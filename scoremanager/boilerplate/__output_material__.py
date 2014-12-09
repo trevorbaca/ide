@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
-import os
-from abjad import persist
-import definition
 
 
 if __name__ == '__main__':
+    from abjad import persist
+    import definition
+    import os
     current_directory = os.path.dirname(os.path.abspath(__file__))
     output_py_path = os.path.join(
         current_directory,
