@@ -149,7 +149,7 @@ class AssetController(Controller):
             parts = (score_directory,)
             parts += self._score_storehouse_path_infix_parts
             directory = os.path.join(*parts)
-            assert '.' not in directory, repr(directory)
+            directory = os.path.abspath(directory)
             return directory
 
     def _get_metadata(self):
