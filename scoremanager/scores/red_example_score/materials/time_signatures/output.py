@@ -1,5 +1,14 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import indicatortools
 
 
-time_signatures = [TimeSignature((2, 8)), TimeSignature((4, 8)), TimeSignature((5, 8)), TimeSignature((8, 8)), TimeSignature((1, 8)), TimeSignature((8, 8)), TimeSignature((8, 8)), TimeSignature((4, 8))]
+time_signatures = [
+    indicatortools.TimeSignature((2, 8)),
+    indicatortools.TimeSignature((4, 8)),
+    indicatortools.TimeSignature((5, 8)),
+    indicatortools.TimeSignature((8, 8)),
+    indicatortools.TimeSignature((1, 8)),
+    indicatortools.TimeSignature((8, 8)),
+    indicatortools.TimeSignature((8, 8)),
+    indicatortools.TimeSignature((4, 8)),
+    ]
