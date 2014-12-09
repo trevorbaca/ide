@@ -11,8 +11,12 @@ if __name__ == '__main__':
         'output.py',
         )
     _, material_name = os.path.split(current_directory)
-    material_object = getattr(definition, material_name)
-    persist(material_object).as_module(
+    result = getattr(definition, material_name)
+    try:
+        output_material = result()
+    except TypeError:
+        output_material = result
+    persist(output_material).as_module(
         output_py_path,
         material_name,
         )
