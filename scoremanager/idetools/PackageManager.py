@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from __future__ import print_function
 import os
 from abjad.tools import stringtools
 from abjad.tools import systemtools
@@ -231,13 +232,16 @@ class PackageManager(ScoreInternalAssetController):
         return messages
 
     def _get_added_asset_paths(self):
+        paths = []
         if self._is_in_git_repository():
-            command = 'git status --porcelain {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            paths = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
+            git_status_lines = self._get_git_status_lines()
+#            command = 'git status --porcelain {}'
+#            command = command.format(self._path)
+#            with systemtools.TemporaryDirectoryChange(self._path):
+#                process = self._io_manager.make_subprocess(command)
+#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+#            for line in stdout_lines.splitlines():
+            for line in git_status_lines:
                 line = str(line)
                 if line.startswith('A'):
                     path = line.strip('A')
@@ -249,7 +253,6 @@ class PackageManager(ScoreInternalAssetController):
             command = 'svn st {}'
             command = command.format(self._path)
             process = self._io_manager.make_subprocess(command)
-            paths = []
             stdout_lines = self._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
@@ -279,6 +282,15 @@ class PackageManager(ScoreInternalAssetController):
                 file_path = os.path.join(self._path, file_name)
                 return file_path
 
+    def _get_git_status_lines(self):
+        command = 'git status --porcelain {}'
+        command = command.format(self._path)
+        with systemtools.TemporaryDirectoryChange(directory=self._path):
+            process = self._io_manager.make_subprocess(command)
+        stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+        stdout_lines = stdout_lines.splitlines()
+        return stdout_lines
+
     def _get_last_version_number(self):
         versions_directory = self._versions_directory
         if not os.path.exists(versions_directory):
@@ -297,13 +309,15 @@ class PackageManager(ScoreInternalAssetController):
         return metadatum
 
     def _get_modified_asset_paths(self):
+        paths = []
         if self._is_in_git_repository():
-            command = 'git status --porcelain {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            paths = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
+            git_status_lines = self._get_git_status_lines()
+#            command = 'git status --porcelain {}'
+#            command = command.format(self._path)
+#            process = self._io_manager.make_subprocess(command)
+#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+#            for line in stdout_lines.splitlines():
+            for line in git_status_lines:
                 line = str(line)
                 if line.startswith(('M', ' M')):
                     path = line.strip('M ')
@@ -315,7 +329,6 @@ class PackageManager(ScoreInternalAssetController):
             command = 'svn st {}'
             command = command.format(self._path)
             process = self._io_manager.make_subprocess(command)
-            paths = []
             stdout_lines = self._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
@@ -337,7 +350,8 @@ class PackageManager(ScoreInternalAssetController):
     def _get_repository_root_directory(self):
         if self._is_in_git_repository():
             command = 'git rev-parse --show-toplevel'
-            process = self._io_manager.make_subprocess(command)
+            with systemtools.TemporaryDirectoryChange(directory=self._path):
+                process = self._io_manager.make_subprocess(command)
             line = self._io_manager._read_one_line_from_pipe(process.stdout)
             return line
         elif self._is_svn_versioned():
@@ -358,25 +372,30 @@ class PackageManager(ScoreInternalAssetController):
         return ()
 
     def _get_unadded_asset_paths(self):
+        paths = []
         if self._is_in_git_repository():
-            command = 'git status --porcelain {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            paths = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
+            root_directory = self._get_repository_root_directory()
+            print('ROOT', root_directory)
+            print('CURDIR', os.path.abspath(os.path.curdir))
+            git_status_lines = self._get_git_status_lines()
+            print('STATUS', git_status_lines)
+#            command = 'git status --porcelain {}'
+#            command = command.format(self._path)
+#            with systemtools.TemporaryDirectoryChange(directory=self._path):
+#                process = self._io_manager.make_subprocess(command)
+#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+#            for line in stdout_lines.splitlines():
+            for line in git_status_lines:
                 line = str(line)
                 if line.startswith('?'):
                     path = line.strip('?')
                     path = path.strip()
-                    root_directory = self._get_repository_root_directory()
                     path = os.path.join(root_directory, path)
                     paths.append(path)
         elif self._is_svn_versioned():
             command = 'svn st {}'
             command = command.format(self._path)
             process = self._io_manager.make_subprocess(command)
-            paths = []
             stdout_lines = self._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
@@ -417,10 +436,12 @@ class PackageManager(ScoreInternalAssetController):
             return False
         if not os.path.exists(path):
             return False
-        command = 'git status --porcelain {}'
-        command = command.format(path)
-        process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        git_status_lines = self._get_git_status_lines() or ['']
+#        command = 'git status --porcelain {}'
+#        command = command.format(path)
+#        process = self._io_manager.make_subprocess(command)
+#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        first_line = git_status_lines[0]
         if first_line.startswith('A'):
             return True
         return False
@@ -431,10 +452,12 @@ class PackageManager(ScoreInternalAssetController):
             return False
         if not os.path.exists(path):
             return False
-        command = 'git status --porcelain {}'
-        command = command.format(path)
-        process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        git_status_lines = self._get_git_status_lines() or ['']
+#        command = 'git status --porcelain {}'
+#        command = command.format(path)
+#        process = self._io_manager.make_subprocess(command)
+#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        first_line = git_status_lines[0]
         if first_line.startswith('??'):
             return True
         return False
@@ -443,11 +466,13 @@ class PackageManager(ScoreInternalAssetController):
         path = path or self._path
         if not self._is_in_git_repository(path=path):
             return False
-        command = 'git status --porcelain {}'
-        command = command.format(path)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        git_status_lines = self._get_git_status_lines() or ['']
+#        command = 'git status --porcelain {}'
+#        command = command.format(path)
+#        with systemtools.TemporaryDirectoryChange(directory=self._path):
+#            process = self._io_manager.make_subprocess(command)
+#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        first_line = git_status_lines[0]
         if first_line.startswith('?'):
             return False
         return True
@@ -458,11 +483,13 @@ class PackageManager(ScoreInternalAssetController):
             return False
         if not os.path.exists(path):
             return False
-        command = 'git status --porcelain {}'
-        command = command.format(path)
-        with systemtools.TemporaryDirectoryChange(directory=path):
-            process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        git_status_lines = self._get_git_status_lines() or ['']
+#        command = 'git status --porcelain {}'
+#        command = command.format(path)
+#        with systemtools.TemporaryDirectoryChange(directory=path):
+#            process = self._io_manager.make_subprocess(command)
+#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
+        first_line = git_status_lines[0]
         if first_line.startswith('fatal:'):
             return False
         return True
@@ -502,15 +529,16 @@ class PackageManager(ScoreInternalAssetController):
 
     def _is_up_to_date(self):
         if self._is_in_git_repository():
-            command = 'git status --porcelain {}'
+            git_status_lines = self._get_git_status_lines() or ['']
+            first_line = git_status_lines[0]
         elif self._is_svn_versioned():
             command = 'svn st {}'
+            command = command.format(self._path)
+            with systemtools.TemporaryDirectoryChange(directory=self._path):
+                process = self._io_manager.make_subprocess(command)
+            first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         else:
             raise ValueError(self)
-        command = command.format(self._path)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         return first_line == ''
 
     def _list(self, public_entries_only=False, smart_sort=False):
