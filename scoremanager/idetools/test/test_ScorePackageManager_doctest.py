@@ -16,7 +16,7 @@ def test_ScorePackageManager_doctest_01():
         '\n__init__.py OK\n',
         '\n__metadata__.py OK\n',
         '\nmakers/RedExampleScoreTemplate.py OK\n',
-        '0 of 0 tests passed in 65 modules.',
+        '0 of 0 tests passed in 67 modules.',
         ]
 
     for string in strings:

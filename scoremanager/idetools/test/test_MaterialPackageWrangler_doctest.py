@@ -31,8 +31,8 @@ def test_MaterialPackageWrangler_doctest_02():
 
     strings = [
         'Running doctest ...',
-        '30 testable assets found ...',
-        '0 of 0 tests passed in 30 modules.',
+        '32 testable assets found ...',
+        '0 of 0 tests passed in 32 modules.',
         ]
     for string in strings:
         assert string in contents
