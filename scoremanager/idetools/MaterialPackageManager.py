@@ -669,38 +669,65 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         result = self._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        pair = self._make_output_material_pair()
-        if pair is None:
-            return
-        output_py_body_string = pair[0]
-        output_material = pair[1]
-        output_material_lines = [output_py_body_string]
-        import_statements = [self._abjad_import_statement]
-        statements_ = self._object_to_import_statements(output_material)
-        for statement_ in statements_:
-            if statement_ not in import_statements:
-                import_statements.append(statement_)
-        if any('handlertools' in _ for _ in output_material_lines):
-            import_statements.append(self._handlertools_import_statement)
-        if ' makers.' in output_material_lines[0]:
-            module = output_material.__class__.__module__
-            parts = module.split('.')
-            index = parts.index('makers')
-            storehouse = parts[index-1]
-            line = output_material_lines[0]
-            unqualified = ' makers.'
-            qualified = ' {}.makers.'.format(storehouse)
-            line = line.replace(unqualified, qualified)
-            output_material_lines[0] = line
-        lines.extend(import_statements)
-        lines.append('')
-        lines.append('')
-        lines.extend(output_material_lines)
-        contents = '\n'.join(lines)
+#        lines = []
+#        lines.append(self._configuration.unicode_directive)
+#        pair = self._make_output_material_pair()
+#        if pair is None:
+#            return
+#        output_py_body_string = pair[0]
+#        output_material = pair[1]
+#        output_material_lines = [output_py_body_string]
+#        import_statements = [self._abjad_import_statement]
+#        statements_ = self._object_to_import_statements(output_material)
+#        for statement_ in statements_:
+#            if statement_ not in import_statements:
+#                import_statements.append(statement_)
+#        if any('handlertools' in _ for _ in output_material_lines):
+#            import_statements.append(self._handlertools_import_statement)
+#        if ' makers.' in output_material_lines[0]:
+#            module = output_material.__class__.__module__
+#            parts = module.split('.')
+#            index = parts.index('makers')
+#            storehouse = parts[index-1]
+#            line = output_material_lines[0]
+#            unqualified = ' makers.'
+#            qualified = ' {}.makers.'.format(storehouse)
+#            line = line.replace(unqualified, qualified)
+#            output_material_lines[0] = line
+#        lines.extend(import_statements)
+#        lines.append('')
+#        lines.append('')
+#        lines.extend(output_material_lines)
+#        contents = '\n'.join(lines)
         clear = not os.path.isfile(self._output_py_path)
-        self._io_manager.write(self._output_py_path, contents)
+#        self._io_manager.write(self._output_py_path, contents)
+        boilerplate_path = os.path.join(
+            self._configuration.score_manager_directory,
+            'boilerplate',
+            '__output_material__.py',
+            )
+        output_path = os.path.join(
+            self._path,
+            '__output_material__.py',
+            )
+        temporary_files = (
+            output_path,
+            )
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(boilerplate_path, output_path)
+            with self._io_manager._silent():
+                result = self._io_manager.interpret_file(output_path)
+        stdout_lines, stderr_lines = result
+        if stderr_lines:
+            self._io_manager._display_errors(stderr_lines)
+            return
+        result = self._io_manager.execute_file(
+            path=self._output_py_path,
+            attribute_names=(
+                self._package_name,
+                ),
+            )
+        output_material = result[0]
         output_material_class_name = type(output_material).__name__
         self._add_metadatum(
             'output_material_class_name', 
