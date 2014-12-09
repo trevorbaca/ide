@@ -235,12 +235,6 @@ class PackageManager(ScoreInternalAssetController):
         paths = []
         if self._is_in_git_repository():
             git_status_lines = self._get_git_status_lines()
-#            command = 'git status --porcelain {}'
-#            command = command.format(self._path)
-#            with systemtools.TemporaryDirectoryChange(self._path):
-#                process = self._io_manager.make_subprocess(command)
-#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-#            for line in stdout_lines.splitlines():
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith('A'):
@@ -312,11 +306,6 @@ class PackageManager(ScoreInternalAssetController):
         paths = []
         if self._is_in_git_repository():
             git_status_lines = self._get_git_status_lines()
-#            command = 'git status --porcelain {}'
-#            command = command.format(self._path)
-#            process = self._io_manager.make_subprocess(command)
-#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-#            for line in stdout_lines.splitlines():
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith(('M', ' M')):
@@ -379,12 +368,6 @@ class PackageManager(ScoreInternalAssetController):
             print('CURDIR', os.path.abspath(os.path.curdir))
             git_status_lines = self._get_git_status_lines()
             print('STATUS', git_status_lines)
-#            command = 'git status --porcelain {}'
-#            command = command.format(self._path)
-#            with systemtools.TemporaryDirectoryChange(directory=self._path):
-#                process = self._io_manager.make_subprocess(command)
-#            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-#            for line in stdout_lines.splitlines():
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith('?'):
@@ -437,10 +420,6 @@ class PackageManager(ScoreInternalAssetController):
         if not os.path.exists(path):
             return False
         git_status_lines = self._get_git_status_lines() or ['']
-#        command = 'git status --porcelain {}'
-#        command = command.format(path)
-#        process = self._io_manager.make_subprocess(command)
-#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         first_line = git_status_lines[0]
         if first_line.startswith('A'):
             return True
@@ -453,10 +432,6 @@ class PackageManager(ScoreInternalAssetController):
         if not os.path.exists(path):
             return False
         git_status_lines = self._get_git_status_lines() or ['']
-#        command = 'git status --porcelain {}'
-#        command = command.format(path)
-#        process = self._io_manager.make_subprocess(command)
-#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         first_line = git_status_lines[0]
         if first_line.startswith('??'):
             return True
@@ -467,11 +442,6 @@ class PackageManager(ScoreInternalAssetController):
         if not self._is_in_git_repository(path=path):
             return False
         git_status_lines = self._get_git_status_lines() or ['']
-#        command = 'git status --porcelain {}'
-#        command = command.format(path)
-#        with systemtools.TemporaryDirectoryChange(directory=self._path):
-#            process = self._io_manager.make_subprocess(command)
-#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         first_line = git_status_lines[0]
         if first_line.startswith('?'):
             return False
@@ -484,11 +454,6 @@ class PackageManager(ScoreInternalAssetController):
         if not os.path.exists(path):
             return False
         git_status_lines = self._get_git_status_lines() or ['']
-#        command = 'git status --porcelain {}'
-#        command = command.format(path)
-#        with systemtools.TemporaryDirectoryChange(directory=path):
-#            process = self._io_manager.make_subprocess(command)
-#        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         first_line = git_status_lines[0]
         if first_line.startswith('fatal:'):
             return False
@@ -687,11 +652,13 @@ class PackageManager(ScoreInternalAssetController):
             command = 'rm -rf {}'
         path = self._path
         command = command.format(path)
-        process = self._io_manager.make_subprocess(command)
+        with systemtools.TemporaryDirectoryChange(directory=self._path):
+            process = self._io_manager.make_subprocess(command)
         self._io_manager._read_one_line_from_pipe(process.stdout)
         if cleanup_command:
             cleanup_command = cleanup_command.format(path)
-            process = self._io_manager.make_subprocess(cleanup_command)
+            with systemtools.TemporaryDirectoryChange(directory=self._path):
+                process = self._io_manager.make_subprocess(cleanup_command)
             self._io_manager._read_one_line_from_pipe(process.stdout)
         return True
 
@@ -718,7 +685,8 @@ class PackageManager(ScoreInternalAssetController):
         else:
             command = 'mv {} {}'
         command = command.format(self._path, new_path)
-        process = self._io_manager.make_subprocess(command)
+        with systemtools.TemporaryDirectoryChange(directory=self._path):
+            process = self._io_manager.make_subprocess(command)
         self._io_manager._read_from_pipe(process.stdout)
         self._path = new_path
 
@@ -894,7 +862,8 @@ class PackageManager(ScoreInternalAssetController):
         else:
             raise ValueError(self)
         command = ' && '.join(commands)
-        self._io_manager.spawn_subprocess(command)
+        with systemtools.TemporaryDirectoryChange(directory=self._path):
+            self._io_manager.spawn_subprocess(command)
 
     ### PUBLIC METHODS ###
 
@@ -1222,7 +1191,8 @@ class PackageManager(ScoreInternalAssetController):
             message = 'Repository status for {} ...'
             message = message.format(self._path)
             messages.append(message)
-            process = self._io_manager.make_subprocess(command)
+            with systemtools.TemporaryDirectoryChange(directory=self._path):
+                process = self._io_manager.make_subprocess(command)
             path = self._path
             path = path + os.path.sep
             clean_lines = []
@@ -1327,7 +1297,8 @@ class PackageManager(ScoreInternalAssetController):
             else:
                 raise ValueError(self)
             command = ' && '.join(commands)
-            self._io_manager.spawn_subprocess(command)
+            with systemtools.TemporaryDirectoryChange(directory=self._path):
+                self._io_manager.spawn_subprocess(command)
 
     def update(self, messages_only=False):
         r'''Updates files from repository.
