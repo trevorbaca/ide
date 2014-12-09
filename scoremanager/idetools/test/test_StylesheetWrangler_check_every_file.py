@@ -13,7 +13,7 @@ def test_StylesheetWrangler_check_every_file_01():
     ide._run(input_=input_)
     contents = ide._transcript.contents
 
-    assert 'Stylesheets directory (3 files): OK' in contents
+    assert 'Stylesheets directory (4 files): OK' in contents
 
 
 def test_StylesheetWrangler_check_every_file_02():
