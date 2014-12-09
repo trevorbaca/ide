@@ -1,0 +1,15 @@
+[run]
+branch = False
+cover_pylib = False
+omit = 
+    scoremanager/docs/*
+    scoremanager/idetools/test/*
+    scoremanager/scores/*
+    scoremanager/test/*
+    setup.py
+source =
+    scoremanager
+
+[report]
+exclude_lines = 
+    raise NotImplementedError
