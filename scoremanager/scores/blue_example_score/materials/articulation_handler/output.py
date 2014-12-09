@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import durationtools
 from abjad.tools import handlertools
-from abjad.tools import handlertools
+from abjad.tools import pitchtools
 
 
 articulation_handler = handlertools.ReiteratedArticulationHandler(
@@ -10,4 +10,5 @@ articulation_handler = handlertools.ReiteratedArticulationHandler(
     maximum_duration=durationtools.Duration(1, 4),
     minimum_written_pitch=pitchtools.NamedPitch('a,,,'),
     maximum_written_pitch=pitchtools.NamedPitch("c''''"),
+    skip_ties=False,
     )

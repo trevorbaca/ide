@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import rhythmmakertools
 
 
 talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(

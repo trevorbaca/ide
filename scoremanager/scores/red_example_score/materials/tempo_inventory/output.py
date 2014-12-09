@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import durationtools
+from abjad.tools import indicatortools
 
 
 tempo_inventory = indicatortools.TempoInventory(

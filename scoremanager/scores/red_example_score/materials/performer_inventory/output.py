@@ -1,5 +1,8 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import indicatortools
+from abjad.tools import instrumenttools
+from abjad.tools import markuptools
+from abjad.tools import pitchtools
 
 
 performer_inventory = instrumenttools.PerformerInventory(

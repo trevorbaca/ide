@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import markuptools
 
 
 markup_inventory = markuptools.MarkupInventory(

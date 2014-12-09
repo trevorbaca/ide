@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
-from abjad import *
+from abjad.tools import indicatortools
+from abjad.tools import scoretools
+from abjad.tools import selectiontools
 
 
 sargasso_measures = selectiontools.ContiguousSelection(
