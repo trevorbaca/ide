@@ -17,5 +17,5 @@ def test_PackageManager__get_repository_root_directory_01():
         )
 
     repository_root_directory = manager._get_repository_root_directory()
-    abjad_root_directory = manager._configuration.abjad_root_directory
-    assert repository_root_directory == abjad_root_directory
+    score_manager_root_directory = manager._configuration.score_manager_root_directory
+    assert repository_root_directory == score_manager_root_directory
