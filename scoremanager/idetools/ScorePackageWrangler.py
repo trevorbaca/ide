@@ -198,6 +198,41 @@ class ScorePackageWrangler(PackageWrangler):
                 return True
         return False
 
+    def _list_asset_paths(
+        self,
+        abjad_material_packages_and_stylesheets=True,
+        example_score_packages=True,
+        library=True,
+        user_score_packages=True,
+        valid_only=True,
+        ):
+        result = []
+        directories = self._list_storehouse_paths(
+            abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
+            example_score_packages=example_score_packages,
+            library=library,
+            user_score_packages=user_score_packages,
+            )
+        for directory in directories:
+            if not directory:
+                continue
+            if not os.path.exists(directory):
+                continue
+            directory_entries = sorted(os.listdir(directory))
+            for directory_entry in directory_entries:
+                if valid_only:
+                    if not self._is_valid_directory_entry(directory_entry):
+                        continue
+                path = os.path.join(directory, directory_entry)
+                init_path = os.path.join(path, '__init__.py')
+                if not os.path.exists(init_path):
+                    path = os.path.join(path, directory_entry)
+                    init_path = os.path.join(path, '__init__.py')
+                    if not os.path.exists(init_path):
+                        continue
+                result.append(path)
+        return result
+
     def _make_all_packages_menu_section(self, menu):
         superclass = super(ScorePackageWrangler, self)
         commands = superclass._make_all_packages_menu_section(
