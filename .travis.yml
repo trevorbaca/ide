@@ -21,7 +21,7 @@ install:
     - pip install -e . 
 
 before_script:
-    - export PYTHONPATH=$TRAVIS_BUILD_DIR/abjad_ide/scores:${PYTHONPATH}
+    - export PYTHONPATH=$TRAVIS_BUILD_DIR/ide/scores:${PYTHONPATH}
     - echo $PYTHONPATH
 
 script:

@@ -302,9 +302,9 @@
     > da
         Exception raised in /Users/trevorbaca/Documents/scores/huitzil/materials/pitch_segment/definition.py.
         Traceback (most recent call last):
-        File "/Users/trevorbaca/Documents/abjad/abjad_ide/idetools/IOManager.py", line 487, in execute_file
+        File "/Users/trevorbaca/Documents/abjad/ide/idetools/IOManager.py", line 487, in execute_file
             result = self.execute_string(file_contents_string, attribute_names)
-        File "/Users/trevorbaca/Documents/abjad/abjad_ide/idetools/IOManager.py", line 521, in execute_string
+        File "/Users/trevorbaca/Documents/abjad/ide/idetools/IOManager.py", line 521, in execute_string
             exec(string, local_namespace, local_namespace)
         File "<string>", line 5, in <module>
         NameError: name 'NumberedPitch' is not defined

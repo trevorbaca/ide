@@ -235,7 +235,7 @@ class Configuration(AbjadConfiguration):
         ..  container:: example
 
             >>> configuration.boilerplate_directory
-            '.../abjad_ide/boilerplate'
+            '.../ide/boilerplate'
 
         Returns string.
         '''
@@ -254,7 +254,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.cache_file_path
-                '.../.abjad/abjad_ide/cache.py'
+                '.../.abjad/ide/cache.py'
 
         Returns string.
         '''
@@ -357,7 +357,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_file_path
-                '.../.abjad/abjad_ide/abjad_ide.cfg'
+                '.../.abjad/ide/abjad_ide.cfg'
 
         Returns string.
         '''
@@ -375,7 +375,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.example_score_packages_directory
-                '.../abjad_ide/scores'
+                '.../ide/scores'
 
         Returns string.
         '''
@@ -527,7 +527,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.transcripts_directory
-                '.../.abjad/abjad_ide/transcripts'
+                '.../.abjad/ide/transcripts'
 
         Returns string.
         '''
@@ -612,7 +612,7 @@ class Configuration(AbjadConfiguration):
         ..  container::
 
             >>> configuration.wrangler_views_metadata_file
-            '.../abjad_ide/views/__metadata__.py'
+            '.../ide/views/__metadata__.py'
 
         Defined equal to metadata file resident in the wrangler views
         directory.
@@ -640,9 +640,9 @@ class Configuration(AbjadConfiguration):
                 ...     abjad=True,
                 ...     ):
                 ...     x
-                '.../abjad_ide/scores/blue_example_score'
-                '.../abjad_ide/scores/etude_example_score'
-                '.../abjad_ide/scores/red_example_score'
+                '.../ide/scores/blue_example_score'
+                '.../ide/scores/etude_example_score'
+                '.../ide/scores/red_example_score'
 
         Returns list.
         '''

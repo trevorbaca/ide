@@ -25,7 +25,7 @@ on your filesystem after checkout:
 2. Add the abjad_ide/scr/ directory to your PATH. This tells your shell
 where the start-abjad-idetools script is housed:
 
-    export PATH=$ABJAD/abjad_ide/scr:$PATH
+    export PATH=$ABJAD/ide/scr:$PATH
 
 3. Create a scores directory. You can do this anywhere on your filesystem you
 wish. Then create a SCORES environment variable in your profile. Set the scores
