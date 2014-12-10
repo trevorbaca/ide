@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from __future__ import print_function
 import os
 from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
 
@@ -133,16 +134,26 @@ class Configuration(AbjadConfiguration):
                 os.makedirs(directory)
 
     def _path_to_score_path(self, path):
+        is_user_score = False
         if path.startswith(self.user_score_packages_directory):
+            is_user_score = True
             prefix = len(self.user_score_packages_directory)
         elif path.startswith(self.example_score_packages_directory):
             prefix = len(self.example_score_packages_directory)
         else:
             return
         path_prefix = path[:prefix]
-        path_suffix = path[prefix+1:]
+        path_suffix = path[prefix + 1:]
         score_name = path_suffix.split(os.path.sep)[0]
         score_path = os.path.join(path_prefix, score_name)
+        # Test for installable Python package structure
+        if is_user_score:
+            outer_init_path = os.path.join(score_path, '__init__.py')
+            inner_init_path = os.path.join(
+                score_path, score_name, '__init__.py')
+            if not os.path.exists(outer_init_path) and \
+                os.path.exists(inner_init_path):
+                score_path = os.path.join(score_path, score_name)
         return score_path
 
     def _path_to_storehouse(self, path):
