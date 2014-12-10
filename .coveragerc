@@ -2,13 +2,13 @@
 branch = False
 cover_pylib = False
 omit = 
-    scoremanager/docs/*
-    scoremanager/idetools/test/*
-    scoremanager/scores/*
-    scoremanager/test/*
+    abjadide/docs/*
+    abjadide/idetools/test/*
+    abjadide/scores/*
+    abjadide/test/*
     setup.py
 source =
-    scoremanager
+    abjadide
 
 [report]
 exclude_lines = 
