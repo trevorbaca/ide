@@ -2,13 +2,13 @@
 branch = False
 cover_pylib = False
 omit = 
-    abjad_ide/docs/*
-    abjad_ide/idetools/test/*
-    abjad_ide/scores/*
-    abjad_ide/test/*
+    ide/docs/*
+    ide/idetools/test/*
+    ide/scores/*
+    ide/test/*
     setup.py
 source =
-    abjad_ide
+    ide
 
 [report]
 exclude_lines = 
