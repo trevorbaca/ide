@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import abjad_ide
+import ide
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 

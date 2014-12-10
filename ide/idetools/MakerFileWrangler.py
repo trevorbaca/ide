@@ -2,7 +2,7 @@
 import os
 from abjad.tools import documentationtools
 from abjad.tools import stringtools
-from abjad_ide.idetools.FileWrangler import FileWrangler
+from ide.idetools.FileWrangler import FileWrangler
 
 
 class MakerFileWrangler(FileWrangler):

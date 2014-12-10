@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_ScorePackageWrangler_go_to_previous_score_01():

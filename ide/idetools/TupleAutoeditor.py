@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from abjad_ide.idetools.CollectionAutoeditor import CollectionAutoeditor
+from ide.idetools.CollectionAutoeditor import CollectionAutoeditor
 
 
 class TupleAutoeditor(CollectionAutoeditor):
@@ -70,7 +70,7 @@ class TupleAutoeditor(CollectionAutoeditor):
 
         Returns none.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         item = self._get_item_from_item_number(number)
         if item is None:
             return

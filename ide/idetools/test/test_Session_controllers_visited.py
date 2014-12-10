@@ -2,7 +2,7 @@
 import os
 import pytest
 from abjad import *
-import abjad_ide
+import ide
 configuration = abjad_ide.idetools.Configuration()
 
 score_path = os.path.join(

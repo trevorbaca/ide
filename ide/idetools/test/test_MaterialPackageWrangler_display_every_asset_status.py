@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_MaterialPackageWrangler_display_every_asset_status_01():

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import abjad_ide
+import ide
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 session = abjad_ide.idetools.Session()
 inventory = instrumenttools.InstrumentInventory()

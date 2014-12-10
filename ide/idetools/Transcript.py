@@ -20,7 +20,7 @@ class Transcript(AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self):
-        from abjad_ide import idetools
+        from ide import idetools
         self._configuration = idetools.Configuration()
         self._entries = []
         current_time = datetime.datetime.fromtimestamp(time.time())
@@ -38,7 +38,7 @@ class Transcript(AbjadObject):
     ### PRIVATE METHODS ###
 
     def _append_entry(self, lines, is_menu=False):
-        from abjad_ide import idetools
+        from ide import idetools
         entry = idetools.TranscriptEntry(lines, is_menu=is_menu)
         self.entries.append(entry)
 

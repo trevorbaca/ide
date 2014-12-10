@@ -5,7 +5,7 @@ import shutil
 from abjad.tools import lilypondfiletools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from abjad_ide.idetools.FileWrangler import FileWrangler
+from ide.idetools.FileWrangler import FileWrangler
 
 
 class BuildFileWrangler(FileWrangler):

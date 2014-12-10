@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_StylesheetWrangler__list_asset_paths_01():

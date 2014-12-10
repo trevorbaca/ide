@@ -5,8 +5,8 @@ if sys.version_info[0] == 2:
     import getters
     import predicates
 else:
-    from abjad_ide.idetools import getters
-    from abjad_ide.idetools import predicates
+    from ide.idetools import getters
+    from ide.idetools import predicates
 del sys
 
 

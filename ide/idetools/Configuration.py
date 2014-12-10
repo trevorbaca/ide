@@ -185,7 +185,7 @@ class Configuration(AbjadConfiguration):
         return storehouse_path
 
     def _path_to_storehouse_annotation(self, path):
-        import abjad_ide
+        import ide
         score_path = self._path_to_score_path(path)
         if score_path:
             session = abjad_ide.idetools.Session

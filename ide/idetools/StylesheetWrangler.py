@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from abjad_ide.idetools.FileWrangler import FileWrangler
+from ide.idetools.FileWrangler import FileWrangler
 
 
 class StylesheetWrangler(FileWrangler):
@@ -26,7 +26,7 @@ class StylesheetWrangler(FileWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from abjad_ide import idetools
+        from ide import idetools
         superclass = super(StylesheetWrangler, self)
         superclass.__init__(session=session)
         self._abjad_storehouse_path = \

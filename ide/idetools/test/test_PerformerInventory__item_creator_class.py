@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import abjad_ide
+import ide
 inventory = instrumenttools.PerformerInventory
 item_creator_class = inventory._make_item_creator_class()
 

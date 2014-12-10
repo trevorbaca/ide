@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from abjad_ide.idetools.CollectionAutoeditor import CollectionAutoeditor
+from ide.idetools.CollectionAutoeditor import CollectionAutoeditor
 
 
 class ListAutoeditor(CollectionAutoeditor):

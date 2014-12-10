@@ -2,7 +2,7 @@
 import collections
 import os
 from abjad.tools import systemtools
-from abjad_ide.idetools.ScoreInternalPackageWrangler import \
+from ide.idetools.ScoreInternalPackageWrangler import \
     ScoreInternalPackageWrangler
 
 
@@ -28,7 +28,7 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from abjad_ide import idetools
+        from ide import idetools
         superclass = super(SegmentPackageWrangler, self)
         superclass.__init__(session=session)
         self._asset_identifier = 'segment package'

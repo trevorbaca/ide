@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import abjad_ide
+import ide
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 views_file = os.path.join(
     abjad_ide._configuration.wrangler_views_directory,

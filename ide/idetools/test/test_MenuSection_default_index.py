@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import pytest
 from abjad import *
-import abjad_ide
+import ide
 session = abjad_ide.idetools.Session()
 
 

@@ -2,7 +2,7 @@
 import os
 from abjad import *
 from abjad.tools import handlertools
-import abjad_ide
+import ide
 
 
 def test_TerracedDynamicsHandler_autoedit_01():

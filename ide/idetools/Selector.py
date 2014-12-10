@@ -5,7 +5,7 @@ from abjad.tools import datastructuretools
 from abjad.tools import documentationtools
 from abjad.tools import rhythmmakertools
 from abjad.tools import stringtools
-from abjad_ide.idetools.Controller import Controller
+from ide.idetools.Controller import Controller
 
 
 class Selector(Controller):
@@ -217,7 +217,7 @@ class Selector(Controller):
 
         Returns selector.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         storehouse_paths = storehouse_paths or []
         forbidden_directory_entries = forbidden_directory_entries or []
         items = []
@@ -285,7 +285,7 @@ class Selector(Controller):
 
         Returns selector.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         wrangler = idetools.MaterialPackageWrangler(session=self._session)
         paths = wrangler._list_asset_paths(
             output_material_class_name=output_material_class_name,

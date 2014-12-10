@@ -4,7 +4,7 @@ import re
 import shlex
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from abjad_ide.idetools.Controller import Controller
+from ide.idetools.Controller import Controller
 
 
 class Menu(Controller):
@@ -268,13 +268,13 @@ class Menu(Controller):
                 return section._menu_entry_return_values[0]
 
     def _get_nearest_autoeditor(self):
-        from abjad_ide import idetools
+        from ide import idetools
         for controller in reversed(self._session.controller_stack):
             if self._is_autoeditor_with_attributes_menu_section(controller):
                 return controller
 
     def _get_parent_autoeditors(self):
-        from abjad_ide import idetools
+        from ide import idetools
         autoeditors = []
         for controller in self._session.controller_stack:
             if self._is_autoeditor_with_attributes_menu_section(controller):
@@ -397,7 +397,7 @@ class Menu(Controller):
 
     @staticmethod
     def _is_autoeditor_with_attributes_menu_section(controller):
-        from abjad_ide import idetools
+        from ide import idetools
         if not isinstance(controller, idetools.Autoeditor):
             return False
         menu = controller._make_main_menu()
@@ -608,7 +608,7 @@ class Menu(Controller):
         return_value_attribute='display_string',
         title=None,
         ):
-        from abjad_ide import idetools
+        from ide import idetools
         assert not (is_numbered and self._has_numbered_section())
         assert not (is_ranged and self._has_ranged_section())
         section = idetools.MenuSection(

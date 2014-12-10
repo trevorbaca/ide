@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad.tools import stringtools
-from abjad_ide.idetools.Wrangler import Wrangler
+from ide.idetools.Wrangler import Wrangler
 
 
 class PackageWrangler(Wrangler):

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from abjad_ide.idetools.CollectionAutoeditor import CollectionAutoeditor
+from ide.idetools.CollectionAutoeditor import CollectionAutoeditor
 
 
 class DictionaryAutoeditor(CollectionAutoeditor):
@@ -80,7 +80,7 @@ class DictionaryAutoeditor(CollectionAutoeditor):
 
         Returns none.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         getter = self._io_manager._make_getter()
         getter.append_string('enter item name')
         key = getter._run()
@@ -105,7 +105,7 @@ class DictionaryAutoeditor(CollectionAutoeditor):
 
         Returns none.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         item = self._get_item_from_item_number(number)
         if item is None:
             return

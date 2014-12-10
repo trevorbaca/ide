@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import sys
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_ScorePackageWrangler__make_main_menu_01():

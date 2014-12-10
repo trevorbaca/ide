@@ -108,7 +108,7 @@ class Session(abctools.AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_test=False):
-        from abjad_ide import idetools
+        from ide import idetools
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
         self._attempted_display_status = False
@@ -230,7 +230,7 @@ class Session(abctools.AbjadObject):
         self.io_manager._display(lines, capitalize=False)
 
     def _format_controller_breadcrumbs(self, stop_controller=None):
-        from abjad_ide import idetools
+        from ide import idetools
         if not self.controller_stack:
             return ['']
         result_lines = []
@@ -289,7 +289,7 @@ class Session(abctools.AbjadObject):
         self._allow_unknown_command_during_test = allow_unknown
 
     def _set_test_score(self, score_package_name):
-        from abjad_ide import idetools
+        from ide import idetools
         assert not self.controller_stack
         path = os.path.join(
             self._configuration.example_score_packages_directory,
@@ -320,7 +320,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         autoeditor = None
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Autoeditor):
@@ -496,7 +496,7 @@ class Session(abctools.AbjadObject):
 
         Returns score package manager or none.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.ScorePackageManager):
                 return controller
@@ -674,7 +674,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         prototype = (idetools.FileWrangler, idetools.PackageWrangler)
         for controller in self.controller_stack:
             if isinstance(controller, prototype):
@@ -828,7 +828,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Autoeditor):
                 return True
@@ -931,7 +931,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Getter):
                 return True

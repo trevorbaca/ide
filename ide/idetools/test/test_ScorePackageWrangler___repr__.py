@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import shutil
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_ScorePackageWrangler___repr___01():

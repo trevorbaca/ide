@@ -2,7 +2,7 @@
 import os
 import sys
 from abjad.tools import stringtools
-from abjad_ide.idetools.PackageWrangler import PackageWrangler
+from ide.idetools.PackageWrangler import PackageWrangler
 
 
 class ScorePackageWrangler(PackageWrangler):
@@ -42,7 +42,7 @@ class ScorePackageWrangler(PackageWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from abjad_ide import idetools
+        from ide import idetools
         superclass = super(ScorePackageWrangler, self)
         superclass.__init__(session=session)
         self._asset_identifier = 'score package'

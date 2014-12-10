@@ -5,7 +5,7 @@ from abjad.tools import datastructuretools
 from abjad.tools import mathtools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from abjad_ide.idetools.Autoeditor import Autoeditor
+from ide.idetools.Autoeditor import Autoeditor
 
 
 class CollectionAutoeditor(Autoeditor):
@@ -39,7 +39,7 @@ class CollectionAutoeditor(Autoeditor):
         session=None,
         target=None,
         ):
-        from abjad_ide import idetools
+        from ide import idetools
         if target is None:
             target = []
         superclass = super(CollectionAutoeditor, self)
@@ -266,7 +266,7 @@ class CollectionAutoeditor(Autoeditor):
 
         Returns none.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         item = self._get_item_from_item_number(number)
         if item is None:
             return

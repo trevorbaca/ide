@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import abjad_ide
+import ide
 session = abjad_ide.idetools.Session(is_test=True)
 
 

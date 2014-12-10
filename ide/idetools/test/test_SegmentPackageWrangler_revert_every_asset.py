@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-import abjad_ide
+import ide
 
 
 def test_SegmentPackageWrangler_revert_every_asset_01():

@@ -3,7 +3,7 @@ import os
 import pytest
 from abjad import *
 from experimental import *
-import abjad_ide
+import ide
 
 
 def test_MaterialPackageManager_autoedit_definition_py_01():

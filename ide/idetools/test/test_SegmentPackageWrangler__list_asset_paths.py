@@ -2,7 +2,7 @@
 import os
 import shutil
 from abjad import *
-import abjad_ide
+import ide
 
 
 def test_SegmentPackageWrangler__list_asset_paths_01():

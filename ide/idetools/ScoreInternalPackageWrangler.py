@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from abjad_ide.idetools.PackageWrangler import PackageWrangler
+from ide.idetools.PackageWrangler import PackageWrangler
 
 
 class ScoreInternalPackageWrangler(PackageWrangler):

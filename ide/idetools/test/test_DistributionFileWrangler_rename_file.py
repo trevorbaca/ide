@@ -2,7 +2,7 @@
 import os
 import shutil
 from abjad import *
-import abjad_ide
+import ide
 configuration = abjad_ide.idetools.Configuration()
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 

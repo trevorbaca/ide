@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad.tools import stringtools
-from abjad_ide.idetools.Controller import Controller
-from abjad_ide.idetools.PromptMakerMixin import PromptMakerMixin
+from ide.idetools.Controller import Controller
+from ide.idetools.PromptMakerMixin import PromptMakerMixin
 
 
 class Getter(Controller, PromptMakerMixin):

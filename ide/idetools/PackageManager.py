@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from abjad_ide.idetools.AssetController import \
+from ide.idetools.AssetController import \
     AssetController
 
 
@@ -1113,7 +1113,7 @@ class PackageManager(AssetController):
                 lines = []
                 lines.append(self._configuration.unicode_directive)
                 lines.append(self._abjad_import_statement)
-                lines.append('from abjad_ide import idetools')
+                lines.append('from ide import idetools')
                 lines.append('')
                 lines.append('')
                 line = 'view_inventory = idetools.ViewInventory([])'

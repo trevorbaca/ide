@@ -2,7 +2,7 @@
 import os
 from abjad.tools import indicatortools
 from abjad.tools import systemtools
-from abjad_ide.idetools.PackageManager import PackageManager
+from ide.idetools.PackageManager import PackageManager
 
 
 class ScorePackageManager(PackageManager):
@@ -237,7 +237,7 @@ class ScorePackageManager(PackageManager):
         return entries
 
     def _make_setup_menu_entry(self, display_string, prepopulated_value):
-        from abjad_ide import idetools
+        from ide import idetools
         return idetools.MenuEntry(
             display_string=display_string,
             prepopulated_value=prepopulated_value,

@@ -585,7 +585,7 @@ class MenuSection(AbjadObject):
 
         Returns menu entry.
         '''
-        from abjad_ide import idetools
+        from ide import idetools
         if isinstance(expr, idetools.MenuEntry):
             new_expr = (
                 expr.display_string,

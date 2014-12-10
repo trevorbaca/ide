@@ -5,7 +5,7 @@ import os
 import shutil
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from abjad_ide.idetools.ScoreInternalPackageManager import \
+from ide.idetools.ScoreInternalPackageManager import \
     ScoreInternalPackageManager
 
 
@@ -122,7 +122,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
 
     @property
     def _score_package_manager(self):
-        from abjad_ide import idetools
+        from ide import idetools
         score_path = self._configuration._path_to_score_path(self._path)
         return idetools.ScorePackageManager(
             path=score_path,

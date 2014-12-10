@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import pytest
-import abjad_ide
+import ide
 import sys
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 

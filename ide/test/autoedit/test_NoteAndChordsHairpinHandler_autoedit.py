@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 from abjad.tools import handlertools
-import abjad_ide
+import ide
 
 
 def test_NoteAndChordsHairpinHandler_autoedit_01():

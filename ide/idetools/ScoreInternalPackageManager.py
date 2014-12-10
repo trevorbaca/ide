@@ -3,7 +3,7 @@ import itertools
 import os
 import shutil
 from abjad.tools import systemtools
-from abjad_ide.idetools.PackageManager import PackageManager
+from ide.idetools.PackageManager import PackageManager
 
 
 class ScoreInternalPackageManager(PackageManager):

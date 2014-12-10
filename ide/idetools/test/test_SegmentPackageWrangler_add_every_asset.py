@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 import pytest
-import abjad_ide
+import ide
 
 
 def test_SegmentPackageWrangler_add_every_asset_01():

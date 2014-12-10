@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import re
 from abjad import *
-from abjad_ide.idetools.Configuration import Configuration
+from ide.idetools.Configuration import Configuration
 configuration = Configuration()
 
 
@@ -146,7 +146,7 @@ def is_string_or_none(expr):
 
 def is_tempo_token(expr):
     import abjad
-    from abjad_ide import idetools
+    from ide import idetools
     try:
         namespace = abjad.__dict__.copy()
         command = 'tempo = indicatortools.Tempo({})'.format(expr)

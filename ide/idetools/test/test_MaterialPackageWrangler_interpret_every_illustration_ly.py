@@ -2,7 +2,7 @@
 from abjad import *
 import os
 import pytest
-import abjad_ide
+import ide
 abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 

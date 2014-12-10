@@ -6,7 +6,7 @@ import shutil
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from abjad_ide.idetools.Controller import Controller
+from ide.idetools.Controller import Controller
 
 
 class AssetController(Controller):
@@ -529,7 +529,7 @@ class AssetController(Controller):
         return view_inventory.get(view_name)
 
     def _read_view_inventory(self):
-        from abjad_ide import idetools
+        from ide import idetools
         if self._views_py_path is None:
             return
         if not os.path.exists(self._views_py_path):
