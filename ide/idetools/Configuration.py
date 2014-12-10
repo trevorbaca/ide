@@ -327,11 +327,11 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_directory
-                '.../.abjad/abjad_ide'
+                '.../.abjad/ide'
 
         Returns string.
         '''
-        return os.path.join(self.abjad_configuration_directory, 'abjad_ide')
+        return os.path.join(self.abjad_configuration_directory, 'ide')
 
     @property
     def configuration_file_name(self):
@@ -342,11 +342,11 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_file_name
-                'abjad_ide.cfg'
+                'ide.cfg'
 
         Returns string.
         '''
-        return 'abjad_ide.cfg'
+        return 'ide.cfg'
 
     @property
     def configuration_file_path(self):
@@ -357,7 +357,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_file_path
-                '.../.abjad/ide/abjad_ide.cfg'
+                '.../.abjad/ide/ide.cfg'
 
         Returns string.
         '''
