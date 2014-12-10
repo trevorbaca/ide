@@ -8,6 +8,6 @@ install_requires = ('abjad',)
 setuptools.setup(
     install_requires=('abjad',),
     name='Abjad Score Manager',
-    packages=('ide',),
+    packages=('abjad_ide',),
     url='http://www.projectabjad.org',
     )

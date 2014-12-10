@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 views_file = os.path.join(
-    ide._configuration.wrangler_views_directory,
+    abjad_ide._configuration.wrangler_views_directory,
     '__ScorePackageWrangler_views__.py',
     )
 
@@ -18,8 +18,8 @@ def test_ScorePackageWrangler_autoedit_views_01():
         input_ += " ren _test _new_test"
         input_ += " _new_test rm 'Red~Example~Score' done"
         input_ += " rm _new_test done q"
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
     lines = [
         'Abjad IDE - scores - views - _test (EDIT)',

@@ -2,16 +2,16 @@
 import os
 from abjad import *
 from abjad.tools import handlertools
-import ide
+import abjad_ide
 
 
 def test_Performer_autoedit_01():
     r'''Adds instruments to performer instrument inventory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -35,9 +35,9 @@ def test_Performer_autoedit_02():
     r'''Removes instruments from performer instrument inventory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -60,9 +60,9 @@ def test_Performer_autoedit_03():
     r'''Moves instruments in performer instrument inventory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

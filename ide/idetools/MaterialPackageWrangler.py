@@ -3,7 +3,7 @@ import collections
 import os
 import traceback
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageWrangler import \
+from abjad_ide.idetools.ScoreInternalPackageWrangler import \
     ScoreInternalPackageWrangler
 
 
@@ -14,8 +14,8 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> wrangler = ide.idetools.MaterialPackageWrangler(
+            >>> session = abjad_ide.idetools.Session()
+            >>> wrangler = abjad_ide.idetools.MaterialPackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler
@@ -25,9 +25,9 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
+            >>> session = abjad_ide.idetools.Session()
             >>> session._set_test_score('red_example_score')
-            >>> wrangler_in_score = ide.idetools.MaterialPackageWrangler(
+            >>> wrangler_in_score = abjad_ide.idetools.MaterialPackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler_in_score
@@ -44,7 +44,7 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         superclass = super(MaterialPackageWrangler, self)
         superclass.__init__(session=session)
         configuration = self._configuration
@@ -88,7 +88,7 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
     def _get_material_package_manager(self, class_name, path):
         assert os.path.sep in path
         assert class_name is not None
-        command = 'manager = ide.idetools.{}'
+        command = 'manager = abjad_ide.idetools.{}'
         command += '(path=path, session=self._session)'
         command = command.format(class_name)
         try:
@@ -141,7 +141,7 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         user_score_packages=True,
         output_material_class_name='',
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         superclass = super(MaterialPackageWrangler, self)
         paths = superclass._list_asset_paths(
             abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,

@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_Getter_go_to_current_score_01():
 
-    ide = ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m tempo~inventory da 1 d s q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
     titles = [
         'Abjad IDE - scores',
@@ -18,4 +18,4 @@ def test_Getter_go_to_current_score_01():
         'Red Example Score (2013) - materials directory - tempo inventory - tempo (EDIT)',
         'Red Example Score (2013)',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

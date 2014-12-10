@@ -2,9 +2,9 @@
 import os
 import shutil
 from abjad import *
-import ide
-configuration = ide.idetools.Configuration()
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+configuration = abjad_ide.idetools.Configuration()
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_rename_file_01():
@@ -12,13 +12,13 @@ def test_BuildFileWrangler_rename_file_01():
     '''
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'score.pdf',
         )
     new_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'foo-score.pdf',
@@ -28,14 +28,14 @@ def test_BuildFileWrangler_rename_file_01():
 
     input_ = 'uu ren score.pdf~(Red~Example~Score)'
     input_ += ' foo-score.pdf y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'uu ren foo-score.pdf~(Red~Example~Score)'
     input_ += ' score.pdf y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)
 
@@ -45,13 +45,13 @@ def test_BuildFileWrangler_rename_file_02():
     '''
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'score.pdf',
         )
     new_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'foo-score.pdf',
@@ -61,13 +61,13 @@ def test_BuildFileWrangler_rename_file_02():
 
     input_ = 'red~example~score u ren score.pdf'
     input_ += ' foo-score.pdf y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'red~example~score u ren foo-score.pdf'
     input_ += ' score.pdf y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)

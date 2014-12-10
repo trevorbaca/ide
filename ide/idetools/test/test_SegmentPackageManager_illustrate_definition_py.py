@@ -2,8 +2,8 @@
 from abjad import *
 import os
 import pytest
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_SegmentPackageManager_illustrate_definition_py_01():
@@ -11,7 +11,7 @@ def test_SegmentPackageManager_illustrate_definition_py_01():
     '''
 
     segment_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'segments',
         'segment_01',
@@ -23,13 +23,13 @@ def test_SegmentPackageManager_illustrate_definition_py_01():
         os.remove(ly_path)
         os.remove(pdf_path)
         input_ = 'red~example~score g A di q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'Wrote ...' in contents
     assert ly_path in contents
     assert pdf_path in contents
@@ -44,7 +44,7 @@ def test_SegmentPackageManager_illustrate_definition_py_02():
     '''
 
     segment_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'segments',
         'segment_01',
@@ -58,9 +58,9 @@ def test_SegmentPackageManager_illustrate_definition_py_02():
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         input_ = 'red~example~score g A di q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert pdf_path in contents
     assert candidate_pdf_path in contents
@@ -74,7 +74,7 @@ def test_SegmentPackageManager_illustrate_definition_py_03():
     '''
 
     segment_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'segments',
         'segment_01',
@@ -90,13 +90,13 @@ def test_SegmentPackageManager_illustrate_definition_py_03():
         with open(pdf_path, 'w') as file_pointer:
             file_pointer.write('text')
         input_ = 'red~example~score g A di y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert pdf_path in contents
     assert candidate_pdf_path in contents

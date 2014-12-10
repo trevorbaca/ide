@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 inventory = instrumenttools.PerformerInventory
 item_creator_class = inventory._make_item_creator_class()
 
 
 def test_PerformerInventory__item_creator_class_01():
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(session=session)
     item_creator._session._pending_input = 'q'
     assert item_creator._run() is None
@@ -23,7 +23,7 @@ def test_PerformerInventory__item_creator_class_01():
 
 def test_PerformerInventory__item_creator_class_02():
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(session=session)
     input_ = 'vn <return>'
     item_creator._session._pending_input = input_
@@ -37,7 +37,7 @@ def test_PerformerInventory__item_creator_class_03():
     r'''Ranged.
     '''
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(
         is_ranged=True,
         session=session,
@@ -60,7 +60,7 @@ def test_PerformerInventory__item_creator_class_04():
     r'''Skipping instruments.
     '''
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(
         is_ranged=True,
         session=session,
@@ -77,7 +77,7 @@ def test_PerformerInventory__item_creator_class_05():
     r'''More instruments.
     '''
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(
         is_ranged=True,
         session=session,
@@ -97,7 +97,7 @@ def test_PerformerInventory__item_creator_class_06():
     r'''Auxiliary percussion.
     '''
 
-    session = ide.idetools.Session()
+    session = abjad_ide.idetools.Session()
     item_creator = item_creator_class(
         is_ranged=True,
         session=session,

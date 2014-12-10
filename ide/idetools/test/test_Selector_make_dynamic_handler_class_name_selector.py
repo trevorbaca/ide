@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_Selector_make_dynamic_handler_class_name_selector_01():
 
-    session = ide.idetools.Session(is_test=True)
-    selector = ide.idetools.Selector(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    selector = abjad_ide.idetools.Selector(session=session)
     selector = selector.make_dynamic_handler_class_name_selector()
     selector._session._is_test = True
     selector._session._pending_input = 'q'
@@ -26,8 +26,8 @@ def test_Selector_make_dynamic_handler_class_name_selector_01():
 
 def test_Selector_make_dynamic_handler_class_name_selector_02():
 
-    session = ide.idetools.Session(is_test=True)
-    selector = ide.idetools.Selector(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    selector = abjad_ide.idetools.Selector(session=session)
     selector = selector.make_dynamic_handler_class_name_selector()
     selector._session._is_test = True
     selector._session._pending_input = 'terraced'

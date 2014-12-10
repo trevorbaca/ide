@@ -5,7 +5,7 @@ from abjad.tools import datastructuretools
 from abjad.tools import documentationtools
 from abjad.tools import rhythmmakertools
 from abjad.tools import stringtools
-from ide.idetools.Controller import Controller
+from abjad_ide.idetools.Controller import Controller
 
 
 class Selector(Controller):
@@ -178,8 +178,8 @@ class Selector(Controller):
             modules=modules):
             if hasattr(class_, '_attribute_manifest'):
                 classes.add(class_)
-        if self._session._ide is not None:
-            wrangler = self._session._ide._maker_file_wrangler
+        if self._session._abjad_ide is not None:
+            wrangler = self._session._abjad_ide._maker_file_wrangler
             maker_classes = wrangler._list_maker_classes()
             for class_ in maker_classes:
                 if hasattr(class_, '_attribute_manifest'):
@@ -217,7 +217,7 @@ class Selector(Controller):
 
         Returns selector.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         storehouse_paths = storehouse_paths or []
         forbidden_directory_entries = forbidden_directory_entries or []
         items = []
@@ -285,7 +285,7 @@ class Selector(Controller):
 
         Returns selector.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         wrangler = idetools.MaterialPackageWrangler(session=self._session)
         paths = wrangler._list_asset_paths(
             output_material_class_name=output_material_class_name,

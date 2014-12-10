@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_DistributionFileWrangler_check_every_file_01():
@@ -10,8 +10,8 @@ def test_DistributionFileWrangler_check_every_file_01():
     '''
 
     input_ = 'red~example~score d ck* y q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Distribution directory (2 files): OK' in contents
 
@@ -21,8 +21,8 @@ def test_DistributionFileWrangler_check_every_file_02():
     '''
 
     input_ = 'dd ck* q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Distribution depot' in contents
 
@@ -32,7 +32,7 @@ def test_DistributionFileWrangler_check_every_file_03():
     '''
 
     false_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'distribution',
         'false_file.txt',
@@ -42,7 +42,7 @@ def test_DistributionFileWrangler_check_every_file_03():
         with open(false_file, 'w') as file_pointer:
             file_pointer.write('')
         input_ = 'red~example~score d ck* y q'
-        ide._run(input_=input_)
-        contents = ide._transcript.contents
+        abjad_ide._run(input_=input_)
+        contents = abjad_ide._transcript.contents
 
     assert '1 unrecognized file found:' in contents

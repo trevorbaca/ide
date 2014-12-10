@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-configuration = ide.idetools.Configuration()
+import abjad_ide
+configuration = abjad_ide.idetools.Configuration()
 
 
 def test_Configuration__path_to_storehouse_annotation_01():

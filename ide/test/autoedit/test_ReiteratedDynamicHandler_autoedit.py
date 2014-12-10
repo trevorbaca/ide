@@ -1,17 +1,17 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 from abjad.tools import handlertools
-import ide
+import abjad_ide
 
 
 def test_ReiteratedDynamicHandler_autoedit_01():
     r'''Edits reiterated dynamic handler.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     target = handlertools.ReiteratedDynamicHandler()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target
         )

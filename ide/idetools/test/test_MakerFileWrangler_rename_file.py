@@ -2,9 +2,9 @@
 import os
 import shutil
 from abjad import *
-import ide
-configuration = ide.idetools.Configuration()
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+configuration = abjad_ide.idetools.Configuration()
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MakerFileWrangler_rename_file_01():
@@ -12,13 +12,13 @@ def test_MakerFileWrangler_rename_file_01():
     '''
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )
     new_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'makers',
         'FooRedExampleScoreTemplate.py',
@@ -28,14 +28,14 @@ def test_MakerFileWrangler_rename_file_01():
 
     input_ = 'kk ren RedExampleScoreTemplate.py~(Red~Example~Score)'
     input_ += ' FooRedExampleScoreTemplate.py y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'kk ren FooRedExampleScoreTemplate.py~(Red~Example~Score)'
     input_ += ' RedExampleScoreTemplate.py y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)
 
@@ -45,13 +45,13 @@ def test_MakerFileWrangler_rename_file_02():
     '''
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )
     new_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'makers',
         'FooRedExampleScoreTemplate.py',
@@ -61,13 +61,13 @@ def test_MakerFileWrangler_rename_file_02():
 
     input_ = 'red~example~score k ren RedExampleScoreTemplate.py'
     input_ += ' FooRedExampleScoreTemplate.py y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'red~example~score k ren FooRedExampleScoreTemplate.py'
     input_ += ' RedExampleScoreTemplate.py y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)

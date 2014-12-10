@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-session = ide.idetools.Session()
+import abjad_ide
+session = abjad_ide.idetools.Session()
 
 
 def test_MenuSection__menu_entry_display_strings_01():
@@ -10,7 +10,7 @@ def test_MenuSection__menu_entry_display_strings_01():
     True whether section is numbered or not.
     '''
 
-    menu = ide.idetools.Menu(session=session)
+    menu = abjad_ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -24,7 +24,7 @@ def test_MenuSection__menu_entry_display_strings_01():
     assert section._menu_entry_display_strings == \
         ['apple', 'banana', 'cherry']
 
-    menu = ide.idetools.Menu(session=session)
+    menu = abjad_ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -46,7 +46,7 @@ def test_MenuSection__menu_entry_display_strings_02():
     True whether section is numbered or not.
     '''
 
-    menu = ide.idetools.Menu(session=session)
+    menu = abjad_ide.idetools.Menu(session=session)
     commands = []
     commands.append(('add something', 'add'))
     commands.append(('delete something', 'rm'))
@@ -62,7 +62,7 @@ def test_MenuSection__menu_entry_display_strings_02():
     assert section._menu_entry_display_strings == \
         [x.display_string for x in section.menu_entries]
 
-    menu = ide.idetools.Menu(session=session)
+    menu = abjad_ide.idetools.Menu(session=session)
     commands = []
     commands.append(('add something', 'add'))
     commands.append(('delete something', 'rm'))

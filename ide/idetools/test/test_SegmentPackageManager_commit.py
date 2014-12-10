@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_SegmentPackageManager_commit_01():
     r'''Flow control reaches Git-managed segment package.
     '''
 
-    wrangler = ide._segment_package_wrangler
+    wrangler = abjad_ide._segment_package_wrangler
     manager = wrangler._find_git_manager()
 
     manager._session._is_repository_test = True
@@ -21,7 +21,7 @@ def test_SegmentPackageManager_commit_02():
     r'''Flow control reaches Subversion-managed segment package.
     '''
 
-    wrangler = ide._segment_package_wrangler
+    wrangler = abjad_ide._segment_package_wrangler
     manager = wrangler._find_svn_manager()
 
     if not manager:
@@ -37,7 +37,7 @@ def test_SegmentPackageManager_commit_03():
     '''
 
     input_ = 'red~example~score rci b q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert not 'Commit message will be' in contents

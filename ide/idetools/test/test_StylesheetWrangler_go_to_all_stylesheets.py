@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_StylesheetWrangler_go_to_all_stylesheets_01():
@@ -9,14 +9,14 @@ def test_StylesheetWrangler_go_to_all_stylesheets_01():
     '''
 
     input_ = 'red~example~score y yy q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Red Example Score (2013)',
         'Red Example Score (2013) - stylesheets directory',
         'Abjad IDE - stylesheets depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles
 
 
 def test_StylesheetWrangler_go_to_all_stylesheets_02():
@@ -24,10 +24,10 @@ def test_StylesheetWrangler_go_to_all_stylesheets_02():
     '''
 
     input_ = 'yy yy q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Abjad IDE - stylesheets depot',
         'Abjad IDE - stylesheets depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

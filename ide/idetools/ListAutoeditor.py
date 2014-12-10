@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from ide.idetools.CollectionAutoeditor import CollectionAutoeditor
+from abjad_ide.idetools.CollectionAutoeditor import CollectionAutoeditor
 
 
 class ListAutoeditor(CollectionAutoeditor):
@@ -7,8 +7,8 @@ class ListAutoeditor(CollectionAutoeditor):
 
     ::
 
-        >>> session = ide.idetools.Session()
-        >>> autoeditor = ide.idetools.ListAutoeditor(
+        >>> session = abjad_ide.idetools.Session()
+        >>> autoeditor = abjad_ide.idetools.ListAutoeditor(
         ...     session=session,
         ...     )
         >>> autoeditor._target = ['first', 'second', 'third']

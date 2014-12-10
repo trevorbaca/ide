@@ -5,7 +5,7 @@ import shutil
 from abjad.tools import lilypondfiletools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.FileWrangler import FileWrangler
+from abjad_ide.idetools.FileWrangler import FileWrangler
 
 
 class BuildFileWrangler(FileWrangler):
@@ -15,8 +15,8 @@ class BuildFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> wrangler = ide.idetools.BuildFileWrangler(
+            >>> session = abjad_ide.idetools.Session()
+            >>> wrangler = abjad_ide.idetools.BuildFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler
@@ -152,7 +152,7 @@ class BuildFileWrangler(FileWrangler):
         return pairs
 
     def _confirm_segment_names(self):
-        wrangler = self._session._ide._segment_package_wrangler
+        wrangler = self._session._abjad_ide._segment_package_wrangler
         view_name = wrangler._read_view_name()
         view_inventory = wrangler._read_view_inventory()
         if not view_inventory or view_name not in view_inventory:

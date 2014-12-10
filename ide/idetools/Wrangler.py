@@ -10,7 +10,7 @@ from abjad.tools import developerscripttools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.AssetController import \
+from abjad_ide.idetools.AssetController import \
     AssetController
 
 
@@ -38,7 +38,7 @@ class Wrangler(AssetController):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
@@ -268,8 +268,8 @@ class Wrangler(AssetController):
         system=True,
         repository='git',
         ):
-        from ide import idetools
-        from ide import idetools
+        from abjad_ide import idetools
+        from abjad_ide import idetools
         abjad_material_packages_and_stylesheets = False
         example_score_packages = False
         library = False
@@ -573,7 +573,7 @@ class Wrangler(AssetController):
         extension=None, 
         message='file name', 
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         extension = extension or getattr(self, '_extension', '')
         if self._session.is_in_score:
             path = self._get_current_directory()
@@ -613,7 +613,7 @@ class Wrangler(AssetController):
         library=True,
         user_score_packages=True,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         display_strings, keys = [], []
         keys.append(self._user_storehouse_path)
         if self._in_library:
@@ -727,7 +727,7 @@ class Wrangler(AssetController):
         self._io_manager.open_file(paths)
 
     def _remove_assets(self):
-        from ide import idetools
+        from abjad_ide import idetools
         self._session._attempted_to_remove = True
         if self._session.is_repository_test:
             return
@@ -830,7 +830,7 @@ class Wrangler(AssetController):
         return result
 
     def _select_storehouse_path(self):
-        from ide import idetools
+        from abjad_ide import idetools
         menu_entries = self._make_storehouse_menu_entries(
             abjad_material_packages_and_stylesheets=False,
             example_score_packages=False,
@@ -848,7 +848,7 @@ class Wrangler(AssetController):
         return result
 
     def _select_view(self, infinitive_phrase=None, is_ranged=False):
-        from ide import idetools
+        from abjad_ide import idetools
         view_inventory = self._read_view_inventory()
         if view_inventory is None:
             message = 'no views found.'
@@ -935,7 +935,7 @@ class Wrangler(AssetController):
         lines = []
         lines.append(self._configuration.unicode_directive)
         lines.append(self._abjad_import_statement)
-        lines.append('from ide import idetools')
+        lines.append('from abjad_ide import idetools')
         lines.append('')
         lines.append('')
         view_inventory = self._sort_ordered_dictionary(view_inventory)
@@ -986,7 +986,7 @@ class Wrangler(AssetController):
 
         Returns none.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         inventory = self._read_view_inventory()
         if inventory is None:
             inventory = idetools.ViewInventory()
@@ -1152,7 +1152,7 @@ class Wrangler(AssetController):
 
         Returns none.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         inputs, outputs = [], []
         inputs.append(self._views_py_path)
         messages = self._format_messaging(inputs, outputs, verb='write')

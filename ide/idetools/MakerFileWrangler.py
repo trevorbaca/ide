@@ -2,7 +2,7 @@
 import os
 from abjad.tools import documentationtools
 from abjad.tools import stringtools
-from ide.idetools.FileWrangler import FileWrangler
+from abjad_ide.idetools.FileWrangler import FileWrangler
 
 
 class MakerFileWrangler(FileWrangler):
@@ -12,8 +12,8 @@ class MakerFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> wrangler = ide.idetools.MakerFileWrangler(
+            >>> session = abjad_ide.idetools.Session()
+            >>> wrangler = abjad_ide.idetools.MakerFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler

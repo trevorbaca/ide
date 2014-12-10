@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-session = ide.idetools.Session(is_test=True)
+import abjad_ide
+session = abjad_ide.idetools.Session(is_test=True)
 
 
 def test_ScorePackageWrangler__list_asset_paths_01():
     r'''Lists example score packages.
     '''
 
-    wrangler = ide.idetools.ScorePackageWrangler(session=session)
+    wrangler = abjad_ide.idetools.ScorePackageWrangler(session=session)
     result = wrangler._list_asset_paths(
         abjad_material_packages_and_stylesheets=False,
         example_score_packages=True,

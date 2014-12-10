@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_MaterialPackageWrangler_go_to_previous_package_01():
     r'''Previous material package.
     '''
 
-    ide = ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m < < < < < < q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Red Example Score (2013)',
@@ -21,7 +21,7 @@ def test_MaterialPackageWrangler_go_to_previous_package_01():
         'Red Example Score (2013) - materials directory - magic numbers',
         'Red Example Score (2013) - materials directory - time signatures',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles
 
 
 def test_MaterialPackageWrangler_go_to_previous_package_02():
@@ -29,9 +29,9 @@ def test_MaterialPackageWrangler_go_to_previous_package_02():
     sibling asset.
     '''
 
-    ide = ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m < < g < < q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Red Example Score (2013)',
@@ -42,4 +42,4 @@ def test_MaterialPackageWrangler_go_to_previous_package_02():
         'Red Example Score (2013) - segments directory - C',
         'Red Example Score (2013) - segments directory - B',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

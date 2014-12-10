@@ -11,8 +11,8 @@ class Configuration(AbjadConfiguration):
 
         ::
 
-            >>> ide = ide.idetools.AbjadIDE(is_test=True)
-            >>> configuration = ide._configuration
+            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> configuration = abjad_ide._configuration
             >>> configuration
             Configuration()
 
@@ -185,11 +185,11 @@ class Configuration(AbjadConfiguration):
         return storehouse_path
 
     def _path_to_storehouse_annotation(self, path):
-        import ide
+        import abjad_ide
         score_path = self._path_to_score_path(path)
         if score_path:
-            session = ide.idetools.Session
-            manager = ide.idetools.ScorePackageManager(
+            session = abjad_ide.idetools.Session
+            manager = abjad_ide.idetools.ScorePackageManager(
                 path=score_path,
                 session=session,
                 )
@@ -235,7 +235,7 @@ class Configuration(AbjadConfiguration):
         ..  container:: example
 
             >>> configuration.boilerplate_directory
-            '.../ide/boilerplate'
+            '.../abjad_ide/boilerplate'
 
         Returns string.
         '''
@@ -254,7 +254,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.cache_file_path
-                '.../.abjad/ide/cache.py'
+                '.../.abjad/abjad_ide/cache.py'
 
         Returns string.
         '''
@@ -327,11 +327,11 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_directory
-                '.../.abjad/ide'
+                '.../.abjad/abjad_ide'
 
         Returns string.
         '''
-        return os.path.join(self.abjad_configuration_directory, 'ide')
+        return os.path.join(self.abjad_configuration_directory, 'abjad_ide')
 
     @property
     def configuration_file_name(self):
@@ -342,11 +342,11 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_file_name
-                'ide.cfg'
+                'abjad_ide.cfg'
 
         Returns string.
         '''
-        return 'ide.cfg'
+        return 'abjad_ide.cfg'
 
     @property
     def configuration_file_path(self):
@@ -357,7 +357,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.configuration_file_path
-                '.../.abjad/ide/ide.cfg'
+                '.../.abjad/abjad_ide/abjad_ide.cfg'
 
         Returns string.
         '''
@@ -375,7 +375,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.example_score_packages_directory
-                '.../ide/scores'
+                '.../abjad_ide/scores'
 
         Returns string.
         '''
@@ -527,7 +527,7 @@ class Configuration(AbjadConfiguration):
             ::
 
                 >>> configuration.transcripts_directory
-                '.../.abjad/ide/transcripts'
+                '.../.abjad/abjad_ide/transcripts'
 
         Returns string.
         '''
@@ -612,7 +612,7 @@ class Configuration(AbjadConfiguration):
         ..  container::
 
             >>> configuration.wrangler_views_metadata_file
-            '.../ide/views/__metadata__.py'
+            '.../abjad_ide/views/__metadata__.py'
 
         Defined equal to metadata file resident in the wrangler views
         directory.
@@ -640,9 +640,9 @@ class Configuration(AbjadConfiguration):
                 ...     abjad=True,
                 ...     ):
                 ...     x
-                '.../ide/scores/blue_example_score'
-                '.../ide/scores/etude_example_score'
-                '.../ide/scores/red_example_score'
+                '.../abjad_ide/scores/blue_example_score'
+                '.../abjad_ide/scores/etude_example_score'
+                '.../abjad_ide/scores/red_example_score'
 
         Returns list.
         '''

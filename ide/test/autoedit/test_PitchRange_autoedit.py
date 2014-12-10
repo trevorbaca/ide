@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_PitchRange_autoedit_01():
     r'''Edits pitch range.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = pitchtools.PitchRange()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -19,9 +19,9 @@ def test_PitchRange_autoedit_01():
 
     assert autoeditor.target == pitchtools.PitchRange('[F#3, C5)')
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = pitchtools.PitchRange()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import pytest
-import ide
+import abjad_ide
 import sys
-ide = ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 @pytest.mark.skipif(2 < sys.version_info[0], reason='Fails under Py3k')
@@ -19,8 +19,8 @@ def test_MaterialPackageWrangler_version_every_package_01():
     '''
 
     input_ = 'red~example~score m vr* n q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Nothing to version ...' in contents
     assert 'Will copy ...' in contents

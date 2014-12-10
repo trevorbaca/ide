@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_NumberedPitch_material_package_01():
 
     materials_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         )
@@ -20,7 +20,7 @@ def test_NumberedPitch_material_package_01():
         assert not os.path.exists(material_package)
         input_ = 'red~example~score m new numbered~pitch y'
         input_ += ' da y NumberedPitch pn 13.5 done dp y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(material_package)
         assert os.path.isfile(definition_py)
         assert os.path.isfile(output_py)

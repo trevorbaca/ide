@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from ide.idetools.Getter import Getter
+from abjad_ide.idetools.Getter import Getter
 
 
 def get_articulation(

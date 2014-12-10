@@ -2,8 +2,8 @@
 from abjad import *
 import os
 import pytest
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_interpret_music_01():
@@ -11,13 +11,13 @@ def test_BuildFileWrangler_interpret_music_01():
     '''
 
     ly_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'music.ly',
         )
     pdf_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'music.pdf',
@@ -27,7 +27,7 @@ def test_BuildFileWrangler_interpret_music_01():
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score u mi q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
@@ -43,13 +43,13 @@ def test_BuildFileWrangler_interpret_music_02():
     '''
 
     ly_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'music.ly',
         )
     pdf_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'music.pdf',
@@ -57,9 +57,9 @@ def test_BuildFileWrangler_interpret_music_02():
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         input_ = 'red~example~score u mi q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents

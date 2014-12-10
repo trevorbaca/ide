@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_doctest_01():
 
     input_ = 'dt q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     strings = [
         'Running doctest ...',

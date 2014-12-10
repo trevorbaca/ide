@@ -2,7 +2,7 @@
 import os
 from abjad.tools import indicatortools
 from abjad.tools import systemtools
-from ide.idetools.PackageManager import PackageManager
+from abjad_ide.idetools.PackageManager import PackageManager
 
 
 class ScorePackageManager(PackageManager):
@@ -127,7 +127,7 @@ class ScorePackageManager(PackageManager):
             )
 
     def _get_tempo_inventory(self):
-        wrangler = self._session._ide._material_package_wrangler
+        wrangler = self._session._abjad_ide._material_package_wrangler
         paths = wrangler._list_asset_paths()
         for path in paths:
             manager = wrangler._initialize_manager(path)
@@ -160,12 +160,12 @@ class ScorePackageManager(PackageManager):
 
     def _get_top_level_wranglers(self):
         return (
-            self._session._ide._build_file_wrangler,
-            self._session._ide._distribution_file_wrangler,
-            self._session._ide._maker_file_wrangler,
-            self._session._ide._material_package_wrangler,
-            self._session._ide._segment_package_wrangler,
-            self._session._ide._stylesheet_wrangler,
+            self._session._abjad_ide._build_file_wrangler,
+            self._session._abjad_ide._distribution_file_wrangler,
+            self._session._abjad_ide._maker_file_wrangler,
+            self._session._abjad_ide._material_package_wrangler,
+            self._session._abjad_ide._segment_package_wrangler,
+            self._session._abjad_ide._stylesheet_wrangler,
             )
 
     def _handle_setup_menu_result(self, result):
@@ -237,7 +237,7 @@ class ScorePackageManager(PackageManager):
         return entries
 
     def _make_setup_menu_entry(self, display_string, prepopulated_value):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.MenuEntry(
             display_string=display_string,
             prepopulated_value=prepopulated_value,
@@ -263,7 +263,7 @@ class ScorePackageManager(PackageManager):
     def _remove(self):
         superclass = super(ScorePackageManager, self)
         superclass._remove()
-        wrangler = self._session._ide._score_package_wrangler
+        wrangler = self._session._abjad_ide._score_package_wrangler
         with self._io_manager._silent():
             wrangler.write_cache()
 
@@ -328,7 +328,7 @@ class ScorePackageManager(PackageManager):
         if self._session.is_backtracking or result is None:
             return
         self._add_metadatum('title', result)
-        wrangler = self._session._ide._score_package_wrangler
+        wrangler = self._session._abjad_ide._score_package_wrangler
         with self._io_manager._silent():
             wrangler.write_cache()
 
@@ -347,7 +347,7 @@ class ScorePackageManager(PackageManager):
         if self._session.is_backtracking or result is None:
             return
         self._add_metadatum('year', result)
-        wrangler = self._session._ide._score_package_wrangler
+        wrangler = self._session._abjad_ide._score_package_wrangler
         with self._io_manager._silent():
             wrangler.write_cache()
 

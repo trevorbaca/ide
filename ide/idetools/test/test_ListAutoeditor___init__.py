@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-configuration = ide.idetools.Configuration()
+import abjad_ide
+configuration = abjad_ide.idetools.Configuration()
 
 
 def test_ListAutoeditor___init___01():
@@ -11,9 +11,9 @@ def test_ListAutoeditor___init___01():
     '''
 
     os.chdir(configuration.score_manager_directory)
-    session = ide.idetools.Session()
-    autoeditor = ide.idetools.ListAutoeditor(session=session)
-    assert isinstance(autoeditor, ide.idetools.ListAutoeditor)
+    session = abjad_ide.idetools.Session()
+    autoeditor = abjad_ide.idetools.ListAutoeditor(session=session)
+    assert isinstance(autoeditor, abjad_ide.idetools.ListAutoeditor)
 
 
 def test_ListAutoeditor___init___02():
@@ -22,6 +22,6 @@ def test_ListAutoeditor___init___02():
     '''
 
     os.chdir(configuration.abjad_directory)
-    session = ide.idetools.Session()
-    autoeditor = ide.idetools.ListAutoeditor(session=session)
-    assert isinstance(autoeditor, ide.idetools.ListAutoeditor)
+    session = abjad_ide.idetools.Session()
+    autoeditor = abjad_ide.idetools.ListAutoeditor(session=session)
+    assert isinstance(autoeditor, abjad_ide.idetools.ListAutoeditor)

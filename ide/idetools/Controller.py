@@ -25,7 +25,7 @@ class Controller(object):
 
     @abc.abstractmethod
     def __init__(self, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         self._configuration = idetools.Configuration()
         self._session = session or idetools.Session()
         self._io_manager = idetools.IOManager(

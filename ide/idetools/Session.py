@@ -13,7 +13,7 @@ class Session(abctools.AbjadObject):
 
         ::
 
-            >>> session = ide.idetools.Session()
+            >>> session = abjad_ide.idetools.Session()
             >>> session
             Session()
 
@@ -23,7 +23,7 @@ class Session(abctools.AbjadObject):
 
         ::
 
-            >>> session_in_score = ide.idetools.Session()
+            >>> session_in_score = abjad_ide.idetools.Session()
             >>> session_in_score._set_test_score('red_example_score')
 
     '''
@@ -85,7 +85,7 @@ class Session(abctools.AbjadObject):
         '_pending_input',
         '_pending_redraw',
         '_proceed_count',
-        '_ide',
+        '_abjad_ide',
         '_task_depth',
         '_transcript',
         )
@@ -108,7 +108,7 @@ class Session(abctools.AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_test=False):
-        from ide import idetools
+        from abjad_ide import idetools
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
         self._attempted_display_status = False
@@ -162,7 +162,7 @@ class Session(abctools.AbjadObject):
         self._pending_input = input_
         self._pending_redraw = True
         self._proceed_count = 0
-        self._ide = None
+        self._abjad_ide = None
         self._task_depth = 0
         self._transcript = idetools.Transcript()
 
@@ -230,7 +230,7 @@ class Session(abctools.AbjadObject):
         self.io_manager._display(lines, capitalize=False)
 
     def _format_controller_breadcrumbs(self, stop_controller=None):
-        from ide import idetools
+        from abjad_ide import idetools
         if not self.controller_stack:
             return ['']
         result_lines = []
@@ -289,7 +289,7 @@ class Session(abctools.AbjadObject):
         self._allow_unknown_command_during_test = allow_unknown
 
     def _set_test_score(self, score_package_name):
-        from ide import idetools
+        from abjad_ide import idetools
         assert not self.controller_stack
         path = os.path.join(
             self._configuration.example_score_packages_directory,
@@ -320,7 +320,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         autoeditor = None
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Autoeditor):
@@ -496,7 +496,7 @@ class Session(abctools.AbjadObject):
 
         Returns score package manager or none.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.ScorePackageManager):
                 return controller
@@ -618,18 +618,18 @@ class Session(abctools.AbjadObject):
         return result
 
     @property
-    def ide(self):
+    def abjad_ide(self):
         r'''Gets session IDE.
 
         ..  container:: example
 
             ::
 
-                >>> session.ide
+                >>> session.abjad_ide
 
         Returns Abjad IDE or none.
         '''
-        return self._ide
+        return self._abjad_ide
 
     @property
     def initial_input(self):
@@ -674,7 +674,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         prototype = (idetools.FileWrangler, idetools.PackageWrangler)
         for controller in self.controller_stack:
             if isinstance(controller, prototype):
@@ -828,7 +828,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Autoeditor):
                 return True
@@ -931,7 +931,7 @@ class Session(abctools.AbjadObject):
 
         Returns boolean.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.Getter):
                 return True

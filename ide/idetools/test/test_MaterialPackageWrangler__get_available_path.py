@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-configuration = ide.idetools.Configuration()
+import abjad_ide
+configuration = abjad_ide.idetools.Configuration()
 
 
 def test_MaterialPackageWrangler__get_available_path_01():
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     session._set_test_score('red_example_score')
-    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
+    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
     input_ = 'foo'
     wrangler._session._pending_input = input_
     result = wrangler._get_available_path()
@@ -25,8 +25,8 @@ def test_MaterialPackageWrangler__get_available_path_01():
 
 def test_MaterialPackageWrangler__get_available_path_02():
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
 
     input_ = 'q'
     wrangler._session._pending_input = input_

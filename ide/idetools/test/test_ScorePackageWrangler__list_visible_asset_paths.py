@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_ScorePackageWrangler__list_visible_asset_paths_01():
     r'''Abjad score packages directory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.ScorePackageWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.ScorePackageWrangler(session=session)
 
     package_names = [
         'blue_example_score',

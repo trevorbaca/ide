@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_NumberedPitch_autoedit_01():
     r'''Changes pitch number to another integer.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = pitchtools.NumberedPitch(13)
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -24,9 +24,9 @@ def test_NumberedPitch_autoedit_02():
     r'''Changes pitch number to float.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = pitchtools.NumberedPitch(13)
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

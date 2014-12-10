@@ -2,13 +2,13 @@
 import os
 import shutil
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_StylesheetWrangler_remove_files_01():
 
-    ide._session._is_repository_test = True
+    abjad_ide._session._is_repository_test = True
     input_ = 'yy rm q'
-    ide._run(input_=input_)
-    assert ide._session._attempted_to_remove
+    abjad_ide._run(input_=input_)
+    assert abjad_ide._session._attempted_to_remove

@@ -3,8 +3,8 @@ import filecmp
 import os
 import shutil
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_generate_draft_source_01():
@@ -12,7 +12,7 @@ def test_BuildFileWrangler_generate_draft_source_01():
     '''
 
     draft_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'draft.tex',
@@ -20,9 +20,9 @@ def test_BuildFileWrangler_generate_draft_source_01():
 
     with systemtools.FilesystemState(keep=[draft_path]):
         input_ = 'red~example~score u dg y y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents
@@ -35,7 +35,7 @@ def test_BuildFileWrangler_generate_draft_source_02():
     '''
 
     draft_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'blue_example_score',
         'build',
         'draft.tex',
@@ -43,10 +43,10 @@ def test_BuildFileWrangler_generate_draft_source_02():
 
     with systemtools.FilesystemState(remove=[draft_path]):
         input_ = 'blue~example~score u dg y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(draft_path)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     message = 'SegmentPackageWrangler views.py is corrupt.' 
     assert message not in contents
     assert 'Will assemble segments in this order:' in contents
@@ -58,7 +58,7 @@ def test_BuildFileWrangler_generate_draft_source_03():
     '''
 
     draft_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'etude_example_score',
         'build',
         'draft.tex',
@@ -66,11 +66,11 @@ def test_BuildFileWrangler_generate_draft_source_03():
 
     with systemtools.FilesystemState(keep=[draft_path]):
         input_ = 'etude~example~score u dg y y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(draft_path)
         assert filecmp.cmp(draft_path, draft_path + '.backup')
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     message = 'No segments found: will generate source without segments'
     assert message in contents
     assert 'The files ...' in contents

@@ -2,15 +2,15 @@
 from abjad import *
 import os
 import pytest
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageWrangler_interpret_every_illustration_ly_01():
     r'''Does not display candidate messages.
     '''
 
-    path = ide._configuration.example_score_packages_directory
+    path = abjad_ide._configuration.example_score_packages_directory
     path = os.path.join(path, 'red_example_score', 'materials')
     package_names = (
         'magic_numbers', 
@@ -29,11 +29,11 @@ def test_MaterialPackageWrangler_interpret_every_illustration_ly_01():
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score m ii* y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     for path in paths:
         assert path in contents
 
@@ -53,7 +53,7 @@ def test_MaterialPackageWrangler_interpret_every_illustration_ly_02():
     r'''Does display candidate messages.
     '''
 
-    path = ide._configuration.example_score_packages_directory
+    path = abjad_ide._configuration.example_score_packages_directory
     path = os.path.join(path, 'red_example_score', 'materials')
     package_names = (
         'magic_numbers', 
@@ -69,9 +69,9 @@ def test_MaterialPackageWrangler_interpret_every_illustration_ly_02():
 
     with systemtools.FilesystemState(keep=paths):
         input_ = 'red~example~score m ii* y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     for path in paths:
         assert path in contents
 

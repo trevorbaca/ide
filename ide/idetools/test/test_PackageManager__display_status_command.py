@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_PackageManager__display_status_command_01():
 
-    manager = ide._score_package_wrangler._find_up_to_date_manager(
+    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
         repository='git',
         system=True,
         )
@@ -18,7 +18,7 @@ def test_PackageManager__display_status_command_01():
 
 def test_PackageManager__display_status_command_02():
 
-    manager = ide._score_package_wrangler._find_up_to_date_manager(
+    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
         repository='svn',
         system=False,
         )

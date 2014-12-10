@@ -5,7 +5,7 @@ import os
 import shutil
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageManager import \
+from abjad_ide.idetools.ScoreInternalPackageManager import \
     ScoreInternalPackageManager
 
 
@@ -18,15 +18,15 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         ::
 
             >>> import os
-            >>> configuration = ide.idetools.Configuration()
-            >>> session = ide.idetools.Session()
+            >>> configuration = abjad_ide.idetools.Configuration()
+            >>> session = abjad_ide.idetools.Session()
             >>> path = os.path.join(
             ...     configuration.example_score_packages_directory,
             ...     'red_example_score',
             ...     'materials',
             ...     'performer_inventory',
             ...     )
-            >>> manager = ide.idetools.MaterialPackageManager(
+            >>> manager = abjad_ide.idetools.MaterialPackageManager(
             ...     path=path,
             ...     session=session,
             ...     )
@@ -122,7 +122,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
 
     @property
     def _score_package_manager(self):
-        from ide import idetools
+        from abjad_ide import idetools
         score_path = self._configuration._path_to_score_path(self._path)
         return idetools.ScorePackageManager(
             path=score_path,

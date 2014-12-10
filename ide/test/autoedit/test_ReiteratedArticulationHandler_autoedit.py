@@ -1,18 +1,18 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 from abjad.tools import handlertools
-import ide
+import abjad_ide
 
 
 def test_ReiteratedArticulationHandler_autoedit_01():
     r'''Edits reiterated articulation handler.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     session._is_autostarting = True
     target = handlertools.ReiteratedArticulationHandler()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -35,11 +35,11 @@ def test_ReiteratedArticulationHandler_autoedit_02():
     r'''Edits reiterated articulation handler.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     session._is_autostarting = True
     target = handlertools.ReiteratedArticulationHandler()
-    autoeditor = ide.idetools.Autoeditor(
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

@@ -2,8 +2,8 @@
 import filecmp
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_generate_front_cover_source_01():
@@ -13,7 +13,7 @@ def test_BuildFileWrangler_generate_front_cover_source_01():
     '''
 
     cover_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'front-cover.tex',
@@ -21,10 +21,10 @@ def test_BuildFileWrangler_generate_front_cover_source_01():
 
     with systemtools.FilesystemState(keep=[cover_path]):
         input_ = 'red~example~score u fcg y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents
@@ -37,7 +37,7 @@ def test_BuildFileWrangler_generate_front_cover_source_02():
     '''
 
     cover_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'front-cover.tex',
@@ -47,8 +47,8 @@ def test_BuildFileWrangler_generate_front_cover_source_02():
         os.remove(cover_path)
         assert not os.path.exists(cover_path)
         input_ = 'red~example~score u fcg q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'Wrote' in contents

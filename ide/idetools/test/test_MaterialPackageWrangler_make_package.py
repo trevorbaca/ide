@@ -3,11 +3,11 @@ import filecmp
 import os
 import shutil
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 path = os.path.join(
-    ide._configuration.materials_library,
+    abjad_ide._configuration.materials_library,
     'testnotes',
     )
 initializer_file_path = os.path.join(path, '__init__.py')
@@ -16,15 +16,15 @@ definition_py_path = os.path.join(path, 'definition.py')
 output_py_path = os.path.join(path, 'output.py')
 
 exception_file_path = os.path.join(
-    ide._configuration.boilerplate_directory,
+    abjad_ide._configuration.boilerplate_directory,
     'exception.py',
     )
 empty_unicode_file_path = os.path.join(
-    ide._configuration.boilerplate_directory,
+    abjad_ide._configuration.boilerplate_directory,
     'empty_unicode.py',
     )
 boilerplate_definition_py_path = os.path.join(
-    ide._configuration.boilerplate_directory,
+    abjad_ide._configuration.boilerplate_directory,
     'notes_definition.py',
     )
 
@@ -34,23 +34,23 @@ def test_MaterialPackageWrangler_make_package_01():
     '''
 
     input_ = 'mm new b q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
     titles = [
         'Abjad IDE - scores',
         'Abjad IDE - materials depot',
         'Abjad IDE - materials depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles
 
 
 def test_MaterialPackageWrangler_make_package_02():
     r'''Creates package and populates package correctly.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
-    configuration = ide._configuration
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
+    configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
         'testnotes',
@@ -64,10 +64,10 @@ def test_MaterialPackageWrangler_make_package_02():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = ide.idetools.Session(is_test=True)
-        manager = ide.idetools.MaterialPackageManager
+        session = abjad_ide.idetools.Session(is_test=True)
+        manager = abjad_ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
 
@@ -76,8 +76,8 @@ def test_MaterialPackageWrangler_make_package_03():
     r'''Creates empty material definition py.
     '''
 
-    ide = ide.idetools.AbjadIDE(is_test=True)
-    configuration = ide._configuration
+    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
         'testnotes',
@@ -97,7 +97,7 @@ def test_MaterialPackageWrangler_make_package_03():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         with open(definition_py_path, 'r') as file_pointer:
             file_lines = file_pointer.readlines()
@@ -112,7 +112,7 @@ def test_MaterialPackageWrangler_make_package_04():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(initializer_file_path)
         assert os.path.exists(metadata_py_path)
@@ -127,14 +127,14 @@ def test_MaterialPackageWrangler_make_package_05():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(initializer_file_path)
         assert filecmp.cmp(initializer_file_path, empty_unicode_file_path)
         shutil.copyfile(exception_file_path, initializer_file_path)
         assert filecmp.cmp(initializer_file_path, exception_file_path)
         input_ = 'mm rm testnotes remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert not os.path.exists(path)
 
 
@@ -145,7 +145,7 @@ def test_MaterialPackageWrangler_make_package_06():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(definition_py_path)
         assert not os.path.exists(output_py_path)
@@ -154,10 +154,10 @@ def test_MaterialPackageWrangler_make_package_06():
             definition_py_path,
             )
         input_ = 'mm testnotes dp y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(output_py_path)
         input_ = 'mm rm testnotes remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert not os.path.exists(path)
 
 
@@ -175,14 +175,14 @@ def test_MaterialPackageWrangler_make_package_07():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = ide.idetools.Session(is_test=True)
-        manager = ide.idetools.MaterialPackageManager
+        session = abjad_ide.idetools.Session(is_test=True)
+        manager = abjad_ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         input_ = 'mm rm testnotes remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
 
 def test_MaterialPackageWrangler_make_package_08():
@@ -192,13 +192,13 @@ def test_MaterialPackageWrangler_make_package_08():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(definition_py_path)
         shutil.copyfile(exception_file_path, definition_py_path)
         assert filecmp.cmp(definition_py_path, exception_file_path)
         input_ = 'mm rm testnotes remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert not os.path.exists(path)
 
 
@@ -210,7 +210,7 @@ def test_MaterialPackageWrangler_make_package_09():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new testnotes y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(definition_py_path)
         assert not os.path.exists(output_py_path)
@@ -223,11 +223,11 @@ def test_MaterialPackageWrangler_make_package_09():
             boilerplate_definition_py_path,
             )
         input_ = 'mm testnotes dp y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.exists(output_py_path)
         assert not filecmp.cmp(output_py_path, exception_file_path)
         shutil.copyfile(exception_file_path, output_py_path)
         assert filecmp.cmp(output_py_path, exception_file_path)
         input_ = 'mm rm testnotes remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert not os.path.exists(path)

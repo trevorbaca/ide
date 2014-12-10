@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageManager_display_status_01():
@@ -9,8 +9,8 @@ def test_MaterialPackageManager_display_status_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory rst q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Repository status for' in contents
     assert '... OK' in contents
@@ -20,7 +20,7 @@ def test_MaterialPackageManager_display_status_02():
     r'''Works with Subversion.
     '''
 
-    wrangler = ide._material_package_wrangler
+    wrangler = abjad_ide._material_package_wrangler
     manager = wrangler._find_svn_manager()
     if not manager:
         return

@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_set_view_01():
@@ -10,7 +10,7 @@ def test_ScorePackageWrangler_set_view_01():
     '''
     
     views_file = os.path.join(
-        ide._configuration.wrangler_views_directory,
+        abjad_ide._configuration.wrangler_views_directory,
         '__ScorePackageWrangler_views__.py',
         )
     with systemtools.FilesystemState(keep=[views_file]):
@@ -18,8 +18,8 @@ def test_ScorePackageWrangler_set_view_01():
         input_ = 'wa add _test'
         input_ += ' add Red~Example~Score~(2013) done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
         lines = [
             'Abjad IDE - scores [_test]',
             '',

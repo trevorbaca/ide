@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageWrangler_go_to_all_maker_files_01():
@@ -9,14 +9,14 @@ def test_MaterialPackageWrangler_go_to_all_maker_files_01():
     '''
 
     input_ = 'red~example~score m kk q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Abjad IDE - makers depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles
 
 
 def test_MaterialPackageWrangler_go_to_all_maker_files_02():
@@ -24,10 +24,10 @@ def test_MaterialPackageWrangler_go_to_all_maker_files_02():
     '''
 
     input_ = 'mm kk q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Abjad IDE - materials depot',
         'Abjad IDE - makers depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

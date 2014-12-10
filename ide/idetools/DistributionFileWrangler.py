@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from ide.idetools.FileWrangler import FileWrangler
+from abjad_ide.idetools.FileWrangler import FileWrangler
 
 
 class DistributionFileWrangler(FileWrangler):
@@ -9,8 +9,8 @@ class DistributionFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> wrangler = ide.idetools.DistributionFileWrangler(
+            >>> session = abjad_ide.idetools.Session()
+            >>> wrangler = abjad_ide.idetools.DistributionFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler
@@ -26,7 +26,7 @@ class DistributionFileWrangler(FileWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         superclass = super(DistributionFileWrangler, self)
         superclass.__init__(session=session)
         self._basic_breadcrumb = 'distribution'

@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_collect_segment_lilypond_files_01():
@@ -11,7 +11,7 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_01():
     '''
 
     build_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         )
@@ -28,11 +28,11 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_01():
         for segment_path in segment_paths:
             os.remove(segment_path)
         input_ = 'red~example~score u mc y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         for segment_path in segment_paths:
             assert os.path.isfile(segment_path)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'Will copy ...' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
@@ -44,7 +44,7 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_02():
     '''
 
     build_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         )
@@ -59,9 +59,9 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_02():
 
     with systemtools.FilesystemState(keep=segment_paths):
         input_ = 'red~example~score u mc y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'Will copy ...' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents

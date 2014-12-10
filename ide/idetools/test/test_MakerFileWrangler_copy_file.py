@@ -1,28 +1,28 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MakerFileWrangler_copy_file_01():
 
     source_path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )
     target_path = os.path.join(
-        ide._configuration.makers_library,
+        abjad_ide._configuration.makers_library,
         'ReusableScoreTemplate.py',
         )
 
     with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
         input_ = 'kk cp RedExampleScoreTemplate.py'
         input_ += ' My~maker~library ReusableScoreTemplate y q'
-        ide._run(input_=input_)
-        contents = ide._transcript.contents
+        abjad_ide._run(input_=input_)
+        contents = abjad_ide._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
         assert 'ReusableScoreTemplate.py' in contents
@@ -31,8 +31,8 @@ def test_MakerFileWrangler_copy_file_01():
 def test_MakerFileWrangler_copy_file_02():
 
     input_ = 'etude~example~score k cp q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     message = 'Nothing to copy.'
     assert message in contents
@@ -41,7 +41,7 @@ def test_MakerFileWrangler_copy_file_02():
 def test_MakerFileWrangler_copy_file_03():
 
     temporary_maker = os.path.join(
-        ide._configuration.library,
+        abjad_ide._configuration.library,
         'makers',
         'FooBarMaker.py',
         )
@@ -53,8 +53,8 @@ def test_MakerFileWrangler_copy_file_03():
         with open(temporary_maker, 'w') as file_pointer:
             file_pointer.write('foo bar.')
         assert os.path.isfile(temporary_maker)
-        ide._run(input_=input_)
-        contents = ide._transcript.contents
+        abjad_ide._run(input_=input_)
+        contents = abjad_ide._transcript.contents
 
     assert 'Already exists:' in contents
 
@@ -63,4 +63,4 @@ def test_MakerFileWrangler_copy_file_04():
     '''
 
     input_ = 'kk cp ZZZZZZ q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)

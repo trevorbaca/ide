@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_SegmentPackageWrangler_list_every_metadata_py_01():
@@ -15,7 +15,7 @@ def test_SegmentPackageWrangler_list_every_metadata_py_01():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
             'segments',
             package_name,
@@ -24,8 +24,8 @@ def test_SegmentPackageWrangler_list_every_metadata_py_01():
         paths.append(path)
 
     input_ = 'red~example~score g mdl* y q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     for path in paths:
         assert path in contents
@@ -35,10 +35,10 @@ def test_SegmentPackageWrangler_list_every_metadata_py_01():
 def test_SegmentPackageWrangler_list_every_metadata_py_02():
 
     input_ = 'gg mdl* q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
-    path = ide._configuration.example_score_packages_directory
+    path = abjad_ide._configuration.example_score_packages_directory
     paths = [
         os.path.join(path, 'red_example_score'),
         ]

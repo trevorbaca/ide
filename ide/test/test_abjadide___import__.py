@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import pytest
 from abjad import *
-import ide
+import abjad_ide
 pytest.skip('fails when run after __doc__ test file.')
 
 
@@ -10,4 +10,4 @@ def test_ide___import___01():
     exceptions will prevent the entire system from starting.
     '''
 
-    assert 'materials' not in dir(ide)
+    assert 'materials' not in dir(abjad_ide)

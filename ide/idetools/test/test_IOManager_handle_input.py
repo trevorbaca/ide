@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_IOManager_handle_input_01():
     r'''Command repetition works.
     '''
 
-    ide = ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
     input_ = '>> . . . q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Blue Example Score (2013)',
@@ -17,4 +17,4 @@ def test_IOManager_handle_input_01():
         'Red Example Score (2013)',
         'Blue Example Score (2013)',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

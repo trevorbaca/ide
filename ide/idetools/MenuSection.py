@@ -11,8 +11,8 @@ class MenuSection(AbjadObject):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> menu = ide.idetools.Menu(session=session)
+            >>> session = abjad_ide.idetools.Session()
+            >>> menu = abjad_ide.idetools.Menu(session=session)
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))
@@ -585,7 +585,7 @@ class MenuSection(AbjadObject):
 
         Returns menu entry.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         if isinstance(expr, idetools.MenuEntry):
             new_expr = (
                 expr.display_string,

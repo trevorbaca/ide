@@ -3,14 +3,14 @@ import filecmp
 import os
 import shutil
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_collect_segment_pdfs_01():
 
     build_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         )
@@ -18,7 +18,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
     for number in ('01', '02', '03'):
         directory_name = 'segment_{}'.format(number)
         path = os.path.join(
-            ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
             'segments',
             directory_name,
@@ -30,7 +30,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
         file_name = 'segment-{}.pdf'
         file_name = file_name.format(number)
         path = os.path.join(
-            ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
             'build',
             file_name,
@@ -45,7 +45,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
         for path in destination_pdfs:
             os.remove(path)
         input_ = 'red~example~score u dc y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         for path in destination_pdfs:
             assert os.path.isfile(path)
         for source_path, destination_path in pairs:

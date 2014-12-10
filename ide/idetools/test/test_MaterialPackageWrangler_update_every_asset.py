@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
-ide._session._is_repository_test = True
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide._session._is_repository_test = True
 
 
 def test_MaterialPackageWrangler_update_every_asset_01():
@@ -10,8 +10,8 @@ def test_MaterialPackageWrangler_update_every_asset_01():
     '''
 
     input_ = 'red~example~score m rup* q'
-    ide._run(input_=input_)
-    assert ide._session._attempted_to_update
+    abjad_ide._run(input_=input_)
+    assert abjad_ide._session._attempted_to_update
 
 
 def test_MaterialPackageWrangler_update_every_asset_02():
@@ -19,5 +19,5 @@ def test_MaterialPackageWrangler_update_every_asset_02():
     '''
 
     input_ = 'mm rup* q'
-    ide._run(input_=input_)
-    assert ide._session._attempted_to_update
+    abjad_ide._run(input_=input_)
+    assert abjad_ide._session._attempted_to_update

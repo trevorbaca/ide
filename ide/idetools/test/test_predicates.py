@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from ide.idetools import predicates
+from abjad_ide.idetools import predicates
 
 
 def test_predicates_01():

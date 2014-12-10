@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_StylesheetWrangler__list_asset_paths_01():
     r'''Lists paths of example stylesheets.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.StylesheetWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.StylesheetWrangler(session=session)
 
     file_names = [
         'clean-letter-14.ily',

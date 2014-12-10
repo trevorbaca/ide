@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_edit_every_init_py_01():
 
     input_ = 'ne* y q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Will open ...' in contents
 
@@ -22,7 +22,7 @@ def test_ScorePackageWrangler_edit_every_init_py_01():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_score_packages_directory,
             package_name,
             '__init__.py',
             )
@@ -30,4 +30,4 @@ def test_ScorePackageWrangler_edit_every_init_py_01():
     for path in paths:
         assert path in contents
 
-    assert ide._session._attempted_to_open_file
+    assert abjad_ide._session._attempted_to_open_file

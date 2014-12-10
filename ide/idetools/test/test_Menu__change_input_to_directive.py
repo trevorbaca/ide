@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_Menu__change_input_to_directive_01():
@@ -9,8 +9,8 @@ def test_Menu__change_input_to_directive_01():
     '''
 
     input_ = 'étude q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Étude Example Score (2013)'
     assert string in contents
@@ -21,8 +21,8 @@ def test_Menu__change_input_to_directive_02():
     '''
 
     input_ = 'etude q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Étude Example Score (2013)'
     assert string in contents
@@ -33,8 +33,8 @@ def test_Menu__change_input_to_directive_03():
     '''
 
     input_ = 'Red~example~score q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Red Example Score (2013)'
     assert string in contents
@@ -45,8 +45,8 @@ def test_Menu__change_input_to_directive_04():
     '''
 
     input_ = 'red~Example~score q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Red Example Score (2013)'
     assert string in contents
@@ -57,8 +57,8 @@ def test_Menu__change_input_to_directive_05():
     '''
 
     input_ = 'red~example~Score q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Red Example Score (2013)'
     assert string in contents
@@ -69,8 +69,8 @@ def test_Menu__change_input_to_directive_06():
     '''
 
     input_ = 'RED~EXAMPLE~SCORE q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     string = 'Red Example Score (2013)'
     assert string in contents
@@ -86,6 +86,6 @@ def test_Menu__change_input_to_directive_07():
     '''
 
     input_ = 'red~example~score m magic~numbers 1 q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
-    assert ide._session._attempted_to_open_file
+    assert abjad_ide._session._attempted_to_open_file

@@ -4,7 +4,7 @@ import re
 import shlex
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from ide.idetools.Controller import Controller
+from abjad_ide.idetools.Controller import Controller
 
 
 class Menu(Controller):
@@ -14,8 +14,8 @@ class Menu(Controller):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> menu = ide.idetools.Menu(session=session)
+            >>> session = abjad_ide.idetools.Session()
+            >>> menu = abjad_ide.idetools.Menu(session=session)
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))
@@ -268,13 +268,13 @@ class Menu(Controller):
                 return section._menu_entry_return_values[0]
 
     def _get_nearest_autoeditor(self):
-        from ide import idetools
+        from abjad_ide import idetools
         for controller in reversed(self._session.controller_stack):
             if self._is_autoeditor_with_attributes_menu_section(controller):
                 return controller
 
     def _get_parent_autoeditors(self):
-        from ide import idetools
+        from abjad_ide import idetools
         autoeditors = []
         for controller in self._session.controller_stack:
             if self._is_autoeditor_with_attributes_menu_section(controller):
@@ -397,7 +397,7 @@ class Menu(Controller):
 
     @staticmethod
     def _is_autoeditor_with_attributes_menu_section(controller):
-        from ide import idetools
+        from abjad_ide import idetools
         if not isinstance(controller, idetools.Autoeditor):
             return False
         menu = controller._make_main_menu()
@@ -608,7 +608,7 @@ class Menu(Controller):
         return_value_attribute='display_string',
         title=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         assert not (is_numbered and self._has_numbered_section())
         assert not (is_ranged and self._has_ranged_section())
         section = idetools.MenuSection(

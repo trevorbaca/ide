@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ListAutoeditor_move_item_01():
     r'''Doesn't blow up when (b) is entered during move.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = [17, 99, 'foo']
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -23,9 +23,9 @@ def test_ListAutoeditor_move_item_02():
     r'''Large numbers like 99 can be used as move-to number.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = [17, 99, 'foo']
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )

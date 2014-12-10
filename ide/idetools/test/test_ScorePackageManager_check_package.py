@@ -2,8 +2,8 @@
 import os
 import shutil
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageManager_check_package_01():
@@ -11,8 +11,8 @@ def test_ScorePackageManager_check_package_01():
     '''
 
     input_ = 'red~example~score ck y q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     lines = [
         'Build directory (18 files): OK',
@@ -32,8 +32,8 @@ def test_ScorePackageManager_check_package_02():
     '''
 
     input_ = 'red~example~score ck n q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     lines = [
         '6 of 6 required directories found:',
@@ -49,7 +49,7 @@ def test_ScorePackageManager_check_package_03():
     '''
 
     extra_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'extra_file.txt',
         )
@@ -58,8 +58,8 @@ def test_ScorePackageManager_check_package_03():
         with open(extra_file, 'w') as file_pointer:
             file_pointer.write('')
         input_ = 'red~example~score ck y q'
-        ide._run(input_=input_)
-        contents = ide._transcript.contents
+        abjad_ide._run(input_=input_)
+        contents = abjad_ide._transcript.contents
 
     line = '1 unrecognized file found:'
     assert line in contents
@@ -70,7 +70,7 @@ def test_ScorePackageManager_check_package_04():
     '''
 
     score_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         )
     build_directory = os.path.join(score_directory, 'build')
@@ -80,7 +80,7 @@ def test_ScorePackageManager_check_package_04():
         os.remove(initializer)
         shutil.rmtree(build_directory)
         input_ = 'red~example~score ck y y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(initializer)
         assert os.path.isdir(build_directory)
 
@@ -90,7 +90,7 @@ def test_ScorePackageManager_check_package_05():
     '''
 
     segment_directory = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'segments',
         'segment_02',
@@ -102,6 +102,6 @@ def test_ScorePackageManager_check_package_05():
         os.remove(initializer)
         shutil.rmtree(versions_directory)
         input_ = 'red~example~score ck y y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(initializer)
         assert os.path.isdir(versions_directory)

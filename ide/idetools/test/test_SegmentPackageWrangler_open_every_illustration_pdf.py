@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_SegmentPackageWrangler_open_every_illustration_pdf_01():
 
     input_ = 'red~example~score g io* y q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
-    assert ide._session._attempted_to_open_file
+    assert abjad_ide._session._attempted_to_open_file

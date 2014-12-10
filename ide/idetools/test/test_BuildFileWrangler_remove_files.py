@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_remove_files_01():
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'build',
         'foo-file.txt',
@@ -19,5 +19,5 @@ def test_BuildFileWrangler_remove_files_01():
             file_pointer.write('This is a test file.')
         assert os.path.exists(path)
         input_ = 'red~example~score u rm foo-file.txt remove q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert not os.path.exists(path)

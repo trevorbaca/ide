@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_DistributionFileWrangler_go_to_current_score_01():
 
     input_ = 'red~example~score d s q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
     titles = [
         'Abjad IDE - scores',
@@ -15,4 +15,4 @@ def test_DistributionFileWrangler_go_to_current_score_01():
         'Red Example Score (2013) - distribution directory',
         'Red Example Score (2013)',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_StylesheetWrangler_invoke_shell_01():
@@ -10,13 +10,13 @@ def test_StylesheetWrangler_invoke_shell_01():
     '''
 
     input_ = 'yy !pwd q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
     path = os.path.join(
-        ide._configuration.score_manager_directory,
+        abjad_ide._configuration.score_manager_directory,
         )
     string = '\n{}\n'.format(path)
-    assert string in ide._transcript.contents
+    assert string in abjad_ide._transcript.contents
 
 
 def test_StylesheetWrangler_invoke_shell_02():
@@ -24,12 +24,12 @@ def test_StylesheetWrangler_invoke_shell_02():
     '''
 
     input_ = 'red~example~score y !pwd q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'stylesheets',
         )
     string = '\n{}\n'.format(path)
-    assert string in ide._transcript.contents
+    assert string in abjad_ide._transcript.contents

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageWrangler_pytest_01():
@@ -9,8 +9,8 @@ def test_MaterialPackageWrangler_pytest_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory pt q'
-    ide._run(input_=input_)
-    transcript_contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    transcript_contents = abjad_ide._transcript.contents
 
     strings = [
         'Running py.test ...',
@@ -26,8 +26,8 @@ def test_MaterialPackageWrangler_pytest_02():
     '''
 
     input_ = 'red~example~score m pt q'
-    ide._run(input_=input_)
-    transcript_contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    transcript_contents = abjad_ide._transcript.contents
 
     strings = [
         'Running py.test ...',
@@ -43,8 +43,8 @@ def test_MaterialPackageWrangler_pytest_03():
     '''
 
     input_ = 'mm pt q'
-    ide._run(input_=input_)
-    transcript_contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    transcript_contents = abjad_ide._transcript.contents
 
     strings = [
         'Running py.test ...',

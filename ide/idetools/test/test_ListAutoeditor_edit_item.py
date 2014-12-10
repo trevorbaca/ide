@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ListAutoeditor_edit_item_01():
@@ -9,9 +9,9 @@ def test_ListAutoeditor_edit_item_01():
     Raises no exceptions.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = [17, 99, 'foo']
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )

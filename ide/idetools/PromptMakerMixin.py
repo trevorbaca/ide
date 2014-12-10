@@ -5,7 +5,7 @@ from abjad.tools import mathtools
 from abjad.tools import pitchtools
 from abjad.tools import stringtools
 from abjad.tools.abctools.AbjadObject import AbjadObject
-from ide.idetools import predicates
+from abjad_ide.idetools import predicates
 
 
 class PromptMakerMixin(AbjadObject):
@@ -37,7 +37,7 @@ class PromptMakerMixin(AbjadObject):
         target_menu_section=None,
         validation_function=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         prompt = idetools.Prompt(
             default_value=default_value,
             disallow_range=disallow_range,

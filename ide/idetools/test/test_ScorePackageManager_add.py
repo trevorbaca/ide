@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageManager_add_01():
@@ -11,7 +11,7 @@ def test_ScorePackageManager_add_01():
     Then unadd the files and leave the score package as found.
     '''
 
-    manager = ide._score_package_wrangler._find_up_to_date_manager(
+    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
         repository='git',
         system=True,
         )
@@ -25,7 +25,7 @@ def test_ScorePackageManager_add_02():
     Then unadd the file and leave the score package as found.
     '''
 
-    manager = ide._score_package_wrangler._find_up_to_date_manager(
+    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
         repository='svn',
         system=False,
         )
@@ -41,7 +41,7 @@ def test_ScorePackageManager_add_03():
     '''
 
     input_ = 'red~example~score rad q'
-    ide._run(input_=input_)
-    contents = ide._transcript.contents
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
 
     assert 'Nothing to add.' in contents

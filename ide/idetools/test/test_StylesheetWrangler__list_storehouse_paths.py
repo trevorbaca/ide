@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_StylesheetWrangler__list_storehouse_paths_01():
     r'''Lists example stylesheets directory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.StylesheetWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.StylesheetWrangler(session=session)
 
     paths = [
         wrangler._configuration.example_stylesheets_directory,
@@ -29,8 +29,8 @@ def test_StylesheetWrangler__list_storehouse_paths_02():
     r'''Lists example score package stylesheet directories.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.StylesheetWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.StylesheetWrangler(session=session)
 
     score_names = [
         'blue_example_score',

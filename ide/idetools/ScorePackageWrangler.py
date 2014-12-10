@@ -2,7 +2,7 @@
 import os
 import sys
 from abjad.tools import stringtools
-from ide.idetools.PackageWrangler import PackageWrangler
+from abjad_ide.idetools.PackageWrangler import PackageWrangler
 
 
 class ScorePackageWrangler(PackageWrangler):
@@ -12,8 +12,8 @@ class ScorePackageWrangler(PackageWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
-            >>> wrangler = ide.idetools.ScorePackageWrangler(
+            >>> session = abjad_ide.idetools.Session()
+            >>> wrangler = abjad_ide.idetools.ScorePackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler
@@ -23,9 +23,9 @@ class ScorePackageWrangler(PackageWrangler):
 
         ::
 
-            >>> session = ide.idetools.Session()
+            >>> session = abjad_ide.idetools.Session()
             >>> session._set_test_score('red_example_score')
-            >>> wrangler_in_score = ide.idetools.ScorePackageWrangler(
+            >>> wrangler_in_score = abjad_ide.idetools.ScorePackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler_in_score
@@ -42,7 +42,7 @@ class ScorePackageWrangler(PackageWrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         superclass = super(ScorePackageWrangler, self)
         superclass.__init__(session=session)
         self._asset_identifier = 'score package'

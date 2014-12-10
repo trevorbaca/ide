@@ -1,16 +1,16 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 from abjad.tools import handlertools
-import ide
+import abjad_ide
 
 
 def test_PerformerInventory_autoedit_01():
     r'''Adds three performers to performer inventory.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.PerformerInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -42,9 +42,9 @@ def test_PerformerInventory_autoedit_02():
     Tests range handling.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.PerformerInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -71,9 +71,9 @@ def test_PerformerInventory_autoedit_03():
     r'''Edits performer inventory. Adds three performers. Removes two.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.PerformerInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -100,9 +100,9 @@ def test_PerformerInventory_autoedit_04():
     Tests range handling.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.PerformerInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -127,9 +127,9 @@ def test_PerformerInventory_autoedit_05():
     Makes two moves.
     '''
 
-    session = ide.idetools.Session(is_test=True)
+    session = abjad_ide.idetools.Session(is_test=True)
     target = instrumenttools.PerformerInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
+    autoeditor = abjad_ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )

@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_MaterialPackageWrangler__list_storehouse_paths_01():
     r'''Abjad score package material directories.
     '''
 
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
+    session = abjad_ide.idetools.Session(is_test=True)
+    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
 
     score_package_names = [
         'blue_example_score',

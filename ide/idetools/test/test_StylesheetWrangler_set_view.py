@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 views_file = os.path.join(
-    ide._configuration.wrangler_views_directory,
+    abjad_ide._configuration.wrangler_views_directory,
     '__StylesheetWrangler_views__.py',
     )
 
@@ -19,8 +19,8 @@ def test_StylesheetWrangler_set_view_01():
         os.remove(views_file)
         input_ = 'yy wa add _test add clean-letter-14.ily done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
         lines = [
             'Abjad IDE - stylesheets [_test]',
             '',
@@ -42,13 +42,13 @@ def test_StylesheetWrangler_set_view_02():
     '''
     
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'stylesheets',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'stylesheets',
         '__metadata__.py',
@@ -59,8 +59,8 @@ def test_StylesheetWrangler_set_view_02():
         input_ = 'red~example~score y wa add _test'
         input_ += ' add stylesheet-addendum.ily done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
         lines = [
             'Red Example Score (2013) - stylesheets [_test]',
             '',

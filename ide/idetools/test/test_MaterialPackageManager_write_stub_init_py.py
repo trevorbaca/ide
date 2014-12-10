@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageManager_write_stub_init_py_01():
 
     path = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         'magic_numbers',
@@ -19,7 +19,7 @@ def test_MaterialPackageManager_write_stub_init_py_01():
         os.remove(path)
         assert not os.path.exists(path)
         input_ = 'red~example~score m magic~numbers ns y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         assert os.path.isfile(path)
-        contents = ide._transcript.contents
+        contents = abjad_ide._transcript.contents
         assert 'Will write stub to' in contents

@@ -2,7 +2,7 @@
 import os
 import shutil
 from abjad.tools import systemtools
-from ide.idetools.Wrangler import Wrangler
+from abjad_ide.idetools.Wrangler import Wrangler
 
 
 class AbjadIDE(Wrangler):
@@ -12,8 +12,8 @@ class AbjadIDE(Wrangler):
 
         ::
 
-            >>> ide = ide.idetools.AbjadIDE(is_test=True)
-            >>> ide
+            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide
             AbjadIDE()
 
 
@@ -29,14 +29,14 @@ class AbjadIDE(Wrangler):
     ### INITIALIZER ###
 
     def __init__(self, session=None, is_test=False):
-        from ide import idetools
+        from abjad_ide import idetools
         if session is None:
             session = idetools.Session()
             session._is_test = is_test
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
         self._basic_breadcrumb = 'Abjad IDE'
-        self._session._ide = self
+        self._session._abjad_ide = self
         self._simple_score_annotation = True
         self._sort_by_annotation = True
         self._supply_missing_cache_file()
@@ -54,7 +54,7 @@ class AbjadIDE(Wrangler):
     @property
     @systemtools.Memoize
     def _build_file_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.BuildFileWrangler(session=self._session)
 
     @property
@@ -72,37 +72,37 @@ class AbjadIDE(Wrangler):
     @property
     @systemtools.Memoize
     def _distribution_file_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.DistributionFileWrangler(session=self._session)
 
     @property
     @systemtools.Memoize
     def _maker_file_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.MakerFileWrangler(session=self._session)
 
     @property
     @systemtools.Memoize
     def _material_package_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.MaterialPackageWrangler(session=self._session)
 
     @property
     @systemtools.Memoize
     def _score_package_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.ScorePackageWrangler(session=self._session)
 
     @property
     @systemtools.Memoize
     def _segment_package_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.SegmentPackageWrangler(session=self._session)
 
     @property
     @systemtools.Memoize
     def _stylesheet_wrangler(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.StylesheetWrangler(session=self._session)
 
     @property
@@ -167,7 +167,7 @@ class AbjadIDE(Wrangler):
             )
 
     def _make_main_menu(self):
-        from ide import idetools
+        from abjad_ide import idetools
         menu = idetools.AssetController._make_main_menu(self)
         self._make_asset_menu_section(menu)
         self._make_init_py_menu_section(menu)
@@ -175,7 +175,7 @@ class AbjadIDE(Wrangler):
         return menu
 
     def _run(self, input_=None):
-        from ide import idetools
+        from abjad_ide import idetools
         self._session._reinitialize()
         type(self).__init__(self, session=self._session)
         if input_:
@@ -233,7 +233,7 @@ class AbjadIDE(Wrangler):
                 self._score_package_wrangler.write_cache()
 
     def _supply_missing_views_files(self):
-        from ide import idetools
+        from abjad_ide import idetools
         if not os.path.exists(self._views_py_path):
             view_inventory = idetools.ViewInventory()
             with self._io_manager._silent():

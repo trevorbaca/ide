@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_GetterPrompt___format___01():
 
-    session = ide.idetools.Session()
-    getter = ide.idetools.Getter(session=session)
+    session = abjad_ide.idetools.Session()
+    getter = abjad_ide.idetools.Getter(session=session)
     getter.append_string('value')
     prompt = getter.prompts[0]
     prompt_format = format(prompt)

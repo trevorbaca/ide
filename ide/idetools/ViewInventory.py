@@ -16,5 +16,5 @@ class ViewInventory(TypedOrderedDict):
 
     @property
     def _item_coercer(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.View

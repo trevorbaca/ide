@@ -4,7 +4,7 @@
 To install the Abjad IDE:
 
     1. verify the Abjad IDE directories.
-    2. add ide/scr/ to your PATH.
+    2. add abjad_ide/scr/ to your PATH.
     3. create a scores/ directory.
     4. start and stop the Abjad IDE.
     5. run pytest.
@@ -22,10 +22,10 @@ on your filesystem after checkout:
     scr/
     test/
 
-2. Add the ide/scr/ directory to your PATH. This tells your shell
+2. Add the abjad_ide/scr/ directory to your PATH. This tells your shell
 where the start-abjad-idetools script is housed:
 
-    export PATH=$ABJAD/ide/scr:$PATH
+    export PATH=$ABJAD/abjad_ide/scr:$PATH
 
 3. Create a scores directory. You can do this anywhere on your filesystem you
 wish. Then create a SCORES environment variable in your profile. Set the scores
@@ -42,20 +42,20 @@ other assets. If the shell can't find start-abjad-idetools then make sure you
 added the scroremanager/scr/ directory to your PATH. After the Abjad IDE starts
 correctly enter 'q' to quit the Abjad IDE.
 
-5. Run pytest against the ide directory. Fix or report tests that
+5. Run pytest against the abjad_ide directory. Fix or report tests that
 break.
 
 6. Build the Abjad IDE API. Run 'avj api -S' to do this.
 
-7. Run doctest on the ide/ directory.  Run 'ajv doctest' in
-ide/ directory to do this. You're ready to use the Abjad IDE when
+7. Run doctest on the abjad_ide/ directory.  Run 'ajv doctest' in
+abjad_ide/ directory to do this. You're ready to use the Abjad IDE when
 all tests pass.
 '''
 import sys
 if sys.version_info[0] == 2:
     import idetools
 else:
-    from ide import idetools
+    from abjad_ide import idetools
 configuration = idetools.Configuration()
 sys.path.insert(0, configuration.example_score_packages_directory)
 del configuration

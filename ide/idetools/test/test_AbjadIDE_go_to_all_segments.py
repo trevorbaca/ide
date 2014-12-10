@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_all_segments_01():
@@ -9,10 +9,10 @@ def test_AbjadIDE_go_to_all_segments_01():
     '''
 
     input_ = 'hh gg q'
-    ide._run(input_=input_)
+    abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',
         'Abjad IDE - home',
         'Abjad IDE - segments depot',
         ]
-    assert ide._transcript.titles == titles
+    assert abjad_ide._transcript.titles == titles

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 import copy
 from abjad import *
-from ide import idetools
+from abjad_ide import idetools
 
 
 def test_ViewInventory___copy___01():

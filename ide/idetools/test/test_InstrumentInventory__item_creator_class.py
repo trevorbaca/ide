@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
-session = ide.idetools.Session()
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+session = abjad_ide.idetools.Session()
 inventory = instrumenttools.InstrumentInventory()
 item_creator_class = inventory._make_item_creator_class()
 
@@ -64,14 +64,14 @@ def test_InstrumentInventory__item_creator_class_05():
     input_ = 'red~example~score m performer~inventory da hornist i add b q'
 
     material_package = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         'performer_inventory',
         )
 
     with systemtools.FilesystemState(keep=[material_package]):
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
 
 
 def test_InstrumentInventory__item_creator_class_06():
@@ -82,11 +82,11 @@ def test_InstrumentInventory__item_creator_class_06():
     input_ += ' hornist i add untuned~percussion b q'
 
     material_package = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         'performer_inventory',
         )
 
     with systemtools.FilesystemState(keep=[material_package]):
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)

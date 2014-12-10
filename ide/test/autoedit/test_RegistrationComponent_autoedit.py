@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
+import abjad_ide
 
 
 def test_RegistrationComponent_autoedit_01():
@@ -8,8 +8,8 @@ def test_RegistrationComponent_autoedit_01():
     '''
 
     target = pitchtools.RegistrationComponent()
-    session = ide.idetools.Session(is_test=True)
-    autoeditor = ide.idetools.Autoeditor(
+    session = abjad_ide.idetools.Session(is_test=True)
+    autoeditor = abjad_ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

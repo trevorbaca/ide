@@ -1,10 +1,10 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 views_file = os.path.join(
-    ide._configuration.wrangler_views_directory,
+    abjad_ide._configuration.wrangler_views_directory,
     '__BuildFileWrangler_views__.py',
     )
 
@@ -18,8 +18,8 @@ def test_BuildFileWrangler_autoedit_views_01():
         input_ += " ren _test _new_test"
         input_ += " _new_test rm 'front-cover' done"
         input_ += " rm _new_test done q"
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
     lines = [
         'Abjad IDE - build depot - views - _test (EDIT)',

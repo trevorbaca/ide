@@ -19,8 +19,8 @@ class IOManager(IOManager):
 
         ::
 
-            >>> ide = ide.idetools.AbjadIDE(is_test=True)
-            >>> io_manager = ide._session.io_manager
+            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> io_manager = abjad_ide._session.io_manager
 
     '''
 
@@ -35,7 +35,7 @@ class IOManager(IOManager):
     ### INITIALIZER ###
 
     def __init__(self, client=None, session=None):
-        from ide import idetools
+        from abjad_ide import idetools
         self._client = client
         self._configuration = idetools.Configuration()
         self._session = session
@@ -93,7 +93,7 @@ class IOManager(IOManager):
         on_enter_callbacks=None,
         on_exit_callbacks=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.ControllerContext(
             clear_terminal=clear_terminal,
             consume_local_backtrack=consume_local_backtrack,
@@ -267,7 +267,7 @@ class IOManager(IOManager):
         breadcrumb=None,
         target=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         kwargs = {
             'allow_item_edit': allow_item_edit,
             'breadcrumb': breadcrumb,
@@ -292,7 +292,7 @@ class IOManager(IOManager):
         include_chevron=True,
         include_newlines=False,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         getter = idetools.Getter(
             session=self._session,
             allow_none=allow_none,
@@ -308,7 +308,7 @@ class IOManager(IOManager):
         dry_run=False,
         task=True,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.Interaction(
             confirm=confirm,
             controller=self.client,
@@ -324,7 +324,7 @@ class IOManager(IOManager):
         prompt_character='>',
         subtitle=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.Menu(
             breadcrumb_callback=breadcrumb_callback,
             name=name,
@@ -334,7 +334,7 @@ class IOManager(IOManager):
             )
 
     def _make_package_manager(self, path):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.PackageManager(
             path=path,
             session=self._session,
@@ -346,7 +346,7 @@ class IOManager(IOManager):
         is_ranged=False,
         items=None,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.Selector(
             breadcrumb=breadcrumb,
             is_ranged=is_ranged,
@@ -406,7 +406,7 @@ class IOManager(IOManager):
         return line
 
     def _silent(self):
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.Interaction(
             confirm=False,
             controller=self.client,
@@ -433,7 +433,7 @@ class IOManager(IOManager):
 
         Returns selector.
         '''
-        from ide import idetools
+        from abjad_ide import idetools
         return idetools.Selector(session=self._session)
 
     ### PUBLIC METHODS ###

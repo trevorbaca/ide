@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-from ide import idetools
+from abjad_ide import idetools
 
 
 def test_View___eq___01():

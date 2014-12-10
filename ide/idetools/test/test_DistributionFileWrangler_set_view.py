@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_DistributionFileWrangler_set_view_01():
@@ -12,7 +12,7 @@ def test_DistributionFileWrangler_set_view_01():
     '''
 
     views_file = os.path.join(
-        ide._configuration.wrangler_views_directory,
+        abjad_ide._configuration.wrangler_views_directory,
         '__DistributionFileWrangler_views__.py',
         )
     with systemtools.FilesystemState(keep=[views_file]):
@@ -20,8 +20,8 @@ def test_DistributionFileWrangler_set_view_01():
         input_ = 'dd wa add _test'
         input_ += ' add red-example-score.pdf~(Red~Example~Score) done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
         lines = [
             'Abjad IDE - distribution depot [_test]',
             '',
@@ -44,13 +44,13 @@ def test_DistributionFileWrangler_set_view_02():
     '''
     
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'distribution',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'distribution',
         '__metadata__.py',
@@ -61,8 +61,8 @@ def test_DistributionFileWrangler_set_view_02():
         input_ = 'red~example~score d wa add _test'
         input_ += ' add red-example-score.pdf done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
         lines = [
             'Red Example Score (2013) - distribution directory [_test]',
             '',

@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_SegmentPackageWrangler_version_every_package_01():
@@ -20,7 +20,7 @@ def test_SegmentPackageWrangler_version_every_package_01():
     file_names = ('definition.py', 'illustration.ly', 'illustration.pdf')
     for segment in segments:
         versions_directory = os.path.join(
-            ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
             'segments',
             segment,
@@ -34,11 +34,11 @@ def test_SegmentPackageWrangler_version_every_package_01():
 
     with systemtools.FilesystemState(remove=next_version_paths):
         input_ = 'red~example~score g vr* y q'
-        ide._run(input_=input_)
+        abjad_ide._run(input_=input_)
         for path in next_version_paths:
             assert not os.path.isfile(path)
 
-    contents = ide._transcript.contents
+    contents = abjad_ide._transcript.contents
     assert 'Nothing to version ...' in contents
     for path in next_version_paths:
         assert path not in contents

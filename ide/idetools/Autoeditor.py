@@ -4,7 +4,7 @@ import types
 from abjad.tools import datastructuretools
 from abjad.tools import stringtools
 from abjad.tools.topleveltools import new
-from ide.idetools.Controller import Controller
+from abjad_ide.idetools.Controller import Controller
 
 
 class Autoeditor(Controller):
@@ -124,7 +124,7 @@ class Autoeditor(Controller):
         space_delimited_attribute_name,
         prepopulated_value,
         ):
-        from ide import idetools
+        from abjad_ide import idetools
         if isinstance(attribute_detail.editor, types.FunctionType):
             autoeditor = attribute_detail.editor(
                 space_delimited_attribute_name,

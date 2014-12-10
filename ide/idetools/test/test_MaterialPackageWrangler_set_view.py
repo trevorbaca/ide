@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
 import os
 from abjad import *
-import ide
-ide = ide.idetools.AbjadIDE(is_test=True)
+import abjad_ide
+abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageWrangler_set_view_01():
@@ -12,7 +12,7 @@ def test_MaterialPackageWrangler_set_view_01():
     '''
     
     views_file = os.path.join(
-        ide._configuration.wrangler_views_directory,
+        abjad_ide._configuration.wrangler_views_directory,
         '__MaterialPackageWrangler_views__.py',
         )
     with systemtools.FilesystemState(keep=[views_file]):
@@ -21,8 +21,8 @@ def test_MaterialPackageWrangler_set_view_01():
         input_ += ' add performer~inventory~(Red~Example~Score)'
         input_ += ' add tempo~inventory~(Red~Example~Score) done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
         lines = [
             'Abjad IDE - materials depot [_test]',
@@ -47,13 +47,13 @@ def test_MaterialPackageWrangler_set_view_02():
     '''
     
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__metadata__.py',
@@ -64,8 +64,8 @@ def test_MaterialPackageWrangler_set_view_02():
         input_ = 'red~example~score m wa add _test'
         input_ += ' add performer~inventory done done'
         input_ += ' ws _test q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
         lines = [
             'Red Example Score (2013) - materials directory [_test]',
@@ -86,13 +86,13 @@ def test_MaterialPackageWrangler_set_view_03():
     '''
 
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__metadata__.py',
@@ -100,8 +100,8 @@ def test_MaterialPackageWrangler_set_view_03():
     with systemtools.FilesystemState(keep=[views_file, metadata_file]):
         os.remove(metadata_file)
         input_ = 'red~example~score m ws inventories q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
         lines = [
             'Red Example Score (2013) - materials directory [inventories]',
@@ -126,13 +126,13 @@ def test_MaterialPackageWrangler_set_view_04():
     '''
 
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__metadata__.py',
@@ -140,8 +140,8 @@ def test_MaterialPackageWrangler_set_view_04():
     with systemtools.FilesystemState(keep=[views_file, metadata_file]):
         os.remove(metadata_file)
         input_ = 'red~example~score m ws inventories q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
         lines = [
             'Red Example Score (2013) - materials directory [inventories]',
@@ -166,13 +166,13 @@ def test_MaterialPackageWrangler_set_view_05():
     '''
 
     views_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__views__.py',
         )
     metadata_file = os.path.join(
-        ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'materials',
         '__metadata__.py',
@@ -180,8 +180,8 @@ def test_MaterialPackageWrangler_set_view_05():
     with systemtools.FilesystemState(keep=[views_file, metadata_file]):
         os.remove(metadata_file)
         input_ = 'red~example~score m ws magic q'
-        ide._run(input_=input_)
-        transcript = ide._transcript
+        abjad_ide._run(input_=input_)
+        transcript = abjad_ide._transcript
 
         lines = [
             'Red Example Score (2013) - materials directory [magic]',

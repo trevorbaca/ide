@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import ide
-session = ide.idetools.Session()
+import abjad_ide
+session = abjad_ide.idetools.Session()
 
 
 
 def test_getters_01():
 
-    getter = ide.idetools.getters.get_duration(
+    getter = abjad_ide.idetools.getters.get_duration(
         'foo bar',
         session=session,
         )
@@ -19,7 +19,7 @@ def test_getters_02():
     r'''Allows none.
     '''
 
-    getter = ide.idetools.getters.get_duration(
+    getter = abjad_ide.idetools.getters.get_duration(
         'foo bar',
         session=session,
         )
@@ -29,7 +29,7 @@ def test_getters_02():
 
 def test_getters_03():
 
-    getter = ide.idetools.getters.get_number(
+    getter = abjad_ide.idetools.getters.get_number(
         'foo bar',
         session=session,
         )
@@ -39,7 +39,7 @@ def test_getters_03():
 
 def test_getters_04():
 
-    getter = ide.idetools.getters.get_number(
+    getter = abjad_ide.idetools.getters.get_number(
         'foo bar',
         session=session,
         )
