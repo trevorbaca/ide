@@ -275,7 +275,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.composer_full_name
                 '...'
 
-        Aliases `composer` setting in score manager configuration
+        Aliases `composer` setting in Abjad IDE configuration
         file.
 
         Returns string.
@@ -293,7 +293,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.composer_last_name
                 '...'
 
-        Aliases `composer` setting in score manager configuration
+        Aliases `composer` setting in Abjad IDE configuration
         file.
 
         Returns string.
@@ -311,7 +311,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.composer_website  # doctest: +SKIP
                 'My website address'
 
-        Aliases `composer_website` setting in score manager configuration
+        Aliases `composer_website` setting in Abjad IDE configuration
         file.
 
         Returns string.
@@ -451,7 +451,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.library
                 '...'
 
-        Aliases `library` setting in score manager configuration
+        Aliases `library` setting in Abjad IDE configuration
         file.
 
         Returns string.
@@ -520,7 +520,7 @@ class Configuration(AbjadConfiguration):
 
     @property
     def transcripts_directory(self):
-        r'''Gets score manager transcripts directory.
+        r'''Gets Abjad IDE transcripts directory.
 
         ..  container:: example
 
@@ -563,7 +563,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.composer_full_name
                 '...'
 
-        Aliases `upper_case_composer_full_name` setting in score manager 
+        Aliases `upper_case_composer_full_name` setting in Abjad IDE 
         configuration file.
 
         Returns string.
@@ -581,7 +581,7 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.user_score_packages_directory
                 '...'
 
-        Aliases `scores_directory` setting in score manager configuration file.
+        Aliases `scores_directory` setting in Abjad IDE configuration file.
 
         Returns string.
         '''
@@ -599,7 +599,7 @@ class Configuration(AbjadConfiguration):
             >>> configuration.wrangler_views_directory
             '.../views'
 
-        Defined equal to views/ subdirectory of score manager directory.
+        Defined equal to views/ subdirectory of Abjad IDE directory.
 
         Returns string.
         '''

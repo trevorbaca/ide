@@ -15,4 +15,4 @@ systemtools.ImportManager.import_structured_package(
 	globals(),
 	)
 
-_documentation_section = 'score manager'
+_documentation_section = 'Abjad IDE'

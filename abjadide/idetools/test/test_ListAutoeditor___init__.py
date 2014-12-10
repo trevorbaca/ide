@@ -18,7 +18,7 @@ def test_ListAutoeditor___init___01():
 
 def test_ListAutoeditor___init___02():
     r'''Initializes correctly when current working directory is a directory
-    other than the score manager directory.
+    other than the Abjad IDE directory.
     '''
 
     os.chdir(configuration.abjad_directory)

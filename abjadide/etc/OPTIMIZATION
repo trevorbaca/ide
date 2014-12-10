@@ -1,12 +1,12 @@
 Note that as of r9,872 it takes only 181 function calls to initialize 
-the score manager ...
+the Abjad IDE ...
 
     >>> expr = 'ide = abjadide.idetools.AbjadIDE(is_test=True)'
     >>> systemtools.IOManager.profile_expr(expr)
     181 function calls in 0.000 seconds
 
 ... but that it takes 819,997 function calls to start and immediately quit 
-the score manager a first time and then significantly fewer function calls 
+the Abjad IDE a first time and then significantly fewer function calls 
 on successive tests:
 
     >>> systemtools.IOManager.profile_expr("ide._run(input_='q')")
@@ -23,8 +23,8 @@ manager takes quite a few unnecessary steps on start-up. AbjadIDE start
 up should be as simple as listing the names of all scores in the system, 
 possibly with the additional work of inspecting each score package metadatum file 
 for date of composition. All of that should take far fewer than 820,000 
-function calls. Optimizing score manager start up should save as much as 
-0.7 seconds on each score manager-initiated test.
+function calls. Optimizing Abjad IDE start up should save as much as 
+0.7 seconds on each Abjad IDE-initiated test.
 
 OBSERVATION: Note that the following ...
 
@@ -37,7 +37,7 @@ OBSERVATION: Note that the following ...
             self.score_package_wrangler._make_asset_menu_entries()
         return menu
 
-... reduces score manager start-up from 820,000 function calls to 
+... reduces Abjad IDE start-up from 820,000 function calls to 
 153,000 function calls. Removing the call to self._where removes the call 
 to inspect.stack(). This was tricky to find because 
 systemtools.IOManager.profile_expr('inspect.stack()') is lean.
@@ -49,7 +49,7 @@ because stack inspection is expensive.
 
 ### r10,249 ###
 
-As of r10,249 it takes 6,658 function calls to initialize the score manager ...
+As of r10,249 it takes 6,658 function calls to initialize the Abjad IDE ...
 
     >>> expr = 'ide = abjadide.idetools.AbjadIDE(is_test=True)'
     >>> systemtools.IOManager.profile_expr(expr)
@@ -78,7 +78,7 @@ This is most likely due to the integration of Configuration.
 This increase from 181 to 6,658 is probably nothing to worry about.
 
 But note that it takes between 325,000 and 323,000 function calls to start 
-and then immediately quit the score manager, totaling ~0.4 seconds on the iMac:
+and then immediately quit the Abjad IDE, totaling ~0.4 seconds on the iMac:
 
     >>> systemtools.IOManager.profile_expr("ide._run(input_='q')")
     325311 function calls (324734 primitive calls) in 0.407 seconds
@@ -92,7 +92,7 @@ and then immediately quit the score manager, totaling ~0.4 seconds on the iMac:
 This represents an increase from 240,000 function calls to 323,000 function
 calls (or 0.22 seconds to 0.40 seconds) from r9,872 to r10,249.
 The performance of r10,249 is only half as fast as r9,872 at the basic
-task of starting the score manager and then immediately quitting.
+task of starting the Abjad IDE and then immediately quitting.
 
 
 ### r10,250 ###
@@ -114,11 +114,11 @@ following results:
     8169 function calls (8157 primitive calls) in 0.009 seconds
 
 CONCLUSION: the quick-and-dirty caching code turned on in r10,250 effectively 
-eliminates *all* the effort associated with starting the score manager. This 
-shows that the effort involved in starting the score manager comes exclusively 
+eliminates *all* the effort associated with starting the Abjad IDE. This 
+shows that the effort involved in starting the Abjad IDE comes exclusively 
 from the call ...
     menu_section.menu_entries = self.score_package_wrangler._make_asset_menu_entries()
-... found in the score manager. The pytest battery runs in 160 seconds on the 
+... found in the Abjad IDE. The pytest battery runs in 160 seconds on the 
 iMac with caching turned off; the pytest battery runs in 94 seconds on the 
 iMac with caching turned on.
 

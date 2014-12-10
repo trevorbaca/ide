@@ -421,7 +421,7 @@ class IOManager(IOManager):
     def client(self):
         r'''Gets client of IO manager.
 
-        Returns score manager object.
+        Returns Abjad IDE object.
         '''
         return self._client
 

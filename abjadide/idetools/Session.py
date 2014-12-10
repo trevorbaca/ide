@@ -801,7 +801,7 @@ class Session(abctools.AbjadObject):
 
     @property
     def is_backtracking_to_score_manager(self):
-        r'''Is true when session is backtracking to score manager.
+        r'''Is true when session is backtracking to Abjad IDE.
         Otherwise false.
 
         ..  container:: example

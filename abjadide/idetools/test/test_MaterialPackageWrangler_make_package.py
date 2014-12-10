@@ -120,7 +120,7 @@ def test_MaterialPackageWrangler_make_package_04():
 
 
 def test_MaterialPackageWrangler_make_package_05():
-    r'''Makes handmade package. Corrupts __init__.py. Makes sure score manager
+    r'''Makes handmade package. Corrupts __init__.py. Makes sure Abjad IDE
     starts and package is removable when __init__.py is corrupt.
     Removes package.
     '''
@@ -187,7 +187,7 @@ def test_MaterialPackageWrangler_make_package_07():
 
 def test_MaterialPackageWrangler_make_package_08():
     r'''Makes handmade package. Corrupts definition py. Makes sure
-    score manager starts when definition py is corrupt. Removes package.
+    Abjad IDE starts when definition py is corrupt. Removes package.
     '''
 
     with systemtools.FilesystemState(remove=[path]):
@@ -204,7 +204,7 @@ def test_MaterialPackageWrangler_make_package_08():
 
 def test_MaterialPackageWrangler_make_package_09():
     r'''Makes handmade package. Copies canned material definition py.
-    Makes output py. Corrupts output py. Makes sure score manager
+    Makes output py. Corrupts output py. Makes sure Abjad IDE
     starts when output py is corrupt. Removes package.
     '''
 
