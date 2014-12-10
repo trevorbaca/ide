@@ -3,11 +3,11 @@ from __future__ import print_function
 import os
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from scoremanager.idetools.ScoreInternalAssetController import \
-    ScoreInternalAssetController
+from scoremanager.idetools.AssetController import \
+    AssetController
 
 
-class PackageManager(ScoreInternalAssetController):
+class PackageManager(AssetController):
     r'''Package manager.
     '''
 
