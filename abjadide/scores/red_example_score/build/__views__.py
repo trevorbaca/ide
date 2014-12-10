@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-from scoremanager import idetools
+from abjadide import idetools
 
 
 view_inventory=idetools.ViewInventory(
