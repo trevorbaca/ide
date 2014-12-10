@@ -1,0 +1,22 @@
+# -*- encoding: utf-8 -*-
+from abjad import *
+import ide
+ide = ide.idetools.AbjadIDE(is_test=True)
+
+
+def test_BuildFileWrangler_invoke_python_01():
+    
+    input_ = 'red~example~score u py 2**38 q'
+    ide._run(input_=input_)
+    contents = ide._transcript.contents
+
+    assert '274877906944' in contents
+
+
+def test_BuildFileWrangler_invoke_python_02():
+    
+    input_ = 'uu py 2**38 q'
+    ide._run(input_=input_)
+    contents = ide._transcript.contents
+
+    assert '274877906944' in contents
