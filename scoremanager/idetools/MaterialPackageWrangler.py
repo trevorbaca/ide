@@ -269,9 +269,12 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         if self._session.is_backtracking or not result:
             return
         with self._io_manager._silent():
+            if managers:
+                print('')
             for manager in managers:
                 method = getattr(manager, method_name)
                 method()
+                print('Output {}.'.format(manager._output_py_path))
 
     def remove_packages(self):
         r'''Removes one or more packages.
