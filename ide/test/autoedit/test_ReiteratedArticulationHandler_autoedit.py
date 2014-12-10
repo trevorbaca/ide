@@ -8,11 +8,11 @@ def test_ReiteratedArticulationHandler_autoedit_01():
     r'''Edits reiterated articulation handler.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     session._is_autostarting = True
     target = handlertools.ReiteratedArticulationHandler()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -35,11 +35,11 @@ def test_ReiteratedArticulationHandler_autoedit_02():
     r'''Edits reiterated articulation handler.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     session._is_autostarting = True
     target = handlertools.ReiteratedArticulationHandler()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

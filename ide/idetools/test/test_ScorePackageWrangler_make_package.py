@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_make_package_01():
@@ -29,8 +29,8 @@ def test_ScorePackageWrangler_make_package_01():
         abjad_ide._run(input_=input_)
         contents = abjad_ide._transcript.contents
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.ScorePackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
 
@@ -42,7 +42,7 @@ def test_ScorePackageWrangler_make_package_02():
     Must set is_test=False to work with views.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=False)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=False)
     score_package = os.path.join(
         abjad_ide._configuration.user_score_packages_directory,
         'example_score',

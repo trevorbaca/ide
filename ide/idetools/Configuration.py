@@ -11,7 +11,7 @@ class Configuration(AbjadConfiguration):
 
         ::
 
-            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide = ide.idetools.AbjadIDE(is_test=True)
             >>> configuration = abjad_ide._configuration
             >>> configuration
             Configuration()
@@ -188,8 +188,8 @@ class Configuration(AbjadConfiguration):
         import ide
         score_path = self._path_to_score_path(path)
         if score_path:
-            session = abjad_ide.idetools.Session
-            manager = abjad_ide.idetools.ScorePackageManager(
+            session = ide.idetools.Session
+            manager = ide.idetools.ScorePackageManager(
                 path=score_path,
                 session=session,
                 )

@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MakerFileWrangler_check_every_file_01():

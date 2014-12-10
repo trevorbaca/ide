@@ -13,7 +13,7 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
 
         ::
 
-            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide = ide.idetools.AbjadIDE(is_test=True)
             >>> wrangler = abjad_ide._segment_package_wrangler
             >>> wrangler
             SegmentPackageWrangler()

@@ -3,7 +3,7 @@ from abjad import *
 import os
 import pytest
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_interpret_back_cover_01():

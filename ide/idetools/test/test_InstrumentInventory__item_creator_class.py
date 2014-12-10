@@ -2,8 +2,8 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
-session = abjad_ide.idetools.Session()
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
+session = ide.idetools.Session()
 inventory = instrumenttools.InstrumentInventory()
 item_creator_class = inventory._make_item_creator_class()
 

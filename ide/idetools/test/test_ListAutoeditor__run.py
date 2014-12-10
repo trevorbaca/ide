@@ -2,15 +2,15 @@
 import pytest
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ListAutoeditor__run_01():
     r'''Edits built-in list.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.ListAutoeditor(session=session)
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.ListAutoeditor(session=session)
     input_ = "17 99 'foo' done q"
     autoeditor._session._is_autoadding = True
     autoeditor._session._pending_input = input_
@@ -25,9 +25,9 @@ def test_ListAutoeditor__run_02():
     r'''Edits empty clef inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = indicatortools.ClefInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -43,9 +43,9 @@ def test_ListAutoeditor__run_03():
     r'''Edits nonempty clef inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = indicatortools.ClefInventory(['treble', 'bass'])
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -61,9 +61,9 @@ def test_ListAutoeditor__run_04():
     r'''Edits empty markup inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = markuptools.MarkupInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -84,9 +84,9 @@ def test_ListAutoeditor__run_05():
     r'''Edits nonempty markup inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = markuptools.MarkupInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -117,9 +117,9 @@ def test_ListAutoeditor__run_06():
     Works with pairs.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = indicatortools.TempoInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -143,9 +143,9 @@ def test_ListAutoeditor__run_07():
     '''
     pytest.skip('make me work again.')
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = indicatortools.TempoInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -166,9 +166,9 @@ def test_ListAutoeditor__run_08():
     r'''Edits empty pitch range inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = pitchtools.PitchRangeInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -188,9 +188,9 @@ def test_ListAutoeditor__run_09():
     r'''Edits empty octave transposition mapping.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = pitchtools.Registration()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -210,9 +210,9 @@ def test_ListAutoeditor__run_10():
     r'''Edits empty octave transposition mapping.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = pitchtools.Registration()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -232,9 +232,9 @@ def test_ListAutoeditor__run_11():
     r'''Edits instrument inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.InstrumentInventory()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -254,9 +254,9 @@ def test_ListAutoeditor__run_12():
     r'''Edits view.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    target = abjad_ide.idetools.View()
-    autoeditor = abjad_ide.idetools.ListAutoeditor(
+    session = ide.idetools.Session(is_test=True)
+    target = ide.idetools.View()
+    autoeditor = ide.idetools.ListAutoeditor(
         session=session,
         target=target,
         )
@@ -264,7 +264,7 @@ def test_ListAutoeditor__run_12():
     autoeditor._session._pending_input = input_
     autoeditor._run()
 
-    view = abjad_ide.idetools.View([
+    view = ide.idetools.View([
         'first pattern',
         'second pattern',
         ])

@@ -18,15 +18,15 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         ::
 
             >>> import os
-            >>> configuration = abjad_ide.idetools.Configuration()
-            >>> session = abjad_ide.idetools.Session()
+            >>> configuration = ide.idetools.Configuration()
+            >>> session = ide.idetools.Session()
             >>> path = os.path.join(
             ...     configuration.example_score_packages_directory,
             ...     'red_example_score',
             ...     'materials',
             ...     'performer_inventory',
             ...     )
-            >>> manager = abjad_ide.idetools.MaterialPackageManager(
+            >>> manager = ide.idetools.MaterialPackageManager(
             ...     path=path,
             ...     session=session,
             ...     )

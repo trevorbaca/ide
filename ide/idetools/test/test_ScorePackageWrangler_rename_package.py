@@ -4,7 +4,7 @@ pytest.skip('make me work again.')
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=False)
+abjad_ide = ide.idetools.AbjadIDE(is_test=False)
 
 
 def test_ScorePackageWrangler_rename_package_01():
@@ -24,7 +24,7 @@ def test_ScorePackageWrangler_rename_package_01():
         input_ = 'new example~score~100 q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path_100)
-        manager = abjad_ide.idetools.ScorePackageManager
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=path_100, session=abjad_ide._session)
         title = 'Example Score 100'
         manager._add_metadatum('title', title)

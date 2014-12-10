@@ -5,7 +5,7 @@ import ide
 
 def test_MaterialPackageWrangler_go_to_next_package_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m > > > > > > q'
     abjad_ide._run(input_=input_)
     titles = [
@@ -27,7 +27,7 @@ def test_MaterialPackageWrangler_go_to_next_package_02():
     asset.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m > > g > > q'
     abjad_ide._run(input_=input_)
     titles = [

@@ -8,9 +8,9 @@ def test_Instrument_autoedit_01():
     Unless short instrument name markup is set explicitly.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Accordion()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -20,9 +20,9 @@ def test_Instrument_autoedit_01():
     instrument = autoeditor.target
     assert instrument.short_instrument_name == 'foo'
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Accordion()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -38,9 +38,9 @@ def test_Instrument_autoedit_02():
     r'''Edits instrument range.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Marimba()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -50,9 +50,9 @@ def test_Instrument_autoedit_02():
     range_ = pitchtools.PitchRange.from_pitches(-19, 36)
     assert autoeditor.target.pitch_range == range_
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Marimba()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -68,9 +68,9 @@ def test_Instrument_autoedit_03():
     change instrument name markup.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Accordion()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -80,9 +80,9 @@ def test_Instrument_autoedit_03():
     instrument = autoeditor.target
     assert instrument.instrument_name == 'foo'
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Accordion()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -98,9 +98,9 @@ def test_Instrument_autoedit_04():
     r'''While editing instrument: main screen.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Accordion()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target
         )
@@ -131,10 +131,10 @@ def test_Instrument_autoedit_05():
     r'''Edits sounding pitch of written middle C.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.FrenchHorn()
     assert target.sounding_pitch_of_written_middle_c == NamedPitch('f')
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

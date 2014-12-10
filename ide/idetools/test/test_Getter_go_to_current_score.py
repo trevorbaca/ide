@@ -5,7 +5,7 @@ import ide
 
 def test_Getter_go_to_current_score_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m tempo~inventory da 1 d s q'
     abjad_ide._run(input_=input_)
 

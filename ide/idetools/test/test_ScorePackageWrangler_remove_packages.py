@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_remove_packages_01():
@@ -18,7 +18,7 @@ def test_ScorePackageWrangler_remove_packages_01():
         input_ = 'new example~score~100 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        manager = abjad_ide.idetools.ScorePackageManager
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=path, session=abjad_ide._session)
         title = 'Example Score 100'
         manager._add_metadatum('title', title)
@@ -47,11 +47,11 @@ def test_ScorePackageWrangler_remove_packages_02():
         input_ = 'new example~score~101 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path_101)
-        manager = abjad_ide.idetools.ScorePackageManager
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=path_100, session=abjad_ide._session)
         title = 'Example Score 100'
         manager._add_metadatum('title', title)
-        manager = abjad_ide.idetools.ScorePackageManager
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=path_101, session=abjad_ide._session)
         title = 'Example Score 101'
         manager._add_metadatum('title', title)

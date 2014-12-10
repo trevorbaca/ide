@@ -9,8 +9,8 @@ class TupleAutoeditor(CollectionAutoeditor):
 
     ::
 
-        >>> session = abjad_ide.idetools.Session()
-        >>> autoeditor = abjad_ide.idetools.TupleAutoeditor(
+        >>> session = ide.idetools.Session()
+        >>> autoeditor = ide.idetools.TupleAutoeditor(
         ...     session=session,
         ...     )
         >>> autoeditor._target = ('first', 'second', 'third')

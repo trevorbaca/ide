@@ -7,8 +7,8 @@ def test_Markup_autoedit_01():
     r'''Edits markup contents.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=Markup(),
         )
@@ -24,8 +24,8 @@ def test_Markup_autoedit_02():
     r'''Edits markup contents and direction.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=Markup(),
         )
@@ -41,8 +41,8 @@ def test_Markup_autoedit_03():
     '''
 
     target = Markup('foo bar')
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

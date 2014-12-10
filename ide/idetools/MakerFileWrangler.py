@@ -12,8 +12,8 @@ class MakerFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
-            >>> wrangler = abjad_ide.idetools.MakerFileWrangler(
+            >>> session = ide.idetools.Session()
+            >>> wrangler = ide.idetools.MakerFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler

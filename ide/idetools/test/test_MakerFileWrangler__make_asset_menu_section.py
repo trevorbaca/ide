@@ -7,7 +7,7 @@ def test_MakerFileWrangler__make_asset_menu_section_01():
     r'''Behaves gracefully when no assets are found.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'blue~example~score k q'
     abjad_ide._run(input_=input_)
     titles = [

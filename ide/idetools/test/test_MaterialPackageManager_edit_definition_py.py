@@ -5,7 +5,7 @@ import ide
 
 def test_MaterialPackageManager_edit_definition_py_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m magic~numbers de q'
     abjad_ide._run(input_=input_)
 

@@ -8,8 +8,8 @@ def test_SegmentPackageWrangler__list_storehouse_paths_01():
     r'''Lists all Abjad score package segment directories.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    wrangler = abjad_ide.idetools.SegmentPackageWrangler(session=session)
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.SegmentPackageWrangler(session=session)
 
     package_names = [
         'blue_example_score',

@@ -2,8 +2,8 @@
 import os
 from abjad import *
 import ide
-configuration = abjad_ide.idetools.Configuration()
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+configuration = ide.idetools.Configuration()
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_StylesheetWrangler_rename_file_01():

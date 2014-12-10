@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_PackageManager__get_repository_root_directory_01():
@@ -11,7 +11,7 @@ def test_PackageManager__get_repository_root_directory_01():
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         )
-    manager = abjad_ide.idetools.PackageManager(
+    manager = ide.idetools.PackageManager(
         path=score_path,
         session=abjad_ide._session,
         )

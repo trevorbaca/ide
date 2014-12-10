@@ -4,7 +4,7 @@ import os
 import shutil
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 path = os.path.join(
     abjad_ide._configuration.materials_library,
@@ -48,8 +48,8 @@ def test_MaterialPackageWrangler_make_package_02():
     r'''Creates package and populates package correctly.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -66,8 +66,8 @@ def test_MaterialPackageWrangler_make_package_02():
         input_ = 'mm new testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
 
@@ -76,7 +76,7 @@ def test_MaterialPackageWrangler_make_package_03():
     r'''Creates empty material definition py.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -177,8 +177,8 @@ def test_MaterialPackageWrangler_make_package_07():
         input_ = 'mm new testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         input_ = 'mm rm testnotes remove q'

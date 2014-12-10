@@ -9,8 +9,8 @@ class StylesheetWrangler(FileWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
-            >>> wrangler = abjad_ide.idetools.StylesheetWrangler(
+            >>> session = ide.idetools.Session()
+            >>> wrangler = ide.idetools.StylesheetWrangler(
             ...     session=session,
             ...     )
             >>> wrangler

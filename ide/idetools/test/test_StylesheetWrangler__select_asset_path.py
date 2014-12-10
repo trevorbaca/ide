@@ -6,7 +6,7 @@ import ide
 
 def test_StylesheetWrangler__select_asset_path_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     wrangler = abjad_ide._stylesheet_wrangler
     input_ = 'clean'
     wrangler._session._pending_input = input_

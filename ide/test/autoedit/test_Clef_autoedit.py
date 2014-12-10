@@ -8,8 +8,8 @@ def test_Clef_autoedit_01():
     '''
 
     target = Clef('alto')
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

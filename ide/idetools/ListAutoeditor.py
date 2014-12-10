@@ -7,8 +7,8 @@ class ListAutoeditor(CollectionAutoeditor):
 
     ::
 
-        >>> session = abjad_ide.idetools.Session()
-        >>> autoeditor = abjad_ide.idetools.ListAutoeditor(
+        >>> session = ide.idetools.Session()
+        >>> autoeditor = ide.idetools.ListAutoeditor(
         ...     session=session,
         ...     )
         >>> autoeditor._target = ['first', 'second', 'third']

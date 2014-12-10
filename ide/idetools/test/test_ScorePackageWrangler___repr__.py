@@ -6,7 +6,7 @@ import ide
 
 def test_ScorePackageWrangler___repr___01():
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    wrangler = abjad_ide.idetools.ScorePackageWrangler(session=session)
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.ScorePackageWrangler(session=session)
 
     assert repr(wrangler) == 'ScorePackageWrangler()'

@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-session = abjad_ide.idetools.Session(is_test=True)
+session = ide.idetools.Session(is_test=True)
 
 
 def test_Selector_make_material_package_selector_01():
 
-    selector = abjad_ide.idetools.Selector(session=session)
+    selector = ide.idetools.Selector(session=session)
     selector = selector.make_package_selector(
         output_material_class_name='ReiteratedArticulationHandler',
         )

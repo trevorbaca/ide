@@ -8,10 +8,10 @@ def test_PatternedArticulationsHandler_autoedit_01():
     r'''Edits patterned articulations handler.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = handlertools.PatternedArticulationsHandler()
     session._autoadvance_depth = 1
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

@@ -5,7 +5,7 @@ import ide
 
 def test_ScorePackageManager_doctest_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score dt q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents

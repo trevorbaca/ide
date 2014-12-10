@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-session = abjad_ide.idetools.Session(is_test=True)
+session = ide.idetools.Session(is_test=True)
 
 
 def test_Selector__run_01():
 
     items=['apple', 'banana', 'cherry']
-    selector = abjad_ide.idetools.Selector(
+    selector = ide.idetools.Selector(
         items=items,
         session=session,
         )
@@ -26,7 +26,7 @@ def test_Selector__run_01():
 def test_Selector__run_02():
 
     items = instrumenttools.UntunedPercussion.known_untuned_percussion[:]
-    selector = abjad_ide.idetools.Selector(
+    selector = ide.idetools.Selector(
         items=items,
         session=session,
         )

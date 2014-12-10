@@ -6,7 +6,7 @@ import ide
 
 def test_ScorePackageWrangler__make_main_menu_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     abjad_ide._session._is_test = True
     statement = 'abjad_ide._score_package_wrangler._make_main_menu()'
     count = abjad_ide._session.io_manager.count_function_calls(

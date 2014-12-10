@@ -5,7 +5,7 @@ import ide
 
 def test_ScorePackageWrangler_go_to_previous_score_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = '<< << q'
     abjad_ide._run(input_=input_)
     titles = [

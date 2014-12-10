@@ -9,9 +9,9 @@ def test_Performer_autoedit_01():
     r'''Adds instruments to performer instrument inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -35,9 +35,9 @@ def test_Performer_autoedit_02():
     r'''Removes instruments from performer instrument inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -60,9 +60,9 @@ def test_Performer_autoedit_03():
     r'''Moves instruments in performer instrument inventory.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = instrumenttools.Performer()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

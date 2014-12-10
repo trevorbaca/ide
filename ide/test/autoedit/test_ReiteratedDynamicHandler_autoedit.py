@@ -8,10 +8,10 @@ def test_ReiteratedDynamicHandler_autoedit_01():
     r'''Edits reiterated dynamic handler.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     session._autoadvance_depth = 1
     target = handlertools.ReiteratedDynamicHandler()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target
         )

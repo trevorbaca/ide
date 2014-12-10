@@ -5,8 +5,8 @@ import ide
 
 def test_GetterPrompt___format___01():
 
-    session = abjad_ide.idetools.Session()
-    getter = abjad_ide.idetools.Getter(session=session)
+    session = ide.idetools.Session()
+    getter = ide.idetools.Getter(session=session)
     getter.append_string('value')
     prompt = getter.prompts[0]
     prompt_format = format(prompt)

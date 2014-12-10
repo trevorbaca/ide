@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-configuration = abjad_ide.idetools.Configuration()
+configuration = ide.idetools.Configuration()
 
 
 def test_Configuration__path_to_storehouse_01():

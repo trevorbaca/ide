@@ -12,8 +12,8 @@ class ScorePackageWrangler(PackageWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
-            >>> wrangler = abjad_ide.idetools.ScorePackageWrangler(
+            >>> session = ide.idetools.Session()
+            >>> wrangler = ide.idetools.ScorePackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler
@@ -23,9 +23,9 @@ class ScorePackageWrangler(PackageWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
+            >>> session = ide.idetools.Session()
             >>> session._set_test_score('red_example_score')
-            >>> wrangler_in_score = abjad_ide.idetools.ScorePackageWrangler(
+            >>> wrangler_in_score = ide.idetools.ScorePackageWrangler(
             ...     session=session,
             ...     )
             >>> wrangler_in_score

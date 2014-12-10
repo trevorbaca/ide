@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-session = abjad_ide.idetools.Session()
+session = ide.idetools.Session()
 
 
 def test_MenuSection__menu_entry_return_values_01():
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -23,7 +23,7 @@ def test_MenuSection__menu_entry_return_values_01():
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -39,7 +39,7 @@ def test_MenuSection__menu_entry_return_values_01():
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -57,7 +57,7 @@ def test_MenuSection__menu_entry_return_values_01():
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -82,7 +82,7 @@ def test_MenuSection__menu_entry_return_values_02():
     Note that section numbering plays no role in this.
     '''
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))
@@ -100,7 +100,7 @@ def test_MenuSection__menu_entry_return_values_02():
     keys = section._menu_entry_keys
     assert section._menu_entry_return_values == keys
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))
@@ -117,7 +117,7 @@ def test_MenuSection__menu_entry_return_values_02():
     keys = section._menu_entry_keys
     assert section._menu_entry_return_values == keys
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))
@@ -134,7 +134,7 @@ def test_MenuSection__menu_entry_return_values_02():
     strings = section._menu_entry_display_strings
     assert section._menu_entry_return_values == strings
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))
@@ -156,7 +156,7 @@ def test_MenuSection__menu_entry_return_values_03():
     You must still set return_value_attribute to 'explicit'.
     '''
 
-    menu = abjad_ide.idetools.Menu(session=session)
+    menu = ide.idetools.Menu(session=session)
     commands = []
     commands.append(('something - add', 'add', None, 'return value A'))
     commands.append(('something - delete', 'rm', None, 'return value B'))

@@ -8,8 +8,8 @@ def test_Tempo_autoedit_01():
     '''
 
     target = Tempo()
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -24,8 +24,8 @@ def test_Tempo_autoedit_02():
     r'''Edits tempo duration with pair.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=Tempo(),
         )
@@ -40,8 +40,8 @@ def test_Tempo_autoedit_03():
     r'''Edits tempo duration with duration object.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    session = ide.idetools.Session(is_test=True)
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=Tempo(),
         )

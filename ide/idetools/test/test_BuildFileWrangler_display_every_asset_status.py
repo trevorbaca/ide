@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_display_every_asset_status_01():
@@ -33,7 +33,7 @@ def test_BuildFileWrangler_display_every_asset_status_03():
     '''
 
     # is_test=False to allow user scores to appear in main menu
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=False)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=False)
     score_name = abjad_ide._score_package_wrangler._find_svn_score_name()
     if not score_name:
         return

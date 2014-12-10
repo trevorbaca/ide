@@ -15,8 +15,8 @@ class BuildFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
-            >>> wrangler = abjad_ide.idetools.BuildFileWrangler(
+            >>> session = ide.idetools.Session()
+            >>> wrangler = ide.idetools.BuildFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler

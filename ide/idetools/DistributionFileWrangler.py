@@ -9,8 +9,8 @@ class DistributionFileWrangler(FileWrangler):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
-            >>> wrangler = abjad_ide.idetools.DistributionFileWrangler(
+            >>> session = ide.idetools.Session()
+            >>> wrangler = ide.idetools.DistributionFileWrangler(
             ...     session=session,
             ...     )
             >>> wrangler

@@ -2,9 +2,9 @@
 import os
 from abjad import *
 import ide
-configuration = abjad_ide.idetools.Configuration()
-session = abjad_ide.idetools.Session()
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+configuration = ide.idetools.Configuration()
+session = ide.idetools.Session()
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler__find_up_to_date_manager_01():
@@ -20,7 +20,7 @@ def test_ScorePackageWrangler__find_up_to_date_manager_01():
 
     storehouse = configuration.example_score_packages_directory
 
-    assert isinstance(manager, abjad_ide.idetools.ScorePackageManager)
+    assert isinstance(manager, ide.idetools.ScorePackageManager)
     assert manager._is_git_versioned()
     assert manager._is_up_to_date()
     assert manager._path.startswith(storehouse)
@@ -43,7 +43,7 @@ def test_ScorePackageWrangler__find_up_to_date_manager_02():
 
     storehouse = configuration.user_score_packages_directory
 
-    assert isinstance(manager, abjad_ide.idetools.ScorePackageManager)
+    assert isinstance(manager, ide.idetools.ScorePackageManager)
     assert manager._is_svn_versioned()
     assert manager._is_up_to_date()
     assert manager._path.startswith(storehouse)

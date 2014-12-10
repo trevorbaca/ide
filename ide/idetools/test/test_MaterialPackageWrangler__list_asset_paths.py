@@ -8,8 +8,8 @@ def test_MaterialPackageWrangler__list_asset_paths_01():
     r'''Red Example Score material packages.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    wrangler = abjad_ide.idetools.MaterialPackageWrangler(session=session)
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.MaterialPackageWrangler(session=session)
 
     package_names = (
         'magic_numbers',

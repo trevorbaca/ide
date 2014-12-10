@@ -10,7 +10,7 @@ def test_MaterialPackageManager_autoedit_definition_py_01():
     '''Edit menu has correct header.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'blue~example~score m markup~inventory da q'
     abjad_ide._run(input_=input_)
 
@@ -22,7 +22,7 @@ def test_MaterialPackageManager_autoedit_definition_py_02():
     r'''Edits tempo inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -46,8 +46,8 @@ def test_MaterialPackageManager_autoedit_definition_py_02():
         input_ += ' add ((1, 4), 60) add ((1, 4), 90) done q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
 
@@ -56,7 +56,7 @@ def test_MaterialPackageManager_autoedit_definition_py_03():
     r'''Edits empty pitch range inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -75,8 +75,8 @@ def test_MaterialPackageManager_autoedit_definition_py_03():
         input_ += ' da y PitchRangeInventory done q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
 
@@ -85,7 +85,7 @@ def test_MaterialPackageManager_autoedit_definition_py_04():
     r'''Edits populated pitch range inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -112,8 +112,8 @@ def test_MaterialPackageManager_autoedit_definition_py_04():
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -122,7 +122,7 @@ def test_MaterialPackageManager_autoedit_definition_py_04():
 
 def test_MaterialPackageManager_autoedit_definition_py_05():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -152,8 +152,8 @@ def test_MaterialPackageManager_autoedit_definition_py_05():
         input_ += " add arg r'\\italic~{~presto~}' done done dp y q"
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -164,7 +164,7 @@ def test_MaterialPackageManager_autoedit_definition_py_06():
     r'''Edits empty octave transposition mapping inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -185,8 +185,8 @@ def test_MaterialPackageManager_autoedit_definition_py_06():
         input_ += ' done dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -197,7 +197,7 @@ def test_MaterialPackageManager_autoedit_definition_py_07():
     r'''Edits populated octave transposition mapping inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -231,8 +231,8 @@ def test_MaterialPackageManager_autoedit_definition_py_07():
         input_ += ' done done dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -241,7 +241,7 @@ def test_MaterialPackageManager_autoedit_definition_py_07():
 
 def test_MaterialPackageManager_autoedit_definition_py_08():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -259,8 +259,8 @@ def test_MaterialPackageManager_autoedit_definition_py_08():
         input_ = 'mm new test~list y da y list add! 17 foo!  dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -269,7 +269,7 @@ def test_MaterialPackageManager_autoedit_definition_py_08():
 
 def test_MaterialPackageManager_autoedit_definition_py_09():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -288,8 +288,8 @@ def test_MaterialPackageManager_autoedit_definition_py_09():
         input_ += ' add 17 add foo done dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -300,7 +300,7 @@ def test_MaterialPackageManager_autoedit_definition_py_10():
     r'''Edits talea rhythm-maker.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -331,8 +331,8 @@ def test_MaterialPackageManager_autoedit_definition_py_10():
         input_ += ' done dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -344,7 +344,7 @@ def test_MaterialPackageManager_autoedit_definition_py_11():
     '''
     pytest.skip('make me work again.')
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -372,8 +372,8 @@ def test_MaterialPackageManager_autoedit_definition_py_11():
         input_ += " done dp y q"
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -385,7 +385,7 @@ def test_MaterialPackageManager_autoedit_definition_py_12():
     '''
     pytest.skip('make me work again.')
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         configuration.materials_library,
@@ -409,8 +409,8 @@ def test_MaterialPackageManager_autoedit_definition_py_12():
         input_ += ' dy f md (1, 16) done dp y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         output_material = manager._execute_output_py()
@@ -421,7 +421,7 @@ def test_MaterialPackageManager_autoedit_definition_py_13():
     r'''Target tempo inventory.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
@@ -448,8 +448,8 @@ def test_MaterialPackageManager_autoedit_definition_py_13():
         input_ += ' add ((1, 4), 60) add ((1, 4), 90) done q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
-        session = abjad_ide.idetools.Session(is_test=True)
-        manager = abjad_ide.idetools.MaterialPackageManager
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
         manager = manager(path=path, session=session)
         assert manager._list() == directory_entries
         target = manager._execute_definition_py()
@@ -460,7 +460,7 @@ def test_MaterialPackageManager_autoedit_definition_py_14():
     r'''Skips rewrite when target has not changed.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m performer~inventory da done q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents

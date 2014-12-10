@@ -19,7 +19,7 @@ class IOManager(IOManager):
 
         ::
 
-            >>> abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide = ide.idetools.AbjadIDE(is_test=True)
             >>> io_manager = abjad_ide._session.io_manager
 
     '''

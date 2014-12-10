@@ -13,7 +13,7 @@ class Session(abctools.AbjadObject):
 
         ::
 
-            >>> session = abjad_ide.idetools.Session()
+            >>> session = ide.idetools.Session()
             >>> session
             Session()
 
@@ -23,7 +23,7 @@ class Session(abctools.AbjadObject):
 
         ::
 
-            >>> session_in_score = abjad_ide.idetools.Session()
+            >>> session_in_score = ide.idetools.Session()
             >>> session_in_score._set_test_score('red_example_score')
 
     '''

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageManager_display_status_01():
@@ -20,7 +20,7 @@ def test_ScorePackageManager_display_status_02():
     r'''Works with Subversion.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=False)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=False)
     name = abjad_ide._score_package_wrangler._find_svn_score_name()
     if not name:
         return

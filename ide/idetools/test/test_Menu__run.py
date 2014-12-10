@@ -7,8 +7,8 @@ def test_Menu__run_01():
     r'''String menu entry defaults.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -54,8 +54,8 @@ def test_Menu__run_02():
     r'''Hidden menu section.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -101,8 +101,8 @@ def test_Menu__run_03():
     r'''Numbered menu section.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -148,8 +148,8 @@ def test_Menu__run_04():
     r'''Menu section with range selection turned on.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -195,8 +195,8 @@ def test_Menu__run_05():
     r'''Keyed menu section with key returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -254,8 +254,8 @@ def test_Menu__run_06():
     r'''Keyed menu section with display string returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -311,8 +311,8 @@ def test_Menu__run_07():
     r'''Hidden keyed menu section with key returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -371,8 +371,8 @@ def test_Menu__run_08():
     r'''Hidden keyed menu section with display string returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -430,8 +430,8 @@ def test_Menu__run_09():
     r'''Numbered keyed menu section with key returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -490,8 +490,8 @@ def test_Menu__run_10():
     r'''Ranged keyed menu section with with key returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -550,8 +550,8 @@ def test_Menu__run_11():
     r'''RK menu section with display string returned.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,
@@ -609,8 +609,8 @@ def test_Menu__run_12():
     r'''Displays unknown command message.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    menu = abjad_ide.idetools.Menu(
+    session = ide.idetools.Session(is_test=True)
+    menu = ide.idetools.Menu(
         breadcrumb_callback='name',
         name='test',
         session=session,

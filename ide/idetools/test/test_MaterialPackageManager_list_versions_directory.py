@@ -5,7 +5,7 @@ import ide
 
 def test_MaterialPackageManager_list_versions_directory_01():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m magic~numbers vl q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
@@ -16,7 +16,7 @@ def test_MaterialPackageManager_list_versions_directory_01():
     
 def test_MaterialPackageManager_list_versions_directory_02():
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m tempo~inventory vl q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents

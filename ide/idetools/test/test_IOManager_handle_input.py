@@ -7,7 +7,7 @@ def test_IOManager_handle_input_01():
     r'''Command repetition works.
     '''
 
-    abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     input_ = '>> . . . q'
     abjad_ide._run(input_=input_)
     titles = [

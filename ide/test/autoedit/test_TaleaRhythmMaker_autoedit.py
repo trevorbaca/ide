@@ -7,9 +7,9 @@ def test_TaleaRhythmMaker_autoedit_01():
     r'''Edits talea rhythm-maker.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = rhythmmakertools.TaleaRhythmMaker()
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )

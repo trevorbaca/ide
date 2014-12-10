@@ -2,7 +2,7 @@
 import pytest
 import ide
 import sys
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 @pytest.mark.skipif(2 < sys.version_info[0], reason='Fails under Py3k')

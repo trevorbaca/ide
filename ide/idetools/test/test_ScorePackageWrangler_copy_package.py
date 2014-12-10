@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = abjad_ide.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_ScorePackageWrangler_copy_package_01():
@@ -16,7 +16,7 @@ def test_ScorePackageWrangler_copy_package_01():
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(pretty_path)
-        manager = abjad_ide.idetools.ScorePackageManager
+        manager = ide.idetools.ScorePackageManager
         manager = manager(path=pretty_path, session=abjad_ide._session)
         title = 'Pretty Example Score'
         manager._add_metadatum('title', title)

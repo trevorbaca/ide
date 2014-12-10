@@ -9,8 +9,8 @@ class DictionaryAutoeditor(CollectionAutoeditor):
 
     ::
 
-        >>> session = abjad_ide.idetools.Session()
-        >>> autoeditor = abjad_ide.idetools.DictionaryAutoeditor(
+        >>> session = ide.idetools.Session()
+        >>> autoeditor = ide.idetools.DictionaryAutoeditor(
         ...     session=session,
         ...     )
         >>> dictionary = {'flavor': 'cherry', 'age': 94}

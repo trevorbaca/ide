@@ -9,8 +9,8 @@ def test_SegmentPackageWrangler__list_asset_paths_01():
     r'''Lists all segment packages resident in Abjad score packages.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
-    wrangler = abjad_ide.idetools.SegmentPackageWrangler(session=session)
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.SegmentPackageWrangler(session=session)
 
     blue_segment_names = [
         'segment_01',

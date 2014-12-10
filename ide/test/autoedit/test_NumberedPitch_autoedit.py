@@ -7,9 +7,9 @@ def test_NumberedPitch_autoedit_01():
     r'''Changes pitch number to another integer.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = pitchtools.NumberedPitch(13)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
@@ -24,9 +24,9 @@ def test_NumberedPitch_autoedit_02():
     r'''Changes pitch number to float.
     '''
 
-    session = abjad_ide.idetools.Session(is_test=True)
+    session = ide.idetools.Session(is_test=True)
     target = pitchtools.NumberedPitch(13)
-    autoeditor = abjad_ide.idetools.Autoeditor(
+    autoeditor = ide.idetools.Autoeditor(
         session=session,
         target=target,
         )
