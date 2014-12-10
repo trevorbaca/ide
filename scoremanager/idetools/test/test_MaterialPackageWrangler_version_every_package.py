@@ -5,7 +5,7 @@ import sys
 ide = scoremanager.idetools.AbjadIDE(is_test=True)
 
 
-@pytest.mark.skipif(2 < sys.version_info[0])
+@pytest.mark.skipif(2 < sys.version_info[0], reason='Fails under Py3k')
 def test_MaterialPackageWrangler_version_every_package_01():
     r'''The status of the five material packages should be that there is
     nothing to version in performer_inventory/ but that the other four packges
