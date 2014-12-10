@@ -111,7 +111,6 @@ class ScorePackageWrangler(PackageWrangler):
         return manager
 
     def _find_svn_score_name(self):
-        from scoremanager import idetools
         manager = self._find_up_to_date_manager(
             repository='svn',
             system=False,
