@@ -364,10 +364,7 @@ class PackageManager(AssetController):
         paths = []
         if self._is_in_git_repository():
             root_directory = self._get_repository_root_directory()
-            print('ROOT', root_directory)
-            print('CURDIR', os.path.abspath(os.path.curdir))
             git_status_lines = self._get_git_status_lines()
-            print('STATUS', git_status_lines)
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith('?'):
