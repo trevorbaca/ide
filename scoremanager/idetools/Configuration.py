@@ -641,10 +641,6 @@ class Configuration(AbjadConfiguration):
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if directory_entry[0].isalpha():
-                    directory = os.path.join(
-                        scores_directory,
-                        directory_entry,
-                        )
                     path = os.path.join(
                         self.example_score_packages_directory,
                         directory_entry,
@@ -654,12 +650,19 @@ class Configuration(AbjadConfiguration):
             scores_directory = self.user_score_packages_directory
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
-                if directory_entry[0].isalpha():
-                    path = os.path.join(
-                        self.user_score_packages_directory,
-                        directory_entry,
-                        )
-                    result.append(path)
+                if not directory_entry[0].isalpha():
+                    continue
+                path = os.path.join(
+                    self.user_score_packages_directory,
+                    directory_entry,
+                    )
+                init_path = os.path.join(path, '__init__.py')
+                if not os.path.exists(init_path):
+                    path = os.path.join(path, directory_entry)
+                    init_path = os.path.join(path, '__init__.py')
+                    if not os.path.exists(init_path):
+                        continue
+                result.append(path)
         return result
 
     def path_to_package(self, path):
