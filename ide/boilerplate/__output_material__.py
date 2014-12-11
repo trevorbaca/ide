@@ -1,22 +1,42 @@
 # -*- encoding: utf-8 -*-
+import os
+import sys
+import traceback
+from abjad import persist
 
 
 if __name__ == '__main__':
-    from abjad import persist
-    import definition
-    import os
     current_directory = os.path.dirname(os.path.abspath(__file__))
     output_py_path = os.path.join(
         current_directory,
         'output.py',
         )
     _, material_name = os.path.split(current_directory)
-    result = getattr(definition, material_name)
+
+    try:
+        import definition
+    except ImportError:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        result = getattr(definition, material_name)
+    except AttributeError:
+        sys.exit(1)
+
     try:
         output_material = result()
     except TypeError:
+        traceback.print_exc()
         output_material = result
-    persist(output_material).as_module(
-        output_py_path,
-        material_name,
-        )
+
+    try:
+        persist(output_material).as_module(
+            output_py_path,
+            material_name,
+            )
+    except:
+        traceback.print_exc()
+        sys.exit(1)
+
+    sys.exit(0)
