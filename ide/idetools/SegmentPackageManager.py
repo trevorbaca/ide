@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import collections
 import os
 import shutil
 from abjad.tools import systemtools
@@ -201,15 +200,15 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             '__illustrate_segment__.py',
             )
         candidate_ly_path = os.path.join(
-            self._path, 
+            self._path,
             'illustration.candidate.ly'
             )
         candidate_pdf_path = os.path.join(
-            self._path, 
+            self._path,
             'illustration.candidate.pdf'
             )
         temporary_files = (
-            illustrate_path, 
+            illustrate_path,
             candidate_ly_path,
             candidate_pdf_path,
             )
@@ -232,7 +231,11 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
             with self._io_manager._silent():
-                result = self._io_manager.interpret_file(illustrate_path)
+                # result = self._io_manager.interpret_file(illustrate_path)
+                result = self._io_manager.interpret_file(
+                    illustrate_path,
+                    strip=False,
+                    )
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
