@@ -341,3 +341,6 @@
 
 67. Make the following not raise a TypeError: 
     (da > RegistrationInventory > add > add > foo).
+
+68. Make the following not raise an AttributeError:
+    (g > B > di!@ io).
