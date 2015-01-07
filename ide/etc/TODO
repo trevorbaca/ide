@@ -344,3 +344,29 @@
 
 68. Make the following not raise an AttributeError:
     (g > B > di!@ io).
+
+69. Document important gotcha about music.ly files:
+        \context Score = "Score" {
+            \include "segment-a.ly"
+            \include "segment-b.ly"
+            \include "segment-c.ly"
+        }
+    This is fine. The gotcha lies in the structure of the segment files.
+    This does not work:
+        \score {
+            \context Score = "Score" <<
+                \new PianoStaff <<
+                    ...
+                >>
+            >>
+        }
+    But this does work:
+        \score {
+            \context Score = "Score" <<
+                \context PianoStaff = "Piano Staff" <<
+                    ...
+                >>
+            >>
+        }
+    Not sure how to best articulate the difference. But what matters is that
+    segment files must start any contexts with the LilyPond \new command.
