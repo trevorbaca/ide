@@ -111,7 +111,7 @@ class IOManager(IOManager):
         if isinstance(lines, str):
             lines = [lines]
         if capitalize:
-            lines = [stringtools.capitalize_start(_) for _ in lines ]
+            lines = [stringtools.capitalize_start(_) for _ in lines]
         if lines:
             self._session.transcript._append_entry(lines, is_menu=is_menu)
         for line in lines:
@@ -381,28 +381,31 @@ class IOManager(IOManager):
         self._session._pending_input = pending_input
         return input_
 
-    def _read_from_pipe(self, pipe):
+    def _read_from_pipe(self, pipe, strip=True):
         lines = []
         string = pipe.read()
         if sys.version_info[0] == 2:
             for line in string.splitlines():
                 line = str(line)
-                line = line.strip()
+                if strip:
+                    line = line.strip()
                 lines.append(line)
         else:
             for line in string.splitlines():
                 line = line.decode('utf-8')
-                line = line.strip()
+                if strip:
+                    line = line.strip()
                 lines.append(line)
         return '\n'.join(lines)
 
-    def _read_one_line_from_pipe(self, pipe):
+    def _read_one_line_from_pipe(self, pipe, strip=True):
         line = pipe.readline()
         if sys.version_info[0] == 2:
             line = str(line)
         else:
             line = line.decode('utf-8')
-        line = line.strip()
+        if strip:
+            line = line.strip()
         return line
 
     def _silent(self):
@@ -528,7 +531,7 @@ class IOManager(IOManager):
         result = tuple(result)
         return result
 
-    def interpret_file(self, path):
+    def interpret_file(self, path, strip=True):
         r'''Invokes Python or LilyPond on `path`.
 
         Displays any in-file messaging during interpretation.
@@ -558,8 +561,10 @@ class IOManager(IOManager):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 )
-        stdout_lines = self._read_from_pipe(process.stdout).splitlines()
-        stderr_lines = self._read_from_pipe(process.stderr).splitlines()
+        stdout_lines = self._read_from_pipe(
+            process.stdout, strip=strip).splitlines()
+        stderr_lines = self._read_from_pipe(
+            process.stderr, strip=strip).splitlines()
         self._display(stdout_lines, capitalize=False)
         self._display(stderr_lines, capitalize=False)
         message = 'interpreted {}.'.format(path)
