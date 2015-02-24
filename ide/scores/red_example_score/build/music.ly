@@ -8,8 +8,8 @@
 
 \score {
     {
-   \include "segment-01.ly"
-   \include "segment-02.ly"
-   \include "segment-03.ly"
+    \include "segment-01.ly"
+    \include "segment-02.ly"
+    \include "segment-03.ly"
     }
 }

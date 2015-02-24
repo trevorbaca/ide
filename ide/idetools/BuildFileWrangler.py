@@ -661,7 +661,8 @@ class BuildFileWrangler(FileWrangler):
             lines = []
             for lilypond_name in lilypond_names:
                 file_name = lilypond_name + '.ly'
-                line = r'   \include "{}"'
+                tab = 4 * ' '
+                line = tab + r'\include "{}"'
                 line = line.format(file_name)
                 lines.append(line)
             if lines:

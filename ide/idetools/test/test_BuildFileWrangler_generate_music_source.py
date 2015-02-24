@@ -9,7 +9,7 @@ def test_BuildFileWrangler_generate_music_source_01():
     r'''Works when music.ly source doesn't yet exist.
 
     (Can't use filecmp because music.ly file contains LilyPond version
-    directive, LilyPond language directive and file paths all dependent
+    directive, LilyPond language directive and file paths. All depend
     on user environment.)
     '''
 
@@ -53,3 +53,26 @@ def test_BuildFileWrangler_generate_music_source_02():
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents
+
+
+def test_BuildFileWrangler_generate_music_source_03():
+    r'''Include files are indentented exacty four spaces.
+    '''
+
+    music_path = os.path.join(
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'build',
+        'music.ly',
+        )
+
+    with systemtools.FilesystemState(keep=[music_path]):
+        input_ = 'red~example~score u mg y y q'
+        abjad_ide._run(input_=input_)
+
+    with open(music_path, 'r') as file_pointer:
+        file_lines = file_pointer.readlines()
+        file_contents = ''.join(file_lines)
+        tab = 4 * ' '
+        line = '\n' + tab + r'\include'
+        assert line in file_contents
