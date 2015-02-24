@@ -369,7 +369,7 @@
             >>
         }
     Not sure how to best articulate the difference. But what matters is that
-    segment files must start any contexts with the LilyPond \new command.
+    segment files must *NOT* start any contexts with the LilyPond \new command.
 
 70. Come up with a way to allow for a separate segment-stylesheet.ily that
     differs from the score stylesheet.ily.
