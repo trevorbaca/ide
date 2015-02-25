@@ -372,4 +372,5 @@
     segment files must start any contexts with the LilyPond \new command.
 
 70. Come up with a way to allow for a separate segment-stylesheet.ily that
-    differs from the score stylesheet.ily.
+    differs from the score stylesheet.ily. Allow for segment-stylesheet.ily
+    to set print-page-numbers = ##f.
