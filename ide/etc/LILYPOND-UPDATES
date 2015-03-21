@@ -81,7 +81,7 @@ The remaining three failed tests are marked with [N] above to indicate that
 they are new failures that result from running (red~example~score g ii*). These
 new failures must be remedied.
 
-Finally, not that the test ...
+Finally, note that the test ...
     test_SegmentPackageManager_illustrate_definition_py_02
 ... has magically stopped failing and does not appear in the output above.
 
