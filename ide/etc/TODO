@@ -375,5 +375,5 @@
     differs from the score stylesheet.ily. Allow for segment-stylesheet.ily
     to set print-page-numbers = ##f.
 
-71. Find out why strings with hyphens like 'Al-whatever' fail to work
-    to select a score in the main menu.
+71. Integrate new score package structrue in (new) command.
+    Integrate new score package structure everywhere in system.

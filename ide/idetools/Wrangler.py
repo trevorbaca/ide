@@ -10,13 +10,11 @@ from abjad.tools import developerscripttools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.AssetController import \
-    AssetController
+from ide.idetools.AssetController import AssetController
 
 
 class Wrangler(AssetController):
     r'''Wrangler.
-
     '''
 
     ### CLASS VARIABLES ###
