@@ -671,7 +671,7 @@ class AssetController(Controller):
             self._io_manager._display(strings, capitalize=False)
 
     def edit_metadata_py(self):
-        r'''Opens ``__metadata__.py``.
+        r'''Edits ``__metadata__.py``.
 
         Returns none.
         '''

@@ -315,20 +315,8 @@ class ScorePackageWrangler(PackageWrangler):
         with self._io_manager._silent():
             self.write_cache()
 
-#    def make_package(self):
-#        r'''Makes package.
-#
-#        Returns none.
-#        '''
-#        path = self._get_available_path()
-#        if self._session.is_backtracking or not path:
-#            return
-#        self._make_asset(path)
-#        with self._io_manager._silent():
-#            self.write_cache()
-
     def edit_cache(self):
-        r'''Opens cache.
+        r'''Edits cache.
 
         Returns none.
         '''

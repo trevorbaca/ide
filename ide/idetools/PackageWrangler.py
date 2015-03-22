@@ -146,14 +146,14 @@ class PackageWrangler(Wrangler):
         return messages, supplied_directories, supplied_files
 
     def edit_every_init_py(self):
-        r'''Opens ``__init__.py`` in every package.
+        r'''Edits ``__init__.py`` in every package.
 
         Returns none.
         '''
         self._open_in_every_package('__init__.py')
 
     def edit_every_metadata_py(self):
-        r'''Opens ``__metadata__.py`` in every package.
+        r'''Edits ``__metadata__.py`` in every package.
 
         Returns none.
         '''
@@ -242,7 +242,7 @@ class PackageWrangler(Wrangler):
         self._io_manager._display_not_yet_implemented()
 
     def write_every_metadata_py(self):
-        r'''Rewrites ``__metadata__.py`` in every package.
+        r'''Writes ``__metadata__.py`` in every package.
 
         Returns none.
         '''

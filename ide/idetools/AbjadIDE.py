@@ -259,7 +259,7 @@ class AbjadIDE(Wrangler):
     ### PUBLIC METHODS ###
 
     def edit_every_init_py(self):
-        r'''Opens every ``__init__.py``.
+        r'''Edits every ``__init__.py``.
 
         Returns none.
         '''

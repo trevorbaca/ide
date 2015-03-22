@@ -1042,7 +1042,7 @@ class Wrangler(AssetController):
             self._io_manager._display(message)
 
     def edit_views_py(self):
-        r'''Opens ``__views__.py``.
+        r'''Edits ``__views__.py``.
 
         Returns none.
         '''
@@ -1104,7 +1104,7 @@ class Wrangler(AssetController):
             manager.revert()
 
     def set_view(self):
-        r'''Applies view.
+        r'''Sets view.
 
         Writes view name to ``__metadata.py__``.
 
@@ -1146,7 +1146,7 @@ class Wrangler(AssetController):
             self._io_manager._display(messages, capitalize=False)
 
     def write_views_py(self):
-        r'''Rewrites ``__views__.py``.
+        r'''Writes ``__views__.py``.
 
         Returns none.
         '''

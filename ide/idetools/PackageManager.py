@@ -103,6 +103,12 @@ class PackageManager(AssetController):
         return os.path.join(self._path, '__init__.py')
 
     @property
+    def _initializer_file_lines(self):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        return lines
+
+    @property
     def _metadata_py_path(self):
         return os.path.join(self._path, '__metadata__.py')
 
@@ -1022,10 +1028,10 @@ class PackageManager(AssetController):
         tab = self._io_manager._tab
         messages = [tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(self._path)
-        found_problems = missing_directories or \
-            missing_files or \
-            unrecognized_directories or \
-            unrecognized_files
+        found_problems = (missing_directories or
+            missing_files or
+            unrecognized_directories or
+            unrecognized_files)
         count = len(names)
         wranglers = self._get_top_level_wranglers()
         if wranglers or not return_messages:
@@ -1100,8 +1106,7 @@ class PackageManager(AssetController):
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                lines = []
-                lines.append(self._configuration.unicode_directive)
+                lines = self._initializer_file_lines[:]
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
                 lines.append(self._configuration.unicode_directive)

@@ -59,6 +59,14 @@ class ScorePackageManager(PackageManager):
         return result
 
     @property
+    def _initializer_file_lines(self):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        lines.append('import makers')
+        lines.append('import materials')
+        return lines
+
+    @property
     def _setup_command_to_method(self):
         result = {
             'catalog number': self.edit_catalog_number,
