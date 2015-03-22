@@ -330,22 +330,16 @@
     The composer requests "traiettorie" but the build file wrangler finds
     "tack".
 
-65. Add ...
-        import makers
-        import materials
-    ... to score/__init__.py by default.
-    Right now the composer must add the two statements by hand.
-
-66. Make sure (k > ren) does not allow renaming to clobber an existing maker
+65. Make sure (k > ren) does not allow renaming to clobber an existing maker
     file.
 
-67. Make the following not raise a TypeError: 
+66. Make the following not raise a TypeError: 
     (da > RegistrationInventory > add > add > foo).
 
-68. Make the following not raise an AttributeError:
+67. Make the following not raise an AttributeError:
     (g > B > di!@ io).
 
-69. Document important gotcha about music.ly files:
+68. Document important gotcha about music.ly files:
         \context Score = "Score" {
             \include "segment-a.ly"
             \include "segment-b.ly"
@@ -371,9 +365,9 @@
     Not sure how to best articulate the difference. But what matters is that
     segment files must *NOT* start any contexts with the LilyPond \new command.
 
-70. Come up with a way to allow for a separate segment-stylesheet.ily that
+69. Come up with a way to allow for a separate segment-stylesheet.ily that
     differs from the score stylesheet.ily. Allow for segment-stylesheet.ily
     to set print-page-numbers = ##f.
 
-71. Integrate new score package structrue in (new) command.
+70. Integrate new score package structrue in (new) command.
     Integrate new score package structure everywhere in system.
