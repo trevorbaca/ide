@@ -374,3 +374,6 @@
 70. Come up with a way to allow for a separate segment-stylesheet.ily that
     differs from the score stylesheet.ily. Allow for segment-stylesheet.ily
     to set print-page-numbers = ##f.
+
+71. Find out why strings with hyphens like 'Al-whatever' fail to work
+    to select a score in the main menu.
