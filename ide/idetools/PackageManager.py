@@ -3,8 +3,7 @@ from __future__ import print_function
 import os
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.AssetController import \
-    AssetController
+from ide.idetools.AssetController import AssetController
 
 
 class PackageManager(AssetController):
@@ -101,12 +100,6 @@ class PackageManager(AssetController):
     @property
     def _init_py_file_path(self):
         return os.path.join(self._path, '__init__.py')
-
-    @property
-    def _initializer_file_lines(self):
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        return lines
 
     @property
     def _metadata_py_path(self):
@@ -290,6 +283,11 @@ class PackageManager(AssetController):
         stdout_lines = self._io_manager._read_from_pipe(process.stdout)
         stdout_lines = stdout_lines.splitlines()
         return stdout_lines
+
+    def _get_initializer_file_lines(self, missing_file):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        return lines
 
     def _get_last_version_number(self):
         versions_directory = self._versions_directory
@@ -939,6 +937,12 @@ class PackageManager(AssetController):
         supplied_directories, supplied_files = [], []
         unrecognized_directories, unrecognized_files = [], []
         names = self._list()
+        if 'materials' in names:
+            materials_initializer = os.path.join('materials', '__init__.py')
+            if materials_initializer in self._required_files:
+                path = os.path.join(self._path, materials_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
         for name in names:
             path = os.path.join(self._path, name)
             if os.path.isdir(path):
@@ -1106,7 +1110,7 @@ class PackageManager(AssetController):
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                lines = self._initializer_file_lines[:]
+                lines = self._get_initializer_file_lines(missing_file)
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
                 lines.append(self._configuration.unicode_directive)

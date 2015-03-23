@@ -36,6 +36,12 @@ class ScorePackageManager(PackageManager):
             'stylesheets',
             ])
         self._required_directories = tuple(required_directories)
+        required_files = list(self._required_files)
+        materials_init_py = os.path.join('materials', '__init__.py')
+        required_files.extend([
+            materials_init_py,
+            ])
+        self._required_files = tuple(required_files)
 
     ### PRIVATE PROPERTIES ###
 
@@ -57,14 +63,6 @@ class ScorePackageManager(PackageManager):
             'so': self.open_score_pdf,
             })
         return result
-
-    @property
-    def _initializer_file_lines(self):
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        lines.append('import makers')
-        lines.append('import materials')
-        return lines
 
     @property
     def _setup_command_to_method(self):
@@ -109,6 +107,22 @@ class ScorePackageManager(PackageManager):
             self._path,
             'distribution',
             )
+
+    def _get_initializer_file_lines(self, missing_file):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        if 'materials' in missing_file:
+            lines.append('from abjad.tools import systemtools')
+            lines.append('')
+            line = 'systemtools.ImportManager.import_structured_package('
+            lines.append(line)
+            lines.append('    __path__[0],')
+            lines.append('    globals(),')
+            lines.append('    )')
+        else:
+            lines.append('import makers')
+            lines.append('import materials')
+        return lines
 
     def _get_makers_directory(self):
         return os.path.join(
