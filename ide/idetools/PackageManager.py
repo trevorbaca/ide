@@ -937,6 +937,12 @@ class PackageManager(AssetController):
         supplied_directories, supplied_files = [], []
         unrecognized_directories, unrecognized_files = [], []
         names = self._list()
+        if 'makers' in names:
+            makers_initializer = os.path.join('makers', '__init__.py')
+            if makers_initializer in self._required_files:
+                path = os.path.join(self._path, makers_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
         if 'materials' in names:
             materials_initializer = os.path.join('materials', '__init__.py')
             if materials_initializer in self._required_files:

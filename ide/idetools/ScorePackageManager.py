@@ -37,8 +37,10 @@ class ScorePackageManager(PackageManager):
             ])
         self._required_directories = tuple(required_directories)
         required_files = list(self._required_files)
+        makers_init_py = os.path.join('makers', '__init__.py')
         materials_init_py = os.path.join('materials', '__init__.py')
         required_files.extend([
+            makers_init_py,
             materials_init_py,
             ])
         self._required_files = tuple(required_files)
@@ -111,7 +113,7 @@ class ScorePackageManager(PackageManager):
     def _get_initializer_file_lines(self, missing_file):
         lines = []
         lines.append(self._configuration.unicode_directive)
-        if 'materials' in missing_file:
+        if 'materials' in missing_file or 'makers' in missing_file:
             lines.append('from abjad.tools import systemtools')
             lines.append('')
             line = 'systemtools.ImportManager.import_structured_package('
