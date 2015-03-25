@@ -371,3 +371,6 @@
 
 70. Integrate new score package structrue in (new) command.
     Integrate new score package structure everywhere in system.
+
+71. Figure out why (gg cp 22 al-kitab) incorrectly thinks that the
+    target score is ins wasser instead of khamr.
