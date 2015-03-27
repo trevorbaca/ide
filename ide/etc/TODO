@@ -374,3 +374,5 @@
 
 71. Figure out why (gg cp 22 al-kitab) incorrectly thinks that the
     target score is ins wasser instead of khamr.
+
+72. Find out if there's a way to pipe the colored output from Git.
