@@ -6,6 +6,7 @@ from abjad import persist
 
 
 if __name__ == '__main__':
+
     try:
         from definition import segment_maker
     except ImportError:
@@ -13,7 +14,13 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        lilypond_file = segment_maker()
+        from __metadata__ import metadata
+    except ImportError:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        lilypond_file = segment_maker(metadata=metadata)
     except:
         traceback.print_exc()
         sys.exit(1)
