@@ -152,9 +152,9 @@ class SegmentPackageManager(ScoreInternalPackageManager):
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True
 
-    def _update_persistent_settings_between_segments(self):
+    def _update_sticky_settings_between_segments(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
-        wrangler._update_persistent_settings_between_segments()
+        wrangler._update_sticky_settings_between_segments()
 
     ### PUBLIC METHODS ###
 
@@ -194,7 +194,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
 
         Returns none.
         '''
-        self._update_persistent_settings_between_segments()
+        self._update_sticky_settings_between_segments()
         boilerplate_path = os.path.join(
             self._configuration.score_manager_directory,
             'boilerplate',

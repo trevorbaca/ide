@@ -594,7 +594,7 @@ class AssetController(Controller):
         command = command.format(remove_command, paths)
         self._io_manager.run_command(command)
 
-    def _write_metadata_py(self, metadata):
+    def _write_metadata_py(self, metadata, metadata_py_path=None):
         lines = []
         lines.append(self._configuration.unicode_directive)
         lines.append('import collections')
@@ -603,7 +603,8 @@ class AssetController(Controller):
         contents = '\n'.join(lines)
         metadata_lines = self._make_metadata_lines(metadata)
         contents = contents + '\n' + metadata_lines
-        with open(self._metadata_py_path, 'w') as file_pointer:
+        metadata_py_path = metadata_py_path or self._metadata_py_path
+        with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
 
     ### PUBLIC METHODS ###

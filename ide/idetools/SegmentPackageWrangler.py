@@ -117,7 +117,7 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True
 
-    def _update_persistent_settings_between_segments(self):
+    def _update_sticky_settings_between_segments(self):
         entries = self._make_asset_menu_entries()
         managers = self._list_visible_asset_managers()
         if not managers:
@@ -131,6 +131,7 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
             return
         next_bar_number = first_bar_number + measure_count
         for manager in managers[1:]:
+            first_bar_number = next_bar_number
             manager._add_metadatum(attribute_name, next_bar_number)
             measure_count = manager._get_metadatum('measure_count')
             if not measure_count:
