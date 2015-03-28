@@ -153,7 +153,8 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         self._session._is_navigating_to_segments = True
 
     def _update_persistent_settings_between_segments(self):
-        pass
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler._update_persistent_settings_between_segments()
 
     ### PUBLIC METHODS ###
 

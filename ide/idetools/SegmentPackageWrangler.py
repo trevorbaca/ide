@@ -53,6 +53,11 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
     def _enter_run(self):
         self._session._is_navigating_to_segments = False
 
+    def _get_first_segment_name(self):
+        managers = self._list_visible_asset_managers()
+        if managers:
+            return managers[0]._get_metadatum('name')
+
     def _handle_numeric_user_input(self, result):
         manager = self._initialize_manager(result)
         manager._run()
@@ -111,6 +116,26 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
 
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True
+
+    def _update_persistent_settings_between_segments(self):
+        entries = self._make_asset_menu_entries()
+        managers = self._list_visible_asset_managers()
+        if not managers:
+            return
+        manager = managers[0]
+        attribute_name = 'first_bar_number'
+        first_bar_number = manager._get_metadatum(attribute_name) or 1
+        manager._add_metadatum(attribute_name, first_bar_number)
+        measure_count = manager._get_metadatum('measure_count')
+        if not measure_count:
+            return
+        next_bar_number = first_bar_number + measure_count
+        for manager in managers[1:]:
+            manager._add_metadatum(attribute_name, next_bar_number)
+            measure_count = manager._get_metadatum('measure_count')
+            if not measure_count:
+                return
+            next_bar_number = first_bar_number + measure_count
 
     ### PUBLIC METHODS ###
 
