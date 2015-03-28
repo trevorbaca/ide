@@ -152,6 +152,9 @@ class SegmentPackageManager(ScoreInternalPackageManager):
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True
 
+    def _update_persistent_settings_between_segments(self):
+        pass
+
     ### PUBLIC METHODS ###
 
     def edit_definition_py(self):
@@ -190,6 +193,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
 
         Returns none.
         '''
+        self._update_persistent_settings_between_segments()
         boilerplate_path = os.path.join(
             self._configuration.score_manager_directory,
             'boilerplate',
@@ -231,7 +235,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
             with self._io_manager._silent():
-                # result = self._io_manager.interpret_file(illustrate_path)
                 result = self._io_manager.interpret_file(
                     illustrate_path,
                     strip=False,
