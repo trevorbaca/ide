@@ -125,16 +125,15 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
             segment_number = segment_index + 1
             manager._add_metadatum('segment_number', segment_number)
         manager = managers[0]
-        attribute_name = 'first_bar_number'
-        first_bar_number = manager._get_metadatum(attribute_name) or 1
-        manager._add_metadatum(attribute_name, first_bar_number)
+        first_bar_number = 1
+        manager._add_metadatum('first_bar_number', first_bar_number)
         measure_count = manager._get_metadatum('measure_count')
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
         for manager in managers[1:]:
             first_bar_number = next_bar_number
-            manager._add_metadatum(attribute_name, next_bar_number)
+            manager._add_metadatum('first_bar_number', next_bar_number)
             measure_count = manager._get_metadatum('measure_count')
             if not measure_count:
                 return
