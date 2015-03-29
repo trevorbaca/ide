@@ -117,11 +117,13 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True
 
-    def _update_sticky_settings_between_segments(self):
-        entries = self._make_asset_menu_entries()
+    def _update_order_dependent_segment_metadata(self):
         managers = self._list_visible_asset_managers()
         if not managers:
             return
+        for segment_index, manager in enumerate(managers):
+            segment_number = segment_index + 1
+            manager._add_metadatum('segment_number', segment_number)
         manager = managers[0]
         attribute_name = 'first_bar_number'
         first_bar_number = manager._get_metadatum(attribute_name) or 1
