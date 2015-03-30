@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-import collections
+from abjad.tools import datastructuretools
 
 
-metadata = collections.OrderedDict([
+metadata = datastructuretools.TypedOrderedDict([
     ('output_material_class_name', 'ReiteratedDynamicHandler'),
     ])

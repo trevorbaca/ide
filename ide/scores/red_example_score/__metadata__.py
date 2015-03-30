@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-import collections
+from abjad.tools import datastructuretools
 
 
-metadata = collections.OrderedDict([
+metadata = datastructuretools.TypedOrderedDict([
     ('catalog_number', '\\#165'),
     ('forces_tagline', 'for piano'),
     ('is_example', True),

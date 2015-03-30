@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-import collections
+from abjad.tools import datastructuretools
 
 
-metadata = collections.OrderedDict([
+metadata = datastructuretools.TypedOrderedDict([
     ('is_example', True),
     ('title', 'Blue Example Score'),
     ('year', 2013),

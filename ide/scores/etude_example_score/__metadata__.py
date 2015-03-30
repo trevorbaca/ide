@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-import collections
+from abjad.tools import datastructuretools
 
 
-metadata = collections.OrderedDict([
+metadata = datastructuretools.TypedOrderedDict([
     ('forces_tagline', 'for alto flute & guitar'),
     ('is_example', True),
     ('title', 'Étude Example Score'),
