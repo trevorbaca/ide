@@ -574,7 +574,6 @@ class AssetController(Controller):
     def _write_metadata_py(self, metadata, metadata_py_path=None):
         lines = []
         lines.append(self._configuration.unicode_directive)
-        lines.append('import collections')
         lines.append('from abjad import *')
         lines.append('')
         lines.append('')

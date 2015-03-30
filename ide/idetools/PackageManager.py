@@ -1120,7 +1120,6 @@ class PackageManager(AssetController):
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
                 lines.append(self._configuration.unicode_directive)
-                lines.append('import collections')
                 lines.append('from abjad import *')
                 lines.append('')
                 lines.append('')
