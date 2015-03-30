@@ -27,7 +27,8 @@ if __name__ == '__main__':
     try:
         output_material = result()
     except TypeError:
-        traceback.print_exc()
+        # ok to swallow this exception; doesn't indicate a problem
+        #traceback.print_exc()
         output_material = result
 
     try:
