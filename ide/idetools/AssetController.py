@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
-import collections
 import os
 import shutil
 from abjad.tools import datastructuretools

@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import collections
 import os
 import traceback
 from abjad.tools import systemtools

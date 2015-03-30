@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import collections
 import os
 from abjad.tools import datastructuretools
 from abjad.tools import documentationtools

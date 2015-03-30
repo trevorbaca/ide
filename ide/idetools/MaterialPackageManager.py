@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import collections
 import copy
 import os
 import shutil
@@ -670,38 +669,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         result = self._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
-#        lines = []
-#        lines.append(self._configuration.unicode_directive)
-#        pair = self._make_output_material_pair()
-#        if pair is None:
-#            return
-#        output_py_body_string = pair[0]
-#        output_material = pair[1]
-#        output_material_lines = [output_py_body_string]
-#        import_statements = [self._abjad_import_statement]
-#        statements_ = self._object_to_import_statements(output_material)
-#        for statement_ in statements_:
-#            if statement_ not in import_statements:
-#                import_statements.append(statement_)
-#        if any('handlertools' in _ for _ in output_material_lines):
-#            import_statements.append(self._handlertools_import_statement)
-#        if ' makers.' in output_material_lines[0]:
-#            module = output_material.__class__.__module__
-#            parts = module.split('.')
-#            index = parts.index('makers')
-#            storehouse = parts[index-1]
-#            line = output_material_lines[0]
-#            unqualified = ' makers.'
-#            qualified = ' {}.makers.'.format(storehouse)
-#            line = line.replace(unqualified, qualified)
-#            output_material_lines[0] = line
-#        lines.extend(import_statements)
-#        lines.append('')
-#        lines.append('')
-#        lines.extend(output_material_lines)
-#        contents = '\n'.join(lines)
         clear = not os.path.isfile(self._output_py_path)
-#        self._io_manager.write(self._output_py_path, contents)
         boilerplate_path = os.path.join(
             self._configuration.score_manager_directory,
             'boilerplate',

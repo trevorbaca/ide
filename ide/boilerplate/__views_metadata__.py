@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-import collections
 
 
 metadata = datastructuretools.TypedOrderedDict([
