@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import collections
 import os
+from abjad.tools import datastructuretools
 from abjad.tools import systemtools
 from ide.idetools.ScoreInternalPackageWrangler import \
     ScoreInternalPackageWrangler
@@ -83,7 +84,7 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
             )
 
     def _make_asset(self, path, metadata=None):
-        metadata = collections.OrderedDict(metadata or {})
+        metadata = datastructuretools.TypedOrderedDict(metadata or {})
         assert not os.path.exists(path)
         os.mkdir(path)
         manager = self._manager_class(
@@ -121,9 +122,11 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
         managers = self._list_visible_asset_managers()
         if not managers:
             return
+        # update segment numbers
         for segment_index, manager in enumerate(managers):
             segment_number = segment_index + 1
             manager._add_metadatum('segment_number', segment_number)
+        # update first bar numbers and measure counts
         manager = managers[0]
         first_bar_number = 1
         manager._add_metadatum('first_bar_number', first_bar_number)

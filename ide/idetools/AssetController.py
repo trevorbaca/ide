@@ -3,6 +3,7 @@ from __future__ import print_function
 import collections
 import os
 import shutil
+from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
@@ -182,13 +183,13 @@ class AssetController(Controller):
                 message = 'can not interpret metadata py: {!r}.'
                 message = message.format(self)
                 self._io_manager._display(message)
-        metadata = metadata or collections.OrderedDict()
+        metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
     def _get_score_metadata(self):
         score_path = self._configuration._path_to_score_path(self._path)
         if score_path is None:
-            return collections.OrderedDict()
+            return datastructuretools.TypedOrderedDict()
         score_package_manager = self._io_manager._make_package_manager(
             path=score_path)
         return score_package_manager._get_metadata()
@@ -362,30 +363,6 @@ class AssetController(Controller):
         self._make_go_menu_section(menu)
         self._make_system_menu_section(menu)
         return menu
-
-    @staticmethod
-    def _make_metadata_lines(metadata):
-        if metadata:
-            lines = []
-            for key, value in sorted(metadata.items()):
-                key = repr(key)
-                if hasattr(value, '_get_multiline_repr'):
-                    repr_lines = \
-                        value._get_multiline_repr(include_tools_package=True)
-                    value = '\n    '.join(repr_lines)
-                    lines.append('({}, {})'.format(key, value))
-                else:
-                    if hasattr(value, '_storage_format_specification'):
-                        string = format(value)
-                    else:
-                        string = repr(value)
-                    lines.append('({}, {})'.format(key, string))
-            lines = ',\n    '.join(lines)
-            result = 'metadata = collections.OrderedDict([\n    {},\n    ])'
-            result = result.format(lines)
-        else:
-            result = 'metadata = collections.OrderedDict([])'
-        return result
 
     def _make_metadata_menu_section(self, menu):
         commands = []
@@ -598,10 +575,16 @@ class AssetController(Controller):
         lines = []
         lines.append(self._configuration.unicode_directive)
         lines.append('import collections')
+        lines.append('from abjad import *')
         lines.append('')
         lines.append('')
         contents = '\n'.join(lines)
-        metadata_lines = self._make_metadata_lines(metadata)
+        metadata = datastructuretools.TypedOrderedDict(metadata)
+        items = list(metadata.items())
+        items.sort()
+        metadata = datastructuretools.TypedOrderedDict(items)
+        metadata_lines = format(metadata, 'storage')
+        metadata_lines = 'metadata = {}'.format(metadata_lines)
         contents = contents + '\n' + metadata_lines
         metadata_py_path = metadata_py_path or self._metadata_py_path
         with open(metadata_py_path, 'w') as file_pointer:
