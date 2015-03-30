@@ -364,30 +364,6 @@ class AssetController(Controller):
         self._make_system_menu_section(menu)
         return menu
 
-#    @staticmethod
-#    def _make_metadata_lines(metadata):
-#        if metadata:
-#            lines = []
-#            for key, value in sorted(metadata.items()):
-#                key = repr(key)
-#                if hasattr(value, '_get_multiline_repr'):
-#                    repr_lines = \
-#                        value._get_multiline_repr(include_tools_package=True)
-#                    value = '\n    '.join(repr_lines)
-#                    lines.append('({}, {})'.format(key, value))
-#                else:
-#                    if hasattr(value, '_storage_format_specification'):
-#                        string = format(value)
-#                    else:
-#                        string = repr(value)
-#                    lines.append('({}, {})'.format(key, string))
-#            lines = ',\n    '.join(lines)
-#            result = 'metadata = collections.OrderedDict([\n    {},\n    ])'
-#            result = result.format(lines)
-#        else:
-#            result = 'metadata = collections.OrderedDict([])'
-#        return result
-
     def _make_metadata_menu_section(self, menu):
         commands = []
         commands.append(('__metadata__.py - edit', 'mde'))
@@ -604,6 +580,9 @@ class AssetController(Controller):
         lines.append('')
         contents = '\n'.join(lines)
         metadata = datastructuretools.TypedOrderedDict(metadata)
+        items = list(metadata.items())
+        items.sort()
+        metadata = datastructuretools.TypedOrderedDict(items)
         metadata_lines = format(metadata, 'storage')
         metadata_lines = 'metadata = {}'.format(metadata_lines)
         contents = contents + '\n' + metadata_lines
