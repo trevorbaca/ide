@@ -1,8 +1,9 @@
 # -*- encoding: utf-8 -*-
+from abjad import *
 import collections
 
 
-metadata = collections.OrderedDict([
+metadata = datastructuretools.TypedOrderedDict([
     ('AbjadIDE_view_name', None),
     ('BuildFileWrangler_view_name', None),
     ('DistributionFileWrangler_view_name', None),

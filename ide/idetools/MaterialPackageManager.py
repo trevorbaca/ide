@@ -3,6 +3,7 @@ import collections
 import copy
 import os
 import shutil
+from abjad.tools import datastructuretools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.idetools.ScoreInternalPackageManager import \
@@ -313,7 +314,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
                 )
 
     def _make_package(self):
-        metadata = collections.OrderedDict()
+        metadata = datastructuretools.TypedOrderedDict()
         assert not os.path.exists(self._path)
         os.mkdir(self._path)
         with self._io_manager._silent():

@@ -1,4 +1,3 @@
-import collections
 from abjad import *
 
 
@@ -9,7 +8,8 @@ class RedExampleScoreTemplate(abctools.AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self):
-        self.context_name_abbreviations = collections.OrderedDict()
+        dictionary = datastructuretools.TypedOrderedDict()
+        self.context_name_abbreviations = dictionary
 
     ### SPECIAL METHODS ###
 
