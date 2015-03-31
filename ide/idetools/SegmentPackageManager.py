@@ -96,6 +96,22 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             target = result[0]
             return target
 
+    def _get_previous_segment_manager(self):
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        managers = wrangler._list_visible_asset_managers()
+        for i, manager in enumerate(managers):
+            if manager._path == self._path:
+                break
+        else:
+            message = 'can not find segment package manager.'
+            raise Exception(message)
+        current_manager_index = i
+        if current_manager_index == 0:
+            return
+        previous_manager_index = current_manager_index - 1
+        previous_manager = managers[previous_manager_index]
+        return previous_manager
+
     def _make_definition_py_menu_section(self, menu):
         if not os.path.isfile(self._definition_py_path):
             message = 'No definition.py found;'
@@ -235,6 +251,22 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
+            previous_segment_manager = self._get_previous_segment_manager()
+            if previous_segment_manager is None:
+                statement = 'previous_segment_metadata = None'
+            else:
+                score_name = self._session.current_score_directory
+                score_name = os.path.basename(score_name)
+                previous_segment_name = previous_segment_manager._path
+                previous_segment_name = os.path.basename(previous_segment_name)
+                statement = 'from {}.segments.{}.__metadata__'
+                statement += ' import metadata as previous_segment_metadata'
+                statement = statement.format(score_name, previous_segment_name)
+            self._replace_in_file(
+                illustrate_path,
+                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
+                statement,
+                )
             with self._io_manager._silent():
                 result = self._io_manager.interpret_file(
                     illustrate_path,

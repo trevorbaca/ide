@@ -21,7 +21,16 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        result = segment_maker(segment_metadata=segment_metadata)
+        PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT
+    except ImportError:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        result = segment_maker(
+            segment_metadata=segment_metadata,
+            previous_segment_metadata=previous_segment_metadata,
+            )
         lilypond_file, segment_metadata = result
     except:
         traceback.print_exc()
