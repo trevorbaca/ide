@@ -949,6 +949,12 @@ class PackageManager(AssetController):
                 path = os.path.join(self._path, materials_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
+        if 'segments' in names:
+            segments_initializer = os.path.join('segments', '__init__.py')
+            if segments_initializer in self._required_files:
+                path = os.path.join(self._path, segments_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
         for name in names:
             path = os.path.join(self._path, name)
             if os.path.isdir(path):

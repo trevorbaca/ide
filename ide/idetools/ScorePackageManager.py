@@ -39,9 +39,11 @@ class ScorePackageManager(PackageManager):
         required_files = list(self._required_files)
         makers_init_py = os.path.join('makers', '__init__.py')
         materials_init_py = os.path.join('materials', '__init__.py')
+        segments_init_py = os.path.join('segments', '__init__.py')
         required_files.extend([
             makers_init_py,
             materials_init_py,
+            segments_init_py,
             ])
         self._required_files = tuple(required_files)
 
@@ -121,9 +123,12 @@ class ScorePackageManager(PackageManager):
             lines.append('    __path__[0],')
             lines.append('    globals(),')
             lines.append('    )')
+        elif 'segments' in missing_file:
+            pass
         else:
             lines.append('import makers')
             lines.append('import materials')
+            lines.append('import segments')
         return lines
 
     def _get_makers_directory(self):
