@@ -4,6 +4,5 @@ from ide import idetools
 
 
 view_inventory=idetools.ViewInventory(
-    [
-        ]
+    []
     )
