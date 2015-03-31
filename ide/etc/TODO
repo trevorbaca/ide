@@ -376,3 +376,9 @@
     target score is ins wasser instead of khamr.
 
 72. Find out if there's a way to pipe the colored output from Git.
+
+73. Add Controller._get_segment_metadata_dictionaries() static method.
+    The method will take a segment package name. The method will return
+    the metadata dictionary for that segment. The method will also return
+    the metadata dictionary for the previous segment. This will make
+    parameterized segment tests able to test metadata dictionary retrieval.
