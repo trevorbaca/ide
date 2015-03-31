@@ -15,13 +15,14 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        from __metadata__ import metadata
+        from __metadata__ import metadata as segment_metadata
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
 
     try:
-        lilypond_file, metadata = segment_maker(metadata=metadata)
+        result = segment_maker(segment_metadata=segment_metadata)
+        lilypond_file, segment_metadata = result
     except:
         traceback.print_exc()
         sys.exit(1)
@@ -34,7 +35,7 @@ if __name__ == '__main__':
             )
         controller = idetools.AssetController()
         controller._write_metadata_py(
-            metadata, 
+            segment_metadata, 
             metadata_py_path=metadata_py_path,
             )
     except:
