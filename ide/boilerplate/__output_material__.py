@@ -3,6 +3,8 @@ import os
 import sys
 import traceback
 from abjad import persist
+from experimental.tools import makertools
+from abjad.tools import rhythmmakertools
 
 
 if __name__ == '__main__':
@@ -29,6 +31,13 @@ if __name__ == '__main__':
     except TypeError:
         # ok to swallow this exception; doesn't indicate a problem
         #traceback.print_exc()
+        output_material = result
+
+    prototype = (
+        rhythmmakertools.RhythmMaker,
+        makertools.DivisionMaker,
+        )
+    if isinstance(result, prototype):
         output_material = result
 
     try:
