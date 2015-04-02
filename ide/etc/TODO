@@ -382,3 +382,6 @@
     the metadata dictionary for that segment. The method will also return
     the metadata dictionary for the previous segment. This will make
     parameterized segment tests able to test metadata dictionary retrieval.
+
+74. Make repository commands (especially (rst - repository status)) 
+    available everywhere. Remove Subversion support first.
