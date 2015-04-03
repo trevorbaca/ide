@@ -26,14 +26,9 @@ if __name__ == '__main__':
     except AttributeError:
         sys.exit(1)
 
-    try:
+    if getattr(result, '_call_before_persisting_to_disk', False):
         output_material = result()
-    except TypeError:
-        # ok to swallow this exception; doesn't indicate a problem
-        #traceback.print_exc()
-        output_material = result
-
-    if 'Maker' in result.__class__.__name__:
+    else:
         output_material = result
 
     try:
