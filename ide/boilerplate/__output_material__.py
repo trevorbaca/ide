@@ -33,11 +33,7 @@ if __name__ == '__main__':
         #traceback.print_exc()
         output_material = result
 
-    prototype = (
-        rhythmmakertools.RhythmMaker,
-        makertools.DivisionMaker,
-        )
-    if isinstance(result, prototype):
+    if 'Maker' in result.__class__.__name__:
         output_material = result
 
     try:
