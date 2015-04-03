@@ -121,10 +121,12 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
         managers = self._list_visible_asset_managers()
         if not managers:
             return
-        # update segment numbers
+        segment_count = len(managers)
+        # update segment numbers and segment count
         for segment_index, manager in enumerate(managers):
             segment_number = segment_index + 1
             manager._add_metadatum('segment_number', segment_number)
+            manager._add_metadatum('segment_count', segment_count)
         # update first bar numbers and measure counts
         manager = managers[0]
         first_bar_number = 1
