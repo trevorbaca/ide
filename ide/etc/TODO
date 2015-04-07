@@ -385,3 +385,42 @@
 
 74. Make repository commands (especially (rst - repository status)) 
     available everywhere. Remove Subversion support first.
+    
+75. Fix (k > rm) in Git score packages:
+    > rm
+    Enter makers(s) to remove]> musichan
+    Will remove /Users/trevorbaca/Documents/scores/krummzeit/krummzeit/makers/MusicHandler.py
+    Type 'remove' to proceed]> remove
+
+    Traceback (most recent call last):
+    File "/Users/trevorbaca/Documents/ide/ide/scr/start-abjad-ide", line 4, in <module>
+        ide.idetools.start_abjad_ide()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/start_abjad_ide.py", line 13, in start_abjad_ide
+        abjad_ide._run(input_=input_)
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/AbjadIDE.py", line 218, in _run
+        self._score_package_wrangler._run()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/Wrangler.py", line 812, in _run
+        self._handle_input(result)
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/AssetController.py", line 244, in _handle_input
+        self._handle_numeric_user_input(result)
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/ScorePackageWrangler.py", line 192, in _handle_numeric_user_input
+        manager._run()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/PackageManager.py", line 774, in _run
+        self._handle_input(result)
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/AssetController.py", line 237, in _handle_input
+        self._command_to_method[result]()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/AssetController.py", line 759, in go_to_score_maker_files
+        self._session._abjad_ide._maker_file_wrangler._run()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/Wrangler.py", line 812, in _run
+        self._handle_input(result)
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/AssetController.py", line 237, in _handle_input
+        self._command_to_method[result]()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/FileWrangler.py", line 147, in remove_files
+        self._remove_assets()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/Wrangler.py", line 764, in _remove_assets
+        manager._remove()
+    File "/Users/trevorbaca/Documents/ide/ide/idetools/PackageManager.py", line 661, in _remove
+        with systemtools.TemporaryDirectoryChange(directory=self._path):
+    File "/Users/trevorbaca/Documents/abjad/abjad/tools/systemtools/TemporaryDirectoryChange.py", line 29, in __enter__
+        os.chdir(self.directory)
+    OSError: [Errno 2] No such file or directory: '/Users/trevorbaca/Documents/scores/krummzeit/krummzeit/makers/MusicHandler.py'
