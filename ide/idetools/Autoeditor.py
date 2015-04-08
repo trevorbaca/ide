@@ -33,7 +33,12 @@ class Autoeditor(Controller):
         Controller.__init__(self, session=session)
         self._attributes_in_memory = {}
         self._breadcrumb = breadcrumb
-        self._original_target = copy.deepcopy(target)
+        try:
+            self._original_target = copy.deepcopy(target)
+        # classes with generators do not like deepcopy; 
+        # use copy instead:
+        except TypeError:
+            self._original_target = copy.copy(target)
         self._target = target
 
     ### SPECIAL METHODS ###
