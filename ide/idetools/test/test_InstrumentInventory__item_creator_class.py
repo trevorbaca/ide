@@ -23,7 +23,7 @@ def test_InstrumentInventory__item_creator_class_02():
     input_ = 'Untuned vibraslap'
     item_creator._session._pending_input = input_
     item_creator._run()
-    vibraslap = instrumenttools.UntunedPercussion(
+    vibraslap = instrumenttools.Percussion(
         instrument_name='vibraslap',
         short_instrument_name='vibraslap',
         )
@@ -49,7 +49,7 @@ def test_InstrumentInventory__item_creator_class_04():
     instruments = [
         instrumenttools.Violin(),
         instrumenttools.Viola(),
-        instrumenttools.UntunedPercussion(
+        instrumenttools.Percussion(
             instrument_name='vibraslap',
             short_instrument_name='vibraslap',
             ),

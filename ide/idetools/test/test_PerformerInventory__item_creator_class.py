@@ -102,7 +102,7 @@ def test_PerformerInventory__item_creator_class_06():
         is_ranged=True,
         session=session,
         )
-    caxixi = instrumenttools.UntunedPercussion(
+    caxixi = instrumenttools.Percussion(
         instrument_name='caxixi',
         short_instrument_name='caxixi',
         )
