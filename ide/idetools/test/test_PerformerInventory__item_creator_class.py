@@ -106,7 +106,7 @@ def test_PerformerInventory__item_creator_class_06():
         instrument_name='caxixi',
         short_instrument_name='caxixi',
         )
-    input_ = 'vn more untuned cax'
+    input_ = 'vn more percussion cax'
     item_creator._session._pending_input = input_
     item_creator._run()
     assert item_creator.target == [

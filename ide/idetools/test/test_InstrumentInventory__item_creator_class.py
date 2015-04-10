@@ -20,7 +20,7 @@ def test_InstrumentInventory__item_creator_class_01():
 def test_InstrumentInventory__item_creator_class_02():
 
     item_creator = item_creator_class(session=session)
-    input_ = 'Untuned vibraslap'
+    input_ = 'percussion vibraslap'
     item_creator._session._pending_input = input_
     item_creator._run()
     vibraslap = instrumenttools.Percussion(
@@ -43,7 +43,7 @@ def test_InstrumentInventory__item_creator_class_03():
 def test_InstrumentInventory__item_creator_class_04():
 
     item_creator = item_creator_class(is_ranged=True, session=session)
-    input_ = 'violin, viola, untuned vibraslap'
+    input_ = 'violin, viola, percussion vibraslap'
     item_creator._session._pending_input = input_
     item_creator._run()
     instruments = [
@@ -75,11 +75,11 @@ def test_InstrumentInventory__item_creator_class_05():
 
 
 def test_InstrumentInventory__item_creator_class_06():
-    r'''Back doesn't cause anything to blow up in untuned percussion getter.
+    r'''Back doesn't cause anything to blow up in percussion getter.
     '''
 
     input_ = 'red~example~score m performer~inventory da'
-    input_ += ' hornist i add untuned~percussion b q'
+    input_ += ' hornist i add percussion b q'
 
     material_package = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
