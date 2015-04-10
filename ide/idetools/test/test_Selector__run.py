@@ -25,7 +25,7 @@ def test_Selector__run_01():
 
 def test_Selector__run_02():
 
-    items = instrumenttools.Percussion.known_untuned_percussion[:]
+    items = instrumenttools.Percussion.known_percussion[:]
     selector = ide.idetools.Selector(
         items=items,
         session=session,
