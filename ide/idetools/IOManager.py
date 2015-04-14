@@ -651,7 +651,7 @@ class IOManager(IOManager):
                 stderr_messages = stderr_messages.splitlines()
             self._display(stderr_messages)
             return stderr_messages, []
-        base_candidate_path = base + '.candiate'
+        base_candidate_path = base + '.candidate'
         candidate_path = base_candidate_path + '.pdf'
         with systemtools.FilesystemState(remove=[candidate_path]):
             command = '{} -dno-point-and-click --output={} {}'
