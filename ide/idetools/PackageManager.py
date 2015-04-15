@@ -640,13 +640,11 @@ class PackageManager(AssetController):
                 return
             if not result == 'remove':
                 return
-        cleanup_command = None
         if self._is_in_git_repository():
             if self._is_git_unknown():
                 command = 'rm -rf {}'
             else:
                 command = 'git rm --force -r {}'
-                cleanup_command = 'rm -rf {}'
         elif self._is_svn_versioned():
             command = 'svn --force rm {}'
         else:
@@ -656,11 +654,6 @@ class PackageManager(AssetController):
         with systemtools.TemporaryDirectoryChange(directory=self._path):
             process = self._io_manager.make_subprocess(command)
         self._io_manager._read_one_line_from_pipe(process.stdout)
-        if cleanup_command:
-            cleanup_command = cleanup_command.format(path)
-            with systemtools.TemporaryDirectoryChange(directory=self._path):
-                process = self._io_manager.make_subprocess(cleanup_command)
-            self._io_manager._read_one_line_from_pipe(process.stdout)
         return True
 
     def _remove_metadatum(self, metadatum_name):
