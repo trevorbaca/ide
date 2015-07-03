@@ -5,7 +5,7 @@ import ide
 pytest.skip('fails when run after __doc__ test file.')
 
 
-def test_ide___import___01():
+def test_abjadide___import___01():
     r'''Do not import materials because any in-progress code that raises
     exceptions will prevent the entire system from starting.
     '''

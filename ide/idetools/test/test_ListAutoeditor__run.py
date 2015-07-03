@@ -22,96 +22,6 @@ def test_ListAutoeditor__run_01():
 
 
 def test_ListAutoeditor__run_02():
-    r'''Edits empty clef inventory.
-    '''
-
-    session = ide.idetools.Session(is_test=True)
-    target = indicatortools.ClefInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
-        session=session,
-        target=target,
-        )
-    input_ = 'add nm treble done add nm bass done done'
-    autoeditor._session._pending_input = input_
-    autoeditor._run()
-
-    inventory = indicatortools.ClefInventory(['treble', 'bass'])
-    assert autoeditor.target == inventory
-
-
-def test_ListAutoeditor__run_03():
-    r'''Edits nonempty clef inventory.
-    '''
-
-    session = ide.idetools.Session(is_test=True)
-    target = indicatortools.ClefInventory(['treble', 'bass'])
-    autoeditor = ide.idetools.ListAutoeditor(
-        session=session,
-        target=target,
-        )
-    input_ = '2 nm alto done done'
-    autoeditor._session._pending_input = input_
-    autoeditor._run()
-
-    new_inventory = indicatortools.ClefInventory(['treble', 'alto'])
-    assert autoeditor.target == new_inventory
-
-
-def test_ListAutoeditor__run_04():
-    r'''Edits empty markup inventory.
-    '''
-
-    session = ide.idetools.Session(is_test=True)
-    target = markuptools.MarkupInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
-        session=session,
-        target=target,
-        )
-    input_ = r'add arg \italic~{~serenamente~possibile~} done done'
-    autoeditor._session._pending_input = input_
-    autoeditor._run()
-
-    inventory = markuptools.MarkupInventory([
-        markuptools.Markup(
-            '\\italic { serenamente possibile }',
-            )
-        ])
-
-    assert autoeditor.target == inventory
-
-
-def test_ListAutoeditor__run_05():
-    r'''Edits nonempty markup inventory.
-    '''
-
-    session = ide.idetools.Session(is_test=True)
-    target = markuptools.MarkupInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
-        session=session,
-        target=target,
-        )
-    input_ = 'add'
-    input_ += r' arg \italic~{~serenamente~possibile~}'
-    input_ += ' direction up done'
-    input_ += r' add arg \italic~{~presto~} done done'
-    autoeditor._session._pending_input = input_
-    autoeditor._run()
-
-    inventory = markuptools.MarkupInventory([
-        markuptools.Markup(
-            '\\italic { serenamente possibile }',
-            direction='^',
-            ),
-        markuptools.Markup(
-            '\\italic { presto }',
-            )
-        ],
-        )
-
-    assert autoeditor.target == inventory
-
-
-def test_ListAutoeditor__run_06():
     r'''Edits empty tempo inventory.
 
     Works with pairs.
@@ -136,33 +46,7 @@ def test_ListAutoeditor__run_06():
     assert autoeditor.target == inventory
 
 
-def test_ListAutoeditor__run_07():
-    r'''Edits empty tempo inventory.
-
-    Works with durations.
-    '''
-    pytest.skip('make me work again.')
-
-    session = ide.idetools.Session(is_test=True)
-    target = indicatortools.TempoInventory()
-    autoeditor = ide.idetools.ListAutoeditor(
-        session=session,
-        target=target,
-        )
-    input_ = 'add (Duration(1, 4), 60)'
-    input_ += ' add (Duration(1, 4), 72)'
-    input_ += ' add (Duration(1, 4), 84) done'
-    autoeditor._session._pending_input = input_
-    autoeditor._run()
-    inventory = indicatortools.TempoInventory([
-        Tempo(Duration(1, 4), 60),
-        Tempo(Duration(1, 4), 72),
-        Tempo(Duration(1, 4), 84),
-        ])
-    assert autoeditor.target == inventory
-
-
-def test_ListAutoeditor__run_08():
+def test_ListAutoeditor__run_03():
     r'''Edits empty pitch range inventory.
     '''
 
@@ -184,7 +68,7 @@ def test_ListAutoeditor__run_08():
         ])
 
 
-def test_ListAutoeditor__run_09():
+def test_ListAutoeditor__run_04():
     r'''Edits empty octave transposition mapping.
     '''
 
@@ -206,7 +90,7 @@ def test_ListAutoeditor__run_09():
     assert autoeditor.target == mapping
 
 
-def test_ListAutoeditor__run_10():
+def test_ListAutoeditor__run_05():
     r'''Edits empty octave transposition mapping.
     '''
 
@@ -228,7 +112,7 @@ def test_ListAutoeditor__run_10():
     assert autoeditor.target == mapping
 
 
-def test_ListAutoeditor__run_11():
+def test_ListAutoeditor__run_06():
     r'''Edits instrument inventory.
     '''
 
@@ -250,7 +134,7 @@ def test_ListAutoeditor__run_11():
     assert autoeditor.target == inventory
 
 
-def test_ListAutoeditor__run_12():
+def test_ListAutoeditor__run_07():
     r'''Edits view.
     '''
 
@@ -272,7 +156,7 @@ def test_ListAutoeditor__run_12():
     assert autoeditor.target == view
 
 
-def test_ListAutoeditor__run_13():
+def test_ListAutoeditor__run_08():
 
     input_ = 'red~example~score m performer~inventory da q'
     abjad_ide._run(input_=input_)
