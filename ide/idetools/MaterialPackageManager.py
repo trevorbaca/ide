@@ -71,7 +71,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'da': self.autoedit_definition_py,
             'dp': self.output_definition_py,
             #
             'le': self.edit_illustrate_py,
@@ -192,7 +191,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         commands = []
         if os.path.isfile(self._definition_py_path):
             is_hidden = False
-            commands.append(('definition.py - autoedit', 'da'))
             commands.append(('definition.py - check', 'dc'))
             commands.append(('definition.py - edit', 'de'))
             commands.append(('definition.py - output', 'dp'))
@@ -406,76 +404,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         self._session._is_navigating_to_materials = True
 
     ### PUBLIC METHODS ###
-
-    def autoedit_definition_py(self):
-        r'''Autoedits ``definition.py``.
-
-        Returns none.
-        '''
-        target = self._execute_definition_py()
-        if target is None:
-            message = 'no autoedit target found;'
-            message += ' would you like to create one?'
-            result = self._io_manager._confirm(message=message)
-            if self._session.is_backtracking or not result:
-                return
-            selector = self._io_manager.selector
-            selector = selector.make_autoeditable_class_selector()
-            class_ = selector._run()
-            if self._session.is_backtracking or not class_:
-                return
-            target = class_()
-            old_target = None
-        else:
-            old_target = copy.deepcopy(target)
-        autoeditor = self._io_manager._make_autoeditor(
-            breadcrumb='',
-            target=target,
-            )
-        autoeditor._run()
-        if self._session.is_backtracking:
-            return
-        if autoeditor.target == old_target:
-            self._session._pending_redraw = True
-            return
-        target = autoeditor.target
-        import_statements = []
-        import_statements.append(self._abjad_import_statement)
-        import_statements.extend(self._object_to_import_statements(target))
-        target_lines = self._make_definition_target_lines(target)
-        self.write_definition_py(
-            import_statements=import_statements,
-            target=target,
-            target_lines=target_lines,
-            )
-        self._session._pending_redraw = True
-
-    def autoedit_output_py(self):
-        r'''Autoedits ``output.py``.
-
-        Returns none.
-        '''
-        output_material = self._execute_output_py()
-        if output_material is None:
-            return
-        autoeditor = self._io_manager._make_autoeditor(
-            breadcrumb='',
-            target=output_material,
-            )
-        autoeditor._run()
-        if self._session.is_backtracking:
-            return
-        output_material = autoeditor.target
-        import_statements = [self._abjad_import_directive]
-        import_statements.extend(
-            self._object_to_import_statements(output_material))
-        output_material_lines = self._make_output_material_lines(
-            output_material)
-        self.output_definition_py(
-            import_statements=import_statements,
-            output_material_lines=output_material_lines,
-            output_material=output_material,
-            )
 
     def check_output_py(self, dry_run=False):
         r'''Checks ``output.py``.

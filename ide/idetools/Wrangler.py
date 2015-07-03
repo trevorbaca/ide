@@ -83,10 +83,8 @@ class Wrangler(AssetController):
             'rrv*': self.revert_every_asset,
             'rup*': self.update_every_asset,
             #
-            'wa': self.autoedit_views,
-            'ws': self.set_view,
-            #
             'we': self.edit_views_py,
+            'ws': self.set_view,
             'ww': self.write_views_py,
             })
         return result
@@ -638,7 +636,6 @@ class Wrangler(AssetController):
         commands = []
         commands.append(('__views.py__ - edit', 'we'))
         commands.append(('__views.py__ - write', 'ww'))
-        commands.append(('views - autoedit', 'wa'))
         commands.append(('views - set', 'ws'))
         menu.make_command_section(
             is_hidden=True,
@@ -979,26 +976,6 @@ class Wrangler(AssetController):
         message = message.format(count, identifier)
         self._io_manager._display(message)
         
-    def autoedit_views(self):
-        r'''Autoedits views.
-
-        Returns none.
-        '''
-        from ide import idetools
-        inventory = self._read_view_inventory()
-        if inventory is None:
-            inventory = idetools.ViewInventory()
-        old_inventory = inventory.copy()
-        autoeditor = self._io_manager._make_autoeditor(
-            breadcrumb='views',
-            target=inventory,
-            )
-        autoeditor._run()
-        inventory = autoeditor.target
-        if old_inventory != inventory:
-            self._write_view_inventory(inventory)
-        self._session._pending_redraw = True
-
     def commit_every_asset(self):
         r'''Commits every asset to repository.
 

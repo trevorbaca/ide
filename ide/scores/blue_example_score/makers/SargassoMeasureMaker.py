@@ -237,53 +237,6 @@ class SargassoMeasureMaker(AbjadObject):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _attribute_manifest(self):
-        from abjad.tools import systemtools
-        from ide import idetools
-        return systemtools.AttributeManifest(
-            systemtools.AttributeDetail(
-                name='measure_denominator',
-                command='md',
-                editor=idetools.getters.get_positive_integer_power_of_two,
-                ),
-            systemtools.AttributeDetail(
-                name='measure_numerator_talea',
-                command='mnt',
-                editor=idetools.getters.get_positive_integers,
-                ),
-            systemtools.AttributeDetail(
-                name='measure_division_denominator',
-                command='mdd',
-                editor=idetools.getters.get_nonnegative_integer,
-                ),
-             systemtools.AttributeDetail(
-                name='measure_division_talea',
-                command='mdt',
-                editor=idetools.getters.get_nonnegative_integers,
-                ),
-             systemtools.AttributeDetail(
-                name='total_duration',
-                command='td',
-                editor=idetools.getters.get_duration,
-                ),
-             systemtools.AttributeDetail(
-                name='measures_are_scaled',
-                command='sc',
-                editor=idetools.getters.get_boolean,
-                ),
-             systemtools.AttributeDetail(
-                name='measures_are_split',
-                command='sp',
-                editor=idetools.getters.get_boolean,
-                ),
-             systemtools.AttributeDetail(
-                name='measures_are_shuffled',
-                command='sh',
-                editor=idetools.getters.get_boolean,
-                ),
-            )
-
-    @property
     def _input_demo_values(self):
         return [
             ('measure_denominator', 4),

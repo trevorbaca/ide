@@ -38,44 +38,6 @@ def test_ScorePackageWrangler_make_package_01():
 
 
 def test_ScorePackageWrangler_make_package_02():
-    r'''Makes score package. Clears view after package is made.
-    Must set is_test=False to work with views.
-    '''
-
-    abjad_ide = ide.idetools.AbjadIDE(is_test=False)
-    score_package = os.path.join(
-        abjad_ide._configuration.user_score_packages_directory,
-        'example_score',
-        )
-    cache = abjad_ide._configuration.cache_file_path
-    views_file = os.path.join(
-        abjad_ide._configuration.wrangler_views_directory,
-        '__ScorePackageWrangler_views__.py',
-        )
-    titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - scores - views (EDIT)',
-        'Abjad IDE - scores - views - _test_view (EDIT)',
-        'Abjad IDE - scores - views (EDIT+)',
-        'Abjad IDE - scores',
-        'Abjad IDE - scores',
-        'Abjad IDE - scores [_test_view]',
-        '(untitled score)',
-        ]
-    
-    with systemtools.FilesystemState(
-        keep=[cache, views_file], remove=[score_package]
-        ):
-        input_ = 'wa add _test_view done done'
-        input_ += ' ws _test_view new example~score y q'
-        abjad_ide._run(input_=input_)
-        contents = abjad_ide._transcript.contents
-        assert os.path.exists(score_package)
-
-    assert abjad_ide._transcript.titles == titles
-
-
-def test_ScorePackageWrangler_make_package_03():
     r'''Accepts flexible package name input.
     '''
 
