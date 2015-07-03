@@ -29,7 +29,7 @@ def test_Tempo_autoedit_02():
         session=session,
         target=Tempo(),
         )
-    input_ = 'Duration (1, 8) units 98 done'
+    input_ = 'reference~duration (1, 8) units 98 done'
     autoeditor._session._pending_input = input_
     autoeditor._run()
 
@@ -45,9 +45,8 @@ def test_Tempo_autoedit_03():
         session=session,
         target=Tempo(),
         )
-    input_ = 'Duration Duration(1, 8) units 98 done'
+    input_ = 'reference~duration Duration(1, 8) units 98 done'
     autoeditor._session._pending_input = input_
     autoeditor._run()
 
     assert autoeditor.target == Tempo(Duration(1, 8), 98)
-
