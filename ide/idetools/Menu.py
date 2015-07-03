@@ -338,7 +338,7 @@ class Menu(Controller):
             )
         user_entered_lone_return = input_ == ''
         directive = None
-        parts = shlex.split(input_)
+        parts = shlex.split(input_, posix=False)
         length = len(parts)
         for i in range(len(parts)):
             count = length - i
