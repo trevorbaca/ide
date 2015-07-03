@@ -261,31 +261,6 @@ class IOManager(IOManager):
                         result.append(directory_entry)
         return result
 
-    def _make_autoeditor(
-        self,
-        allow_item_edit=True,
-        breadcrumb=None,
-        target=None,
-        ):
-        from ide import idetools
-        kwargs = {
-            'allow_item_edit': allow_item_edit,
-            'breadcrumb': breadcrumb,
-            'session': self._session,
-            'target': target,
-            }
-        if isinstance(target, (dict, datastructuretools.TypedOrderedDict)):
-            class_ = idetools.DictionaryAutoeditor
-        elif isinstance(target, (tuple, datastructuretools.TypedTuple)):
-            class_ = idetools.TupleAutoeditor
-        elif isinstance(target, (list, datastructuretools.TypedCollection)):
-            class_ = idetools.ListAutoeditor
-        else:
-            class_ = idetools.Autoeditor
-            kwargs.pop('allow_item_edit')
-        autoeditor = class_(**kwargs)
-        return autoeditor
-
     def _make_getter(
         self,
         allow_none=False,

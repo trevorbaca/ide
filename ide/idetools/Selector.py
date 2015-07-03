@@ -162,36 +162,6 @@ class Selector(Controller):
             )
         return selector
 
-    def make_autoeditable_class_selector(self):
-        r'''Makes autoeditable class selector.
-
-        Returns selector.
-        '''
-        from abjad.tools import handlertools
-        classes = set()
-        for class_ in documentationtools.list_all_abjad_classes():
-            if hasattr(class_, '_attribute_manifest'):
-                classes.add(class_)
-        modules = (handlertools,)
-        for class_ in documentationtools.list_all_experimental_classes(
-            modules=modules):
-            if hasattr(class_, '_attribute_manifest'):
-                classes.add(class_)
-        if self._session._abjad_ide is not None:
-            wrangler = self._session._abjad_ide._maker_file_wrangler
-            maker_classes = wrangler._list_maker_classes()
-            for class_ in maker_classes:
-                if hasattr(class_, '_attribute_manifest'):
-                    classes.add(class_)
-        classes.add(list)
-        classes = sorted(classes, key=lambda x: x.__name__)
-        selector = type(self)(
-            session=self._session,
-            items=classes,
-            breadcrumb='autoeditable class',
-            )
-        return selector
-
     def make_clef_name_selector(self):
         r'''Makes clef name selector.
 

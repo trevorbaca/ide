@@ -177,15 +177,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
             return True
         return False
 
-    def _make_autoeditor_summary_menu_section(self, menu):
-        output_material = self._execute_output_py()
-        if output_material is None:
-            return
-        autoeditor = self._io_manager._make_autoeditor(target=output_material)
-        lines = autoeditor._get_target_summary_lines()
-        lines = lines or ['(empty)']
-        return menu.make_material_summary_section(lines=lines)
-
     def _make_definition_py_menu_section(self, menu):
         name = 'definition.py'
         commands = []
@@ -257,7 +248,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
     def _make_main_menu(self):
         superclass = super(MaterialPackageManager, self)
         menu = superclass._make_main_menu()
-        self._make_autoeditor_summary_menu_section(menu)
         self._make_illustrate_py_menu_section(menu)
         self._make_illustration_pdf_menu_section(menu)
         self._make_init_py_menu_section(menu)

@@ -397,15 +397,7 @@ class Menu(Controller):
 
     @staticmethod
     def _is_autoeditor_with_attributes_menu_section(controller):
-        from ide import idetools
-        if not isinstance(controller, idetools.Autoeditor):
-            return False
-        menu = controller._make_main_menu()
-        try:
-            section = menu['attributes']
-        except KeyError:
-            return False
-        return True
+        return False
 
     def _is_in_open_environment(self):
         if self._session.is_in_confirmation_environment:
