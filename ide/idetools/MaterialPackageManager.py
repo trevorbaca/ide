@@ -83,11 +83,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
             'oc': self.check_output_py,
             'oi': self.illustrate_output_py,
             'oe': self.edit_output_py,
-            #
-            'vde': self.edit_versioned_definition_py,
-            'vie': self.edit_versioned_illustration_ly,
-            'vio': self.open_versioned_illustration_pdf,
-            'voe': self.edit_versioned_output_py,
             })
         return result
 
@@ -256,7 +251,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         self._make_output_py_menu_section(menu)
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
-        self._make_versions_directory_menu_section(menu)
         return menu
 
     def _make_output_material_lines(self, output_material):
@@ -311,20 +305,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
                 )
             self._write_metadata_py(metadata)
             self.write_stub_definition_py()
-
-    def _make_versions_directory_menu_section(self, menu):
-        superclass = super(MaterialPackageManager, self)
-        commands = superclass._make_versions_directory_menu_section(
-            menu,
-            commands_only=True,
-            )
-        commands.append(('versions - output.py - edit', 'voe'))
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='versions directory',
-                )
 
     def _object_to_import_statements(self, object_):
         import_statements = []
@@ -441,27 +421,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         '''
         self._io_manager.open_file(self._output_py_path)
 
-    def edit_versioned_definition_py(self):
-        r'''Opens versioned ``definition.py``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('definition.py')
-
-    def edit_versioned_illustration_ly(self):
-        r'''Opens versioned ``illustration.ly``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('illustration.ly')
-
-    def edit_versioned_output_py(self):
-        r'''Opens versioned ``output.py``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('output.py')
-
     # TODO: refactor with SegmentPackageManager.illustrate_definition_py()
     def illustrate_output_py(self):
         r'''Illustrates ``output.py``.
@@ -563,13 +522,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         Returns none.
         '''
         self._io_manager.open_file(self._illustration_pdf_path)
-
-    def open_versioned_illustration_pdf(self):
-        r'''Opens versioned ``illustration.pdf``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('illustration.pdf')
 
     def output_definition_py(self, dry_run=False):
         r'''Outputs ``definition.py`` to ``output.py``.

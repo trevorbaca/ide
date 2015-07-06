@@ -58,10 +58,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             'ii': self.interpret_illustration_ly,
             'ie': self.edit_illustration_ly,
             'io': self.open_illustration_pdf,
-            #
-            'vde': self.edit_versioned_definition_py,
-            'vie': self.edit_versioned_illustration_ly,
-            'vio': self.open_versioned_illustration_pdf,
             })
         return result
 
@@ -153,7 +149,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         self._make_illustration_ly_menu_section(menu)
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
-        self._make_versions_directory_menu_section(menu)
         return menu
 
     def _make_package(self):
@@ -187,20 +182,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         Returns none.
         '''
         self._open_file(self._illustration_ly_path)
-
-    def edit_versioned_definition_py(self):
-        r'''Opens versioned ``definition py``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('definition.py')
-
-    def edit_versioned_illustration_ly(self):
-        r'''Opens versioned ``illustration.ly``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('illustration.ly')
 
     # TODO: refactor with MaterialPackageManager.illustrate_output_py()
     def illustrate_definition_py(self, dry_run=False):
@@ -319,13 +300,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         Returns none.
         '''
         self._open_file(self._illustration_pdf_path)
-
-    def open_versioned_illustration_pdf(self):
-        r'''Opens versioned ``illustration.pdf``.
-
-        Returns none.
-        '''
-        self._open_versioned_file('illustration.pdf')
 
     def write_stub_definition_py(self):
         r'''Writes stub ``definition.py``.

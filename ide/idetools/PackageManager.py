@@ -260,14 +260,14 @@ class PackageManager(AssetController):
     def _get_current_directory(self):
         return self._path
 
-    def _get_existing_version_numbers(self, file_name_prototype):
-        root, extension = os.path.splitext(file_name_prototype)
-        version_numbers = []
-        for entry in sorted(os.listdir(self._versions_directory)):
-            if entry.startswith(root) and entry.endswith(extension):
-                version_number = self._file_name_to_version_number(entry)
-                version_numbers.append(version_number)
-        return version_numbers
+#    def _get_existing_version_numbers(self, file_name_prototype):
+#        root, extension = os.path.splitext(file_name_prototype)
+#        version_numbers = []
+#        for entry in sorted(os.listdir(self._versions_directory)):
+#            if entry.startswith(root) and entry.endswith(extension):
+#                version_number = self._file_name_to_version_number(entry)
+#                version_numbers.append(version_number)
+#        return version_numbers
 
     def _get_file_path_ending_with(self, string):
         for file_name in self._list():
@@ -289,14 +289,14 @@ class PackageManager(AssetController):
         lines.append(self._configuration.unicode_directive)
         return lines
 
-    def _get_last_version_number(self):
-        versions_directory = self._versions_directory
-        if not os.path.exists(versions_directory):
-            return
-        file_names = sorted(os.listdir(versions_directory))
-        if not file_names:
-            return
-        return max(self._file_name_to_version_number(_) for _ in file_names)
+#    def _get_last_version_number(self):
+#        versions_directory = self._versions_directory
+#        if not os.path.exists(versions_directory):
+#            return
+#        file_names = sorted(os.listdir(versions_directory))
+#        if not file_names:
+#            return
+#        return max(self._file_name_to_version_number(_) for _ in file_names)
 
     def _get_metadatum(self, metadatum_name, include_score=False):
         metadata = self._get_metadata()
@@ -593,40 +593,40 @@ class PackageManager(AssetController):
             raise ValueError(self)
         return command
 
-    def _open_versioned_file(self, file_name_prototype):
-        getter = self._io_manager._make_getter()
-        version_numbers = self._get_existing_version_numbers(
-            file_name_prototype)
-        if not version_numbers:
-            message = 'no {} files in versions directory.'
-            message = message.format(file_name_prototype)
-            self._io_manager._display(message)
-            return
-        prompt = 'version number ({})'
-        prompt = prompt.format(version_numbers)
-        getter.append_integer(prompt)
-        version_number = getter._run()
-        if self._session.is_backtracking or version_number is None:
-            return
-        if version_number < 0:
-            version_number = version_numbers[version_number]
-        version_string = str(version_number).zfill(4)
-        root, extension = os.path.splitext(file_name_prototype)
-        file_name = '{}_{}{}'.format(
-            root,
-            version_string,
-            extension,
-            )
-        file_path = os.path.join(
-            self._path,
-            'versions',
-            file_name,
-            )
-        if os.path.isfile(file_path):
-            self._io_manager.open_file(file_path)
-        else:
-            message = 'file not found: {}'.format(file_path)
-            self._io_manager._display(message)
+#    def _open_versioned_file(self, file_name_prototype):
+#        getter = self._io_manager._make_getter()
+#        version_numbers = self._get_existing_version_numbers(
+#            file_name_prototype)
+#        if not version_numbers:
+#            message = 'no {} files in versions directory.'
+#            message = message.format(file_name_prototype)
+#            self._io_manager._display(message)
+#            return
+#        prompt = 'version number ({})'
+#        prompt = prompt.format(version_numbers)
+#        getter.append_integer(prompt)
+#        version_number = getter._run()
+#        if self._session.is_backtracking or version_number is None:
+#            return
+#        if version_number < 0:
+#            version_number = version_numbers[version_number]
+#        version_string = str(version_number).zfill(4)
+#        root, extension = os.path.splitext(file_name_prototype)
+#        file_name = '{}_{}{}'.format(
+#            root,
+#            version_string,
+#            extension,
+#            )
+#        file_path = os.path.join(
+#            self._path,
+#            'versions',
+#            file_name,
+#            )
+#        if os.path.isfile(file_path):
+#            self._io_manager.open_file(file_path)
+#        else:
+#            message = 'file not found: {}'.format(file_path)
+#            self._io_manager._display(message)
 
     def _remove(self):
         message = '{} will be removed.'

@@ -19,7 +19,6 @@ def test_SegmentPackageWrangler_make_package_01():
         '__init__.py',
         '__metadata__.py',
         'definition.py',
-        'versions',
         ]
 
     with systemtools.FilesystemState(remove=[path]):

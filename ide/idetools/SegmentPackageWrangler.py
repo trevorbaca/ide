@@ -92,8 +92,6 @@ class SegmentPackageWrangler(ScoreInternalPackageWrangler):
             )
         manager.write_init_py()
         manager.write_definition_py()
-        if not os.path.exists(manager._versions_directory):
-            os.mkdir(manager._versions_directory)
 
     def _make_main_menu(self):
         superclass = super(SegmentPackageWrangler, self)
