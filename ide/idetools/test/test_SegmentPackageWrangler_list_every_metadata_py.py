@@ -17,6 +17,7 @@ def test_SegmentPackageWrangler_list_every_metadata_py_01():
         path = os.path.join(
             abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
+            'red_example_score',
             'segments',
             package_name,
             '__metadata__.py',
@@ -40,7 +41,11 @@ def test_SegmentPackageWrangler_list_every_metadata_py_02():
 
     path = abjad_ide._configuration.example_score_packages_directory
     paths = [
-        os.path.join(path, 'red_example_score'),
+        os.path.join(
+            path,
+            'red_example_score',
+            'red_example_score',
+            ),
         ]
     for path in paths:
         assert path in contents

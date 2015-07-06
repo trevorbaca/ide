@@ -40,11 +40,13 @@ def test_StylesheetWrangler_rename_file_02():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'stylesheets',
         'stylesheet.ily',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'stylesheets',
         'foo-stylesheet.ily',

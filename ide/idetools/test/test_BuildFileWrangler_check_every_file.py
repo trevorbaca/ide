@@ -34,6 +34,7 @@ def test_BuildFileWrangler_check_every_file_03():
     false_file = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'false_file.txt',
         )

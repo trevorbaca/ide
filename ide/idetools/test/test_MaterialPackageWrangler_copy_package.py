@@ -35,11 +35,13 @@ def test_MaterialPackageWrangler_copy_package_02():
     source_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'performer_inventory',
         )
     target_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'materials',
         'copied_performer_inventory',

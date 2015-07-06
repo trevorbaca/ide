@@ -10,6 +10,7 @@ def test_SegmentPackageManager_remove_unadded_assets_01():
     foo_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         'test_foo.txt',

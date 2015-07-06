@@ -49,6 +49,7 @@ def test_ScorePackageWrangler_check_every_package_02():
     score_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         )
     build_directory = os.path.join(score_directory, 'build')
     initializer = os.path.join(score_directory, '__init__.py')
@@ -68,6 +69,7 @@ def test_ScorePackageWrangler_check_every_package_03():
 
     segment_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'segments',
         'segment_02',

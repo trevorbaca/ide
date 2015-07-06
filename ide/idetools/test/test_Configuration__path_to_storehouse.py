@@ -43,6 +43,7 @@ def test_Configuration__path_to_storehouse_03():
     storehouse = os.path.join(
         configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'stylesheets',
         )
 

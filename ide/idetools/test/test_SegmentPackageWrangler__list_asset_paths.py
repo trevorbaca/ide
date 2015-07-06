@@ -29,6 +29,7 @@ def test_SegmentPackageWrangler__list_asset_paths_01():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             'blue_example_score',
+            'blue_example_score',
             'segments',
             segment_name,
             )
@@ -37,6 +38,7 @@ def test_SegmentPackageWrangler__list_asset_paths_01():
     for segment_name in red_segment_names:
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
+            'red_example_score',
             'red_example_score',
             'segments',
             segment_name,

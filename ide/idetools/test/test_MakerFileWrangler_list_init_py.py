@@ -10,6 +10,7 @@ def test_MakerFileWrangler_list_init_py_01():
     init_py_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'makers',
         '__init__.py',
         )

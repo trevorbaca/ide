@@ -10,6 +10,7 @@ def test_PackageManager__get_repository_root_directory_01():
     score_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         )
     manager = ide.idetools.PackageManager(
         path=score_path,

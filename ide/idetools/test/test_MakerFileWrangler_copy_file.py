@@ -10,6 +10,7 @@ def test_MakerFileWrangler_copy_file_01():
     source_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )

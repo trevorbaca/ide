@@ -12,6 +12,7 @@ def test_SegmentPackageManager_write_stub_init_py_01():
     initializer = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         '__init__.py',

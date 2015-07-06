@@ -43,6 +43,7 @@ def test_MaterialPackageManager_check_package_03():
     material_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'tempo_inventory',
         )

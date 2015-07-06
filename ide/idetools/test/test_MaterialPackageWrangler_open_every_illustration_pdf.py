@@ -13,6 +13,7 @@ def test_MaterialPackageWrangler_open_every_illustration_pdf_01():
         path = os.path.join(
             abjad_ide._configuration.example_score_packages_directory,
             'red_example_score',
+            'red_example_score',
             'materials',
             name,
             'illustration.pdf',

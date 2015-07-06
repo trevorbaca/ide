@@ -14,11 +14,13 @@ def test_MakerFileWrangler_rename_file_01():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'makers',
         'FooRedExampleScoreTemplate.py',
@@ -47,11 +49,13 @@ def test_MakerFileWrangler_rename_file_02():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'makers',
         'RedExampleScoreTemplate.py',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'makers',
         'FooRedExampleScoreTemplate.py',

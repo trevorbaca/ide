@@ -10,6 +10,7 @@ def test_ScorePackageManager_edit_year_01():
     metadata_file = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         '__metadata__.py',
         )
         

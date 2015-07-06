@@ -16,6 +16,7 @@ def test_BuildFileWrangler_generate_music_source_01():
     music_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'music.ly',
         )
@@ -41,6 +42,7 @@ def test_BuildFileWrangler_generate_music_source_02():
     music_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'music.ly',
         )
@@ -61,6 +63,7 @@ def test_BuildFileWrangler_generate_music_source_03():
 
     music_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'music.ly',

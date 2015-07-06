@@ -12,6 +12,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
     build_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         )
     source_pdfs = []
@@ -19,6 +20,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
         directory_name = 'segment_{}'.format(number)
         path = os.path.join(
             abjad_ide._configuration.example_score_packages_directory,
+            'red_example_score',
             'red_example_score',
             'segments',
             directory_name,
@@ -31,6 +33,7 @@ def test_BuildFileWrangler_collect_segment_pdfs_01():
         file_name = file_name.format(number)
         path = os.path.join(
             abjad_ide._configuration.example_score_packages_directory,
+            'red_example_score',
             'red_example_score',
             'build',
             file_name,

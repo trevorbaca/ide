@@ -13,6 +13,7 @@ def test_SegmentPackageManager_illustrate_definition_py_01():
     segment_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         )
@@ -46,6 +47,7 @@ def test_SegmentPackageManager_illustrate_definition_py_02():
     segment_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         )
@@ -75,6 +77,7 @@ def test_SegmentPackageManager_illustrate_definition_py_03():
 
     segment_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'segments',
         'segment_01',

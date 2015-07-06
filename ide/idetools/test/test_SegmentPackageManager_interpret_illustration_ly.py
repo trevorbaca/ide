@@ -12,12 +12,14 @@ def test_SegmentPackageManager_interpret_illustration_ly_01():
     ly_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         'illustration.ly',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'segments',
         'segment_01',

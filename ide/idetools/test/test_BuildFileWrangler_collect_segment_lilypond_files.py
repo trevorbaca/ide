@@ -13,6 +13,7 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_01():
     build_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         )
 
@@ -45,6 +46,7 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_02():
 
     build_directory = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         )

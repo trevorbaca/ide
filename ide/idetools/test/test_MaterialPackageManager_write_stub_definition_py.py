@@ -10,6 +10,7 @@ def test_MaterialPackageManager_write_stub_definition_py_01():
     package = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'test_package',
         )

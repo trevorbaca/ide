@@ -10,6 +10,7 @@ def test_StylesheetWrangler_list_metadata_py_01():
     metadata_py_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'stylesheets',
         '__metadata__.py',
         )

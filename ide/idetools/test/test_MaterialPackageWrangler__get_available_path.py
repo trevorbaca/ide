@@ -16,6 +16,7 @@ def test_MaterialPackageWrangler__get_available_path_01():
     path = os.path.join(
         configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'foo',
         )

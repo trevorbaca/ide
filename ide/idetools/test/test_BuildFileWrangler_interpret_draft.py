@@ -13,11 +13,13 @@ def test_BuildFileWrangler_interpret_draft_01():
     tex_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'draft.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'draft.pdf',
@@ -44,11 +46,13 @@ def test_BuildFileWrangler_interpret_draft_02():
     tex_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'draft.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'draft.pdf',

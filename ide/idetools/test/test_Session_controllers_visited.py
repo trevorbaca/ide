@@ -8,6 +8,7 @@ configuration = ide.idetools.Configuration()
 score_path = os.path.join(
     configuration.example_score_packages_directory,
     'red_example_score',
+    'red_example_score',
     )
 tempo_inventory_path = os.path.join(
     score_path,

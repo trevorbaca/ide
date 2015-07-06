@@ -10,6 +10,7 @@ def test_MakerFileWrangler_make_py_01():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'makers',
         'FooMaker.py',
         )

@@ -13,6 +13,7 @@ def test_SegmentPackageManager_invoke_shell_01():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'segments',
         'segment_01',
         )

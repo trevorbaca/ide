@@ -14,11 +14,13 @@ def test_DistributionFileWrangler_rename_file_01():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'distribution',
         'red-example-score.pdf',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'distribution',
         'foo-score.pdf',
@@ -47,11 +49,13 @@ def test_DistributionFileWrangler_rename_file_02():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'distribution',
         'red-example-score.pdf',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'distribution',
         'foo-score.pdf',

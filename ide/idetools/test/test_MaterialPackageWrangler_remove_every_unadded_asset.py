@@ -7,6 +7,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 foo_path = os.path.join(
     abjad_ide._configuration.example_score_packages_directory,
     'red_example_score',
+    'red_example_score',
     'materials',
     'test_foo.txt',
     )

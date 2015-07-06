@@ -13,9 +13,9 @@ def test_ScorePackageWrangler_list_every_metadata_py_01():
 
     path = abjad_ide._configuration.example_score_packages_directory
     paths = [
-        os.path.join(path, 'blue_example_score'),
-        os.path.join(path, 'etude_example_score'),
-        os.path.join(path, 'red_example_score'),
+        os.path.join(path, 'blue_example_score', 'blue_example_score'),
+        os.path.join(path, 'etude_example_score', 'etude_example_score'),
+        os.path.join(path, 'red_example_score', 'red_example_score'),
         ]
     for path in paths:
         assert path in contents

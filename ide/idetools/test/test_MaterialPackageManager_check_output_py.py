@@ -11,6 +11,7 @@ def test_MaterialPackageManager_check_output_py_01():
     output_py_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'magic_numbers',
         'output.py',

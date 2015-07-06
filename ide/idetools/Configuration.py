@@ -146,14 +146,13 @@ class Configuration(AbjadConfiguration):
         path_suffix = path[prefix + 1:]
         score_name = path_suffix.split(os.path.sep)[0]
         score_path = os.path.join(path_prefix, score_name)
-        # Test for installable Python package structure
-        if is_user_score:
-            outer_init_path = os.path.join(score_path, '__init__.py')
-            inner_init_path = os.path.join(
-                score_path, score_name, '__init__.py')
-            if not os.path.exists(outer_init_path) and \
-                os.path.exists(inner_init_path):
-                score_path = os.path.join(score_path, score_name)
+        # test for installable Python package structure
+        outer_init_path = os.path.join(score_path, '__init__.py')
+        inner_init_path = os.path.join(
+            score_path, score_name, '__init__.py')
+        if (not os.path.exists(outer_init_path) and
+            os.path.exists(inner_init_path)):
+            score_path = os.path.join(score_path, score_name)
         return score_path
 
     def _path_to_storehouse(self, path):

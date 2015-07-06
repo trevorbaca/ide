@@ -29,6 +29,7 @@ def test_MaterialPackageWrangler_invoke_shell_02():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         )
     string = '\n{}\n'.format(path)

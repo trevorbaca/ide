@@ -224,7 +224,7 @@ class ScorePackageWrangler(PackageWrangler):
                     if not self._is_valid_directory_entry(directory_entry):
                         continue
                 path = os.path.join(directory, directory_entry)
-                # Test for installable Python package structure
+                # test for installable Python package structure
                 outer_init_path = os.path.join(path, '__init__.py')
                 inner_directory = os.path.join(path, directory_entry)
                 inner_init_path = os.path.join(inner_directory, '__init__.py')

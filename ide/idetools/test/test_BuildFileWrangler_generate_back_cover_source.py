@@ -19,6 +19,7 @@ def test_BuildFileWrangler_generate_back_cover_source_01():
     destination_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'blue_example_score',
+        'blue_example_score',
         'build',
         'back-cover.tex',
         )
@@ -53,6 +54,7 @@ def test_BuildFileWrangler_generate_back_cover_source_02():
         )
     destination_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'back-cover.tex',

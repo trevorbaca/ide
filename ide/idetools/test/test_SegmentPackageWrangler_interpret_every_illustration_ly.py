@@ -10,20 +10,6 @@ def test_SegmentPackageWrangler_interpret_every_illustration_ly_01():
     r'''Does not display candidate messages.
     '''
 
-    path = abjad_ide._configuration.example_score_packages_directory
-    path = os.path.join(path, 'red_example_score', 'segments')
-    package_names = (
-        'segment_01',
-        'segment_02',
-        'segment_03',
-        )
-    ly_paths = [
-        os.path.join(path, _, 'illustration.ly') 
-        for _ in package_names
-        ]
-    pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
-    paths = ly_paths + pdf_paths
-
     with systemtools.FilesystemState(keep=paths):
         for path in pdf_paths:
             os.remove(path)
@@ -52,18 +38,6 @@ def test_SegmentPackageWrangler_interpret_every_illustration_ly_01():
 def test_SegmentPackageWrangler_interpret_every_illustration_ly_02():
     r'''Does display candidate messages.
     '''
-
-    path = abjad_ide._configuration.example_score_packages_directory
-    path = os.path.join(path, 'red_example_score', 'segments')
-    package_names = (
-        'segment_01',
-        'segment_02',
-        'segment_03',
-        )
-    ly_paths = [
-        os.path.join(path, _, 'illustration.ly') for _ in package_names]
-    pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
-    paths = ly_paths + pdf_paths
 
     with systemtools.FilesystemState(keep=paths):
         input_ = 'red~example~score g ii* y q'

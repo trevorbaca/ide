@@ -12,12 +12,14 @@ def test_MaterialPackageManager_illustrate_output_py_01():
     illustration_ly = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'tempo_inventory',
         'illustration.ly',
         )
     illustration_pdf = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'materials',
         'tempo_inventory',
@@ -44,12 +46,14 @@ def test_MaterialPackageManager_illustrate_output_py_02():
     illustration_ly = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'blue_example_score',
+        'blue_example_score',
         'materials',
         'sargasso_measures',
         'illustration.ly',
         )
     illustration_pdf = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'blue_example_score',
         'blue_example_score',
         'materials',
         'sargasso_measures',
@@ -76,12 +80,14 @@ def test_MaterialPackageManager_illustrate_output_py_03():
     illustration_ly = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'blue_example_score',
+        'blue_example_score',
         'materials',
         'talea_rhythm_maker',
         'illustration.ly',
         )
     illustration_pdf = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'blue_example_score',
         'blue_example_score',
         'materials',
         'talea_rhythm_maker',

@@ -10,6 +10,7 @@ def test_MaterialPackageManager_remove_unadded_assets_01():
     foo_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'magic_numbers',
         'test_foo.txt',

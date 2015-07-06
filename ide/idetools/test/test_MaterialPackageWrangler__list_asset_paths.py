@@ -23,6 +23,7 @@ def test_MaterialPackageWrangler__list_asset_paths_01():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             'red_example_score',
+            'red_example_score',
             'materials',
             package_name,
             )
@@ -37,6 +38,7 @@ def test_MaterialPackageWrangler__list_asset_paths_01():
     for package_name in package_names:
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
+            'blue_example_score',
             'blue_example_score',
             'materials',
             package_name,

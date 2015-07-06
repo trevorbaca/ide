@@ -13,11 +13,13 @@ def test_BuildFileWrangler_interpret_back_cover_01():
     tex_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'back-cover.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'back-cover.pdf',
@@ -44,11 +46,13 @@ def test_BuildFileWrangler_interpret_back_cover_02():
     tex_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'back-cover.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'back-cover.pdf',

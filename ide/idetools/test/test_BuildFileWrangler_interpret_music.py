@@ -13,11 +13,13 @@ def test_BuildFileWrangler_interpret_music_01():
     ly_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'music.ly',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'music.pdf',
@@ -45,11 +47,13 @@ def test_BuildFileWrangler_interpret_music_02():
     ly_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'music.ly',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'music.pdf',

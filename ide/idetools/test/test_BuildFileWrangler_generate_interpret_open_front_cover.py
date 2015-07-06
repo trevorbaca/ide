@@ -10,11 +10,13 @@ def test_BuildFileWrangler_generate_interpret_open_front_cover_01():
     tex_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'build',
         'front-cover.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
         'red_example_score',
         'build',
         'front-cover.pdf',

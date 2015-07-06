@@ -10,6 +10,7 @@ def test_MaterialPackageManager_write_stub_init_py_01():
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
+        'red_example_score',
         'materials',
         'magic_numbers',
         '__init__.py',
