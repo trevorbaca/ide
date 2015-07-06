@@ -59,7 +59,6 @@ def test_MaterialPackageWrangler_make_package_02():
         '__init__.py',
         '__metadata__.py',
         'definition.py',
-        'versions',
         ]
 
     with systemtools.FilesystemState(remove=[path]):
@@ -170,7 +169,6 @@ def test_MaterialPackageWrangler_make_package_07():
         '__init__.py',
         '__metadata__.py',
         'definition.py',
-        'versions',
         ]
 
     with systemtools.FilesystemState(remove=[path]):

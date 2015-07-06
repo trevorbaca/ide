@@ -54,13 +54,10 @@ def test_MaterialPackageWrangler_check_every_package_03():
         'materials',
         'tempo_inventory',
         )
-    versions_directory = os.path.join(material_directory, 'versions')
     initializer = os.path.join(material_directory, '__init__.py')
         
-    with systemtools.FilesystemState(keep=[versions_directory, initializer]):
+    with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
-        shutil.rmtree(versions_directory)
         input_ = 'red~example~score m ck* y y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(initializer)
-        assert os.path.isdir(versions_directory)

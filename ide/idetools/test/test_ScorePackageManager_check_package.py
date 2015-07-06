@@ -95,13 +95,10 @@ def test_ScorePackageManager_check_package_05():
         'segments',
         'segment_02',
         )
-    versions_directory = os.path.join(segment_directory, 'versions')
     initializer = os.path.join(segment_directory, '__init__.py')
         
-    with systemtools.FilesystemState(keep=[versions_directory, initializer]):
+    with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
-        shutil.rmtree(versions_directory)
         input_ = 'red~example~score ck y y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(initializer)
-        assert os.path.isdir(versions_directory)

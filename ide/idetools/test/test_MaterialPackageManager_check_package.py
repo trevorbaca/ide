@@ -14,7 +14,7 @@ def test_MaterialPackageManager_check_package_01():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'Top level (7 assets): OK' in contents
+    assert 'Top level (6 assets): OK' in contents
     assert 'found' not in contents
     assert 'missing' not in contents
 
@@ -28,7 +28,6 @@ def test_MaterialPackageManager_check_package_02():
     contents = abjad_ide._transcript.contents
 
     lines = [
-        '1 of 1 required directory found:',
         '3 of 3 required files found:',
         '3 optional files found:',
         ]
@@ -47,13 +46,10 @@ def test_MaterialPackageManager_check_package_03():
         'materials',
         'tempo_inventory',
         )
-    versions_directory = os.path.join(material_directory, 'versions')
     initializer = os.path.join(material_directory, '__init__.py')
         
-    with systemtools.FilesystemState(keep=[versions_directory, initializer]):
+    with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
-        shutil.rmtree(versions_directory)
         input_ = 'red~example~score m tempo~inventory ck y y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(initializer)
-        assert os.path.isdir(versions_directory)
