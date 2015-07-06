@@ -144,13 +144,6 @@ class Menu(Controller):
                 return
         ends_with_bang = input_.endswith('!')
         input_ = input_.strip('!')
-        if input_.endswith('/'):
-            is_autoadvancing = self._session.is_autoadvancing
-            if is_autoadvancing:
-                self._session._autoadvance_depth = 0
-            else:   
-                self._session._autoadvance_depth = 1
-            input_ = input_.strip('/')
         if input_.endswith('@'):
             self._session._is_autostarting = True
             self._session._is_autoadvancing = True

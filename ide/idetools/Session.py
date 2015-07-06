@@ -41,7 +41,6 @@ class Session(abctools.AbjadObject):
         '_attempted_to_remove',
         '_attempted_to_revert',
         '_attempted_to_update',
-        '_autoadvance_depth',
         '_command_history',
         '_confirm',
         '_configuration',
@@ -54,7 +53,6 @@ class Session(abctools.AbjadObject):
         '_initial_input',
         '_io_manager',
         '_is_autoadding',
-        #'_is_autoadvancing',
         '_is_autostarting',
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
@@ -91,12 +89,10 @@ class Session(abctools.AbjadObject):
         )
 
     _variables_to_display = (
-        'autoadvance_depth',
         'command_history',
         'controller_stack',
         'current_score_package_manager',
         'is_autoadding',
-        'is_autoadvancing',
         'is_in_confirmation_environment',
         'is_in_autoeditor',
         'is_in_user_input_getter',
@@ -119,7 +115,6 @@ class Session(abctools.AbjadObject):
         self._attempted_to_remove = False
         self._attempted_to_revert = False
         self._attempted_to_update = False
-        self._autoadvance_depth = 0
         self._command_history = []
         self._configuration = idetools.Configuration()
         self._confirm = True
@@ -132,7 +127,6 @@ class Session(abctools.AbjadObject):
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_autoadding = False
-        #self._is_autoadvancing = False
         self._is_autostarting = False
         self._is_backtracking_locally = False
         self._is_backtracking_to_all_build_files = False
@@ -300,14 +294,6 @@ class Session(abctools.AbjadObject):
         self._controller_stack.append(manager)
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def autoadvance_depth(self):
-        r'''Gets autoadvance depth.
-
-        Returns nonnegative integer.
-        '''
-        return self._autoadvance_depth
 
     @property
     def command_history(self):
@@ -674,22 +660,6 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self._is_autoadding
-
-    @property
-    def is_autoadvancing(self):
-        r'''Is true when session is autoadvancing. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_autoadvancing
-                False
-
-        Returns boolean.
-        '''
-        #return self._is_autoadvancing
-        return 0 < self._autoadvance_depth
 
     @property
     def is_autonavigating_within_score(self):
