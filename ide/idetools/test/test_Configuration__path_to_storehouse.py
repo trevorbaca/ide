@@ -26,6 +26,7 @@ def test_Configuration__path_to_storehouse_02():
     storehouse = os.path.join(
         configuration.user_score_packages_directory,
         'foo_score',
+        'foo_score',
         'stylesheets',
         )
 

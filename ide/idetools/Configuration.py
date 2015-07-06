@@ -176,7 +176,8 @@ class Configuration(AbjadConfiguration):
         path_parts = remainder.split(os.path.sep)
         assert 1 <= len(path_parts)
         if is_in_score:
-            path_parts = path_parts[:2]
+            #path_parts = path_parts[:2]
+            path_parts = path_parts[:3]
         else:
             assert 1 <= len(path_parts)
             path_parts = path_parts[:1]

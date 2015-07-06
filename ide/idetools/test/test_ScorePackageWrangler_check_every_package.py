@@ -52,14 +52,11 @@ def test_ScorePackageWrangler_check_every_package_02():
         'red_example_score',
         )
     build_directory = os.path.join(score_directory, 'build')
-    initializer = os.path.join(score_directory, '__init__.py')
         
-    with systemtools.FilesystemState(keep=[build_directory, initializer]):
-        os.remove(initializer)
+    with systemtools.FilesystemState(keep=[build_directory]):
         shutil.rmtree(build_directory)
         input_ = 'ck* y y q'
         abjad_ide._run(input_=input_)
-        assert os.path.isfile(initializer)
         assert os.path.isdir(build_directory)
 
 

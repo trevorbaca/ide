@@ -184,7 +184,7 @@ class PackageManager(AssetController):
         for directory_entry in sorted(os.listdir(self._path)):
             if not directory_entry.startswith('.'):
                 path = os.path.join(self._path, directory_entry)
-                if os.path.isfile(path):
+                if (os.path.isfile(path) and not '__init__.py' in path):
                     return directory_entry
 
     def _format_counted_check_messages(

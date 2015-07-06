@@ -22,6 +22,7 @@ def test_SegmentPackageWrangler__list_storehouse_paths_01():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             package_name,
+            package_name,
             'segments',
             )
         paths.append(path)

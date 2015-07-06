@@ -5,6 +5,25 @@ import pytest
 import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
+path = abjad_ide._configuration.example_score_packages_directory
+path = os.path.join(
+    path, 
+    'red_example_score', 
+    'red_example_score', 
+    'materials',
+    )
+package_names = (
+    'magic_numbers', 
+    'pitch_range_inventory', 
+    'tempo_inventory',
+    )
+ly_paths = [
+    os.path.join(path, _, 'illustration.ly') 
+    for _ in package_names
+    ]
+pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
+paths = ly_paths + pdf_paths
+
 
 def test_MaterialPackageWrangler_interpret_every_illustration_ly_01():
     r'''Does not display candidate messages.

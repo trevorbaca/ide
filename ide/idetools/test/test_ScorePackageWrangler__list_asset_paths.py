@@ -27,6 +27,7 @@ def test_ScorePackageWrangler__list_asset_paths_01():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             package_name,
+            package_name,
             )
         paths.append(path)
     assert result == paths

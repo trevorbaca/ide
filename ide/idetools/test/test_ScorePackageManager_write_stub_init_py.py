@@ -15,8 +15,6 @@ def test_ScorePackageManager_write_stub_init_py_01():
         )
 
     with systemtools.FilesystemState(keep=[path]):
-        os.remove(path)
-        assert not os.path.exists(path)
         input_ = 'red~example~score ns y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(path)

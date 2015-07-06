@@ -43,6 +43,7 @@ def test_StylesheetWrangler__list_storehouse_paths_02():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             score_name,
+            score_name,
             'stylesheets',
             )
         paths.append(path)

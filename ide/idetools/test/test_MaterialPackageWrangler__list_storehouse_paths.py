@@ -22,6 +22,7 @@ def test_MaterialPackageWrangler__list_storehouse_paths_01():
         path = os.path.join(
             wrangler._configuration.example_score_packages_directory,
             score_package_name,
+            score_package_name,
             'materials',
             )
         paths.append(path)
