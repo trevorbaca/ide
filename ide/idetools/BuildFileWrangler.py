@@ -202,7 +202,7 @@ class BuildFileWrangler(FileWrangler):
         assert manager is not None
         width, height, unit = manager._parse_paper_dimensions()
         source_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             file_name,
             )
@@ -544,7 +544,7 @@ class BuildFileWrangler(FileWrangler):
         segment_names = result
         pdf_names = [_.replace('_', '-') for _ in segment_names]
         source_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             'draft.tex',
             )
@@ -636,7 +636,7 @@ class BuildFileWrangler(FileWrangler):
         segment_names = result
         lilypond_names = [_.replace('_', '-') for _ in segment_names]
         source_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             'music.ly',
             )

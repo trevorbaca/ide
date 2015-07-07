@@ -707,7 +707,7 @@ class Session(abctools.AbjadObject):
         if (
             self.is_autonavigating_within_score or
             self.is_backtracking_locally or 
-            self.is_backtracking_to_score_manager or
+            self.is_backtracking_to_all_scores or
             self.is_backtracking_to_score or
             self.is_quitting
             ):
@@ -749,7 +749,7 @@ class Session(abctools.AbjadObject):
         return self._is_backtracking_to_score
 
     @property
-    def is_backtracking_to_score_manager(self):
+    def is_backtracking_to_all_scores(self):
         r'''Is true when session is backtracking to Abjad IDE.
         Otherwise false.
 
@@ -757,7 +757,7 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session.is_backtracking_to_score_manager
+                >>> session.is_backtracking_to_all_scores
                 False
 
         Returns boolean.

@@ -13,7 +13,7 @@ def test_BuildFileWrangler_invoke_shell_01():
     abjad_ide._run(input_=input_)
 
     path = os.path.join(
-        abjad_ide._configuration.score_manager_directory,
+        abjad_ide._configuration.abjad_ide_directory,
         )
     string = '\n{}\n'.format(path)
     assert string in abjad_ide._transcript.contents

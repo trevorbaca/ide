@@ -193,7 +193,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         '''
         self._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             '__illustrate_segment__.py',
             )
@@ -315,7 +315,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         if self._session.is_backtracking or not result:
             return
         source_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             'definition.py',
             )

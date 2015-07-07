@@ -94,7 +94,7 @@ class ScorePackageManager(PackageManager):
             self._session._is_backtracking_to_score = False
             result = False
         elif self._session.is_autonavigating_within_score:
-            if self._session.is_backtracking_to_score_manager:
+            if self._session.is_backtracking_to_all_scores:
                 result = True
             else:
                 result = False

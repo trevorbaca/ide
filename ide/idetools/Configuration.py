@@ -240,7 +240,7 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         path = os.path.join(
-            self.score_manager_directory,
+            self.abjad_ide_directory,
             'boilerplate',
             )
         return path
@@ -380,7 +380,7 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         path = os.path.join(
-            self.score_manager_directory,
+            self.abjad_ide_directory,
             'scores',
             )
         return path
@@ -706,8 +706,8 @@ class Configuration(AbjadConfiguration):
                     'material_packages',
                     ])
             return result
-        elif path.startswith(self.score_manager_directory):
-            prefix = len(os.path.dirname(self.score_manager_directory)) + 1
+        elif path.startswith(self.abjad_ide_directory):
+            prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
         elif path.startswith(self.user_score_packages_directory):
             prefix = len(self.user_score_packages_directory) + 1
         elif path.startswith(self.stylesheets_library):

@@ -12,7 +12,7 @@ def test_BuildFileWrangler_generate_back_cover_source_01():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.score_manager_directory,
+        abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
         'back-cover.tex',
         )
@@ -48,7 +48,7 @@ def test_BuildFileWrangler_generate_back_cover_source_02():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.score_manager_directory,
+        abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
         'back-cover.tex',
         )

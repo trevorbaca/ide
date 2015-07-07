@@ -434,7 +434,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         else:
             boilerplate_name = '__illustrate_material_1__.py'
         boilerplate_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             boilerplate_name,
             )
@@ -541,7 +541,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
             return
         clear = not os.path.isfile(self._output_py_path)
         boilerplate_path = os.path.join(
-            self._configuration.score_manager_directory,
+            self._configuration.abjad_ide_directory,
             'boilerplate',
             '__output_material__.py',
             )

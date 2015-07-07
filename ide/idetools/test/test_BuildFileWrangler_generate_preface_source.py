@@ -12,7 +12,7 @@ def test_BuildFileWrangler_generate_preface_source_01():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.score_manager_directory,
+        abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
         'preface.tex',
         )
@@ -49,7 +49,7 @@ def test_BuildFileWrangler_generate_preface_source_02():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.score_manager_directory,
+        abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
         'preface.tex',
         )

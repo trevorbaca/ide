@@ -185,7 +185,7 @@ class AbjadIDE(Wrangler):
             consume_local_backtrack=True,
             on_exit_callbacks=(self._session._clean_up,)
             )
-        path = self._configuration.score_manager_directory
+        path = self._configuration.abjad_ide_directory
         directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
         wrangler_views = os.path.join(

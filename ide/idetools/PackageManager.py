@@ -1135,7 +1135,7 @@ class PackageManager(AssetController):
                 lines.append(line)
             elif missing_file.endswith('definition.py'):
                 source_path = os.path.join(
-                    self._configuration.score_manager_directory,
+                    self._configuration.abjad_ide_directory,
                     'boilerplate',
                     'definition.py',
                     )
