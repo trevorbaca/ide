@@ -719,7 +719,14 @@ class Configuration(AbjadConfiguration):
             prefix = len(os.path.dirname(self.library)) + 1
         else:
             message = 'can not change path to package: {!r}.'
-            raise Exception(message.format(path))
+            message = message.format(path)
+            raise Exception(message)
         package = path[prefix:]
+        if path.startswith(self.example_score_packages_directory):
+            # change red_example_score/red_example_score/materials/foo
+            # to red_example_score/materials/foo
+            parts = package.split(os.path.sep)
+            parts = parts[1:]
+            package = os.path.sep.join(parts)
         package = package.replace(os.path.sep, '.')
         return package
