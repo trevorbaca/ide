@@ -59,7 +59,6 @@ class AssetController(Controller):
             '??': self.display_available_commands,
             'll': self.open_lilypond_log,
             'dt': self.doctest,
-            'py': self.invoke_python,
             'pt': self.pytest,
             'sv': self.display_session_variables,
             #
@@ -411,7 +410,6 @@ class AssetController(Controller):
         commands.append(('system - doctest', 'dt'))
         commands.append(('system - log', 'll'))
         commands.append(('system - pytest', 'pt'))
-        commands.append(('system - python', 'py'))
         commands.append(('system - shell', '!'))
         commands.append(('system - variables', 'sv'))
         menu.make_command_section(
@@ -778,30 +776,6 @@ class AssetController(Controller):
         Returns none.
         '''
         self._session._abjad_ide._stylesheet_wrangler._run()
-
-    def invoke_python(self):
-        r'''Invokes Python.
-
-        Returns none.
-        '''
-        messages = []
-        prompt = True
-        statement = self._io_manager._handle_input(
-            '>>',
-            include_newline=False,
-            )
-        try:
-            command = 'from abjad import *; result = {}'.format(statement)
-            result = self._io_manager.execute_string(
-                command,
-                attribute_names=('result',),
-                )
-            result = result[0]
-            messages.append('{!r}'.format(result))
-        except:
-            messages.append('expression not executable.')
-        if prompt:
-            self._io_manager._display(messages)
 
     def invoke_shell(self):
         r'''Invokes shell.
