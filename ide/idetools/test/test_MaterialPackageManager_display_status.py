@@ -14,18 +14,3 @@ def test_MaterialPackageManager_display_status_01():
 
     assert 'Repository status for' in contents
     assert '... OK' in contents
-
-
-def test_MaterialPackageManager_display_status_02():
-    r'''Works with Subversion.
-    '''
-
-    wrangler = abjad_ide._material_package_wrangler
-    manager = wrangler._find_svn_manager()
-    if not manager:
-        return
-    manager.display_status()
-    contents = manager._transcript.contents
-
-    assert 'Repository status for' in contents
-    assert '... OK' in contents

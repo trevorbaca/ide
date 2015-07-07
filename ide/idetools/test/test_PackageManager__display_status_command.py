@@ -14,17 +14,3 @@ def test_PackageManager__display_status_command_01():
 
     command = 'git status {}'.format(manager._path)
     assert manager._display_status_command == command
-
-
-def test_PackageManager__display_status_command_02():
-
-    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
-        repository='svn',
-        system=False,
-        )
-
-    if manager is None:
-        return
-
-    command = 'svn st {}'.format(manager._path)
-    assert manager._display_status_command == command

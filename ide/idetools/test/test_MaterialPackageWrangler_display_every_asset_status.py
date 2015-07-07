@@ -27,35 +27,3 @@ def test_MaterialPackageWrangler_display_every_asset_status_02():
 
     assert 'Repository status for' in contents
     assert '... OK' in contents
-
-
-def test_MaterialPackageWrangler_display_every_asset_status_03():
-    r'''Work with Subversion outside of score.
-    '''
-
-    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    wrangler = abjad_ide._material_package_wrangler
-    manager = wrangler._find_svn_manager(inside_score=False)
-    if not manager:
-        return
-    manager.display_status()
-    contents = manager._transcript.contents
-
-    assert 'Repository status for' in contents
-    assert '... OK' in contents
-
-
-def test_MaterialPackageWrangler_display_every_asset_status_04():
-    r'''Work with Subversion inside score.
-    '''
-
-    abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    wrangler = abjad_ide._material_package_wrangler
-    manager = wrangler._find_svn_manager(inside_score=True)
-    if not manager:
-        return
-    manager.display_status()
-    contents = manager._transcript.contents
-
-    assert 'Repository status for' in contents
-    assert '... OK' in contents

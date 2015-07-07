@@ -26,19 +26,3 @@ def test_SegmentPackageWrangler_display_every_asset_status_02():
 
     assert 'Repository status for' in contents
     assert '... OK' in contents
-
-
-def test_SegmentPackageWrangler_display_every_asset_status_03():
-    r'''Works with Subversion-managed segment package.
-    '''
-
-    wrangler = abjad_ide._segment_package_wrangler
-    manager = wrangler._find_svn_manager(inside_score=False)
-    if not manager:
-        return
-
-    manager.display_status()
-    titles = manager._transcript.titles
-
-    assert 'Repository status for' in contents
-    assert '... OK' in contents

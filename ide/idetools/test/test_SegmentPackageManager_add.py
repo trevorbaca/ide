@@ -15,18 +15,3 @@ def test_SegmentPackageManager_add_01():
     manager = wrangler._find_git_manager()
 
     assert manager._test_add()
-
-
-def test_SegmentPackageManager_add_02():
-    r'''Add two files to Subversioned-managed segment package.
-    Make sure Subversion recognizes the files as added.
-    Then unadd the file and leave the score package as found.
-    '''
-
-    wrangler = abjad_ide._segment_package_wrangler
-    manager = wrangler._find_svn_manager()
-
-    if not manager:
-        return
-
-    assert manager._test_add()

@@ -18,21 +18,6 @@ def test_SegmentPackageManager_commit_01():
 
 
 def test_SegmentPackageManager_commit_02():
-    r'''Flow control reaches Subversion-managed segment package.
-    '''
-
-    wrangler = abjad_ide._segment_package_wrangler
-    manager = wrangler._find_svn_manager()
-
-    if not manager:
-        return
-
-    manager._session._is_repository_test = True
-    manager.commit()
-    assert manager._session._attempted_to_commit
-
-
-def test_SegmentPackageManager_commit_03():
     r'''Back works in commit message getter.
     '''
 

@@ -20,23 +20,6 @@ def test_ScorePackageManager_add_01():
 
 
 def test_ScorePackageManager_add_02():
-    r'''Add two files to Subversioned-managed score package.
-    Make sure Subversion recognizes the files as added.
-    Then unadd the file and leave the score package as found.
-    '''
-
-    manager = abjad_ide._score_package_wrangler._find_up_to_date_manager(
-        repository='svn',
-        system=False,
-        )
-
-    if not manager:
-        return
-
-    assert manager._test_add()
-
-
-def test_ScorePackageManager_add_03():
     r'''Displays informative message when nothing to add.
     '''
 

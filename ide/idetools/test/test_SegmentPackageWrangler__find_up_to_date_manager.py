@@ -20,23 +20,3 @@ def test_SegmentPackageWrangler__find_up_to_date_manager_01():
     assert manager._is_up_to_date()
     assert os.path.basename(os.path.dirname(manager._path)) == 'segments'
     assert not os.path.basename(manager._path) == 'segments'
-
-
-def test_SegmentPackageWrangler__find_up_to_date_manager_02():
-    r'''Works with Subversion.
-    '''
-
-    wrangler = abjad_ide._segment_package_wrangler
-    manager = wrangler._find_up_to_date_manager(
-        system=False,
-        repository='svn',
-        )
-
-    if not manager:
-        return
-
-    assert isinstance(manager, ide.idetools.SegmentPackageManager)
-    assert manager._is_svn_versioned()
-    assert manager._is_up_to_date()
-    assert os.path.basename(os.path.dirname(manager._path)) == 'segments'
-    assert not os.path.basename(manager._path) == 'segments'

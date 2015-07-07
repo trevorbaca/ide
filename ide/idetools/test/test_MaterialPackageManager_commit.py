@@ -13,16 +13,3 @@ def test_MaterialPackageManager_commit_01():
     manager._session._is_repository_test = True
     manager.commit()
     assert manager._session._attempted_to_commit
-
-
-def test_MaterialPackageManager_commit_02():
-
-    wrangler = abjad_ide._material_package_wrangler
-    manager = wrangler._find_svn_manager()
-
-    if not manager:
-        return
-
-    manager._session._is_repository_test = True
-    manager.commit()
-    assert manager._session._attempted_to_commit
