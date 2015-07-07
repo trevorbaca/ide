@@ -494,8 +494,14 @@ class PackageManager(AssetController):
         return command
 
     def _remove(self):
+        path = self._path
+        # handle score packages correctly
+        parts = path.split(os.path.sep)
+        if parts[-2] == parts[-1]:
+            parts = parts[:-1]
+        path = os.path.sep.join(parts)
         message = '{} will be removed.'
-        message = message.format(self._path)
+        message = message.format(path)
         self._io_manager._display(message)
         getter = self._io_manager._make_getter()
         getter.append_string("type 'remove' to proceed")
@@ -512,9 +518,8 @@ class PackageManager(AssetController):
                 command = 'git rm --force -r {}'
         else:
             command = 'rm -rf {}'
-        path = self._path
         command = command.format(path)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
+        with systemtools.TemporaryDirectoryChange(directory=path):
             process = self._io_manager.make_subprocess(command)
         self._io_manager._read_one_line_from_pipe(process.stdout)
         return True
@@ -874,10 +879,12 @@ class PackageManager(AssetController):
         tab = self._io_manager._tab
         messages = [tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(self._path)
-        found_problems = (missing_directories or
+        found_problems = (
+            missing_directories or
             missing_files or
             unrecognized_directories or
-            unrecognized_files)
+            unrecognized_files
+            )
         count = len(names)
         wranglers = self._get_top_level_wranglers()
         if wranglers or not return_messages:

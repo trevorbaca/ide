@@ -12,6 +12,7 @@ def test_ScorePackageWrangler_make_package_01():
     path = os.path.join(
         abjad_ide._configuration.user_score_packages_directory,
         'example_score',
+        'example_score',
         )
     directory_entries = [
         '__init__.py',

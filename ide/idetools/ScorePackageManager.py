@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os
+import shutil
 from abjad.tools import indicatortools
 from abjad.tools import systemtools
 from ide.idetools.PackageManager import PackageManager
@@ -222,6 +223,18 @@ class ScorePackageManager(PackageManager):
                 return_supply_messages=True,
                 supply_missing=True,
                 )
+        old_path = self._path
+        temporary_path = os.path.join(
+            os.path.dirname(self._path),
+            '_TEMPORARY_SCORE_PACKAGE',
+            )
+        new_path = os.path.join(
+            self._path,
+            self._package_name,
+            )
+        shutil.move(old_path, temporary_path)
+        shutil.move(temporary_path, new_path)
+        self._path = new_path
 
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
