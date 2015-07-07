@@ -102,25 +102,6 @@ class ScorePackageWrangler(PackageWrangler):
             )
         return manager
 
-    def _find_svn_manager(self, must_have_file=False):
-        superclass = super(ScorePackageWrangler, self)
-        manager = superclass._find_svn_manager(
-            inside_score=False,
-            must_have_file=must_have_file,
-            )
-        return manager
-
-    def _find_svn_score_name(self):
-        manager = self._find_up_to_date_manager(
-            repository='svn',
-            system=False,
-            )
-        if manager:
-            title = manager._get_title()
-            title = stringtools.strip_diacritics(title)
-            title = title.lower()
-            return title
-
     def _get_scores_to_display_string(self):
         view = self._read_view()
         if view:

@@ -92,8 +92,6 @@ class PackageManager(AssetController):
             return
         if self._is_in_git_repository(path=self._path):
             return 'git status {}'.format(self._path)
-        elif self._is_svn_versioned(path=self._path):
-            return 'svn st {}'.format(self._path)
         else:
             return
 
@@ -111,13 +109,6 @@ class PackageManager(AssetController):
             return
         if self._is_in_git_repository(path=self._path):
             command = 'git add -A {}'.format(self._path)
-        elif self._is_svn_versioned(path=self._path):
-            paths = self._get_unadded_asset_paths()
-            commands = []
-            for path in paths:
-                command = 'svn add {}'.format(path)
-                commands.append(command)
-            command = ' && '.join(commands)
         else:
             raise ValueError(self)
         return command
@@ -129,8 +120,6 @@ class PackageManager(AssetController):
         if self._is_in_git_repository(path=self._path):
             root_directory = self._get_repository_root_directory()
             return 'git pull {}'.format(root_directory)
-        elif self._is_svn_versioned(path=self._path):
-            return 'svn update {}'.format(self._path)
         else:
             raise ValueError(self)
 
@@ -242,32 +231,12 @@ class PackageManager(AssetController):
                     root_directory = self._get_repository_root_directory()
                     path = os.path.join(root_directory, path)
                     paths.append(path)
-        elif self._is_svn_versioned():
-            command = 'svn st {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                if line.startswith('A'):
-                    path = line.strip('A')
-                    path = path.strip()
-                    paths.append(path)
         else:
             raise ValueError(self)
         return paths
 
     def _get_current_directory(self):
         return self._path
-
-#    def _get_existing_version_numbers(self, file_name_prototype):
-#        root, extension = os.path.splitext(file_name_prototype)
-#        version_numbers = []
-#        for entry in sorted(os.listdir(self._versions_directory)):
-#            if entry.startswith(root) and entry.endswith(extension):
-#                version_number = self._file_name_to_version_number(entry)
-#                version_numbers.append(version_number)
-#        return version_numbers
 
     def _get_file_path_ending_with(self, string):
         for file_name in self._list():
@@ -289,15 +258,6 @@ class PackageManager(AssetController):
         lines.append(self._configuration.unicode_directive)
         return lines
 
-#    def _get_last_version_number(self):
-#        versions_directory = self._versions_directory
-#        if not os.path.exists(versions_directory):
-#            return
-#        file_names = sorted(os.listdir(versions_directory))
-#        if not file_names:
-#            return
-#        return max(self._file_name_to_version_number(_) for _ in file_names)
-
     def _get_metadatum(self, metadatum_name, include_score=False):
         metadata = self._get_metadata()
         metadatum = metadata.get(metadatum_name, None)
@@ -318,17 +278,6 @@ class PackageManager(AssetController):
                     root_directory = self._get_repository_root_directory()
                     path = os.path.join(root_directory, path)
                     paths.append(path)
-        elif self._is_svn_versioned():
-            command = 'svn st {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                if line.startswith('M'):
-                    path = line.strip('M')
-                    path = path.strip()
-                    paths.append(path)
         else:
             raise ValueError(self._path)
         return paths
@@ -347,8 +296,6 @@ class PackageManager(AssetController):
                 process = self._io_manager.make_subprocess(command)
             line = self._io_manager._read_one_line_from_pipe(process.stdout)
             return line
-        elif self._is_svn_versioned():
-            pass
         else:
             raise ValueError(self)
 
@@ -375,17 +322,6 @@ class PackageManager(AssetController):
                     path = line.strip('?')
                     path = path.strip()
                     path = os.path.join(root_directory, path)
-                    paths.append(path)
-        elif self._is_svn_versioned():
-            command = 'svn st {}'
-            command = command.format(self._path)
-            process = self._io_manager.make_subprocess(command)
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                if line.startswith('?'):
-                    path = line.strip('?')
-                    path = path.strip()
                     paths.append(path)
         else:
             raise ValueError(self)
@@ -466,43 +402,10 @@ class PackageManager(AssetController):
                 return True
         return False
 
-    def _is_svn_versioned(self, path=None):
-        path = path or self._path
-        if path is None:
-            return False
-        if not os.path.exists(path):
-            return False
-        is_in_svn_versioned_tree = False
-        path_to_check = path
-        root_directory = os.path.sep
-        while path_to_check:
-            if os.path.isdir(path_to_check):
-                if '.svn' in sorted(os.listdir(path_to_check)):
-                    is_in_svn_versioned_tree = True
-            path_to_check = os.path.dirname(path_to_check)
-            if path_to_check == root_directory:
-                break
-        if not is_in_svn_versioned_tree:
-            return False
-        command = 'svn st {}'
-        command = command.format(path)
-        process = self._io_manager.make_subprocess(command)
-        first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
-        if first_line.startswith('svn: warning:'):
-            return False
-        else:
-            return True
-
     def _is_up_to_date(self):
         if self._is_in_git_repository():
             git_status_lines = self._get_git_status_lines() or ['']
             first_line = git_status_lines[0]
-        elif self._is_svn_versioned():
-            command = 'svn st {}'
-            command = command.format(self._path)
-            with systemtools.TemporaryDirectoryChange(directory=self._path):
-                process = self._io_manager.make_subprocess(command)
-            first_line = self._io_manager._read_one_line_from_pipe(process.stdout)
         else:
             raise ValueError(self)
         return first_line == ''
@@ -586,47 +489,9 @@ class PackageManager(AssetController):
         if self._is_in_git_repository(path=self._path):
             command = 'git commit -m "{}" {}; git push'
             command = command.format(message, self._path)
-        elif self._is_svn_versioned(path=self._path):
-            command =  'svn commit -m "{}" {}'
-            command = command.format(message, self._path)
         else:
             raise ValueError(self)
         return command
-
-#    def _open_versioned_file(self, file_name_prototype):
-#        getter = self._io_manager._make_getter()
-#        version_numbers = self._get_existing_version_numbers(
-#            file_name_prototype)
-#        if not version_numbers:
-#            message = 'no {} files in versions directory.'
-#            message = message.format(file_name_prototype)
-#            self._io_manager._display(message)
-#            return
-#        prompt = 'version number ({})'
-#        prompt = prompt.format(version_numbers)
-#        getter.append_integer(prompt)
-#        version_number = getter._run()
-#        if self._session.is_backtracking or version_number is None:
-#            return
-#        if version_number < 0:
-#            version_number = version_numbers[version_number]
-#        version_string = str(version_number).zfill(4)
-#        root, extension = os.path.splitext(file_name_prototype)
-#        file_name = '{}_{}{}'.format(
-#            root,
-#            version_string,
-#            extension,
-#            )
-#        file_path = os.path.join(
-#            self._path,
-#            'versions',
-#            file_name,
-#            )
-#        if os.path.isfile(file_path):
-#            self._io_manager.open_file(file_path)
-#        else:
-#            message = 'file not found: {}'.format(file_path)
-#            self._io_manager._display(message)
 
     def _remove(self):
         message = '{} will be removed.'
@@ -645,8 +510,6 @@ class PackageManager(AssetController):
                 command = 'rm -rf {}'
             else:
                 command = 'git rm --force -r {}'
-        elif self._is_svn_versioned():
-            command = 'svn --force rm {}'
         else:
             command = 'rm -rf {}'
         path = self._path
@@ -674,8 +537,6 @@ class PackageManager(AssetController):
                 command = 'mv {} {}'
             else:
                 command = 'git mv --force {} {}'
-        elif self._is_svn_versioned():
-            command = 'svn --force mv {} {}'
         else:
             command = 'mv {} {}'
         command = command.format(self._path, new_path)
@@ -719,29 +580,9 @@ class PackageManager(AssetController):
             os.path.dirname(self._path),
             new_package_name,
             )
-        if self._is_svn_versioned():
-            # rename package directory
-            command = 'svn mv {} {}'
-            command = command.format(self._path, new_directory)
-            self._io_manager.spawn_subprocess(command)
-            # commit
-            commit_message = 'renamed {} to {}.'
-            commit_message = commit_message.format(
-                base_name,
-                new_package_name,
-                )
-            commit_message = commit_message.replace('_', ' ')
-            parent_directory = os.path.dirname(self._path)
-            command = 'svn commit -m {!r} {}'
-            command = command.format(
-                commit_message,
-                parent_directory,
-                )
-            self._io_manager.spawn_subprocess(command)
-        else:
-            command = 'mv {} {}'
-            command = command.format(self._path, new_directory)
-            self._io_manager.spawn_subprocess(command)
+        command = 'mv {} {}'
+        command = command.format(self._path, new_directory)
+        self._io_manager.spawn_subprocess(command)
         # update path name to reflect change
         self._path = new_directory
         self._session._is_backtracking_locally = True
@@ -848,10 +689,6 @@ class PackageManager(AssetController):
         if self._is_git_versioned():
             for path in paths:
                 command = 'git reset -- {}'.format(path)
-                commands.append(command)
-        elif self._is_svn_versioned():
-            for path in paths:
-                command = 'svn revert {}'.format(path)
                 commands.append(command)
         else:
             raise ValueError(self)
@@ -1301,10 +1138,6 @@ class PackageManager(AssetController):
             if self._is_in_git_repository():
                 for path in paths:
                     command = 'git checkout {}'.format(path)
-                    commands.append(command)
-            elif self._is_svn_versioned():
-                for path in paths:
-                    command = 'svn revert {}'.format(path)
                     commands.append(command)
             else:
                 raise ValueError(self)

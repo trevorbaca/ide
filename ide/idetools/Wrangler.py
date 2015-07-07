@@ -248,15 +248,6 @@ class Wrangler(AssetController):
             )
         return manager
 
-    def _find_svn_manager(self, inside_score=True, must_have_file=False):
-        manager = self._find_up_to_date_manager(
-            inside_score=inside_score,
-            must_have_file=must_have_file,
-            system=False,
-            repository='svn',
-            )
-        return manager
-
     def _find_up_to_date_manager(
         self,
         inside_score=True,
@@ -264,7 +255,6 @@ class Wrangler(AssetController):
         system=True,
         repository='git',
         ):
-        from ide import idetools
         from ide import idetools
         abjad_material_packages_and_stylesheets = False
         example_score_packages = False
@@ -308,11 +298,6 @@ class Wrangler(AssetController):
                 )
             if (repository == 'git' and
                 manager._is_git_versioned() and
-                manager._is_up_to_date() and
-                (not must_have_file or manager._find_first_file_name())):
-                return manager
-            elif (repository == 'svn' and
-                manager._is_svn_versioned() and
                 manager._is_up_to_date() and
                 (not must_have_file or manager._find_first_file_name())):
                 return manager
