@@ -71,11 +71,14 @@ class ScorePackageManager(PackageManager):
 
     @property
     def _inner_path(self):
-        return os.path.join(self._path, self._package_name)
+        return os.path.join(self._outer_path, self._package_name)
 
     @property
     def _outer_path(self):
-        return self._path
+        return os.path.join(
+            self._configuration.user_score_packages_directory,
+            self._package_name
+            )
 
     @property
     def _setup_command_to_method(self):
@@ -90,6 +93,22 @@ class ScorePackageManager(PackageManager):
         return result
 
     ### PRIVATE METHODS ###
+
+    def _copy_boilerplate(self, file_name, replacements=None):
+        replacements = replacements or {}
+        source_path = os.path.join(
+            self._configuration.abjad_ide_directory,
+            'boilerplate',
+            file_name,
+            )
+        destination_path = os.path.join(
+            self._outer_path,
+            file_name,
+            )
+        shutil.copyfile(source_path, destination_path)
+        for old in replacements:
+            new = replacements[old]
+            self._replace_in_file(destination_path, old, new)
 
     def _enter_run(self):
         superclass = super(ScorePackageManager, self)
@@ -239,6 +258,14 @@ class ScorePackageManager(PackageManager):
         shutil.move(old_path, temporary_path)
         shutil.move(temporary_path, self._inner_path)
         self._path = self._inner_path
+        self._copy_boilerplate('README.md')
+        self._copy_boilerplate('requirements.txt')
+        self._copy_boilerplate('setup.cfg')
+        replacements = {
+            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
+            'PACKAGE_NAME': self._package_name,
+            }
+        self._copy_boilerplate('setup.py', replacements=replacements)
 
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
