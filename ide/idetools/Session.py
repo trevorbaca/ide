@@ -52,8 +52,6 @@ class Session(abctools.AbjadObject):
         '_display_pitch_ranges_with_numbered_pitches',
         '_initial_input',
         '_io_manager',
-        '_is_autoadding',
-        '_is_autostarting',
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
         '_is_navigating_home',
@@ -92,7 +90,6 @@ class Session(abctools.AbjadObject):
         'command_history',
         'controller_stack',
         'current_score_package_manager',
-        'is_autoadding',
         'is_in_confirmation_environment',
         'is_in_autoeditor',
         'is_in_user_input_getter',
@@ -126,8 +123,6 @@ class Session(abctools.AbjadObject):
         self._display_available_commands = False
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
-        self._is_autoadding = False
-        self._is_autostarting = False
         self._is_backtracking_locally = False
         self._is_backtracking_to_all_build_files = False
         self._is_navigating_home = False
@@ -257,8 +252,6 @@ class Session(abctools.AbjadObject):
             stop_controller=stop_controller,
             )
         header = '\n'.join(breadcrumbs)
-        if annotate_edit and self.is_in_autoeditor:
-            header = '{} (EDIT)'.format(header)
         if header == 'Abjad IDE':
             header = 'Abjad IDE - home'
         return header
@@ -647,21 +640,6 @@ class Session(abctools.AbjadObject):
         return True
 
     @property
-    def is_autoadding(self):
-        r'''Is true when session is autoadding. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_autoadding
-                False
-
-        Returns boolean.
-        '''
-        return self._is_autoadding
-
-    @property
     def is_autonavigating_within_score(self):
         r'''Is true when session is autonavigating. Otherwise false.
 
@@ -675,21 +653,6 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self.wrangler_navigation_directive is not None
-
-    @property
-    def is_autostarting(self):
-        r'''Is true when session is autostarting. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_autostarting
-                False
-
-        Returns boolean.
-        '''
-        return self._is_autostarting
 
     @property
     def is_backtracking(self):
