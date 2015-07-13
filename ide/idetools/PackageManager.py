@@ -586,6 +586,11 @@ class PackageManager(AssetController):
             os.path.dirname(self._path),
             new_package_name,
             )
+        if os.path.exists(new_directory):
+            message = 'path already exists: {!r}.'
+            message = message.format(new_directory)
+            self._io_manager._display(message)
+            return
         shutil.move(self._path, new_directory)
         # update path name to reflect change
         self._path = new_directory

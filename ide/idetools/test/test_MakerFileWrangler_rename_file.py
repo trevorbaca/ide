@@ -75,3 +75,33 @@ def test_MakerFileWrangler_rename_file_02():
     abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)
+
+
+def test_MakerFileWrangler_rename_file_03():
+    r'''Does not clobber existing files.
+    '''
+
+    path = os.path.join(
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'RedExampleScoreTemplate.py',
+        )
+    existing_path = os.path.join(
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'RedExampleScoreRhythmMaker.py',
+        )
+
+    assert os.path.exists(path)
+    assert os.path.exists(existing_path)
+
+    input_ = 'red~example~score k ren RedExampleScoreTemplate.py'
+    input_ += ' RedExampleScoreRhythmMaker.py y q'
+    abjad_ide._run(input_=input_)
+    assert os.path.exists(path)
+    assert os.path.exists(existing_path)
+    assert 'Path already exists' in abjad_ide._transcript.contents
