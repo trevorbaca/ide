@@ -70,6 +70,14 @@ class ScorePackageManager(PackageManager):
         return result
 
     @property
+    def _inner_path(self):
+        return os.path.join(self._path, self._package_name)
+
+    @property
+    def _outer_path(self):
+        return self._path
+
+    @property
     def _setup_command_to_method(self):
         result = {
             'catalog number': self.edit_catalog_number,
@@ -216,25 +224,21 @@ class ScorePackageManager(PackageManager):
         return menu
 
     def _make_package(self):
-        assert not os.path.exists(self._path)
-        os.mkdir(self._path)
+        assert not os.path.exists(self._outer_path)
+        os.mkdir(self._outer_path)
         with self._io_manager._silent():
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
                 )
-        old_path = self._path
+        old_path = self._outer_path
         temporary_path = os.path.join(
-            os.path.dirname(self._path),
+            os.path.dirname(self._outer_path),
             '_TEMPORARY_SCORE_PACKAGE',
             )
-        new_path = os.path.join(
-            self._path,
-            self._package_name,
-            )
         shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, new_path)
-        self._path = new_path
+        shutil.move(temporary_path, self._inner_path)
+        self._path = self._inner_path
 
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
