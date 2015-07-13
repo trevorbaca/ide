@@ -66,6 +66,7 @@ class ScorePackageManager(PackageManager):
         result.update({
             'p': self.go_to_setup,
             'so': self.open_score_pdf,
+            'pw': self.write_enclosing_artifacts,
             })
         return result
 
@@ -75,10 +76,17 @@ class ScorePackageManager(PackageManager):
 
     @property
     def _outer_path(self):
-        return os.path.join(
-            self._configuration.user_score_packages_directory,
-            self._package_name
-            )
+        if self._path.startswith(
+            self._configuration.user_score_packages_directory):
+            return os.path.join(
+                self._configuration.user_score_packages_directory,
+                self._package_name
+                )
+        else:
+            return os.path.join(
+                self._configuration.example_score_packages_directory,
+                self._package_name
+                )
 
     @property
     def _setup_command_to_method(self):
@@ -257,17 +265,7 @@ class ScorePackageManager(PackageManager):
             )
         shutil.move(old_path, temporary_path)
         shutil.move(temporary_path, self._inner_path)
-        self._path = self._inner_path
-        self._copy_boilerplate('README.md')
-        self._copy_boilerplate('requirements.txt')
-        self._copy_boilerplate('setup.cfg')
-        replacements = {
-            'COMPOSER_EMAIL': self._configuration.composer_email,
-            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
-            'GITHUB_USERNAME': self._configuration.github_username,
-            'PACKAGE_NAME': self._package_name,
-            }
-        self._copy_boilerplate('setup.py', replacements=replacements)
+        self._write_enclosing_artifacts()
 
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
@@ -275,6 +273,7 @@ class ScorePackageManager(PackageManager):
             menu, commands_only=True)
         commands.append(('package - score.pdf - open', 'so'))
         commands.append(('package - setup', 'p'))
+        commands.append(('package - write enclosing artifacts', 'pw'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -341,6 +340,19 @@ class ScorePackageManager(PackageManager):
         wrangler = self._session._abjad_ide._score_package_wrangler
         with self._io_manager._silent():
             wrangler.write_cache()
+
+    def _write_enclosing_artifacts(self):
+        self._path = self._inner_path
+        self._copy_boilerplate('README.md')
+        self._copy_boilerplate('requirements.txt')
+        self._copy_boilerplate('setup.cfg')
+        replacements = {
+            'COMPOSER_EMAIL': self._configuration.composer_email,
+            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
+            'GITHUB_USERNAME': self._configuration.github_username,
+            'PACKAGE_NAME': self._package_name,
+            }
+        self._copy_boilerplate('setup.py', replacements=replacements)
 
     ### PUBLIC METHODS ###
 
@@ -471,3 +483,18 @@ class ScorePackageManager(PackageManager):
                 message = "no score.pdf file found"
                 message += ' in either distribution/ or build/ directories.'
                 self._io_manager._display(message)
+
+    def write_enclosing_artifacts(self):
+        r'''Writes README.md, requirements.txt, setup.cfg and setup.py
+        to enclosing directory of score package.
+
+        Returns none.
+        '''
+        if not os.path.exists(self._inner_path):
+            message = 'score package must be structured'
+            message += ' with enclosing directory.'
+            self._io_manager._display(message)
+            return
+        self._write_enclosing_artifacts()
+        message = 'wrote enclosing artifacts.'
+        self._io_manager._display(message)
