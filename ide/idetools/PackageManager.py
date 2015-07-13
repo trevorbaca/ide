@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import os
+import shutil
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.idetools.AssetController import AssetController
@@ -585,9 +586,7 @@ class PackageManager(AssetController):
             os.path.dirname(self._path),
             new_package_name,
             )
-        command = 'mv {} {}'
-        command = command.format(self._path, new_directory)
-        self._io_manager.spawn_subprocess(command)
+        shutil.move(self._path, new_directory)
         # update path name to reflect change
         self._path = new_directory
         self._session._is_backtracking_locally = True
