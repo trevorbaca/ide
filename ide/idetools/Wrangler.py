@@ -554,10 +554,10 @@ class Wrangler(AssetController):
 
     def _make_file(
         self, 
+        contents='',
         extension=None, 
         message='file name', 
         ):
-        from ide import idetools
         extension = extension or getattr(self, '_extension', '')
         if self._session.is_in_score:
             path = self._get_current_directory()
@@ -579,7 +579,7 @@ class Wrangler(AssetController):
         if not name.endswith(extension):
             name = name + extension
         path = os.path.join(path, name)
-        self._io_manager.write(path, '')
+        self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
     def _make_main_menu(self):

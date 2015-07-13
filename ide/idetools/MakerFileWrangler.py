@@ -37,8 +37,7 @@ class MakerFileWrangler(FileWrangler):
         self._force_lowercase = False
         self._in_library = True
         self._score_storehouse_path_infix_parts = ('makers',)
-        self._user_storehouse_path = \
-            self._configuration.makers_library
+        self._user_storehouse_path = self._configuration.makers_library
 
     ### PRIVATE PROPERTIES ###
 
@@ -120,6 +119,16 @@ class MakerFileWrangler(FileWrangler):
         Returns none.
         '''
         self._io_manager._display(self._init_py_file_path)
+
+    def make_file(self):
+        r'''Makes empty file with Unicode header.
+
+        Returns none.
+        '''
+        self._make_file(
+            contents=self._configuration.unicode_directive,
+            message='file name',
+            )
 
     def write_stub_init_py(self):
         r'''Writes stub ``__init__.py``.
