@@ -262,7 +262,9 @@ class ScorePackageManager(PackageManager):
         self._copy_boilerplate('requirements.txt')
         self._copy_boilerplate('setup.cfg')
         replacements = {
+            'COMPOSER_EMAIL': self._configuration.composer_email,
             'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
+            'GITHUB_USERNAME': self._configuration.github_username,
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate('setup.py', replacements=replacements)

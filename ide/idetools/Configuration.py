@@ -67,10 +67,24 @@ class Configuration(AbjadConfiguration):
                 ],
                 'spec': "string(default='Last Name')",
             },
+            'composer_email': {
+                'comment': [
+                    '',
+                    'Your email.',
+                ],
+                'spec': "string(default=None)",
+            },
             'composer_website': {
                 'comment': [
                     '',
                     'Your website.',
+                ],
+                'spec': "string(default=None)",
+            },
+            'github_username': {
+                'comment': [
+                    '',
+                    'Your GitHub username.',
                 ],
                 'spec': "string(default=None)",
             },
@@ -265,6 +279,23 @@ class Configuration(AbjadConfiguration):
         return file_path
 
     @property
+    def composer_email(self):
+        r'''Gets composer email.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.composer_email
+                '...'
+
+        Aliases `composer_email` setting in Abjad IDE configuration file.
+
+        Returns string.
+        '''
+        return self._settings['composer_email']
+
+    @property
     def composer_full_name(self):
         r'''Gets composer full name.
 
@@ -403,6 +434,23 @@ class Configuration(AbjadConfiguration):
             'stylesheets',
             )
         return path
+
+    @property
+    def github_username(self):
+        r'''Gets GitHub username.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.github_username
+                '...'
+
+        Aliases `github_username` setting in Abjad IDE configuration file.
+
+        Returns string.
+        '''
+        return self._settings['github_username']
 
     @property
     def handler_tools_directory(self):

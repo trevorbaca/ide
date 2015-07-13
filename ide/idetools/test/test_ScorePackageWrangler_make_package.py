@@ -14,7 +14,13 @@ def test_ScorePackageWrangler_make_package_01():
         'example_score',
         )
     inner_path = os.path.join(outer_path, 'example_score')
-    directory_entries = [
+    outer_directory_entries = [
+        'README.md',
+        'requirements.txt',
+        'setup.cfg',
+        'setup.py',
+        ]
+    inner_directory_entries = [
         '__init__.py',
         '__metadata__.py',
         'build',
@@ -33,7 +39,10 @@ def test_ScorePackageWrangler_make_package_01():
         session = ide.idetools.Session(is_test=True)
         manager = ide.idetools.ScorePackageManager
         manager = manager(path=inner_path, session=session)
-        assert manager._list() == directory_entries
+        assert manager._list() == inner_directory_entries
+        for file_name in outer_directory_entries:
+            path = os.path.join(outer_path, file_name)
+            assert os.path.exists(path)
 
     assert 'Enter score package name]>' in contents
 
