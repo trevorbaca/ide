@@ -289,6 +289,20 @@ class Session(abctools.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
+    def abjad_ide(self):
+        r'''Gets session IDE.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.abjad_ide
+
+        Returns Abjad IDE or none.
+        '''
+        return self._abjad_ide
+
+    @property
     def command_history(self):
         r'''Gets session command history.
 
@@ -684,20 +698,6 @@ class Session(abctools.AbjadObject):
         return result
 
     @property
-    def abjad_ide(self):
-        r'''Gets session IDE.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.abjad_ide
-
-        Returns Abjad IDE or none.
-        '''
-        return self._abjad_ide
-
-    @property
     def initial_input(self):
         r'''Gets session initial user input.
 
@@ -804,22 +804,6 @@ class Session(abctools.AbjadObject):
         return self._is_backtracking_locally
 
     @property
-    def is_backtracking_to_score(self):
-        r'''Is true when session is backtracking to score.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_backtracking_to_score
-                False
-
-        Returns boolean.
-        '''
-        return self._is_backtracking_to_score
-
-    @property
     def is_backtracking_to_all_scores(self):
         r'''Is true when session is backtracking to Abjad IDE.
         Otherwise false.
@@ -834,6 +818,22 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self._is_navigating_to_scores
+
+    @property
+    def is_backtracking_to_score(self):
+        r'''Is true when session is backtracking to score.
+        Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.is_backtracking_to_score
+                False
+
+        Returns boolean.
+        '''
+        return self._is_backtracking_to_score
 
     @property
     def is_in_autoeditor(self):
@@ -957,6 +957,22 @@ class Session(abctools.AbjadObject):
             if isinstance(controller, idetools.Getter):
                 return True
         return False
+
+    @property
+    def is_navigating_home(self):
+        r'''Is true when session is navigating home.
+        Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.is_navigating_home
+                False
+
+        Returns boolean.
+        '''
+        return self._is_navigating_home
 
     @property
     def is_navigating_to_build_files(self):
@@ -1156,22 +1172,6 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self._is_navigating_to_stylesheets
-
-    @property
-    def is_navigating_home(self):
-        r'''Is true when session is backtracking to library.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_home
-                False
-
-        Returns boolean.
-        '''
-        return self._is_navigating_home
 
     @property
     def is_quitting(self):

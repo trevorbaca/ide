@@ -187,6 +187,14 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_available_commands = False
 
+    def go_home(self):
+        r'''Goes to library.
+
+        Returns none.
+        '''
+        self._session._is_navigating_home = True
+        self._session._display_available_commands = False
+
     def go_to_all_scores(self):
         r'''Goes to all scores.
 
@@ -204,14 +212,6 @@ class Controller(object):
         if self._session.is_in_score:
             self._session._is_backtracking_to_score = True
             self._session._display_available_commands = False
-
-    def go_home(self):
-        r'''Goes to library.
-
-        Returns none.
-        '''
-        self._session._is_navigating_home = True
-        self._session._display_available_commands = False
 
     def quit(self):
         r'''Quits.

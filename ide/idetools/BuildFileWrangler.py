@@ -733,6 +733,13 @@ class BuildFileWrangler(FileWrangler):
         '''
         self._interpret_file_ending_with('front-cover.tex')
 
+    def interpret_music(self):
+        r'''Interprets ``music.ly``.
+
+        Returns none.
+        '''
+        self._call_lilypond_on_file_ending_with('music.ly')
+
     def interpret_open_front_cover(self):
         r'''Interprets ``front-cover.tex`` and then opens ``front-cover.pdf``.
 
@@ -740,13 +747,6 @@ class BuildFileWrangler(FileWrangler):
         '''
         self.interpret_front_cover()
         self.open_front_cover_pdf()
-
-    def interpret_music(self):
-        r'''Interprets ``music.ly``.
-
-        Returns none.
-        '''
-        self._call_lilypond_on_file_ending_with('music.ly')
         
     def interpret_preface(self):
         r'''Interprets ``preface.tex``.
