@@ -12,7 +12,7 @@ def test_DistributionFileWrangler_copy_file_01():
     packages could pollute the example score packages).
     '''
 
-    input_ = 'dd cp red-example-score.pdf q'
+    input_ = 'dd cp red-example-score-score.pdf q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -34,21 +34,21 @@ def test_DistributionFileWrangler_copy_file_02():
         'red_example_score',
         'red_example_score',
         'distribution',
-        'red-example-score.pdf',
+        'red-example-score-score.pdf',
         )
     target_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'distribution',
-        'copied-red-example-score.pdf',
+        'copied-red-example-score-score.pdf',
         )
 
     with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
         input_ = 'red~example~score d cp'
-        input_ += ' red-example-score.pdf copied-red-example-score.pdf y q'
+        input_ += ' red-example-score-score.pdf copied-red-example-score-score.pdf y q'
         abjad_ide._run(input_=input_)
         contents = abjad_ide._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
-        assert 'copied-red-example-score.pdf' in contents
+        assert 'copied-red-example-score-score.pdf' in contents

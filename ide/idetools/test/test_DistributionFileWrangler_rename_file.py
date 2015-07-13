@@ -16,7 +16,7 @@ def test_DistributionFileWrangler_rename_file_01():
         'red_example_score',
         'red_example_score',
         'distribution',
-        'red-example-score.pdf',
+        'red-example-score-score.pdf',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
@@ -28,7 +28,7 @@ def test_DistributionFileWrangler_rename_file_01():
 
     assert os.path.exists(path)
 
-    input_ = 'dd ren red-example-score.pdf~(Red~Example~Score)'
+    input_ = 'dd ren red-example-score-score.pdf~(Red~Example~Score)'
     input_ += ' foo-score.pdf y q'
     abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
@@ -36,7 +36,7 @@ def test_DistributionFileWrangler_rename_file_01():
 
     # no shutil because need to rename file in repository
     input_ = 'dd ren foo-score.pdf~(Red~Example~Score)'
-    input_ += ' red-example-score.pdf y q'
+    input_ += ' red-example-score-score.pdf y q'
     abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)
@@ -51,7 +51,7 @@ def test_DistributionFileWrangler_rename_file_02():
         'red_example_score',
         'red_example_score',
         'distribution',
-        'red-example-score.pdf',
+        'red-example-score-score.pdf',
         )
     new_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
@@ -63,7 +63,7 @@ def test_DistributionFileWrangler_rename_file_02():
 
     assert os.path.exists(path)
 
-    input_ = 'red~example~score d ren red-example-score.pdf'
+    input_ = 'red~example~score d ren red-example-score-score.pdf'
     input_ += ' foo-score.pdf y q'
     abjad_ide._run(input_=input_)
     assert not os.path.exists(path)
@@ -71,7 +71,7 @@ def test_DistributionFileWrangler_rename_file_02():
 
     # no shutil because need to rename file in repository
     input_ = 'red~example~score d ren foo-score.pdf'
-    input_ += ' red-example-score.pdf y q'
+    input_ += ' red-example-score-score.pdf y q'
     abjad_ide._run(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)

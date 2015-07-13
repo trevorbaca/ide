@@ -79,6 +79,7 @@ class BuildFileWrangler(FileWrangler):
             'sg': self.generate_score_source,
             'si': self.interpret_score,
             'so': self.open_score_pdf,
+            'sp': self.push_score_pdf_to_distribution_directory,
             })
         return result
 
@@ -117,15 +118,7 @@ class BuildFileWrangler(FileWrangler):
                 score_path)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
-            #if 'segment' in directory_entry:
-            if True:
-                target_file_name = directory_entry + extension
-            #else:
-            #    target_file_name = '{}-{}{}'.format(
-            #        score_name,
-            #        directory_entry,
-            #        extension
-            #        )
+            target_file_name = directory_entry + extension
             target_file_path = os.path.join(
                 build_directory,
                 target_file_name,
@@ -183,18 +176,6 @@ class BuildFileWrangler(FileWrangler):
         if self._session.is_backtracking or not result:
             return False
         return segment_names
-
-    def _edit_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
-        if file_path:
-            self._io_manager.edit(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
-    def _enter_run(self):
-        self._session._is_navigating_to_build_files = False
 
     def _copy_boilerplate(self, file_name, candidacy=True, replacements=None):
         replacements = replacements or {}
@@ -259,6 +240,18 @@ class BuildFileWrangler(FileWrangler):
                 messages.append(message)
             self._io_manager._display(messages)
             return True
+
+    def _edit_file_ending_with(self, string):
+        file_path = self._get_file_path_ending_with(string)
+        if file_path:
+            self._io_manager.edit(file_path)
+        else:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
+
+    def _enter_run(self):
+        self._session._is_navigating_to_build_files = False
 
     def _interpret_file_ending_with(self, string):
         r'''Typesets TeX file.
@@ -386,6 +379,7 @@ class BuildFileWrangler(FileWrangler):
         commands.append(('score - generate latex source', 'sg'))
         commands.append(('score - interpret latex source', 'si'))
         commands.append(('score - open pdf', 'so'))
+        commands.append(('score - push pdf to distribution directory', 'sp'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -809,3 +803,32 @@ class BuildFileWrangler(FileWrangler):
         Returns none.
         '''
         self._open_file_ending_with('score.pdf')
+
+    def push_score_pdf_to_distribution_directory(self):
+        r'''Pushes ``score.pdf`` to distribution directory.
+
+        Returns none.
+        '''
+        path = self._session.current_build_directory
+        build_score_path = os.path.join(path, 'score.pdf')
+        if not os.path.exists(build_score_path):
+            message = 'does not exist: {!r}.'
+            message = message.format(build_score_path)
+            self._io_manager._display(message)
+            return
+        score_package_name = self._session.current_score_package_name
+        score_package_name = score_package_name.replace('_', '-')
+        distribution_file_name = '{}-score.pdf'.format(score_package_name)
+        distribution_directory = self._session.current_distribution_directory
+        distribution_score_path = os.path.join(
+            distribution_directory,
+            distribution_file_name,
+            )
+        shutil.copyfile(build_score_path, distribution_score_path)
+        messages = []
+        messages.append('Copied')
+        message = ' FROM: {}'.format(build_score_path)
+        messages.append(message)
+        message = '   TO: {}'.format(distribution_score_path)
+        messages.append(message)
+        self._io_manager._display(messages)
