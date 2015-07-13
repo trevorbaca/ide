@@ -365,6 +365,33 @@ class Session(abctools.AbjadObject):
         return self._controllers_visited
 
     @property
+    def current_build_directory(self):
+        r'''Gets session current build directory.
+
+        ..  container:: example
+
+            Build directory of session outside score:
+
+            ::
+
+                >>> session.current_build_directory is None
+                True
+
+        ..  container:: example
+
+            Build directory of session in score:
+
+            ::
+
+                >>> session_in_score.current_build_directory
+                '.../red_example_score/build'
+
+        Returns string.
+        '''
+        if self.current_score_directory:
+            return os.path.join(self.current_score_directory, 'build')
+
+    @property
     def current_controller(self):
         r'''Gets current controller of session.
 
@@ -380,6 +407,60 @@ class Session(abctools.AbjadObject):
         if self.controller_stack:
             return self.controller_stack[-1]
 
+    @property
+    def current_distribution_directory(self):
+        r'''Gets session current distribution directory.
+
+        ..  container:: example
+
+            Distribution directory of session outside score:
+
+            ::
+
+                >>> session.current_distribution_directory is None
+                True
+
+        ..  container:: example
+
+            Materials directory of session in score:
+
+            ::
+
+                >>> session_in_score.current_distribution_directory
+                '.../red_example_score/distribution'
+
+        Returns string.
+        '''
+        if self.current_score_directory:
+            return os.path.join(self.current_score_directory, 'distribution')
+
+    @property
+    def current_etc_directory(self):
+        r'''Gets session current etc directory.
+
+        ..  container:: example
+
+            Etc directory of session outside score:
+
+            ::
+
+                >>> session.current_etc_directory is None
+                True
+
+        ..  container:: example
+
+            Etc directory of session in score:
+
+            ::
+
+                >>> session_in_score.current_etc_directory
+                '.../red_example_score/etc'
+
+        Returns string.
+        '''
+        if self.current_score_directory:
+            return os.path.join(self.current_score_directory, 'etc')
+            
     @property
     def current_materials_directory(self):
         r'''Gets session current materials directory.
@@ -458,6 +539,33 @@ class Session(abctools.AbjadObject):
         for controller in reversed(self.controller_stack):
             if isinstance(controller, idetools.ScorePackageManager):
                 return controller
+
+    @property
+    def current_score_package_name(self):
+        r'''Gets session current score package name.
+
+        ..  container:: example
+
+            Score package name of session outside score:
+
+            ::
+
+                >>> session.current_score_package_name is None
+                True
+
+        ..  container:: example
+
+            Score package nmae of session in score:
+
+            ::
+
+                >>> session_in_score.current_score_package_name
+                'red_example_score'
+
+        Returns string.
+        '''
+        if self.current_score_directory:
+            return os.path.basename(self.current_score_directory)
 
     @property
     def current_segments_directory(self):
