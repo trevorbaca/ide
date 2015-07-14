@@ -70,10 +70,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'dp*': self.output_every_definition_py,
-            #
-            'oc*': self.check_every_output_py,
-            'oe*': self.edit_every_output_py,
             })
         return result
 
@@ -159,19 +155,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
                 result.append(path)
         return result
 
-    def _make_all_packages_menu_section(self, menu):
-        superclass = super(MaterialPackageWrangler, self)
-        commands = superclass._make_all_packages_menu_section(
-            menu, commands_only=True)
-        commands.append(('all packages - definition.py - output', 'dp*'))
-        commands.append(('all packages - output.py - check', 'oc*'))
-        commands.append(('all packages - output.py - edit', 'oe*'))
-        menu.make_command_section(
-            commands=commands,
-            is_hidden=True,
-            name='all packages',
-            )
-
     def _make_main_menu(self):
         superclass = super(MaterialPackageWrangler, self)
         menu = superclass._make_main_menu()
@@ -196,29 +179,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
 
     ### PUBLIC METHODS ###
 
-    # TODO: factor out check_every_definition_py shared code
-    def check_every_output_py(self):
-        r'''Checks ``output.py`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'check_output_py'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='check')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        for manager in managers:
-            method = getattr(manager, method_name)
-            method()
-
     def copy_package(self):
         r'''Copies package.
 
@@ -232,13 +192,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         Returns none.
         '''
         self._open_in_every_package('definition.py')
-
-    def edit_every_output_py(self):
-        r'''Opens ``output.py`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('output.py')
 
     def open_every_illustration_pdf(self):
         r'''Opens ``illustration.pdf`` in every package.

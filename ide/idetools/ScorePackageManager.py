@@ -191,17 +191,6 @@ class ScorePackageManager(PackageManager):
             'stylesheets',
             )
 
-    def _get_tempo_inventory(self):
-        wrangler = self._session._abjad_ide._material_package_wrangler
-        paths = wrangler._list_asset_paths()
-        for path in paths:
-            manager = wrangler._initialize_manager(path)
-            output_material_class_name = manager._get_metadatum(
-                'output_material_class_name')
-            if output_material_class_name == 'TempoInventory':
-                output_material = manager._execute_output_py()
-                return output_material
-
     def _get_title(self, year=False):
         if year and self._get_metadatum('year'):
             result = '{} ({})'

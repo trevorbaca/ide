@@ -71,18 +71,12 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'dp': self.output_definition_py,
-            #
             'le': self.edit_illustrate_py,
             'ls': self.write_stub_illustrate_py,
             #
             'ii': self.interpret_illustration_ly,
             'ie': self.edit_illustration_ly,
             'io': self.open_illustration_pdf,
-            #
-            'oc': self.check_output_py,
-            'oi': self.illustrate_output_py,
-            'oe': self.edit_output_py,
             })
         return result
 
@@ -111,10 +105,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         return os.path.join(self._path, 'maker.py')
 
     @property
-    def _output_py_path(self):
-        return os.path.join(self._path, 'output.py')
-
-    @property
     def _score_package_manager(self):
         from ide import idetools
         score_path = self._configuration._path_to_score_path(self._path)
@@ -127,21 +117,11 @@ class MaterialPackageManager(ScoreInternalPackageManager):
     def _source_paths(self):
         return (
             self._definition_py_path,
-            self._output_py_path,
             self._illustration_ly_path,
             self._illustration_pdf_path,
             )
 
     ### PRIVATE METHODS ###
-
-    def _can_make_output_material(self):
-        if os.path.isfile(self._definition_py_path):
-            return True
-        return False
-
-    @staticmethod
-    def _check_output_material(material):
-        return True
 
     def _execute_definition_py(self):
         result = self._io_manager.execute_file(
@@ -152,25 +132,10 @@ class MaterialPackageManager(ScoreInternalPackageManager):
             target = result[0]
             return target
 
-    def _execute_output_py(self):
-        attribute_names = (self._package_name,)
-        result = self._io_manager.execute_file(
-            path = self._output_py_path,
-            attribute_names=attribute_names,
-            )
-        if result and len(result) == 1:
-            output_material = result[0]
-            return output_material
-
     def _get_storage_format(self, expr):
         if hasattr(expr, '_storage_format_specification'):
             return format(expr, 'storage')
         return repr(expr)
-
-    def _has_output_material_editor(self):
-        if not os.path.isfile(self._definition_py_path):
-            return True
-        return False
 
     def _make_definition_py_menu_section(self, menu):
         name = 'definition.py'
@@ -248,51 +213,9 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         self._make_init_py_menu_section(menu)
         self._make_definition_py_menu_section(menu)
         self._make_metadata_menu_section(menu)
-        self._make_output_py_menu_section(menu)
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
-
-    def _make_output_material_lines(self, output_material):
-        if hasattr(output_material, '_storage_format_specification'):
-            lines = format(output_material, 'storage').splitlines()
-        else:
-            lines = [repr(output_material)]
-        lines = list(lines)
-        lines[0] = '{} = {}'.format(self._package_name, lines[0])
-        return lines
-
-    def _make_output_material_pair(self):
-        result = self._retrieve_output_material()
-        if result == 'corrupt':
-            message = '{} is corrupt.'.format(self._definition_py_path)
-            self._io_manager._display(message)
-            self._io_manager._acknowledge()
-            return
-        try:
-            output_material = result()
-        except TypeError:
-            output_material = result
-        body_string = '{} = {}'
-        output_material_name = self._package_name
-        storage_format = self._get_storage_format(output_material)
-        body_string = body_string.format(
-            output_material_name,
-            storage_format,
-            )
-        return (body_string, output_material)
-
-    def _make_output_py_menu_section(self, menu):
-        commands = []
-        if os.path.isfile(self._output_py_path):
-            commands.append(('output.py - check', 'oc'))
-            commands.append(('output.py - edit', 'oe'))
-            commands.append(('output.py - illustrate', 'oi'))
-        if commands:
-            menu.make_command_section(
-                commands=commands,
-                name='output.py',
-                )
 
     def _make_package(self):
         metadata = datastructuretools.TypedOrderedDict()
@@ -305,20 +228,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
                 )
             self._write_metadata_py(metadata)
             self.write_stub_definition_py()
-
-    def _object_to_import_statements(self, object_):
-        import_statements = []
-        module = object_.__class__.__module__
-        assert isinstance(module, str)
-        parts = module.split('.')
-        if 'makers' in parts:
-            index = parts.index('makers')
-            storehouse = parts[0]
-            import_statement = 'import {}'.format(storehouse)
-            import_statements.append(import_statement)
-        if 'handlertools' in parts:
-            import_statements.append(self._handlertools_import_statement)
-        return import_statements
 
     def _rename_interactively(
         self,
@@ -359,39 +268,10 @@ class MaterialPackageManager(ScoreInternalPackageManager):
                     new_package_name,
                     )
 
-    def _retrieve_output_material(self):
-        attribute_names = (self._package_name,)
-        result = self._io_manager.execute_file(
-            path=self._definition_py_path,
-            attribute_names=attribute_names,
-            )
-        if not len(result) == 1:
-            return 'corrupt'
-        output_material = result[0]
-        return output_material
-
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True
 
     ### PUBLIC METHODS ###
-
-    def check_output_py(self, dry_run=False):
-        r'''Checks ``output.py``.
-
-        Display errors generated during interpretation.
-        '''
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(self._output_py_path)
-            return inputs, outputs
-        stderr_lines = self._io_manager.check_file(self._output_py_path)
-        if stderr_lines:
-            messages = [self._output_py_path + ' FAILED:']
-            messages.extend('    ' + _ for _ in stderr_lines)
-            self._io_manager._display(messages)
-        else:
-            message = '{} OK.'.format(self._output_py_path)
-            self._io_manager._display(message)
 
     def edit_definition_py(self):
         r'''Edits ``definition.py``.
@@ -414,107 +294,101 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         '''
         self._io_manager.open_file(self._illustration_ly_path)
 
-    def edit_output_py(self):
-        r'''Opens ``output.py``.
-
-        Returns none.
-        '''
-        self._io_manager.open_file(self._output_py_path)
-
     # TODO: refactor with SegmentPackageManager.illustrate_definition_py()
-    def illustrate_output_py(self):
-        r'''Illustrates ``output.py``.
-
-        Makes ``illustration.pdf`` and ``illustration.ly``.
-
-        Returns none.
-        '''
-        if os.path.isfile(self._illustrate_py_path):
-            boilerplate_name = '__illustrate_material_2__.py'
-        else:
-            boilerplate_name = '__illustrate_material_1__.py'
-        boilerplate_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            boilerplate_name,
-            )
-        illustrate_path = os.path.join(
-            self._path,
-            '__illustrate_material__.py',
-            )
-        candidate_ly_path = os.path.join(
-            self._path, 
-            'illustration.candidate.ly'
-            )
-        candidate_pdf_path = os.path.join(
-            self._path, 
-            'illustration.candidate.pdf'
-            )
-        temporary_files = (
-            illustrate_path, 
-            candidate_ly_path,
-            candidate_pdf_path,
-            )
-        for path in temporary_files:
-            if os.path.exists(path):
-                os.remove(path)
-        illustration_ly_path = os.path.join(
-            self._path,
-            'illustration.ly',
-            )
-        illustration_pdf_path = os.path.join(
-            self._path,
-            'illustration.pdf',
-            )
-        with systemtools.FilesystemState(remove=temporary_files):
-            shutil.copyfile(boilerplate_path, illustrate_path)
-            self._replace_in_file(
-                illustrate_path, 
-                'OUTPUT_OBJECT', 
-                self._package_name,
-                )
-            with self._io_manager._silent():
-                result = self._io_manager.interpret_file(illustrate_path)
-            stdout_lines, stderr_lines = result
-            if stderr_lines:
-                self._io_manager._display(stderr_lines, capitalize=False)
-                return
-            messages = []
-            tab = self._io_manager._tab
-            if not os.path.exists(illustration_pdf_path):
-                shutil.move(candidate_pdf_path, illustration_pdf_path)
-                shutil.move(candidate_ly_path, illustration_ly_path)
-                tab = self._io_manager._tab
-                messages.append('Wrote ...')
-                messages.append(tab + illustration_ly_path)
-                messages.append(tab + illustration_pdf_path)
-                self._io_manager._display(messages)
-            else:
-                result = systemtools.TestManager.compare_files(
-                candidate_pdf_path,
-                illustration_pdf_path,
-                )
-                if result:
-                    messages.append('the files ...')
-                    messages.append(tab + candidate_pdf_path)
-                    messages.append(tab + illustration_pdf_path)
-                    messages.append('... compare the same.')
-                    self._io_manager._display(messages)
-                    message = 'Preserved {}.'.format(illustration_pdf_path)
-                    self._io_manager._display(message)
-                    return
-                else:
-                    messages.append('the files ...')
-                    messages.append(tab + candidate_pdf_path)
-                    messages.append(tab + illustration_pdf_path)
-                    messages.append('... compare differently.')
-                    self._io_manager._display(messages)
-                    message = 'overwrite existing PDF with candidate PDF?'
-                    result = self._io_manager._confirm(message=message)
-                    if self._session.is_backtracking or not result:
-                        return
-                    shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    shutil.move(candidate_ly_path, illustration_ly_path)
+    # TODO: maybe change to self.illustration_definition_py()
+#    def illustrate_output_py(self):
+#        r'''Illustrates ``output.py``.
+#
+#        Makes ``illustration.pdf`` and ``illustration.ly``.
+#
+#        Returns none.
+#        '''
+#        if os.path.isfile(self._illustrate_py_path):
+#            boilerplate_name = '__illustrate_material_2__.py'
+#        else:
+#            boilerplate_name = '__illustrate_material_1__.py'
+#        boilerplate_path = os.path.join(
+#            self._configuration.abjad_ide_directory,
+#            'boilerplate',
+#            boilerplate_name,
+#            )
+#        illustrate_path = os.path.join(
+#            self._path,
+#            '__illustrate_material__.py',
+#            )
+#        candidate_ly_path = os.path.join(
+#            self._path, 
+#            'illustration.candidate.ly'
+#            )
+#        candidate_pdf_path = os.path.join(
+#            self._path, 
+#            'illustration.candidate.pdf'
+#            )
+#        temporary_files = (
+#            illustrate_path, 
+#            candidate_ly_path,
+#            candidate_pdf_path,
+#            )
+#        for path in temporary_files:
+#            if os.path.exists(path):
+#                os.remove(path)
+#        illustration_ly_path = os.path.join(
+#            self._path,
+#            'illustration.ly',
+#            )
+#        illustration_pdf_path = os.path.join(
+#            self._path,
+#            'illustration.pdf',
+#            )
+#        with systemtools.FilesystemState(remove=temporary_files):
+#            shutil.copyfile(boilerplate_path, illustrate_path)
+#            self._replace_in_file(
+#                illustrate_path, 
+#                'OUTPUT_OBJECT', 
+#                self._package_name,
+#                )
+#            with self._io_manager._silent():
+#                result = self._io_manager.interpret_file(illustrate_path)
+#            stdout_lines, stderr_lines = result
+#            if stderr_lines:
+#                self._io_manager._display(stderr_lines, capitalize=False)
+#                return
+#            messages = []
+#            tab = self._io_manager._tab
+#            if not os.path.exists(illustration_pdf_path):
+#                shutil.move(candidate_pdf_path, illustration_pdf_path)
+#                shutil.move(candidate_ly_path, illustration_ly_path)
+#                tab = self._io_manager._tab
+#                messages.append('Wrote ...')
+#                messages.append(tab + illustration_ly_path)
+#                messages.append(tab + illustration_pdf_path)
+#                self._io_manager._display(messages)
+#            else:
+#                result = systemtools.TestManager.compare_files(
+#                candidate_pdf_path,
+#                illustration_pdf_path,
+#                )
+#                if result:
+#                    messages.append('the files ...')
+#                    messages.append(tab + candidate_pdf_path)
+#                    messages.append(tab + illustration_pdf_path)
+#                    messages.append('... compare the same.')
+#                    self._io_manager._display(messages)
+#                    message = 'Preserved {}.'.format(illustration_pdf_path)
+#                    self._io_manager._display(message)
+#                    return
+#                else:
+#                    messages.append('the files ...')
+#                    messages.append(tab + candidate_pdf_path)
+#                    messages.append(tab + illustration_pdf_path)
+#                    messages.append('... compare differently.')
+#                    self._io_manager._display(messages)
+#                    message = 'overwrite existing PDF with candidate PDF?'
+#                    result = self._io_manager._confirm(message=message)
+#                    if self._session.is_backtracking or not result:
+#                        return
+#                    shutil.move(candidate_pdf_path, illustration_pdf_path)
+#                    shutil.move(candidate_ly_path, illustration_ly_path)
 
     def open_illustration_pdf(self):
         r'''Opens ``illustration.pdf``.
@@ -522,57 +396,6 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         Returns none.
         '''
         self._io_manager.open_file(self._illustration_pdf_path)
-
-    def output_definition_py(self, dry_run=False):
-        r'''Outputs ``definition.py`` to ``output.py``.
-
-        Returns none.
-        '''
-        inputs, outputs = [], []
-        inputs = [self._definition_py_path]
-        outputs = [(self._output_py_path,)]
-        if dry_run:
-            return inputs, outputs
-        message = 'will write output material to {}.'
-        message = message.format(self._output_py_path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        clear = not os.path.isfile(self._output_py_path)
-        boilerplate_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            '__output_material__.py',
-            )
-        output_path = os.path.join(
-            self._path,
-            '__output_material__.py',
-            )
-        temporary_files = (
-            output_path,
-            )
-        with systemtools.FilesystemState(remove=temporary_files):
-            shutil.copyfile(boilerplate_path, output_path)
-            with self._io_manager._silent():
-                result = self._io_manager.interpret_file(output_path)
-        stdout_lines, stderr_lines = result
-        if stderr_lines:
-            self._io_manager._display_errors(stderr_lines)
-            return
-        result = self._io_manager.execute_file(
-            path=self._output_py_path,
-            attribute_names=(
-                self._package_name,
-                ),
-            )
-        output_material = result[0]
-        output_material_class_name = type(output_material).__name__
-        self._add_metadatum(
-            'output_material_class_name', 
-            output_material_class_name,
-            )
-        self._session._pending_redraw = clear
 
     def write_definition_py(
         self,
@@ -626,6 +449,7 @@ class MaterialPackageManager(ScoreInternalPackageManager):
         self._io_manager._display(message)
 
     # TODO: replace with boilerplate
+    # TODO: maybe eliminate altogether?
     def write_stub_illustrate_py(self):
         r'''Writes stub ``__illustrate.py__``.
 

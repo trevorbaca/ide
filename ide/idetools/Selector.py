@@ -310,18 +310,3 @@ class Selector(Controller):
             session=self._session,
             )
         return selector
-
-    def make_tempo_selector(self):
-        r'''Makes tempo selector.
-
-        Returns selector.
-        '''
-        items = []
-        manager = self._session.current_score_package_manager
-        if hasattr(manager, '_get_tempo_inventory'):
-            items = manager._get_tempo_inventory()
-        selector = type(self)(
-            session=self._session,
-            items=items,
-            )
-        return selector

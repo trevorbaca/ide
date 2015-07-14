@@ -184,7 +184,6 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         '''
         self._open_file(self._illustration_ly_path)
 
-    # TODO: refactor with MaterialPackageManager.illustrate_output_py()
     def illustrate_definition_py(self, dry_run=False):
         r'''Illustrates ``definition.py``.
 

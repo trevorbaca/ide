@@ -13,7 +13,6 @@ path = os.path.join(
 initializer_file_path = os.path.join(path, '__init__.py')
 metadata_py_path = os.path.join(path, '__metadata__.py')
 definition_py_path = os.path.join(path, 'definition.py')
-output_py_path = os.path.join(path, 'output.py')
 
 exception_file_path = os.path.join(
     abjad_ide._configuration.boilerplate_directory,
@@ -138,29 +137,6 @@ def test_MaterialPackageWrangler_make_package_05():
 
 
 def test_MaterialPackageWrangler_make_package_06():
-    r'''Makes handmade package. Copies boilerplate definition py.
-    Creates output material. Removes package.
-    '''
-
-    with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
-        abjad_ide._run(input_=input_)
-        assert os.path.exists(path)
-        assert os.path.exists(definition_py_path)
-        assert not os.path.exists(output_py_path)
-        shutil.copyfile(
-            boilerplate_definition_py_path,
-            definition_py_path,
-            )
-        input_ = 'mm testnotes dp y q'
-        abjad_ide._run(input_=input_)
-        assert os.path.exists(output_py_path)
-        input_ = 'mm rm testnotes remove q'
-        abjad_ide._run(input_=input_)
-        assert not os.path.exists(path)
-
-
-def test_MaterialPackageWrangler_make_package_07():
     r'''Makes handmade package. Overwrite material definition py with stub.
     Removes package.
     '''
@@ -183,7 +159,7 @@ def test_MaterialPackageWrangler_make_package_07():
         abjad_ide._run(input_=input_)
 
 
-def test_MaterialPackageWrangler_make_package_08():
+def test_MaterialPackageWrangler_make_package_07():
     r'''Makes handmade package. Corrupts definition py. Makes sure
     Abjad IDE starts when definition py is corrupt. Removes package.
     '''
@@ -195,37 +171,6 @@ def test_MaterialPackageWrangler_make_package_08():
         assert os.path.exists(definition_py_path)
         shutil.copyfile(exception_file_path, definition_py_path)
         assert filecmp.cmp(definition_py_path, exception_file_path)
-        input_ = 'mm rm testnotes remove q'
-        abjad_ide._run(input_=input_)
-        assert not os.path.exists(path)
-
-
-def test_MaterialPackageWrangler_make_package_09():
-    r'''Makes handmade package. Copies canned material definition py.
-    Makes output py. Corrupts output py. Makes sure Abjad IDE
-    starts when output py is corrupt. Removes package.
-    '''
-
-    with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
-        abjad_ide._run(input_=input_)
-        assert os.path.exists(path)
-        assert os.path.exists(definition_py_path)
-        assert not os.path.exists(output_py_path)
-        shutil.copyfile(
-            boilerplate_definition_py_path,
-            definition_py_path,
-            )
-        assert filecmp.cmp(
-            definition_py_path,
-            boilerplate_definition_py_path,
-            )
-        input_ = 'mm testnotes dp y q'
-        abjad_ide._run(input_=input_)
-        assert os.path.exists(output_py_path)
-        assert not filecmp.cmp(output_py_path, exception_file_path)
-        shutil.copyfile(exception_file_path, output_py_path)
-        assert filecmp.cmp(output_py_path, exception_file_path)
         input_ = 'mm rm testnotes remove q'
         abjad_ide._run(input_=input_)
         assert not os.path.exists(path)
