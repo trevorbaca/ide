@@ -221,6 +221,7 @@ class MenuEntry(AbjadObject):
             self.menu_section,
             self.menu_section.return_value_attribute,
             self,
+            return_value,
             ))
         return return_value
 

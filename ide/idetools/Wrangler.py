@@ -599,13 +599,15 @@ class Wrangler(AssetController):
         ):
         from ide import idetools
         display_strings, keys = [], []
-        keys.append(self._user_storehouse_path)
-        if self._in_library:
+        if self._user_storehouse_path is not None:
+            assert self._in_library
             display_string = 'My {} library'.format(self._asset_identifier)
             display_strings.append(display_string)
+            keys.append(self._user_storehouse_path)
         wrangler = idetools.ScorePackageWrangler(session=self._session)
         paths = wrangler._list_asset_paths(
-            abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
+            abjad_material_packages_and_stylesheets=\
+                abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
             library=library,
             user_score_packages=user_score_packages,
@@ -617,6 +619,7 @@ class Wrangler(AssetController):
             path_parts = path_parts + self._score_storehouse_path_infix_parts
             key = os.path.join(*path_parts)
             keys.append(key)
+        assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
         return sequencetools.zip_sequences(sequences, cyclic=True)
 
