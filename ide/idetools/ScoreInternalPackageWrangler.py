@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import time
 from ide.idetools.PackageWrangler import PackageWrangler
 
 
@@ -74,9 +75,16 @@ class ScoreInternalPackageWrangler(PackageWrangler):
         result = self._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
+        start_time = time.time()
         for manager in managers:
             method = getattr(manager, method_name)
             method()
+        stop_time = time.time()
+        total_time = stop_time - start_time
+        total_time = int(total_time)
+        message = 'total time: {} seconds.'
+        message = message.format(total_time)
+        self._io_manager._display(message)
 
     def edit_init_py(self):
         r'''Edits ``__init__.py``.
