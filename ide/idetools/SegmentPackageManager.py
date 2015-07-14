@@ -67,31 +67,11 @@ class SegmentPackageManager(ScoreInternalPackageManager):
 
     @property
     def _illustration_ly_path(self):
-        #return os.path.join(self._path, 'illustration.ly')
-        score_package_name = self._session.current_score_package_name
-        segment_name = self._space_delimited_lowercase_name
-        if self._session.is_in_score:
-            segment_name = self._get_metadatum('name')
-        segment_name = segment_name or self._space_delimited_lowercase_name
-        file_name = '{}-{}.ly'
-        file_name = file_name.format(score_package_name, segment_name)
-        file_name = file_name.replace('_', '-')
-        file_name = file_name.lower()
-        return os.path.join(self._path, file_name)
+        return os.path.join(self._path, 'illustration.ly')
 
     @property
     def _illustration_pdf_path(self):
-        #return os.path.join(self._path, 'illustration.pdf')
-        score_package_name = self._session.current_score_package_name
-        segment_name = self._space_delimited_lowercase_name
-        if self._session.is_in_score:
-            segment_name = self._get_metadatum('name')
-        segment_name = segment_name or self._space_delimited_lowercase_name
-        file_name = '{}-{}.pdf'
-        file_name = file_name.format(score_package_name, segment_name)
-        file_name = file_name.replace('_', '-')
-        file_name = file_name.lower()
-        return os.path.join(self._path, file_name)
+        return os.path.join(self._path, 'illustration.pdf')
 
     @property
     def _source_paths(self):
