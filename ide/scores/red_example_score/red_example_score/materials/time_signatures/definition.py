@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
-from red_example_score.materials.magic_numbers.output import magic_numbers
+from red_example_score.materials.magic_numbers.definition import magic_numbers
 
 
 numerators = magic_numbers[:8]

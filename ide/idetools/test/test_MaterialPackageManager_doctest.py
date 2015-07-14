@@ -12,8 +12,8 @@ def test_MaterialPackageManager_doctest_01():
 
     strings = [
         'Running doctest ...',
-        '4 testable assets found ...',
-        '0 of 0 tests passed in 4 modules.',
+        '3 testable assets found ...',
+        '0 of 0 tests passed in 3 modules.',
         ]
     for string in strings:
        assert string in contents

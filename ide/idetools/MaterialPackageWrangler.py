@@ -200,32 +200,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         '''
         self._open_in_every_package('illustration.pdf')
 
-    def output_every_definition_py(self):
-        r'''Outputs ``definition.py`` to ``output.py`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'output_definition_py'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='output')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        with self._io_manager._silent():
-            if managers:
-                print('')
-            for manager in managers:
-                method = getattr(manager, method_name)
-                method()
-                print('Output {}.'.format(manager._output_py_path))
-
     def remove_packages(self):
         r'''Removes one or more packages.
 

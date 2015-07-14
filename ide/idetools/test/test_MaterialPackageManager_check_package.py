@@ -14,7 +14,7 @@ def test_MaterialPackageManager_check_package_01():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'Top level (6 assets): OK' in contents
+    assert 'Top level (5 assets): OK' in contents
     assert 'found' not in contents
     assert 'missing' not in contents
 
@@ -29,7 +29,7 @@ def test_MaterialPackageManager_check_package_02():
 
     lines = [
         '3 of 3 required files found:',
-        '3 optional files found:',
+        '2 optional files found:',
         ]
     for line in lines:
         assert line in contents
