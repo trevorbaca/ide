@@ -77,6 +77,12 @@ class AbjadIDE(Wrangler):
 
     @property
     @systemtools.Memoize
+    def _etc_file_wrangler(self):
+        from ide import idetools
+        return idetools.EtcFileWrangler(session=self._session)
+
+    @property
+    @systemtools.Memoize
     def _maker_file_wrangler(self):
         from ide import idetools
         return idetools.MakerFileWrangler(session=self._session)
@@ -111,6 +117,7 @@ class AbjadIDE(Wrangler):
             self,
             self._build_file_wrangler,
             self._distribution_file_wrangler,
+            self._etc_file_wrangler,
             self._maker_file_wrangler,
             self._material_package_wrangler,
             self._score_package_wrangler,

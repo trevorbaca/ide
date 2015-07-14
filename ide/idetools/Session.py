@@ -62,6 +62,7 @@ class Session(abctools.AbjadObject):
         '_is_in_user_input_getter',
         '_is_navigating_to_build_files',
         '_is_navigating_to_distribution_files',
+        '_is_navigating_to_etc_files',
         '_is_navigating_to_next_asset',
         '_is_navigating_to_next_score',
         '_is_navigating_to_previous_asset',
@@ -132,6 +133,7 @@ class Session(abctools.AbjadObject):
         self._is_in_score_setup_menu = False
         self._is_navigating_to_build_files = False
         self._is_navigating_to_distribution_files = False
+        self._is_navigating_to_etc_files = False
         self._is_navigating_to_next_asset = False
         self._is_navigating_to_next_score = False
         self._is_navigating_to_previous_asset = False
@@ -1007,6 +1009,22 @@ class Session(abctools.AbjadObject):
         return self._is_navigating_to_distribution_files
 
     @property
+    def is_navigating_to_etc_files(self):
+        r'''Is true when session is navigating to etc directory.
+        Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.is_navigating_to_etc_files
+                False
+
+        Returns boolean.
+        '''
+        return self._is_navigating_to_etc_files
+
+    @property
     def is_navigating_to_maker_files(self):
         r'''Is true when session is navigating to score makers.
         Otherwise false.
@@ -1444,6 +1462,8 @@ class Session(abctools.AbjadObject):
             return 'u'
         elif self.is_navigating_to_distribution_files:
             return 'd'
+        elif self.is_navigating_to_etc_files:
+            return 'e'
         elif self.is_navigating_to_maker_files:
             return 'k'
         elif self.is_navigating_to_materials:

@@ -115,6 +115,7 @@ class Menu(Controller):
     def _wrangler_navigation_to_session_variable(self):
         result = {
             'd': '_is_navigating_to_distribution_files',
+            'e': '_is_navigating_to_etc_files',
             'g': '_is_navigating_to_segments',
             'k': '_is_navigating_to_maker_files',
             'm': '_is_navigating_to_materials',

@@ -66,6 +66,7 @@ class AssetController(Controller):
             '>>': self.go_to_next_score,
             #
             'd': self.go_to_score_distribution_files,
+            'e': self.go_to_score_etc_files,
             'g': self.go_to_score_segments,
             'k': self.go_to_score_maker_files,
             'm': self.go_to_score_materials,
@@ -81,7 +82,7 @@ class AssetController(Controller):
         result = (
             'b', 'q',
             'hh', 'dd', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
-            'd', 'g', 'k', 'm', 's', 'u', 'y',
+            'd', 'e', 'g', 'k', 'm', 's', 'u', 'y',
             )
         return result
 
@@ -323,6 +324,7 @@ class AssetController(Controller):
             commands.append(('go - score', 's'))
             commands.append(('go - score - build', 'u'))
             commands.append(('go - score - distribution', 'd'))
+            commands.append(('go - score - etc', 'e'))
             commands.append(('go - score - makers', 'k'))
             commands.append(('go - score - materials', 'm'))
             commands.append(('go - score - segments', 'g'))
@@ -746,6 +748,13 @@ class AssetController(Controller):
         Returns none.
         '''
         self._session._abjad_ide._distribution_file_wrangler._run()
+
+    def go_to_score_etc_files(self):
+        r'''Goes to etc files.
+
+        Returns none.
+        '''
+        self._session._abjad_ide._etc_file_wrangler._run()
 
     def go_to_score_maker_files(self):
         r'''Goes to maker files.
