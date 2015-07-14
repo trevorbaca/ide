@@ -43,6 +43,7 @@ class AssetController(Controller):
             'hh': self.go_home,
             #
             'dd': self.go_to_all_distribution_files,
+            'ee': self.go_to_all_etc_files,
             'gg': self.go_to_all_segments,
             'kk': self.go_to_all_maker_files,
             'mm': self.go_to_all_materials,
@@ -81,7 +82,7 @@ class AssetController(Controller):
     def _navigation_commands(self):
         result = (
             'b', 'q',
-            'hh', 'dd', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
+            'hh', 'dd', 'ee', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
             'd', 'e', 'g', 'k', 'm', 's', 'u', 'y',
             )
         return result
@@ -315,6 +316,7 @@ class AssetController(Controller):
         commands.append(('go - all', 'hh'))
         commands.append(('go - all - build', 'uu'))
         commands.append(('go - all - distribution', 'dd'))
+        commands.append(('go - all - etc', 'ee'))
         commands.append(('go - all - makers', 'kk'))
         commands.append(('go - all - materials', 'mm'))
         commands.append(('go - all - scores', 'ss'))
@@ -684,6 +686,14 @@ class AssetController(Controller):
         '''
         self.go_to_all_scores()
         self._session._is_navigating_to_distribution_files = True
+
+    def go_to_all_etc_files(self):
+        r'''Goes to all etc files.
+
+        Returns none.
+        '''
+        self.go_to_all_scores()
+        self._session._is_navigating_to_etc_files = True
 
     def go_to_all_maker_files(self):
         r'''Goes to all maker files.
