@@ -77,24 +77,8 @@ class PackageManager(AssetController):
             'ne': self.edit_init_py,
             'nl': self.list_init_py,
             'ns': self.write_stub_init_py,
-            #
-            'rad': self.add,
-            'rci': self.commit,
-            'rcn': self.remove_unadded_assets,
-            'rrv': self.revert,
-            'rst': self.display_status,
-            'rup': self.update,
             })
         return result
-
-    @property
-    def _display_status_command(self):
-        if not self._path:
-            return
-        if self._is_in_git_repository(path=self._path):
-            return 'git status {}'.format(self._path)
-        else:
-            return
 
     @property
     def _init_py_file_path(self):
@@ -461,7 +445,6 @@ class PackageManager(AssetController):
         superclass = super(PackageManager, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
-        self._make_repository_menu_section(menu)
         return menu
 
     def _make_metadata_menu_entries(self):
@@ -706,33 +689,6 @@ class PackageManager(AssetController):
             self._io_manager.spawn_subprocess(command)
 
     ### PUBLIC METHODS ###
-
-    def add(self, dry_run=False):
-        r'''Adds files to repository.
-
-        Returns none.
-        '''
-        change = systemtools.TemporaryDirectoryChange(directory=self._path)
-        with change:
-            inputs = self._get_unadded_asset_paths()
-            outputs = []
-            if dry_run:
-                return inputs, outputs
-            if not inputs:
-                message = 'nothing to add.'
-                self._io_manager._display(message)
-                return
-            messages = []
-            messages.append('will add ...')
-            for path in inputs:
-                messages.append(self._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking or not result:
-                return
-            command = self._repository_add_command
-            assert isinstance(command, str)
-            self._io_manager.run_command(command)
 
     def add_metadatum(self):
         r'''Adds metadatum to ``__metadata.py__``.
@@ -1006,76 +962,6 @@ class PackageManager(AssetController):
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
-    def commit(self, commit_message=None):
-        r'''Commits files to repository.
-
-        Returns none.
-        '''
-        change = systemtools.TemporaryDirectoryChange(directory=self._path)
-        with change:
-            self._session._attempted_to_commit = True
-            if self._session.is_repository_test:
-                return
-            if commit_message is None:
-                getter = self._io_manager._make_getter()
-                getter.append_string('commit message')
-                commit_message = getter._run()
-                if self._session.is_backtracking or commit_message is None:
-                    return
-                message = 'commit message will be: "{}"'
-                message = message.format(commit_message)
-                self._io_manager._display(message)
-                result = self._io_manager._confirm()
-                if self._session.is_backtracking or not result:
-                    return
-            message = self._get_score_package_directory_name()
-            message = message + ' ...'
-            command = self._make_repository_commit_command(commit_message)
-            self._io_manager.run_command(command, capitalize=False)
-
-    def display_status(self):
-        r'''Displays repository status.
-
-        Returns none.
-        '''
-        change = systemtools.TemporaryDirectoryChange(directory=self._path)
-        with change:
-            command = self._display_status_command
-            if not command:
-                message = 'path not in repository: {}.'
-                message = message.format(self._path)
-                self._io_manager._display(message)
-                return
-            messages = []
-            self._session._attempted_display_status = True
-            message = 'Repository status for {} ...'
-            message = message.format(self._path)
-            messages.append(message)
-            with systemtools.TemporaryDirectoryChange(directory=self._path):
-                process = self._io_manager.make_subprocess(command)
-            path = self._path
-            path = path + os.path.sep
-            clean_lines = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                clean_line = line.strip()
-                clean_line = clean_line.replace(path, '')
-                clean_lines.append(clean_line)
-            everything_ok = False
-            for line in clean_lines:
-                if 'nothing to commit' in line:
-                    everything_ok = True
-                    break
-            if clean_lines and not everything_ok:
-                messages.extend(clean_lines)
-            else:
-                first_message = messages[0]
-                first_message = first_message + ' OK'
-                messages[0] = first_message
-                clean_lines.append(message)
-            self._io_manager._display(messages, capitalize=False)
-
     def edit_init_py(self):
         r'''Edits ``__init__.py``.
 
@@ -1116,69 +1002,6 @@ class PackageManager(AssetController):
             return
         metadatum_name = result
         self._remove_metadatum(metadatum_name)
-
-    def remove_unadded_assets(self, dry_run=False):
-        r'''Removes files not yet added to repository.
-
-        Returns none.
-        '''
-        return self._remove_unadded_assets(dry_run=dry_run)
-
-    def revert(self):
-        r'''Reverts files to repository.
-
-        Returns none.
-        '''
-        change = systemtools.TemporaryDirectoryChange(directory=self._path)
-        with change:
-            self._session._attempted_to_revert = True
-            if self._session.is_repository_test:
-                return
-            paths = []
-            paths.extend(self._get_added_asset_paths())
-            paths.extend(self._get_modified_asset_paths())
-            messages = []
-            messages.append('will revert ...')
-            for path in paths:
-                messages.append(self._io_manager._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking or not result:
-                return
-            commands = []
-            if self._is_in_git_repository():
-                for path in paths:
-                    command = 'git checkout {}'.format(path)
-                    commands.append(command)
-            else:
-                raise ValueError(self)
-            command = ' && '.join(commands)
-            with systemtools.TemporaryDirectoryChange(directory=self._path):
-                self._io_manager.spawn_subprocess(command)
-
-    def update(self, messages_only=False):
-        r'''Updates files from repository.
-
-        Returns none.
-        '''
-        messages = []
-        change = systemtools.TemporaryDirectoryChange(directory=self._path)
-        with change:
-            self._session._attempted_to_update = True
-            if self._session.is_repository_test:
-                return messages
-            command = self._repository_update_command
-            messages = self._io_manager.run_command(
-                command,
-                messages_only=True,
-                )
-        if messages and messages[-1].startswith('At revision'):
-            messages = messages[-1:]
-        elif messages and 'Already up-to-date' in messages[-1]:
-            messages = messages[-1:]
-        if messages_only:
-            return messages
-        self._io_manager._display(messages)
 
     def write_stub_init_py(self):
         r'''Writes stub ``__init__.py``.
