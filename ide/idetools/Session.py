@@ -92,7 +92,6 @@ class Session(abctools.AbjadObject):
         'controller_stack',
         'current_score_package_manager',
         'is_in_confirmation_environment',
-        'is_in_autoeditor',
         'is_in_user_input_getter',
         'last_asset_path',
         'last_score_path',
@@ -838,26 +837,6 @@ class Session(abctools.AbjadObject):
         return self._is_backtracking_to_score
 
     @property
-    def is_in_autoeditor(self):
-        r'''Is true when session is in editor. Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_autoeditor
-                False
-
-        Returns boolean.
-        '''
-        from ide import idetools
-        for controller in reversed(self.controller_stack):
-            #if isinstance(controller, idetools.Autoeditor):
-            if False:
-                return True
-        return False
-
-    @property
     def is_in_confirmation_environment(self):
         r'''Is true when session is in confirmation environment.
         Otherwise false:
@@ -1336,7 +1315,7 @@ class Session(abctools.AbjadObject):
 
     @property
     def pending_done(self):
-        r'''Is true when autoeditor is pending done. Otherwise false.
+        r'''Is true when something is pending done. Otherwise false.
 
         ..  container:: example
 

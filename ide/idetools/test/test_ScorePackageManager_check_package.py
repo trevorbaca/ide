@@ -38,7 +38,7 @@ def test_ScorePackageManager_check_package_02():
     lines = [
         '6 of 6 required directories found:',
         '3 of 3 required files found:',
-        '1 optional directory found:',
+        '2 optional directories found:',
         ]
     for line in lines:
         assert line in contents

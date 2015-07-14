@@ -14,7 +14,7 @@ def test_ScorePackageManager__handle_numeric_user_input_01():
 
 def test_ScorePackageManager__handle_numeric_user_input_02():
 
-    input_ = 'red~example~score 7 q'
+    input_ = 'red~example~score 8 q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

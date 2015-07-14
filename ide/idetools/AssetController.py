@@ -602,8 +602,7 @@ class AssetController(Controller):
 
         Returns none.
         '''
-        if (not self._session.is_in_confirmation_environment and
-            not self._session.is_in_autoeditor):
+        if not self._session.is_in_confirmation_environment:
             show = self._session.display_available_commands
             self._session._display_available_commands = not show
 

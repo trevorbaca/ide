@@ -227,23 +227,6 @@ class Menu(Controller):
         if self._user_enters_argument_range(input_):
             return self._handle_argument_range_input(input_)
 
-    def _display_parent_autoeditor_attribute_sections(self):
-        parent_autoeditors = self._get_parent_autoeditors()
-        for autoeditor in parent_autoeditors:
-            menu = autoeditor._make_main_menu()
-            header = self._session._make_menu_header(
-                annotate_edit=False,
-                stop_controller=autoeditor,
-                )
-            header = header + ' ...'
-            self._io_manager._display([header, ''])
-            try:
-                section = menu['attributes']
-            except KeyError:
-                continue
-            lines = section._make_lines()
-            self._io_manager._display(lines)
-
     def _enclose_in_list(self, expr):
         if self._has_ranged_section():
             return [expr]
@@ -256,23 +239,6 @@ class Menu(Controller):
                 continue
             if section._menu_entry_return_values:
                 return section._menu_entry_return_values[0]
-
-    def _get_nearest_autoeditor(self):
-        from ide import idetools
-        for controller in reversed(self._session.controller_stack):
-            if self._is_autoeditor_with_attributes_menu_section(controller):
-                return controller
-
-    def _get_parent_autoeditors(self):
-        from ide import idetools
-        autoeditors = []
-        for controller in self._session.controller_stack:
-            if self._is_autoeditor_with_attributes_menu_section(controller):
-                autoeditors.append(controller)
-        if not autoeditors:
-            return []
-        parent_autoeditors = autoeditors[:-1]
-        return parent_autoeditors
 
     def _group_by_annotation(self, lines):
         new_lines = []
@@ -385,14 +351,8 @@ class Menu(Controller):
                     return True
         return False
 
-    @staticmethod
-    def _is_autoeditor_with_attributes_menu_section(controller):
-        return False
-
     def _is_in_open_environment(self):
         if self._session.is_in_confirmation_environment:
-            return False
-        if self._session.is_in_autoeditor:
             return False
         return True
 
@@ -629,13 +589,7 @@ class Menu(Controller):
         if self.title is not None:
             title = self.title
         else:
-            parent_autoeditors = self._get_parent_autoeditors()
-            if parent_autoeditors:
-                nearest_autoeditor = self._get_nearest_autoeditor()
-                breadcrumb = getattr(nearest_autoeditor, 'breadcrumb', None)
-                title = '... {} (EDIT)'.format(breadcrumb)
-            else:
-                title = self._session.menu_header
+            title = self._session.menu_header
         result.append(stringtools.capitalize_start(title))
         if self.subtitle is not None:
             line = '  ' + self.subtitle
@@ -657,7 +611,6 @@ class Menu(Controller):
     def _redraw(self):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
-        self._display_parent_autoeditor_attribute_sections()
         if self._session.display_available_commands:
             lines = self._make_available_command_section_lines()
         else:

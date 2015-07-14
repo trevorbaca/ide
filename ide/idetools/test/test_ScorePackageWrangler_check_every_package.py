@@ -10,7 +10,7 @@ def test_ScorePackageWrangler_check_every_package_01():
 
     lines = [
         'Étude Example Score (2013):',
-        '    Top level (9 assets): OK',
+        '    Top level (10 assets): OK',
         '    Build directory (1 files): OK',
         '    Distribution directory (0 files): OK',
         '    Makers directory (0 files): OK',
@@ -18,7 +18,7 @@ def test_ScorePackageWrangler_check_every_package_01():
         '    Segments directory (0 packages): OK',
         '    Stylesheets directory (0 files): OK',
         'Red Example Score (2013):',
-        '    Top level (9 assets): OK',
+        '    Top level (10 assets): OK',
         '    Build directory (18 files): OK',
         '    Distribution directory (2 files): OK',
         '    Makers directory (2 files): OK',
