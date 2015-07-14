@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 import shutil
+import time
 from abjad.tools import systemtools
 from ide.idetools.ScoreInternalPackageManager import \
     ScoreInternalPackageManager
@@ -249,14 +250,20 @@ class SegmentPackageManager(ScoreInternalPackageManager):
                 statement,
                 )
             with self._io_manager._silent():
+                start_time = time.time()
                 result = self._io_manager.interpret_file(
                     illustrate_path,
                     strip=False,
                     )
+                stop_time = time.time()
+                total_time = stop_time - start_time
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
+            message = 'total time: {} seconds.'
+            message = message.format(int(total_time))
+            self._io_manager._display(message)
             if not os.path.exists(illustration_pdf_path):
                 messages = []
                 messages.append('Wrote ...')
