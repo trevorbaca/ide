@@ -57,6 +57,7 @@ class MenuEntry(AbjadObject):
         self._menu_section = menu_section
         self._display_string = display_string
         self._explicit_return_value = explicit_return_value
+        assert MenuEntry._is_valid_key(key), repr(key)
         self._key = key
         self._prepopulated_value = prepopulated_value
 
@@ -98,6 +99,16 @@ class MenuEntry(AbjadObject):
             keyword_argument_names=keyword_argument_names,
             positional_argument_values=positional_argument_values,
             )
+
+    ### PRIVATE METHODS ###
+
+    @staticmethod
+    def _is_valid_key(key):
+        if key is None:
+            return True
+        if isinstance(key, str) and key.lower() == key:
+            return True
+        return False
 
     ### PUBLIC PROPERTIES ###
 
