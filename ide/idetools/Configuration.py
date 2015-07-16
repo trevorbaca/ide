@@ -51,7 +51,6 @@ class Configuration(AbjadConfiguration):
     ### PRIVATE METHODS ###
 
     def _get_option_definitions(self):
-        #parent_options = AbjadConfiguration._get_option_definitions(self)
         options = {
             'composer_full_name': {
                 'comment': [
@@ -122,8 +121,6 @@ class Configuration(AbjadConfiguration):
                 'spec': "string(default='Upper Case Full Name')",
             },
         }
-        #parent_options.update(options)
-        #return parent_options
         return options
 
     def _make_missing_directories(self):
@@ -240,6 +237,39 @@ class Configuration(AbjadConfiguration):
             'blue_example_score',
             'etude_example_score',
             'red_example_score',
+            )
+
+    @property
+    def aliases_file_name(self):
+        r'''Gets aliases file name.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.aliases_file_name
+                '__aliases__.py'
+
+        Returns string.
+        '''
+        return '__aliases__.py'
+
+    @property
+    def aliases_file_path(self):
+        r'''Gets aliases file path.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.aliases_file_path
+                '.../.abjad/ide/__aliases__.py'
+
+        Returns string.
+        '''
+        return os.path.join(
+            self.configuration_directory,
+            self.aliases_file_name,
             )
 
     @property
