@@ -32,7 +32,7 @@ def test_ScorePackageWrangler_make_package_01():
         ]
 
     with systemtools.FilesystemState(remove=[outer_path]):
-        input_ = 'new example~score y q'
+        input_ = 'new Example~Score y q'
         abjad_ide._run(input_=input_)
         contents = abjad_ide._transcript.contents
         assert os.path.exists(outer_path)
@@ -44,7 +44,7 @@ def test_ScorePackageWrangler_make_package_01():
             path = os.path.join(outer_path, file_name)
             assert os.path.exists(path)
 
-    assert 'Enter score package name]>' in contents
+    assert 'Enter title]> Example Score' in contents
 
 
 def test_ScorePackageWrangler_make_package_02():
