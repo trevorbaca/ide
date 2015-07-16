@@ -47,8 +47,6 @@ class AbjadIDE(Wrangler):
     @property
     def _breadcrumb(self):
         if not self._session.is_in_score:
-            #superclass = super(AbjadIDE, self)
-            #return superclass._breadcrumb
             return self._basic_breadcrumb
 
     @property

@@ -132,6 +132,7 @@ class Menu(Controller):
             1. all command sections
             2. 'assets' section, if it exists
             3. 'material summary', if it exists
+            4. aliases, if any are defined
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
@@ -226,6 +227,17 @@ class Menu(Controller):
                     return self._enclose_in_list(return_value)
         if self._user_enters_argument_range(input_):
             return self._handle_argument_range_input(input_)
+        current_score_directory = self._session.current_score_directory
+        aliased_path = self._session.aliases.get(input_, None)
+        if current_score_directory and aliased_path:
+            aliased_path = os.path.join(current_score_directory, aliased_path)
+            if os.path.isfile(aliased_path):
+                self._io_manager.open_file(aliased_path)
+            else:
+                message = 'file does not exist: {}.'
+                message = message.format(aliased_path)
+                self._io_manager._display(message)
+            return 'user entered alias'
 
     def _enclose_in_list(self, expr):
         if self._has_ranged_section():
@@ -300,6 +312,8 @@ class Menu(Controller):
             count = length - i
             candidate = ' '.join(parts[:count])
             directive = self._change_input_to_directive(candidate)
+            if directive == 'user entered alias':
+                continue
             if directive is not None:
                 if count < length:
                     remaining_count = length - count
@@ -314,6 +328,8 @@ class Menu(Controller):
                     self._session._pending_input = pending_input
                     self._session._pending_redraw = True
                 break
+        if directive == 'user entered alias':
+            return
         directive = self._strip_default_notice_from_strings(directive)
         directive = self._handle_directive(directive)
         if directive is None and user_entered_lone_return:
