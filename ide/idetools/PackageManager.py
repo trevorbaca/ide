@@ -70,10 +70,6 @@ class PackageManager(AssetController):
         result.update({
             'ck': self.check_package,
             #
-            'mda': self.add_metadatum,
-            'mdg': self.get_metadatum,
-            'mdr': self.remove_metadatum,
-            #
             'ne': self.edit_init_py,
             'nl': self.list_init_py,
             'ns': self.write_stub_init_py,
@@ -690,24 +686,6 @@ class PackageManager(AssetController):
 
     ### PUBLIC METHODS ###
 
-    def add_metadatum(self):
-        r'''Adds metadatum to ``__metadata.py__``.
-
-        Returns none.
-        '''
-        getter = self._io_manager._make_getter()
-        getter.append_snake_case_string(
-            'metadatum name',
-            allow_empty=False,
-            )
-        getter.append_expr('metadatum value')
-        result = getter._run()
-        if self._session.is_backtracking or result is None:
-            return
-        if result:
-            metadatum_name, metadatum_value = result
-            self._add_metadatum(metadatum_name, metadatum_value)
-
     def check_package(
         self,
         problems_only=None,
@@ -969,39 +947,12 @@ class PackageManager(AssetController):
         '''
         self._open_file(self._init_py_file_path)
 
-    def get_metadatum(self):
-        r'''Gets metadatum from ``__metadata.py__``.
-
-        Returns none.
-        '''
-        getter = self._io_manager._make_getter()
-        getter.append_string('metadatum name')
-        result = getter._run()
-        if self._session.is_backtracking or result is None:
-            return
-        metadatum = self._get_metadatum(result)
-        message = '{!r}'.format(metadatum)
-        self._io_manager._display(message)
-
     def list_init_py(self):
         r'''Lists ``__init__.py``.
 
         Returns none.
         '''
         self._io_manager._display(self._init_py_file_path)
-
-    def remove_metadatum(self):
-        r'''Removes metadatum from ``__metadata__.py``.
-
-        Returns none.
-        '''
-        getter = self._io_manager._make_getter()
-        getter.append_string('metadatum name')
-        result = getter._run()
-        if self._session.is_backtracking or not result:
-            return
-        metadatum_name = result
-        self._remove_metadatum(metadatum_name)
 
     def write_stub_init_py(self):
         r'''Writes stub ``__init__.py``.
