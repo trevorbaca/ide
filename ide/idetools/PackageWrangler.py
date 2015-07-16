@@ -230,6 +230,7 @@ class PackageWrangler(Wrangler):
         if path not in paths:
             with self._io_manager._silent():
                 self._clear_view()
+        # TODO: probably remove and leave on ScorePackageWrangler
         if hasattr(self, 'write_cache'):
             self.write_cache()
         manager._run()
