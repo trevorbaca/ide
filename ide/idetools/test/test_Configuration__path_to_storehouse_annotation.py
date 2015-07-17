@@ -21,10 +21,6 @@ def test_Configuration__path_to_storehouse_annotation_01():
     annotation = configuration._path_to_storehouse_annotation(path)
     assert annotation == configuration.composer_last_name
 
-    path = configuration.stylesheets_library
-    annotation = configuration._path_to_storehouse_annotation(path)
-    assert annotation == configuration.composer_last_name
-
 
 def test_Configuration__path_to_storehouse_annotation_02():
     r'''Example asset storehouse paths annotate 'Abjad'.

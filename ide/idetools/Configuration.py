@@ -137,7 +137,6 @@ class Configuration(AbjadConfiguration):
                     file_pointer.write('')
         directories = (
             self.user_score_packages_directory,
-            self.stylesheets_library,
             self.transcripts_directory,
             )
         for directory in directories:
@@ -578,25 +577,6 @@ class Configuration(AbjadConfiguration):
         return path
 
     @property
-    def stylesheets_library(self):
-        r'''Gets stylesheets library path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.stylesheets_library
-                '.../stylesheets'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.library,
-            'stylesheets',
-            )
-        return path
-
-    @property
     def transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -788,9 +768,6 @@ class Configuration(AbjadConfiguration):
             prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
         elif path.startswith(self.user_score_packages_directory):
             prefix = len(self.user_score_packages_directory) + 1
-        elif path.startswith(self.stylesheets_library):
-            prefix = len(
-                os.path.dirname(self.stylesheets_library)) + 1
         elif path.startswith(self.example_stylesheets_directory):
             prefix = len(self.abjad_root_directory) + 1
         elif path.startswith(self.library):

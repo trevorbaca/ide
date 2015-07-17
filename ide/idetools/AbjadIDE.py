@@ -144,7 +144,6 @@ class AbjadIDE(Wrangler):
         paths.append(self._configuration.makers_library)
         paths.append(self._configuration.materials_library)
         paths.append(self._configuration.example_stylesheets_directory)
-        paths.append(self._configuration.stylesheets_library)
         paths.append(self._configuration.example_score_packages_directory)
         paths.append(self._configuration.user_score_packages_directory)
         return paths
