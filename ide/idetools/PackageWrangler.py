@@ -215,7 +215,12 @@ class PackageWrangler(Wrangler):
         if self._session.is_in_score:
             storehouse_path = self._current_storehouse_path
         else:
-            storehouse_path = self._user_storehouse_path
+            example_score_packages = self._session.is_test
+            storehouse_path = self._select_storehouse_path(
+                example_score_packages=example_score_packages,
+                )
+            if self._session.is_backtracking or storehouse_path is None:
+                return
         path = self._get_available_path(storehouse_path=storehouse_path)
         if self._session.is_backtracking or not path:
             return

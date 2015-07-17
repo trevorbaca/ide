@@ -51,8 +51,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         self._in_library = True
         self._manager_class = idetools.MaterialPackageManager
         self._score_storehouse_path_infix_parts = ('materials',)
-        path = configuration.materials_library
-        self._user_storehouse_path = path
 
     ### PRIVATE PROPERTIES ###
 
@@ -77,42 +75,6 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
 
     def _enter_run(self):
         self._session._is_navigating_to_materials = False
-
-    def _get_material_package_manager(self, class_name, path):
-        assert os.path.sep in path
-        assert class_name is not None
-        command = 'manager = ide.idetools.{}'
-        command += '(path=path, session=self._session)'
-        command = command.format(class_name)
-        try:
-            result = self._io_manager.execute_string(
-                command,
-                attribute_names=('manager',),
-                )
-            manager = result[0]
-            return manager
-        except AttributeError:
-            pass
-        command = 'from {0}.{1}.{1} import {1} as class_'
-        configuration = self._configuration
-        library_path = \
-            configuration.materials_library
-        package = self._configuration.path_to_package(library_path)
-        command = command.format(
-            package,
-            class_name,
-            )
-        try:
-            result = self._io_manager.execute_string(
-                command,
-                attribute_names=('class_',),
-                )
-            class_ = result[0]
-        except ImportError:
-            return
-        package = self._configuration.path_to_package(path)
-        manager = class_(package, session=self._session)
-        return manager
 
     def _handle_numeric_user_input(self, result):
         manager = self._initialize_manager(result)

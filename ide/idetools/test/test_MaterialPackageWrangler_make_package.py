@@ -7,7 +7,10 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 path = os.path.join(
-    abjad_ide._configuration.materials_library,
+    abjad_ide._configuration.example_score_packages_directory,
+    'red_example_score',
+    'red_example_score',
+    'materials',
     'testnotes',
     )
 initializer_file_path = os.path.join(path, '__init__.py')
@@ -39,6 +42,7 @@ def test_MaterialPackageWrangler_make_package_01():
         'Abjad IDE - scores',
         'Abjad IDE - materials depot',
         'Abjad IDE - materials depot',
+        'Abjad IDE - materials depot',
         ]
     assert abjad_ide._transcript.titles == titles
 
@@ -51,7 +55,10 @@ def test_MaterialPackageWrangler_make_package_02():
     wrangler = ide.idetools.MaterialPackageWrangler(session=session)
     configuration = abjad_ide._configuration
     path = os.path.join(
-        configuration.materials_library,
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
         'testnotes',
         )
     directory_entries = [
@@ -61,7 +68,7 @@ def test_MaterialPackageWrangler_make_package_02():
         ]
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         session = ide.idetools.Session(is_test=True)
@@ -77,7 +84,10 @@ def test_MaterialPackageWrangler_make_package_03():
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
-        configuration.materials_library,
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
         'testnotes',
         )
     definition_py_path = os.path.join(
@@ -94,7 +104,7 @@ def test_MaterialPackageWrangler_make_package_03():
     contents = '\n'.join(lines)
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         with open(definition_py_path, 'r') as file_pointer:
@@ -109,7 +119,7 @@ def test_MaterialPackageWrangler_make_package_04():
     '''
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(initializer_file_path)
@@ -124,7 +134,7 @@ def test_MaterialPackageWrangler_make_package_05():
     '''
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(initializer_file_path)
@@ -148,7 +158,7 @@ def test_MaterialPackageWrangler_make_package_06():
         ]
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         session = ide.idetools.Session(is_test=True)
@@ -165,7 +175,7 @@ def test_MaterialPackageWrangler_make_package_07():
     '''
 
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new testnotes y q'
+        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         assert os.path.exists(definition_py_path)

@@ -126,7 +126,6 @@ class Configuration(AbjadConfiguration):
     def _make_missing_directories(self):
         directories = (
             self.library,
-            self.materials_library,
             self.makers_library,
             )
         for directory in directories:
@@ -558,25 +557,6 @@ class Configuration(AbjadConfiguration):
         return path
 
     @property
-    def materials_library(self):
-        r'''Gets materials library path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.materials_library
-                '.../materials'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.library,
-            'materials',
-            )
-        return path
-
-    @property
     def transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -748,22 +728,6 @@ class Configuration(AbjadConfiguration):
             path, extension = os.path.splitext(path)
         if path.startswith(self.example_score_packages_directory):
             prefix = len(self.example_score_packages_directory) + 1
-        elif path.startswith(self.materials_library):
-            prefix = len(self.materials_library) + 1
-            remainder = path[prefix:]
-            if remainder:
-                remainder = remainder.replace(os.path.sep, '.')
-                result = '{}.{}'.format(
-                    self._library_name,
-                    'material_packages',
-                    remainder,
-                    )
-            else:
-                result = '.'.join([
-                    self._library_name,
-                    'material_packages',
-                    ])
-            return result
         elif path.startswith(self.abjad_ide_directory):
             prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
         elif path.startswith(self.user_score_packages_directory):

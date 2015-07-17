@@ -815,11 +815,14 @@ class Wrangler(AssetController):
                 break
         return result
 
-    def _select_storehouse_path(self):
+    def _select_storehouse_path(
+        self,
+        example_score_packages=False,
+        ):
         from ide import idetools
         menu_entries = self._make_storehouse_menu_entries(
             abjad_material_packages_and_stylesheets=False,
-            example_score_packages=False,
+            example_score_packages=example_score_packages,
             library=True,
             user_score_packages=False,
             )
