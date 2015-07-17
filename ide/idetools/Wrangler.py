@@ -747,7 +747,7 @@ class Wrangler(AssetController):
             if not result == confirmation_string:
                 return
         for path in paths:
-            manager = idetools.PackageManager(path=path, session=self._session)
+            manager = self._get_manager(path=path)
             with self._io_manager._silent():
                 manager._remove()
         self._session._pending_redraw = True
