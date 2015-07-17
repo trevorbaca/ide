@@ -152,11 +152,9 @@ class Getter(Controller, PromptMakerMixin):
         while not self._current_prompt_is_done:
             message = self._messages[-1]
             message = self._indent_and_number_message(message)
-            default_value = str(self._current_prompt.default_value)
             include_chevron = self._current_prompt.include_chevron
             input_ = self._io_manager._handle_input(
                 message,
-                default_value=default_value,
                 include_chevron=include_chevron,
                 include_newline=self.include_newlines,
                 prompt_character=self.prompt_character,

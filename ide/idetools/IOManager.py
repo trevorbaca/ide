@@ -154,7 +154,6 @@ class IOManager(IOManager):
     def _handle_input(
         self,
         message,
-        default_value=None,
         include_chevron=True,
         include_newline=False,
         prompt_character='>',
@@ -165,8 +164,7 @@ class IOManager(IOManager):
         Appends user input to IO transcript.
         Returns command selected by user.
         '''
-        if default_value in (None, 'None'):
-            default_value = ''
+        default_value = ''
         readline.set_startup_hook(lambda: readline.insert_text(default_value))
         found_default_token = False
         # TODO: replace try-finally with startup hook context manager

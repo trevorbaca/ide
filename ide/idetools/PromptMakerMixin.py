@@ -28,7 +28,6 @@ class PromptMakerMixin(AbjadObject):
     def _make_prompt(
         self,
         spaced_attribute_name,
-        default_value=None,
         disallow_range=False,
         help_template=None,
         help_template_arguments=None,
@@ -39,7 +38,6 @@ class PromptMakerMixin(AbjadObject):
         ):
         from ide import idetools
         prompt = idetools.Prompt(
-            default_value=default_value,
             disallow_range=disallow_range,
             help_template=help_template,
             help_template_arguments=help_template_arguments,
@@ -56,7 +54,6 @@ class PromptMakerMixin(AbjadObject):
     def append_articulation(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends articulation.
 
@@ -68,13 +65,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_ariculation_token,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_articulations(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends articulations.
 
@@ -86,13 +81,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.are_articulation_tokens,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_available_snake_case_package_name(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends available snake case package name.
 
@@ -105,13 +98,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=validation_function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_boolean(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends boolean.
 
@@ -122,13 +113,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_boolean,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_clef(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends clef.
 
@@ -140,13 +129,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_clef_token,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_constellation_circuit_id_pair(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends constellation circuit ID pair.
 
@@ -157,13 +144,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=lambda x: True,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_dash_case_file_name(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends dash case file name.
 
@@ -174,13 +159,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             help_template=help_template,
             validation_function=stringtools.is_dash_case_file_name,
-            default_value=default_value,
             )
 
     def append_direction_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends direction string.
 
@@ -191,13 +174,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             help_template=help_template,
             validation_function=predicates.is_direction_string,
-            default_value=default_value,
             )
 
     def append_duration(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends duration.
 
@@ -212,13 +193,11 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.is_duration_token,
             help_template=help_template,
             setup_statements=setup_statements,
-            default_value=default_value,
             )
 
     def append_durations(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends durations.
 
@@ -233,13 +212,11 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.are_duration_tokens,
             help_template=help_template,
             setup_statements=setup_statements,
-            default_value=default_value,
             )
 
     def append_dynamic(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends dynamic.
 
@@ -251,13 +228,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_dynamic_token,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_dynamics(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends dynamics.
 
@@ -268,13 +243,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.are_dynamic_tokens,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_existing_package_name(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends existing package name.
 
@@ -285,13 +258,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_existing_package_name,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_expr(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends expression.
 
@@ -302,13 +273,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=lambda expr: True,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_hairpin_token(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends hairpin token.
 
@@ -319,13 +288,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_hairpin_token,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_hairpin_tokens(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends hairpin tokens.
 
@@ -336,14 +303,12 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.are_hairpin_tokens,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_identifier(
         self,
         spaced_attribute_name,
         allow_spaces=False,
-        default_value=None,
         ):
         r'''Appends Python identifier.
 
@@ -359,13 +324,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=helper,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_integer(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends integer.
 
@@ -376,7 +339,6 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_integer,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_integer_in_range(
@@ -385,7 +347,6 @@ class PromptMakerMixin(AbjadObject):
         start=None,
         stop=None,
         allow_none=False,
-        default_value=None,
         ):
         r'''Appends integer in range.
 
@@ -403,13 +364,11 @@ class PromptMakerMixin(AbjadObject):
             help_template=help_template,
             validation_function=validation_function,
             help_template_arguments=(start, stop),
-            default_value=default_value,
             )
 
     def append_integers(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends integers.
 
@@ -421,13 +380,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_list(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends lists.
 
@@ -438,13 +395,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_list,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_lists(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends lists.
 
@@ -455,13 +410,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.are_lists,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_markup(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends markup.
 
@@ -477,14 +430,12 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.is_markup,
             help_template=help_template,
             setup_statements=setup_statements,
-            default_value=default_value,
             )
 
     def append_menu_section_item(
         self,
         spaced_attribute_name,
         target_menu_section,
-        default_value=None,
         ):
         r'''Appends menu section item.
 
@@ -496,7 +447,6 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.is_list,
             help_template=help_template,
             target_menu_section=target_menu_section,
-            default_value=default_value,
             disallow_range=True,
             )
 
@@ -504,7 +454,6 @@ class PromptMakerMixin(AbjadObject):
         self,
         spaced_attribute_name,
         target_menu_section,
-        default_value=None,
         ):
         r'''Appends menu section range.
 
@@ -516,13 +465,11 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.is_list,
             help_template=help_template,
             target_menu_section=target_menu_section,
-            default_value=default_value,
             )
 
     def append_named_pitch(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends named pitch.
 
@@ -538,13 +485,11 @@ class PromptMakerMixin(AbjadObject):
             help_template=help_template,
             validation_function=predicates.is_named_pitch,
             setup_statements=setup_statements,
-            default_value=default_value,
             )
 
     def append_nonnegative_integer(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends nonnegative integer.
 
@@ -556,13 +501,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_nonnegative_integers(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends nonnegative integers.
 
@@ -574,13 +517,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_nonzero_integers(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends nonzero integers.
 
@@ -592,13 +533,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_number(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends number.
 
@@ -610,13 +549,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_paper_dimensions(
         self,
         spaced_attribute_name,
-        default_value='8.5 x 11 in',
         ):
         r'''Appends paper dimensions.
 
@@ -627,13 +564,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_paper_dimension_string,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_pitch_range(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends pitch range.
 
@@ -648,14 +583,12 @@ class PromptMakerMixin(AbjadObject):
             validation_function=predicates.is_pitch_range_or_none,
             help_template=help_template,
             setup_statements=setup_statements,
-            default_value=default_value,
             )
         self._setup_statements[-1] = setup_statements
 
     def append_pitch_range_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends symbolic pitch range string.
 
@@ -666,13 +599,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=pitchtools.PitchRange.is_range_string,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_positive_integer(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends positive integer.
 
@@ -683,13 +614,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=mathtools.is_positive_integer,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_positive_integer_power_of_two(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends positive integer power of two.
 
@@ -700,13 +629,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=mathtools.is_positive_integer_power_of_two,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_positive_integer_powers_of_two(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends positive integer powers of two.
 
@@ -719,13 +646,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=validation_function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_positive_integers(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends positive integers.
 
@@ -738,13 +663,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_snake_case_file_name(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends snake case file name.
 
@@ -755,13 +678,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=stringtools.is_snake_case_file_name,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_snake_case_file_name_with_extension(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends snake case file name with extension.
 
@@ -773,13 +694,11 @@ class PromptMakerMixin(AbjadObject):
             validation_function=\
                 stringtools.is_snake_case_file_name_with_extension,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_snake_case_package_name(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends snake case package name.
 
@@ -790,13 +709,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_snake_case_package_name,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_snake_case_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         allow_empty=False,
         ):
         r'''Appends snake case string.
@@ -817,13 +734,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=validation_function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_space_delimited_lowercase_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends space-delimited lowercase string.
 
@@ -834,13 +749,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=stringtools.is_space_delimited_lowercase,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         allow_empty=True,
         ):
         r'''Appends string.
@@ -857,13 +770,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=validation_function,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_string_or_none(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends string or none.
 
@@ -874,13 +785,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_string_or_none,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_strings(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends strings.
 
@@ -891,13 +800,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.are_strings,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_tempo(
         self,
         spaced_attribute_name,
-        default_value=None,
         ):
         r'''Appends tempo.
 
@@ -908,13 +815,11 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_tempo_token,
             help_template=help_template,
-            default_value=default_value,
             )
 
     def append_yes_no_string(
         self,
         spaced_attribute_name,
-        default_value=None,
         include_chevron=False,
         ):
         r'''Appends yes / no string.
@@ -926,6 +831,5 @@ class PromptMakerMixin(AbjadObject):
             spaced_attribute_name,
             validation_function=predicates.is_yes_no_string,
             help_template=help_template,
-            default_value=default_value,
             include_chevron=include_chevron,
             )

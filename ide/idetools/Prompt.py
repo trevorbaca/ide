@@ -9,7 +9,6 @@ class Prompt(AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_default_value',
         '_disallow_range',
         '_help_template',
         '_help_template_arguments',
@@ -24,7 +23,6 @@ class Prompt(AbjadObject):
 
     def __init__(
         self,
-        default_value=None,
         disallow_range=False,
         help_template=None,
         help_template_arguments=None,
@@ -37,7 +35,6 @@ class Prompt(AbjadObject):
         AbjadObject.__init__(self)
         assert isinstance(message, str)
         assert isinstance(help_template, str)
-        self._default_value = default_value
         self._disallow_range = disallow_range
         self._help_template = help_template
         self._help_template_arguments = help_template_arguments or []
@@ -48,14 +45,6 @@ class Prompt(AbjadObject):
         self._validation_function = validation_function
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def default_value(self):
-        r'''Gets default value of prompt.
-
-        Returns object.
-        '''
-        return self._default_value
 
     @property
     def disallow_range(self):
