@@ -54,6 +54,13 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
+            '<': self.go_to_previous_package,
+            '>': self.go_to_next_package,
+            #
+            'dc': self.check_definition_py,
+            'de': self.edit_definition_py,
+            'ds': self.write_stub_definition_py,
+            #
             'i': self.illustrate_definition_py,
             #
             'ii': self.interpret_illustration_ly,
