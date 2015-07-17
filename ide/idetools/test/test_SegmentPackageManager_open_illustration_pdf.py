@@ -6,7 +6,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 def test_SegmentPackageManager_open_illustration_pdf_01():
 
-    input_ = 'red~example~score g A io q'
+    input_ = 'red~example~score g A o q'
     abjad_ide._run(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

@@ -45,6 +45,11 @@ class ScoreInternalPackageManager(PackageManager):
 
         Display errors generated during interpretation.
         '''
+        if not os.path.isfile(self._definition_py_path):
+            message = 'File not found: {}.'
+            message = message.format(self._definition_py_path)
+            self._io_manager._display(message)
+            return
         inputs, outputs = [], []
         if dry_run:
             inputs.append(self._definition_py_path)

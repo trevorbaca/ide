@@ -58,7 +58,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             #
             'ii': self.interpret_illustration_ly,
             'ie': self.edit_illustration_ly,
-            'io': self.open_illustration_pdf,
+            'o': self.open_illustration_pdf,
             })
         return result
 
@@ -110,33 +110,27 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         return previous_manager
 
     def _make_definition_py_menu_section(self, menu):
-        if not os.path.isfile(self._definition_py_path):
-            message = 'No definition.py found;'
-            message += ' use (ds) to write stub.'
-            menu.make_information_section(
-                menu_entries=[message],
-                )
         commands = []
-        commands.append(('definition.py - check', 'dc'))
-        commands.append(('definition.py - edit', 'de'))
-        commands.append(('definition.py - illustrate', 'i'))
-        commands.append(('definition.py - stub', 'ds'))
-        menu.make_command_section(
-            commands=commands,
-            is_hidden=False,
-            name='definition py',
-            )
+        if os.path.isfile(self._definition_py_path):
+            commands.append(('definition.py - check', 'dc'))
+            commands.append(('definition.py - edit', 'de'))
+        else:
+            commands.append(('definition.py - stub', 'ds'))
+        if commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=commands,
+                name='definition.py',
+                )
 
     def _make_illustration_ly_menu_section(self, menu):
         commands = []
         if os.path.isfile(self._illustration_ly_path):
             commands.append(('illustration.ly - edit', 'ie'))
             commands.append(('illustration.ly - interpret', 'ii'))
-        if os.path.isfile(self._illustration_pdf_path):
-            commands.append(('illustration.pdf - open', 'io'))
         if commands:
             menu.make_command_section(
-                is_hidden=False,
+                is_hidden=True,
                 commands=commands,
                 name='illustration',
                 )
@@ -150,6 +144,7 @@ class SegmentPackageManager(ScoreInternalPackageManager):
         self._make_illustration_ly_menu_section(menu)
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
+        self._make_main_visible_menu_section(menu)
         return menu
 
     def _make_package(self):
@@ -159,6 +154,18 @@ class SegmentPackageManager(ScoreInternalPackageManager):
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
+                )
+
+    def _make_main_visible_menu_section(self, menu):
+        commands = []
+        commands.append(('definition.py - illustrate', 'i'))
+        if os.path.isfile(self._illustration_pdf_path):
+            commands.append(('illustration.pdf - open', 'o'))
+        if commands:
+            menu.make_command_section(
+                commands=commands,
+                is_hidden=False,
+                name='main visible section',
                 )
 
     def _set_is_navigating_to_sibling_asset(self):
@@ -191,6 +198,11 @@ class SegmentPackageManager(ScoreInternalPackageManager):
 
         Returns none.
         '''
+        if not os.path.isfile(self._definition_py_path):
+            message = 'File not found: {}.'
+            message = message.format(self._definition_py_path)
+            self._io_manager._display(message)
+            return
         self._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
             self._configuration.abjad_ide_directory,

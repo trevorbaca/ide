@@ -18,6 +18,8 @@ def test_SegmentPackageManager_write_stub_definition_py_01():
         )
 
     with systemtools.FilesystemState(keep=[path]):
+        os.remove(path)
+        assert not os.path.exists(path)
         input_ = 'red~example~score g A ds y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(path)
