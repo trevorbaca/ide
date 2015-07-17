@@ -164,8 +164,7 @@ class IOManager(IOManager):
         Appends user input to IO transcript.
         Returns command selected by user.
         '''
-        default_value = ''
-        readline.set_startup_hook(lambda: readline.insert_text(default_value))
+        readline.set_startup_hook()
         found_default_token = False
         # TODO: replace try-finally with startup hook context manager
         try:
