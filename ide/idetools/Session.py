@@ -61,7 +61,6 @@ class Session(abctools.AbjadObject):
         '_is_backtracking_to_score',
         '_is_navigating_to_scores',
         '_is_in_confirmation_environment',
-        '_is_in_score_setup_menu',
         '_is_in_user_input_getter',
         '_is_navigating_to_build_files',
         '_is_navigating_to_distribution_files',
@@ -133,7 +132,6 @@ class Session(abctools.AbjadObject):
         self._is_backtracking_to_score = False
         self._is_navigating_to_scores = False
         self._is_in_confirmation_environment = False
-        self._is_in_score_setup_menu = False
         self._is_navigating_to_build_files = False
         self._is_navigating_to_distribution_files = False
         self._is_navigating_to_etc_files = False
@@ -925,21 +923,6 @@ class Session(abctools.AbjadObject):
         if self.current_score_package_manager is not None:
             return True
         return False
-
-    @property
-    def is_in_score_setup_menu(self):
-        r'''Is true when session in score setup menu. Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_score_setup_menu
-                False
-
-        Returns boolean.
-        '''
-        return self._is_in_score_setup_menu
 
     @property
     def is_in_task(self):
