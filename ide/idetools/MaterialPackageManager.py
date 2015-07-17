@@ -139,20 +139,14 @@ class MaterialPackageManager(ScoreInternalPackageManager):
     def _make_definition_py_menu_section(self, menu):
         name = 'definition.py'
         commands = []
-        if os.path.isfile(self._definition_py_path):
-            is_hidden = False
-            commands.append(('definition.py - check', 'dc'))
-            commands.append(('definition.py - edit', 'de'))
-            commands.append(('definition.py - output', 'dp'))
-        else:
-            is_hidden = True
-            commands.append(('definition.py - stub', 'ds'))
-        if commands:
-            menu.make_command_section(
-                is_hidden=is_hidden,
-                commands=commands,
-                name='definition.py',
-                )
+        commands.append(('definition.py - check', 'dc'))
+        commands.append(('definition.py - edit', 'de'))
+        commands.append(('definition.py - stub', 'ds'))
+        menu.make_command_section(
+            is_hidden=True,
+            commands=commands,
+            name='definition.py',
+            )
 
     def _make_definition_target_lines(self, target):
         if hasattr(target, '_storage_format_specification'):

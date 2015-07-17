@@ -23,7 +23,7 @@ def test_SegmentPackageManager_illustrate_definition_py_01():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(ly_path)
         os.remove(pdf_path)
-        input_ = 'red~example~score g A di q'
+        input_ = 'red~example~score g A i q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
@@ -59,7 +59,7 @@ def test_SegmentPackageManager_illustrate_definition_py_02():
         )
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
-        input_ = 'red~example~score g A di q'
+        input_ = 'red~example~score g A i q'
         abjad_ide._run(input_=input_)
 
     contents = abjad_ide._transcript.contents
@@ -92,7 +92,7 @@ def test_SegmentPackageManager_illustrate_definition_py_03():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         with open(pdf_path, 'w') as file_pointer:
             file_pointer.write('text')
-        input_ = 'red~example~score g A di y q'
+        input_ = 'red~example~score g A i y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)

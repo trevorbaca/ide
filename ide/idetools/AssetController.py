@@ -377,9 +377,6 @@ class AssetController(Controller):
         commands.append(('__metadata__.py - edit', 'mde'))
         commands.append(('__metadata__.py - list', 'mdl'))
         commands.append(('__metadata__.py - write', 'mdw'))
-        commands.append(('metadata - add', 'mda'))
-        commands.append(('metadata - get', 'mdg'))
-        commands.append(('metadata - remove', 'mdr'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
