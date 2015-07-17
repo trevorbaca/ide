@@ -44,6 +44,7 @@ class Session(abctools.AbjadObject):
         '_attempted_to_remove',
         '_attempted_to_revert',
         '_attempted_to_update',
+        '_clear_terminal_after_quit',
         '_command_history',
         '_confirm',
         '_configuration',
@@ -115,6 +116,7 @@ class Session(abctools.AbjadObject):
         self._attempted_to_remove = False
         self._attempted_to_revert = False
         self._attempted_to_update = False
+        self._clear_terminal_after_quit = False
         self._command_history = []
         self._configuration = idetools.Configuration()
         self._confirm = True

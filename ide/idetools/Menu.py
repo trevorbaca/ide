@@ -145,6 +145,8 @@ class Menu(Controller):
             else:
                 return
         ends_with_bang = input_.endswith('!')
+        if ends_with_bang and input_[:-1] == 'q':
+            self._session._clear_terminal_after_quit = True
         input_ = input_.strip('!')
         if self._user_enters_nothing(input_):
             default_value = None

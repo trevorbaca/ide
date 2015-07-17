@@ -230,6 +230,8 @@ class AbjadIDE(Wrangler):
                 if self._session.is_quitting:
                     if not self._transcript[-1][-1] == '':
                         self._io_manager._display('')
+                    if self._session._clear_terminal_after_quit:
+                        self._io_manager.clear_terminal()
                     return
 
     def _supply_missing_cache_file(self):
