@@ -5,11 +5,10 @@ import shutil
 from abjad.tools import datastructuretools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageManager import \
-    ScoreInternalPackageManager
+from ide.idetools.PackageManager import PackageManager
 
 
-class MaterialPackageManager(ScoreInternalPackageManager):
+class MaterialPackageManager(PackageManager):
     r'''Material package manager.
 
 

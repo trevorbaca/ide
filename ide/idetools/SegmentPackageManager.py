@@ -3,11 +3,10 @@ import os
 import shutil
 import time
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageManager import \
-    ScoreInternalPackageManager
+from ide.idetools.PackageManager import PackageManager
 
 
-class SegmentPackageManager(ScoreInternalPackageManager):
+class SegmentPackageManager(PackageManager):
     r'''Segment package manager.
     '''
 
