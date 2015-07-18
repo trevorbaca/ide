@@ -25,6 +25,6 @@ def test_ScorePackageWrangler_display_available_commands_02():
 
     title = 'Abjad IDE - scores - available commands'
     first_blank_line = ''
-    first_real_line = '    all packages -'
+    first_real_line = '    __init__.py - edit (ne)'
     string = '\n'.join([title, first_blank_line, first_real_line])
     assert string in contents

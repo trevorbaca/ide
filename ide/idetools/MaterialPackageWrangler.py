@@ -148,19 +148,19 @@ class MaterialPackageWrangler(ScoreInternalPackageWrangler):
         '''
         self._copy_asset()
 
-    def edit_every_definition_py(self):
-        r'''Opens ``definition.py`` in every package.
+#    def edit_every_definition_py(self):
+#        r'''Opens ``definition.py`` in every package.
+#
+#        Returns none.
+#        '''
+#        self._open_in_every_package('definition.py')
 
-        Returns none.
-        '''
-        self._open_in_every_package('definition.py')
-
-    def open_every_illustration_pdf(self):
-        r'''Opens ``illustration.pdf`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('illustration.pdf')
+#    def open_every_illustration_pdf(self):
+#        r'''Opens ``illustration.pdf`` in every package.
+#
+#        Returns none.
+#        '''
+#        self._open_in_every_package('illustration.pdf')
 
     def remove_packages(self):
         r'''Removes one or more packages.

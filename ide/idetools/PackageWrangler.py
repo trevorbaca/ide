@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os
+import time
 from abjad.tools import stringtools
 from ide.idetools.Wrangler import Wrangler
 
@@ -16,6 +17,21 @@ class PackageWrangler(Wrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
+            '<': self.go_to_previous_package,
+            '>': self.go_to_next_package,
+            #
+            'dc*': self.check_every_definition_py,
+            'de*': self.edit_every_definition_py,
+            #
+            'ii*': self.interpret_every_illustration_ly,
+            'io*': self.open_every_illustration_pdf,
+            #
+            'ne': self.edit_init_py,
+            'nl': self.list_init_py,
+            'ns': self.write_stub_init_py,
+            #
+            'di*': self.illustrate_every_definition_py,  
+            #
             'cp': self.copy_package,
             'new': self.make_package,
             'ren': self.rename_package,
@@ -53,6 +69,10 @@ class PackageWrangler(Wrangler):
         commands.append(('all packages - __metadata__.py - list', 'mdl*'))
         commands.append(('all packages - __metadata__.py - write', 'mdw*'))
         commands.append(('all packages - check', 'ck*'))
+        commands.append(('all packages - definition.py - check', 'dc*'))
+        commands.append(('all packages - definition.py - edit', 'de*'))
+        commands.append(('all packages - illustration.ly - interpret', 'ii*'))
+        commands.append(('all packages - illustration.pdf - open', 'io*'))
         commands.append(('all packages - repository - add', 'rad*'))
         commands.append(('all packages - repository - clean', 'rcn*'))
         commands.append(('all packages - repository - commit', 'rci*'))
@@ -67,7 +87,42 @@ class PackageWrangler(Wrangler):
             name='all packages',
             )
 
+    def _make_main_menu(self):
+        superclass = super(PackageWrangler, self)
+        menu = superclass._make_main_menu()
+        self._make_init_py_menu_section(menu)
+        return menu
+
     ### PUBLIC METHODS ###
+
+    def check_every_definition_py(self):
+        r'''Checks ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'check_definition_py'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='check')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        start_time = time.time()
+        for manager in managers:
+            method = getattr(manager, method_name)
+            method()
+        stop_time = time.time()
+        total_time = stop_time - start_time
+        total_time = int(total_time)
+        message = 'total time: {} seconds.'
+        message = message.format(total_time)
+        self._io_manager._display(message)
 
     def check_every_package(
         self, 
@@ -145,6 +200,13 @@ class PackageWrangler(Wrangler):
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
+    def edit_every_definition_py(self):
+        r'''Opens ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package('definition.py')
+
     def edit_every_init_py(self):
         r'''Edits ``__init__.py`` in every package.
 
@@ -169,6 +231,81 @@ class PackageWrangler(Wrangler):
             return
         self._io_manager.open_file(paths)
 
+    def edit_init_py(self):
+        r'''Edits ``__init__.py``.
+
+        Returns none.
+        '''
+        self._current_package_manager.edit_init_py()
+
+    def go_to_next_package(self):
+        r'''Goes to next package.
+
+        Returns none.
+        '''
+        self._go_to_next_package()
+
+    def go_to_previous_package(self):
+        r'''Goes to previous package.
+
+        Returns none.
+        '''
+        self._go_to_previous_package()
+
+    def illustrate_every_definition_py(self):
+        r'''Illustrates ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'illustrate_definition_py'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='illustrate')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            method = getattr(manager, method_name)
+            method()
+
+    def interpret_every_illustration_ly(
+        self, 
+        open_every_illustration_pdf=True,
+        ):
+        r'''Interprets ``illustration.ly`` in every package.
+
+        Makes ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'interpret_illustration_ly'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            with self._io_manager._silent():
+                method = getattr(manager, method_name)
+                subprocess_messages, candidate_messages = method()
+            if subprocess_messages:
+                self._io_manager._display(subprocess_messages)
+                self._io_manager._display(candidate_messages)
+                self._io_manager._display('')
+                
     def list_every_init_py(self):
         r'''Lists ``__init__.py`` in every package.
 
@@ -207,6 +344,13 @@ class PackageWrangler(Wrangler):
         message = message.format(len(paths))
         self._io_manager._display(message)
 
+    def list_init_py(self):
+        r'''Lists ``__init__.py``.
+
+        Returns none.
+        '''
+        self._current_package_manager.list_init_py()
+
     def make_package(self):
         r'''Makes package.
 
@@ -236,6 +380,13 @@ class PackageWrangler(Wrangler):
             with self._io_manager._silent():
                 self._clear_view()
         manager._run()
+
+    def open_every_illustration_pdf(self):
+        r'''Opens ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package('illustration.pdf')
 
     def write_every_init_py_stub(self):
         r'''Writes stub ``__init__.py`` in every package.
@@ -277,3 +428,10 @@ class PackageWrangler(Wrangler):
         message = '{} __metadata__.py files rewritten.'
         message = message.format(len(managers))
         self._io_manager._display(message)
+
+    def write_stub_init_py(self):
+        r'''Writes stub ``__init__.py``.
+
+        Returns none.
+        '''
+        self._current_package_manager.write_stub_init_py()
