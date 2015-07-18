@@ -2,11 +2,10 @@
 import os
 from abjad.tools import datastructuretools
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageWrangler import \
-    ScoreInternalPackageWrangler
+from ide.idetools.PackageWrangler import PackageWrangler
 
 
-class SegmentPackageWrangler(ScoreInternalPackageWrangler):
+class SegmentPackageWrangler(PackageWrangler):
     r'''Segment package wrangler.
 
     ..  container:: example

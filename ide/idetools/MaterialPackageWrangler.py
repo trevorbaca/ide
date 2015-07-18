@@ -2,11 +2,10 @@
 import os
 import traceback
 from abjad.tools import systemtools
-from ide.idetools.ScoreInternalPackageWrangler import \
-    ScoreInternalPackageWrangler
+from ide.idetools.PackageWrangler import PackageWrangler
 
 
-class MaterialPackageWrangler(ScoreInternalPackageWrangler):
+class MaterialPackageWrangler(PackageWrangler):
     r'''Material package wrangler.
 
     ..  container:: example
