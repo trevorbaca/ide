@@ -81,6 +81,7 @@ class AssetController(Controller):
             'u': self.go_to_score_build_files,
             'y': self.go_to_score_stylesheets,
             #
+            'abb': self.edit_abbreviations_file,
             'sse': self.edit_score_stylesheet,
             })
         return result
@@ -399,6 +400,7 @@ class AssetController(Controller):
 
     def _make_score_stylesheet_menu_section(self, menu):
         commands = []
+        commands.append(('abbreviations.py - edit', 'abb'))
         commands.append(('score stylesheet - edit', 'sse'))
         menu.make_command_section(
             is_hidden=True,
@@ -756,6 +758,17 @@ class AssetController(Controller):
                 )
             self._io_manager._display(strings, capitalize=False)
 
+    def edit_abbreviations_file(self):
+        r'''Edits abbreviations file.
+
+        Returns none.
+        '''
+        path = self._session.current_abbreviations_file_path
+        if not path or not os.path.isfile(path):
+            with open(path, 'w') as file_pointer:
+                file_pointer.write('')
+        self._io_manager.edit(path)
+
     def edit_metadata_py(self):
         r'''Edits ``__metadata__.py``.
 
@@ -769,11 +782,10 @@ class AssetController(Controller):
         Returns none.
         '''
         path = self._session.current_stylesheet_path
-        if path:
-            self._io_manager.edit(path)
-        else:
-            message = 'no file ending in *stylesheet.ily found.'
-            self._io_manager._display(message)
+        if not path or not os.path.isfile(path):
+            with open(path, 'w') as file_pointer:
+                file_pointer.write('')
+        self._io_manager.edit(path)
 
     def go_to_all_build_files(self):
         r'''Goes to all build files.

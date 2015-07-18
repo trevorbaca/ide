@@ -416,6 +416,26 @@ class Session(abctools.AbjadObject):
         return self._controllers_visited
 
     @property
+    def current_abbreviations_file_path(self):
+        r'''Gets current abbreviations file path.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.current_abbreviations_file_path is None
+                True
+
+        Returns string or none.
+        '''
+        if self.is_in_score:
+            return os.path.join(
+                self.current_score_directory,
+                'materials',
+                'abbreviations.py',
+                )
+
+    @property
     def current_build_directory(self):
         r'''Gets session current build directory.
 
@@ -649,22 +669,17 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session.current_stylesheet_path
+                >>> session.current_stylesheet_path is None
+                True
 
-        Returns path or none.
+        Returns string or none.
         '''
-        if not self.is_in_score:
-            return
-        directory = self.current_score_directory
-        stylesheets_directory = os.path.join(directory, 'stylesheets')
-        found_score_stylesheet = False
-        for entry in sorted(os.listdir(stylesheets_directory)):
-            if entry.endswith('stylesheet.ily'):
-                found_score_stylesheet = True
-                break
-        if found_score_stylesheet:
-            path = os.path.join(stylesheets_directory, entry)
-            return path
+        if self.is_in_score:
+            return os.path.join(
+                self.current_score_directory,
+                'stylesheets',
+                'stylesheet.ily',
+                )
 
     @property
     def display(self):
