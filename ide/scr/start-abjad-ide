@@ -1,4 +1,5 @@
 #! /usr/bin/env python
 import ide
 
-ide.idetools.start_abjad_ide()
+
+ide.idetools.AbjadIDE.start_abjad_ide()

@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 import os
 import shutil
+import sys
 from abjad.tools import systemtools
 from ide.idetools.Wrangler import Wrangler
 
@@ -269,6 +270,17 @@ class AbjadIDE(Wrangler):
         Returns none.
         '''
         self._io_manager._display_not_yet_implemented()
+
+    @staticmethod
+    def start_abjad_ide():
+        r'''Starts Abjad IDE.
+
+        Returns none.
+        '''
+        import ide
+        abjad_ide = ide.idetools.AbjadIDE(is_test=False)
+        input_ = ' '.join(sys.argv[1:])
+        abjad_ide._run(input_=input_)
 
     def write_every_init_py_stub(self):
         r'''Writes stub to every ``__init__.py``.
