@@ -22,6 +22,13 @@ class AssetController(Controller):
         '_include_extensions',
         )
 
+    known_secondary_assets = (
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        'abbreviations.py',
+        )
+
     ### INITIALIZER ###
 
     def __init__(self, session=None):
@@ -253,7 +260,15 @@ class AssetController(Controller):
                 self._handle_numeric_user_input(result)
 
     def _handle_numeric_user_input(self, result):
-        pass
+        if os.path.isfile(result):
+            self._io_manager.open_file(result)
+        elif os.path.isdir(result):
+            manager = self._initialize_manager(result)
+            manager._run()
+        else:
+            message = 'must be file or directory: {!r}.'
+            message = message.format(result)
+            raise Exception(message)
 
     def _is_valid_directory_entry(self, directory_entry):
         if directory_entry[0].isalpha():
@@ -303,9 +318,25 @@ class AssetController(Controller):
         return entries
 
     def _make_asset_menu_section(self, menu):
-        menu_entries = self._make_asset_menu_entries()
+        menu_entries = []
+        menu_entries.extend(self._make_secondary_asset_menu_entries())
+        menu_entries.extend(self._make_asset_menu_entries())
         if menu_entries:
             menu.make_asset_section(menu_entries=menu_entries)
+
+    def _make_secondary_asset_menu_entries(self):
+        menu_entries = []
+        if not self._session.is_in_score:
+            return menu_entries
+        current_directory = self._get_current_directory()
+        if not current_directory:
+            return menu_entries
+        for name in os.listdir(current_directory):
+            if name in self.known_secondary_assets:
+                path = os.path.join(current_directory, name)
+                menu_entry = (name, None, None, path)
+                menu_entries.append(menu_entry)
+        return menu_entries
 
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []

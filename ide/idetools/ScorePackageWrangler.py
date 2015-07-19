@@ -136,43 +136,6 @@ class ScorePackageWrangler(PackageWrangler):
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(next_=False)
 
-    def _handle_numeric_user_input(self, result):
-        paths = self._list_visible_asset_paths()
-        if result in paths:
-            path = result
-            manager = self._initialize_manager(path)
-            if not self._session.is_test:
-                with self._io_manager._silent():
-                    result = manager.check_package(
-                        return_supply_messages=True,
-                        supply_missing=True,
-                        )
-                messages, supplied_directories, supplied_files = result
-                messages = []
-                tab = self._io_manager._tab
-                if supplied_directories:
-                    identifier = 'directory'
-                    count = len(supplied_directories)
-                    identifier = stringtools.pluralize(identifier, count)
-                    message = 'Made missing {}:'.format(identifier)
-                    messages.append(message)
-                    directories = [tab + _ for _ in supplied_directories]
-                    messages.extend(directories)
-                if supplied_files:
-                    identifier = 'file'
-                    count = len(supplied_files)
-                    identifier = stringtools.pluralize(identifier, count)
-                    message = 'Made missing {}:'.format(identifier)
-                    messages.append(message)
-                    files = [tab + _ for _ in supplied_files]
-                    messages.extend(files)
-                if messages:
-                    self._io_manager._display(messages)
-                    self._io_manager._acknowledge()
-                    if self._session.is_backtracking:
-                        return
-            manager._run()
-
     def _is_valid_directory_entry(self, expr):
         superclass = super(ScorePackageWrangler, self)
         if superclass._is_valid_directory_entry(expr):

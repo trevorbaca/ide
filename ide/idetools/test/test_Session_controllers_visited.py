@@ -156,7 +156,7 @@ def test_Session_controllers_visited_07():
     '''
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    input_ = 'red~example~score g 1 q'
+    input_ = 'red~example~score g A q'
     abjad_ide._run(input_=input_)
 
     session = ide.idetools.Session(is_test=True)

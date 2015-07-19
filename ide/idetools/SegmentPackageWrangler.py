@@ -56,10 +56,6 @@ class SegmentPackageWrangler(PackageWrangler):
         if managers:
             return managers[0]._get_metadatum('name')
 
-    def _handle_numeric_user_input(self, result):
-        manager = self._initialize_manager(result)
-        manager._run()
-
     def _is_valid_directory_entry(self, expr):
         superclass = super(SegmentPackageWrangler, self)
         if superclass._is_valid_directory_entry(expr):

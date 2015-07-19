@@ -318,8 +318,8 @@ class PackageManager(AssetController):
                 entries = [message]
             self._io_manager._display(entries, capitalize=False)
         else:
-            message = 'neither file nor directory: {}?'.format(result)
-            raise ValueError(message)
+            message = message.format(result)
+            raise Exception(message)
 
     def _initialize_file_name_getter(self):
         getter = self._io_manager._make_getter()

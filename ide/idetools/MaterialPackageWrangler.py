@@ -75,11 +75,6 @@ class MaterialPackageWrangler(PackageWrangler):
     def _enter_run(self):
         self._session._is_navigating_to_materials = False
 
-    def _handle_numeric_user_input(self, result):
-        manager = self._initialize_manager(result)
-        if os.path.exists(manager._path):
-            manager._run()
-
     def _is_valid_directory_entry(self, expr):
         superclass = super(MaterialPackageWrangler, self)
         if superclass._is_valid_directory_entry(expr):
