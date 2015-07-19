@@ -21,7 +21,6 @@ class Configuration(AbjadConfiguration):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_cache_file_path',
         )
 
     ### INITIALIZER ###
@@ -286,25 +285,6 @@ class Configuration(AbjadConfiguration):
             'boilerplate',
             )
         return path
-
-    @property
-    def cache_file_path(self):
-        r'''Gets cache file path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.cache_file_path
-                '.../.abjad/ide/cache.py'
-
-        Returns string.
-        '''
-        file_path = self._cache_file_path = os.path.join(
-            self.configuration_directory,
-            'cache.py',
-            )
-        return file_path
 
     @property
     def composer_email(self):

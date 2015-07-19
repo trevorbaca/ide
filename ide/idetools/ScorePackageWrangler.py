@@ -72,9 +72,6 @@ class ScorePackageWrangler(PackageWrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'ce': self.edit_cache,
-            'cw': self.write_cache,
-            #
             'so*': self.open_every_score_pdf,
             })
         return result
@@ -190,16 +187,6 @@ class ScorePackageWrangler(PackageWrangler):
             name='all packages',
             )
 
-    def _make_cache_menu_section(self, menu):
-        commands = []
-        commands.append(('cache - edit', 'ce'))
-        commands.append(('cache - write', 'cw'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='cache',
-            )
-
     def _make_main_menu(self):
         superclass = super(ScorePackageWrangler, self)
         menu = superclass._make_main_menu()
@@ -210,7 +197,6 @@ class ScorePackageWrangler(PackageWrangler):
             pass
         self._make_all_packages_menu_section(menu)
         self._make_scores_menu_section(menu)
-        self._make_cache_menu_section(menu)
         return menu
 
     def _make_scores_menu_section(self, menu):
@@ -224,22 +210,6 @@ class ScorePackageWrangler(PackageWrangler):
             name='scores',
             )
 
-    def _read_cache(self):
-        start_menu_entries = []
-        if os.path.exists(self._configuration.cache_file_path):
-            path = self._configuration.cache_file_path
-            with open(path, 'r') as file_pointer:
-                cache_lines = file_pointer.read()
-            try:
-                result = self._session.io_manager.execute_string(
-                    cache_lines,
-                    attribute_names=('start_menu_entries',),
-                    )
-                start_menu_entries = result[0]
-            except SyntaxError:
-                pass
-        return start_menu_entries
-
     ### PUBLIC METHODS ###
 
     def copy_package(self):
@@ -249,16 +219,6 @@ class ScorePackageWrangler(PackageWrangler):
         '''
         path = self._configuration.user_score_packages_directory
         self._copy_asset(new_storehouse=path)
-        with self._io_manager._silent():
-            self.write_cache()
-
-    def edit_cache(self):
-        r'''Edits cache.
-
-        Returns none.
-        '''
-        file_path = self._configuration.cache_file_path
-        self._io_manager.open_file(file_path)
 
     def make_package(self):
         r'''Makes package.
@@ -300,7 +260,6 @@ class ScorePackageWrangler(PackageWrangler):
         manager._add_metadatum('title', title)
         year = datetime.date.today().year
         manager._add_metadatum('year', year)
-        self.write_cache()
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
             with self._io_manager._silent():
@@ -341,31 +300,3 @@ class ScorePackageWrangler(PackageWrangler):
         Returns none.
         '''
         self._rename_asset()
-
-    def write_cache(self):
-        r'''Writes cache.
-
-        Returns none.
-        '''
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        lines.append('')
-        lines.append('')
-        lines.append('start_menu_entries = [')
-        menu_entries = self._make_asset_menu_entries(
-            apply_current_directory=False,
-            set_view=False,
-            )
-        for menu_entry in menu_entries:
-            string = '{},'.format(menu_entry)
-            if sys.version_info[0] == 2:
-                string = string.decode('string_escape')
-            lines.append(string)
-        lines.append(']')
-        contents = '\n'.join(lines)
-        cache_file_path = self._configuration.cache_file_path
-        if sys.version_info[0] == 2:
-            contents = contents.decode('utf-8')
-        self._io_manager.write(cache_file_path, contents)
-        message = 'wrote {}.'.format(cache_file_path)
-        self._io_manager._display(message)

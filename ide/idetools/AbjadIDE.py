@@ -39,7 +39,6 @@ class AbjadIDE(Wrangler):
         self._session._abjad_ide = self
         self._simple_score_annotation = True
         self._sort_by_annotation = True
-        self._supply_missing_cache_file()
         self._supply_missing_views_files()
 
     ### PRIVATE PROPERTIES ###
@@ -198,7 +197,6 @@ class AbjadIDE(Wrangler):
             )
         if self._session.is_test:
             paths_to_keep = []
-            paths_to_keep.append(self._configuration.cache_file_path)
             paths_to_keep.append(wrangler_views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
         interaction = self._io_manager._make_interaction(task=False)
@@ -231,11 +229,6 @@ class AbjadIDE(Wrangler):
                     if self._session._clear_terminal_after_quit:
                         self._io_manager.clear_terminal()
                     return
-
-    def _supply_missing_cache_file(self):
-        if not os.path.exists(self._configuration.cache_file_path):
-            with self._io_manager._silent():
-                self._score_package_wrangler.write_cache()
 
     def _supply_missing_views_files(self):
         from ide import idetools

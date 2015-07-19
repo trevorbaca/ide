@@ -252,13 +252,6 @@ class ScorePackageManager(PackageManager):
         height = eval(height)
         return width, height, units
 
-    def _remove(self):
-        superclass = super(ScorePackageManager, self)
-        superclass._remove()
-        wrangler = self._session._abjad_ide._score_package_wrangler
-        with self._io_manager._silent():
-            wrangler.write_cache()
-
     def _write_enclosing_artifacts(self):
         self._path = self._inner_path
         self._copy_boilerplate('README.md')
