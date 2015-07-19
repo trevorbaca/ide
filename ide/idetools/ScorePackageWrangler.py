@@ -190,14 +190,6 @@ class ScorePackageWrangler(PackageWrangler):
             name='all packages',
             )
 
-    def _make_asset_menu_section(self, menu):
-        entries = self._read_cache()
-        if self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' in _[0]]
-        entries = self._filter_asset_menu_entries_by_view(entries)
-        if entries:
-            menu.make_asset_section(menu_entries=entries)
-
     def _make_cache_menu_section(self, menu):
         commands = []
         commands.append(('cache - edit', 'ce'))
