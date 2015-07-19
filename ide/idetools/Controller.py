@@ -75,7 +75,6 @@ class Controller(object):
     @property
     def _command_to_method(self):
         result = {
-            'hh': self.go_home,
             'b': self.go_back,
             'q': self.quit,
             's': self.go_to_current_score,
@@ -185,14 +184,6 @@ class Controller(object):
         Returns none.
         '''
         self._session._is_backtracking_locally = True
-        self._session._display_available_commands = False
-
-    def go_home(self):
-        r'''Goes to library.
-
-        Returns none.
-        '''
-        self._session._is_navigating_home = True
         self._session._display_available_commands = False
 
     def go_to_all_scores(self):

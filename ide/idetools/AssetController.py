@@ -47,8 +47,6 @@ class AssetController(Controller):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'hh': self.go_home,
-            #
             'dd': self.go_to_all_distribution_files,
             'ee': self.go_to_all_etc_files,
             'gg': self.go_to_all_segments,
@@ -97,7 +95,7 @@ class AssetController(Controller):
     def _navigation_commands(self):
         result = (
             'b', 'q',
-            'hh', 'dd', 'ee', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
+            'dd', 'ee', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
             'd', 'e', 'g', 'k', 'm', 's', 'u', 'y',
             )
         return result
@@ -352,7 +350,6 @@ class AssetController(Controller):
 
     def _make_go_menu_section(self, menu, packages=False):
         commands = []
-        commands.append(('go - all', 'hh'))
         commands.append(('go - all - build', 'uu'))
         commands.append(('go - all - distribution', 'dd'))
         commands.append(('go - all - etc', 'ee'))
