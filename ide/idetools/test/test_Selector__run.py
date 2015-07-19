@@ -21,16 +21,3 @@ def test_Selector__run_01():
 
     selector._session._pending_input = 'cherry'
     assert selector._run() == 'cherry'
-
-
-def test_Selector__run_02():
-
-    items = instrumenttools.Percussion.known_percussion[:]
-    selector = ide.idetools.Selector(
-        items=items,
-        session=session,
-        )
-    selector._session._is_test = True
-
-    selector._session._pending_input = 'cax'
-    assert selector._run() == 'caxixi'
