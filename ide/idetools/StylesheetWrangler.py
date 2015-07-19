@@ -29,8 +29,6 @@ class StylesheetWrangler(FileWrangler):
         from ide import idetools
         superclass = super(StylesheetWrangler, self)
         superclass.__init__(session=session)
-        self._abjad_storehouse_path = \
-            self._configuration.example_stylesheets_directory
         self._asset_identifier = 'stylesheet'
         self._basic_breadcrumb = 'stylesheets'
         self._extension = '.ily'

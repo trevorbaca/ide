@@ -55,16 +55,3 @@ def test_Configuration__path_to_storehouse_03():
         
     path_2 = os.path.join(storehouse, 'foo', 'bar')
     assert configuration._path_to_storehouse(path_1) == storehouse
-
-
-def test_Configuration__path_to_storehouse_04():
-    
-    storehouse = configuration.example_stylesheets_directory
-
-    assert configuration._path_to_storehouse(storehouse) == storehouse
-
-    path_1 = os.path.join(storehouse, 'foo')
-    assert configuration._path_to_storehouse(path_1) == storehouse
-        
-    path_2 = os.path.join(storehouse, 'foo', 'bar')
-    assert configuration._path_to_storehouse(path_1) == storehouse

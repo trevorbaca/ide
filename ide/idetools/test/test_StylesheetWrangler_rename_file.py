@@ -11,33 +11,6 @@ def test_StylesheetWrangler_rename_file_01():
     '''
 
     path = os.path.join(
-        configuration.example_stylesheets_directory,
-        'clean-letter-14.ily',
-        )
-    new_path = os.path.join(
-        configuration.example_stylesheets_directory,
-        'very-clean-letter-14.ily',
-        )
-
-    assert os.path.exists(path)
-
-    input_ = 'yy ren clean-letter-14.ily very-clean-letter-14.ily y q'
-    abjad_ide._run(input_=input_)
-    assert not os.path.exists(path)
-    assert os.path.exists(new_path)
-
-    # no shutil because need to rename file in repository
-    input_ = 'yy ren very-clean-letter-14.ily clean-letter-14.ily y q'
-    abjad_ide._run(input_=input_)
-    assert not os.path.exists(new_path)
-    assert os.path.exists(path)
-
-
-def test_StylesheetWrangler_rename_file_02():
-    r'''Works in library.
-    '''
-
-    path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',

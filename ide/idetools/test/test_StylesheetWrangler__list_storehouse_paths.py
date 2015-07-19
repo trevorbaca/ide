@@ -5,27 +5,6 @@ import ide
 
 
 def test_StylesheetWrangler__list_storehouse_paths_01():
-    r'''Lists example stylesheets directory.
-    '''
-
-    session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.StylesheetWrangler(session=session)
-
-    paths = [
-        wrangler._configuration.example_stylesheets_directory,
-        ]
-
-    result = wrangler._list_storehouse_paths(
-        abjad_material_packages_and_stylesheets=True,
-        example_score_packages=False,
-        library=False,
-        user_score_packages=False,
-        )
-
-    assert result == paths
-
-
-def test_StylesheetWrangler__list_storehouse_paths_02():
     r'''Lists example score package stylesheet directories.
     '''
 

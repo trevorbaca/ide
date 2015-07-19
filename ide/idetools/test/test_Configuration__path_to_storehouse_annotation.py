@@ -19,15 +19,6 @@ def test_Configuration__path_to_storehouse_annotation_01():
 
 
 def test_Configuration__path_to_storehouse_annotation_02():
-    r'''Example asset storehouse paths annotate 'Abjad'.
-    '''
-
-    path = configuration.example_stylesheets_directory
-    annotation = configuration._path_to_storehouse_annotation(path)
-    assert annotation == 'Abjad'
-
-
-def test_Configuration__path_to_storehouse_annotation_03():
     r'''Score paths annotate score title.
     '''
 

@@ -173,8 +173,6 @@ class Configuration(AbjadConfiguration):
             prefix = len(self.example_score_packages_directory)
         elif path.startswith(self.library):
             prefix = len(self.library)
-        elif path.startswith(self.example_stylesheets_directory):
-            return self.example_stylesheets_directory
         else:
             message = 'unidentifiable path: {!r}.'
             message = message.format(path)
@@ -421,25 +419,6 @@ class Configuration(AbjadConfiguration):
         path = os.path.join(
             self.abjad_ide_directory,
             'scores',
-            )
-        return path
-
-    @property
-    def example_stylesheets_directory(self):
-        r'''Gets example stylesheets directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.example_stylesheets_directory
-                '.../abjad/stylesheets'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.abjad_directory,
-            'stylesheets',
             )
         return path
 
@@ -712,8 +691,6 @@ class Configuration(AbjadConfiguration):
             prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
         elif path.startswith(self.user_score_packages_directory):
             prefix = len(self.user_score_packages_directory) + 1
-        elif path.startswith(self.example_stylesheets_directory):
-            prefix = len(self.abjad_root_directory) + 1
         elif path.startswith(self.library):
             prefix = len(os.path.dirname(self.library)) + 1
         else:
