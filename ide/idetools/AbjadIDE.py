@@ -2,6 +2,7 @@
 import os
 import shutil
 import sys
+from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.idetools.Wrangler import Wrangler
 
@@ -91,7 +92,18 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _maker_file_wrangler(self):
         from ide import idetools
-        return idetools.MakerFileWrangler(session=self._session)
+        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._asset_identifier = 'maker'
+        wrangler._basic_breadcrumb = 'makers'
+        wrangler._extension = '.py'
+        wrangler._file_name_predicate = stringtools.is_upper_camel_case
+        wrangler._file_wrangler_type = 'maker'
+        wrangler._force_lowercase = False
+        wrangler._in_library = True
+        wrangler._new_file_contents = self._configuration.unicode_directive
+        wrangler._score_storehouse_path_infix_parts = ('makers',)
+        wrangler._user_storehouse_path = wrangler._configuration.makers_library
+        return wrangler
 
     @property
     @systemtools.Memoize

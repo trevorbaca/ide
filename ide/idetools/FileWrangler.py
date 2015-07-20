@@ -12,7 +12,9 @@ class FileWrangler(Wrangler):
 
     __slots__ = (
         '_extension',
+        '_file_name_predicate',
         '_file_wrangler_type',
+        '_new_file_contents',
         )
 
     def __init__(self, session=None):
@@ -21,9 +23,11 @@ class FileWrangler(Wrangler):
         self._abjad_storehouse_path = None
         self._asset_identifier = 'file'
         self._extension = ''
+        self._file_name_predicate = stringtools.is_dash_case
         self._file_wrangler_type = None
         self._human_readable = False
         self._include_extensions = True
+        self._new_file_contents = ''
         self._user_storehouse_path = None
 
     ### PRIVATE PROPERTIES ###
@@ -50,6 +54,8 @@ class FileWrangler(Wrangler):
             self._session._is_navigating_to_distribution_files = False
         elif self._file_wrangler_type == 'etc':
             self._session._is_navigating_to_etc_files = False
+        elif self._file_wrangler_type == 'maker':
+            self._session._is_navigating_to_maker_files = False
         elif self._file_wrangler_type == 'stylesheet':
             self._session._is_navigating_to_stylesheets = False
         else:
@@ -65,7 +71,7 @@ class FileWrangler(Wrangler):
         superclass = super(FileWrangler, self)
         if superclass._is_valid_directory_entry(directory_entry):
             name, extension = os.path.splitext(directory_entry)
-            if stringtools.is_dash_case(name):
+            if self._file_name_predicate(name):
                 if self._extension == '':
                     return True
                 elif self._extension == extension:
@@ -158,7 +164,10 @@ class FileWrangler(Wrangler):
 
         Returns none.
         '''
-        self._make_file(message='file name')
+        self._make_file(
+            contents=self._new_file_contents,
+            message='file name',
+            )
 
     def remove_files(self):
         r'''Removes one or more files.
