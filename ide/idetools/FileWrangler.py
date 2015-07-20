@@ -12,6 +12,7 @@ class FileWrangler(Wrangler):
 
     __slots__ = (
         '_extension',
+        '_file_wrangler_type',
         )
 
     def __init__(self, session=None):
@@ -20,6 +21,7 @@ class FileWrangler(Wrangler):
         self._abjad_storehouse_path = None
         self._asset_identifier = 'file'
         self._extension = ''
+        self._file_wrangler_type = None
         self._human_readable = False
         self._include_extensions = True
         self._user_storehouse_path = None
@@ -42,6 +44,10 @@ class FileWrangler(Wrangler):
         return result
 
     ### PRIVATE METHODS ###
+
+    def _enter_run(self):
+        if self._file_wrangler_type == 'etc':
+            self._session._is_navigating_to_etc_files = False
 
     def _is_valid_directory_entry(self, directory_entry):
         superclass = super(FileWrangler, self)

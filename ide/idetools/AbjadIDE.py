@@ -77,7 +77,11 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _etc_file_wrangler(self):
         from ide import idetools
-        return idetools.EtcFileWrangler(session=self._session)
+        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._basic_breadcrumb = 'etc'
+        wrangler._file_wrangler_type = 'etc'
+        wrangler._score_storehouse_path_infix_parts = ('etc',)
+        return wrangler
 
     @property
     @systemtools.Memoize
