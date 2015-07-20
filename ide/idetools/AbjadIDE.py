@@ -71,7 +71,11 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _distribution_file_wrangler(self):
         from ide import idetools
-        return idetools.DistributionFileWrangler(session=self._session)
+        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._basic_breadcrumb = 'distribution'
+        wrangler._file_wrangler_type = 'distribution'
+        wrangler._score_storehouse_path_infix_parts = ('distribution',)
+        return wrangler
 
     @property
     @systemtools.Memoize

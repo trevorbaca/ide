@@ -46,8 +46,12 @@ class FileWrangler(Wrangler):
     ### PRIVATE METHODS ###
 
     def _enter_run(self):
-        if self._file_wrangler_type == 'etc':
+        if self._file_wrangler_type == 'distribution':
+            self._session._is_navigating_to_distribution_files = False
+        elif self._file_wrangler_type == 'etc':
             self._session._is_navigating_to_etc_files = False
+        else:
+            raise ValueError(repr(self._file_wrangler_type))
 
     def _is_valid_directory_entry(self, directory_entry):
         superclass = super(FileWrangler, self)
