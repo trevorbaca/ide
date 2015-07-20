@@ -67,8 +67,6 @@ class AssetController(Controller):
             '!': self.invoke_shell,
             '??': self.display_available_commands,
             'll': self.open_lilypond_log,
-            'dt': self.doctest,
-            'pt': self.pytest,
             'sv': self.display_session_variables,
             #
             '<<': self.go_to_previous_score,
@@ -438,9 +436,7 @@ class AssetController(Controller):
     def _make_system_menu_section(self, menu):
         commands = []
         commands.append(('system - commands', '??'))
-        commands.append(('system - doctest', 'dt'))
         commands.append(('system - log', 'll'))
-        commands.append(('system - pytest', 'pt'))
         commands.append(('system - shell', '!'))
         commands.append(('system - variables', 'sv'))
         menu.make_command_section(
@@ -740,44 +736,6 @@ class AssetController(Controller):
                 clean_lines.append(message)
             self._io_manager._display(messages, capitalize=False)
 
-    def doctest(self):
-        r'''Doctests Python files.
-
-        Returns none.
-        '''
-        message = 'running doctest ...'
-        self._io_manager._display(message)
-        assets = []
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            if path.endswith('.py'):
-                assets.append(path)
-            if os.path.isdir(path):
-                triples = os.walk(path)
-                for directory_name, subdirectories, file_names in triples:
-                    for file_name in file_names:
-                        if file_name.endswith('.py'):
-                            file_path = os.path.join(
-                                directory_name,
-                                file_name,
-                                )
-                            assets.append(file_path)
-        if not assets:
-            message = 'no testable assets found.'
-            self._io_manager._display(message)
-        else:
-            count = len(assets)
-            identifier = stringtools.pluralize('asset', count=count)
-            message = '{} testable {} found ...'
-            message = message.format(count, identifier)
-            self._io_manager._display(message)
-            script = developerscripttools.RunDoctestsScript()
-            strings = script.process_args(
-                file_paths=assets,
-                print_to_terminal=False,
-                )
-            self._io_manager._display(strings, capitalize=False)
-
     def edit_abbreviations_file(self):
         r'''Edits abbreviations file.
 
@@ -953,38 +911,6 @@ class AssetController(Controller):
         if self._session.is_test:
             return
         systemtools.IOManager.open_last_log()
-
-    def pytest(self):
-        r'''Pytests Python files.
-
-        Returns none.
-        '''
-        message = 'running py.test ...'
-        self._io_manager._display(message)
-        assets = []
-        paths = self._list_python_files_in_visible_assets()
-        for path in paths:
-            assert os.path.isfile(path)
-        paths = [
-            _ for _ in paths if os.path.basename(_).startswith('test_')
-            ]
-        for path in paths:
-            if os.path.isdir(path):
-                assets.append(path)
-            elif os.path.isfile(path) and path.endswith('.py'):
-                assets.append(path)
-        if not assets:
-            message = 'no testable assets found.'
-            self._io_manager._display(message)
-        else:
-            count = len(paths)
-            identifier = stringtools.pluralize('asset', count=count)
-            message = '{} testable {} found ...'
-            message = message.format(count, identifier)
-            self._io_manager._display(message)
-            assets = ' '.join(assets)
-            command = 'py.test -rf {}'.format(assets)
-            self._io_manager.run_command(command, capitalize=False)
 
     def remove_unadded_assets(self, dry_run=False):
         r'''Removes files not yet added to repository.

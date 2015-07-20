@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import copy
-import doctest
 import os
 import shutil
 import subprocess
