@@ -57,10 +57,6 @@ class AssetController(Controller):
             #
             'cc': self.check_contents,
             #
-            'mde': self.edit_metadata_py,
-            'mdl': self.list_metadata_py,
-            'mdw': self.write_metadata_py,
-            #
             'rad': self.add,
             'rci': self.commit,
             'rcn': self.remove_unadded_assets,
@@ -409,17 +405,6 @@ class AssetController(Controller):
         self._make_repository_menu_section(menu)
         self._make_system_menu_section(menu)
         return menu
-
-    def _make_metadata_menu_section(self, menu):
-        commands = []
-        commands.append(('__metadata__.py - edit', 'mde'))
-        commands.append(('__metadata__.py - list', 'mdl'))
-        commands.append(('__metadata__.py - write', 'mdw'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='metadata',
-            )
 
     def _make_repository_menu_section(self, menu):
         commands = []
@@ -804,13 +789,6 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    def edit_metadata_py(self):
-        r'''Edits ``__metadata__.py``.
-
-        Returns none.
-        '''
-        self._open_file(self._metadata_py_path)
-
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
 
@@ -965,13 +943,6 @@ class AssetController(Controller):
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
 
-    def list_metadata_py(self):
-        r'''Lists ``__metadata__.py``.
-
-        Returns none.
-        '''
-        self._io_manager._display(self._metadata_py_path)
-
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
 
@@ -1080,22 +1051,3 @@ class AssetController(Controller):
         if messages_only:
             return messages
         self._io_manager._display(messages)
-
-    def write_metadata_py(self, dry_run=False):
-        r'''Writes ``__metadata.py__``.
-
-        Returns none.
-        '''
-        inputs, outputs = [], []
-        inputs.append(self._metadata_py_path)
-        if dry_run:
-            return inputs, outputs
-        messages = self._format_messaging(inputs, outputs, verb='write')
-        self._io_manager._display(messages)
-        # WEIRD: why can't this confirm check be removed?
-        if self._session.confirm:
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking or not result:
-                return
-        metadata = self._get_metadata()
-        self._write_metadata_py(metadata)

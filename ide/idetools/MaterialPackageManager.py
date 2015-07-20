@@ -210,7 +210,6 @@ class MaterialPackageManager(PackageManager):
         self._make_illustrate_py_menu_section(menu)
         self._make_illustration_pdf_menu_section(menu)
         self._make_definition_py_menu_section(menu)
-        self._make_metadata_menu_section(menu)
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu

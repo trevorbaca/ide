@@ -426,14 +426,6 @@ class PackageManager(AssetController):
         self._make_asset_menu_section(menu)
         return menu
 
-    def _make_metadata_menu_entries(self):
-        result = []
-        metadata = self._get_metadata()
-        for key in sorted(metadata):
-            display_string = key.replace('_', ' ')
-            result.append((display_string, None, metadata[key], key))
-        return result
-
     def _make_package_menu_section(self, menu, commands_only=False):
         commands = []
         commands.append(('package - check', 'ck'))

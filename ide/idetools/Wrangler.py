@@ -583,7 +583,6 @@ class Wrangler(AssetController):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
-        self._make_metadata_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 

@@ -34,10 +34,6 @@ class PackageWrangler(Wrangler):
             'rm': self.remove_packages,
             #
             'ck*': self.check_every_package,
-            #
-            'mdl*': self.list_every_metadata_py,
-            'mde*': self.edit_every_metadata_py,
-            'mdw*': self.write_every_metadata_py,
             })
         return result
 
@@ -54,9 +50,6 @@ class PackageWrangler(Wrangler):
 
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         commands = []
-        commands.append(('all packages - __metadata__.py - edit', 'mde*'))
-        commands.append(('all packages - __metadata__.py - list', 'mdl*'))
-        commands.append(('all packages - __metadata__.py - write', 'mdw*'))
         commands.append(('all packages - check', 'ck*'))
         commands.append(('all packages - definition.py - check', 'dc*'))
         commands.append(('all packages - definition.py - edit', 'de*'))

@@ -209,7 +209,6 @@ class ScorePackageManager(PackageManager):
     def _make_main_menu(self):
         superclass = super(ScorePackageManager, self)
         menu = superclass._make_main_menu()
-        self._make_metadata_menu_section(menu)
         self._make_package_menu_section(menu)
         return menu
 
