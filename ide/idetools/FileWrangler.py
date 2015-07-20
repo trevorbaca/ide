@@ -50,15 +50,26 @@ class FileWrangler(Wrangler):
             self._session._is_navigating_to_distribution_files = False
         elif self._file_wrangler_type == 'etc':
             self._session._is_navigating_to_etc_files = False
+        elif self._file_wrangler_type == 'stylesheet':
+            self._session._is_navigating_to_stylesheets = False
         else:
             raise ValueError(repr(self._file_wrangler_type))
+
+    @staticmethod
+    def _file_name_callback(file_name):
+        file_name = file_name.replace(' ', '-')
+        file_name = file_name.replace('_', '-')
+        return file_name
 
     def _is_valid_directory_entry(self, directory_entry):
         superclass = super(FileWrangler, self)
         if superclass._is_valid_directory_entry(directory_entry):
             name, extension = os.path.splitext(directory_entry)
             if stringtools.is_dash_case(name):
-                return True
+                if self._extension == '':
+                    return True
+                elif self._extension == extension:
+                    return True
         return False
 
     def _make_all_menu_section(self, menu):

@@ -115,7 +115,14 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _stylesheet_wrangler(self):
         from ide import idetools
-        return idetools.StylesheetWrangler(session=self._session)
+        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._asset_identifier = 'stylesheet'
+        wrangler._basic_breadcrumb = 'stylesheets'
+        wrangler._extension = '.ily'
+        wrangler._file_wrangler_type = 'stylesheet'
+        wrangler._in_library = True
+        wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
+        return wrangler
 
     @property
     def _wranglers(self):

@@ -194,6 +194,6 @@ def test_Session_controllers_visited_08():
             path=score_path,
             session=session,
             ),
-        ide.idetools.StylesheetWrangler(session=session),
+        ide.idetools.FileWrangler(session=session),
         ]
     assert abjad_ide._session.controllers_visited == controllers
