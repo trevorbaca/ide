@@ -261,8 +261,26 @@ class AssetController(Controller):
         if os.path.isfile(result):
             self._io_manager.open_file(result)
         elif os.path.isdir(result):
-            manager = self._initialize_manager(result)
-            manager._run()
+            basename = os.path.basename(result)
+            if basename == 'build':
+                self.go_to_score_build_files()
+            elif basename == 'distribution':
+                self.go_to_score_distribution_files()
+            elif basename == 'etc':
+                self.go_to_score_etc_files()
+            elif basename == 'makers':
+                self.go_to_score_maker_files()
+            elif basename == 'materials':
+                self.go_to_score_materials()
+            elif basename == 'segments':
+                self.go_to_score_segments()
+            elif basename == 'stylesheets':
+                self.go_to_score_stylesheets()
+            elif basename == 'test':
+                self.go_to_score_test_files()
+            else:
+                manager = self._initialize_manager(result)
+                manager._run()
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
@@ -937,6 +955,13 @@ class AssetController(Controller):
         Returns none.
         '''
         self._session._abjad_ide._stylesheet_wrangler._run()
+
+    def go_to_score_test_files(self):
+        r'''Geots to score test files.
+
+        Returns none.
+        '''
+        raise NotImplementedError
 
     def invoke_shell(self):
         r'''Invokes shell.

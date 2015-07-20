@@ -308,19 +308,6 @@ class PackageManager(AssetController):
             raise ValueError(self)
         return paths
 
-    def _handle_numeric_user_input(self, result):
-        if os.path.isfile(result):
-            self._io_manager.open_file(result)
-        elif os.path.isdir(result):
-            entries = self._io_manager._list_directory(result)
-            if not entries:
-                message = 'Empty directory.'
-                entries = [message]
-            self._io_manager._display(entries, capitalize=False)
-        else:
-            message = message.format(result)
-            raise Exception(message)
-
     def _initialize_file_name_getter(self):
         getter = self._io_manager._make_getter()
         asset_identifier = getattr(self, '_asset_identifier', None)
