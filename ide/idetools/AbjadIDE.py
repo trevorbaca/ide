@@ -62,9 +62,6 @@ class AbjadIDE(Wrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'ne*': self.edit_every_init_py,
-            'nl*': self.list_every_init_py,
-            'ns*': self.write_every_init_py_stub,
             })
         return result
 
@@ -178,7 +175,7 @@ class AbjadIDE(Wrangler):
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_init_py_menu_section(self, menu):
+    def _make_all_assets_menu_section(self, menu):
         commands = []
         commands.append(('all assets - repository - add', 'rad*'))
         commands.append(('all assets - repository - clean', 'rcn*'))
@@ -186,9 +183,6 @@ class AbjadIDE(Wrangler):
         commands.append(('all assets - repository - revert', 'rrv*'))
         commands.append(('all assets - repository - status', 'rst*'))
         commands.append(('all assets - repository - update', 'rup*'))
-        commands.append(('all packages - __init__.py - edit', 'ne*'))
-        commands.append(('all packages - __init__.py - list', 'nl*'))
-        commands.append(('all packages - __init__.py - stub', 'ns*'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -199,7 +193,7 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         menu = idetools.AssetController._make_main_menu(self)
         self._make_asset_menu_section(menu)
-        self._make_init_py_menu_section(menu)
+        self._make_all_assets_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 
@@ -283,20 +277,6 @@ class AbjadIDE(Wrangler):
 
     ### PUBLIC METHODS ###
 
-    def edit_every_init_py(self):
-        r'''Edits every ``__init__.py``.
-
-        Returns none.
-        '''
-        self._io_manager._display_not_yet_implemented()
-
-    def list_every_init_py(self):
-        r'''Lists every ``__init__.py``.
-
-        Returns none.
-        '''
-        self._io_manager._display_not_yet_implemented()
-
     @staticmethod
     def start_abjad_ide():
         r'''Starts Abjad IDE.
@@ -307,10 +287,3 @@ class AbjadIDE(Wrangler):
         abjad_ide = ide.idetools.AbjadIDE(is_test=False)
         input_ = ' '.join(sys.argv[1:])
         abjad_ide._run(input_=input_)
-
-    def write_every_init_py_stub(self):
-        r'''Writes stub to every ``__init__.py``.
-
-        Returns none.
-        '''
-        self._io_manager._display_not_yet_implemented()

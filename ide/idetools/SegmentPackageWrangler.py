@@ -76,6 +76,7 @@ class SegmentPackageWrangler(PackageWrangler):
             name='all packages',
             )
 
+    # TODO: remove this method because it's not being called?
     def _make_asset(self, path, metadata=None):
         metadata = datastructuretools.TypedOrderedDict(metadata or {})
         assert not os.path.exists(path)

@@ -69,10 +69,6 @@ class PackageManager(AssetController):
         result = result.copy()
         result.update({
             'ck': self.check_package,
-            #
-            'ne': self.edit_init_py,
-            'nl': self.list_init_py,
-            'ns': self.write_stub_init_py,
             })
         return result
 
@@ -950,13 +946,6 @@ class PackageManager(AssetController):
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
-    def edit_init_py(self):
-        r'''Edits ``__init__.py``.
-
-        Returns none.
-        '''
-        self._open_file(self._init_py_file_path)
-
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -998,24 +987,3 @@ class PackageManager(AssetController):
         result = self._io_manager.run_lilypond(self._illustration_ly_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
-
-    def list_init_py(self):
-        r'''Lists ``__init__.py``.
-
-        Returns none.
-        '''
-        self._io_manager._display(self._init_py_file_path)
-
-    def write_stub_init_py(self):
-        r'''Writes stub ``__init__.py``.
-
-        Returns none.
-        '''
-        path = self._init_py_file_path
-        message = 'will write stub to {}.'
-        message = message.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        self._io_manager.write_stub(self._init_py_file_path)

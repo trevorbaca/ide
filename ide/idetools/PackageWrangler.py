@@ -26,10 +26,6 @@ class PackageWrangler(Wrangler):
             'ii*': self.interpret_every_illustration_ly,
             'io*': self.open_every_illustration_pdf,
             #
-            'ne': self.edit_init_py,
-            'nl': self.list_init_py,
-            'ns': self.write_stub_init_py,
-            #
             'di*': self.illustrate_every_definition_py,  
             #
             'cp': self.copy_package,
@@ -42,10 +38,6 @@ class PackageWrangler(Wrangler):
             'mdl*': self.list_every_metadata_py,
             'mde*': self.edit_every_metadata_py,
             'mdw*': self.write_every_metadata_py,
-            #
-            'nl*': self.list_every_init_py,
-            'ne*': self.edit_every_init_py,
-            'ns*': self.write_every_init_py_stub,
             })
         return result
 
@@ -62,9 +54,6 @@ class PackageWrangler(Wrangler):
 
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         commands = []
-        commands.append(('all packages - __init__.py - edit', 'ne*'))
-        commands.append(('all packages - __init__.py - list', 'nl*'))
-        commands.append(('all packages - __init__.py - stub', 'ns*'))
         commands.append(('all packages - __metadata__.py - edit', 'mde*'))
         commands.append(('all packages - __metadata__.py - list', 'mdl*'))
         commands.append(('all packages - __metadata__.py - write', 'mdw*'))
@@ -86,12 +75,6 @@ class PackageWrangler(Wrangler):
             commands=commands,
             name='all packages',
             )
-
-    def _make_main_menu(self):
-        superclass = super(PackageWrangler, self)
-        menu = superclass._make_main_menu()
-        self._make_init_py_menu_section(menu)
-        return menu
 
     ### PUBLIC METHODS ###
 
@@ -207,13 +190,6 @@ class PackageWrangler(Wrangler):
         '''
         self._open_in_every_package('definition.py')
 
-    def edit_every_init_py(self):
-        r'''Edits ``__init__.py`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('__init__.py')
-
     def edit_every_metadata_py(self):
         r'''Edits ``__metadata__.py`` in every package.
 
@@ -230,13 +206,6 @@ class PackageWrangler(Wrangler):
         if self._session.is_backtracking or not result:
             return
         self._io_manager.open_file(paths)
-
-    def edit_init_py(self):
-        r'''Edits ``__init__.py``.
-
-        Returns none.
-        '''
-        self._current_package_manager.edit_init_py()
 
     def go_to_next_package(self):
         r'''Goes to next package.
@@ -306,31 +275,6 @@ class PackageWrangler(Wrangler):
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
                 
-    def list_every_init_py(self):
-        r'''Lists ``__init__.py`` in every package.
-
-        Returns none.
-        '''
-        file_name = '__init__.py'
-        paths = []
-        for segment_path in self._list_visible_asset_paths():
-            path = os.path.join(segment_path, file_name)
-            if os.path.isfile(path):
-                paths.append(path)
-        if not paths:
-            message = 'no {} files found.'
-            message = message.format(file_name)
-            self._io_manager._display(message)
-            return
-        messages = []
-        for path in paths:
-            message = '    ' + path
-            messages.append(message)
-        message = '{} {} files found.'
-        message.format(len(paths), file_name)
-        messages.append(message)
-        self._io_manager._display(message)
-
     def list_every_metadata_py(self):
         r'''Lists ``__metadata__.py`` in every package.
 
@@ -343,13 +287,6 @@ class PackageWrangler(Wrangler):
         message = '{} __metadata__.py files found.'
         message = message.format(len(paths))
         self._io_manager._display(message)
-
-    def list_init_py(self):
-        r'''Lists ``__init__.py``.
-
-        Returns none.
-        '''
-        self._current_package_manager.list_init_py()
 
     def make_package(self):
         r'''Makes package.
@@ -388,13 +325,6 @@ class PackageWrangler(Wrangler):
         '''
         self._open_in_every_package('illustration.pdf')
 
-    def write_every_init_py_stub(self):
-        r'''Writes stub ``__init__.py`` in every package.
-
-        Returns none.
-        '''
-        self._io_manager._display_not_yet_implemented()
-
     def write_every_metadata_py(self):
         r'''Writes ``__metadata__.py`` in every package.
 
@@ -428,10 +358,3 @@ class PackageWrangler(Wrangler):
         message = '{} __metadata__.py files rewritten.'
         message = message.format(len(managers))
         self._io_manager._display(message)
-
-    def write_stub_init_py(self):
-        r'''Writes stub ``__init__.py``.
-
-        Returns none.
-        '''
-        self._current_package_manager.write_stub_init_py()

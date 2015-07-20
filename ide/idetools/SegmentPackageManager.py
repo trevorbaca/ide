@@ -145,7 +145,6 @@ class SegmentPackageManager(PackageManager):
         superclass = super(SegmentPackageManager, self)
         menu = superclass._make_main_menu()
         self._make_definition_py_menu_section(menu)
-        self._make_init_py_menu_section(menu)
         self._make_metadata_menu_section(menu)
         self._make_illustration_ly_menu_section(menu)
         self._make_package_menu_section(menu)

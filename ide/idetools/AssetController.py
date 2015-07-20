@@ -400,17 +400,6 @@ class AssetController(Controller):
             name='go',
             )
 
-    def _make_init_py_menu_section(self, menu):
-        commands = []
-        commands.append(('__init__.py - edit', 'ne'))
-        commands.append(('__init__.py - list', 'nl'))
-        commands.append(('__init__.py - stub', 'ns'))
-        menu.make_command_section(
-            commands=commands,
-            is_hidden=True,
-            name='__init__.py',
-            )
-
     def _make_main_menu(self):
         name = self._spaced_class_name
         menu = self._io_manager._make_menu(name=name)
