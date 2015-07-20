@@ -62,7 +62,6 @@ class ScorePackageManager(PackageManager):
         result = result.copy()
         result.update({
             'so': self.open_score_pdf,
-            'pw': self.write_enclosing_artifacts,
             })
         return result
 
@@ -234,7 +233,6 @@ class ScorePackageManager(PackageManager):
         commands = superclass._make_package_menu_section(
             menu, commands_only=True)
         commands.append(('package - score.pdf - open', 'so'))
-        commands.append(('package - write enclosing artifacts', 'pw'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -290,18 +288,3 @@ class ScorePackageManager(PackageManager):
                 message = "no score.pdf file found"
                 message += ' in either distribution/ or build/ directories.'
                 self._io_manager._display(message)
-
-    def write_enclosing_artifacts(self):
-        r'''Writes README.md, requirements.txt, setup.cfg and setup.py
-        to enclosing directory of score package.
-
-        Returns none.
-        '''
-        if not os.path.exists(self._inner_path):
-            message = 'score package must be structured'
-            message += ' with enclosing directory.'
-            self._io_manager._display(message)
-            return
-        self._write_enclosing_artifacts()
-        message = 'wrote enclosing artifacts.'
-        self._io_manager._display(message)
