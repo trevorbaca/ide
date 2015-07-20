@@ -83,9 +83,7 @@ class Wrangler(AssetController):
             'rrv*': self.revert_every_asset,
             'rup*': self.update_every_asset,
             #
-            'we': self.edit_views_py,
             'ws': self.set_view,
-            'ww': self.write_views_py,
             })
         return result
 
@@ -621,8 +619,6 @@ class Wrangler(AssetController):
 
     def _make_views_menu_section(self, menu):
         commands = []
-        commands.append(('__views.py__ - edit', 'we'))
-        commands.append(('__views.py__ - write', 'ww'))
         commands.append(('views - set', 'ws'))
         menu.make_command_section(
             is_hidden=True,
@@ -1008,17 +1004,6 @@ class Wrangler(AssetController):
             message = message.format(directory)
             self._io_manager._display(message)
 
-    def edit_views_py(self):
-        r'''Edits ``__views__.py``.
-
-        Returns none.
-        '''
-        if os.path.exists(self._views_py_path):
-            self._io_manager.open_file(self._views_py_path)
-        else:
-            message = 'no __views.py__ found.'
-            self._io_manager._display(message)
-
     def remove_every_unadded_asset(self):
         r'''Removes files not yet added to repository of every asset.
 
@@ -1111,23 +1096,3 @@ class Wrangler(AssetController):
                 messages_ = [tab + _ for _ in messages_]
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
-
-    def write_views_py(self):
-        r'''Writes ``__views__.py``.
-
-        Returns none.
-        '''
-        from ide import idetools
-        inputs, outputs = [], []
-        inputs.append(self._views_py_path)
-        messages = self._format_messaging(inputs, outputs, verb='write')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        view_inventory = self._read_view_inventory()
-        view_inventory = view_inventory or idetools.ViewInventory()
-        with self._io_manager._silent():
-            self._write_view_inventory(view_inventory)
-        message = 'wrote {}.'.format(self._views_py_path)
-        self._io_manager._display(message)

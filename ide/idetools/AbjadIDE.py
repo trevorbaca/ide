@@ -269,7 +269,8 @@ class AbjadIDE(Wrangler):
         else:
             with self._io_manager._silent():
                 for wrangler in self._wranglers:
-                    wrangler.write_views_py()
+                    view_inventory = idetools.ViewInventory()
+                    wrangler._write_view_inventory(view_inventory)
 
     def _update_session_variables(self):
         self._session._is_backtracking_to_score = False
