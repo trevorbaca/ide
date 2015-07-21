@@ -8,7 +8,7 @@ def test_ScorePackageWrangler_display_available_commands_01():
     r'''Displays correct title.
     '''
     
-    input_ = '?? q'
+    input_ = '? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -19,7 +19,7 @@ def test_ScorePackageWrangler_display_available_commands_02():
     r'''Displays only one blank line after title.
     '''
     
-    input_ = '?? q'
+    input_ = '? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

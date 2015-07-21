@@ -158,7 +158,7 @@ class Menu(Controller):
         elif input_ in ('ss', 'q', 'b', '<return>'):
             self._session._pending_redraw = True
             return input_
-        elif input_ == '??' and self._has_help_command():
+        elif input_ == '?' and self._has_help_command():
             self._session._pending_redraw = True
             return input_
         elif input_ == 's' and self._session.is_in_score:
@@ -352,7 +352,7 @@ class Menu(Controller):
     def _has_help_command(self):
         for section in self.menu_sections:
             for entry in section.menu_entries:
-                if entry.key == '??':
+                if entry.key == '?':
                     return True
         return False
 

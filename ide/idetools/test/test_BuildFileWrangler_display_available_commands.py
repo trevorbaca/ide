@@ -6,7 +6,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 def test_BuildFileWrangler_display_available_commands_01():
     
-    input_ = 'red~example~score u ?? q'
+    input_ = 'red~example~score u ? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -15,7 +15,7 @@ def test_BuildFileWrangler_display_available_commands_01():
 
 def test_BuildFileWrangler_display_available_commands_02():
     
-    input_ = 'uu ?? q'
+    input_ = 'uu ? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

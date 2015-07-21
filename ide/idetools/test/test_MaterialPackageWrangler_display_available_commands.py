@@ -6,7 +6,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 def test_MaterialPackageWrangler_display_available_commands_01():
     
-    input_ = 'red~example~score m ?? q'
+    input_ = 'red~example~score m ? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -15,7 +15,7 @@ def test_MaterialPackageWrangler_display_available_commands_01():
 
 def test_MaterialPackageWrangler_display_available_commands_02():
     
-    input_ = 'mm ?? q'
+    input_ = 'mm ? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

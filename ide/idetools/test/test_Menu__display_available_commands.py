@@ -6,7 +6,7 @@ import ide
 def test_Menu__display_available_commands_01():
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    input_ = '?? q'
+    input_ = '? q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -20,7 +20,7 @@ def test_Menu__display_available_commands_02():
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     abjad_ide._session._allow_unknown_command_during_test = True
-    input_ = '?? asdf q'
+    input_ = '? asdf q'
     abjad_ide._run(input_=input_)
 
     titles = [
@@ -35,7 +35,7 @@ def test_Menu__display_available_commands_03():
     '''
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    input_ = '?? ll q'
+    input_ = '? ll q'
     abjad_ide._run(input_=input_)
 
     titles = [
@@ -50,7 +50,7 @@ def test_Menu__display_available_commands_04():
     '''
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    input_ = 'red~example~score ?? q'
+    input_ = 'red~example~score ? q'
     abjad_ide._run(input_=input_)
 
     titles = [

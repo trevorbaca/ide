@@ -67,7 +67,7 @@ class AssetController(Controller):
             'rup': self.update,
             #
             '!': self.invoke_shell,
-            '??': self.display_available_commands,
+            '?': self.display_available_commands,
             'll': self.open_lilypond_log,
             'sv': self.display_session_variables,
             #
@@ -438,7 +438,7 @@ class AssetController(Controller):
 
     def _make_system_menu_section(self, menu):
         commands = []
-        commands.append(('system - commands', '??'))
+        commands.append(('system - commands', '?'))
         commands.append(('system - log', 'll'))
         commands.append(('system - shell', '!'))
         commands.append(('system - variables', 'sv'))

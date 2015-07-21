@@ -334,7 +334,7 @@ class PackageManager(AssetController):
             return False
         git_status_lines = self._get_git_status_lines() or ['']
         first_line = git_status_lines[0]
-        if first_line.startswith('??'):
+        if first_line.startswith('?'):
             return True
         return False
 
