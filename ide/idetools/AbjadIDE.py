@@ -54,7 +54,44 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _build_file_wrangler(self):
         from ide import idetools
-        return idetools.BuildFileWrangler(session=self._session)
+        wrangler = idetools.BuildFileWrangler(session=self._session)
+        wrangler._commands['bce'] = wrangler.edit_back_cover_source
+        wrangler._commands['bcg'] = wrangler.generate_back_cover_source
+        wrangler._commands['bci'] = wrangler.interpret_back_cover
+        wrangler._commands['bco'] = wrangler.open_back_cover_pdf
+        #
+        wrangler._commands['dc'] = wrangler.collect_segment_pdfs
+        wrangler._commands['de'] = wrangler.edit_draft_source
+        wrangler._commands['dg'] = wrangler.generate_draft_source
+        wrangler._commands['di'] = wrangler.interpret_draft
+        wrangler._commands['do'] = wrangler.open_draft_pdf
+        #
+        wrangler._commands['fce'] = wrangler.edit_front_cover_source
+        wrangler._commands['fceio'] = wrangler.edit_interpret_open_front_cover_source
+        wrangler._commands['fcg'] = wrangler.generate_front_cover_source
+        wrangler._commands['fcgio'] = wrangler.generate_interpret_open_front_cover
+        wrangler._commands['fci'] = wrangler.interpret_front_cover
+        wrangler._commands['fcio'] = wrangler.interpret_open_front_cover
+        wrangler._commands['fco'] = wrangler.open_front_cover_pdf
+        #
+        wrangler._commands['mc'] = wrangler.collect_segment_lilypond_files
+        wrangler._commands['me'] = wrangler.edit_music_source
+        wrangler._commands['mg'] = wrangler.generate_music_source
+        wrangler._commands['mi'] = wrangler.interpret_music
+        wrangler._commands['mo'] = wrangler.open_music_pdf
+        #
+        wrangler._commands['pe'] = wrangler.edit_preface_source
+        wrangler._commands['pg'] = wrangler.generate_preface_source
+        wrangler._commands['pi'] = wrangler.interpret_preface
+        wrangler._commands['po'] = wrangler.open_preface_pdf
+        #
+        wrangler._commands['se'] = wrangler.edit_score_source
+        wrangler._commands['sg'] = wrangler.generate_score_source
+        wrangler._commands['si'] = wrangler.interpret_score
+        wrangler._commands['so'] = wrangler.open_score_pdf
+        wrangler._commands['sp'] = wrangler.push_score_pdf_to_distribution_directory
+        return wrangler
+
 
     @property
     def _command_to_method(self):

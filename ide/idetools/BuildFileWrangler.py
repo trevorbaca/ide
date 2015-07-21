@@ -37,52 +37,6 @@ class BuildFileWrangler(FileWrangler):
         self._basic_breadcrumb = 'build'
         self._score_storehouse_path_infix_parts = ('build',)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _command_to_method(self):
-        superclass = super(BuildFileWrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            'bce': self.edit_back_cover_source,
-            'bcg': self.generate_back_cover_source,
-            'bci': self.interpret_back_cover,
-            'bco': self.open_back_cover_pdf,
-            #
-            'dc': self.collect_segment_pdfs,
-            'de': self.edit_draft_source,
-            'dg': self.generate_draft_source,
-            'di': self.interpret_draft,
-            'do': self.open_draft_pdf,
-            #
-            'fce': self.edit_front_cover_source,
-            'fceio': self.edit_interpret_open_front_cover_source,
-            'fcg': self.generate_front_cover_source,
-            'fcgio': self.generate_interpret_open_front_cover,
-            'fci': self.interpret_front_cover,
-            'fcio': self.interpret_open_front_cover,
-            'fco': self.open_front_cover_pdf,
-            #
-            'mc': self.collect_segment_lilypond_files,
-            'me': self.edit_music_source,
-            'mg': self.generate_music_source,
-            'mi': self.interpret_music,
-            'mo': self.open_music_pdf,
-            #
-            'pe': self.edit_preface_source,
-            'pg': self.generate_preface_source,
-            'pi': self.interpret_preface,
-            'po': self.open_preface_pdf,
-            #
-            'se': self.edit_score_source,
-            'sg': self.generate_score_source,
-            'si': self.interpret_score,
-            'so': self.open_score_pdf,
-            'sp': self.push_score_pdf_to_distribution_directory,
-            })
-        return result
-
     ### PRIVATE METHODS ###
 
     def _call_lilypond_on_file_ending_with(self, string):

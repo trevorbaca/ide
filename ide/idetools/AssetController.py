@@ -17,6 +17,7 @@ class AssetController(Controller):
 
     __slots__ = (
         '_annotate_year',
+        '_commands',
         '_human_readable',
         '_include_asset_name',
         '_include_extensions',
@@ -35,6 +36,7 @@ class AssetController(Controller):
         superclass = super(AssetController, self)
         superclass.__init__(session=session)
         self._annotate_year = False
+        self._commands = {}
         self._human_readable = True
         self._include_asset_name = True
         self._include_extensions = False
@@ -83,6 +85,7 @@ class AssetController(Controller):
             'abb': self.edit_abbreviations_file,
             'sse': self.edit_score_stylesheet,
             })
+        result.update(self._commands)
         return result
 
     @property
