@@ -18,6 +18,7 @@ class FileWrangler(Wrangler):
         '_extension',
         '_file_name_predicate',
         '_file_wrangler_type',
+        '_in_score_commands',
         '_new_file_contents',
         )
 
@@ -30,6 +31,7 @@ class FileWrangler(Wrangler):
         self._file_name_predicate = stringtools.is_dash_case
         self._file_wrangler_type = None
         self._human_readable = False
+        self._in_score_commands = []
         self._include_extensions = True
         self._new_file_contents = ''
         self._user_storehouse_path = None
@@ -324,6 +326,12 @@ class FileWrangler(Wrangler):
         menu = superclass._make_main_menu()
         self._make_all_menu_section(menu)
         self._make_files_menu_section(menu)
+        if self._in_score_commands:
+            menu.make_command_section(
+                commands=self._in_score_commands,
+                is_hidden=True,
+                name='in score commands',
+                )
         return menu
 
     def _trim_lilypond_file(self, file_path):

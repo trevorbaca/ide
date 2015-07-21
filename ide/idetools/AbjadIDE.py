@@ -54,27 +54,42 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _build_file_wrangler(self):
         from ide import idetools
-        wrangler = idetools.BuildFileWrangler(session=self._session)
+        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._basic_breadcrumb = 'build'
+        wrangler._file_wrangler_type = 'build'
+        wrangler._score_storehouse_path_infix_parts = ('build',)
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
-        #
         wrangler._commands['dc'] = wrangler.collect_segment_pdfs
         wrangler._commands['dg'] = wrangler.generate_draft_source
         wrangler._commands['di'] = wrangler.interpret_draft
-        #
         wrangler._commands['fcg'] = wrangler.generate_front_cover_source
         wrangler._commands['fci'] = wrangler.interpret_front_cover
-        #
         wrangler._commands['mc'] = wrangler.collect_segment_lilypond_files
         wrangler._commands['mg'] = wrangler.generate_music_source
         wrangler._commands['mi'] = wrangler.interpret_music
-        #
         wrangler._commands['pg'] = wrangler.generate_preface_source
         wrangler._commands['pi'] = wrangler.interpret_preface
-        #
         wrangler._commands['sg'] = wrangler.generate_score_source
         wrangler._commands['si'] = wrangler.interpret_score
         wrangler._commands['sp'] = wrangler.push_score_pdf_to_distribution_directory
+        commands = []
+        commands.append(('back cover - generate latex source', 'bcg'))
+        commands.append(('back cover - interpret latex source', 'bci'))
+        commands.append(('draft - collect segment files', 'dc'))
+        commands.append(('draft - generate latex source', 'dg'))
+        commands.append(('draft - interpret latex source', 'di'))
+        commands.append(('front cover - generate latex source', 'fcg'))
+        commands.append(('front cover - interpret latex source', 'fci'))
+        commands.append(('music - collect segment files', 'mc'))
+        commands.append(('music - generate lilypond source', 'mg'))
+        commands.append(('music - interpret lilypond source', 'mi'))
+        commands.append(('preface - generate latex source', 'pg'))
+        commands.append(('preface - interpret latex source', 'pi'))
+        commands.append(('score - generate latex source', 'sg'))
+        commands.append(('score - interpret latex source', 'si'))
+        commands.append(('score - push pdf to distribution directory', 'sp'))
+        wrangler._in_score_commands = commands
         return wrangler
 
 
