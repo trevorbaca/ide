@@ -252,10 +252,8 @@ class BuildFileWrangler(FileWrangler):
 
     def _make_back_cover_menu_section(self, menu):
         commands = []
-        commands.append(('back cover - edit latex source', 'bce'))
         commands.append(('back cover - generate latex source', 'bcg'))
         commands.append(('back cover - interpret latex source', 'bci'))
-        commands.append(('back cover - open pdf', 'bco'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -265,10 +263,8 @@ class BuildFileWrangler(FileWrangler):
     def _make_draft_menu_section(self, menu):
         commands = []
         commands.append(('draft - collect segment files', 'dc'))
-        commands.append(('draft - edit latex source', 'de'))
         commands.append(('draft - generate latex source', 'dg'))
         commands.append(('draft - interpret latex source', 'di'))
-        commands.append(('draft - open pdf', 'do'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -277,13 +273,8 @@ class BuildFileWrangler(FileWrangler):
 
     def _make_front_cover_menu_section(self, menu):
         commands = []
-        commands.append(('front cover - edit latex source', 'fce'))
-        commands.append(('front cover - edit; interpret; open', 'fceio'))
         commands.append(('front cover - generate latex source', 'fcg'))
-        commands.append(('front cover - generate; interpret; open', 'fcgio'))
         commands.append(('front cover - interpret latex source', 'fci'))
-        commands.append(('front cover - interpret; open', 'fcio'))
-        commands.append(('front cover - open pdf', 'fco'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -305,10 +296,8 @@ class BuildFileWrangler(FileWrangler):
     def _make_music_menu_section(self, menu):
         commands = []
         commands.append(('music - collect segment files', 'mc'))
-        commands.append(('music - edit lilypond source', 'me'))
         commands.append(('music - generate lilypond source', 'mg'))
         commands.append(('music - interpret lilypond source', 'mi'))
-        commands.append(('music - open pdf', 'mo'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -317,10 +306,8 @@ class BuildFileWrangler(FileWrangler):
 
     def _make_preface_menu_section(self, menu):
         commands = []
-        commands.append(('preface - edit latex source', 'pe'))
         commands.append(('preface - generate latex source', 'pg'))
         commands.append(('preface - interpret latex source', 'pi'))
-        commands.append(('preface - open pdf', 'po'))
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
@@ -329,10 +316,8 @@ class BuildFileWrangler(FileWrangler):
 
     def _make_score_menu_section(self, menu):
         commands = []
-        commands.append(('score - edit latex source', 'se'))
         commands.append(('score - generate latex source', 'sg'))
         commands.append(('score - interpret latex source', 'si'))
-        commands.append(('score - open pdf', 'so'))
         commands.append(('score - push pdf to distribution directory', 'sp'))
         menu.make_command_section(
             commands=commands,
@@ -401,59 +386,6 @@ class BuildFileWrangler(FileWrangler):
         for source_file_path, target_file_path in pairs:
             self._handle_candidate(source_file_path, target_file_path)
             self._io_manager._display('')
-
-    def edit_back_cover_source(self):
-        r'''Edits ``back-cover.tex``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('back-cover.tex')
-
-    def edit_draft_source(self):
-        r'''Edits ``draft.tex``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('draft.tex')
-
-    def edit_front_cover_source(self):
-        r'''Edits ``front-cover.tex``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('front-cover.tex')
-
-    def edit_interpret_open_front_cover_source(self):
-        r'''Edits ``front-cover.tex``;
-        interprets ``front-cover.tex``;
-        opens ``front-cover.pdf``.
-
-        Returns none.
-        '''
-        self.edit_front_cover_source()
-        self.interpret_front_cover()
-        self.open_front_cover_pdf()
-
-    def edit_music_source(self):
-        r'''Edits ``music.ly``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('music.ly')
-
-    def edit_preface_source(self):
-        r'''Edits ``preface.tex``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('preface.tex')
-
-    def edit_score_source(self):
-        r'''Edits ``score.tex``.
-
-        Returns none.
-        '''
-        self._edit_file_ending_with('score.tex')
 
     def generate_back_cover_source(self):
         r'''Generates ``back-cover.tex``.
@@ -715,48 +647,6 @@ class BuildFileWrangler(FileWrangler):
         Returns none.
         '''
         self._interpret_file_ending_with('score.tex')
-
-    def open_back_cover_pdf(self):
-        r'''Opens ``back-cover.pdf``.
-
-        Returns none.
-        '''
-        self._open_file_ending_with('back-cover.pdf')
-
-    def open_draft_pdf(self):
-        r'''Opens ``draft.pdf``.
-
-        Return none.
-        '''
-        self._open_file_ending_with('draft.pdf')
-
-    def open_front_cover_pdf(self):
-        r'''Opens ``front-cover.pdf``.
-
-        Returns none.
-        '''
-        self._open_file_ending_with('front-cover.pdf')
-
-    def open_music_pdf(self):
-        r'''Opens ``music.pdf``.
-
-        Returns none.
-        '''
-        self._open_file_ending_with('music.pdf')
-
-    def open_preface_pdf(self):
-        r'''Opens ``preface.pdf``.
-
-        Returns none.
-        '''
-        self._open_file_ending_with('preface.pdf')
-
-    def open_score_pdf(self):
-        r'''Opens ``score.pdf``.
-
-        Returns none.
-        '''
-        self._open_file_ending_with('score.pdf')
 
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
