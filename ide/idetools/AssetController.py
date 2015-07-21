@@ -358,16 +358,8 @@ class AssetController(Controller):
             messages.append('... compare differently.')
         return messages
 
-    def _make_go_menu_section(self, menu, packages=False):
+    def _make_go_menu_section(self, menu, commands_only=False, packages=False):
         commands = []
-        commands.append(('go - all - build', 'uu'))
-        commands.append(('go - all - distribution', 'dd'))
-        commands.append(('go - all - etc', 'ee'))
-        commands.append(('go - all - makers', 'kk'))
-        commands.append(('go - all - materials', 'mm'))
-        commands.append(('go - all - scores', 'ss'))
-        commands.append(('go - all - segments', 'gg'))
-        commands.append(('go - all - stylesheets', 'yy'))
         if self._session.is_in_score:
             commands.append(('go - score', 's'))
             commands.append(('go - score - build', 'u'))
@@ -384,6 +376,8 @@ class AssetController(Controller):
             commands.append(('go - system - previous package', '<'))
         commands.append(('go - system - next score', '>>'))
         commands.append(('go - system - previous score', '<<'))
+        if commands_only:
+            return commands
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

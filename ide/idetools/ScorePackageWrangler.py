@@ -193,6 +193,23 @@ class ScorePackageWrangler(PackageWrangler):
             name='all packages',
             )
 
+    def _make_go_menu_section(self, menu, packages=False):
+        superclass = super(ScorePackageWrangler, self)
+        commands = superclass._make_go_menu_section(menu, commands_only=True)
+        commands.append(('go - all - build', 'uu'))
+        commands.append(('go - all - distribution', 'dd'))
+        commands.append(('go - all - etc', 'ee'))
+        commands.append(('go - all - makers', 'kk'))
+        commands.append(('go - all - materials', 'mm'))
+        commands.append(('go - all - scores', 'ss'))
+        commands.append(('go - all - segments', 'gg'))
+        commands.append(('go - all - stylesheets', 'yy'))
+        menu.make_command_section(
+            is_hidden=True,
+            commands=commands,
+            name='go',
+            )
+
     def _make_main_menu(self):
         superclass = super(ScorePackageWrangler, self)
         menu = superclass._make_main_menu()
