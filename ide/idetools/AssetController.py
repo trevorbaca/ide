@@ -59,13 +59,6 @@ class AssetController(Controller):
             #
             'cc': self.check_contents,
             #
-            'rad': self.add,
-            'rci': self.commit,
-            'rcn': self.remove_unadded_assets,
-            'rrv': self.revert,
-            'rst': self.display_status,
-            'rup': self.update,
-            #
             '!': self.invoke_shell,
             '?': self.display_available_commands,
             'll': self.open_lilypond_log,
@@ -403,23 +396,8 @@ class AssetController(Controller):
         if self._session.is_in_score:
             self._make_score_stylesheet_menu_section(menu)
         self._make_go_menu_section(menu)
-        self._make_repository_menu_section(menu)
         self._make_system_menu_section(menu)
         return menu
-
-    def _make_repository_menu_section(self, menu):
-        commands = []
-        commands.append(('repository - add', 'rad'))
-        commands.append(('repository - clean', 'rcn'))
-        commands.append(('repository - commit', 'rci'))
-        commands.append(('repository - revert', 'rrv'))
-        commands.append(('repository - status', 'rst'))
-        commands.append(('repository - update', 'rup'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='repository',
-            )
 
     def _make_score_stylesheet_menu_section(self, menu):
         commands = []
