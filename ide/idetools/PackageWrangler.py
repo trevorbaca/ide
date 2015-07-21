@@ -55,12 +55,6 @@ class PackageWrangler(Wrangler):
         commands.append(('all packages - definition.py - edit', 'de*'))
         commands.append(('all packages - illustration.ly - interpret', 'ii*'))
         commands.append(('all packages - illustration.pdf - open', 'io*'))
-        commands.append(('all packages - repository - add', 'rad*'))
-        commands.append(('all packages - repository - clean', 'rcn*'))
-        commands.append(('all packages - repository - commit', 'rci*'))
-        commands.append(('all packages - repository - revert', 'rrv*'))
-        commands.append(('all packages - repository - status', 'rst*'))
-        commands.append(('all packages - repository - update', 'rup*'))
         if commands_only:
             return commands
         menu.make_command_section(
