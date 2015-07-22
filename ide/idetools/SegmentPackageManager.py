@@ -80,24 +80,7 @@ class SegmentPackageManager(PackageManager):
     def _illustration_pdf_path(self):
         return os.path.join(self._path, 'illustration.pdf')
 
-    @property
-    def _source_paths(self):
-        return (
-            self._definition_py_path,
-            self._illustration_ly_path,
-            self._illustration_pdf_path,
-            )
-
     ### PRIVATE METHODS ###
-
-    def _execute_definition_py(self):
-        result = self._io_manager.execute_file(
-            path = self._definition_py_path,
-            attribute_names=('segment_maker',)
-            )
-        if result and len(result) == 1:
-            target = result[0]
-            return target
 
     def _get_previous_segment_manager(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler

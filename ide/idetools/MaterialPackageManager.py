@@ -90,10 +90,6 @@ class MaterialPackageManager(PackageManager):
         return os.path.join(self._path, 'definition.py')
 
     @property
-    def _handlertools_import_statement(self):
-        return 'from abjad.tools import handlertools'
-
-    @property
     def _illustrate_py_path(self):
         return os.path.join(self._path, '__illustrate__.py')
 
@@ -105,42 +101,7 @@ class MaterialPackageManager(PackageManager):
     def _illustration_pdf_path(self):
         return os.path.join(self._path, 'illustration.pdf')
 
-    @property
-    def _maker_py_path(self):
-        return os.path.join(self._path, 'maker.py')
-
-    @property
-    def _score_package_manager(self):
-        from ide import idetools
-        score_path = self._configuration._path_to_score_path(self._path)
-        return idetools.ScorePackageManager(
-            path=score_path,
-            session=self._session,
-            )
-
-    @property
-    def _source_paths(self):
-        return (
-            self._definition_py_path,
-            self._illustration_ly_path,
-            self._illustration_pdf_path,
-            )
-
     ### PRIVATE METHODS ###
-
-    def _execute_definition_py(self):
-        result = self._io_manager.execute_file(
-            path = self._definition_py_path,
-            attribute_names=(self._package_name,)
-            )
-        if result and len(result) == 1:
-            target = result[0]
-            return target
-
-    def _get_storage_format(self, expr):
-        if hasattr(expr, '_storage_format_specification'):
-            return format(expr, 'storage')
-        return repr(expr)
 
     def _make_definition_py_menu_section(self, menu):
         name = 'definition.py'
@@ -153,25 +114,6 @@ class MaterialPackageManager(PackageManager):
             commands=commands,
             name='definition.py',
             )
-
-    def _make_definition_target_lines(self, target):
-        if hasattr(target, '_storage_format_specification'):
-            lines = format(target, 'storage').splitlines()
-        else:
-            lines = [repr(target)]
-        lines = list(lines)
-        lines[0] = '{} = {}'.format(self._package_name, lines[0])
-        if ' makers.' in lines[0]:
-            module = target.__class__.__module__
-            parts = module.split('.')
-            index = parts.index('makers')
-            storehouse = parts[index-1]
-            line = lines[0]
-            unqualified = ' makers.'
-            qualified = ' {}.makers.'.format(storehouse)
-            line = line.replace(unqualified, qualified)
-            lines[0] = line
-        return lines
 
     def _make_illustrate_py_menu_section(self, menu):
         commands = []
@@ -290,102 +232,6 @@ class MaterialPackageManager(PackageManager):
         Returns none.
         '''
         self._io_manager.open_file(self._illustration_ly_path)
-
-    # TODO: refactor with SegmentPackageManager.illustrate_definition_py()
-    # TODO: maybe change to self.illustration_definition_py()
-#    def illustrate_output_py(self):
-#        r'''Illustrates ``output.py``.
-#
-#        Makes ``illustration.pdf`` and ``illustration.ly``.
-#
-#        Returns none.
-#        '''
-#        if os.path.isfile(self._illustrate_py_path):
-#            boilerplate_name = '__illustrate_material_2__.py'
-#        else:
-#            boilerplate_name = '__illustrate_material_1__.py'
-#        boilerplate_path = os.path.join(
-#            self._configuration.abjad_ide_directory,
-#            'boilerplate',
-#            boilerplate_name,
-#            )
-#        illustrate_path = os.path.join(
-#            self._path,
-#            '__illustrate_material__.py',
-#            )
-#        candidate_ly_path = os.path.join(
-#            self._path, 
-#            'illustration.candidate.ly'
-#            )
-#        candidate_pdf_path = os.path.join(
-#            self._path, 
-#            'illustration.candidate.pdf'
-#            )
-#        temporary_files = (
-#            illustrate_path, 
-#            candidate_ly_path,
-#            candidate_pdf_path,
-#            )
-#        for path in temporary_files:
-#            if os.path.exists(path):
-#                os.remove(path)
-#        illustration_ly_path = os.path.join(
-#            self._path,
-#            'illustration.ly',
-#            )
-#        illustration_pdf_path = os.path.join(
-#            self._path,
-#            'illustration.pdf',
-#            )
-#        with systemtools.FilesystemState(remove=temporary_files):
-#            shutil.copyfile(boilerplate_path, illustrate_path)
-#            self._replace_in_file(
-#                illustrate_path, 
-#                'OUTPUT_OBJECT', 
-#                self._package_name,
-#                )
-#            with self._io_manager._silent():
-#                result = self._io_manager.interpret_file(illustrate_path)
-#            stdout_lines, stderr_lines = result
-#            if stderr_lines:
-#                self._io_manager._display(stderr_lines, capitalize=False)
-#                return
-#            messages = []
-#            tab = self._io_manager._tab
-#            if not os.path.exists(illustration_pdf_path):
-#                shutil.move(candidate_pdf_path, illustration_pdf_path)
-#                shutil.move(candidate_ly_path, illustration_ly_path)
-#                tab = self._io_manager._tab
-#                messages.append('Wrote ...')
-#                messages.append(tab + illustration_ly_path)
-#                messages.append(tab + illustration_pdf_path)
-#                self._io_manager._display(messages)
-#            else:
-#                result = systemtools.TestManager.compare_files(
-#                candidate_pdf_path,
-#                illustration_pdf_path,
-#                )
-#                if result:
-#                    messages.append('the files ...')
-#                    messages.append(tab + candidate_pdf_path)
-#                    messages.append(tab + illustration_pdf_path)
-#                    messages.append('... compare the same.')
-#                    self._io_manager._display(messages)
-#                    message = 'Preserved {}.'.format(illustration_pdf_path)
-#                    self._io_manager._display(message)
-#                    return
-#                else:
-#                    messages.append('the files ...')
-#                    messages.append(tab + candidate_pdf_path)
-#                    messages.append(tab + illustration_pdf_path)
-#                    messages.append('... compare differently.')
-#                    self._io_manager._display(messages)
-#                    message = 'overwrite existing PDF with candidate PDF?'
-#                    result = self._io_manager._confirm(message=message)
-#                    if self._session.is_backtracking or not result:
-#                        return
-#                    shutil.move(candidate_pdf_path, illustration_pdf_path)
-#                    shutil.move(candidate_ly_path, illustration_ly_path)
 
     def open_illustration_pdf(self):
         r'''Opens ``illustration.pdf``.
