@@ -8,7 +8,7 @@ def test_ScorePackageWrangler_display_every_asset_status_01():
     r'''Works with all scores.
     '''
 
-    input_ = 'rst* q'
+    input_ = 'st* q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

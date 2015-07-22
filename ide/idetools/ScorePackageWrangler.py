@@ -187,12 +187,12 @@ class ScorePackageWrangler(PackageWrangler):
 
     def _make_all_packages_repository_menu_section(self, menu):
         commands = []
-        commands.append(('git add all score packages', 'rad*'))
-        commands.append(('git clean all score packages', 'rcn*'))
-        commands.append(('git commit all score packages', 'rci*'))
-        commands.append(('git revert all score packages', 'rrv*'))
-        commands.append(('git status all score packages', 'rst*'))
-        commands.append(('git update all score packages', 'rup*'))
+        commands.append(('git add all score packages', 'add*'))
+        commands.append(('git clean all score packages', 'clean*'))
+        commands.append(('git commit all score packages', 'ci*'))
+        commands.append(('git revert all score packages', 'revert*'))
+        commands.append(('git status all score packages', 'st*'))
+        commands.append(('git update all score packages', 'up*'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

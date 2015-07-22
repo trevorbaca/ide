@@ -203,25 +203,10 @@ class AbjadIDE(Wrangler):
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_all_assets_menu_section(self, menu):
-        commands = []
-        commands.append(('all assets - repository - add', 'rad*'))
-        commands.append(('all assets - repository - clean', 'rcn*'))
-        commands.append(('all assets - repository - commit', 'rci*'))
-        commands.append(('all assets - repository - revert', 'rrv*'))
-        commands.append(('all assets - repository - status', 'rst*'))
-        commands.append(('all assets - repository - update', 'rup*'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='all',
-            )
-
     def _make_main_menu(self):
         from ide import idetools
         menu = idetools.AssetController._make_main_menu(self)
         self._make_asset_menu_section(menu)
-        self._make_all_assets_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 

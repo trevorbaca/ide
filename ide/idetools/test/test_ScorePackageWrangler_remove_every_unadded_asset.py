@@ -6,6 +6,6 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 def test_ScorePackageWrangler_remove_every_unadded_asset_01():
 
-    input_ = 'rcn* q'
+    input_ = 'clean* q'
     abjad_ide._run(input_=input_)
     assert abjad_ide._session._attempted_remove_unadded_assets

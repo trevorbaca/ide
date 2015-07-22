@@ -7,6 +7,6 @@ def test_ScorePackageWrangler_commit_every_asset_01():
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     abjad_ide._session._is_repository_test = True
-    input_ = 'rci* q'
+    input_ = 'ci* q'
     abjad_ide._run(input_=input_)
     assert abjad_ide._session._attempted_to_commit

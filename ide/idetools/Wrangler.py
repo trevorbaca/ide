@@ -73,12 +73,12 @@ class Wrangler(AssetController):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'rad*': self.add_every_asset,
-            'rci*': self.commit_every_asset,
-            'rcn*': self.remove_every_unadded_asset,
-            'rst*': self.display_every_asset_status,
-            'rrv*': self.revert_every_asset,
-            'rup*': self.update_every_asset,
+            'add*': self.add_every_asset,
+            'ci*': self.commit_every_asset,
+            'clean*': self.remove_every_unadded_asset,
+            'st*': self.display_every_asset_status,
+            'revert*': self.revert_every_asset,
+            'up*': self.update_every_asset,
             #
             'ws': self.set_view,
             })

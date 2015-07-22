@@ -7,6 +7,6 @@ def test_ScorePackageWrangler_update_every_asset_01():
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     abjad_ide._session._is_repository_test = True
-    input_ = 'rup* q'
+    input_ = 'up* q'
     abjad_ide._run(input_=input_)
     assert abjad_ide._session._attempted_to_update
