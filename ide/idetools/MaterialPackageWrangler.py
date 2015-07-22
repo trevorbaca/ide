@@ -76,26 +76,3 @@ class MaterialPackageWrangler(PackageWrangler):
 
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True
-
-    ### PUBLIC METHODS ###
-
-    def copy_package(self):
-        r'''Copies package.
-
-        Returns none.
-        '''
-        self._copy_asset()
-
-    def remove_packages(self):
-        r'''Removes one or more packages.
-
-        Returns none.
-        '''
-        self._remove_assets()
-
-    def rename_package(self):
-        r'''Renames package.
-
-        Returns none.
-        '''
-        self._rename_asset()

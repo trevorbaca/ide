@@ -191,6 +191,13 @@ class PackageWrangler(Wrangler):
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
+    def copy_package(self):
+        r'''Copies package.
+
+        Returns none.
+        '''
+        self._copy_asset()
+
     def edit_every_definition_py(self):
         r'''Opens ``definition.py`` in every package.
 
@@ -332,6 +339,20 @@ class PackageWrangler(Wrangler):
         Returns none.
         '''
         self._open_in_every_package('illustration.pdf')
+
+    def remove_packages(self):
+        r'''Removes one or more packages.
+        
+        Returns none.
+        '''
+        self._remove_assets()
+
+    def rename_package(self):
+        r'''Renames package.
+
+        Returns none.
+        '''
+        self._rename_asset()
 
     def write_every_metadata_py(self):
         r'''Writes ``__metadata__.py`` in every package.
