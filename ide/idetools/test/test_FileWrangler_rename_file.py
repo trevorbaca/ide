@@ -7,7 +7,7 @@ configuration = ide.idetools.Configuration()
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_rename_file_01():
+def test_FileWrangler_rename_file_01():
     r'''Works at home screen.
     '''
 
@@ -42,7 +42,7 @@ def test_BuildFileWrangler_rename_file_01():
     assert os.path.exists(path)
 
 
-def test_BuildFileWrangler_rename_file_02():
+def test_FileWrangler_rename_file_02():
     r'''Works in score package.
     '''
 

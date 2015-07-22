@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_collect_segment_lilypond_files_01():
+def test_FileWrangler_collect_segment_lilypond_files_01():
     r'''Copies LilyPond files from segment packages to build directory
     when build directory contains no segment LilyPond files.
     '''
@@ -39,7 +39,7 @@ def test_BuildFileWrangler_collect_segment_lilypond_files_01():
     assert 'TO:' in contents
 
 
-def test_BuildFileWrangler_collect_segment_lilypond_files_02():
+def test_FileWrangler_collect_segment_lilypond_files_02():
     r'''Preseves build directory segment LilyPond files when segment package
     LilyPond files compare equal to build directory segment LilyPond files.
     '''

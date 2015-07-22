@@ -5,8 +5,8 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_generate_preface_source_01():
-    r'''Works when preface source doesn't yet exist.
+def test_FileWrangler_generate_back_cover_source_01():
+    r'''Works when back cover source doesn't yet exist.
 
     Supplies papersize={8.5in, 11in} as a.
     '''
@@ -14,14 +14,14 @@ def test_BuildFileWrangler_generate_preface_source_01():
     source_path = os.path.join(
         abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
-        'preface.tex',
+        'back-cover.tex',
         )
     destination_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'blue_example_score',
         'blue_example_score',
         'build',
-        'preface.tex',
+        'back-cover.tex',
         )
 
     with open(source_path) as file_pointer:
@@ -31,7 +31,7 @@ def test_BuildFileWrangler_generate_preface_source_01():
 
     with systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
-        input_ = 'blue~example~score u pg q'
+        input_ = 'blue~example~score u bcg q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
@@ -40,25 +40,24 @@ def test_BuildFileWrangler_generate_preface_source_01():
         assert '{8.5in, 11in}' in destination_contents
 
     contents = abjad_ide._transcript.contents
-    assert 'Overwrite' not in contents
-    assert 'Overwrote' not in contents
+    assert 'Wrote' in contents
 
 
-def test_BuildFileWrangler_generate_preface_source_02():
-    r'''Works when preface source already exists.
+def test_FileWrangler_generate_back_cover_source_02():
+    r'''Preserves existing source when candidate doesn't differ.
     '''
 
     source_path = os.path.join(
         abjad_ide._configuration.abjad_ide_directory,
         'boilerplate',
-        'preface.tex',
+        'back-cover.tex',
         )
     destination_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'preface.tex',
+        'back-cover.tex',
         )
 
     with open(source_path) as file_pointer:
@@ -67,14 +66,14 @@ def test_BuildFileWrangler_generate_preface_source_02():
     assert '{8.5in, 11in}' not in source_contents
 
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
-        input_ = 'red~example~score u pg y q'
+        input_ = 'red~example~score u bcg y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(destination_path)
-        with open(destination_path) as file_pointer:
-            destination_contents = ''.join(file_pointer.readlines())
-        assert 'PAPER_SIZE' not in destination_contents
-        assert '{8.5in, 11in}' in destination_contents
 
+    with open(destination_path) as file_pointer:
+        destination_contents = ''.join(file_pointer.readlines())
+    assert 'PAPER_SIZE' not in destination_contents
+    assert '{8.5in, 11in}' in destination_contents
     contents = abjad_ide._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents

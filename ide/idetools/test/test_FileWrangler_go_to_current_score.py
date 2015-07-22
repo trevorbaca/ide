@@ -4,9 +4,9 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_go_back_01():
+def test_FileWrangler_go_to_current_score_01():
 
-    input_ = 'red~example~score u b q'
+    input_ = 'red~example~score u s q'
     abjad_ide._run(input_=input_)
 
     titles = [
@@ -14,18 +14,5 @@ def test_BuildFileWrangler_go_back_01():
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
         'Red Example Score (2013)',
-        ]
-    assert abjad_ide._transcript.titles == titles
-
-
-def test_BuildFileWrangler_go_back_02():
-
-    input_ = 'uu b q'
-    abjad_ide._run(input_=input_)
-
-    titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - build depot',
-        'Abjad IDE - scores',
         ]
     assert abjad_ide._transcript.titles == titles

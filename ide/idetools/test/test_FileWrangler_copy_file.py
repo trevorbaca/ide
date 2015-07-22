@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_copy_file_01():
+def test_FileWrangler_copy_file_01():
     r'''Works in build depot.
     
     Partial test because we can't be sure any user score packages will be
@@ -27,7 +27,7 @@ def test_BuildFileWrangler_copy_file_01():
     assert 'Select storehouse:' in contents
 
 
-def test_BuildFileWrangler_copy_file_02():
+def test_FileWrangler_copy_file_02():
     r'''Works in build directory.
     '''
 

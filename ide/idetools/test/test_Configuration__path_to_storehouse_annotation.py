@@ -5,7 +5,7 @@ import ide
 configuration = ide.idetools.Configuration()
 
 
-def test_Configuration__path_to_storehouse_annotation_02():
+def test_Configuration__path_to_storehouse_annotation_01():
     r'''Score paths annotate score title.
     '''
 

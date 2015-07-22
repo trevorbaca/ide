@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 import datetime
 import os
-import sys
 from abjad.tools import stringtools
 from ide.idetools.PackageWrangler import PackageWrangler
 

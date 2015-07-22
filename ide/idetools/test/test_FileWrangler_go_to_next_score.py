@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_go_to_next_score_01():
+def test_FileWrangler_go_to_next_score_01():
 
     input_ = 'red~example~score u >> q'
     abjad_ide._run(input_=input_)
@@ -18,7 +18,7 @@ def test_BuildFileWrangler_go_to_next_score_01():
     assert abjad_ide._transcript.titles == titles
 
 
-def test_BuildFileWrangler_go_to_next_score_02():
+def test_FileWrangler_go_to_next_score_02():
 
     input_ = 'uu >> q'
     abjad_ide._run(input_=input_)

@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_invoke_shell_01():
+def test_FileWrangler_invoke_shell_01():
     r'''Outside of score package.
     '''
 
@@ -19,7 +19,7 @@ def test_BuildFileWrangler_invoke_shell_01():
     assert string in abjad_ide._transcript.contents
 
 
-def test_BuildFileWrangler_invoke_shell_02():
+def test_FileWrangler_invoke_shell_02():
     r'''Inside score package.
     '''
 

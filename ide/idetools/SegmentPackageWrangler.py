@@ -1,7 +1,4 @@
 # -*- encoding: utf-8 -*-
-import os
-from abjad.tools import datastructuretools
-from abjad.tools import systemtools
 from ide.idetools.PackageWrangler import PackageWrangler
 
 

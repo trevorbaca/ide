@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_go_to_score_materials_01():
+def test_FileWrangler_go_to_score_materials_01():
     r'''Goes from build directory to materials directory.
     '''
 

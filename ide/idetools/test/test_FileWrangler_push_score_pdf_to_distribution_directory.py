@@ -7,7 +7,7 @@ configuration = ide.idetools.Configuration()
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_push_score_pdf_to_distribution_directory_01():
+def test_FileWrangler_push_score_pdf_to_distribution_directory_01():
     r'''Works in score package.
     '''
 

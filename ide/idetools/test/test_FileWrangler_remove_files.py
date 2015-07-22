@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_BuildFileWrangler_remove_files_01():
+def test_FileWrangler_remove_files_01():
 
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
