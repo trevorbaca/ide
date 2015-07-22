@@ -48,9 +48,6 @@ class SegmentPackageWrangler(PackageWrangler):
 
     ### PRIVATE METHODS ###
 
-    def _enter_run(self):
-        self._session._is_navigating_to_segments = False
-
     def _get_first_segment_name(self):
         managers = self._list_visible_asset_managers()
         if managers:

@@ -219,20 +219,6 @@ class FileWrangler(Wrangler):
             message = message.format(string)
             self._io_manager._display(message)
 
-    def _enter_run(self):
-        if self._basic_breadcrumb == 'build':
-            self._session._is_navigating_to_build_files = False   
-        elif self._basic_breadcrumb == 'distribution':
-            self._session._is_navigating_to_distribution_files = False
-        elif self._basic_breadcrumb == 'etc':
-            self._session._is_navigating_to_etc_files = False
-        elif self._basic_breadcrumb == 'makers':
-            self._session._is_navigating_to_maker_files = False
-        elif self._basic_breadcrumb == 'stylesheets':
-            self._session._is_navigating_to_stylesheets = False
-        else:
-            raise ValueError(repr(self._basic_breadcrumb))
-
     @staticmethod
     def _file_name_callback(file_name):
         file_name = file_name.replace(' ', '-')

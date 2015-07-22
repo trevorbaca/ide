@@ -96,6 +96,22 @@ class AssetController(Controller):
 
     ### PRIVATE METHODS ###
 
+    def _enter_run(self):
+        if self._basic_breadcrumb == 'build':
+            self._session._is_navigating_to_build_files = False   
+        elif self._basic_breadcrumb == 'distribution':
+            self._session._is_navigating_to_distribution_files = False
+        elif self._basic_breadcrumb == 'etc':
+            self._session._is_navigating_to_etc_files = False
+        elif self._basic_breadcrumb == 'makers':
+            self._session._is_navigating_to_maker_files = False
+        elif self._basic_breadcrumb == 'stylesheets':
+            self._session._is_navigating_to_stylesheets = False
+        elif self._basic_breadcrumb == 'segments':
+            self._session._is_navigating_to_segments = False
+        elif self._basic_breadcrumb == 'materials':
+            self._session._is_navigating_to_materials = False
+
     def _filter_asset_menu_entries_by_view(self, entries):
         view = self._read_view()
         if view is None:

@@ -63,9 +63,6 @@ class MaterialPackageWrangler(PackageWrangler):
 
     ### PRIVATE METHODS ###
 
-    def _enter_run(self):
-        self._session._is_navigating_to_materials = False
-
     def _is_valid_directory_entry(self, expr):
         superclass = super(MaterialPackageWrangler, self)
         if superclass._is_valid_directory_entry(expr):

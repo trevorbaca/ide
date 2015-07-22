@@ -215,9 +215,6 @@ class Wrangler(AssetController):
                     new_name,
                     )
 
-    def _enter_run(self):
-        pass
-
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
         example_score_packages_directory = \
