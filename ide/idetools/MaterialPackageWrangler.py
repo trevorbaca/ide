@@ -73,33 +73,6 @@ class MaterialPackageWrangler(PackageWrangler):
                 return True
         return False
 
-    def _list_asset_paths(
-        self,
-        abjad_material_packages_and_stylesheets=True,
-        example_score_packages=True,
-        user_score_packages=True,
-        output_material_class_name='',
-        ):
-        from ide import idetools
-        superclass = super(MaterialPackageWrangler, self)
-        paths = superclass._list_asset_paths(
-            abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
-            example_score_packages=example_score_packages,
-            user_score_packages=user_score_packages,
-            )
-        if not output_material_class_name:
-            return paths
-        result = []
-        for path in paths:
-            manager = idetools.PackageManager(
-                path=path,
-                session=self._session,
-                )
-            metadatum = manager._get_metadatum('output_material_class_name')
-            if metadatum and metadatum == output_material_class_name:
-                result.append(path)
-        return result
-
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         superclass = super(MaterialPackageWrangler, self)
         commands = superclass._make_all_packages_menu_section(
