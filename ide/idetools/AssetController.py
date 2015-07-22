@@ -17,6 +17,8 @@ class AssetController(Controller):
 
     __slots__ = (
         '_annotate_year',
+        '_asset_identifier',
+        '_basic_breadcrumb',
         '_commands',
         '_human_readable',
         '_include_asset_name',
@@ -36,6 +38,8 @@ class AssetController(Controller):
         superclass = super(AssetController, self)
         superclass.__init__(session=session)
         self._annotate_year = False
+        self._asset_identifier = None
+        self._basic_breadcrumb = None
         self._commands = {}
         self._human_readable = True
         self._include_asset_name = True
@@ -111,6 +115,15 @@ class AssetController(Controller):
             self._session._is_navigating_to_segments = False
         elif self._basic_breadcrumb == 'materials':
             self._session._is_navigating_to_materials = False
+        elif self._asset_identifier == 'package manager':
+            self._session._is_navigating_to_next_asset = False
+            self._session._is_navigating_to_previous_asset = False
+            self._session._last_asset_path = self._path
+        elif self._asset_identifier == 'score package manager':
+            self._session._is_navigating_to_next_asset = False
+            self._session._is_navigating_to_previous_asset = False
+            self._session._last_asset_path = self._path
+            self._session._last_score_path = self._path
 
     def _filter_asset_menu_entries_by_view(self, entries):
         view = self._read_view()

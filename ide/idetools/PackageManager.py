@@ -31,7 +31,7 @@ class PackageManager(AssetController):
         assert path is not None and os.path.sep in path
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
-        self._asset_identifier = None
+        self._asset_identifier = 'package manager'
         self._optional_directories = (
             '__pycache__',
             'test',
@@ -126,11 +126,6 @@ class PackageManager(AssetController):
         metadata[metadatum_name] = metadatum_value
         with self._io_manager._silent():
             self._write_metadata_py(metadata)
-
-    def _enter_run(self):
-        self._session._is_navigating_to_next_asset = False
-        self._session._is_navigating_to_previous_asset = False
-        self._session._last_asset_path = self._path
 
     def _exit_run(self):
         return self._session.is_backtracking

@@ -21,6 +21,7 @@ class ScorePackageManager(PackageManager):
         superclass = super(ScorePackageManager, self)
         superclass.__init__(path=path, session=session)
         self._annotate_year = True
+        self._asset_identifier = 'score package manager'
         self._include_asset_name = False
         optional_directories = list(self._optional_directories)
         optional_directories.extend([
@@ -100,11 +101,6 @@ class ScorePackageManager(PackageManager):
         for old in replacements:
             new = replacements[old]
             self._replace_in_file(destination_path, old, new)
-
-    def _enter_run(self):
-        superclass = super(ScorePackageManager, self)
-        superclass._enter_run()
-        self._session._last_score_path = self._path
 
     def _exit_run(self):
         superclass = super(ScorePackageManager, self)
