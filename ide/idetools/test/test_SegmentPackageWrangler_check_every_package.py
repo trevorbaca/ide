@@ -25,7 +25,7 @@ def test_SegmentPackageWrangler_check_every_package_01():
 
 
 def test_SegmentPackageWrangler_check_every_package_02():
-    r'''Works in library.
+    r'''Works at home screen.
     '''
 
     lines = [

@@ -8,7 +8,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_BuildFileWrangler_rename_file_01():
-    r'''Works in library.
+    r'''Works at home screen.
     '''
 
     path = os.path.join(

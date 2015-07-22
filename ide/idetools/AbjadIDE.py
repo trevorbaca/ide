@@ -133,7 +133,6 @@ class AbjadIDE(Wrangler):
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._file_wrangler_type = 'maker'
         wrangler._force_lowercase = False
-        wrangler._in_library = True
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
         return wrangler
@@ -165,7 +164,6 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'stylesheets'
         wrangler._extension = '.ily'
         wrangler._file_wrangler_type = 'stylesheet'
-        wrangler._in_library = True
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         return wrangler
 

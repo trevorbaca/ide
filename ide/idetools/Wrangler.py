@@ -24,7 +24,6 @@ class Wrangler(AssetController):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_force_lowercase',
-        '_in_library',
         '_main_menu',
         '_manager_class',
         '_score_storehouse_path_infix_parts',
@@ -44,7 +43,6 @@ class Wrangler(AssetController):
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._force_lowercase = True
-        self._in_library = False
         self._manager_class = idetools.PackageManager
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
@@ -255,7 +253,6 @@ class Wrangler(AssetController):
         from ide import idetools
         abjad_material_packages_and_stylesheets = False
         example_score_packages = False
-        library = False
         user_score_packages = False
         if system and inside_score:
             example_score_packages = True
@@ -263,14 +260,11 @@ class Wrangler(AssetController):
             abjad_material_packages_and_stylesheets = True
         elif not system and inside_score:
             user_score_packages = True
-        elif not system and not inside_score:
-            library = True
         else:
             Exception
         asset_paths = self._list_asset_paths(
             abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
-            library=library,
             user_score_packages=user_score_packages,
             )
         if type(self) is idetools.ScorePackageWrangler:
@@ -421,7 +415,6 @@ class Wrangler(AssetController):
         self,
         abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
-        library=True,
         user_score_packages=True,
         valid_only=True,
         ):
@@ -430,7 +423,6 @@ class Wrangler(AssetController):
             abjad_material_packages_and_stylesheets=\
                 abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
-            library=library,
             user_score_packages=user_score_packages,
             )
         for directory in directories:
@@ -451,14 +443,13 @@ class Wrangler(AssetController):
         self,
         abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
-        library=True,
         user_score_packages=True,
         ):
         result = []
         if (abjad_material_packages_and_stylesheets and
             self._abjad_storehouse_path is not None):
             result.append(self._abjad_storehouse_path)
-        if library and self._user_storehouse_path is not None:
+        if user_score_packages and self._user_storehouse_path is not None:
             result.append(self._user_storehouse_path)
         if (example_score_packages and
             self._score_storehouse_path_infix_parts):
@@ -587,22 +578,17 @@ class Wrangler(AssetController):
         self,
         abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
-        library=True,
         user_score_packages=True,
         ):
         from ide import idetools
         display_strings, keys = [], []
         if self._user_storehouse_path is not None:
-            assert self._in_library
-            display_string = 'My {} library'.format(self._asset_identifier)
-            display_strings.append(display_string)
-            keys.append(self._user_storehouse_path)
+            raise Exception('library no longer supported.')
         wrangler = idetools.ScorePackageWrangler(session=self._session)
         paths = wrangler._list_asset_paths(
             abjad_material_packages_and_stylesheets=\
                 abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
-            library=library,
             user_score_packages=user_score_packages,
             )
         for path in paths:
@@ -814,7 +800,6 @@ class Wrangler(AssetController):
         menu_entries = self._make_storehouse_menu_entries(
             abjad_material_packages_and_stylesheets=False,
             example_score_packages=example_score_packages,
-            library=True,
             user_score_packages=False,
             )
         selector = idetools.Selector(

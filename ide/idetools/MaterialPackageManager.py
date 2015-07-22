@@ -58,7 +58,7 @@ class MaterialPackageManager(PackageManager):
     @property
     def _breadcrumb(self):
         breadcrumb = self._space_delimited_lowercase_name
-        if not self._session.is_in_library and not self._session.is_in_score:
+        if not self._session.is_in_score:
             annotation = self._path_to_annotation(self._path)
             breadcrumb = '{} - {}'.format(annotation, breadcrumb)
         return breadcrumb

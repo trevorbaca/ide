@@ -144,7 +144,6 @@ class ScorePackageWrangler(PackageWrangler):
         self,
         abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
-        library=True,
         user_score_packages=True,
         valid_only=True,
         ):
@@ -152,7 +151,6 @@ class ScorePackageWrangler(PackageWrangler):
         directories = self._list_storehouse_paths(
             abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
-            library=library,
             user_score_packages=user_score_packages,
             )
         for directory in directories:

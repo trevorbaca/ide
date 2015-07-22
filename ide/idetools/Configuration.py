@@ -41,12 +41,6 @@ class Configuration(AbjadConfiguration):
             'This file is interpreted by ConfigObj and follows ini sytnax.',
         ]
 
-    @property
-    def _library_name(self):
-        directory = self.library
-        directory_name = os.path.split(directory)[-1]
-        return directory_name
-
     ### PRIVATE METHODS ###
 
     def _get_option_definitions(self):
@@ -85,19 +79,6 @@ class Configuration(AbjadConfiguration):
                     'Your GitHub username.',
                 ],
                 'spec': "string(default=None)",
-            },
-            'library': {
-                'comment': [
-                    '',
-                    'The directory where you house score-external assets.',
-                    'Defaults to $HOME/.abjad/library/.',
-                ],
-                'spec': 'string(default={!r})'.format(
-                    os.path.join(
-                        self.abjad_configuration_directory,
-                        'library',
-                        )
-                    ),
             },
             'scores_directory': {
                 'comment': [
@@ -164,8 +145,6 @@ class Configuration(AbjadConfiguration):
         elif path.startswith(self.example_score_packages_directory):
             is_in_score = True
             prefix = len(self.example_score_packages_directory)
-        elif path.startswith(self.library):
-            prefix = len(self.library)
         else:
             message = 'unidentifiable path: {!r}.'
             message = message.format(path)
@@ -193,8 +172,6 @@ class Configuration(AbjadConfiguration):
                 )
             title = manager._get_title()
             return title
-        elif path.startswith(self.library):
-            return self.composer_last_name
         elif path.startswith(self.abjad_root_directory):
             return 'Abjad'
         else:
@@ -468,27 +445,6 @@ class Configuration(AbjadConfiguration):
         return superclass.home_directory
 
     @property
-    def library(self):
-        r'''Gets library directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.library
-                '...'
-
-        Aliases `library` setting in Abjad IDE configuration
-        file.
-
-        Returns string.
-        '''
-        path = self._settings['library']
-        path = os.path.expanduser(path)
-        path = os.path.normpath(path)
-        return path
-
-    @property
     def transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -663,8 +619,6 @@ class Configuration(AbjadConfiguration):
             prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
         elif path.startswith(self.user_score_packages_directory):
             prefix = len(self.user_score_packages_directory) + 1
-        elif path.startswith(self.library):
-            prefix = len(os.path.dirname(self.library)) + 1
         else:
             message = 'can not change path to package: {!r}.'
             message = message.format(path)

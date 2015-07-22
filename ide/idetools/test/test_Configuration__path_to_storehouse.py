@@ -8,22 +8,6 @@ configuration = ide.idetools.Configuration()
 def test_Configuration__path_to_storehouse_01():
     
     storehouse = os.path.join(
-        configuration.library,
-        'stylesheets',
-        )
-
-    assert configuration._path_to_storehouse(storehouse) == storehouse
-
-    path_1 = os.path.join(storehouse, 'foo')
-    assert configuration._path_to_storehouse(path_1) == storehouse
-        
-    path_2 = os.path.join(storehouse, 'foo', 'bar')
-    assert configuration._path_to_storehouse(path_1) == storehouse
-
-
-def test_Configuration__path_to_storehouse_02():
-    
-    storehouse = os.path.join(
         configuration.user_score_packages_directory,
         'foo_score',
         'foo_score',
@@ -39,7 +23,7 @@ def test_Configuration__path_to_storehouse_02():
     assert configuration._path_to_storehouse(path_1) == storehouse
 
 
-def test_Configuration__path_to_storehouse_03():
+def test_Configuration__path_to_storehouse_02():
     
     storehouse = os.path.join(
         configuration.example_score_packages_directory,

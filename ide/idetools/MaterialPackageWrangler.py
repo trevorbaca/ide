@@ -47,19 +47,10 @@ class MaterialPackageWrangler(PackageWrangler):
         configuration = self._configuration
         self._asset_identifier = 'material package'
         self._basic_breadcrumb = 'materials'
-        self._in_library = True
         self._manager_class = idetools.MaterialPackageManager
         self._score_storehouse_path_infix_parts = ('materials',)
 
     ### PRIVATE PROPERTIES ###
-
-    @property
-    def _breadcrumb(self):
-        superclass = super(MaterialPackageWrangler, self)
-        breadcrumb = superclass._breadcrumb
-        if self._session.is_in_library:
-            breadcrumb = '{} - library'.format(breadcrumb)
-        return breadcrumb
 
     @property
     def _command_to_method(self):
@@ -85,7 +76,6 @@ class MaterialPackageWrangler(PackageWrangler):
     def _list_asset_paths(
         self,
         abjad_material_packages_and_stylesheets=True,
-        library=True,
         example_score_packages=True,
         user_score_packages=True,
         output_material_class_name='',
@@ -94,7 +84,6 @@ class MaterialPackageWrangler(PackageWrangler):
         superclass = super(MaterialPackageWrangler, self)
         paths = superclass._list_asset_paths(
             abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
-            library=library,
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
