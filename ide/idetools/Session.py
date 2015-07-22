@@ -33,6 +33,7 @@ class Session(abctools.AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_abjad_ide',
         '_aliases',
         '_allow_unknown_command_during_test',
         '_after_redraw_message',
@@ -53,7 +54,6 @@ class Session(abctools.AbjadObject):
         '_current_score_directory',
         '_display',
         '_display_available_commands',
-        '_display_pitch_ranges_with_numbered_pitches',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -80,13 +80,9 @@ class Session(abctools.AbjadObject):
         '_last_asset_path',
         '_last_command_was_composite',
         '_last_score_path',
-        '_menu_header_width',
         '_pending_done',
         '_pending_input',
         '_pending_redraw',
-        '_proceed_count',
-        '_abjad_ide',
-        '_task_depth',
         '_transcript',
         )
 
@@ -94,6 +90,7 @@ class Session(abctools.AbjadObject):
 
     def __init__(self, input_=None, is_test=False):
         from ide import idetools
+        self._abjad_ide = None
         self._aliases = {}
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
@@ -113,7 +110,6 @@ class Session(abctools.AbjadObject):
         self._controllers_visited = []
         self._current_score_directory = None
         self._display = True
-        self._display_pitch_ranges_with_numbered_pitches = False
         self._display_available_commands = False
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
@@ -140,13 +136,9 @@ class Session(abctools.AbjadObject):
         self._last_asset_path = None
         self._last_command_was_composite = False
         self._last_score_path = None
-        self._menu_header_width = 160
         self._pending_done = False
         self._pending_input = input_
         self._pending_redraw = True
-        self._proceed_count = 0
-        self._abjad_ide = None
-        self._task_depth = 0
         self._transcript = idetools.Transcript()
 
     ### SPECIAL METHODS ###
@@ -683,22 +675,6 @@ class Session(abctools.AbjadObject):
         return self._display_available_commands
 
     @property
-    def display_pitch_ranges_with_numbered_pitches(self):
-        r'''Is true when session should display pitch ranges with numbered
-        pitches. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.display_pitch_ranges_with_numbered_pitches
-                False
-
-        Returns boolean.
-        '''
-        return self._display_pitch_ranges_with_numbered_pitches
-
-    @property
     def explicit_command_history(self):
         r'''Gets session explicit command history.
 
@@ -889,21 +865,6 @@ class Session(abctools.AbjadObject):
         if self.current_score_package_manager is not None:
             return True
         return False
-
-    @property
-    def is_in_task(self):
-        r'''Is true when session is in task. Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_task
-                False
-
-        Returns boolean.
-        '''
-        return bool(self.task_depth)
 
     @property
     def is_in_user_input_getter(self):
@@ -1284,21 +1245,6 @@ class Session(abctools.AbjadObject):
         return self._make_menu_header()
 
     @property
-    def menu_header_width(self):
-        r'''Gets session menu header width.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.menu_header_width
-                160
-
-        Returns nonnegative integer.
-        '''
-        return self._menu_header_width
-
-    @property
     def pending_done(self):
         r'''Is true when something is pending done. Otherwise false.
 
@@ -1342,37 +1288,6 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self._pending_redraw
-
-    @property
-    def proceed_count(self):
-        r'''Gets the number of times IOManager.proceed()
-        has been called in session.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.proceed_count
-                0
-
-        Returns nonnegative integer.
-        '''
-        return self._proceed_count
-
-    @property
-    def task_depth(self):
-        r'''Gets task depth.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.task_depth
-                0
-
-        Returns nonnegative integer.
-        '''
-        return self._task_depth
 
     @property
     def testable_command_history_string(self):

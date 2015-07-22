@@ -43,8 +43,6 @@ class Interaction(ContextManager):
 
         Returns none.
         '''
-        if self.task:
-            self._controller._session._task_depth += 1
         self._original_confirm = self._controller._session.confirm
         self._original_display = self._controller._session.display
         self._controller._session._confirm = self.confirm
@@ -55,8 +53,6 @@ class Interaction(ContextManager):
 
         Returns none.
         '''
-        if self.task:
-            self._controller._session._task_depth -= 1
         if self.display and not self.dry_run:
             if self.task:
                 if 0 < len(self._controller._transcript.entries):
