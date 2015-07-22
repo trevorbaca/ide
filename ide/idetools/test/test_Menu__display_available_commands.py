@@ -10,7 +10,7 @@ def test_Menu__display_available_commands_01():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'system - commands' in contents
+    assert 'system - help' in contents
     assert 'scores - new' in contents
 
 

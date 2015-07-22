@@ -85,7 +85,7 @@ class AssetController(Controller):
     def _navigation_commands(self):
         result = (
             'b', 'q',
-            'dd', 'ee', 'gg', 'kk', 'mm', 'ss', 'uu', 'yy',
+            'dd', 'ee', 'gg', 'kk', 'mm', 'h', 'uu', 'yy',
             'd', 'e', 'g', 'k', 'm', 's', 'u', 'y',
             )
         return result
@@ -370,7 +370,6 @@ class AssetController(Controller):
             commands.append(('go - score - segments', 'g'))
             commands.append(('go - score - stylesheets', 'y'))
         commands.append(('go - system - back', 'b'))
-        commands.append(('go - system - quit', 'q'))
         if packages:
             commands.append(('go - system - next package', '>'))
             commands.append(('go - system - previous package', '<'))
@@ -410,8 +409,10 @@ class AssetController(Controller):
 
     def _make_system_menu_section(self, menu):
         commands = []
-        commands.append(('system - commands', '?'))
+        commands.append(('system - help', '?'))
+        commands.append(('system - home', 'h'))
         commands.append(('system - log', 'll'))
+        commands.append(('system - quit', 'q'))
         commands.append(('system - shell', '!'))
         commands.append(('system - variables', 'sv'))
         menu.make_command_section(

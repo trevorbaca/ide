@@ -6,7 +6,7 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 def test_SegmentPackageManager_go_to_all_scores_01():
 
-    input_ = 'red~example~score g A ss q'
+    input_ = 'red~example~score g A h q'
     abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - scores',

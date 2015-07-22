@@ -78,7 +78,7 @@ class Controller(object):
             'b': self.go_back,
             'q': self.quit,
             's': self.go_to_current_score,
-            'ss': self.go_to_all_scores,
+            'h': self.go_to_all_scores,
             }
         return result
 

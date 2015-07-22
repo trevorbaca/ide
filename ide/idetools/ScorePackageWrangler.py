@@ -201,7 +201,6 @@ class ScorePackageWrangler(PackageWrangler):
         commands.append(('go - all - etc', 'ee'))
         commands.append(('go - all - makers', 'kk'))
         commands.append(('go - all - materials', 'mm'))
-        commands.append(('go - all - scores', 'ss'))
         commands.append(('go - all - segments', 'gg'))
         commands.append(('go - all - stylesheets', 'yy'))
         menu.make_command_section(
