@@ -51,9 +51,6 @@ class MenuEntry(AbjadObject):
         key=None,
         prepopulated_value=None,
         ):
-        if menu_section is not None:
-            if menu_section.is_command_section:
-                assert '-' in display_string, repr(menu_section)
         self._menu_section = menu_section
         self._display_string = display_string
         self._explicit_return_value = explicit_return_value

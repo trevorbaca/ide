@@ -369,12 +369,11 @@ class AssetController(Controller):
             commands.append(('go - score - materials', 'm'))
             commands.append(('go - score - segments', 'g'))
             commands.append(('go - score - stylesheets', 'y'))
-        commands.append(('go - system - back', 'b'))
         if packages:
-            commands.append(('go - system - next package', '>'))
-            commands.append(('go - system - previous package', '<'))
-        commands.append(('go - system - next score', '>>'))
-        commands.append(('go - system - previous score', '<<'))
+            commands.append(('next package', '>'))
+            commands.append(('previous package', '<'))
+        commands.append(('next score', '>>'))
+        commands.append(('previous score', '<<'))
         if commands_only:
             return commands
         menu.make_command_section(
@@ -409,12 +408,13 @@ class AssetController(Controller):
 
     def _make_system_menu_section(self, menu):
         commands = []
-        commands.append(('system - help', '?'))
-        commands.append(('system - home', 'h'))
-        commands.append(('system - log', 'll'))
-        commands.append(('system - quit', 'q'))
-        commands.append(('system - shell', '!'))
-        commands.append(('system - variables', 'sv'))
+        commands.append(('back', 'b'))
+        commands.append(('help', '?'))
+        commands.append(('home', 'h'))
+        commands.append(('log', 'll'))
+        commands.append(('quit', 'q'))
+        commands.append(('shell', '!'))
+        commands.append(('session variables', 'sv'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

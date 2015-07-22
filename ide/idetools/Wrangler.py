@@ -618,7 +618,7 @@ class Wrangler(AssetController):
 
     def _make_views_menu_section(self, menu):
         commands = []
-        commands.append(('views - set', 'ws'))
+        commands.append(('set view', 'ws'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

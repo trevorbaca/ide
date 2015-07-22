@@ -193,20 +193,19 @@ class ScorePackageWrangler(PackageWrangler):
             name='all packages',
             )
 
-    def _make_go_menu_section(self, menu, packages=False):
-        superclass = super(ScorePackageWrangler, self)
-        commands = superclass._make_go_menu_section(menu, commands_only=True)
-        commands.append(('go - all - build', 'uu'))
-        commands.append(('go - all - distribution', 'dd'))
-        commands.append(('go - all - etc', 'ee'))
-        commands.append(('go - all - makers', 'kk'))
-        commands.append(('go - all - materials', 'mm'))
-        commands.append(('go - all - segments', 'gg'))
-        commands.append(('go - all - stylesheets', 'yy'))
+    def _make_show_all_menu_section(self, menu):
+        commands = []
+        commands.append(('show all build files', 'uu'))
+        commands.append(('show all distribution', 'dd'))
+        commands.append(('show all etc files', 'ee'))
+        commands.append(('show all maker files', 'kk'))
+        commands.append(('show all material packages', 'mm'))
+        commands.append(('show all segment packages', 'gg'))
+        commands.append(('show all stylesheets', 'yy'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
-            name='go',
+            name='show all',
             )
 
     def _make_main_menu(self):
@@ -219,14 +218,15 @@ class ScorePackageWrangler(PackageWrangler):
             pass
         self._make_all_packages_menu_section(menu)
         self._make_scores_menu_section(menu)
+        self._make_show_all_menu_section(menu)
         return menu
 
     def _make_scores_menu_section(self, menu):
         commands = []
-        commands.append(('scores - copy', 'cp'))
-        commands.append(('scores - new', 'new'))
-        commands.append(('scores - remove', 'rm'))
-        commands.append(('scores - rename', 'ren'))
+        commands.append(('copy score', 'cp'))
+        commands.append(('new score', 'new'))
+        commands.append(('remove score', 'rm'))
+        commands.append(('rename score', 'ren'))
         menu.make_command_section(
             commands=commands,
             name='scores',
