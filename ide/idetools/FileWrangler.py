@@ -468,53 +468,6 @@ class FileWrangler(Wrangler):
             replacements[old] = new
         self._copy_boilerplate('back-cover.tex', replacements=replacements)
 
-    def generate_draft_source(self):
-        r'''Generates ``draft.tex``.
-
-        Returns none.
-        '''
-        result = self._confirm_segment_names()
-        if self._session.is_backtracking or not isinstance(result, list):
-            return
-        segment_names = result
-        pdf_names = [_.replace('_', '-') for _ in segment_names]
-        source_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            'draft.tex',
-            )
-        manager = self._session.current_score_package_manager
-        destination_path = os.path.join(
-            manager._path,
-            'build',
-            'draft.tex',
-            )
-        candidate_path = os.path.join(
-            manager._path,
-            'build',
-            'draft.candidate.tex',
-            )
-        with systemtools.FilesystemState(remove=[candidate_path]):
-            shutil.copyfile(source_path, candidate_path)
-            width, height, unit = manager._parse_paper_dimensions()
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            self._replace_in_file(candidate_path, old, new)
-            lines = []
-            for pdf_name in pdf_names:
-                line = r'\includepdf[pages=-]{{{}.pdf}}'
-                line = line.format(pdf_name)
-                lines.append(line)
-            if lines:
-                new = '\n'.join(lines)
-                old = '%%% SEGMENTS %%%'
-                self._replace_in_file(candidate_path, old, new)
-            else:
-                line_to_remove = '%%% SEGMENTS %%%\n'
-                self._remove_file_line(candidate_path, line_to_remove)
-            self._handle_candidate(candidate_path, destination_path)
-
     def generate_front_cover_source(self):
         r'''Generates ``front-cover.tex``.
 
@@ -659,13 +612,6 @@ class FileWrangler(Wrangler):
         Returns none.
         '''
         self._interpret_file_ending_with('back-cover.tex')
-
-    def interpret_draft(self):
-        r'''Interprets ``draft.tex``.
-
-        Returns none.
-        '''
-        self._interpret_file_ending_with('draft.tex')
 
     def interpret_front_cover(self):
         r'''Interprets ``front-cover.tex``.

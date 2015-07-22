@@ -61,8 +61,6 @@ class AbjadIDE(Wrangler):
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
         wrangler._commands['dc'] = wrangler.collect_segment_pdfs
-        wrangler._commands['dg'] = wrangler.generate_draft_source
-        wrangler._commands['di'] = wrangler.interpret_draft
         wrangler._commands['fcg'] = wrangler.generate_front_cover_source
         wrangler._commands['fci'] = wrangler.interpret_front_cover
         wrangler._commands['mc'] = wrangler.collect_segment_lilypond_files
@@ -74,16 +72,13 @@ class AbjadIDE(Wrangler):
         wrangler._commands['si'] = wrangler.interpret_score
         wrangler._commands['sp'] = wrangler.push_score_pdf_to_distribution_directory
         commands = []
-        commands.append(('collect draft segment files', 'dc'))
         commands.append(('collect music segment files', 'mc'))
         commands.append(('generate back-cover.tex', 'bcg'))
-        commands.append(('generate draft.tex', 'dg'))
         commands.append(('generate front-cover.tex', 'fcg'))
         commands.append(('generate music.ly', 'mg'))
         commands.append(('generate preface.tex', 'pg'))
         commands.append(('generate score.tex', 'sg'))
         commands.append(('interpret back-cover.tex', 'bci'))
-        commands.append(('interpret draft.tex', 'di'))
         commands.append(('interpret front-cover.tex', 'fci'))
         commands.append(('interpret music.ly', 'mi'))
         commands.append(('interpret preface.tex', 'pi'))
