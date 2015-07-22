@@ -56,7 +56,6 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'build'
-        wrangler._file_wrangler_type = 'build'
         wrangler._score_storehouse_path_infix_parts = ('build',)
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
@@ -103,7 +102,6 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'distribution'
-        wrangler._file_wrangler_type = 'distribution'
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
 
@@ -113,7 +111,6 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'etc'
-        wrangler._file_wrangler_type = 'etc'
         wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
 
@@ -126,7 +123,6 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'makers'
         wrangler._extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
-        wrangler._file_wrangler_type = 'maker'
         wrangler._force_lowercase = False
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
@@ -158,7 +154,6 @@ class AbjadIDE(Wrangler):
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
         wrangler._extension = '.ily'
-        wrangler._file_wrangler_type = 'stylesheet'
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         return wrangler
 
