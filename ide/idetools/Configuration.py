@@ -124,16 +124,6 @@ class Configuration(AbjadConfiguration):
 
     def _make_missing_directories(self):
         directories = (
-            self.library,
-            self.makers_library,
-            )
-        for directory in directories:
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-                file_path = os.path.join(directory, '__init__.py')
-                with open(file_path, 'w') as file_pointer:
-                    file_pointer.write('')
-        directories = (
             self.user_score_packages_directory,
             self.transcripts_directory,
             )
@@ -157,7 +147,10 @@ class Configuration(AbjadConfiguration):
         # test for installable Python package structure
         outer_init_path = os.path.join(score_path, '__init__.py')
         inner_init_path = os.path.join(
-            score_path, score_name, '__init__.py')
+            score_path, 
+            score_name, 
+            '__init__.py',
+            )
         if (not os.path.exists(outer_init_path) and
             os.path.exists(inner_init_path)):
             score_path = os.path.join(score_path, score_name)
@@ -182,7 +175,6 @@ class Configuration(AbjadConfiguration):
         path_parts = remainder.split(os.path.sep)
         assert 1 <= len(path_parts)
         if is_in_score:
-            #path_parts = path_parts[:2]
             path_parts = path_parts[:3]
         else:
             assert 1 <= len(path_parts)
@@ -497,25 +489,6 @@ class Configuration(AbjadConfiguration):
         return path
 
     @property
-    def makers_library(self):
-        r'''Gets makers library path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.makers_library
-                '.../makers'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.library,
-            'makers',
-            )
-        return path
-
-    @property
     def transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -683,7 +656,6 @@ class Configuration(AbjadConfiguration):
         assert isinstance(path, str), repr(path)
         path = os.path.normpath(path)
         if path.endswith('.py'):
-            #path = path[:-3]
             path, extension = os.path.splitext(path)
         if path.startswith(self.example_score_packages_directory):
             prefix = len(self.example_score_packages_directory) + 1

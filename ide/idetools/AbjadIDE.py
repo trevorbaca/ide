@@ -136,7 +136,6 @@ class AbjadIDE(Wrangler):
         wrangler._in_library = True
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
-        wrangler._user_storehouse_path = wrangler._configuration.makers_library
         return wrangler
 
     @property
@@ -202,7 +201,6 @@ class AbjadIDE(Wrangler):
 
     def _list_storehouse_paths(self):
         paths = []
-        paths.append(self._configuration.makers_library)
         paths.append(self._configuration.example_score_packages_directory)
         paths.append(self._configuration.user_score_packages_directory)
         return paths

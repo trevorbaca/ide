@@ -453,8 +453,6 @@ class AssetController(Controller):
                 annotation = 'example scores'
             else:
                 annotation = 'scores'
-        elif path.startswith(self._configuration.makers_library):
-            annotation = 'library: makers'
         elif path.startswith(self._configuration.abjad_root_directory):
             annotation = 'Abjad'
         else:
