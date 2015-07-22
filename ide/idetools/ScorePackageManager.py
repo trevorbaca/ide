@@ -102,19 +102,6 @@ class ScorePackageManager(PackageManager):
             new = replacements[old]
             self._replace_in_file(destination_path, old, new)
 
-    def _exit_run(self):
-        superclass = super(ScorePackageManager, self)
-        result = superclass._exit_run()
-        if self._session.is_backtracking_to_score:
-            self._session._is_backtracking_to_score = False
-            result = False
-        elif self._session.is_autonavigating_within_score:
-            if self._session.is_backtracking_to_all_scores:
-                result = True
-            else:
-                result = False
-        return result
-
     def _get_build_directory(self):
         return os.path.join(
             self._path,

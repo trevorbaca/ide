@@ -39,6 +39,13 @@ class PackageWrangler(Wrangler):
 
     ### PRIVATE METHODS ###
 
+    def _is_valid_directory_entry(self, expr):
+        superclass = super(PackageWrangler, self)
+        if superclass._is_valid_directory_entry(expr):
+            if '.' not in expr:
+                return True
+        return False
+
     def _list_metadata_py_files_in_all_directories(self):
         paths = []
         directories = self._list_all_directories_with_metadata_pys()

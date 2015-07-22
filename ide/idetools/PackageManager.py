@@ -127,9 +127,6 @@ class PackageManager(AssetController):
         with self._io_manager._silent():
             self._write_metadata_py(metadata)
 
-    def _exit_run(self):
-        return self._session.is_backtracking
-
     @staticmethod
     def _file_name_to_version_number(file_name):
         root, extension = os.path.splitext(file_name)

@@ -78,17 +78,7 @@ class ScorePackageWrangler(PackageWrangler):
 
     @property
     def _current_storehouse_path(self):
-        if self._session.is_in_score:
-            path = self._configuration.example_score_packages_directory
-            directory_entries = sorted(os.listdir(path))
-            manager = self._session.current_score_package_manager
-            score_name = manager._package_name
-            if score_name in directory_entries:
-                return path
-            else:
-                return self._configuration.user_score_packages_directory
-        else:
-            return self._configuration.user_score_packages_directory
+        return self._configuration.user_score_packages_directory
 
     ### PRIVATE METHODS ###
 
@@ -132,13 +122,6 @@ class ScorePackageWrangler(PackageWrangler):
             self._session._is_navigating_to_previous_score = False
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(next_=False)
-
-    def _is_valid_directory_entry(self, expr):
-        superclass = super(ScorePackageWrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
-        return False
 
     def _list_asset_paths(
         self,

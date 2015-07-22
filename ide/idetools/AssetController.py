@@ -125,6 +125,21 @@ class AssetController(Controller):
             self._session._last_asset_path = self._path
             self._session._last_score_path = self._path
 
+    def _exit_run(self):
+        if self._asset_identifier == 'package manager':
+            return self._session.is_backtracking
+        elif self._asset_identifier == 'score package manager':
+            result = self._session.is_backtracking
+            if self._session.is_backtracking_to_score:
+                self._session._is_backtracking_to_score = False
+                result = False
+            elif self._session.is_autonavigating_within_score:
+                if self._session.is_backtracking_to_all_scores:
+                    result = True
+                else:
+                    result = False
+            return result
+
     def _filter_asset_menu_entries_by_view(self, entries):
         view = self._read_view()
         if view is None:

@@ -35,30 +35,12 @@ class SegmentPackageWrangler(PackageWrangler):
         self._manager_class = idetools.SegmentPackageManager
         self._score_storehouse_path_infix_parts = ('segments',)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _command_to_method(self):
-        superclass = super(SegmentPackageWrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            })
-        return result
-
     ### PRIVATE METHODS ###
 
     def _get_first_segment_name(self):
         managers = self._list_visible_asset_managers()
         if managers:
             return managers[0]._get_metadatum('name')
-
-    def _is_valid_directory_entry(self, expr):
-        superclass = super(SegmentPackageWrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
-        return False
 
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         superclass = super(SegmentPackageWrangler, self)

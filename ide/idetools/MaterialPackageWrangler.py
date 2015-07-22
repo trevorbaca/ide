@@ -50,25 +50,7 @@ class MaterialPackageWrangler(PackageWrangler):
         self._manager_class = idetools.MaterialPackageManager
         self._score_storehouse_path_infix_parts = ('materials',)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _command_to_method(self):
-        superclass = super(MaterialPackageWrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            })
-        return result
-
     ### PRIVATE METHODS ###
-
-    def _is_valid_directory_entry(self, expr):
-        superclass = super(MaterialPackageWrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
-        return False
 
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         superclass = super(MaterialPackageWrangler, self)
