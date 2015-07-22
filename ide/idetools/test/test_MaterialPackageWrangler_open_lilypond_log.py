@@ -8,7 +8,7 @@ def test_MaterialPackageWrangler_open_lilypond_log_01():
     r'''In score.
     '''
 
-    input_ = 'red~example~score m ll q'
+    input_ = 'red~example~score m l q'
     abjad_ide._run(input_=input_)
     
     assert abjad_ide._session._attempted_to_open_file
@@ -18,7 +18,7 @@ def test_MaterialPackageWrangler_open_lilypond_log_02():
     r'''Out of score.
     '''
 
-    input_ = 'mm ll q'
+    input_ = 'mm l q'
     abjad_ide._run(input_=input_)
     
     assert abjad_ide._session._attempted_to_open_file

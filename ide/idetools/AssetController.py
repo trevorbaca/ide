@@ -61,7 +61,7 @@ class AssetController(Controller):
             #
             '!': self.invoke_shell,
             '?': self.display_available_commands,
-            'll': self.open_lilypond_log,
+            'l': self.open_lilypond_log,
             #
             '<<': self.go_to_previous_score,
             '>>': self.go_to_next_score,
@@ -410,13 +410,13 @@ class AssetController(Controller):
         commands.append(('back', 'b'))
         commands.append(('help', '?'))
         commands.append(('home', 'h'))
-        commands.append(('log', 'll'))
+        commands.append(('log', 'l'))
         commands.append(('quit', 'q'))
         commands.append(('shell', '!'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
-            name='system',
+            name='aaa',
             )
 
     def _open_file(self, path):

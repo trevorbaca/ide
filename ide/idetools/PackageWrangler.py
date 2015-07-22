@@ -60,7 +60,7 @@ class PackageWrangler(Wrangler):
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
-            name='all packages',
+            name='zzz',
             )
 
     ### PUBLIC METHODS ###

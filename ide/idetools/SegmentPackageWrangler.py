@@ -73,20 +73,8 @@ class SegmentPackageWrangler(PackageWrangler):
         menu.make_command_section(
             commands=commands,
             is_hidden=True,
-            name='all packages',
+            name='zzz',
             )
-
-    # TODO: remove this method because it's not being called?
-    def _make_asset(self, path, metadata=None):
-        metadata = datastructuretools.TypedOrderedDict(metadata or {})
-        assert not os.path.exists(path)
-        os.mkdir(path)
-        manager = self._manager_class(
-            path=path,
-            session=self._session,
-            )
-        manager.write_init_py()
-        manager.write_definition_py()
 
     def _make_main_menu(self):
         superclass = super(SegmentPackageWrangler, self)

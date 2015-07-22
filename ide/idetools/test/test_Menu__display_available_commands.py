@@ -35,7 +35,7 @@ def test_Menu__display_available_commands_03():
     '''
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
-    input_ = '? ll q'
+    input_ = '? l q'
     abjad_ide._run(input_=input_)
 
     titles = [

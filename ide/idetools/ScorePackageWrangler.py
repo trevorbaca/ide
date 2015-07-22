@@ -188,7 +188,7 @@ class ScorePackageWrangler(PackageWrangler):
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
-            name='all packages',
+            name='zzz',
             )
 
     def _make_show_all_menu_section(self, menu):
