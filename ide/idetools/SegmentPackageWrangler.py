@@ -67,7 +67,11 @@ class SegmentPackageWrangler(PackageWrangler):
         superclass = super(SegmentPackageWrangler, self)
         commands = superclass._make_all_packages_menu_section(
             menu, commands_only=True)
+        commands.append(('check all definition.py files', 'dc*'))
+        commands.append(('edit all definition.py files', 'de*'))
         commands.append(('illustrate all definition.py files', 'di*'))
+        commands.append(('interpret all illustration.ly files', 'ii*'))
+        commands.append(('open all illustration.pdf files', 'io*'))
         if commands_only:
             return commands
         menu.make_command_section(

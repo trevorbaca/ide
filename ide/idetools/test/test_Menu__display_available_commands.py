@@ -11,7 +11,7 @@ def test_Menu__display_available_commands_01():
     contents = abjad_ide._transcript.contents
 
     assert 'help' in contents
-    assert 'new score' in contents
+    assert 'new' in contents
 
 
 def test_Menu__display_available_commands_02():

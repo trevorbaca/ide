@@ -230,10 +230,10 @@ class ScorePackageWrangler(PackageWrangler):
 
     def _make_scores_menu_section(self, menu):
         commands = []
-        commands.append(('copy score', 'cp'))
-        commands.append(('new score', 'new'))
-        commands.append(('remove score', 'rm'))
-        commands.append(('rename score', 'ren'))
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('remove', 'rm'))
+        commands.append(('rename', 'ren'))
         menu.make_command_section(
             commands=commands,
             name='scores',
