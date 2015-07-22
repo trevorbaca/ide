@@ -90,17 +90,6 @@ class Session(abctools.AbjadObject):
         '_transcript',
         )
 
-    _variables_to_display = (
-        'command_history',
-        'controller_stack',
-        'current_score_package_manager',
-        'is_in_confirmation_environment',
-        'is_in_user_input_getter',
-        'last_asset_path',
-        'last_score_path',
-        'display_available_commands',
-        )
-
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_test=False):
@@ -203,25 +192,6 @@ class Session(abctools.AbjadObject):
             messages.append(message)
             self.io_manager._display(messages)
         self.transcript._write()
-
-    def _display_variables(self):
-        lines = []
-        for variable_name in sorted(self._variables_to_display):
-            if variable_name == 'controller_stack':
-                line = '{}:'.format(variable_name)
-                lines.append(line)
-                variable_value = getattr(self, variable_name)
-                for controller in variable_value:
-                    tab_string = self._io_manager._tab
-                    line = '{}{}'.format(tab_string, controller)
-                    lines.append(line)
-            else:
-                variable_value = getattr(self, variable_name)
-                line = '{}: {!r}'
-                line = line.format(variable_name, variable_value)
-                lines.append(line)
-        lines.append('')
-        self.io_manager._display(lines, capitalize=False)
 
     def _format_controller_breadcrumbs(self, stop_controller=None):
         from ide import idetools

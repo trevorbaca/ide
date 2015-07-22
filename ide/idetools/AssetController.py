@@ -62,7 +62,6 @@ class AssetController(Controller):
             '!': self.invoke_shell,
             '?': self.display_available_commands,
             'll': self.open_lilypond_log,
-            'sv': self.display_session_variables,
             #
             '<<': self.go_to_previous_score,
             '>>': self.go_to_next_score,
@@ -414,7 +413,6 @@ class AssetController(Controller):
         commands.append(('log', 'll'))
         commands.append(('quit', 'q'))
         commands.append(('shell', '!'))
-        commands.append(('session variables', 'sv'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -657,13 +655,6 @@ class AssetController(Controller):
             show = self._session.display_available_commands
             self._session._display_available_commands = not show
 
-    def display_session_variables(self):
-        r'''Displays session variables.
-
-        Returns none.
-        '''
-        self._session._display_variables()
-
     def display_status(self):
         r'''Displays repository status.
 
@@ -672,23 +663,15 @@ class AssetController(Controller):
         directory = self._get_current_directory()
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
-#            command = self._display_status_command
-#            if not command:
-#                message = 'path not in repository: {}.'
-#                message = message.format(self._path)
-#                self._io_manager._display(message)
-#                return
             command = 'git status {}'.format(directory)
             messages = []
             self._session._attempted_display_status = True
             message = 'Repository status for {} ...'
-            #message = message.format(self._path)
             message = message.format(directory)
             messages.append(message)
             directory = self._get_current_directory()
             with systemtools.TemporaryDirectoryChange(directory=directory):
                 process = self._io_manager.make_subprocess(command)
-            #path = self._path
             path = directory
             path = path + os.path.sep
             clean_lines = []
