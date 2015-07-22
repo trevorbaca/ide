@@ -37,11 +37,6 @@ class SegmentPackageWrangler(PackageWrangler):
 
     ### PRIVATE METHODS ###
 
-    def _get_first_segment_name(self):
-        managers = self._list_visible_asset_managers()
-        if managers:
-            return managers[0]._get_metadatum('name')
-
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         superclass = super(SegmentPackageWrangler, self)
         commands = superclass._make_all_packages_menu_section(
@@ -62,21 +57,8 @@ class SegmentPackageWrangler(PackageWrangler):
     def _make_main_menu(self):
         superclass = super(SegmentPackageWrangler, self)
         menu = superclass._make_main_menu()
-        self._make_all_packages_menu_section(menu)
-        self._make_segments_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
-
-    def _make_segments_menu_section(self, menu):
-        commands = []
-        commands.append(('copy', 'cp'))
-        commands.append(('new', 'new'))
-        commands.append(('rename', 'ren'))
-        commands.append(('remove', 'rm'))
-        menu.make_command_section(
-            commands=commands,
-            name='segments',
-            )
 
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_segments = True

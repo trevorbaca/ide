@@ -71,21 +71,8 @@ class MaterialPackageWrangler(PackageWrangler):
     def _make_main_menu(self):
         superclass = super(MaterialPackageWrangler, self)
         menu = superclass._make_main_menu()
-        self._make_all_packages_menu_section(menu)
-        self._make_material_command_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
-
-    def _make_material_command_menu_section(self, menu):
-        commands = []
-        commands.append(('copy', 'cp'))
-        commands.append(('new', 'new'))
-        commands.append(('remove', 'rm'))
-        commands.append(('rename', 'ren'))
-        menu.make_command_section(
-            commands=commands,
-            name='material',
-            )
 
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True

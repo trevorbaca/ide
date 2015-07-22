@@ -205,22 +205,9 @@ class ScorePackageWrangler(PackageWrangler):
             asset_section._group_by_annotation = False
         except KeyError:
             pass
-        self._make_all_packages_menu_section(menu)
         self._make_all_packages_repository_menu_section(menu)
-        self._make_scores_menu_section(menu)
         self._make_show_all_menu_section(menu)
         return menu
-
-    def _make_scores_menu_section(self, menu):
-        commands = []
-        commands.append(('copy', 'cp'))
-        commands.append(('new', 'new'))
-        commands.append(('remove', 'rm'))
-        commands.append(('rename', 'ren'))
-        menu.make_command_section(
-            commands=commands,
-            name='scores',
-            )
 
     ### PUBLIC METHODS ###
 

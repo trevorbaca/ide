@@ -66,6 +66,24 @@ class PackageWrangler(Wrangler):
             name='zzz',
             )
 
+    def _make_basic_operations_menu_section(self, menu):
+        commands = []
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('rename', 'ren'))
+        commands.append(('remove', 'rm'))
+        menu.make_command_section(
+            commands=commands,
+            name='basic operations',
+            )
+
+    def _make_main_menu(self):
+        superclass = super(PackageWrangler, self)
+        menu = superclass._make_main_menu()
+        self._make_all_packages_menu_section(menu)
+        self._make_basic_operations_menu_section(menu)
+        return menu
+
     ### PUBLIC METHODS ###
 
     def check_every_definition_py(self):
