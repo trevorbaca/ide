@@ -232,7 +232,7 @@ class ScorePackageManager(PackageManager):
         superclass = super(ScorePackageManager, self)
         commands = superclass._make_package_menu_section(
             menu, commands_only=True)
-        commands.append(('package - score.pdf - open', 'so'))
+        commands.append(('open score.pdf', 'so'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

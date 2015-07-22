@@ -428,7 +428,7 @@ class PackageManager(AssetController):
 
     def _make_package_menu_section(self, menu, commands_only=False):
         commands = []
-        commands.append(('package - check', 'ck'))
+        commands.append(('check package', 'ck'))
         if commands_only:
             return commands
         if commands:

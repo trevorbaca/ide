@@ -74,21 +74,21 @@ class AbjadIDE(Wrangler):
         wrangler._commands['si'] = wrangler.interpret_score
         wrangler._commands['sp'] = wrangler.push_score_pdf_to_distribution_directory
         commands = []
-        commands.append(('back cover - generate latex source', 'bcg'))
-        commands.append(('back cover - interpret latex source', 'bci'))
-        commands.append(('draft - collect segment files', 'dc'))
-        commands.append(('draft - generate latex source', 'dg'))
-        commands.append(('draft - interpret latex source', 'di'))
-        commands.append(('front cover - generate latex source', 'fcg'))
-        commands.append(('front cover - interpret latex source', 'fci'))
-        commands.append(('music - collect segment files', 'mc'))
-        commands.append(('music - generate lilypond source', 'mg'))
-        commands.append(('music - interpret lilypond source', 'mi'))
-        commands.append(('preface - generate latex source', 'pg'))
-        commands.append(('preface - interpret latex source', 'pi'))
-        commands.append(('score - generate latex source', 'sg'))
-        commands.append(('score - interpret latex source', 'si'))
-        commands.append(('score - push pdf to distribution directory', 'sp'))
+        commands.append(('collect draft segment files', 'dc'))
+        commands.append(('collect music segment files', 'mc'))
+        commands.append(('generate back-cover.tex', 'bcg'))
+        commands.append(('generate draft.tex', 'dg'))
+        commands.append(('generate front-cover.tex', 'fcg'))
+        commands.append(('generate music.ly', 'mg'))
+        commands.append(('generate preface.tex', 'pg'))
+        commands.append(('generate score.tex', 'sg'))
+        commands.append(('interpret back-cover.tex', 'bci'))
+        commands.append(('interpret draft.tex', 'di'))
+        commands.append(('interpret front-cover.tex', 'fci'))
+        commands.append(('interpret music.ly', 'mi'))
+        commands.append(('interpret preface.tex', 'pi'))
+        commands.append(('interpret score.tex', 'si'))
+        commands.append(('push score to distribution directory', 'sp'))
         wrangler._in_score_commands = commands
         return wrangler
 

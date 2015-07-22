@@ -110,10 +110,10 @@ class MaterialPackageWrangler(PackageWrangler):
 
     def _make_material_command_menu_section(self, menu):
         commands = []
-        commands.append(('materials - copy', 'cp'))
-        commands.append(('materials - new', 'new'))
-        commands.append(('materials - remove', 'rm'))
-        commands.append(('materials - rename', 'ren'))
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('remove', 'rm'))
+        commands.append(('rename', 'ren'))
         menu.make_command_section(
             commands=commands,
             name='material',
@@ -130,20 +130,6 @@ class MaterialPackageWrangler(PackageWrangler):
         Returns none.
         '''
         self._copy_asset()
-
-#    def edit_every_definition_py(self):
-#        r'''Opens ``definition.py`` in every package.
-#
-#        Returns none.
-#        '''
-#        self._open_in_every_package('definition.py')
-
-#    def open_every_illustration_pdf(self):
-#        r'''Opens ``illustration.pdf`` in every package.
-#
-#        Returns none.
-#        '''
-#        self._open_in_every_package('illustration.pdf')
 
     def remove_packages(self):
         r'''Removes one or more packages.

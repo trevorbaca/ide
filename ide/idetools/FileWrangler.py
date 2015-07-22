@@ -295,27 +295,27 @@ class FileWrangler(Wrangler):
                     return True
         return False
 
-    def _make_all_menu_section(self, menu):
-        commands = []
-        commands.append(('all files - check', 'ck*'))
-        commands.append(('all files - repository - add', 'rad*'))
-        commands.append(('all files - repository - clean', 'rcn*'))
-        commands.append(('all files - repository - commit', 'rci*'))
-        commands.append(('all files - repository - revert', 'rrv*'))
-        commands.append(('all files - repository - status', 'rst*'))
-        commands.append(('all files - repository - update', 'rup*'))
-        menu.make_command_section(
-            commands=commands,
-            is_hidden=True,
-            name='all',
-            )
+#    def _make_all_menu_section(self, menu):
+#        commands = []
+#        commands.append(('all files - check', 'ck*'))
+#        commands.append(('all files - repository - add', 'rad*'))
+#        commands.append(('all files - repository - clean', 'rcn*'))
+#        commands.append(('all files - repository - commit', 'rci*'))
+#        commands.append(('all files - repository - revert', 'rrv*'))
+#        commands.append(('all files - repository - status', 'rst*'))
+#        commands.append(('all files - repository - update', 'rup*'))
+#        menu.make_command_section(
+#            commands=commands,
+#            is_hidden=True,
+#            name='all',
+#            )
 
     def _make_files_menu_section(self, menu):
         commands = []
-        commands.append(('files - copy', 'cp'))
-        commands.append(('files - new', 'new'))
-        commands.append(('files - rename', 'ren'))
-        commands.append(('files - remove', 'rm'))
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('rename', 'ren'))
+        commands.append(('remove', 'rm'))
         menu.make_command_section(
             commands=commands,
             name='files',
@@ -324,7 +324,7 @@ class FileWrangler(Wrangler):
     def _make_main_menu(self):
         superclass = super(FileWrangler, self)
         menu = superclass._make_main_menu()
-        self._make_all_menu_section(menu)
+        #self._make_all_menu_section(menu)
         self._make_files_menu_section(menu)
         if self._in_score_commands:
             menu.make_command_section(

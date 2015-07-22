@@ -50,11 +50,11 @@ class PackageWrangler(Wrangler):
 
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         commands = []
-        commands.append(('all packages - check', 'ck*'))
-        commands.append(('all packages - definition.py - check', 'dc*'))
-        commands.append(('all packages - definition.py - edit', 'de*'))
-        commands.append(('all packages - illustration.ly - interpret', 'ii*'))
-        commands.append(('all packages - illustration.pdf - open', 'io*'))
+        commands.append(('check all packages', 'ck*'))
+        commands.append(('check all definition.py files', 'dc*'))
+        commands.append(('edit all definition.py files', 'de*'))
+        commands.append(('interpret all illustration.ly files', 'ii*'))
+        commands.append(('open all illustration.pdf files', 'io*'))
         if commands_only:
             return commands
         menu.make_command_section(

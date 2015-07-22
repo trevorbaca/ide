@@ -359,15 +359,6 @@ class AssetController(Controller):
 
     def _make_go_menu_section(self, menu, commands_only=False, packages=False):
         commands = []
-        if self._session.is_in_score:
-            commands.append(('go - score', 's'))
-            commands.append(('go - score - build', 'u'))
-            commands.append(('go - score - distribution', 'd'))
-            commands.append(('go - score - etc', 'e'))
-            commands.append(('go - score - makers', 'k'))
-            commands.append(('go - score - materials', 'm'))
-            commands.append(('go - score - segments', 'g'))
-            commands.append(('go - score - stylesheets', 'y'))
         if packages:
             commands.append(('next package', '>'))
             commands.append(('previous package', '<'))
@@ -375,11 +366,30 @@ class AssetController(Controller):
         commands.append(('previous score', '<<'))
         if commands_only:
             return commands
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='go',
-            )
+        if commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=commands,
+                name='go',
+                )
+
+    def _make_navigation_menu_section(self, menu):
+        commands = []
+        if self._session.is_in_score:
+            commands.append(('score', 's'))
+            commands.append(('build', 'u'))
+            commands.append(('distribution', 'd'))
+            commands.append(('etc', 'e'))
+            commands.append(('makers', 'k'))
+            commands.append(('materials', 'm'))
+            commands.append(('segments', 'g'))
+            commands.append(('stylesheets', 'y'))
+        if commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=commands,
+                name='navigation',
+                )
 
     def _make_main_menu(self):
         name = self._spaced_class_name
@@ -387,13 +397,14 @@ class AssetController(Controller):
         if self._session.is_in_score:
             self._make_score_stylesheet_menu_section(menu)
         self._make_go_menu_section(menu)
+        self._make_navigation_menu_section(menu)
         self._make_system_menu_section(menu)
         return menu
 
     def _make_score_stylesheet_menu_section(self, menu):
         commands = []
-        commands.append(('abbreviations.py - edit', 'abb'))
-        commands.append(('score stylesheet - edit', 'sse'))
+        commands.append(('edit abbreviations', 'abb'))
+        commands.append(('edit stylesheet', 'sse'))
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

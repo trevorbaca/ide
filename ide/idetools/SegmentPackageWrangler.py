@@ -67,7 +67,7 @@ class SegmentPackageWrangler(PackageWrangler):
         superclass = super(SegmentPackageWrangler, self)
         commands = superclass._make_all_packages_menu_section(
             menu, commands_only=True)
-        commands.append(('all packages - definition.py - illustrate', 'di*'))
+        commands.append(('illustrate all definition.py files', 'di*'))
         if commands_only:
             return commands
         menu.make_command_section(
@@ -86,10 +86,10 @@ class SegmentPackageWrangler(PackageWrangler):
 
     def _make_segments_menu_section(self, menu):
         commands = []
-        commands.append(('segments - copy', 'cp'))
-        commands.append(('segments - new', 'new'))
-        commands.append(('segments - rename', 'ren'))
-        commands.append(('segments - remove', 'rm'))
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('rename', 'ren'))
+        commands.append(('remove', 'rm'))
         menu.make_command_section(
             commands=commands,
             name='segments',
