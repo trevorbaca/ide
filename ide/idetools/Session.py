@@ -432,7 +432,7 @@ class Session(abctools.AbjadObject):
             return os.path.join(
                 self.current_score_directory,
                 'materials',
-                'abbreviations.py',
+                '__abbreviations__.py',
                 )
 
     @property

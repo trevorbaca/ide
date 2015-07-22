@@ -27,7 +27,7 @@ class AssetController(Controller):
         '__init__.py',
         '__metadata__.py',
         '__views__.py',
-        'abbreviations.py',
+        '__abbreviations__.py',
         )
 
     ### INITIALIZER ###
