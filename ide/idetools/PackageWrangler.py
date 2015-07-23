@@ -9,6 +9,21 @@ class PackageWrangler(Wrangler):
     r'''Package wrangler.
     '''
 
+    ### CLASS VARIABLES ###
+
+    __slots__ = (
+        '_mandatory_copy_target_storehouse',
+        )
+
+    ### INITIALIZER ###
+
+    def __init__(self, session=None):
+        from ide import idetools
+        assert session is not None
+        superclass = super(PackageWrangler, self)
+        superclass.__init__(session=session)
+        self._mandatory_copy_target_storehouse = None
+
     ### PRIVATE PROPERTIES ###
 
     @property

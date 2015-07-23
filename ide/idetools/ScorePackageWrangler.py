@@ -49,24 +49,12 @@ class ScorePackageWrangler(PackageWrangler):
         self._include_asset_name = False
         self._annotate_year = True
         self._allow_depot = False
+        self._has_breadcrumb_in_score = False
         self._manager_class = idetools.ScorePackageManager
         self._only_example_scores_during_test = True
         self._sort_by_annotation = False
         path = self._configuration.user_score_packages_directory
         self._user_storehouse_path = path
-
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _breadcrumb(self):
-        if not self._session.is_in_score:
-            superclass = super(ScorePackageWrangler, self)
-            breadcrumb = superclass._breadcrumb
-            return breadcrumb
-
-    @property
-    def _current_storehouse_path(self):
-        return self._configuration.user_score_packages_directory
 
     ### PRIVATE METHODS ###
 
@@ -252,17 +240,3 @@ class ScorePackageWrangler(PackageWrangler):
             with self._io_manager._silent():
                 self._clear_view()
         manager._run()
-
-    def remove_packages(self):
-        r'''Removes one or more packages.
-
-        Returns none.
-        '''
-        self._remove_assets()
-
-    def rename_package(self):
-        r'''Renames package.
-
-        Returns none.
-        '''
-        self._rename_asset()

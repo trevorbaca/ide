@@ -20,6 +20,7 @@ class AssetController(Controller):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_commands',
+        '_has_breadcrumb_in_score',
         '_human_readable',
         '_include_asset_name',
         '_include_extensions',
@@ -41,6 +42,7 @@ class AssetController(Controller):
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._commands = {}
+        self._has_breadcrumb_in_score = True
         self._human_readable = True
         self._include_asset_name = True
         self._include_extensions = False

@@ -55,6 +55,8 @@ class Wrangler(AssetController):
 
     @property
     def _breadcrumb(self):
+        if self._session.is_in_score and not self._has_breadcrumb_in_score:
+            return
         breadcrumb = self._basic_breadcrumb
         if not self._allow_depot:
             pass
@@ -102,8 +104,7 @@ class Wrangler(AssetController):
             parts.extend(self._score_storehouse_path_infix_parts)
             return os.path.join(*parts)
         else:
-            raise Exception('FOO')
-            return self._abjad_storehouse_path
+            return self._configuration.user_score_packages_directory
 
     @property
     def _init_py_file_path(self):
