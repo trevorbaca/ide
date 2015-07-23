@@ -586,7 +586,7 @@ class Wrangler(AssetController):
         display_strings, keys = [], []
         if self._user_storehouse_path is not None:
             raise Exception('library no longer supported.')
-        wrangler = idetools.ScorePackageWrangler(session=self._session)
+        wrangler = self._session._abjad_ide._score_package_wrangler
         paths = wrangler._list_asset_paths(
             abjad_material_packages_and_stylesheets=\
                 abjad_material_packages_and_stylesheets,

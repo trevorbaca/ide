@@ -143,7 +143,21 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _score_package_wrangler(self):
         from ide import idetools
-        return idetools.ScorePackageWrangler(session=self._session)
+        wrangler = idetools.ScorePackageWrangler(session=self._session)
+        wrangler._asset_identifier = 'score package'
+        wrangler._basic_breadcrumb = 'scores'
+        wrangler._annotate_year = True
+        wrangler._allow_depot = False
+        wrangler._has_breadcrumb_in_score = False
+        wrangler._include_asset_name = False
+        wrangler._manager_class = idetools.ScorePackageManager
+        wrangler._mandatory_copy_target_storehouse = \
+            wrangler._configuration.user_score_packages_directory
+        wrangler._only_example_scores_during_test = True
+        wrangler._sort_by_annotation = False
+        wrangler._user_storehouse_path = \
+            wrangler._configuration.user_score_packages_directory
+        return wrangler
 
     @property
     @systemtools.Memoize
