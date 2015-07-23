@@ -1,8 +1,4 @@
 # -*- encoding: utf-8 -*-
-import os
-from abjad.tools import datastructuretools
-from abjad.tools import documentationtools
-from abjad.tools import rhythmmakertools
 from abjad.tools import stringtools
 from ide.idetools.Controller import Controller
 
