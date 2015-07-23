@@ -86,7 +86,6 @@ class AbjadIDE(Wrangler):
         wrangler._in_score_commands = commands
         return wrangler
 
-
     @property
     @systemtools.Memoize
     def _distribution_file_wrangler(self):

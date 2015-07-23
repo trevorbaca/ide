@@ -46,16 +46,16 @@ class ScorePackageWrangler(PackageWrangler):
         superclass.__init__(session=session)
         self._asset_identifier = 'score package'
         self._basic_breadcrumb = 'scores'
-        self._include_asset_name = False
         self._annotate_year = True
         self._allow_depot = False
         self._has_breadcrumb_in_score = False
+        self._include_asset_name = False
         self._manager_class = idetools.ScorePackageManager
+        self._mandatory_copy_target_storehouse = \
+            self._configuration.user_score_packages_directory
         self._only_example_scores_during_test = True
         self._sort_by_annotation = False
-        path = self._configuration.user_score_packages_directory
-        self._user_storehouse_path = path
-        self._mandatory_copy_target_storehouse = \
+        self._user_storehouse_path = \
             self._configuration.user_score_packages_directory
 
     ### PRIVATE METHODS ###
