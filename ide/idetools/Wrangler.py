@@ -27,6 +27,7 @@ class Wrangler(AssetController):
         '_force_lowercase',
         '_main_menu',
         '_manager_class',
+        '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
         '_sort_by_annotation',
         '_user_storehouse_path',
@@ -101,6 +102,7 @@ class Wrangler(AssetController):
             parts.extend(self._score_storehouse_path_infix_parts)
             return os.path.join(*parts)
         else:
+            raise Exception('FOO')
             return self._abjad_storehouse_path
 
     @property

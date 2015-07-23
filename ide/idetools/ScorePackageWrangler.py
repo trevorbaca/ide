@@ -36,7 +36,6 @@ class ScorePackageWrangler(PackageWrangler):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_only_example_scores_during_test',
         )
 
     ### INITIALIZER ###
@@ -64,16 +63,6 @@ class ScorePackageWrangler(PackageWrangler):
             superclass = super(ScorePackageWrangler, self)
             breadcrumb = superclass._breadcrumb
             return breadcrumb
-
-    @property
-    def _command_to_method(self):
-        superclass = super(ScorePackageWrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            'so*': self.open_every_score_pdf,
-            })
-        return result
 
     @property
     def _current_storehouse_path(self):
@@ -263,27 +252,6 @@ class ScorePackageWrangler(PackageWrangler):
             with self._io_manager._silent():
                 self._clear_view()
         manager._run()
-
-    def open_every_score_pdf(self):
-        r'''Opens ``score.pdf`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        paths = []
-        for manager in managers:
-            inputs, outputs = manager.open_score_pdf(dry_run=True)
-            paths.extend(inputs)
-        messages = ['will open ...']
-        tab = self._io_manager._tab
-        paths = [tab + _ for _ in paths]
-        messages.extend(paths)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        if paths:
-            self._io_manager.open_file(paths)
 
     def remove_packages(self):
         r'''Removes one or more packages.
