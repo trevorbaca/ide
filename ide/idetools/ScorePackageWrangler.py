@@ -40,21 +40,6 @@ class ScorePackageWrangler(PackageWrangler):
 
     ### PRIVATE METHODS ###
 
-    def _find_git_manager(self, must_have_file=False):
-        superclass = super(ScorePackageWrangler, self)
-        manager = superclass._find_git_manager(
-            inside_score=False,
-            must_have_file=must_have_file,
-            )
-        return manager
-
-    def _get_scores_to_display_string(self):
-        view = self._read_view()
-        if view:
-            view_name = self._read_view_name()
-            return 'scores ({})'.format(view_name)
-        return 'scores'
-
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths()
         if self._session.last_asset_path is None:

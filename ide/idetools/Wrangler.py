@@ -237,11 +237,12 @@ class Wrangler(AssetController):
         return parent_directories
 
     def _find_git_manager(self, inside_score=True, must_have_file=False):
+        if self._basic_breadcrumb == 'scores':
+            inside_score = False
         manager = self._find_up_to_date_manager(
             inside_score=inside_score,
             must_have_file=must_have_file,
             system=True,
-            repository='git',
             )
         return manager
 
