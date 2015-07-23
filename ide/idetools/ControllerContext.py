@@ -49,8 +49,6 @@ class ControllerContext(ContextManager):
         Returns none.
         '''
         self._session._controller_stack.append(self._controller)
-        if self._controller not in self._session.controllers_visited:
-            self._session._controllers_visited.append(self._controller)
         self._session._is_in_confirmation_environment = \
             self._is_in_confirmation_environment
         if self._clear_terminal:

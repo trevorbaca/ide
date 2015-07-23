@@ -50,7 +50,6 @@ class Session(abctools.AbjadObject):
         '_confirm',
         '_configuration',
         '_controller_stack',
-        '_controllers_visited',
         '_current_score_directory',
         '_display',
         '_display_available_commands',
@@ -107,7 +106,6 @@ class Session(abctools.AbjadObject):
         self._configuration = idetools.Configuration()
         self._confirm = True
         self._controller_stack = []
-        self._controllers_visited = []
         self._current_score_directory = None
         self._display = True
         self._display_available_commands = False
@@ -361,21 +359,6 @@ class Session(abctools.AbjadObject):
         Returns list of objects all of which are either wranglers or idetools.
         '''
         return self._controller_stack
-
-    @property
-    def controllers_visited(self):
-        r'''Gets controllers visited during session.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.controllers_visited
-                []
-
-        Returs list.
-        '''
-        return self._controllers_visited
 
     @property
     def current_abbreviations_file_path(self):
