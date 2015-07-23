@@ -88,15 +88,6 @@ class AbjadIDE(Wrangler):
 
 
     @property
-    def _command_to_method(self):
-        superclass = super(AbjadIDE, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            })
-        return result
-
-    @property
     @systemtools.Memoize
     def _distribution_file_wrangler(self):
         from ide import idetools
@@ -132,7 +123,22 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _material_package_wrangler(self):
         from ide import idetools
-        return idetools.MaterialPackageWrangler(session=self._session)
+        wrangler = idetools.PackageWrangler(session=self._session)
+        wrangler._asset_identifier = 'material package'
+        wrangler._basic_breadcrumb = 'materials'
+        wrangler._manager_class = idetools.MaterialPackageManager
+        wrangler._score_storehouse_path_infix_parts = ('materials',)
+        commands = []
+        commands.append(('check all definition.py files', 'dc*'))
+        commands.append(('edit all definition.py files', 'de*'))
+        commands.append(('interpret all illustration.ly files', 'ii*'))
+        commands.append(('open all illustration.pdf files', 'io*'))
+        commands.append(('next package', '>'))
+        commands.append(('previous package', '<'))
+        commands.append(('next score', '>>'))
+        commands.append(('previous score', '<<'))
+        wrangler._extra_commands = commands
+        return wrangler
 
     @property
     @systemtools.Memoize

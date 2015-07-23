@@ -98,7 +98,7 @@ def test_Session_controllers_visited_04():
             path=score_path,
             session=session,
             ),
-        ide.idetools.MaterialPackageWrangler(session=session),
+        ide.idetools.PackageWrangler(session=session),
         ]
     assert abjad_ide._session.controllers_visited == controllers
 
@@ -120,7 +120,7 @@ def test_Session_controllers_visited_05():
             path=score_path,
             session=session,
             ),
-        ide.idetools.MaterialPackageWrangler(session=session),
+        ide.idetools.PackageWrangler(session=session),
         ide.idetools.MaterialPackageManager(
             path=tempo_inventory_path,
             session=session,

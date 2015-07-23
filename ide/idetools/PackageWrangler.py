@@ -58,6 +58,7 @@ class PackageWrangler(Wrangler):
     def _make_all_packages_menu_section(self, menu, commands_only=False):
         commands = []
         commands.append(('check all packages', 'ck*'))
+        commands.extend(self._extra_commands)
         if commands_only:
             return commands
         menu.make_command_section(

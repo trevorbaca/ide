@@ -23,6 +23,7 @@ class Wrangler(AssetController):
         '_allow_depot',
         '_asset_identifier',
         '_basic_breadcrumb',
+        '_extra_commands',
         '_force_lowercase',
         '_main_menu',
         '_manager_class',
@@ -42,6 +43,7 @@ class Wrangler(AssetController):
         self._allow_depot = True
         self._asset_identifier = None
         self._basic_breadcrumb = None
+        self._extra_commands = []
         self._force_lowercase = True
         self._manager_class = idetools.PackageManager
         self._score_storehouse_path_infix_parts = ()
@@ -881,8 +883,8 @@ class Wrangler(AssetController):
         return paths
 
     def _set_is_navigating_to_sibling_asset(self):
-        message = 'implement on concrete wrangler classes.'
-        raise Exception(message)
+        if self._basic_breadcrumb == 'materials':
+            self._session._is_navigating_to_materials = True            
 
     @staticmethod
     def _strip_annotation(display_string):
