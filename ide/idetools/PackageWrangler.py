@@ -214,7 +214,9 @@ class PackageWrangler(Wrangler):
 
         Returns none.
         '''
-        self._copy_asset()
+        self._copy_asset(
+            new_storehouse=self._mandatory_copy_target_storehouse,
+            )
 
     def edit_every_definition_py(self):
         r'''Opens ``definition.py`` in every package.

@@ -55,6 +55,8 @@ class ScorePackageWrangler(PackageWrangler):
         self._sort_by_annotation = False
         path = self._configuration.user_score_packages_directory
         self._user_storehouse_path = path
+        self._mandatory_copy_target_storehouse = \
+            self._configuration.user_score_packages_directory
 
     ### PRIVATE METHODS ###
 
@@ -186,14 +188,6 @@ class ScorePackageWrangler(PackageWrangler):
         return menu
 
     ### PUBLIC METHODS ###
-
-    def copy_package(self):
-        r'''Copies package.
-
-        Returns none.
-        '''
-        path = self._configuration.user_score_packages_directory
-        self._copy_asset(new_storehouse=path)
 
     def make_package(self):
         r'''Makes package.
