@@ -150,7 +150,23 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _segment_package_wrangler(self):
         from ide import idetools
-        return idetools.SegmentPackageWrangler(session=self._session)
+        wrangler = idetools.PackageWrangler(session=self._session)
+        wrangler._asset_identifier = 'segment package'
+        wrangler._basic_breadcrumb = 'segments'
+        wrangler._manager_class = idetools.SegmentPackageManager
+        wrangler._score_storehouse_path_infix_parts = ('segments',)
+        commands = []
+        commands.append(('check all definition.py files', 'dc*'))
+        commands.append(('edit all definition.py files', 'de*'))
+        commands.append(('illustrate all definition.py files', 'di*'))
+        commands.append(('interpret all illustration.ly files', 'ii*'))
+        commands.append(('open all illustration.pdf files', 'io*'))
+        commands.append(('next package', '>'))
+        commands.append(('previous package', '<'))
+        commands.append(('next score', '>>'))
+        commands.append(('previous score', '<<'))
+        wrangler._extra_commands = commands
+        return wrangler
 
     @property
     @systemtools.Memoize

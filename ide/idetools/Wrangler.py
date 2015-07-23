@@ -885,6 +885,8 @@ class Wrangler(AssetController):
     def _set_is_navigating_to_sibling_asset(self):
         if self._basic_breadcrumb == 'materials':
             self._session._is_navigating_to_materials = True            
+        elif self._basic_breadcrumb == 'segments':
+            self._session._is_navigating_to_segments = True
 
     @staticmethod
     def _strip_annotation(display_string):
