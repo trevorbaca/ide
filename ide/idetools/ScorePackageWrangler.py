@@ -100,46 +100,6 @@ class ScorePackageWrangler(PackageWrangler):
                 result.append(path)
         return result
 
-#    def _make_all_packages_menu_section(self, menu):
-#        superclass = super(ScorePackageWrangler, self)
-#        commands = superclass._make_all_packages_menu_section(
-#            menu, commands_only=True)
-#        commands.append(('open all distribution score.pdf files', 'so*'))
-#        menu.make_command_section(
-#            is_hidden=True,
-#            commands=commands,
-#            name='zzz',
-#            )
-
-#    def _make_all_packages_repository_menu_section(self, menu):
-#        commands = []
-#        commands.append(('git add all score packages', 'add*'))
-#        commands.append(('git clean all score packages', 'clean*'))
-#        commands.append(('git commit all score packages', 'ci*'))
-#        commands.append(('git revert all score packages', 'revert*'))
-#        commands.append(('git status all score packages', 'st*'))
-#        commands.append(('git update all score packages', 'up*'))
-#        menu.make_command_section(
-#            is_hidden=True,
-#            commands=commands,
-#            name='zzz2',
-#            )
-
-#    def _make_show_all_menu_section(self, menu):
-#        commands = []
-#        commands.append(('show all build files', 'uu'))
-#        commands.append(('show all distribution', 'dd'))
-#        commands.append(('show all etc files', 'ee'))
-#        commands.append(('show all maker files', 'kk'))
-#        commands.append(('show all material packages', 'mm'))
-#        commands.append(('show all segment packages', 'gg'))
-#        commands.append(('show all stylesheets', 'yy'))
-#        menu.make_command_section(
-#            is_hidden=True,
-#            commands=commands,
-#            name='show all',
-#            )
-
     def _make_main_menu(self):
         superclass = super(ScorePackageWrangler, self)
         menu = superclass._make_main_menu()
@@ -148,8 +108,6 @@ class ScorePackageWrangler(PackageWrangler):
             asset_section._group_by_annotation = False
         except KeyError:
             pass
-#        self._make_all_packages_repository_menu_section(menu)
-#        self._make_show_all_menu_section(menu)
         return menu
 
     ### PUBLIC METHODS ###
