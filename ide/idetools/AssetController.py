@@ -244,6 +244,32 @@ class AssetController(Controller):
             path=score_path)
         return score_package_manager._get_metadata()
 
+    def _get_sibling_score_directory(self, next_=True):
+        paths = self._list_visible_asset_paths()
+        if self._session.last_asset_path is None:
+            if next_:
+                return paths[0]
+            else:
+                return paths[-1]
+        score_path = self._session.last_score_path
+        index = paths.index(score_path)
+        if next_:
+            sibling_index = (index + 1) % len(paths)
+        else:
+            sibling_index = (index - 1) % len(paths)
+        sibling_path = paths[sibling_index]
+        return sibling_path
+
+    def _get_sibling_score_path(self):
+        if self._session.is_navigating_to_next_score:
+            self._session._is_navigating_to_next_score = False
+            self._session._is_navigating_to_scores = False
+            return self._get_sibling_score_directory(next_=True)
+        if self._session.is_navigating_to_previous_score:
+            self._session._is_navigating_to_previous_score = False
+            self._session._is_navigating_to_scores = False
+            return self._get_sibling_score_directory(next_=False)
+
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
         self._session._display_available_commands = False
