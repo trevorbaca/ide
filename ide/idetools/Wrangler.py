@@ -254,19 +254,15 @@ class Wrangler(AssetController):
         repository='git',
         ):
         from ide import idetools
-        abjad_material_packages_and_stylesheets = False
         example_score_packages = False
         user_score_packages = False
         if system and inside_score:
             example_score_packages = True
-        elif system and not inside_score:
-            abjad_material_packages_and_stylesheets = True
         elif not system and inside_score:
             user_score_packages = True
         else:
             Exception
         asset_paths = self._list_asset_paths(
-            abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
@@ -416,15 +412,12 @@ class Wrangler(AssetController):
 
     def _list_asset_paths(
         self,
-        abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
         user_score_packages=True,
         valid_only=True,
         ):
         result = []
         directories = self._list_storehouse_paths(
-            abjad_material_packages_and_stylesheets=\
-                abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
@@ -444,13 +437,11 @@ class Wrangler(AssetController):
 
     def _list_storehouse_paths(
         self,
-        abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
         user_score_packages=True,
         ):
         result = []
-        if (abjad_material_packages_and_stylesheets and
-            self._abjad_storehouse_path is not None):
+        if self._abjad_storehouse_path is not None:
             result.append(self._abjad_storehouse_path)
         if user_score_packages and self._user_storehouse_path is not None:
             result.append(self._user_storehouse_path)
@@ -579,7 +570,6 @@ class Wrangler(AssetController):
 
     def _make_storehouse_menu_entries(
         self,
-        abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
         user_score_packages=True,
         ):
@@ -589,8 +579,6 @@ class Wrangler(AssetController):
             raise Exception('library no longer supported.')
         wrangler = self._session._abjad_ide._score_package_wrangler
         paths = wrangler._list_asset_paths(
-            abjad_material_packages_and_stylesheets=\
-                abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
@@ -801,7 +789,6 @@ class Wrangler(AssetController):
         ):
         from ide import idetools
         menu_entries = self._make_storehouse_menu_entries(
-            abjad_material_packages_and_stylesheets=False,
             example_score_packages=example_score_packages,
             user_score_packages=False,
             )

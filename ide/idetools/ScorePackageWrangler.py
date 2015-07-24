@@ -40,14 +40,12 @@ class ScorePackageWrangler(PackageWrangler):
 
     def _list_asset_paths(
         self,
-        abjad_material_packages_and_stylesheets=True,
         example_score_packages=True,
         user_score_packages=True,
         valid_only=True,
         ):
         result = []
         directories = self._list_storehouse_paths(
-            abjad_material_packages_and_stylesheets=abjad_material_packages_and_stylesheets,
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
