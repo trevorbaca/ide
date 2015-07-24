@@ -6,12 +6,9 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_MaterialPackageWrangler__find_up_to_date_manager_01():
-    r'''Works with Git.
-    '''
 
     wrangler = abjad_ide._material_package_wrangler
     manager = wrangler._find_up_to_date_manager(
-        repository='git',
         system=True,
         )
 

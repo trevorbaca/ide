@@ -3,7 +3,7 @@ from abjad import *
 import ide
 
 
-def test_SegmentPackageWrangler__make_asset_menu_section_01():
+def test_PackageWrangler__make_asset_menu_section_01():
     r'''Omits score annotation when listing segments in score.
     '''
 

@@ -8,14 +8,11 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_PackageWrangler__find_up_to_date_manager_01():
-    r'''Works with Git.
-    '''
 
     wrangler = abjad_ide._score_package_wrangler
     manager = wrangler._find_up_to_date_manager(
         inside_score=False,
         system=True,
-        repository='git',
         )
 
     storehouse = configuration.example_score_packages_directory

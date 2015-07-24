@@ -352,12 +352,6 @@ class PackageManager(AssetController):
             return False
         return True
 
-    def _is_populated_directory(self, directory):
-        if os.path.exists(directory):
-            if sorted(os.listdir(directory)):
-                return True
-        return False
-
     def _is_up_to_date(self):
         if self._is_in_git_repository():
             git_status_lines = self._get_git_status_lines() or ['']

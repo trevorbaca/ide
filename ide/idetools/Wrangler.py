@@ -251,7 +251,6 @@ class Wrangler(AssetController):
         inside_score=True,
         must_have_file=False,
         system=True,
-        repository='git',
         ):
         from ide import idetools
         example_score_packages = False
@@ -286,8 +285,7 @@ class Wrangler(AssetController):
                 path=asset_path,
                 session=session,
                 )
-            if (repository == 'git' and
-                manager._is_git_versioned() and
+            if (manager._is_git_versioned() and
                 manager._is_up_to_date() and
                 (not must_have_file or manager._find_first_file_name())):
                 return manager
