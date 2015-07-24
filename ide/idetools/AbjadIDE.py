@@ -148,6 +148,7 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'scores'
         wrangler._annotate_year = True
         wrangler._allow_depot = False
+        wrangler._group_asset_section_by_annotation = False
         wrangler._has_breadcrumb_in_score = False
         wrangler._include_asset_name = False
         wrangler._manager_class = idetools.ScorePackageManager

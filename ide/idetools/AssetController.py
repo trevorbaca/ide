@@ -20,6 +20,7 @@ class AssetController(Controller):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_commands',
+        '_group_asset_section_by_annotation',
         '_has_breadcrumb_in_score',
         '_human_readable',
         '_include_asset_name',
@@ -42,6 +43,7 @@ class AssetController(Controller):
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._commands = {}
+        self._group_asset_section_by_annotation = True
         self._has_breadcrumb_in_score = True
         self._human_readable = True
         self._include_asset_name = True
@@ -375,7 +377,10 @@ class AssetController(Controller):
         menu_entries.extend(self._make_secondary_asset_menu_entries())
         menu_entries.extend(self._make_asset_menu_entries())
         if menu_entries:
-            menu.make_asset_section(menu_entries=menu_entries)
+            section = menu.make_asset_section(menu_entries=menu_entries)
+            assert section is not None
+            section._group_by_annotation = \
+                self._group_asset_section_by_annotation
 
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []

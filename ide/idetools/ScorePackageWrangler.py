@@ -97,13 +97,3 @@ class ScorePackageWrangler(PackageWrangler):
                         path = inner_directory
                 result.append(path)
         return result
-
-    def _make_main_menu(self):
-        superclass = super(ScorePackageWrangler, self)
-        menu = superclass._make_main_menu()
-        try:
-            asset_section = menu['assets']
-            asset_section._group_by_annotation = False
-        except KeyError:
-            pass
-        return menu
