@@ -229,20 +229,6 @@ class AbjadIDE(Wrangler):
 
     ### PRIVATE METHODS ###
 
-    def _list_asset_paths(self):
-        paths = []
-        storehouses = self._list_storehouse_paths()
-        for storehouse in storehouses:
-            if not os.path.exists(storehouse):
-                continue
-            entries = sorted(os.listdir(storehouse))
-            for entry in entries:
-                if not self._is_valid_directory_entry(entry):
-                    continue
-                path = os.path.join(storehouse, entry)
-                paths.append(path)
-        return paths
-
     def _list_storehouse_paths(self):
         paths = []
         paths.append(self._configuration.example_score_packages_directory)
