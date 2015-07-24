@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_remove_packages_01():
+def test_PackageWrangler_remove_packages_01():
     r'''Removes one score package.
     '''
 
@@ -32,7 +32,7 @@ def test_ScorePackageWrangler_remove_packages_01():
         assert not os.path.exists(outer_path)
 
 
-def test_ScorePackageWrangler_remove_packages_02():
+def test_PackageWrangler_remove_packages_02():
     r'''Removes range of score packages.
     '''
 

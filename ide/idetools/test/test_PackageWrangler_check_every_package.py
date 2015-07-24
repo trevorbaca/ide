@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_check_every_package_01():
+def test_PackageWrangler_check_every_package_01():
 
     lines = [
         'Étude Example Score (2013):',
@@ -42,7 +42,7 @@ def test_ScorePackageWrangler_check_every_package_01():
         assert line in contents
 
 
-def test_ScorePackageWrangler_check_every_package_02():
+def test_PackageWrangler_check_every_package_02():
     r'''Supplies missing directory and missing file in immediate package.
     '''
 
@@ -60,7 +60,7 @@ def test_ScorePackageWrangler_check_every_package_02():
         assert os.path.isdir(build_directory)
 
 
-def test_ScorePackageWrangler_check_every_package_03():
+def test_PackageWrangler_check_every_package_03():
     r'''Supplies missing directory and missing file in nested package.
     '''
 

@@ -3,7 +3,7 @@ from abjad import *
 import ide
 
 
-def test_ScorePackageWrangler_add_every_asset_01():
+def test_PackageWrangler_add_every_asset_01():
     r'''Flow control reaches add.
     '''
 

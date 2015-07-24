@@ -4,14 +4,13 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_go_to_all_materials_01():
-    r'''From scores to materials depot.
-    '''
+def test_PackageWrangler_go_back_01():
 
-    input_ = 'mm q'
+    input_ = 'b q'
     abjad_ide._run(input_=input_)
+
     titles = [
         'Abjad IDE - scores',
-        'Abjad IDE - materials depot',
+        'Abjad IDE - scores',
         ]
     assert abjad_ide._transcript.titles == titles

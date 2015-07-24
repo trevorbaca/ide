@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_copy_package_01():
+def test_PackageWrangler_copy_package_01():
 
     pretty_path = os.path.join(
         abjad_ide._configuration.user_score_packages_directory,

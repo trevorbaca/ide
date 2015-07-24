@@ -3,7 +3,7 @@ from abjad import *
 import ide
 
 
-def test_ScorePackageWrangler_commit_every_asset_01():
+def test_PackageWrangler_commit_every_asset_01():
 
     abjad_ide = ide.idetools.AbjadIDE(is_test=True)
     abjad_ide._session._is_repository_test = True

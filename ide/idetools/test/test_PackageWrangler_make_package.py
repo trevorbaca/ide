@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_make_package_01():
+def test_PackageWrangler_make_package_01():
     r'''Makes score package.
     '''
 
@@ -47,7 +47,7 @@ def test_ScorePackageWrangler_make_package_01():
     assert 'Enter title]> Example Score' in contents
 
 
-def test_ScorePackageWrangler_make_package_02():
+def test_PackageWrangler_make_package_02():
     r'''Accepts flexible package name input.
     '''
 

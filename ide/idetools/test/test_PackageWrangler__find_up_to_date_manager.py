@@ -7,7 +7,7 @@ session = ide.idetools.Session()
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler__find_up_to_date_manager_01():
+def test_PackageWrangler__find_up_to_date_manager_01():
     r'''Works with Git.
     '''
 

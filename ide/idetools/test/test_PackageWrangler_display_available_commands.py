@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_display_available_commands_01():
+def test_PackageWrangler_display_available_commands_01():
     r'''Displays correct title.
     '''
     
@@ -15,7 +15,7 @@ def test_ScorePackageWrangler_display_available_commands_01():
     assert 'Abjad IDE - scores - available commands' in contents
 
 
-def test_ScorePackageWrangler_display_available_commands_02():
+def test_PackageWrangler_display_available_commands_02():
     r'''Displays only one blank line after title.
     '''
     

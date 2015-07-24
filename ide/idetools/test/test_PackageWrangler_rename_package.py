@@ -7,7 +7,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=False)
 
 
-def test_ScorePackageWrangler_rename_package_01():
+def test_PackageWrangler_rename_package_01():
     r'''Creates score package. Renames score package.
     '''
 

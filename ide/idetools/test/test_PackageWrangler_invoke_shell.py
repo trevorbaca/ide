@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageWrangler_invoke_shell_01():
+def test_PackageWrangler_invoke_shell_01():
     r'''Outside of score package.
     '''
 
