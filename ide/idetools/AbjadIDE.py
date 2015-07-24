@@ -143,7 +143,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _score_package_wrangler(self):
         from ide import idetools
-        wrangler = idetools.ScorePackageWrangler(session=self._session)
+        wrangler = idetools.PackageWrangler(session=self._session)
         wrangler._asset_identifier = 'score package'
         wrangler._basic_breadcrumb = 'scores'
         wrangler._annotate_year = True

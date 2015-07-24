@@ -266,7 +266,7 @@ class Wrangler(AssetController):
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
-        if type(self) is idetools.ScorePackageWrangler:
+        if self._basic_breadcrumb == 'scores':
             if system:
                 scores_directory = \
                     self._configuration.example_score_packages_directory
