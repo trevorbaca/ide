@@ -173,6 +173,10 @@ class AbjadIDE(Wrangler):
         commands.append(('show all segment packages', 'gg'))
         commands.append(('show all stylesheets', 'yy'))
         wrangler._extra_commands = commands
+        commands = {
+            'new': wrangler.make_score_package,
+            }
+        wrangler._commands = commands
         return wrangler
 
     @property
