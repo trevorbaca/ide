@@ -20,7 +20,6 @@ class Wrangler(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_abjad_storehouse_path',
         '_allow_depot',
         '_asset_identifier',
         '_basic_breadcrumb',
@@ -42,7 +41,6 @@ class Wrangler(AssetController):
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
-        self._abjad_storehouse_path = None
         self._allow_depot = True
         self._asset_identifier = None
         self._basic_breadcrumb = None
@@ -338,8 +336,6 @@ class Wrangler(AssetController):
         user_score_packages=True,
         ):
         result = []
-        if self._abjad_storehouse_path is not None:
-            result.append(self._abjad_storehouse_path)
         if user_score_packages and self._user_storehouse_path is not None:
             result.append(self._user_storehouse_path)
         if (example_score_packages and
