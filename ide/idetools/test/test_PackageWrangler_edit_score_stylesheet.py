@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_SegmentPackageWrangler_edit_score_stylesheet_01():
+def test_PackageWrangler_edit_score_stylesheet_01():
 
     input_ = 'red~example~score g sse q'
     abjad_ide._run(input_=input_)

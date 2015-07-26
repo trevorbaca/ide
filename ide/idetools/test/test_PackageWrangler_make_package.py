@@ -48,7 +48,7 @@ def test_PackageWrangler_make_package_01():
 
 
 def test_PackageWrangler_make_package_02():
-    r'''Accepts flexible package name input.
+    r'''Accepts flexible package name input for score packages.
     '''
 
     score_package = os.path.join(
@@ -75,3 +75,61 @@ def test_PackageWrangler_make_package_02():
         input_ = 'new example_score_1 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(score_package)
+
+
+def test_PackageWrangler_make_package_03():
+    r'''Creates material package.
+    '''
+
+    session = ide.idetools.Session(is_test=True)
+    wrangler = ide.idetools.PackageWrangler(session=session)
+    configuration = abjad_ide._configuration
+    path = os.path.join(
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        'testnotes',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    with systemtools.FilesystemState(remove=[path]):
+        input_ = 'mm new Red~Example~Score testnotes y q'
+        abjad_ide._run(input_=input_)
+        assert os.path.exists(path)
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.MaterialPackageManager
+        manager = manager(path=path, session=session)
+        assert manager._list() == directory_entries
+
+
+def test_PackageWrangler_make_package_04():
+    r'''Makes segment package.
+    '''
+
+    path = os.path.join(
+        abjad_ide._configuration.example_score_packages_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_04',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    with systemtools.FilesystemState(remove=[path]):
+        input_ = 'red~example~score g new segment~04 y q'
+        abjad_ide._run(input_=input_)
+        contents = abjad_ide._transcript.contents
+        assert os.path.exists(path)
+        session = ide.idetools.Session(is_test=True)
+        manager = ide.idetools.SegmentPackageManager
+        manager = manager(path=path, session=session)
+        assert manager._list() == directory_entries

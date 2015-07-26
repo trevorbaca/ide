@@ -5,9 +5,11 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageWrangler_check_every_definition_py_01():
+def test_PackageWrangler_edit_every_definition_py_01():
+    r'''Edits every material definition file.
+    '''
 
-    input_ = 'red~example~score m dc* y q'
+    input_ = 'red~example~score m de* y q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
@@ -30,10 +32,17 @@ def test_MaterialPackageWrangler_check_every_definition_py_01():
             )
         paths.append(path)
 
-    confirmation_messages = [_ + ' OK.' for _ in paths]
-
-    assert 'Will check ...' in contents
+    assert 'Will open ...' in contents
     for path in paths:
         assert path in contents
-    for confirmation_message in confirmation_messages:
-        assert confirmation_message in contents
+    assert abjad_ide._session._attempted_to_open_file
+
+
+def test_PackageWrangler_edit_every_definition_py_02():
+    r'''Edits every segment definition file.
+    '''
+
+    input_ = 'red~example~score g de* y q'
+    abjad_ide._run(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file

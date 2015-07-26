@@ -128,8 +128,8 @@ class AbjadIDE(Wrangler):
         wrangler._manager_class = idetools.MaterialPackageManager
         wrangler._score_storehouse_path_infix_parts = ('materials',)
         commands = []
-        commands.append(('check all definition.py files', 'dc*'))
-        commands.append(('edit all definition.py files', 'de*'))
+        commands.append(('check every definition.py files', 'dc*'))
+        commands.append(('edit every definition.py files', 'de*'))
         commands.append(('interpret all illustration.ly files', 'ii*'))
         commands.append(('open all illustration.pdf files', 'io*'))
         commands.append(('next package', '>'))
@@ -159,7 +159,7 @@ class AbjadIDE(Wrangler):
         wrangler._user_storehouse_path = \
             wrangler._configuration.user_score_packages_directory
         commands = []
-        commands.append(('check all score packages', 'ck*'))
+        commands.append(('check every score packages', 'ck*'))
         commands.append(('git add all score packages', 'add*'))
         commands.append(('git clean all score packages', 'clean*'))
         commands.append(('git commit all score packages', 'ci*'))
@@ -191,8 +191,8 @@ class AbjadIDE(Wrangler):
         wrangler._manager_class = idetools.SegmentPackageManager
         wrangler._score_storehouse_path_infix_parts = ('segments',)
         commands = []
-        commands.append(('check all definition.py files', 'dc*'))
-        commands.append(('edit all definition.py files', 'de*'))
+        commands.append(('check every definition.py files', 'dc*'))
+        commands.append(('edit every definition.py files', 'de*'))
         commands.append(('illustrate all definition.py files', 'di*'))
         commands.append(('interpret all illustration.ly files', 'ii*'))
         commands.append(('open all illustration.pdf files', 'io*'))

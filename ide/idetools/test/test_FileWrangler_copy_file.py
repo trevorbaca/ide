@@ -10,7 +10,7 @@ def test_FileWrangler_copy_file_01():
     
     Partial test because we can't be sure any user score packages will be
     present. And because Score PackageManager allows copying into user score 
-    packges only (because copying into example score packages could pollute the 
+    packages only (because copying into example score packages could pollute the 
     example score packages).
     '''
 

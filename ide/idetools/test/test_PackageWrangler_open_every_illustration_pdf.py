@@ -5,7 +5,9 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageWrangler_open_every_illustration_pdf_01():
+def test_PackageWrangler_open_every_illustration_pdf_01():
+    r'''Opens illustration PDF in every material package.
+    '''
 
     package_names = ('pitch_range_inventory', 'tempo_inventory')
     paths = []
@@ -27,3 +29,13 @@ def test_MaterialPackageWrangler_open_every_illustration_pdf_01():
     assert 'Will open ...' in contents
     for path in paths:
         assert path in contents
+
+
+def test_PackageWrangler_open_every_illustration_pdf_02():
+    r'''Opens illustration PDF in every segment package.
+    '''
+
+    input_ = 'red~example~score g io* y q'
+    abjad_ide._run(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file
