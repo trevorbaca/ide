@@ -279,21 +279,9 @@ class FileWrangler(Wrangler):
                     return True
         return False
 
-    def _make_files_menu_section(self, menu):
-        commands = []
-        commands.append(('copy', 'cp'))
-        commands.append(('new', 'new'))
-        commands.append(('rename', 'ren'))
-        commands.append(('remove', 'rm'))
-        menu.make_command_section(
-            commands=commands,
-            name='files',
-            )
-
     def _make_main_menu(self):
         superclass = super(FileWrangler, self)
         menu = superclass._make_main_menu()
-        self._make_files_menu_section(menu)
         if self._in_score_commands:
             menu.make_command_section(
                 commands=self._in_score_commands,

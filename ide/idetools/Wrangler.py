@@ -504,6 +504,17 @@ class Wrangler(AssetController):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
+    def _make_basic_operations_menu_section(self, menu):
+        commands = []
+        commands.append(('copy', 'cp'))
+        commands.append(('new', 'new'))
+        commands.append(('rename', 'ren'))
+        commands.append(('remove', 'rm'))
+        menu.make_command_section(
+            commands=commands,
+            name='basic operations',
+            )
+
     def _make_file(
         self, 
         contents='',
@@ -538,6 +549,7 @@ class Wrangler(AssetController):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
+        self._make_basic_operations_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 
