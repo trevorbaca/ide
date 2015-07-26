@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageWrangler_copy_package_01():
+def test_PackageWrangler_copy_01():
     r'''Copies score package.
     '''
 
@@ -27,7 +27,7 @@ def test_PackageWrangler_copy_package_01():
         assert not os.path.exists(pretty_path)
 
 
-def test_PackageWrangler_copy_package_02():
+def test_PackageWrangler_copy_02():
     r'''Copies material package outside score.
     
     Partial test because we can't be sure any user score packages will be
@@ -49,7 +49,7 @@ def test_PackageWrangler_copy_package_02():
     assert 'Select storehouse:' in contents
 
 
-def test_PackageWrangler_copy_package_03():
+def test_PackageWrangler_copy_03():
     r'''Copies material package in score.
     '''
 
@@ -78,7 +78,7 @@ def test_PackageWrangler_copy_package_03():
         assert 'copied_performer_inventory' in contents
 
 
-def test_PackageWrangler_copy_package_04():
+def test_PackageWrangler_copy_04():
     r'''Includes preservation message in getter help.
     '''
 
@@ -92,7 +92,7 @@ def test_PackageWrangler_copy_package_04():
     assert string in contents
 
 
-def test_PackageWrangler_copy_package_05():
+def test_PackageWrangler_copy_05():
     r'''Copies segment package outside score.
     
     Partial test because we can't be sure any user score packages will be
@@ -114,7 +114,7 @@ def test_PackageWrangler_copy_package_05():
     assert 'Select storehouse:' in contents
 
 
-def test_PackageWrangler_copy_package_06():
+def test_PackageWrangler_copy_06():
     r'''Copies segment package in score.
     '''
 

@@ -13,7 +13,6 @@ class PackageWrangler(Wrangler):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_mandatory_copy_target_storehouse',
         )
 
     ### INITIALIZER ###
@@ -23,7 +22,6 @@ class PackageWrangler(Wrangler):
         assert session is not None
         superclass = super(PackageWrangler, self)
         superclass.__init__(session=session)
-        self._mandatory_copy_target_storehouse = None
 
     ### PRIVATE PROPERTIES ###
 
@@ -36,20 +34,17 @@ class PackageWrangler(Wrangler):
             '<': self.go_to_previous_package,
             '>': self.go_to_next_package,
             #
+            'ck*': self.check_every_package,
+            #
+            'new': self.make_package,
+            #
             'dc*': self.check_every_definition_py,
             'de*': self.edit_every_definition_py,
             #
-            'ii*': self.interpret_every_illustration_ly,
-            'io*': self.open_every_illustration_pdf,
-            #
             'di*': self.illustrate_every_definition_py,  
             #
-            'cp': self.copy_package,
-            'new': self.make_package,
-            'ren': self.rename_package,
-            'rm': self.remove_packages,
-            #
-            'ck*': self.check_every_package,
+            'ii*': self.interpret_every_illustration_ly,
+            'io*': self.open_every_illustration_pdf,
             #
             'so*': self.open_every_score_pdf,
             })
@@ -187,15 +182,6 @@ class PackageWrangler(Wrangler):
                 messages.extend(messages_)
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
-
-    def copy_package(self):
-        r'''Copies package.
-
-        Returns none.
-        '''
-        self._copy_asset(
-            new_storehouse=self._mandatory_copy_target_storehouse,
-            )
 
     def edit_every_definition_py(self):
         r'''Opens ``definition.py`` in every package.
@@ -375,17 +361,3 @@ class PackageWrangler(Wrangler):
             return
         if paths:
             self._io_manager.open_file(paths)
-
-    def remove_packages(self):
-        r'''Removes one or more packages.
-        
-        Returns none.
-        '''
-        self._remove_assets()
-
-    def rename_package(self):
-        r'''Renames package.
-
-        Returns none.
-        '''
-        self._rename_asset()

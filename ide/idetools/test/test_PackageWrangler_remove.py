@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageWrangler_remove_packages_01():
+def test_PackageWrangler_remove_01():
     r'''Removes one score package.
     '''
 
@@ -32,7 +32,7 @@ def test_PackageWrangler_remove_packages_01():
         assert not os.path.exists(outer_path)
 
 
-def test_PackageWrangler_remove_packages_02():
+def test_PackageWrangler_remove_02():
     r'''Removes range of score packages.
     '''
 
@@ -79,7 +79,7 @@ def test_PackageWrangler_remove_packages_02():
         assert not os.path.exists(path_101_outer)
 
 
-def test_PackageWrangler_remove_packages_03():
+def test_PackageWrangler_remove_03():
     r'''Attempts material package removal.
     '''
 
@@ -89,7 +89,7 @@ def test_PackageWrangler_remove_packages_03():
     assert abjad_ide._session._attempted_to_remove
 
 
-def test_PackageWrangler_remove_packages_04():
+def test_PackageWrangler_remove_04():
     r'''Attempts segment package removal.
     '''
 

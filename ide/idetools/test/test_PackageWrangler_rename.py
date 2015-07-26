@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageWrangler_rename_package_01():
+def test_PackageWrangler_rename_01():
     r'''Renames score package.
     '''
     pytest.skip('make me work again.')
@@ -34,7 +34,7 @@ def test_PackageWrangler_rename_package_01():
         assert os.path.exists(path_101)
 
 
-def test_PackageWrangler_rename_package_02():
+def test_PackageWrangler_rename_02():
     r'''Renames material package.
     '''
 
@@ -63,7 +63,7 @@ def test_PackageWrangler_rename_package_02():
         assert os.path.exists(new_path)
 
 
-def test_PackageWrangler_rename_package_03():
+def test_PackageWrangler_rename_03():
     r'''Renames segment package.
     '''
 

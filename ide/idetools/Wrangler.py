@@ -27,6 +27,7 @@ class Wrangler(AssetController):
         '_force_lowercase',
         '_main_menu',
         '_manager_class',
+        '_mandatory_copy_target_storehouse',
         '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
         '_sort_by_annotation',
@@ -47,6 +48,7 @@ class Wrangler(AssetController):
         self._extra_commands = []
         self._force_lowercase = True
         self._manager_class = idetools.PackageManager
+        self._mandatory_copy_target_storehouse = None
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
         self._user_storehouse_path = None
@@ -78,6 +80,10 @@ class Wrangler(AssetController):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
+            'cp': self.copy,
+            'ren': self.rename,
+            'rm': self.remove,
+            #
             'add*': self.add_every_asset,
             'ci*': self.commit_every_asset,
             'clean*': self.remove_every_unadded_asset,
@@ -141,84 +147,6 @@ class Wrangler(AssetController):
             manager = self._views_package_manager
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, None)
-
-    def _copy_asset(
-        self, 
-        extension=None,
-        new_storehouse=None
-        ):
-        visible_asset_paths = self._list_visible_asset_paths()
-        if not visible_asset_paths:
-            messages = ['nothing to copy.']
-            messages.append('')
-            self._io_manager._display(messages)
-            return
-        extension = extension or getattr(self, '_extension', '')
-        old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
-        if not old_path:
-            return
-        old_name = os.path.basename(old_path)
-        if new_storehouse:
-            pass
-        elif self._session.is_in_score:
-            new_storehouse = self._get_current_directory()
-        else:
-            new_storehouse = self._select_storehouse_path()
-            if self._session.is_backtracking or new_storehouse is None:
-                return
-        message = 'existing {} name> {}'
-        message = message.format(self._asset_identifier, old_name)
-        self._io_manager._display(message)
-        message = 'new {} name'
-        message = message.format(self._asset_identifier)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        help_template = getter.prompts[0].help_template
-        string = 'Press <return> to preserve existing name.'
-        help_template = help_template + ' ' + string
-        getter.prompts[0]._help_template = help_template
-        new_name = getter._run()
-        new_name = new_name or old_name
-        if self._session.is_backtracking or new_name is None:
-            return
-        new_name = stringtools.strip_diacritics(new_name)
-        if hasattr(self, '_file_name_callback'):
-            new_name = self._file_name_callback(new_name)
-        new_name = new_name.replace(' ', '_')
-        if self._force_lowercase:
-            new_name = new_name.lower()
-        if extension and not new_name.endswith(extension):
-            new_name = new_name + extension
-        new_path = os.path.join(new_storehouse, new_name)
-        if os.path.exists(new_path):
-            message = 'already exists: {}'.format(new_path)
-            self._io_manager._display(message)
-            self._io_manager._acknowledge()
-            return
-        messages = []
-        messages.append('will copy ...')
-        messages.append(' FROM: {}'.format(old_path))
-        messages.append('   TO: {}'.format(new_path))
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        if os.path.isfile(old_path):
-            shutil.copyfile(old_path, new_path)
-        elif os.path.isdir(old_path):
-            shutil.copytree(old_path, new_path)
-        else:
-            raise TypeError(old_path)
-        if os.path.isdir(new_path):
-            for directory_entry in sorted(os.listdir(new_path)):
-                if not directory_entry.endswith('.py'):
-                    continue
-                path = os.path.join(new_path, directory_entry)
-                self._replace_in_file(
-                    path,
-                    old_name,
-                    new_name,
-                    )
 
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
@@ -665,70 +593,6 @@ class Wrangler(AssetController):
             return
         self._io_manager.open_file(paths)
 
-    def _remove_assets(self):
-        from ide import idetools
-        self._session._attempted_to_remove = True
-        if self._session.is_repository_test:
-            return
-        paths = self._select_visible_asset_paths()
-        if not paths:
-            return
-        count = len(paths)
-        messages = []
-        if count == 1:
-            message = 'will remove {}'.format(paths[0])
-            messages.append(message)
-        else:
-            messages.append('will remove ...')
-            for path in paths:
-                message = '    {}'.format(path)
-                messages.append(message)
-        self._io_manager._display(messages)
-        if count == 1:
-            confirmation_string = 'remove'
-        else:
-            confirmation_string = 'remove {}'
-            confirmation_string = confirmation_string.format(count)
-        message = "type {!r} to proceed"
-        message = message.format(confirmation_string)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        if self._session.confirm:
-            result = getter._run()
-            if self._session.is_backtracking or result is None:
-                return
-            if not result == confirmation_string:
-                return
-        for path in paths:
-            manager = self._get_manager(path=path)
-            with self._io_manager._silent():
-                manager._remove()
-        self._session._pending_redraw = True
-
-    def _rename_asset(
-        self,
-        extension=None,
-        file_name_callback=None, 
-        ):
-        extension = extension or getattr(self, '_extension', '')
-        path = self._select_visible_asset_path(infinitive_phrase='to rename')
-        if not path:
-            return
-        file_name = os.path.basename(path)
-        message = 'existing file name> {}'
-        message = message.format(file_name)
-        self._io_manager._display(message)
-        manager = self._initialize_manager(
-            path,
-            asset_identifier=self._asset_identifier,
-            )
-        manager._rename_interactively(
-            extension=extension,
-            file_name_callback=file_name_callback,
-            force_lowercase=self._force_lowercase,
-            )
-        self._session._is_backtracking_locally = False
-
     def _run(self):
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
@@ -947,6 +811,89 @@ class Wrangler(AssetController):
             with self._io_manager._silent():
                 manager.commit(commit_message=commit_message)
 
+    def copy(
+        self, 
+        extension=None,
+        new_storehouse=None
+        ):
+        r'''Copies asset.
+
+        Returns none.
+        '''
+        visible_asset_paths = self._list_visible_asset_paths()
+        if not visible_asset_paths:
+            messages = ['nothing to copy.']
+            messages.append('')
+            self._io_manager._display(messages)
+            return
+        extension = extension or getattr(self, '_extension', '')
+        old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
+        if not old_path:
+            return
+        old_name = os.path.basename(old_path)
+        new_storehouse = self._mandatory_copy_target_storehouse
+        if new_storehouse:
+            pass
+        elif self._session.is_in_score:
+            new_storehouse = self._get_current_directory()
+        else:
+            new_storehouse = self._select_storehouse_path()
+            if self._session.is_backtracking or new_storehouse is None:
+                return
+        message = 'existing {} name> {}'
+        message = message.format(self._asset_identifier, old_name)
+        self._io_manager._display(message)
+        message = 'new {} name'
+        message = message.format(self._asset_identifier)
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        help_template = getter.prompts[0].help_template
+        string = 'Press <return> to preserve existing name.'
+        help_template = help_template + ' ' + string
+        getter.prompts[0]._help_template = help_template
+        new_name = getter._run()
+        new_name = new_name or old_name
+        if self._session.is_backtracking or new_name is None:
+            return
+        new_name = stringtools.strip_diacritics(new_name)
+        if hasattr(self, '_file_name_callback'):
+            new_name = self._file_name_callback(new_name)
+        new_name = new_name.replace(' ', '_')
+        if self._force_lowercase:
+            new_name = new_name.lower()
+        if extension and not new_name.endswith(extension):
+            new_name = new_name + extension
+        new_path = os.path.join(new_storehouse, new_name)
+        if os.path.exists(new_path):
+            message = 'already exists: {}'.format(new_path)
+            self._io_manager._display(message)
+            self._io_manager._acknowledge()
+            return
+        messages = []
+        messages.append('will copy ...')
+        messages.append(' FROM: {}'.format(old_path))
+        messages.append('   TO: {}'.format(new_path))
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        if os.path.isfile(old_path):
+            shutil.copyfile(old_path, new_path)
+        elif os.path.isdir(old_path):
+            shutil.copytree(old_path, new_path)
+        else:
+            raise TypeError(old_path)
+        if os.path.isdir(new_path):
+            for directory_entry in sorted(os.listdir(new_path)):
+                if not directory_entry.endswith('.py'):
+                    continue
+                path = os.path.join(new_path, directory_entry)
+                self._replace_in_file(
+                    path,
+                    old_name,
+                    new_name,
+                    )
+
     def display_every_asset_status(self):
         r'''Displays repository status of every asset.
 
@@ -964,6 +911,46 @@ class Wrangler(AssetController):
             directory = self._get_current_directory()
             message = message.format(directory)
             self._io_manager._display(message)
+
+    def remove(self):
+        from ide import idetools
+        self._session._attempted_to_remove = True
+        if self._session.is_repository_test:
+            return
+        paths = self._select_visible_asset_paths()
+        if not paths:
+            return
+        count = len(paths)
+        messages = []
+        if count == 1:
+            message = 'will remove {}'.format(paths[0])
+            messages.append(message)
+        else:
+            messages.append('will remove ...')
+            for path in paths:
+                message = '    {}'.format(path)
+                messages.append(message)
+        self._io_manager._display(messages)
+        if count == 1:
+            confirmation_string = 'remove'
+        else:
+            confirmation_string = 'remove {}'
+            confirmation_string = confirmation_string.format(count)
+        message = "type {!r} to proceed"
+        message = message.format(confirmation_string)
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        if self._session.confirm:
+            result = getter._run()
+            if self._session.is_backtracking or result is None:
+                return
+            if not result == confirmation_string:
+                return
+        for path in paths:
+            manager = self._get_manager(path=path)
+            with self._io_manager._silent():
+                manager._remove()
+        self._session._pending_redraw = True
 
     def remove_every_unadded_asset(self):
         r'''Removes files not yet added to repository of every asset.
@@ -1002,6 +989,30 @@ class Wrangler(AssetController):
         message = 'removed {} unadded {}.'
         message = message.format(count, identifier)
         self._io_manager._display(message)
+
+    def rename(
+        self,
+        extension=None,
+        file_name_callback=None, 
+        ):
+        extension = extension or getattr(self, '_extension', '')
+        path = self._select_visible_asset_path(infinitive_phrase='to rename')
+        if not path:
+            return
+        file_name = os.path.basename(path)
+        message = 'existing file name> {}'
+        message = message.format(file_name)
+        self._io_manager._display(message)
+        manager = self._initialize_manager(
+            path,
+            asset_identifier=self._asset_identifier,
+            )
+        manager._rename_interactively(
+            extension=extension,
+            file_name_callback=file_name_callback,
+            force_lowercase=self._force_lowercase,
+            )
+        self._session._is_backtracking_locally = False
 
     def revert_every_asset(self):
         r'''Reverts every asset to repository.

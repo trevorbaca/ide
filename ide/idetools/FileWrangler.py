@@ -42,12 +42,10 @@ class FileWrangler(Wrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'cp': self.copy_file,
-            'new': self.make_file,
-            'ren': self.rename_file,
-            'rm': self.remove_files,
             #
             'ck*': self.check_every_file,
+            #
+            'new': self.make_file,
             })
         return result
 
@@ -64,7 +62,6 @@ class FileWrangler(Wrangler):
 
     def _collect_segment_files(self, file_name):
         segments_directory = self._session.current_segments_directory
-        #build_directory = self._get_current_directory()
         build_directory = self._session.current_build_directory
         directory_entries = sorted(os.listdir(segments_directory))
         source_file_paths, target_file_paths = [], []
@@ -391,13 +388,6 @@ class FileWrangler(Wrangler):
             self._handle_candidate(source_file_path, target_file_path)
             self._io_manager._display('')
 
-    def copy_file(self):
-        r'''Copies file.
-
-        Returns none.
-        '''
-        self._copy_asset()
-
     def generate_back_cover_source(self):
         r'''Generates ``back-cover.tex``.
 
@@ -643,17 +633,3 @@ class FileWrangler(Wrangler):
         message = '   TO: {}'.format(distribution_score_path)
         messages.append(message)
         self._io_manager._display(messages)
-        
-    def remove_files(self):
-        r'''Removes one or more files.
-
-        Returns none.
-        '''
-        self._remove_assets()
-
-    def rename_file(self):
-        r'''Renames file.
-
-        Returns none.
-        '''
-        self._rename_asset()
