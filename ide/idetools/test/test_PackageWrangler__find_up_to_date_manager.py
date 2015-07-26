@@ -8,6 +8,8 @@ abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_PackageWrangler__find_up_to_date_manager_01():
+    r'''Finds up-to-date score package manger.
+    '''
 
     wrangler = abjad_ide._score_package_wrangler
     manager = wrangler._find_up_to_date_manager(
@@ -22,3 +24,35 @@ def test_PackageWrangler__find_up_to_date_manager_01():
     assert manager._is_up_to_date()
     assert manager._path.startswith(storehouse)
     assert not manager._path == storehouse
+
+
+def test_PackageWrangler__find_up_to_date_manager_02():
+    r'''Finds up-to-date material package manager.
+    '''
+
+    wrangler = abjad_ide._material_package_wrangler
+    manager = wrangler._find_up_to_date_manager(
+        system=True,
+        )
+
+    assert isinstance(manager, ide.idetools.MaterialPackageManager)
+    assert manager._is_git_versioned()
+    assert manager._is_up_to_date()
+    assert os.path.basename(os.path.dirname(manager._path)) == 'materials'
+    assert not os.path.dirname(manager._path) == 'materials'
+
+
+def test_PackageWrangler__find_up_to_date_manager_03():
+    r'''Finds up-to-date segment package manager.
+    '''
+
+    wrangler = abjad_ide._segment_package_wrangler
+    manager = wrangler._find_up_to_date_manager(
+        system=True,
+        )
+
+    assert isinstance(manager, ide.idetools.SegmentPackageManager)
+    assert manager._is_git_versioned()
+    assert manager._is_up_to_date()
+    assert os.path.basename(os.path.dirname(manager._path)) == 'segments'
+    assert not os.path.basename(manager._path) == 'segments'
