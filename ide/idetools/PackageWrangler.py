@@ -74,17 +74,15 @@ class PackageWrangler(Wrangler):
         paths.sort()
         return paths
 
-    def _make_all_packages_menu_section(self, menu, commands_only=False):
+    def _make_extra_commands_menu_section(self, menu):
         commands = []
-        commands.append(('check all packages', 'ck*'))
         commands.extend(self._extra_commands)
-        if commands_only:
-            return commands
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='zzz',
-            )
+        if commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=commands,
+                name='extra commands',
+                )
 
     def _make_basic_operations_menu_section(self, menu):
         commands = []
@@ -100,7 +98,7 @@ class PackageWrangler(Wrangler):
     def _make_main_menu(self):
         superclass = super(PackageWrangler, self)
         menu = superclass._make_main_menu()
-        self._make_all_packages_menu_section(menu)
+        self._make_extra_commands_menu_section(menu)
         self._make_basic_operations_menu_section(menu)
         return menu
 

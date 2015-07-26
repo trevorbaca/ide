@@ -159,13 +159,14 @@ class AbjadIDE(Wrangler):
         wrangler._user_storehouse_path = \
             wrangler._configuration.user_score_packages_directory
         commands = []
-        commands.append(('open all distribution score.pdf files', 'so*'))
+        commands.append(('check all score packages', 'ck*'))
         commands.append(('git add all score packages', 'add*'))
         commands.append(('git clean all score packages', 'clean*'))
         commands.append(('git commit all score packages', 'ci*'))
         commands.append(('git revert all score packages', 'revert*'))
         commands.append(('git status all score packages', 'st*'))
         commands.append(('git update all score packages', 'up*'))
+        commands.append(('open all distribution score.pdf files', 'so*'))
         commands.append(('show all build files', 'uu'))
         commands.append(('show all distribution', 'dd'))
         commands.append(('show all etc files', 'ee'))

@@ -1,6 +1,9 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
+configuration = ide.idetools.Configuration()
+session = ide.idetools.Session()
+abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
 def test_PackageWrangler__make_asset_menu_section_01():
