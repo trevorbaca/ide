@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import datetime
 import os
 import time
 from abjad.tools import stringtools
@@ -258,82 +257,6 @@ class PackageWrangler(Wrangler):
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
                 
-    def make_package(self):
-        r'''Makes package.
-
-        Returns none.
-        '''
-        if self._session.is_in_score:
-            storehouse_path = self._current_storehouse_path
-        else:
-            example_score_packages = self._session.is_test
-            storehouse_path = self._select_storehouse_path(
-                example_score_packages=example_score_packages,
-                )
-            if self._session.is_backtracking or storehouse_path is None:
-                return
-        path = self._get_available_path(storehouse_path=storehouse_path)
-        if self._session.is_backtracking or not path:
-            return
-        message = 'path will be {}.'.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        manager = self._get_manager(path)
-        manager._make_package()
-        paths = self._list_visible_asset_paths()
-        if path not in paths:
-            with self._io_manager._silent():
-                self._clear_view()
-        manager._run()
-
-    def make_score_package(self):
-        r'''Makes score package.
-
-        Returns none.
-        '''
-        message = 'enter title'
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        title = getter._run()
-        if self._session.is_backtracking or not title:
-            return
-        package_name = stringtools.strip_diacritics(title)
-        package_name = stringtools.to_snake_case(package_name)
-        confirmed = False 
-        while not confirmed:
-            package_path = os.path.join(
-                self._configuration.user_score_packages_directory,
-                package_name,
-                )
-            message = 'path will be {}.'.format(package_path)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking:
-                return
-            confirmed = result
-            if confirmed:
-                break
-            message = 'enter package name'
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            package_name = getter._run()
-            if self._session.is_backtracking or not package_name:
-                return
-            package_name = stringtools.strip_diacritics(package_name)
-            package_name = stringtools.to_snake_case(package_name)
-        manager = self._get_manager(package_path)
-        manager._make_package()
-        manager._add_metadatum('title', title)
-        year = datetime.date.today().year
-        manager._add_metadatum('year', year)
-        package_paths = self._list_visible_asset_paths()
-        if package_path not in package_paths:
-            with self._io_manager._silent():
-                self._clear_view()
-        manager._run()
-
     def open_every_illustration_pdf(self):
         r'''Opens ``illustration.pdf`` in every package.
 

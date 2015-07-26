@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import copy
+import datetime
 import os
 import shutil
 import subprocess
@@ -443,36 +444,6 @@ class Wrangler(AssetController):
             name='basic operations',
             )
 
-    def _make_file(
-        self, 
-        contents='',
-        extension=None, 
-        message='file name', 
-        ):
-        extension = extension or getattr(self, '_extension', '')
-        if self._session.is_in_score:
-            path = self._get_current_directory()
-        else:
-            path = self._select_storehouse_path()
-            if self._session.is_backtracking or path is None:
-                return
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        name = getter._run()
-        if self._session.is_backtracking or name is None:
-            return
-        name = stringtools.strip_diacritics(name)
-        if hasattr(self, '_file_name_callback'):
-            name = self._file_name_callback(name)
-        name = name.replace(' ', '_')
-        if self._force_lowercase:
-            name = name.lower()
-        if not name.endswith(extension):
-            name = name + extension
-        path = os.path.join(path, name)
-        self._io_manager.write(path, contents)
-        self._io_manager.edit(path)
-
     def _make_main_menu(self):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
@@ -912,7 +883,121 @@ class Wrangler(AssetController):
             message = message.format(directory)
             self._io_manager._display(message)
 
+    def make_file(
+        self, 
+        extension=None, 
+        message='file name', 
+        ):
+        r'''Makes file.
+
+        Returns none.
+        '''
+        contents = self._new_file_contents
+        extension = extension or getattr(self, '_extension', '')
+        if self._session.is_in_score:
+            path = self._get_current_directory()
+        else:
+            path = self._select_storehouse_path()
+            if self._session.is_backtracking or path is None:
+                return
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        name = getter._run()
+        if self._session.is_backtracking or name is None:
+            return
+        name = stringtools.strip_diacritics(name)
+        if hasattr(self, '_file_name_callback'):
+            name = self._file_name_callback(name)
+        name = name.replace(' ', '_')
+        if self._force_lowercase:
+            name = name.lower()
+        if not name.endswith(extension):
+            name = name + extension
+        path = os.path.join(path, name)
+        self._io_manager.write(path, contents)
+        self._io_manager.edit(path)
+
+    def make_package(self):
+        r'''Makes package.
+
+        Returns none.
+        '''
+        if self._session.is_in_score:
+            storehouse_path = self._current_storehouse_path
+        else:
+            example_score_packages = self._session.is_test
+            storehouse_path = self._select_storehouse_path(
+                example_score_packages=example_score_packages,
+                )
+            if self._session.is_backtracking or storehouse_path is None:
+                return
+        path = self._get_available_path(storehouse_path=storehouse_path)
+        if self._session.is_backtracking or not path:
+            return
+        message = 'path will be {}.'.format(path)
+        self._io_manager._display(message)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        manager = self._get_manager(path)
+        manager._make_package()
+        paths = self._list_visible_asset_paths()
+        if path not in paths:
+            with self._io_manager._silent():
+                self._clear_view()
+        manager._run()
+
+    def make_score_package(self):
+        r'''Makes score package.
+
+        Returns none.
+        '''
+        message = 'enter title'
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        title = getter._run()
+        if self._session.is_backtracking or not title:
+            return
+        package_name = stringtools.strip_diacritics(title)
+        package_name = stringtools.to_snake_case(package_name)
+        confirmed = False 
+        while not confirmed:
+            package_path = os.path.join(
+                self._configuration.user_score_packages_directory,
+                package_name,
+                )
+            message = 'path will be {}.'.format(package_path)
+            self._io_manager._display(message)
+            result = self._io_manager._confirm()
+            if self._session.is_backtracking:
+                return
+            confirmed = result
+            if confirmed:
+                break
+            message = 'enter package name'
+            getter = self._io_manager._make_getter()
+            getter.append_string(message)
+            package_name = getter._run()
+            if self._session.is_backtracking or not package_name:
+                return
+            package_name = stringtools.strip_diacritics(package_name)
+            package_name = stringtools.to_snake_case(package_name)
+        manager = self._get_manager(package_path)
+        manager._make_package()
+        manager._add_metadatum('title', title)
+        year = datetime.date.today().year
+        manager._add_metadatum('year', year)
+        package_paths = self._list_visible_asset_paths()
+        if package_path not in package_paths:
+            with self._io_manager._silent():
+                self._clear_view()
+        manager._run()
+
     def remove(self):
+        r'''Removes asset.
+
+        Returns none.
+        '''
         from ide import idetools
         self._session._attempted_to_remove = True
         if self._session.is_repository_test:
@@ -995,6 +1080,10 @@ class Wrangler(AssetController):
         extension=None,
         file_name_callback=None, 
         ):
+        r'''Renames asset.
+
+        Returns none.
+        '''
         extension = extension or getattr(self, '_extension', '')
         path = self._select_visible_asset_path(infinitive_phrase='to rename')
         if not path:

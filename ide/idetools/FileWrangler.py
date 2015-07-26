@@ -42,9 +42,6 @@ class FileWrangler(Wrangler):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            #
-            'ck*': self.check_every_file,
-            #
             'new': self.make_file,
             })
         return result
@@ -595,15 +592,15 @@ class FileWrangler(Wrangler):
         '''
         self._interpret_file_ending_with('score.tex')
 
-    def make_file(self):
-        r'''Makes empty file.
-
-        Returns none.
-        '''
-        self._make_file(
-            contents=self._new_file_contents,
-            message='file name',
-            )
+#    def make_file(self):
+#        r'''Makes empty file.
+#
+#        Returns none.
+#        '''
+#        self._make_file(
+#            contents=self._new_file_contents,
+#            message='file name',
+#            )
 
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
