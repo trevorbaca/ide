@@ -65,15 +65,6 @@ class PackageWrangler(Wrangler):
                 return True
         return False
 
-    def _list_metadata_py_files_in_all_directories(self):
-        paths = []
-        directories = self._list_all_directories_with_metadata_pys()
-        for directory in directories:
-            path = os.path.join(directory, '__metadata__.py')
-            paths.append(path)
-        paths.sort()
-        return paths
-
     def _make_extra_commands_menu_section(self, menu):
         commands = []
         commands.extend(self._extra_commands)
@@ -225,23 +216,6 @@ class PackageWrangler(Wrangler):
         '''
         self._open_in_every_package('definition.py')
 
-    def edit_every_metadata_py(self):
-        r'''Edits ``__metadata__.py`` in every package.
-
-        Returns none.
-        '''
-        paths = self._list_metadata_py_files_in_all_directories()
-        messages = []
-        messages.append('will open ...')
-        for path in paths:
-            message = '    ' + path
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        self._io_manager.open_file(paths)
-
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -310,19 +284,6 @@ class PackageWrangler(Wrangler):
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
                 
-    def list_every_metadata_py(self):
-        r'''Lists ``__metadata__.py`` in every package.
-
-        Returns none.
-        '''
-        directories = self._list_all_directories_with_metadata_pys()
-        paths = [os.path.join(_, '__metadata__.py') for _ in directories]
-        messages = paths[:]
-        self._io_manager._display(messages)
-        message = '{} __metadata__.py files found.'
-        message = message.format(len(paths))
-        self._io_manager._display(message)
-
     def make_package(self):
         r'''Makes package.
 
@@ -440,37 +401,3 @@ class PackageWrangler(Wrangler):
         Returns none.
         '''
         self._rename_asset()
-
-    def write_every_metadata_py(self):
-        r'''Writes ``__metadata__.py`` in every package.
-
-        Returns none.
-        '''
-        directories = self._list_all_directories_with_metadata_pys()
-        managers = []
-        for directory in directories:
-            manager = self._io_manager._make_package_manager(directory)
-            managers.append(manager)
-        inputs, outputs = [], []
-        method_name = 'write_metadata_py'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(
-            inputs, 
-            outputs, 
-            verb='write',
-            )
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        with self._io_manager._silent():
-            for manager in managers:
-                method = getattr(manager, method_name)
-                method()
-        message = '{} __metadata__.py files rewritten.'
-        message = message.format(len(managers))
-        self._io_manager._display(message)
