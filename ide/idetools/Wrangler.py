@@ -86,13 +86,6 @@ class Wrangler(AssetController):
             'ren': self.rename,
             'rm': self.remove,
             #
-            'add*': self.add_every_asset,
-            'ci*': self.commit_every_asset,
-            'clean*': self.remove_every_unadded_asset,
-            'st*': self.display_every_asset_status,
-            'revert*': self.revert_every_asset,
-            'up*': self.update_every_asset,
-            #
             'ws': self.set_view,
             })
         result.update(self._commands)

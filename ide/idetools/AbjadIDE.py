@@ -176,6 +176,12 @@ class AbjadIDE(Wrangler):
         commands.append(('show all stylesheets', 'yy'))
         wrangler._extra_commands = commands
         commands = {
+            'add*': wrangler.add_every_asset,
+            'ci*': wrangler.commit_every_asset,
+            'clean*': wrangler.remove_every_unadded_asset,
+            'st*': wrangler.display_every_asset_status,
+            'revert*': wrangler.revert_every_asset,
+            'up*': wrangler.update_every_asset,
             'new': wrangler.make_score_package,
             }
         wrangler._commands = commands
