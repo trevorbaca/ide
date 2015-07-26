@@ -82,6 +82,7 @@ class Wrangler(AssetController):
         result = result.copy()
         result.update({
             'cp': self.copy,
+            'new': self.make,
             'ren': self.rename,
             'rm': self.remove,
             #
@@ -94,6 +95,7 @@ class Wrangler(AssetController):
             #
             'ws': self.set_view,
             })
+        result.update(self._commands)
         return result
 
     @property
@@ -883,15 +885,21 @@ class Wrangler(AssetController):
             message = message.format(directory)
             self._io_manager._display(message)
 
-    def make_file(
+    def make(self):
+        r'''Makes asset.
+
+        Returns none.
+        '''
+        if self._asset_identifier == 'file':
+            self._make_file()
+        else:
+            self._make_package()
+
+    def _make_file(
         self, 
         extension=None, 
         message='file name', 
         ):
-        r'''Makes file.
-
-        Returns none.
-        '''
         contents = self._new_file_contents
         extension = extension or getattr(self, '_extension', '')
         if self._session.is_in_score:
@@ -917,11 +925,7 @@ class Wrangler(AssetController):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def make_package(self):
-        r'''Makes package.
-
-        Returns none.
-        '''
+    def _make_package(self):
         if self._session.is_in_score:
             storehouse_path = self._current_storehouse_path
         else:

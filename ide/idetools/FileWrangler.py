@@ -21,6 +21,8 @@ class FileWrangler(Wrangler):
         '_new_file_contents',
         )
 
+    ### INITIALIZER ###
+
     def __init__(self, session=None):
         superclass = super(FileWrangler, self)
         superclass.__init__(session=session)
@@ -33,18 +35,6 @@ class FileWrangler(Wrangler):
         self._include_extensions = True
         self._new_file_contents = ''
         self._user_storehouse_path = None
-
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _command_to_method(self):
-        superclass = super(FileWrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-        result.update({
-            'new': self.make_file,
-            })
-        return result
 
     ### PRIVATE METHODS ###
 

@@ -14,14 +14,6 @@ class PackageWrangler(Wrangler):
     __slots__ = (
         )
 
-    ### INITIALIZER ###
-
-    def __init__(self, session=None):
-        from ide import idetools
-        assert session is not None
-        superclass = super(PackageWrangler, self)
-        superclass.__init__(session=session)
-
     ### PRIVATE PROPERTIES ###
 
     @property
@@ -34,8 +26,6 @@ class PackageWrangler(Wrangler):
             '>': self.go_to_next_package,
             #
             'ck*': self.check_every_package,
-            #
-            'new': self.make_package,
             #
             'dc*': self.check_every_definition_py,
             'de*': self.edit_every_definition_py,
