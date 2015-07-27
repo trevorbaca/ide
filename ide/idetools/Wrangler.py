@@ -438,23 +438,20 @@ class Wrangler(AssetController):
 
     def _make_asset_selection_breadcrumb(
         self,
-        human_readable_target_name=None,
         infinitival_phrase=None,
         is_storehouse=False,
         ):
-        if human_readable_target_name is None:
-            name = self._manager_class.__name__
-            name = stringtools.to_space_delimited_lowercase(name)
-            human_readable_target_name = name
+        name = self._manager_class.__name__
+        name = stringtools.to_space_delimited_lowercase(name)
         if infinitival_phrase:
             return 'select {} {}:'.format(
-                human_readable_target_name,
+                name,
                 infinitival_phrase,
                 )
         elif is_storehouse:
             return 'select storehouse'
         else:
-            return 'select {}:'.format(human_readable_target_name)
+            return 'select {}:'.format(name)
 
     def _make_asset_selection_menu(self):
         menu = self._io_manager._make_menu(name='asset selection')
