@@ -17,14 +17,6 @@ class FileWrangler(Wrangler):
     __slots__ = (
         )
 
-    ### PRIVATE METHODS ###
-
-    @staticmethod
-    def _file_name_callback(file_name):
-        file_name = file_name.replace(' ', '-')
-        file_name = file_name.replace('_', '-')
-        return file_name
-
     ### PUBLIC METHODS ###
 
     def check_every_file(self):

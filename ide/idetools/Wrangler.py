@@ -38,6 +38,7 @@ class Wrangler(AssetController):
         '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
         '_sort_by_annotation',
+        '_use_dash_case',
         )
 
     ### INITIALIZER ###
@@ -60,6 +61,7 @@ class Wrangler(AssetController):
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
+        self._use_dash_case = False
 
     ### PRIVATE PROPERTIES ###
 
@@ -499,8 +501,8 @@ class Wrangler(AssetController):
         if self._session.is_backtracking or name is None:
             return
         name = stringtools.strip_diacritics(name)
-        if hasattr(self, '_file_name_callback'):
-            name = self._file_name_callback(name)
+        if self._use_dash_case:
+            name = self._to_dash_case(name)
         name = name.replace(' ', '_')
         if self._force_lowercase:
             name = name.lower()
@@ -1034,8 +1036,8 @@ class Wrangler(AssetController):
         if self._session.is_backtracking or new_name is None:
             return
         new_name = stringtools.strip_diacritics(new_name)
-        if hasattr(self, '_file_name_callback'):
-            new_name = self._file_name_callback(new_name)
+        if self._use_dash_case:
+            new_name = self._to_dash_case(new_name)
         new_name = new_name.replace(' ', '_')
         if self._force_lowercase:
             new_name = new_name.lower()
@@ -1623,6 +1625,12 @@ class Wrangler(AssetController):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
             self._handle_candidate(candidate_path, destination_path)
+
+    @staticmethod
+    def _to_dash_case(file_name):
+        file_name = file_name.replace(' ', '-')
+        file_name = file_name.replace('_', '-')
+        return file_name
 
     @staticmethod
     def _trim_lilypond_file(file_path):

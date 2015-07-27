@@ -59,6 +59,7 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'build'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('build',)
+        wrangler._use_dash_case = True
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
@@ -97,6 +98,7 @@ class AbjadIDE(Wrangler):
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
         wrangler._file_name_predicate = stringtools.is_dash_case
+        wrangler._use_dash_case = True
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
@@ -109,6 +111,7 @@ class AbjadIDE(Wrangler):
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
         wrangler._file_name_predicate = stringtools.is_dash_case
+        wrangler._use_dash_case = True
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
@@ -120,12 +123,12 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
-        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._force_lowercase = False
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         return wrangler
 
     @property
@@ -230,6 +233,7 @@ class AbjadIDE(Wrangler):
         wrangler._extension = '.ily'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
+        wrangler._use_dash_case = True
         wrangler._validator = wrangler._is_valid_file_directory_entry
         return wrangler
 
