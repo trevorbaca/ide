@@ -22,7 +22,6 @@ class AssetController(Controller):
         '_commands',
         '_group_asset_section_by_annotation',
         '_has_breadcrumb_in_score',
-        '_human_readable',
         '_include_asset_name',
         '_include_extensions',
         '_validator',
@@ -46,7 +45,6 @@ class AssetController(Controller):
         self._commands = {}
         self._group_asset_section_by_annotation = True
         self._has_breadcrumb_in_score = True
-        self._human_readable = True
         self._include_asset_name = True
         self._include_extensions = False
         self._validator = self._is_valid_directory_entry
@@ -584,10 +582,14 @@ class AssetController(Controller):
         return annotation
 
     def _path_to_asset_menu_display_string(self, path):
-        if self._human_readable:
-            asset_name = self._path_to_human_readable_name(path)
-        else:
-            asset_name = os.path.basename(path)
+        path = os.path.normpath(path)
+        name = os.path.basename(path)
+        include_extensions = self._include_extensions
+        if not include_extensions:
+            name, extension = os.path.splitext(name)
+        if '_' in name:
+            name = stringtools.to_space_delimited_lowercase(name)
+        asset_name = name
         if 'segments' in path:
             manager = self._io_manager._make_package_manager(path=path)
             name = manager._get_metadatum('name')
@@ -601,14 +603,6 @@ class AssetController(Controller):
             else:
                 string = annotation
         return string
-
-    def _path_to_human_readable_name(self, path):
-        path = os.path.normpath(path)
-        name = os.path.basename(path)
-        include_extensions = self._include_extensions
-        if not include_extensions:
-            name, extension = os.path.splitext(name)
-        return stringtools.to_space_delimited_lowercase(name)
 
     def _read_view(self):
         view_name = self._read_view_name()
