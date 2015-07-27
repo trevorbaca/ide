@@ -478,6 +478,33 @@ class Session(abctools.AbjadObject):
             return os.path.join(self.current_score_directory, 'etc')
             
     @property
+    def current_makers_directory(self):
+        r'''Gets session current makers directory.
+
+        ..  container:: example
+
+            makers directory of session outside score:
+
+            ::
+
+                >>> session.current_makers_directory is None
+                True
+
+        ..  container:: example
+
+            makers directory of session in score:
+
+            ::
+
+                >>> session_in_score.current_makers_directory
+                '.../red_example_score/makers'
+
+        Returns string.
+        '''
+        if self.current_score_directory:
+            return os.path.join(self.current_score_directory, 'makers')
+
+    @property
     def current_materials_directory(self):
         r'''Gets session current materials directory.
 
