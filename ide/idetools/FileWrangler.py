@@ -19,98 +19,6 @@ class FileWrangler(Wrangler):
 
     ### PRIVATE METHODS ###
 
-    def _call_lilypond_on_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
-        if file_path:
-            self._io_manager.run_lilypond(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
-    def _collect_segment_files(self, file_name):
-        segments_directory = self._session.current_segments_directory
-        build_directory = self._session.current_build_directory
-        directory_entries = sorted(os.listdir(segments_directory))
-        source_file_paths, target_file_paths = [], []
-        _, extension = os.path.splitext(file_name)
-        for directory_entry in directory_entries:
-            segment_directory = os.path.join(
-                segments_directory,
-                directory_entry,
-                )
-            if not os.path.isdir(segment_directory):
-                continue
-            source_file_path = os.path.join(
-                segment_directory,
-                file_name,
-                )
-            if not os.path.isfile(source_file_path):
-                continue
-            score_path = self._session.current_score_directory
-            score_package = self._configuration.path_to_package(
-                score_path)
-            score_name = score_package.replace('_', '-')
-            directory_entry = directory_entry.replace('_', '-')
-            target_file_name = directory_entry + extension
-            target_file_path = os.path.join(
-                build_directory,
-                target_file_name,
-                )
-            source_file_paths.append(source_file_path)
-            target_file_paths.append(target_file_path)
-        if source_file_paths:
-            messages = []
-            messages.append('will copy ...')
-            pairs = zip(source_file_paths, target_file_paths)
-            for source_file_path, target_file_path in pairs:
-                message = ' FROM: {}'.format(source_file_path)
-                messages.append(message)
-                message = '   TO: {}'.format(target_file_path)
-                messages.append(message)
-            self._io_manager._display(messages)
-            if not self._io_manager._confirm():
-                return
-            if self._session.is_backtracking:
-                return
-        if not os.path.exists(build_directory):
-            os.mkdir(build_directory)
-        pairs = zip(source_file_paths, target_file_paths)
-        return pairs
-
-    def _confirm_segment_names(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        view_name = wrangler._read_view_name()
-        view_inventory = wrangler._read_view_inventory()
-        if not view_inventory or view_name not in view_inventory:
-            view_name = None
-        segment_paths = wrangler._list_visible_asset_paths()
-        segment_paths = segment_paths or []
-        segment_names = []
-        for segment_path in segment_paths:
-            segment_name = os.path.basename(segment_path)
-            segment_names.append(segment_name)
-        messages = []
-        if view_name:
-            message = 'the {!r} segment view is currently selected.'
-            message = message.format(view_name)
-            messages.append(message)
-        if segment_names:
-            message = 'will assemble segments in this order:'
-            messages.append(message)
-            for segment_name in segment_names:
-                message = '    ' + segment_name
-                messages.append(message)
-        else:
-            message = 'no segments found:'
-            message += ' will generate source without segments.'
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return False
-        return segment_names
-
     def _copy_boilerplate(self, file_name, candidacy=True, replacements=None):
         replacements = replacements or {}
         manager = self._session.current_score_package_manager
@@ -540,16 +448,6 @@ class FileWrangler(Wrangler):
         Returns none.
         '''
         self._interpret_file_ending_with('score.tex')
-
-#    def make_file(self):
-#        r'''Makes empty file.
-#
-#        Returns none.
-#        '''
-#        self._make_file(
-#            contents=self._new_file_contents,
-#            message='file name',
-#            )
 
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
