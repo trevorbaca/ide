@@ -251,17 +251,6 @@ class FileWrangler(Wrangler):
                 os.remove(path)
             self._handle_candidate(candidate_path, destination_path)
 
-    def _is_valid_directory_entry(self, directory_entry):
-        superclass = super(FileWrangler, self)
-        if superclass._is_valid_directory_entry(directory_entry):
-            name, extension = os.path.splitext(directory_entry)
-            if self._file_name_predicate(name):
-                if self._extension == '':
-                    return True
-                elif self._extension == extension:
-                    return True
-        return False
-
     def _make_main_menu(self):
         superclass = super(FileWrangler, self)
         menu = superclass._make_main_menu()

@@ -313,6 +313,24 @@ class Wrangler(AssetController):
             manager._asset_identifier = asset_identifier
         return manager
 
+    def _is_valid_file_directory_entry(self, expr):
+        superclass = super(Wrangler, self)
+        if superclass._is_valid_directory_entry(expr):
+            name, extension = os.path.splitext(expr)
+            if self._file_name_predicate(name):
+                if self._extension == '':
+                    return True
+                elif self._extension == extension:
+                    return True
+        return False
+
+    def _is_valid_package_directory_entry(self, expr):
+        superclass = super(Wrangler, self)
+        if superclass._is_valid_directory_entry(expr):
+            if '.' not in expr:
+                return True
+        return False
+
     def _list(self, public_entries_only=False):
         result = []
         path = self._get_current_directory()

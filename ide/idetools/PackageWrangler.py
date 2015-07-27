@@ -42,13 +42,6 @@ class PackageWrangler(Wrangler):
 
     ### PRIVATE METHODS ###
 
-    def _is_valid_directory_entry(self, expr):
-        superclass = super(PackageWrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
-        return False
-
     def _make_extra_commands_menu_section(self, menu):
         commands = []
         commands.extend(self._extra_commands)

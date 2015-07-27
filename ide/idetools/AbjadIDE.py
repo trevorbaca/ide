@@ -56,6 +56,7 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'build'
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('build',)
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
@@ -92,6 +93,7 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'distribution'
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
 
@@ -101,6 +103,7 @@ class AbjadIDE(Wrangler):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._basic_breadcrumb = 'etc'
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
 
@@ -111,6 +114,7 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._force_lowercase = False
@@ -125,6 +129,7 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.PackageWrangler(session=self._session)
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
+        wrangler._validator = wrangler._is_valid_package_directory_entry
         wrangler._manager_class = idetools.MaterialPackageManager
         wrangler._score_storehouse_path_infix_parts = ('materials',)
         commands = []
@@ -158,6 +163,7 @@ class AbjadIDE(Wrangler):
         wrangler._sort_by_annotation = False
         wrangler._user_storehouse_path = \
             wrangler._configuration.user_score_packages_directory
+        wrangler._validator = wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every score packages', 'ck*'))
         commands.append(('git add all score packages', 'add*'))
@@ -196,6 +202,7 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'segments'
         wrangler._manager_class = idetools.SegmentPackageManager
         wrangler._score_storehouse_path_infix_parts = ('segments',)
+        wrangler._validator = wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -218,6 +225,7 @@ class AbjadIDE(Wrangler):
         wrangler._basic_breadcrumb = 'stylesheets'
         wrangler._extension = '.ily'
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         return wrangler
 
     @property

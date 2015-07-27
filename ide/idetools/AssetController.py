@@ -25,6 +25,7 @@ class AssetController(Controller):
         '_human_readable',
         '_include_asset_name',
         '_include_extensions',
+        '_validator',
         )
 
     known_secondary_assets = (
@@ -48,6 +49,7 @@ class AssetController(Controller):
         self._human_readable = True
         self._include_asset_name = True
         self._include_extensions = False
+        self._validator = self._is_valid_directory_entry
 
     ### PRIVATE PROPERTIES ###
 
@@ -374,7 +376,8 @@ class AssetController(Controller):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    if not self._is_valid_directory_entry(directory_entry):
+                    #if not self._is_valid_directory_entry(directory_entry):
+                    if not self._validator(directory_entry):
                         continue
                 path = os.path.join(directory, directory_entry)
                 if self._basic_breadcrumb == 'scores':
