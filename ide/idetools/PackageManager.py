@@ -15,6 +15,7 @@ class PackageManager(AssetController):
 
     __slots__ = (
         '_asset_identifier',
+        '_breadcrumb_callback',
         '_main_menu',
         '_optional_directories',
         '_optional_files',
@@ -32,6 +33,7 @@ class PackageManager(AssetController):
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
         self._asset_identifier = 'package manager'
+        self._breadcrumb_callback = None
         self._optional_directories = (
             '__pycache__',
             'test',
@@ -58,8 +60,9 @@ class PackageManager(AssetController):
 
     @property
     def _breadcrumb(self):
-        breadcrumb = self._space_delimited_lowercase_name
-        return breadcrumb
+        if self._breadcrumb_callback is not None:
+            return self._breadcrumb_callback()
+        return self._space_delimited_lowercase_name
 
     @property
     def _command_to_method(self):

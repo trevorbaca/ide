@@ -170,7 +170,7 @@ class Configuration(AbjadConfiguration):
                 path=score_path,
                 session=session,
                 )
-            title = manager._get_title()
+            title = manager._get_title(year=False)
             return title
         elif path.startswith(self.abjad_root_directory):
             return 'Abjad'

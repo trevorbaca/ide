@@ -22,6 +22,7 @@ class ScorePackageManager(PackageManager):
         superclass.__init__(path=path, session=session)
         self._annotate_year = True
         self._asset_identifier = 'score package manager'
+        self._breadcrumb_callback = self._get_title
         self._include_asset_name = False
         optional_directories = list(self._optional_directories)
         optional_directories.extend([
@@ -50,11 +51,6 @@ class ScorePackageManager(PackageManager):
         self._required_files = tuple(required_files)
 
     ### PRIVATE PROPERTIES ###
-
-    @property
-    def _breadcrumb(self):
-        annotated_title = self._get_title(year=True)
-        return annotated_title
 
     @property
     def _command_to_method(self):
@@ -157,11 +153,11 @@ class ScorePackageManager(PackageManager):
             'stylesheets',
             )
 
-    def _get_title(self, year=False):
+    def _get_title(self, year=True):
         if year and self._get_metadatum('year'):
             result = '{} ({})'
             result = result.format(
-                self._get_title(),
+                self._get_title(year=False),
                 self._get_metadatum('year')
                 )
             return result

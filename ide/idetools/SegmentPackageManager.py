@@ -20,6 +20,7 @@ class SegmentPackageManager(PackageManager):
     def __init__(self, path=None, session=None):
         superclass = super(SegmentPackageManager, self)
         superclass.__init__(path=path, session=session)
+        self._breadcrumb_callback = self._get_segment_name
         optional_files = list(self._optional_files)
         optional_files.extend([
             'illustration.ly',
@@ -32,13 +33,11 @@ class SegmentPackageManager(PackageManager):
             ])
         self._required_files = tuple(required_files)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _breadcrumb(self):
+    def _get_segment_name(self):
         name = self._get_metadatum('name')
-        name = name or self._space_delimited_lowercase_name
-        return name
+        return name or self._space_delimited_lowercase_name
+
+    ### PRIVATE PROPERTIES ###
 
     @property
     def _command_to_method(self):
