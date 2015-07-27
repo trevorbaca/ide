@@ -1581,6 +1581,49 @@ class Wrangler(AssetController):
             message = message.format(string)
             self._io_manager._display(message)
 
+    def _interpret_file_ending_with(self, string):
+        r'''Typesets TeX file.
+        Calls ``pdflatex`` on file TWICE.
+        Some LaTeX packages like ``tikz`` require two passes.
+        '''
+        file_path = self._get_file_path_ending_with(string)
+        if not file_path:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
+            return
+        input_directory = os.path.dirname(file_path)
+        output_directory = input_directory
+        basename = os.path.basename(file_path)
+        input_file_name_stem, extension = os.path.splitext(basename)
+        job_name = '{}.candidate'.format(input_file_name_stem)
+        candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
+        candidate_path = os.path.join(output_directory, candidate_name)
+        destination_name = '{}.pdf'.format(input_file_name_stem)
+        destination_path = os.path.join(output_directory, destination_name)
+        command = 'pdflatex --jobname={} -output-directory={} {}/{}.tex'
+        command = command.format(
+            job_name,
+            output_directory,
+            input_directory,
+            input_file_name_stem,
+            )
+        command_called_twice = '{}; {}'.format(command, command)
+        filesystem = systemtools.FilesystemState(remove=[candidate_path])
+        directory = systemtools.TemporaryDirectoryChange(input_directory)
+        with filesystem, directory:
+            self._io_manager.spawn_subprocess(command_called_twice)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.log'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            self._handle_candidate(candidate_path, destination_path)
+
     @staticmethod
     def _trim_lilypond_file(file_path):
         lines = []
