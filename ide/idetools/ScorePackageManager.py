@@ -86,12 +86,6 @@ class ScorePackageManager(PackageManager):
             'build',
             )
 
-    def _get_distribution_directory(self):
-        return os.path.join(
-            self._path,
-            'distribution',
-            )
-
     def _get_initializer_file_lines(self, missing_file):
         lines = []
         lines.append(self._configuration.unicode_directive)
@@ -111,30 +105,6 @@ class ScorePackageManager(PackageManager):
             lines.append('import segments')
         return lines
 
-    def _get_makers_directory(self):
-        return os.path.join(
-            self._path,
-            'makers',
-            )
-
-    def _get_materials_directory(self):
-        return os.path.join(
-            self._path,
-            'materials',
-            )
-
-    def _get_segments_directory(self):
-        return os.path.join(
-            self._path,
-            'segments',
-            )
-
-    def _get_stylesheets_directory(self):
-        return os.path.join(
-            self._path,
-            'stylesheets',
-            )
-
     def _get_title(self, year=True):
         if year and self._get_metadatum('year'):
             result = '{} ({})'
@@ -145,16 +115,6 @@ class ScorePackageManager(PackageManager):
             return result
         else:
             return self._get_metadatum('title') or '(untitled score)'
-
-    def _get_top_level_directories(self):
-        return (
-            self._get_build_directory(),
-            self._get_distribution_directory(),
-            self._get_makers_directory(),
-            self._get_materials_directory(),
-            self._get_segments_directory(),
-            self._get_stylesheets_directory(),
-            )
 
     def _get_top_level_wranglers(self):
         return (
@@ -231,11 +191,11 @@ class ScorePackageManager(PackageManager):
         '''
         with self._io_manager._make_interaction(dry_run=dry_run):
             file_name = 'score.pdf'
-            directory = self._get_distribution_directory()
+            directory = os.path.join(self._path, 'distribution')
             manager = self._io_manager._make_package_manager(directory)
             path = manager._get_file_path_ending_with(file_name)
             if not path:
-                directory = self._get_build_directory()
+                directory = os.path.join(self._path, 'build')
                 manager = self._io_manager._make_package_manager(directory)
                 path = manager._get_file_path_ending_with(file_name)
             if dry_run:
