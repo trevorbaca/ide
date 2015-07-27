@@ -722,9 +722,8 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         from ide import idetools
-        prototype = (idetools.FileWrangler, idetools.PackageWrangler)
         for controller in self.controller_stack:
-            if isinstance(controller, prototype):
+            if isinstance(controller, idetools.Wrangler):
                 return False
         return True
 

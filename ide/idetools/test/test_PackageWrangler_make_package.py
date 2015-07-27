@@ -82,7 +82,6 @@ def test_PackageWrangler_make_package_03():
     '''
 
     session = ide.idetools.Session(is_test=True)
-    wrangler = ide.idetools.PackageWrangler(session=session)
     configuration = abjad_ide._configuration
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,

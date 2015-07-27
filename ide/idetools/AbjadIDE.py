@@ -126,7 +126,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _material_package_wrangler(self):
         from ide import idetools
-        wrangler = idetools.PackageWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
         wrangler._validator = wrangler._is_valid_package_directory_entry
@@ -148,7 +148,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _score_package_wrangler(self):
         from ide import idetools
-        wrangler = idetools.PackageWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'score package'
         wrangler._basic_breadcrumb = 'scores'
         wrangler._annotate_year = True
@@ -197,7 +197,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _segment_package_wrangler(self):
         from ide import idetools
-        wrangler = idetools.PackageWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
         wrangler._manager_class = idetools.SegmentPackageManager
