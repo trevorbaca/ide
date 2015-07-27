@@ -639,7 +639,7 @@ class Wrangler(AssetController):
         infinitival_phrase=None,
         is_storehouse=False,
         ):
-        name = self._manager_class.__name__
+        name = self._asset_identifier
         name = stringtools.to_space_delimited_lowercase(name)
         if infinitival_phrase:
             return 'select {} {}:'.format(
