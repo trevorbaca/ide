@@ -57,8 +57,9 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('build',)
+        wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
         wrangler._commands['dc'] = wrangler.collect_segment_pdfs
@@ -95,6 +96,7 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
+        wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
@@ -106,6 +108,7 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.FileWrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
+        wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
@@ -227,6 +230,7 @@ class AbjadIDE(Wrangler):
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
         wrangler._extension = '.ily'
+        wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         wrangler._validator = wrangler._is_valid_file_directory_entry
         return wrangler

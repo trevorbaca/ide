@@ -51,6 +51,7 @@ class Wrangler(AssetController):
         self._basic_breadcrumb = None
         self._extension = ''
         self._extra_commands = []
+        self._file_name_predicate = None
         self._force_lowercase = True
         self._in_score_commands = []
         self._manager_class = idetools.PackageManager
