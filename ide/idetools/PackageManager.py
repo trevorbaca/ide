@@ -829,14 +829,16 @@ class PackageManager(AssetController):
             with controller, silence:
                 tab = self._io_manager._tab
                 for wrangler in wranglers:
-                    if hasattr(wrangler, 'check_every_package'):
+                    self._io_manager._display(repr(wrangler))
+                    prototype = ('file', 'stylesheet', 'maker')
+                    if wrangler._asset_identifier in prototype:
+                        result = wrangler.check_every_file()
+                    else:
                         result = wrangler.check_every_package(
                             indent=1,
                             problems_only=problems_only,
                             supply_missing=False,
                             )
-                    else:
-                        result = wrangler.check_every_file()
                     messages_, missing_directories_, missing_files_ = result
                     missing_directories.extend(missing_directories_)
                     missing_files.extend(missing_files_)
