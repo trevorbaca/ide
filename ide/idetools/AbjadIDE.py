@@ -54,7 +54,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _build_file_wrangler(self):
         from ide import idetools
-        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
         wrangler._file_name_predicate = stringtools.is_dash_case
@@ -94,7 +94,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _distribution_file_wrangler(self):
         from ide import idetools
-        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
         wrangler._file_name_predicate = stringtools.is_dash_case
@@ -107,7 +107,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _etc_file_wrangler(self):
         from ide import idetools
-        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
         wrangler._file_name_predicate = stringtools.is_dash_case
@@ -120,7 +120,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _maker_file_wrangler(self):
         from ide import idetools
-        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
         wrangler._extension = '.py'
@@ -227,7 +227,7 @@ class AbjadIDE(Wrangler):
     @systemtools.Memoize
     def _stylesheet_wrangler(self):
         from ide import idetools
-        wrangler = idetools.FileWrangler(session=self._session)
+        wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
         wrangler._extension = '.ily'

@@ -155,6 +155,15 @@ class Wrangler(AssetController):
 
     ### PRIVATE METHODS ###
 
+    def _call_lilypond_on_file_ending_with(self, string):
+        file_path = self._get_file_path_ending_with(string)
+        if file_path:
+            self._io_manager.run_lilypond(file_path)
+        else:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
+
     def _clear_view(self):
         if self._session.is_in_score:
             manager = self._current_package_manager
@@ -163,6 +172,162 @@ class Wrangler(AssetController):
             manager = self._views_package_manager
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, None)
+
+    def _collect_segment_files(self, file_name):
+        segments_directory = self._session.current_segments_directory
+        build_directory = self._session.current_build_directory
+        directory_entries = sorted(os.listdir(segments_directory))
+        source_file_paths, target_file_paths = [], []
+        _, extension = os.path.splitext(file_name)
+        for directory_entry in directory_entries:
+            segment_directory = os.path.join(
+                segments_directory,
+                directory_entry,
+                )
+            if not os.path.isdir(segment_directory):
+                continue
+            source_file_path = os.path.join(
+                segment_directory,
+                file_name,
+                )
+            if not os.path.isfile(source_file_path):
+                continue
+            score_path = self._session.current_score_directory
+            score_package = self._configuration.path_to_package(
+                score_path)
+            score_name = score_package.replace('_', '-')
+            directory_entry = directory_entry.replace('_', '-')
+            target_file_name = directory_entry + extension
+            target_file_path = os.path.join(
+                build_directory,
+                target_file_name,
+                )
+            source_file_paths.append(source_file_path)
+            target_file_paths.append(target_file_path)
+        if source_file_paths:
+            messages = []
+            messages.append('will copy ...')
+            pairs = zip(source_file_paths, target_file_paths)
+            for source_file_path, target_file_path in pairs:
+                message = ' FROM: {}'.format(source_file_path)
+                messages.append(message)
+                message = '   TO: {}'.format(target_file_path)
+                messages.append(message)
+            self._io_manager._display(messages)
+            if not self._io_manager._confirm():
+                return
+            if self._session.is_backtracking:
+                return
+        if not os.path.exists(build_directory):
+            os.mkdir(build_directory)
+        pairs = zip(source_file_paths, target_file_paths)
+        return pairs
+
+    def _confirm_segment_names(self):
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        view_name = wrangler._read_view_name()
+        view_inventory = wrangler._read_view_inventory()
+        if not view_inventory or view_name not in view_inventory:
+            view_name = None
+        segment_paths = wrangler._list_visible_asset_paths()
+        segment_paths = segment_paths or []
+        segment_names = []
+        for segment_path in segment_paths:
+            segment_name = os.path.basename(segment_path)
+            segment_names.append(segment_name)
+        messages = []
+        if view_name:
+            message = 'the {!r} segment view is currently selected.'
+            message = message.format(view_name)
+            messages.append(message)
+        if segment_names:
+            message = 'will assemble segments in this order:'
+            messages.append(message)
+            for segment_name in segment_names:
+                message = '    ' + segment_name
+                messages.append(message)
+        else:
+            message = 'no segments found:'
+            message += ' will generate source without segments.'
+            messages.append(message)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return False
+        return segment_names
+
+    def _copy_boilerplate(self, file_name, candidacy=True, replacements=None):
+        replacements = replacements or {}
+        manager = self._session.current_score_package_manager
+        assert manager is not None
+        width, height, unit = manager._parse_paper_dimensions()
+        source_path = os.path.join(
+            self._configuration.abjad_ide_directory,
+            'boilerplate',
+            file_name,
+            )
+        destination_path = os.path.join(
+            manager._path,
+            'build',
+            file_name,
+            )
+        base_name, extension = os.path.splitext(file_name)
+        candidate_name = base_name + '.candidate' + extension
+        candidate_path = os.path.join(
+            manager._path,
+            'build',
+            candidate_name,
+            )
+        messages = []
+        with systemtools.FilesystemState(remove=[candidate_path]):
+            shutil.copyfile(source_path, candidate_path)
+            old = '{PAPER_SIZE}'
+            new = '{{{}{}, {}{}}}'
+            new = new.format(width, unit, height, unit)
+            self._replace_in_file(candidate_path, old, new)
+            for old in replacements:
+                new = replacements[old]
+                self._replace_in_file(candidate_path, old, new)
+            if not os.path.exists(destination_path):
+                shutil.copyfile(candidate_path, destination_path)
+                message = 'wrote {}.'.format(destination_path)
+                messages.append(message)
+            elif not candidacy:
+                message = 'overwrite {}?'
+                message = message.format(destination_path)
+                result = self._io_manager._confirm(message)
+                if self._session.is_backtracking or not result:
+                    return False
+                shutil.copyfile(candidate_path, destination_path)
+                message = 'overwrote {}.'.format(destination_path)
+                messages.append(message)
+            elif systemtools.TestManager.compare_files(
+                candidate_path, 
+                destination_path,
+                ):
+                messages_ = self._make_candidate_messages(
+                    True, 
+                    candidate_path, 
+                    destination_path,
+                    )
+                messages.extend(messages_)
+                message = 'preserved {}.'.format(destination_path)
+                messages.append(message)
+            else:
+                shutil.copyfile(candidate_path, destination_path)
+                message = 'overwrote {}.'.format(destination_path)
+                messages.append(message)
+            self._io_manager._display(messages)
+            return True
+
+    def _edit_file_ending_with(self, string):
+        file_path = self._get_file_path_ending_with(string)
+        if file_path:
+            self._io_manager.edit(file_path)
+        else:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
 
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
@@ -334,6 +499,49 @@ class Wrangler(AssetController):
         if asset_identifier:
             manager._asset_identifier = asset_identifier
         return manager
+
+    def _interpret_file_ending_with(self, string):
+        r'''Typesets TeX file.
+        Calls ``pdflatex`` on file TWICE.
+        Some LaTeX packages like ``tikz`` require two passes.
+        '''
+        file_path = self._get_file_path_ending_with(string)
+        if not file_path:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
+            return
+        input_directory = os.path.dirname(file_path)
+        output_directory = input_directory
+        basename = os.path.basename(file_path)
+        input_file_name_stem, extension = os.path.splitext(basename)
+        job_name = '{}.candidate'.format(input_file_name_stem)
+        candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
+        candidate_path = os.path.join(output_directory, candidate_name)
+        destination_name = '{}.pdf'.format(input_file_name_stem)
+        destination_path = os.path.join(output_directory, destination_name)
+        command = 'pdflatex --jobname={} -output-directory={} {}/{}.tex'
+        command = command.format(
+            job_name,
+            output_directory,
+            input_directory,
+            input_file_name_stem,
+            )
+        command_called_twice = '{}; {}'.format(command, command)
+        filesystem = systemtools.FilesystemState(remove=[candidate_path])
+        directory = systemtools.TemporaryDirectoryChange(input_directory)
+        with filesystem, directory:
+            self._io_manager.spawn_subprocess(command_called_twice)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.log'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            self._handle_candidate(candidate_path, destination_path)
 
     def _is_valid_file_directory_entry(self, expr):
         superclass = super(Wrangler, self)
@@ -812,6 +1020,33 @@ class Wrangler(AssetController):
         result = result.strip()
         return result
 
+    @staticmethod
+    def _to_dash_case(file_name):
+        file_name = file_name.replace(' ', '-')
+        file_name = file_name.replace('_', '-')
+        return file_name
+
+    @staticmethod
+    def _trim_lilypond_file(file_path):
+        lines = []
+        with open(file_path, 'r') as file_pointer:
+            found_score_block = False
+            for line in file_pointer.readlines():
+                if line.startswith(r'\score'):
+                    found_score_block = True
+                    continue
+                if line.startswith('}'):
+                    found_score_block = False
+                    lines.append('\n')
+                    continue
+                if found_score_block:
+                    lines.append(line)
+        if lines and lines[-1] == '\n':
+            lines.pop()
+        lines = ''.join(lines)
+        with open(file_path, 'w') as file_pointer:
+            file_pointer.write(lines)
+            
     def _write_view_inventory(self, view_inventory):
         lines = []
         lines.append(self._configuration.unicode_directive)
@@ -891,6 +1126,45 @@ class Wrangler(AssetController):
         message = message.format(total_time)
         self._io_manager._display(message)
 
+    def check_every_file(self):
+        r'''Checks every file.
+
+        Returns none.
+        '''
+        paths = self._list_asset_paths(valid_only=False)
+        paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
+        paths = [_ for _ in paths if not _.endswith('.pyc')]
+        current_directory = self._get_current_directory()
+        if current_directory:
+            paths = [_ for _ in paths if _.startswith(current_directory)]
+        invalid_paths = []
+        for path in paths:
+            file_name = os.path.basename(path)
+            if not self._is_valid_directory_entry(file_name):
+                invalid_paths.append(path)
+        messages = []
+        if not invalid_paths:
+            count = len(paths)
+            message = '{} ({} files): OK'.format(self._breadcrumb, count)
+            messages.append(message)
+        else:
+            message = '{}:'.format(self._breadcrumb)
+            messages.append(message)
+            identifier = 'file'
+            count = len(invalid_paths)
+            identifier = stringtools.pluralize(identifier, count)
+            message = '{} unrecognized {} found:'
+            message = message.format(count, identifier)
+            tab = self._io_manager._tab
+            message = tab + message
+            messages.append(message)
+            for invalid_path in invalid_paths:
+                message = tab + tab + invalid_path
+                messages.append(message)
+        self._io_manager._display(messages)
+        missing_files, missing_directories = [], []
+        return messages, missing_files, missing_directories
+
     def check_every_package(
         self, 
         indent=0,
@@ -966,6 +1240,46 @@ class Wrangler(AssetController):
                 messages.extend(messages_)
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
+
+    def collect_segment_lilypond_files(self):
+        r'''Copies ``illustration.ly`` files from segment packages to build 
+        directory.
+
+        Trims top-level comments, includes and directives from each
+        ``illustration.ly`` file.
+
+        Trims header and paper block from each ``illustration.ly`` file.
+
+        Leaves score block in each ``illustration.ly`` file.
+
+        Returns none.
+        '''
+        pairs = self._collect_segment_files('illustration.ly')
+        if not pairs:
+            return
+        for source_file_path, target_file_path in pairs:
+            candidate_file_path = target_file_path.replace(
+                '.ly',
+                '.candidate.ly',
+                )
+            with systemtools.FilesystemState(remove=[candidate_file_path]):
+                shutil.copyfile(source_file_path, candidate_file_path)
+                self._trim_lilypond_file(candidate_file_path)
+                self._handle_candidate(candidate_file_path, target_file_path)
+                self._io_manager._display('')
+
+    def collect_segment_pdfs(self):
+        r'''Copies ``illustration.pdf`` files from segment packages to build 
+        directory.
+
+        Returns none.
+        '''
+        pairs = self._collect_segment_files('illustration.pdf')
+        if not pairs:
+            return
+        for source_file_path, target_file_path in pairs:
+            self._handle_candidate(source_file_path, target_file_path)
+            self._io_manager._display('')
 
     def commit_every_asset(self):
         r'''Commits every asset to repository.
@@ -1098,641 +1412,6 @@ class Wrangler(AssetController):
         Returns none.
         '''
         self._open_in_every_package('definition.py')
-
-    def go_to_next_package(self):
-        r'''Goes to next package.
-
-        Returns none.
-        '''
-        self._go_to_next_package()
-
-    def go_to_previous_package(self):
-        r'''Goes to previous package.
-
-        Returns none.
-        '''
-        self._go_to_previous_package()
-
-    def make(self):
-        r'''Makes asset.
-
-        Returns none.
-        '''
-        if self._asset_identifier == 'file':
-            self._make_file()
-        else:
-            self._make_package()
-
-    def make_score_package(self):
-        r'''Makes score package.
-
-        Returns none.
-        '''
-        message = 'enter title'
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        title = getter._run()
-        if self._session.is_backtracking or not title:
-            return
-        package_name = stringtools.strip_diacritics(title)
-        package_name = stringtools.to_snake_case(package_name)
-        confirmed = False 
-        while not confirmed:
-            package_path = os.path.join(
-                self._configuration.user_score_packages_directory,
-                package_name,
-                )
-            message = 'path will be {}.'.format(package_path)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking:
-                return
-            confirmed = result
-            if confirmed:
-                break
-            message = 'enter package name'
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            package_name = getter._run()
-            if self._session.is_backtracking or not package_name:
-                return
-            package_name = stringtools.strip_diacritics(package_name)
-            package_name = stringtools.to_snake_case(package_name)
-        manager = self._get_manager(package_path)
-        manager._make_package()
-        manager._add_metadatum('title', title)
-        year = datetime.date.today().year
-        manager._add_metadatum('year', year)
-        package_paths = self._list_visible_asset_paths()
-        if package_path not in package_paths:
-            with self._io_manager._silent():
-                self._clear_view()
-        manager._run()
-
-    def illustrate_every_definition_py(self):
-        r'''Illustrates ``definition.py`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'illustrate_definition_py'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='illustrate')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        for manager in managers:
-            method = getattr(manager, method_name)
-            method()
-
-    def interpret_every_illustration_ly(
-        self, 
-        open_every_illustration_pdf=True,
-        ):
-        r'''Interprets ``illustration.ly`` in every package.
-
-        Makes ``illustration.pdf`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'interpret_illustration_ly'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        for manager in managers:
-            with self._io_manager._silent():
-                method = getattr(manager, method_name)
-                subprocess_messages, candidate_messages = method()
-            if subprocess_messages:
-                self._io_manager._display(subprocess_messages)
-                self._io_manager._display(candidate_messages)
-                self._io_manager._display('')
-                
-    def open_every_illustration_pdf(self):
-        r'''Opens ``illustration.pdf`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('illustration.pdf')
-
-    def open_every_score_pdf(self):
-        r'''Opens ``score.pdf`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        paths = []
-        for manager in managers:
-            inputs, outputs = manager.open_score_pdf(dry_run=True)
-            paths.extend(inputs)
-        messages = ['will open ...']
-        tab = self._io_manager._tab
-        paths = [tab + _ for _ in paths]
-        messages.extend(paths)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        if paths:
-            self._io_manager.open_file(paths)
-
-    def remove(self):
-        r'''Removes asset.
-
-        Returns none.
-        '''
-        from ide import idetools
-        self._session._attempted_to_remove = True
-        if self._session.is_repository_test:
-            return
-        paths = self._select_visible_asset_paths()
-        if not paths:
-            return
-        count = len(paths)
-        messages = []
-        if count == 1:
-            message = 'will remove {}'.format(paths[0])
-            messages.append(message)
-        else:
-            messages.append('will remove ...')
-            for path in paths:
-                message = '    {}'.format(path)
-                messages.append(message)
-        self._io_manager._display(messages)
-        if count == 1:
-            confirmation_string = 'remove'
-        else:
-            confirmation_string = 'remove {}'
-            confirmation_string = confirmation_string.format(count)
-        message = "type {!r} to proceed"
-        message = message.format(confirmation_string)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        if self._session.confirm:
-            result = getter._run()
-            if self._session.is_backtracking or result is None:
-                return
-            if not result == confirmation_string:
-                return
-        for path in paths:
-            manager = self._get_manager(path=path)
-            with self._io_manager._silent():
-                manager._remove()
-        self._session._pending_redraw = True
-
-    def remove_every_unadded_asset(self):
-        r'''Removes files not yet added to repository of every asset.
-
-        Returns none.
-        '''
-        self._session._attempted_remove_unadded_assets = True
-        if self._session.is_test and not self._session.is_in_score:
-            return
-        paths = self._list_visible_asset_paths()
-        paths = self._extract_common_parent_directories(paths)
-        paths.sort()
-        inputs, outputs = [], []
-        managers = []
-        method_name = 'remove_unadded_assets'
-        for path in paths:
-            manager = self._io_manager._make_package_manager(path)
-            managers.append(manager)
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='remove')
-        self._io_manager._display(messages)
-        if not inputs:
-            return
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        with self._io_manager._silent():
-            for manager in managers:
-                method = getattr(manager, method_name)
-                method()
-        count = len(inputs)
-        identifier = stringtools.pluralize('asset', count)
-        message = 'removed {} unadded {}.'
-        message = message.format(count, identifier)
-        self._io_manager._display(message)
-
-    def rename(
-        self,
-        extension=None,
-        file_name_callback=None, 
-        ):
-        r'''Renames asset.
-
-        Returns none.
-        '''
-        extension = extension or getattr(self, '_extension', '')
-        path = self._select_visible_asset_path(infinitive_phrase='to rename')
-        if not path:
-            return
-        file_name = os.path.basename(path)
-        message = 'existing file name> {}'
-        message = message.format(file_name)
-        self._io_manager._display(message)
-        manager = self._initialize_manager(
-            path,
-            asset_identifier=self._asset_identifier,
-            )
-        manager._rename_interactively(
-            extension=extension,
-            file_name_callback=file_name_callback,
-            force_lowercase=self._force_lowercase,
-            )
-        self._session._is_backtracking_locally = False
-
-    def revert_every_asset(self):
-        r'''Reverts every asset to repository.
-
-        Returns none.
-        '''
-        self._session._attempted_to_revert = True
-        if self._session.is_repository_test:
-            return
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            manager = self._io_manager._make_package_manager(path)
-            manager.revert()
-
-    def set_view(self):
-        r'''Sets view.
-
-        Writes view name to ``__metadata.py__``.
-
-        Returns none.
-        '''
-        infinitive_phrase = 'to apply'
-        view_name = self._select_view(infinitive_phrase=infinitive_phrase)
-        if self._session.is_backtracking or view_name is None:
-            return
-        if view_name == 'none':
-            view_name = None
-        if self._session.is_in_score:
-            manager = self._current_package_manager
-            metadatum_name = 'view_name'
-        else:
-            manager = self._views_package_manager
-            metadatum_name = '{}_view_name'.format(type(self).__name__)
-        manager._add_metadatum(metadatum_name, view_name)
-
-    def update_every_asset(self):
-        r'''Updates every asset from repository.
-
-        Returns none.
-        '''
-        tab = self._io_manager._tab
-        managers = self._list_visible_asset_managers()
-        for manager in managers:
-            messages = []
-            message = self._path_to_asset_menu_display_string(manager._path)
-            message = self._strip_annotation(message)
-            message = message + ':'
-            messages_ = manager.update(messages_only=True)
-            if len(messages_) == 1:
-                message = message + ' ' + messages_[0]
-                messages.append(message)
-            else:
-                messages_ = [tab + _ for _ in messages_]
-                messages.extend(messages_)
-            self._io_manager._display(messages, capitalize=False)
-
-    ### PRIVATE METHODS (ALPHABETIZE LATER) ###
-
-    def _call_lilypond_on_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
-        if file_path:
-            self._io_manager.run_lilypond(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
-    def _collect_segment_files(self, file_name):
-        segments_directory = self._session.current_segments_directory
-        build_directory = self._session.current_build_directory
-        directory_entries = sorted(os.listdir(segments_directory))
-        source_file_paths, target_file_paths = [], []
-        _, extension = os.path.splitext(file_name)
-        for directory_entry in directory_entries:
-            segment_directory = os.path.join(
-                segments_directory,
-                directory_entry,
-                )
-            if not os.path.isdir(segment_directory):
-                continue
-            source_file_path = os.path.join(
-                segment_directory,
-                file_name,
-                )
-            if not os.path.isfile(source_file_path):
-                continue
-            score_path = self._session.current_score_directory
-            score_package = self._configuration.path_to_package(
-                score_path)
-            score_name = score_package.replace('_', '-')
-            directory_entry = directory_entry.replace('_', '-')
-            target_file_name = directory_entry + extension
-            target_file_path = os.path.join(
-                build_directory,
-                target_file_name,
-                )
-            source_file_paths.append(source_file_path)
-            target_file_paths.append(target_file_path)
-        if source_file_paths:
-            messages = []
-            messages.append('will copy ...')
-            pairs = zip(source_file_paths, target_file_paths)
-            for source_file_path, target_file_path in pairs:
-                message = ' FROM: {}'.format(source_file_path)
-                messages.append(message)
-                message = '   TO: {}'.format(target_file_path)
-                messages.append(message)
-            self._io_manager._display(messages)
-            if not self._io_manager._confirm():
-                return
-            if self._session.is_backtracking:
-                return
-        if not os.path.exists(build_directory):
-            os.mkdir(build_directory)
-        pairs = zip(source_file_paths, target_file_paths)
-        return pairs
-
-    def _confirm_segment_names(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        view_name = wrangler._read_view_name()
-        view_inventory = wrangler._read_view_inventory()
-        if not view_inventory or view_name not in view_inventory:
-            view_name = None
-        segment_paths = wrangler._list_visible_asset_paths()
-        segment_paths = segment_paths or []
-        segment_names = []
-        for segment_path in segment_paths:
-            segment_name = os.path.basename(segment_path)
-            segment_names.append(segment_name)
-        messages = []
-        if view_name:
-            message = 'the {!r} segment view is currently selected.'
-            message = message.format(view_name)
-            messages.append(message)
-        if segment_names:
-            message = 'will assemble segments in this order:'
-            messages.append(message)
-            for segment_name in segment_names:
-                message = '    ' + segment_name
-                messages.append(message)
-        else:
-            message = 'no segments found:'
-            message += ' will generate source without segments.'
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return False
-        return segment_names
-
-    def _copy_boilerplate(self, file_name, candidacy=True, replacements=None):
-        replacements = replacements or {}
-        manager = self._session.current_score_package_manager
-        assert manager is not None
-        width, height, unit = manager._parse_paper_dimensions()
-        source_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            file_name,
-            )
-        destination_path = os.path.join(
-            manager._path,
-            'build',
-            file_name,
-            )
-        base_name, extension = os.path.splitext(file_name)
-        candidate_name = base_name + '.candidate' + extension
-        candidate_path = os.path.join(
-            manager._path,
-            'build',
-            candidate_name,
-            )
-        messages = []
-        with systemtools.FilesystemState(remove=[candidate_path]):
-            shutil.copyfile(source_path, candidate_path)
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            self._replace_in_file(candidate_path, old, new)
-            for old in replacements:
-                new = replacements[old]
-                self._replace_in_file(candidate_path, old, new)
-            if not os.path.exists(destination_path):
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'wrote {}.'.format(destination_path)
-                messages.append(message)
-            elif not candidacy:
-                message = 'overwrite {}?'
-                message = message.format(destination_path)
-                result = self._io_manager._confirm(message)
-                if self._session.is_backtracking or not result:
-                    return False
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
-                messages.append(message)
-            elif systemtools.TestManager.compare_files(
-                candidate_path, 
-                destination_path,
-                ):
-                messages_ = self._make_candidate_messages(
-                    True, 
-                    candidate_path, 
-                    destination_path,
-                    )
-                messages.extend(messages_)
-                message = 'preserved {}.'.format(destination_path)
-                messages.append(message)
-            else:
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
-                messages.append(message)
-            self._io_manager._display(messages)
-            return True
-
-    def _edit_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
-        if file_path:
-            self._io_manager.edit(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
-    def _interpret_file_ending_with(self, string):
-        r'''Typesets TeX file.
-        Calls ``pdflatex`` on file TWICE.
-        Some LaTeX packages like ``tikz`` require two passes.
-        '''
-        file_path = self._get_file_path_ending_with(string)
-        if not file_path:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-            return
-        input_directory = os.path.dirname(file_path)
-        output_directory = input_directory
-        basename = os.path.basename(file_path)
-        input_file_name_stem, extension = os.path.splitext(basename)
-        job_name = '{}.candidate'.format(input_file_name_stem)
-        candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
-        candidate_path = os.path.join(output_directory, candidate_name)
-        destination_name = '{}.pdf'.format(input_file_name_stem)
-        destination_path = os.path.join(output_directory, destination_name)
-        command = 'pdflatex --jobname={} -output-directory={} {}/{}.tex'
-        command = command.format(
-            job_name,
-            output_directory,
-            input_directory,
-            input_file_name_stem,
-            )
-        command_called_twice = '{}; {}'.format(command, command)
-        filesystem = systemtools.FilesystemState(remove=[candidate_path])
-        directory = systemtools.TemporaryDirectoryChange(input_directory)
-        with filesystem, directory:
-            self._io_manager.spawn_subprocess(command_called_twice)
-            for file_name in glob.glob('*.aux'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            for file_name in glob.glob('*.aux'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            for file_name in glob.glob('*.log'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            self._handle_candidate(candidate_path, destination_path)
-
-    @staticmethod
-    def _to_dash_case(file_name):
-        file_name = file_name.replace(' ', '-')
-        file_name = file_name.replace('_', '-')
-        return file_name
-
-    @staticmethod
-    def _trim_lilypond_file(file_path):
-        lines = []
-        with open(file_path, 'r') as file_pointer:
-            found_score_block = False
-            for line in file_pointer.readlines():
-                if line.startswith(r'\score'):
-                    found_score_block = True
-                    continue
-                if line.startswith('}'):
-                    found_score_block = False
-                    lines.append('\n')
-                    continue
-                if found_score_block:
-                    lines.append(line)
-        if lines and lines[-1] == '\n':
-            lines.pop()
-        lines = ''.join(lines)
-        with open(file_path, 'w') as file_pointer:
-            file_pointer.write(lines)
-            
-    ### PUBLIC METHODS (ALPHABETIZE LATER) ###
-
-    def check_every_file(self):
-        r'''Checks every file.
-
-        Returns none.
-        '''
-        paths = self._list_asset_paths(valid_only=False)
-        paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
-        paths = [_ for _ in paths if not _.endswith('.pyc')]
-        current_directory = self._get_current_directory()
-        if current_directory:
-            paths = [_ for _ in paths if _.startswith(current_directory)]
-        invalid_paths = []
-        for path in paths:
-            file_name = os.path.basename(path)
-            if not self._is_valid_directory_entry(file_name):
-                invalid_paths.append(path)
-        messages = []
-        if not invalid_paths:
-            count = len(paths)
-            message = '{} ({} files): OK'.format(self._breadcrumb, count)
-            messages.append(message)
-        else:
-            message = '{}:'.format(self._breadcrumb)
-            messages.append(message)
-            identifier = 'file'
-            count = len(invalid_paths)
-            identifier = stringtools.pluralize(identifier, count)
-            message = '{} unrecognized {} found:'
-            message = message.format(count, identifier)
-            tab = self._io_manager._tab
-            message = tab + message
-            messages.append(message)
-            for invalid_path in invalid_paths:
-                message = tab + tab + invalid_path
-                messages.append(message)
-        self._io_manager._display(messages)
-        missing_files, missing_directories = [], []
-        return messages, missing_files, missing_directories
-
-    def collect_segment_lilypond_files(self):
-        r'''Copies ``illustration.ly`` files from segment packages to build 
-        directory.
-
-        Trims top-level comments, includes and directives from each
-        ``illustration.ly`` file.
-
-        Trims header and paper block from each ``illustration.ly`` file.
-
-        Leaves score block in each ``illustration.ly`` file.
-
-        Returns none.
-        '''
-        pairs = self._collect_segment_files('illustration.ly')
-        if not pairs:
-            return
-        for source_file_path, target_file_path in pairs:
-            candidate_file_path = target_file_path.replace(
-                '.ly',
-                '.candidate.ly',
-                )
-            with systemtools.FilesystemState(remove=[candidate_file_path]):
-                shutil.copyfile(source_file_path, candidate_file_path)
-                self._trim_lilypond_file(candidate_file_path)
-                self._handle_candidate(candidate_file_path, target_file_path)
-                self._io_manager._display('')
-
-    def collect_segment_pdfs(self):
-        r'''Copies ``illustration.pdf`` files from segment packages to build 
-        directory.
-
-        Returns none.
-        '''
-        pairs = self._collect_segment_files('illustration.pdf')
-        if not pairs:
-            return
-        for source_file_path, target_file_path in pairs:
-            self._handle_candidate(source_file_path, target_file_path)
-            self._io_manager._display('')
 
     def generate_back_cover_source(self):
         r'''Generates ``back-cover.tex``.
@@ -1898,6 +1577,98 @@ class Wrangler(AssetController):
         '''
         self._copy_boilerplate('score.tex')
 
+    def go_to_next_package(self):
+        r'''Goes to next package.
+
+        Returns none.
+        '''
+        self._go_to_next_package()
+
+    def go_to_previous_package(self):
+        r'''Goes to previous package.
+
+        Returns none.
+        '''
+        self._go_to_previous_package()
+
+    def make(self):
+        r'''Makes asset.
+
+        Returns none.
+        '''
+        if self._asset_identifier == 'file':
+            self._make_file()
+        else:
+            self._make_package()
+
+    def make_score_package(self):
+        r'''Makes score package.
+
+        Returns none.
+        '''
+        message = 'enter title'
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        title = getter._run()
+        if self._session.is_backtracking or not title:
+            return
+        package_name = stringtools.strip_diacritics(title)
+        package_name = stringtools.to_snake_case(package_name)
+        confirmed = False 
+        while not confirmed:
+            package_path = os.path.join(
+                self._configuration.user_score_packages_directory,
+                package_name,
+                )
+            message = 'path will be {}.'.format(package_path)
+            self._io_manager._display(message)
+            result = self._io_manager._confirm()
+            if self._session.is_backtracking:
+                return
+            confirmed = result
+            if confirmed:
+                break
+            message = 'enter package name'
+            getter = self._io_manager._make_getter()
+            getter.append_string(message)
+            package_name = getter._run()
+            if self._session.is_backtracking or not package_name:
+                return
+            package_name = stringtools.strip_diacritics(package_name)
+            package_name = stringtools.to_snake_case(package_name)
+        manager = self._get_manager(package_path)
+        manager._make_package()
+        manager._add_metadatum('title', title)
+        year = datetime.date.today().year
+        manager._add_metadatum('year', year)
+        package_paths = self._list_visible_asset_paths()
+        if package_path not in package_paths:
+            with self._io_manager._silent():
+                self._clear_view()
+        manager._run()
+
+    def illustrate_every_definition_py(self):
+        r'''Illustrates ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'illustrate_definition_py'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='illustrate')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            method = getattr(manager, method_name)
+            method()
+
     def interpret_back_cover(self):
         r'''Interprets ``back-cover.tex``.
 
@@ -1905,6 +1676,38 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('back-cover.tex')
 
+    def interpret_every_illustration_ly(
+        self, 
+        open_every_illustration_pdf=True,
+        ):
+        r'''Interprets ``illustration.ly`` in every package.
+
+        Makes ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'interpret_illustration_ly'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            with self._io_manager._silent():
+                method = getattr(manager, method_name)
+                subprocess_messages, candidate_messages = method()
+            if subprocess_messages:
+                self._io_manager._display(subprocess_messages)
+                self._io_manager._display(candidate_messages)
+                self._io_manager._display('')
+                
     def interpret_front_cover(self):
         r'''Interprets ``front-cover.tex``.
 
@@ -1941,6 +1744,34 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('score.tex')
 
+    def open_every_illustration_pdf(self):
+        r'''Opens ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package('illustration.pdf')
+
+    def open_every_score_pdf(self):
+        r'''Opens ``score.pdf`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        paths = []
+        for manager in managers:
+            inputs, outputs = manager.open_score_pdf(dry_run=True)
+            paths.extend(inputs)
+        messages = ['will open ...']
+        tab = self._io_manager._tab
+        paths = [tab + _ for _ in paths]
+        messages.extend(paths)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        if paths:
+            self._io_manager.open_file(paths)
+
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
 
@@ -1969,3 +1800,168 @@ class Wrangler(AssetController):
         message = '   TO: {}'.format(distribution_score_path)
         messages.append(message)
         self._io_manager._display(messages)
+
+    def remove(self):
+        r'''Removes asset.
+
+        Returns none.
+        '''
+        from ide import idetools
+        self._session._attempted_to_remove = True
+        if self._session.is_repository_test:
+            return
+        paths = self._select_visible_asset_paths()
+        if not paths:
+            return
+        count = len(paths)
+        messages = []
+        if count == 1:
+            message = 'will remove {}'.format(paths[0])
+            messages.append(message)
+        else:
+            messages.append('will remove ...')
+            for path in paths:
+                message = '    {}'.format(path)
+                messages.append(message)
+        self._io_manager._display(messages)
+        if count == 1:
+            confirmation_string = 'remove'
+        else:
+            confirmation_string = 'remove {}'
+            confirmation_string = confirmation_string.format(count)
+        message = "type {!r} to proceed"
+        message = message.format(confirmation_string)
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        if self._session.confirm:
+            result = getter._run()
+            if self._session.is_backtracking or result is None:
+                return
+            if not result == confirmation_string:
+                return
+        for path in paths:
+            manager = self._get_manager(path=path)
+            with self._io_manager._silent():
+                manager._remove()
+        self._session._pending_redraw = True
+
+    def remove_every_unadded_asset(self):
+        r'''Removes files not yet added to repository of every asset.
+
+        Returns none.
+        '''
+        self._session._attempted_remove_unadded_assets = True
+        if self._session.is_test and not self._session.is_in_score:
+            return
+        paths = self._list_visible_asset_paths()
+        paths = self._extract_common_parent_directories(paths)
+        paths.sort()
+        inputs, outputs = [], []
+        managers = []
+        method_name = 'remove_unadded_assets'
+        for path in paths:
+            manager = self._io_manager._make_package_manager(path)
+            managers.append(manager)
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='remove')
+        self._io_manager._display(messages)
+        if not inputs:
+            return
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        with self._io_manager._silent():
+            for manager in managers:
+                method = getattr(manager, method_name)
+                method()
+        count = len(inputs)
+        identifier = stringtools.pluralize('asset', count)
+        message = 'removed {} unadded {}.'
+        message = message.format(count, identifier)
+        self._io_manager._display(message)
+
+    def rename(
+        self,
+        extension=None,
+        file_name_callback=None, 
+        ):
+        r'''Renames asset.
+
+        Returns none.
+        '''
+        extension = extension or getattr(self, '_extension', '')
+        path = self._select_visible_asset_path(infinitive_phrase='to rename')
+        if not path:
+            return
+        file_name = os.path.basename(path)
+        message = 'existing file name> {}'
+        message = message.format(file_name)
+        self._io_manager._display(message)
+        manager = self._initialize_manager(
+            path,
+            asset_identifier=self._asset_identifier,
+            )
+        manager._rename_interactively(
+            extension=extension,
+            file_name_callback=file_name_callback,
+            force_lowercase=self._force_lowercase,
+            )
+        self._session._is_backtracking_locally = False
+
+    def revert_every_asset(self):
+        r'''Reverts every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_revert = True
+        if self._session.is_repository_test:
+            return
+        paths = self._list_visible_asset_paths()
+        for path in paths:
+            manager = self._io_manager._make_package_manager(path)
+            manager.revert()
+
+    def set_view(self):
+        r'''Sets view.
+
+        Writes view name to ``__metadata.py__``.
+
+        Returns none.
+        '''
+        infinitive_phrase = 'to apply'
+        view_name = self._select_view(infinitive_phrase=infinitive_phrase)
+        if self._session.is_backtracking or view_name is None:
+            return
+        if view_name == 'none':
+            view_name = None
+        if self._session.is_in_score:
+            manager = self._current_package_manager
+            metadatum_name = 'view_name'
+        else:
+            manager = self._views_package_manager
+            metadatum_name = '{}_view_name'.format(type(self).__name__)
+        manager._add_metadatum(metadatum_name, view_name)
+
+    def update_every_asset(self):
+        r'''Updates every asset from repository.
+
+        Returns none.
+        '''
+        tab = self._io_manager._tab
+        managers = self._list_visible_asset_managers()
+        for manager in managers:
+            messages = []
+            message = self._path_to_asset_menu_display_string(manager._path)
+            message = self._strip_annotation(message)
+            message = message + ':'
+            messages_ = manager.update(messages_only=True)
+            if len(messages_) == 1:
+                message = message + ' ' + messages_[0]
+                messages.append(message)
+            else:
+                messages_ = [tab + _ for _ in messages_]
+                messages.extend(messages_)
+            self._io_manager._display(messages, capitalize=False)
