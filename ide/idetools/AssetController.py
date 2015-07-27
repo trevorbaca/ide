@@ -340,7 +340,7 @@ class AssetController(Controller):
             elif basename == 'test':
                 self.go_to_score_test_files()
             else:
-                manager = self._initialize_manager(result)
+                manager = self._get_manager(result)
                 manager._run()
         else:
             message = 'must be file or directory: {!r}.'

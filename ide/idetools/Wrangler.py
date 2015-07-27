@@ -390,7 +390,7 @@ class Wrangler(AssetController):
                     asset_paths.append(path)
         session = idetools.Session()
         for asset_path in asset_paths:
-            manager = self._get_manager(path=asset_path)
+            manager = self._get_manager(asset_path)
             if (manager._is_git_versioned() and
                 manager._is_up_to_date() and
                 (not must_have_file or manager._find_first_file_name())):
@@ -432,6 +432,7 @@ class Wrangler(AssetController):
                 return file_path
 
     def _get_manager(self, path):
+        assert os.path.sep in path, repr(path)
         manager = self._manager_class(
             path=path,
             session=self._session,
@@ -486,16 +487,6 @@ class Wrangler(AssetController):
             storehouses.add(storehouse)
         storehouses = list(sorted(storehouses))
         return storehouses
-
-    def _initialize_manager(self, path, asset_identifier=None):
-        assert os.path.sep in path, repr(path)
-        manager = self._manager_class(
-            path=path,
-            session=self._session,
-            )
-        if asset_identifier:
-            manager._asset_identifier = asset_identifier
-        return manager
 
     def _interpret_file_ending_with(self, string):
         r'''Typesets TeX file.
@@ -611,7 +602,7 @@ class Wrangler(AssetController):
         paths = self._list_visible_asset_paths()
         managers = []
         for path in paths:
-            manager = self._initialize_manager(path=path)
+            manager = self._get_manager(path)
             managers.append(manager)
         return managers
 
@@ -628,7 +619,7 @@ class Wrangler(AssetController):
             self._current_storehouse_path,
             asset_name,
             )
-        manager = self._initialize_manager(path)
+        manager = self._get_manager(path)
         if hasattr(manager, '_write_stub'):
             self._io_manager.write_stub(path)
         else:
@@ -776,7 +767,7 @@ class Wrangler(AssetController):
             user_score_packages=user_score_packages,
             )
         for path in paths:
-            manager = wrangler._initialize_manager(path)
+            manager = wrangler._get_manager(path)
             display_strings.append(manager._get_title())
             path_parts = (manager._path,)
             path_parts = path_parts + self._score_storehouse_path_infix_parts
@@ -1298,7 +1289,7 @@ class Wrangler(AssetController):
             return
         paths = self._list_visible_asset_paths()
         for path in paths:
-            manager = self._initialize_manager(path)
+            manager = self._get_manager(path)
             with self._io_manager._silent():
                 manager.commit(commit_message=commit_message)
 
@@ -1837,7 +1828,7 @@ class Wrangler(AssetController):
             if not result == confirmation_string:
                 return
         for path in paths:
-            manager = self._get_manager(path=path)
+            manager = self._get_manager(path)
             with self._io_manager._silent():
                 manager._remove()
         self._session._pending_redraw = True
@@ -1897,10 +1888,8 @@ class Wrangler(AssetController):
         message = 'existing file name> {}'
         message = message.format(file_name)
         self._io_manager._display(message)
-        manager = self._initialize_manager(
-            path,
-            asset_identifier=self._asset_identifier,
-            )
+        manager = self._get_manager(path)
+        manager._asset_identifier = self._asset_identifier
         manager._rename_interactively(
             extension=extension,
             file_name_callback=file_name_callback,
