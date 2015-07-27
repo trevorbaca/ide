@@ -77,26 +77,6 @@ class FileWrangler(Wrangler):
                 os.remove(path)
             self._handle_candidate(candidate_path, destination_path)
 
-    def _trim_lilypond_file(self, file_path):
-        lines = []
-        with open(file_path, 'r') as file_pointer:
-            found_score_block = False
-            for line in file_pointer.readlines():
-                if line.startswith(r'\score'):
-                    found_score_block = True
-                    continue
-                if line.startswith('}'):
-                    found_score_block = False
-                    lines.append('\n')
-                    continue
-                if found_score_block:
-                    lines.append(line)
-        if lines and lines[-1] == '\n':
-            lines.pop()
-        lines = ''.join(lines)
-        with open(file_path, 'w') as file_pointer:
-            file_pointer.write(lines)
-
     ### PUBLIC METHODS ###
 
     def check_every_file(self):

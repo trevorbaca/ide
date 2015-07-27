@@ -1571,3 +1571,24 @@ class Wrangler(AssetController):
                 messages.append(message)
             self._io_manager._display(messages)
             return True
+
+    @staticmethod
+    def _trim_lilypond_file(file_path):
+        lines = []
+        with open(file_path, 'r') as file_pointer:
+            found_score_block = False
+            for line in file_pointer.readlines():
+                if line.startswith(r'\score'):
+                    found_score_block = True
+                    continue
+                if line.startswith('}'):
+                    found_score_block = False
+                    lines.append('\n')
+                    continue
+                if found_score_block:
+                    lines.append(line)
+        if lines and lines[-1] == '\n':
+            lines.pop()
+        lines = ''.join(lines)
+        with open(file_path, 'w') as file_pointer:
+            file_pointer.write(lines)
