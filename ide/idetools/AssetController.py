@@ -23,7 +23,6 @@ class AssetController(Controller):
         '_group_asset_section_by_annotation',
         '_has_breadcrumb_in_score',
         '_include_asset_name',
-        '_include_extensions',
         '_validator',
         )
 
@@ -46,7 +45,6 @@ class AssetController(Controller):
         self._group_asset_section_by_annotation = True
         self._has_breadcrumb_in_score = True
         self._include_asset_name = True
-        self._include_extensions = False
         self._validator = self._is_valid_directory_entry
 
     ### PRIVATE PROPERTIES ###
@@ -584,9 +582,6 @@ class AssetController(Controller):
     def _path_to_asset_menu_display_string(self, path):
         path = os.path.normpath(path)
         name = os.path.basename(path)
-        include_extensions = self._include_extensions
-        if not include_extensions:
-            name, extension = os.path.splitext(name)
         if '_' in name:
             name = stringtools.to_space_delimited_lowercase(name)
         asset_name = name

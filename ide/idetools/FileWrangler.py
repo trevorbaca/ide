@@ -22,7 +22,6 @@ class FileWrangler(Wrangler):
     def __init__(self, session=None):
         superclass = super(FileWrangler, self)
         superclass.__init__(session=session)
-        self._include_extensions = True
         self._user_storehouse_path = None
 
     ### PRIVATE METHODS ###
