@@ -155,10 +155,10 @@ class AbjadIDE(Wrangler):
     def _score_package_wrangler(self):
         from ide import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'score package'
-        wrangler._basic_breadcrumb = 'scores'
-        wrangler._annotate_year = True
         wrangler._allow_depot = False
+        wrangler._asset_identifier = 'score package'
+        wrangler._annotate_year = True
+        wrangler._basic_breadcrumb = 'scores'
         wrangler._group_asset_section_by_annotation = False
         wrangler._has_breadcrumb_in_score = False
         wrangler._include_asset_name = False
@@ -167,8 +167,6 @@ class AbjadIDE(Wrangler):
             wrangler._configuration.user_score_packages_directory
         wrangler._only_example_scores_during_test = True
         wrangler._sort_by_annotation = False
-        wrangler._user_storehouse_path = \
-            wrangler._configuration.user_score_packages_directory
         wrangler._validator = wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every score packages', 'ck*'))

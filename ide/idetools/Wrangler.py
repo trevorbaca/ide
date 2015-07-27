@@ -36,7 +36,6 @@ class Wrangler(AssetController):
         '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
         '_sort_by_annotation',
-        '_user_storehouse_path',
         )
 
     ### INITIALIZER ###
@@ -59,7 +58,6 @@ class Wrangler(AssetController):
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
-        self._user_storehouse_path = None
 
     ### PRIVATE PROPERTIES ###
 
@@ -374,8 +372,8 @@ class Wrangler(AssetController):
         user_score_packages=True,
         ):
         result = []
-        if user_score_packages and self._user_storehouse_path is not None:
-            result.append(self._user_storehouse_path)
+        if user_score_packages:
+            result.append(self._configuration.user_score_packages_directory)
         if (example_score_packages and
             self._score_storehouse_path_infix_parts):
             for score_directory in \
@@ -563,8 +561,6 @@ class Wrangler(AssetController):
         ):
         from ide import idetools
         display_strings, keys = [], []
-        if self._user_storehouse_path is not None:
-            raise Exception('library no longer supported.')
         wrangler = self._session._abjad_ide._score_package_wrangler
         paths = wrangler._list_asset_paths(
             example_score_packages=example_score_packages,
