@@ -139,7 +139,6 @@ class AbjadIDE(Wrangler):
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
         wrangler._validator = wrangler._is_valid_package_directory_entry
-        wrangler._manager_class = idetools.MaterialPackageManager
         wrangler._score_storehouse_path_infix_parts = ('materials',)
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
@@ -165,7 +164,6 @@ class AbjadIDE(Wrangler):
         wrangler._group_asset_section_by_annotation = False
         wrangler._has_breadcrumb_in_score = False
         wrangler._include_asset_name = False
-        wrangler._manager_class = idetools.ScorePackageManager
         wrangler._mandatory_copy_target_storehouse = \
             wrangler._configuration.user_score_packages_directory
         wrangler._only_example_scores_during_test = True
@@ -207,7 +205,6 @@ class AbjadIDE(Wrangler):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
-        wrangler._manager_class = idetools.SegmentPackageManager
         wrangler._score_storehouse_path_infix_parts = ('segments',)
         wrangler._validator = wrangler._is_valid_package_directory_entry
         commands = []

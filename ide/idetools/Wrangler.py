@@ -32,7 +32,6 @@ class Wrangler(AssetController):
         '_force_lowercase',
         '_in_score_commands',
         '_main_menu',
-        '_manager_class',
         '_mandatory_copy_target_storehouse',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -56,7 +55,6 @@ class Wrangler(AssetController):
         self._file_name_predicate = None
         self._force_lowercase = True
         self._in_score_commands = []
-        self._manager_class = idetools.PackageManager
         self._mandatory_copy_target_storehouse = None
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
@@ -432,8 +430,17 @@ class Wrangler(AssetController):
                 return file_path
 
     def _get_manager(self, path):
+        from ide import idetools
         assert os.path.sep in path, repr(path)
-        manager = self._manager_class(
+        if self._asset_identifier == 'material package':
+            manager_class = idetools.MaterialPackageManager
+        elif self._asset_identifier == 'score package':
+            manager_class = idetools.ScorePackageManager
+        elif self._asset_identifier == 'segment package':
+            manager_class = idetools.SegmentPackageManager
+        else:
+            manager_class = idetools.PackageManager
+        manager = manager_class(
             path=path,
             session=self._session,
             )
