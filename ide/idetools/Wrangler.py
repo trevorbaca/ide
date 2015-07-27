@@ -87,6 +87,18 @@ class Wrangler(AssetController):
             'rm': self.remove,
             #
             'ws': self.set_view,
+            #
+            '<': self.go_to_previous_package,
+            '>': self.go_to_next_package,
+            #
+            'de*': self.edit_every_definition_py,
+            #
+            'di*': self.illustrate_every_definition_py,  
+            #
+            'ii*': self.interpret_every_illustration_ly,
+            'io*': self.open_every_illustration_pdf,
+            #
+            'so*': self.open_every_score_pdf,
             })
         result.update(self._commands)
         return result
@@ -465,6 +477,36 @@ class Wrangler(AssetController):
                 name='extra commands',
                 )
 
+    def _make_file(
+        self, 
+        extension=None, 
+        message='file name', 
+        ):
+        contents = self._new_file_contents
+        extension = extension or getattr(self, '_extension', '')
+        if self._session.is_in_score:
+            path = self._get_current_directory()
+        else:
+            path = self._select_storehouse_path()
+            if self._session.is_backtracking or path is None:
+                return
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        name = getter._run()
+        if self._session.is_backtracking or name is None:
+            return
+        name = stringtools.strip_diacritics(name)
+        if hasattr(self, '_file_name_callback'):
+            name = self._file_name_callback(name)
+        name = name.replace(' ', '_')
+        if self._force_lowercase:
+            name = name.lower()
+        if not name.endswith(extension):
+            name = name + extension
+        path = os.path.join(path, name)
+        self._io_manager.write(path, contents)
+        self._io_manager.edit(path)
+
     def _make_in_score_commands_menu_section(self, menu):
         commands = []
         commands.extend(self._in_score_commands)
@@ -484,6 +526,32 @@ class Wrangler(AssetController):
         self._make_in_score_commands_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
+
+    def _make_package(self):
+        if self._session.is_in_score:
+            storehouse_path = self._current_storehouse_path
+        else:
+            example_score_packages = self._session.is_test
+            storehouse_path = self._select_storehouse_path(
+                example_score_packages=example_score_packages,
+                )
+            if self._session.is_backtracking or storehouse_path is None:
+                return
+        path = self._get_available_path(storehouse_path=storehouse_path)
+        if self._session.is_backtracking or not path:
+            return
+        message = 'path will be {}.'.format(path)
+        self._io_manager._display(message)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        manager = self._get_manager(path)
+        manager._make_package()
+        paths = self._list_visible_asset_paths()
+        if path not in paths:
+            with self._io_manager._silent():
+                self._clear_view()
+        manager._run()
 
     def _make_storehouse_menu_entries(
         self,
@@ -916,6 +984,27 @@ class Wrangler(AssetController):
             message = message.format(directory)
             self._io_manager._display(message)
 
+    def edit_every_definition_py(self):
+        r'''Opens ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package('definition.py')
+
+    def go_to_next_package(self):
+        r'''Goes to next package.
+
+        Returns none.
+        '''
+        self._go_to_next_package()
+
+    def go_to_previous_package(self):
+        r'''Goes to previous package.
+
+        Returns none.
+        '''
+        self._go_to_previous_package()
+
     def make(self):
         r'''Makes asset.
 
@@ -925,62 +1014,6 @@ class Wrangler(AssetController):
             self._make_file()
         else:
             self._make_package()
-
-    def _make_file(
-        self, 
-        extension=None, 
-        message='file name', 
-        ):
-        contents = self._new_file_contents
-        extension = extension or getattr(self, '_extension', '')
-        if self._session.is_in_score:
-            path = self._get_current_directory()
-        else:
-            path = self._select_storehouse_path()
-            if self._session.is_backtracking or path is None:
-                return
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        name = getter._run()
-        if self._session.is_backtracking or name is None:
-            return
-        name = stringtools.strip_diacritics(name)
-        if hasattr(self, '_file_name_callback'):
-            name = self._file_name_callback(name)
-        name = name.replace(' ', '_')
-        if self._force_lowercase:
-            name = name.lower()
-        if not name.endswith(extension):
-            name = name + extension
-        path = os.path.join(path, name)
-        self._io_manager.write(path, contents)
-        self._io_manager.edit(path)
-
-    def _make_package(self):
-        if self._session.is_in_score:
-            storehouse_path = self._current_storehouse_path
-        else:
-            example_score_packages = self._session.is_test
-            storehouse_path = self._select_storehouse_path(
-                example_score_packages=example_score_packages,
-                )
-            if self._session.is_backtracking or storehouse_path is None:
-                return
-        path = self._get_available_path(storehouse_path=storehouse_path)
-        if self._session.is_backtracking or not path:
-            return
-        message = 'path will be {}.'.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        manager = self._get_manager(path)
-        manager._make_package()
-        paths = self._list_visible_asset_paths()
-        if path not in paths:
-            with self._io_manager._silent():
-                self._clear_view()
-        manager._run()
 
     def make_score_package(self):
         r'''Makes score package.
@@ -1027,6 +1060,88 @@ class Wrangler(AssetController):
             with self._io_manager._silent():
                 self._clear_view()
         manager._run()
+
+    def illustrate_every_definition_py(self):
+        r'''Illustrates ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'illustrate_definition_py'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='illustrate')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            method = getattr(manager, method_name)
+            method()
+
+    def interpret_every_illustration_ly(
+        self, 
+        open_every_illustration_pdf=True,
+        ):
+        r'''Interprets ``illustration.ly`` in every package.
+
+        Makes ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = 'interpret_illustration_ly'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        for manager in managers:
+            with self._io_manager._silent():
+                method = getattr(manager, method_name)
+                subprocess_messages, candidate_messages = method()
+            if subprocess_messages:
+                self._io_manager._display(subprocess_messages)
+                self._io_manager._display(candidate_messages)
+                self._io_manager._display('')
+                
+    def open_every_illustration_pdf(self):
+        r'''Opens ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package('illustration.pdf')
+
+    def open_every_score_pdf(self):
+        r'''Opens ``score.pdf`` in every package.
+
+        Returns none.
+        '''
+        managers = self._list_visible_asset_managers()
+        paths = []
+        for manager in managers:
+            inputs, outputs = manager.open_score_pdf(dry_run=True)
+            paths.extend(inputs)
+        messages = ['will open ...']
+        tab = self._io_manager._tab
+        paths = [tab + _ for _ in paths]
+        messages.extend(paths)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        if paths:
+            self._io_manager.open_file(paths)
 
     def remove(self):
         r'''Removes asset.
