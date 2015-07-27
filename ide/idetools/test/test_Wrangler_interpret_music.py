@@ -6,31 +6,32 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_interpret_preface_01():
-    r'''Makes preface.pdf when preface.pdf doesn't yet exist.
+def test_Wrangler_interpret_music_01():
+    r'''Makes music.pdf when music.pdf doesn't yet exist.
     '''
 
-    tex_path = os.path.join(
+    ly_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'preface.tex',
+        'music.ly',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'preface.pdf',
+        'music.pdf',
         )
 
-    with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score u pi q'
+        input_ = 'red~example~score u mi q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(pdf_path)
+        assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
 
@@ -38,28 +39,28 @@ def test_FileWrangler_interpret_preface_01():
     os.environ.get('TRAVIS') == 'true',
     reason='Cannot build on Travis-CI',
     )
-def test_FileWrangler_interpret_preface_02():
-    r'''Preserves preface.pdf when preface.candidate.pdf compares
-    equal to preface.pdf.
+def test_Wrangler_interpret_music_02():
+    r'''Preserves music.pdf when music.candidate.pdf compares
+    equal to music.pdf.
     '''
 
-    tex_path = os.path.join(
+    ly_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'preface.tex',
+        'music.ly',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'preface.pdf',
+        'music.pdf',
         )
 
-    with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
-        input_ = 'red~example~score u pi q'
+    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+        input_ = 'red~example~score u mi q'
         abjad_ide._run(input_=input_)
 
     contents = abjad_ide._transcript.contents

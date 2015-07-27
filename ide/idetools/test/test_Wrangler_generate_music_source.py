@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_generate_music_source_01():
+def test_Wrangler_generate_music_source_01():
     r'''Works when music.ly source doesn't yet exist.
 
     (Can't use filecmp because music.ly file contains LilyPond version
@@ -35,7 +35,7 @@ def test_FileWrangler_generate_music_source_01():
         #assert r'\context Score = "Red Example Score"' in file_contents
 
 
-def test_FileWrangler_generate_music_source_02():
+def test_Wrangler_generate_music_source_02():
     r'''Works when music.ly already exists.
     '''
 
@@ -57,7 +57,7 @@ def test_FileWrangler_generate_music_source_02():
     assert 'Preserved' in contents
 
 
-def test_FileWrangler_generate_music_source_03():
+def test_Wrangler_generate_music_source_03():
     r'''Include files are indentented exacty four spaces.
     '''
 

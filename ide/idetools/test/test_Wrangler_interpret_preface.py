@@ -6,8 +6,8 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_interpret_back_cover_01():
-    r'''Creates back-cover.pdf when back-cover.pdf doesn't exist.
+def test_Wrangler_interpret_preface_01():
+    r'''Makes preface.pdf when preface.pdf doesn't yet exist.
     '''
 
     tex_path = os.path.join(
@@ -15,20 +15,20 @@ def test_FileWrangler_interpret_back_cover_01():
         'red_example_score',
         'red_example_score',
         'build',
-        'back-cover.tex',
+        'preface.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'back-cover.pdf',
+        'preface.pdf',
         )
 
     with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score u bci q'
+        input_ = 'red~example~score u pi q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
@@ -38,9 +38,9 @@ def test_FileWrangler_interpret_back_cover_01():
     os.environ.get('TRAVIS') == 'true',
     reason='Cannot build on Travis-CI',
     )
-def test_FileWrangler_interpret_back_cover_02():
-    r'''Preserves back-cover.pdf when back-cover.candidate.pdf compares
-    the same.
+def test_Wrangler_interpret_preface_02():
+    r'''Preserves preface.pdf when preface.candidate.pdf compares
+    equal to preface.pdf.
     '''
 
     tex_path = os.path.join(
@@ -48,18 +48,18 @@ def test_FileWrangler_interpret_back_cover_02():
         'red_example_score',
         'red_example_score',
         'build',
-        'back-cover.tex',
+        'preface.tex',
         )
     pdf_path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'back-cover.pdf',
+        'preface.pdf',
         )
 
     with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
-        input_ = 'red~example~score u bci q'
+        input_ = 'red~example~score u pi q'
         abjad_ide._run(input_=input_)
 
     contents = abjad_ide._transcript.contents

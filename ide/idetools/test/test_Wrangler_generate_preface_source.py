@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_generate_preface_source_01():
+def test_Wrangler_generate_preface_source_01():
     r'''Works when preface source doesn't yet exist.
 
     Supplies papersize={8.5in, 11in} as a.
@@ -44,7 +44,7 @@ def test_FileWrangler_generate_preface_source_01():
     assert 'Overwrote' not in contents
 
 
-def test_FileWrangler_generate_preface_source_02():
+def test_Wrangler_generate_preface_source_02():
     r'''Works when preface source already exists.
     '''
 

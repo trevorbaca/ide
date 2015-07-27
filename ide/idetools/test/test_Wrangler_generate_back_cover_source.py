@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_generate_back_cover_source_01():
+def test_Wrangler_generate_back_cover_source_01():
     r'''Works when back cover source doesn't yet exist.
 
     Supplies papersize={8.5in, 11in} as a.
@@ -43,7 +43,7 @@ def test_FileWrangler_generate_back_cover_source_01():
     assert 'Wrote' in contents
 
 
-def test_FileWrangler_generate_back_cover_source_02():
+def test_Wrangler_generate_back_cover_source_02():
     r'''Preserves existing source when candidate doesn't differ.
     '''
 

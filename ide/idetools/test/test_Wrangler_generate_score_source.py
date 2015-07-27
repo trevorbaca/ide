@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_generate_score_source_01():
+def test_Wrangler_generate_score_source_01():
     r'''Works when score source already exists.
     '''
 

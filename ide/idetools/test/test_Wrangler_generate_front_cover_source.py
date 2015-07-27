@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_generate_front_cover_source_01():
+def test_Wrangler_generate_front_cover_source_01():
     r'''Works when front cover source already exists.
 
     (Front cover source already exists in Red Example Score.)
@@ -31,7 +31,7 @@ def test_FileWrangler_generate_front_cover_source_01():
     assert 'Preserved' in contents
 
 
-def test_FileWrangler_generate_front_cover_source_02():
+def test_Wrangler_generate_front_cover_source_02():
     r'''Works when front cover source doesn't exist.
 
     (Front cover source does exist in Red Example Score.)

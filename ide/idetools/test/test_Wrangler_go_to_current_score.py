@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_FileWrangler_go_to_current_score_01():
+def test_Wrangler_go_to_current_score_01():
 
     input_ = 'red~example~score u s q'
     abjad_ide._run(input_=input_)
