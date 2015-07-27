@@ -390,10 +390,7 @@ class Wrangler(AssetController):
                     asset_paths.append(path)
         session = idetools.Session()
         for asset_path in asset_paths:
-            manager = self._manager_class(
-                path=asset_path,
-                session=session,
-                )
+            manager = self._get_manager(path=asset_path)
             if (manager._is_git_versioned() and
                 manager._is_up_to_date() and
                 (not must_have_file or manager._find_first_file_name())):
