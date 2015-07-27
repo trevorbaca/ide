@@ -55,6 +55,7 @@ class AbjadIDE(Wrangler):
     def _build_file_wrangler(self):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('build',)
@@ -92,6 +93,7 @@ class AbjadIDE(Wrangler):
     def _distribution_file_wrangler(self):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
@@ -102,6 +104,7 @@ class AbjadIDE(Wrangler):
     def _etc_file_wrangler(self):
         from ide import idetools
         wrangler = idetools.FileWrangler(session=self._session)
+        wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
         wrangler._validator = wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('etc',)

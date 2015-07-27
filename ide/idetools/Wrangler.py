@@ -24,12 +24,15 @@ class Wrangler(AssetController):
         '_allow_depot',
         '_asset_identifier',
         '_basic_breadcrumb',
+        '_extension',
         '_extra_commands',
+        '_file_name_predicate',
         '_force_lowercase',
         '_in_score_commands',
         '_main_menu',
         '_manager_class',
         '_mandatory_copy_target_storehouse',
+        '_new_file_contents',
         '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
         '_sort_by_annotation',
@@ -46,11 +49,13 @@ class Wrangler(AssetController):
         self._allow_depot = True
         self._asset_identifier = None
         self._basic_breadcrumb = None
+        self._extension = ''
         self._extra_commands = []
         self._force_lowercase = True
         self._in_score_commands = []
         self._manager_class = idetools.PackageManager
         self._mandatory_copy_target_storehouse = None
+        self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
         self._user_storehouse_path = None

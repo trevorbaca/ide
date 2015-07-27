@@ -15,9 +15,6 @@ class FileWrangler(Wrangler):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_extension',
-        '_file_name_predicate',
-        '_new_file_contents',
         )
 
     ### INITIALIZER ###
@@ -25,12 +22,9 @@ class FileWrangler(Wrangler):
     def __init__(self, session=None):
         superclass = super(FileWrangler, self)
         superclass.__init__(session=session)
-        self._asset_identifier = 'file'
-        self._extension = ''
         self._file_name_predicate = stringtools.is_dash_case
         self._human_readable = False
         self._include_extensions = True
-        self._new_file_contents = ''
         self._user_storehouse_path = None
 
     ### PRIVATE METHODS ###
