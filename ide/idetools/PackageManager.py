@@ -58,9 +58,8 @@ class PackageManager(AssetController):
 
     @property
     def _breadcrumb(self):
-        if self._path:
-            return os.path.basename(self._path)
-        return self._spaced_class_name
+        breadcrumb = self._space_delimited_lowercase_name
+        return breadcrumb
 
     @property
     def _command_to_method(self):

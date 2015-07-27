@@ -36,16 +36,9 @@ class SegmentPackageManager(PackageManager):
 
     @property
     def _breadcrumb(self):
-        if self._session.is_in_score:
-            name = self._get_metadatum('name')
-            name = name or self._space_delimited_lowercase_name
-            return name
-        name = self._space_delimited_lowercase_name
-        configuration = self._configuration
-        annotation = configuration._path_to_storehouse_annotation(self._path)
-        string = '{} ({})'
-        string = string.format(name, annotation)
-        return string
+        name = self._get_metadatum('name')
+        name = name or self._space_delimited_lowercase_name
+        return name
 
     @property
     def _command_to_method(self):
