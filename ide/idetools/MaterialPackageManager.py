@@ -77,22 +77,6 @@ class MaterialPackageManager(PackageManager):
             })
         return result
 
-    @property
-    def _definition_py_path(self):
-        return os.path.join(self._path, 'definition.py')
-
-    @property
-    def _illustrate_py_path(self):
-        return os.path.join(self._path, '__illustrate__.py')
-
-    @property
-    def _illustration_ly_path(self):
-        return os.path.join(self._path, 'illustration.ly')
-
-    @property
-    def _illustration_pdf_path(self):
-        return os.path.join(self._path, 'illustration.pdf')
-
     ### PRIVATE METHODS ###
 
     def _make_definition_py_menu_section(self, menu):

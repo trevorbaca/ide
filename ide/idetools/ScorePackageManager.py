@@ -62,24 +62,6 @@ class ScorePackageManager(PackageManager):
             })
         return result
 
-    @property
-    def _inner_path(self):
-        return os.path.join(self._outer_path, self._package_name)
-
-    @property
-    def _outer_path(self):
-        if self._path.startswith(
-            self._configuration.user_score_packages_directory):
-            return os.path.join(
-                self._configuration.user_score_packages_directory,
-                self._package_name
-                )
-        else:
-            return os.path.join(
-                self._configuration.example_score_packages_directory,
-                self._package_name
-                )
-
     ### PRIVATE METHODS ###
 
     def _copy_boilerplate(self, file_name, replacements=None):

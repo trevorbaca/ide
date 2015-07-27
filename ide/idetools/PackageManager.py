@@ -75,6 +75,26 @@ class PackageManager(AssetController):
         return result
 
     @property
+    def _definition_py_path(self):
+        return os.path.join(self._path, 'definition.py')
+
+    @property
+    def _illustrate_py_path(self):
+        return os.path.join(self._path, '__illustrate__.py')
+
+    @property
+    def _illustration_ly_path(self):
+        return os.path.join(self._path, 'illustration.ly')
+
+    @property
+    def _illustration_pdf_path(self):
+        return os.path.join(self._path, 'illustration.pdf')
+
+    @property
+    def _inner_path(self):
+        return os.path.join(self._outer_path, self._package_name)
+
+    @property
     def _init_py_file_path(self):
         return os.path.join(self._path, '__init__.py')
 
@@ -82,6 +102,19 @@ class PackageManager(AssetController):
     def _metadata_py_path(self):
         return os.path.join(self._path, '__metadata__.py')
 
+    @property
+    def _outer_path(self):
+        if self._path.startswith(
+            self._configuration.user_score_packages_directory):
+            return os.path.join(
+                self._configuration.user_score_packages_directory,
+                self._package_name
+                )
+        else:
+            return os.path.join(
+                self._configuration.example_score_packages_directory,
+                self._package_name
+                )
     @property
     def _repository_add_command(self):
         if not self._path:

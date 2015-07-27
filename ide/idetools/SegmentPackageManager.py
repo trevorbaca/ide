@@ -60,18 +60,6 @@ class SegmentPackageManager(PackageManager):
             })
         return result
 
-    @property
-    def _definition_py_path(self):
-        return os.path.join(self._path, 'definition.py')
-
-    @property
-    def _illustration_ly_path(self):
-        return os.path.join(self._path, 'illustration.ly')
-
-    @property
-    def _illustration_pdf_path(self):
-        return os.path.join(self._path, 'illustration.pdf')
-
     ### PRIVATE METHODS ###
 
     def _get_previous_segment_manager(self):
