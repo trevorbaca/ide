@@ -1572,6 +1572,15 @@ class Wrangler(AssetController):
             self._io_manager._display(messages)
             return True
 
+    def _edit_file_ending_with(self, string):
+        file_path = self._get_file_path_ending_with(string)
+        if file_path:
+            self._io_manager.edit(file_path)
+        else:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            self._io_manager._display(message)
+
     @staticmethod
     def _trim_lilypond_file(file_path):
         lines = []
