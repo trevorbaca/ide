@@ -40,24 +40,6 @@ class PackageWrangler(Wrangler):
         result.update(self._commands)
         return result
 
-    ### PRIVATE METHODS ###
-
-    def _make_extra_commands_menu_section(self, menu):
-        commands = []
-        commands.extend(self._extra_commands)
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='extra commands',
-                )
-
-    def _make_main_menu(self):
-        superclass = super(PackageWrangler, self)
-        menu = superclass._make_main_menu()
-        self._make_extra_commands_menu_section(menu)
-        return menu
-
     ### PUBLIC METHODS ###
 
     def check_every_definition_py(self):

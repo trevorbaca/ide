@@ -376,7 +376,6 @@ class AssetController(Controller):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    #if not self._is_valid_directory_entry(directory_entry):
                     if not self._validator(directory_entry):
                         continue
                 path = os.path.join(directory, directory_entry)

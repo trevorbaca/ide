@@ -25,6 +25,7 @@ class Wrangler(AssetController):
         '_basic_breadcrumb',
         '_extra_commands',
         '_force_lowercase',
+        '_in_score_commands',
         '_main_menu',
         '_manager_class',
         '_mandatory_copy_target_storehouse',
@@ -46,6 +47,7 @@ class Wrangler(AssetController):
         self._basic_breadcrumb = None
         self._extra_commands = []
         self._force_lowercase = True
+        self._in_score_commands = []
         self._manager_class = idetools.PackageManager
         self._mandatory_copy_target_storehouse = None
         self._score_storehouse_path_infix_parts = ()
@@ -453,11 +455,33 @@ class Wrangler(AssetController):
             name='basic operations',
             )
 
+    def _make_extra_commands_menu_section(self, menu):
+        commands = []
+        commands.extend(self._extra_commands)
+        if commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=commands,
+                name='extra commands',
+                )
+
+    def _make_in_score_commands_menu_section(self, menu):
+        commands = []
+        commands.extend(self._in_score_commands)
+        if commands:
+            menu.make_command_section(
+                commands=self._in_score_commands,
+                is_hidden=True,
+                name='in score commands',
+                )
+
     def _make_main_menu(self):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
         self._make_basic_operations_menu_section(menu)
+        self._make_extra_commands_menu_section(menu)
+        self._make_in_score_commands_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 
