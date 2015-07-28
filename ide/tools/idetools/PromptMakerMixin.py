@@ -1,11 +1,9 @@
 # -*- encoding: utf-8 -*-
+import re
 import functools
 import numbers
-from abjad.tools import mathtools
-from abjad.tools import pitchtools
-from abjad.tools import stringtools
+from abjad import *
 from abjad.tools.abctools.AbjadObject import AbjadObject
-from ide.tools.idetools import predicates
 
 
 class PromptMakerMixin(AbjadObject):
@@ -63,7 +61,7 @@ class PromptMakerMixin(AbjadObject):
         help_template += ' must successfully initialize articulation.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_ariculation_token,
+            validation_function=PromptMakerMixin.is_articulation_token,
             help_template=help_template,
             )
 
@@ -79,7 +77,7 @@ class PromptMakerMixin(AbjadObject):
         help_template += ' must successfully initialize articulations.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_articulation_tokens,
+            validation_function=PromptMakerMixin.are_articulation_tokens,
             help_template=help_template,
             )
 
@@ -93,7 +91,7 @@ class PromptMakerMixin(AbjadObject):
         '''
         help_template = 'value must be available '
         help_template += 'underscore-delimited lowercase package name.'
-        validation_function = predicates.is_available_snake_case_package_name
+        validation_function = PromptMakerMixin.is_available_snake_case_package_name
         self._make_prompt(
             spaced_attribute_name,
             validation_function=validation_function,
@@ -111,7 +109,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be boolean.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_boolean,
+            validation_function=PromptMakerMixin.is_boolean,
             help_template=help_template,
             )
 
@@ -127,7 +125,7 @@ class PromptMakerMixin(AbjadObject):
         help_template += ' must successfully initialize clef.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_clef_token,
+            validation_function=PromptMakerMixin.is_clef_token,
             help_template=help_template,
             )
 
@@ -173,7 +171,7 @@ class PromptMakerMixin(AbjadObject):
         self._make_prompt(
             spaced_attribute_name,
             help_template=help_template,
-            validation_function=predicates.is_direction_string,
+            validation_function=PromptMakerMixin.is_direction_string,
             )
 
     def append_duration(
@@ -190,7 +188,7 @@ class PromptMakerMixin(AbjadObject):
         setup_statements.append('evaluated_input = Duration({})')
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_duration_token,
+            validation_function=PromptMakerMixin.is_duration_token,
             help_template=help_template,
             setup_statements=setup_statements,
             )
@@ -209,7 +207,7 @@ class PromptMakerMixin(AbjadObject):
         setup_statements.append('evaluated_input = [Duration(x) for x in {}]')
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_duration_tokens,
+            validation_function=PromptMakerMixin.are_duration_tokens,
             help_template=help_template,
             setup_statements=setup_statements,
             )
@@ -226,7 +224,7 @@ class PromptMakerMixin(AbjadObject):
         help_template += ' must successfully initialize dynamic.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_dynamic_token,
+            validation_function=PromptMakerMixin.is_dynamic_token,
             help_template=help_template,
             )
 
@@ -241,7 +239,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be list of dynamic initializers.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_dynamic_tokens,
+            validation_function=PromptMakerMixin.are_dynamic_tokens,
             help_template=help_template,
             )
 
@@ -256,7 +254,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be existing package name.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_existing_package_name,
+            validation_function=PromptMakerMixin.is_existing_package_name,
             help_template=help_template,
             )
 
@@ -286,7 +284,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be hairpin token.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_hairpin_token,
+            validation_function=PromptMakerMixin.is_hairpin_token,
             help_template=help_template,
             )
 
@@ -301,7 +299,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be tuple of hairpin tokens.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_hairpin_tokens,
+            validation_function=PromptMakerMixin.are_hairpin_tokens,
             help_template=help_template,
             )
 
@@ -318,7 +316,7 @@ class PromptMakerMixin(AbjadObject):
         Returns prompt.
         '''
         help_template = 'value must be valid Python identifier.'
-        helper = lambda x: predicates.is_identifier(
+        helper = lambda x: PromptMakerMixin.is_identifier(
             x, allow_spaces=allow_spaces)
         self._make_prompt(
             spaced_attribute_name,
@@ -337,7 +335,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be integer.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_integer,
+            validation_function=PromptMakerMixin.is_integer,
             help_template=help_template,
             )
 
@@ -353,7 +351,7 @@ class PromptMakerMixin(AbjadObject):
         Returns prompt.
         '''
         validation_function = functools.partial(
-            predicates.is_integer_in_range,
+            PromptMakerMixin.is_integer_in_range,
             start=start,
             stop=stop,
             allow_none=allow_none,
@@ -375,7 +373,7 @@ class PromptMakerMixin(AbjadObject):
         Returns prompt.
         '''
         help_template = 'value must be tuple of integers.'
-        function = lambda x: all(predicates.is_integer(y) for y in x)
+        function = lambda x: all(PromptMakerMixin.is_integer(y) for y in x)
         self._make_prompt(
             spaced_attribute_name,
             validation_function=function,
@@ -393,7 +391,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be list.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_list,
+            validation_function=PromptMakerMixin.is_list,
             help_template=help_template,
             )
 
@@ -408,7 +406,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be tuple of lists.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_lists,
+            validation_function=PromptMakerMixin.are_lists,
             help_template=help_template,
             )
 
@@ -427,7 +425,7 @@ class PromptMakerMixin(AbjadObject):
         setup_statements.append(statement)
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_markup,
+            validation_function=PromptMakerMixin.is_markup,
             help_template=help_template,
             setup_statements=setup_statements,
             )
@@ -444,7 +442,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be menu section item.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_list,
+            validation_function=PromptMakerMixin.is_list,
             help_template=help_template,
             target_menu_section=target_menu_section,
             disallow_range=True,
@@ -462,7 +460,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be argument range.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_list,
+            validation_function=PromptMakerMixin.is_list,
             help_template=help_template,
             target_menu_section=target_menu_section,
             )
@@ -483,7 +481,7 @@ class PromptMakerMixin(AbjadObject):
         self._make_prompt(
             spaced_attribute_name,
             help_template=help_template,
-            validation_function=predicates.is_named_pitch,
+            validation_function=PromptMakerMixin.is_named_pitch,
             setup_statements=setup_statements,
             )
 
@@ -562,7 +560,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = "value must be of the form '8.5 x 11 in'."
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_paper_dimension_string,
+            validation_function=PromptMakerMixin.is_paper_dimension_string,
             help_template=help_template,
             )
 
@@ -580,7 +578,7 @@ class PromptMakerMixin(AbjadObject):
         setup_statements.append('evaluated_input = pitchtools.PitchRange({})')
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_pitch_range_or_none,
+            validation_function=PromptMakerMixin.is_pitch_range_or_none,
             help_template=help_template,
             setup_statements=setup_statements,
             )
@@ -707,7 +705,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be snake case package name, 3 <= length.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_snake_case_package_name,
+            validation_function=PromptMakerMixin.is_snake_case_package_name,
             help_template=help_template,
             )
 
@@ -761,10 +759,10 @@ class PromptMakerMixin(AbjadObject):
         Returns prompt.
         '''
         if allow_empty:
-            validation_function = predicates.is_string
+            validation_function = PromptMakerMixin.is_string
             help_template = 'value must be string.'
         else:
-            validation_function = predicates.is_nonempty_string
+            validation_function = PromptMakerMixin.is_nonempty_string
             help_template = 'value must be nonempty string.'
         self._make_prompt(
             spaced_attribute_name,
@@ -783,7 +781,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be string or none.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_string_or_none,
+            validation_function=PromptMakerMixin.is_string_or_none,
             help_template=help_template,
             )
 
@@ -798,7 +796,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must be tuple of strings.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.are_strings,
+            validation_function=PromptMakerMixin.are_strings,
             help_template=help_template,
             )
 
@@ -813,7 +811,7 @@ class PromptMakerMixin(AbjadObject):
         help_template = 'value must successfully initialize tempo.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_tempo_token,
+            validation_function=PromptMakerMixin.is_tempo_token,
             help_template=help_template,
             )
 
@@ -829,7 +827,300 @@ class PromptMakerMixin(AbjadObject):
         help_template = "value for '{}' must be 'y' or 'n'."
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=predicates.is_yes_no_string,
+            validation_function=PromptMakerMixin.is_yes_no_string,
             help_template=help_template,
             include_chevron=include_chevron,
             )
+
+    @staticmethod
+    def are_articulation_tokens(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_articulation_token(x) for x in expr)
+
+    @staticmethod
+    def are_duration_tokens(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_duration_token(x) for x in expr)
+
+    @staticmethod
+    def are_dynamic_tokens(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_dynamic_token(x) for x in expr)
+
+    @staticmethod
+    def are_hairpin_tokens(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_hairpin_token(x) for x in expr)
+
+    @staticmethod
+    def are_lists(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_list(x) for x in expr)
+
+    @staticmethod
+    def are_strings(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, (tuple, list)):
+            return all(is_string(x) for x in expr)
+
+    @staticmethod
+    def is_argument_range_string(expr):
+        r'''Predicate.
+        '''
+        pattern = re.compile('^(\w+( *- *\w+)?)(, *\w+( *- *\w+)?)*$')
+        return pattern.match(expr) is not None
+
+    @staticmethod
+    def is_articulation_token(expr):
+        r'''Predicate.
+        '''
+        try:
+            result = indicatortools.Articulation(expr)
+            return isinstance(result, indicatortools.Articulation)
+        except:
+            return False
+
+    @staticmethod
+    def is_boolean(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, bool)
+
+    @staticmethod
+    def is_class_name_or_none(expr):
+        r'''Predicate.
+        '''
+        return expr is None or stringtools.is_upper_camel_case(expr)
+
+    @staticmethod
+    def is_clef_token(expr):
+        r'''Predicate.
+        '''
+        try:
+            result = indicatortools.Clef(expr)
+            return isinstance(result, indicatortools.Clef)
+        except:
+            return False
+
+    @staticmethod
+    def is_direction_string(expr):
+        r'''Predicate.
+        '''
+        return expr in ('up', 'down')
+
+    @staticmethod
+    def is_duration_token(expr):
+        r'''Predicate.
+        '''
+        try:
+            durationtools.Duration(expr)
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def is_dynamic_token(expr):
+        r'''Predicate.
+        '''
+        try:
+            result = indicatortools.Dynamic(expr)
+            return isinstance(result, indicatortools.Dynamic)
+        except:
+            return False
+
+    @staticmethod
+    def is_hairpin_token(expr):
+        r'''Predicate.
+        '''
+        return spannertools.Hairpin._is_hairpin_token(expr)
+
+    @staticmethod
+    def is_identifier(expr, allow_spaces=False):
+        r'''Predicate.
+        '''
+        if not isinstance(expr, str):
+            return False
+        if len(expr) < 1:
+            return False
+        if expr[0] in '0123456789':
+            return False
+        for _ in expr:
+            if allow_spaces:
+                if not (_.isalnum() or _ == '_' or _ == ' '):
+                    return False
+            else:
+                if not (_.isalnum() or _ == '_'):
+                    return False
+        return True
+
+    @staticmethod
+    def is_integer(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, int)
+
+    @staticmethod
+    def is_integer_in_range(expr, start=None, stop=None, allow_none=False):
+        r'''Predicate.
+        '''
+        if expr is None and allow_none:
+            return True
+        if PromptMakerMixin.is_integer(expr) and \
+            (start is None or start <= expr) and \
+            (stop is None or expr <= stop):
+            return True
+        return False
+
+    @staticmethod
+    def is_integer_or_none(expr):
+        r'''Predicate.
+        '''
+        return expr is None or is_integer(expr)
+
+    @staticmethod
+    def is_list(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, list)
+
+    @staticmethod
+    def is_markup(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, markuptools.Markup)
+
+    @staticmethod
+    def is_markup_token(expr):
+        r'''Predicate.
+        '''
+        try:
+            result = markuptools.Markup(expr)
+            return isinstance(result, markuptools.Markup)
+        except:
+            return False
+
+    @staticmethod
+    def is_named_pitch(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, NamedPitch)
+
+    @staticmethod
+    def is_negative_integer(expr):
+        r'''Predicate.
+        '''
+        return is_integer(expr) and expr < 0
+
+    @staticmethod
+    def is_nonempty_string(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, str) and bool(expr)
+
+    @staticmethod
+    def is_nonnegative_integer(expr):
+        r'''Predicate.
+        '''
+        return is_integer(expr) and expr <= 0
+
+    @staticmethod
+    def is_nonpositive_integer(expr):
+        r'''Predicate.
+        '''
+        return is_integer(expr) and 0 <= expr
+
+    @staticmethod
+    def is_page_layout_unit(expr):
+        r'''Predicate.
+        '''
+        return expr in ('in', 'mm', 'cm', 'pt', 'pica')
+
+    @staticmethod
+    def is_paper_dimension_string(expr):
+        r'''Predicate.
+        '''
+        if not isinstance(expr, str):
+            return False
+        parts = expr.split()
+        if not len(parts) == 4:
+            return False
+        width, x, height, units = parts
+        try:
+            float(width) 
+        except ValueError:
+            return False
+        try:
+            float(height) 
+        except ValueError:
+            return False
+        if not x == 'x':
+            return False
+        if not is_page_layout_unit(units):
+            return False
+        return True
+
+    @staticmethod
+    def is_pitch_range_or_none(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, (pitchtools.PitchRange, type(None)))
+
+    @staticmethod
+    def is_positive_integer(expr):
+        r'''Predicate.
+        '''
+        return is_integer(expr) and 0 < expr
+
+    @staticmethod
+    def is_string(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, str)
+
+    @staticmethod
+    def is_string_or_none(expr):
+        r'''Predicate.
+        '''
+        return isinstance(expr, (str, type(None)))
+
+    @staticmethod
+    def is_tempo_token(expr):
+        r'''Predicate.
+        '''
+        import abjad
+        from ide.tools import idetools
+        try:
+            namespace = abjad.__dict__.copy()
+            command = 'tempo = indicatortools.Tempo({})'.format(expr)
+            result = idetools.IOManager().execute_string(
+                command,
+                attribute_names=('tempo',),
+                local_namespace=namespace,
+                )
+            tempo = result[0]
+            return isinstance(tempo, indicatortools.Tempo)
+        except:
+            return False
+
+    @staticmethod
+    def is_snake_case_package_name(expr):
+        r'''Predicate.
+        '''
+        return stringtools.is_snake_case_package_name(expr)
+
+    @staticmethod
+    def is_yes_no_string(expr):
+        r'''Predicate.
+        '''
+        return 'yes'.startswith(expr.lower()) or 'no'.startswith(expr.lower())
