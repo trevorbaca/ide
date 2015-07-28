@@ -105,14 +105,7 @@ class ScorePackageManager(PackageManager):
                 return_supply_messages=True,
                 supply_missing=True,
                 )
-        old_path = self._outer_path
-        temporary_path = os.path.join(
-            os.path.dirname(self._outer_path),
-            '_TEMPORARY_SCORE_PACKAGE',
-            )
-        shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, self._inner_path)
-        self._write_enclosing_artifacts()
+        self._make_score_into_installable_package()
 
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
@@ -124,6 +117,16 @@ class ScorePackageManager(PackageManager):
             commands=commands,
             name='package',
             )
+
+    def _make_score_into_installable_package(self):
+        old_path = self._outer_path
+        temporary_path = os.path.join(
+            os.path.dirname(self._outer_path),
+            '_TEMPORARY_SCORE_PACKAGE',
+            )
+        shutil.move(old_path, temporary_path)
+        shutil.move(temporary_path, self._inner_path)
+        self._write_enclosing_artifacts()
 
     def _parse_paper_dimensions(self):
         string = self._get_metadatum('paper_dimensions') or '8.5 x 11 in'

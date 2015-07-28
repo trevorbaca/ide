@@ -70,15 +70,6 @@ class SegmentPackageManager(PackageManager):
         self._make_main_visible_menu_section(menu)
         return menu
 
-    def _make_package(self):
-        assert not os.path.exists(self._path)
-        os.mkdir(self._path)
-        with self._io_manager._silent():
-            self.check_package(
-                return_supply_messages=True,
-                supply_missing=True,
-                )
-
     def _make_main_visible_menu_section(self, menu):
         commands = []
         commands.append(('definition.py - illustrate', 'i'))

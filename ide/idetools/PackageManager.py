@@ -491,6 +491,15 @@ class PackageManager(AssetController):
         self._make_asset_menu_section(menu)
         return menu
 
+    def _make_package(self):
+        assert not os.path.exists(self._path)
+        os.mkdir(self._path)
+        with self._io_manager._silent():
+            self.check_package(
+                return_supply_messages=True,
+                supply_missing=True,
+                )
+
     def _make_package_menu_section(self, menu, commands_only=False):
         commands = []
         commands.append(('check package', 'ck'))

@@ -72,17 +72,5 @@ class MaterialPackageManager(PackageManager):
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
 
-    def _make_package(self):
-        metadata = datastructuretools.TypedOrderedDict()
-        assert not os.path.exists(self._path)
-        os.mkdir(self._path)
-        with self._io_manager._silent():
-            self.check_package(
-                return_supply_messages=True,
-                supply_missing=True,
-                )
-            self._write_metadata_py(metadata)
-            self._write_stub_definition_py()
-
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True
