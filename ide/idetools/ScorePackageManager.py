@@ -38,6 +38,8 @@ class ScorePackageManager(PackageManager):
             'etc',
             'test',
             )
+        self._package_creation_callback = \
+            self._make_score_into_installable_package
         self._required_directories = (
             'build',
             'distribution',
@@ -97,16 +99,6 @@ class ScorePackageManager(PackageManager):
         self._make_package_menu_section(menu)
         return menu
 
-    def _make_package(self):
-        assert not os.path.exists(self._outer_path)
-        os.mkdir(self._outer_path)
-        with self._io_manager._silent():
-            self.check_package(
-                return_supply_messages=True,
-                supply_missing=True,
-                )
-        self._make_score_into_installable_package()
-
     def _make_package_menu_section(self, menu):
         superclass = super(ScorePackageManager, self)
         commands = superclass._make_package_menu_section(
@@ -118,16 +110,6 @@ class ScorePackageManager(PackageManager):
             name='package',
             )
 
-    def _make_score_into_installable_package(self):
-        old_path = self._outer_path
-        temporary_path = os.path.join(
-            os.path.dirname(self._outer_path),
-            '_TEMPORARY_SCORE_PACKAGE',
-            )
-        shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, self._inner_path)
-        self._write_enclosing_artifacts()
-
     def _parse_paper_dimensions(self):
         string = self._get_metadatum('paper_dimensions') or '8.5 x 11 in'
         parts = string.split()
@@ -136,16 +118,3 @@ class ScorePackageManager(PackageManager):
         width = eval(width)
         height = eval(height)
         return width, height, units
-
-    def _write_enclosing_artifacts(self):
-        self._path = self._inner_path
-        self._copy_boilerplate('README.md')
-        self._copy_boilerplate('requirements.txt')
-        self._copy_boilerplate('setup.cfg')
-        replacements = {
-            'COMPOSER_EMAIL': self._configuration.composer_email,
-            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
-            'GITHUB_USERNAME': self._configuration.github_username,
-            'PACKAGE_NAME': self._package_name,
-            }
-        self._copy_boilerplate('setup.py', replacements=replacements)

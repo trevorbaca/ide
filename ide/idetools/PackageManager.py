@@ -21,6 +21,7 @@ class PackageManager(AssetController):
         '_main_menu',
         '_optional_directories',
         '_optional_files',
+        '_package_creation_callback',
         '_package_name',
         '_path',
         '_required_directories',
@@ -42,13 +43,14 @@ class PackageManager(AssetController):
             'test',
             )
         self._optional_files = ()
+        self._package_creation_callback = None
+        self._package_name = os.path.basename(path)
+        self._path = path
         self._required_directories = ()
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
             )
-        self._package_name = os.path.basename(path)
-        self._path = path
 
     ### SPECIAL METHODS ###
 
@@ -499,6 +501,8 @@ class PackageManager(AssetController):
                 return_supply_messages=True,
                 supply_missing=True,
                 )
+        if self._package_creation_callback is not None:
+            self._package_creation_callback()
 
     def _make_package_menu_section(self, menu, commands_only=False):
         commands = []
@@ -521,6 +525,16 @@ class PackageManager(AssetController):
         else:
             raise ValueError(self)
         return command
+
+    def _make_score_into_installable_package(self):
+        old_path = self._outer_path
+        temporary_path = os.path.join(
+            os.path.dirname(self._outer_path),
+            '_TEMPORARY_SCORE_PACKAGE',
+            )
+        shutil.move(old_path, temporary_path)
+        shutil.move(temporary_path, self._inner_path)
+        self._write_enclosing_artifacts()
 
     def _remove(self):
         path = self._path
@@ -728,6 +742,19 @@ class PackageManager(AssetController):
         command = ' && '.join(commands)
         with systemtools.TemporaryDirectoryChange(directory=self._path):
             self._io_manager.spawn_subprocess(command)
+
+    def _write_enclosing_artifacts(self):
+        self._path = self._inner_path
+        self._copy_boilerplate('README.md')
+        self._copy_boilerplate('requirements.txt')
+        self._copy_boilerplate('setup.cfg')
+        replacements = {
+            'COMPOSER_EMAIL': self._configuration.composer_email,
+            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
+            'GITHUB_USERNAME': self._configuration.github_username,
+            'PACKAGE_NAME': self._package_name,
+            }
+        self._copy_boilerplate('setup.py', replacements=replacements)
 
     def _write_stub_definition_py(self):
         lines = []
