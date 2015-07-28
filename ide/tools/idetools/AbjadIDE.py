@@ -244,12 +244,6 @@ class AbjadIDE(AssetController):
 
     ### PRIVATE METHODS ###
 
-    def _make_main_menu(self):
-        from ide.tools import idetools
-        menu = idetools.AssetController._make_main_menu(self)
-        self._make_asset_menu_section(menu)
-        return menu
-
     def _run(self, input_=None):
         from ide.tools import idetools
         self._session._reinitialize()
@@ -291,10 +285,7 @@ class AbjadIDE(AssetController):
                 elif not self._session.is_navigating_home:
                     self._score_package_wrangler._run()
                 else:
-                    menu = self._make_main_menu()
-                    result = menu._run()
-                    if result:
-                        self._handle_input(result)
+                    raise Exception('FOO')
                 self._update_session_variables()
                 if self._session.is_quitting:
                     if not self._transcript[-1][-1] == '':
