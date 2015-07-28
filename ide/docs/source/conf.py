@@ -14,7 +14,7 @@ PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 ### CORE ###
 add_function_parentheses = True
-copyright = u'2008-2015, Trevor Bača, Josiah Wolf Oberholtzer, Víctor Adán'
+copyright = u'2008-2015, Trevor Bača & Josiah Wolf Oberholtzer'
 exclude_patterns = []
 extensions = [
     'sphinx.ext.autodoc',
@@ -35,7 +35,7 @@ version = abjad_configuration.get_abjad_version_string()
 pygments_style = 'sphinx'
 ### HTML ###
 html_domain_indices = False
-html_last_updated_fmt = '%b %d, %yy'
+html_last_updated_fmt = '%b %d, %Y'
 html_show_sourcelink = True
 html_static_path = ['_static']
 html_theme = "sphinx_rtd_theme"
