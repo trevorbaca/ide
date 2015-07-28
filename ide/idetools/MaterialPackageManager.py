@@ -10,28 +10,6 @@ from ide.idetools.PackageManager import PackageManager
 
 class MaterialPackageManager(PackageManager):
     r'''Material package manager.
-
-
-    ..  container:: example
-
-        ::
-
-            >>> import os
-            >>> configuration = ide.idetools.Configuration()
-            >>> session = ide.idetools.Session()
-            >>> path = os.path.join(
-            ...     configuration.example_score_packages_directory,
-            ...     'red_example_score',
-            ...     'materials',
-            ...     'performer_inventory',
-            ...     )
-            >>> manager = ide.idetools.MaterialPackageManager(
-            ...     path=path,
-            ...     session=session,
-            ...     )
-            >>> manager
-            MaterialPackageManager('.../materials/performer_inventory')
-
     '''
 
     ### INTIALIZER ###
@@ -105,45 +83,6 @@ class MaterialPackageManager(PackageManager):
                 )
             self._write_metadata_py(metadata)
             self._write_stub_definition_py()
-
-    def _rename_interactively(
-        self,
-        extension=None,
-        file_name_callback=None,
-        force_lowercase=True,
-        ):
-        getter = self._io_manager._make_getter()
-        getter.append_identifier('enter new package name', allow_spaces=True)
-        new_package_name = getter._run()
-        if self._session.is_backtracking or new_package_name is None:
-            return
-        new_package_name = stringtools.to_snake_case(new_package_name)
-        base_name = os.path.basename(self._path)
-        new_directory = self._path.replace(
-            base_name,
-            new_package_name,
-            )
-        messages = []
-        messages.append('will change ...')
-        messages.append(' FROM: {}'.format(self._path))
-        messages.append('   TO: {}'.format(new_directory))
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        self._rename(new_directory)
-        if not os.path.exists(new_directory):
-            return
-        for directory_entry in sorted(os.listdir(new_directory)):
-            if directory_entry.endswith('.py'):
-                path = os.path.join(new_directory, directory_entry)
-                result = os.path.splitext(base_name)
-                old_package_name, extension = result
-                self._replace_in_file(
-                    path,
-                    old_package_name,
-                    new_package_name,
-                    )
 
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True
