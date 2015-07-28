@@ -232,7 +232,6 @@ class AbjadIDE(AssetController):
     @property
     def _wranglers(self):
         return (
-            self,
             self._build_file_wrangler,
             self._distribution_file_wrangler,
             self._etc_file_wrangler,
