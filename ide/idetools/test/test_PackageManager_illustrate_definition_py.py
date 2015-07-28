@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_SegmentPackageManager_illustrate_definition_py_01():
+def test_PackageManager_illustrate_definition_py_01():
     r'''Creates PDF and LilyPond files when none exists.
     '''
 
@@ -40,7 +40,7 @@ def test_SegmentPackageManager_illustrate_definition_py_01():
     os.environ.get('TRAVIS') == 'true',
     reason='Cannot build on Travis-CI',
     )
-def test_SegmentPackageManager_illustrate_definition_py_02():
+def test_PackageManager_illustrate_definition_py_02():
     r'''Preserves existing PDF when candidate compares the same.
     '''
 
@@ -70,7 +70,7 @@ def test_SegmentPackageManager_illustrate_definition_py_02():
     assert '... compare the same.' in contents
 
 
-def test_SegmentPackageManager_illustrate_definition_py_03():
+def test_PackageManager_illustrate_definition_py_03():
     r'''Prompts composer to overwrite existing PDF when candidate compares
     differently.
     '''

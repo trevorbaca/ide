@@ -3,7 +3,7 @@ from abjad import *
 import ide
 
 
-def test_SegmentPackageManager__make_asset_menu_section_01():
+def test_PackageManager__make_asset_menu_section_01():
     r'''Behaves gracefully when no assets are found.
     '''
 
