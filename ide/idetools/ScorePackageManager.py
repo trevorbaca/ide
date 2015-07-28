@@ -80,12 +80,6 @@ class ScorePackageManager(PackageManager):
             new = replacements[old]
             self._replace_in_file(destination_path, old, new)
 
-    def _get_build_directory(self):
-        return os.path.join(
-            self._path,
-            'build',
-            )
-
     def _get_initializer_file_lines(self, missing_file):
         lines = []
         lines.append(self._configuration.unicode_directive)
@@ -104,17 +98,6 @@ class ScorePackageManager(PackageManager):
             lines.append('import materials')
             lines.append('import segments')
         return lines
-
-    def _get_title(self, year=True):
-        if year and self._get_metadatum('year'):
-            result = '{} ({})'
-            result = result.format(
-                self._get_title(year=False),
-                self._get_metadatum('year')
-                )
-            return result
-        else:
-            return self._get_metadatum('title') or '(untitled score)'
 
     def _get_top_level_wranglers(self):
         return (

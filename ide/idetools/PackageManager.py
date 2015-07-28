@@ -286,6 +286,10 @@ class PackageManager(AssetController):
             raise ValueError(self._path)
         return paths
 
+    def _get_name_metadatum(self):
+        name = self._get_metadatum('name')
+        return name or self._space_delimited_lowercase_name
+
     def _get_next_version_string(self):
         last_version_number = self._get_last_version_number()
         last_version_number = last_version_number or 0
@@ -311,6 +315,17 @@ class PackageManager(AssetController):
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line
+
+    def _get_title(self, year=True):
+        if year and self._get_metadatum('year'):
+            result = '{} ({})'
+            result = result.format(
+                self._get_title(year=False),
+                self._get_metadatum('year')
+                )
+            return result
+        else:
+            return self._get_metadatum('title') or '(untitled score)'
 
     def _get_top_level_wranglers(self):
         return ()
