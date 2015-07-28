@@ -48,20 +48,6 @@ class SegmentPackageManager(PackageManager):
         previous_manager = managers[previous_manager_index]
         return previous_manager
 
-    def _make_definition_py_menu_section(self, menu):
-        commands = []
-        if os.path.isfile(self._definition_py_path):
-            commands.append(('definition.py - check', 'dc'))
-            commands.append(('definition.py - edit', 'de'))
-        else:
-            commands.append(('definition.py - stub', 'ds'))
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='definition.py',
-                )
-
     def _make_illustration_ly_menu_section(self, menu):
         commands = []
         if os.path.isfile(self._illustration_ly_path):
