@@ -101,8 +101,7 @@ def test_Wrangler_make_package_03():
         abjad_ide._run(input_=input_)
         assert os.path.exists(path)
         session = ide.idetools.Session(is_test=True)
-        manager = ide.idetools.MaterialPackageManager
-        manager = manager(path=path, session=session)
+        manager = ide.idetools.PackageManager(path=path, session=session)
         assert manager._list() == directory_entries
 
 
