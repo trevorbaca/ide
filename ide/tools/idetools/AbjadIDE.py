@@ -245,22 +245,10 @@ class AbjadIDE(AssetController):
 
     ### PRIVATE METHODS ###
 
-    def _list_storehouse_paths(self):
-        paths = []
-        paths.append(self._configuration.example_score_packages_directory)
-        paths.append(self._configuration.user_score_packages_directory)
-        return paths
-
-    def _list_visible_asset_paths(self):
-        entries = self._make_asset_menu_entries()
-        paths = [_[-1] for _ in entries]
-        return paths
-
     def _make_main_menu(self):
         from ide.tools import idetools
         menu = idetools.AssetController._make_main_menu(self)
         self._make_asset_menu_section(menu)
-        self._make_views_menu_section(menu)
         return menu
 
     def _run(self, input_=None):
