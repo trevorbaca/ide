@@ -166,10 +166,11 @@ class Configuration(AbjadConfiguration):
         score_path = self._path_to_score_path(path)
         if score_path:
             session = ide.idetools.Session
-            manager = ide.idetools.ScorePackageManager(
+            manager = ide.idetools.PackageManager(
                 path=score_path,
                 session=session,
                 )
+            manager._configure_as_score_package_manager()
             title = manager._get_title(year=False)
             return title
         elif path.startswith(self.abjad_root_directory):
