@@ -19,6 +19,7 @@ class SegmentPackageManager(PackageManager):
     def __init__(self, path=None, session=None):
         superclass = super(SegmentPackageManager, self)
         superclass.__init__(path=path, session=session)
+        self._basic_breadcrumb = 'SEGMENTS'
         self._breadcrumb_callback = self._get_name_metadatum
         self._optional_files = (
             'illustration.ly',
@@ -81,9 +82,6 @@ class SegmentPackageManager(PackageManager):
                 is_hidden=False,
                 name='main visible section',
                 )
-
-    def _set_is_navigating_to_sibling_asset(self):
-        self._session._is_navigating_to_segments = True
 
     def _update_order_dependent_segment_metadata(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler

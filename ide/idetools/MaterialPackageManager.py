@@ -17,6 +17,7 @@ class MaterialPackageManager(PackageManager):
     def __init__(self, path=None, session=None):
         superclass = super(MaterialPackageManager, self)
         superclass.__init__(path=path, session=session)
+        self._basic_breadcrumb = 'MATERIALS'
         self._optional_files = (
             '__illustrate__.py',
             'illustration.ly',
@@ -71,6 +72,3 @@ class MaterialPackageManager(PackageManager):
         self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
-
-    def _set_is_navigating_to_sibling_asset(self):
-        self._session._is_navigating_to_materials = True
