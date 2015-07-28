@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_invoke_shell_01():
+def test_PackageManager_invoke_shell_01():
 
     input_ = 'red~example~score m tempo~inventory !pwd q'
     abjad_ide._run(input_=input_)

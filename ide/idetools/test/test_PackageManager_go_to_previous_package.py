@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_go_to_previous_package_01():
+def test_PackageManager_go_to_previous_package_01():
 
     input_ = 'red~example~score m tempo~inventory < q'
     abjad_ide._run(input_=input_)

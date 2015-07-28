@@ -4,9 +4,9 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_go_to_current_score_01():
+def test_PackageManager_go_to_score_build_files_01():
 
-    input_ = 'red~example~score m tempo~inventory s q'
+    input_ = 'red~example~score m tempo~inventory u q'
     abjad_ide._run(input_=input_)
 
     titles = [
@@ -14,6 +14,6 @@ def test_MaterialPackageManager_go_to_current_score_01():
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Red Example Score (2013)',
+        'Red Example Score (2013) - build directory',
         ]
     assert abjad_ide._transcript.titles == titles

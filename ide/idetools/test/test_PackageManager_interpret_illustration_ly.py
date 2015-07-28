@@ -5,7 +5,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_interpret_illustration_ly_01():
+def test_PackageManager_interpret_illustration_ly_01():
     r'''Works when illustration.ly already exists.
     '''
 

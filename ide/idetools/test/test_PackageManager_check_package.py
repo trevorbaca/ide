@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_check_package_01():
+def test_PackageManager_check_package_01():
     r'''Displays problems only.
     '''
 
@@ -19,7 +19,7 @@ def test_MaterialPackageManager_check_package_01():
     assert 'missing' not in contents
 
 
-def test_MaterialPackageManager_check_package_02():
+def test_PackageManager_check_package_02():
     r'''Displays everything.
     '''
 
@@ -36,7 +36,7 @@ def test_MaterialPackageManager_check_package_02():
     assert 'No problem assets found.' not in contents
 
 
-def test_MaterialPackageManager_check_package_03():
+def test_PackageManager_check_package_03():
     r'''Supplies missing directory and missing file.
     '''
 

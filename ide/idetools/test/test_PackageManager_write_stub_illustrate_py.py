@@ -6,7 +6,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_MaterialPackageManager_write_stub_illustrate_py_01():
+def test_PackageManager_write_stub_illustrate_py_01():
 
     path = os.path.join(
         abjad_ide._configuration.example_score_packages_directory,
