@@ -77,6 +77,11 @@ class PackageManager(AssetController):
             'ck': self.check_package,
             'dc': self.check_definition_py,
             'de': self.edit_definition_py,
+            'ie': self.edit_illustration_ly,
+            'ii': self.interpret_illustration_ly,
+            'io': self.open_illustration_pdf,
+            'le': self.edit_illustrate_py,
+            'ls': self.write_stub_illustrate_py,
             'so': self.open_score_pdf,
             })
         return result
@@ -990,6 +995,20 @@ class PackageManager(AssetController):
         '''
         self._io_manager.edit(self._definition_py_path)
 
+    def edit_illustrate_py(self):
+        r'''Edits ``__illustrate.py__``.
+
+        Returns none.
+        '''
+        self._io_manager.edit(self._illustrate_py_path)
+
+    def edit_illustration_ly(self):
+        r'''Opens ``illustration.ly``.
+
+        Returns none.
+        '''
+        self._io_manager.open_file(self._illustration_ly_path)
+
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -1032,6 +1051,13 @@ class PackageManager(AssetController):
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 
+    def open_illustration_pdf(self):
+        r'''Opens ``illustration.pdf``.
+
+        Returns none.
+        '''
+        self._io_manager.open_file(self._illustration_pdf_path)
+
     def open_score_pdf(self, dry_run=False):
         r'''Opens ``score.pdf``.
 
@@ -1057,3 +1083,36 @@ class PackageManager(AssetController):
                 message = "no score.pdf file found"
                 message += ' in either distribution/ or build/ directories.'
                 self._io_manager._display(message)
+
+    def write_stub_illustrate_py(self):
+        r'''Writes stub ``__illustrate.py__``.
+
+        Returns none.
+        '''
+        message = 'will write stub to {}.'
+        message = message.format(self._illustrate_py_path)
+        self._io_manager._display(message)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        lines = []
+        lines.append(self._abjad_import_statement)
+        line = 'from output import {}'
+        line = line.format(self._package_name)
+        lines.append(line)
+        lines.append('')
+        lines.append('')
+        line = 'triple = scoretools.make_piano_score_from_leaves({})'
+        line = line.format(self._package_name)
+        lines.append(line)
+        line = 'score, treble_staff, bass_staff = triple'
+        lines.append(line)
+        line = 'illustration = lilypondfiletools.'
+        line += 'make_basic_lilypond_file(score)'
+        lines.append(line)
+        contents = '\n'.join(lines)
+        with open(self._illustrate_py_path, 'w') as file_pointer:
+            file_pointer.write(contents)
+        message = 'wrote stub to {}.'
+        message = message.format(self._illustrate_py_path)
+        self._io_manager._display(message)
