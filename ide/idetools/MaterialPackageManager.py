@@ -26,51 +26,20 @@ class MaterialPackageManager(PackageManager):
             )
         commands = []
         commands.append(('check package', 'ck'))
+        commands.append(('definition.py - check', 'dc'))
+        commands.append(('definition.py - edit', 'de'))
+        commands.append(('next package', '>'))
+        commands.append(('previous package', '<'))
+        string = '__illustrate__.py - edit'
+        commands.append((string, 'le'))
+        string = '__illustrate__.py - stub'
+        commands.append((string, 'ls'))
+        commands.append(('illustration.ly - interpret', 'ii'))
+        commands.append(('illustration.ly - edit', 'ie'))
+        commands.append(('illustration.pdf - open', 'io'))
         self._other_commands = commands
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
             'definition.py',
             )
-
-    ### PRIVATE METHODS ###
-
-    def _make_illustrate_py_menu_section(self, menu):
-        commands = []
-        if os.path.isfile(self._illustrate_py_path):
-            is_hidden = False
-            string = '__illustrate__.py - edit'
-            commands.append((string, 'le'))
-            string = '__illustrate__.py - stub'
-            commands.append((string, 'ls'))
-        else:
-            is_hidden = True
-            string = '__illustrate__.py - stub'
-            commands.append((string, 'ls'))
-        menu.make_command_section(
-            is_hidden=is_hidden,
-            commands=commands,
-            name='__illustrate__.py',
-            )
-
-    def _make_illustration_pdf_menu_section(self, menu):
-        commands = []
-        if os.path.isfile(self._illustration_ly_path):
-            commands.append(('illustration.ly - interpret', 'ii'))
-            commands.append(('illustration.ly - edit', 'ie'))
-        if os.path.isfile(self._illustration_pdf_path):
-            commands.append(('illustration.pdf - open', 'io'))
-        if commands:
-            menu.make_command_section(
-                commands=commands,
-                name='illustration.pdf',
-                )
-
-    def _make_main_menu(self):
-        superclass = super(MaterialPackageManager, self)
-        menu = superclass._make_main_menu()
-        self._make_illustrate_py_menu_section(menu)
-        self._make_illustration_pdf_menu_section(menu)
-        self._make_definition_py_menu_section(menu)
-        self._make_sibling_asset_tour_menu_section(menu)
-        return menu

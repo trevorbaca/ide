@@ -530,16 +530,6 @@ class PackageManager(AssetController):
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
 
-    def _make_definition_py_menu_section(self, menu):
-        commands = []
-        commands.append(('definition.py - check', 'dc'))
-        commands.append(('definition.py - edit', 'de'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='definition.py',
-            )
-
     def _make_main_menu(self):
         superclass = super(PackageManager, self)
         menu = superclass._make_main_menu()
