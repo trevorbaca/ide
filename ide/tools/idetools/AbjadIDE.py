@@ -23,7 +23,6 @@ class AbjadIDE(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_simple_score_annotation',
         '_sort_by_annotation',
         )
 
@@ -38,7 +37,6 @@ class AbjadIDE(AssetController):
         superclass.__init__(session=session)
         self._basic_breadcrumb = 'Abjad IDE'
         self._session._abjad_ide = self
-        self._simple_score_annotation = True
         self._sort_by_annotation = True
         self._score_package_wrangler._supply_missing_views_files()
 
@@ -304,8 +302,7 @@ class AbjadIDE(AssetController):
                 if not result:
                     result = self._session.wrangler_navigation_directive
                 if result:
-                    self._score_package_wrangler._handle_input(
-                        result)
+                    self._score_package_wrangler._handle_input(result)
                 elif not self._session.is_navigating_home:
                     self._score_package_wrangler._run()
                 else:

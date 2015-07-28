@@ -563,8 +563,7 @@ class AssetController(Controller):
             self._configuration.example_score_packages_directory,
             self._configuration.user_score_packages_directory,
             )
-        if (path.startswith(score_storehouses) and
-            not getattr(self, '_simple_score_annotation', False)):
+        if path.startswith(score_storehouses):
             score_path = self._configuration._path_to_score_path(path)
             manager = self._io_manager._make_package_manager(path=score_path)
             metadata = manager._get_metadata()
@@ -578,12 +577,6 @@ class AssetController(Controller):
             else:
                 package_name = os.path.basename(path)
                 annotation = package_name
-        elif (path.startswith(score_storehouses) and
-            getattr(self, '_simple_score_annotation', False)):
-            if self._configuration.example_score_packages_directory in path:
-                annotation = 'example scores'
-            else:
-                annotation = 'scores'
         elif path.startswith(self._configuration.abjad_root_directory):
             annotation = 'Abjad'
         else:
