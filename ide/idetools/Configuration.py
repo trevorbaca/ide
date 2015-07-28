@@ -161,25 +161,6 @@ class Configuration(AbjadConfiguration):
         storehouse_path = os.path.join(path_prefix, *path_parts)
         return storehouse_path
 
-    def _path_to_storehouse_annotation(self, path):
-        import ide
-        score_path = self._path_to_score_path(path)
-        if score_path:
-            session = ide.idetools.Session
-            manager = ide.idetools.PackageManager(
-                path=score_path,
-                session=session,
-                )
-            manager._configure_as_score_package_manager()
-            title = manager._get_title(year=False)
-            return title
-        elif path.startswith(self.abjad_root_directory):
-            return 'Abjad'
-        else:
-            message = 'path in unknown storehouse: {!r}.'
-            message = message.format(path)
-            raise ValueError(path)
-
     ### PUBLIC PROPERTIES ###
 
     @property
