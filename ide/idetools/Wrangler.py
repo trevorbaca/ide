@@ -432,17 +432,21 @@ class Wrangler(AssetController):
     def _get_manager(self, path):
         from ide import idetools
         assert os.path.sep in path, repr(path)
-        if self._asset_identifier == 'material package':
-            manager_class = idetools.MaterialPackageManager
-        elif self._asset_identifier == 'score package':
-            manager_class = idetools.ScorePackageManager
-        elif self._asset_identifier == 'segment package':
-            manager_class = idetools.SegmentPackageManager
-        else:
-            manager_class = idetools.PackageManager
-        manager = manager_class(
+        manager = idetools.PackageManager(
             path=path,
             session=self._session,
+            )
+        if self._asset_identifier == 'material package':
+            manager._configure_as_material_package_manager()
+        elif self._asset_identifier == 'score package':
+            manager = idetools.ScorePackageManager(
+                path=path,
+                session=self._session,
+            )
+        elif self._asset_identifier == 'segment package':
+            manager = idetools.SegmentPackageManager(
+                path=path,
+                session=self._session,
             )
         return manager
 

@@ -1,10 +1,5 @@
 # -*- encoding: utf-8 -*-
-import copy
 import os
-import shutil
-from abjad.tools import datastructuretools
-from abjad.tools import stringtools
-from abjad.tools import systemtools
 from ide.idetools.PackageManager import PackageManager
 
 

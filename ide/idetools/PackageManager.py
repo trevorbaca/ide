@@ -181,6 +181,99 @@ class PackageManager(AssetController):
         with self._io_manager._silent():
             self._write_metadata_py(metadata)
 
+    def _configure_as_material_package_manager(self):
+        self._basic_breadcrumb = 'MATERIALS'
+        self._optional_files = (
+            '__illustrate__.py',
+            'illustration.ly',
+            'illustration.pdf',
+            'maker.py',
+            )
+        commands = []
+        commands.append(('check package', 'ck'))
+        commands.append(('definition.py - check', 'dc'))
+        commands.append(('definition.py - edit', 'de'))
+        commands.append(('next package', '>'))
+        commands.append(('previous package', '<'))
+        string = '__illustrate__.py - edit'
+        commands.append((string, 'le'))
+        string = '__illustrate__.py - stub'
+        commands.append((string, 'ls'))
+        commands.append(('illustration.ly - interpret', 'ii'))
+        commands.append(('illustration.ly - edit', 'ie'))
+        commands.append(('illustration.pdf - open', 'io'))
+        self._other_commands = commands
+        self._required_files = (
+            '__init__.py',
+            '__metadata__.py',
+            'definition.py',
+            )
+
+    def _configure_as_score_package_manager(self):
+        self._annotate_year = True
+        self._asset_identifier = 'score package manager'
+        self._breadcrumb_callback = self._get_title
+        self._directory_names = (
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'materials',
+            'segments',
+            'stylesheets',
+            )
+        self._include_asset_name = False
+        self._optional_directories = (
+            '__pycache__',
+            'etc',
+            'test',
+            )
+        commands = []
+        commands.append(('check package', 'ck'))
+        commands.append(('open score.pdf', 'so'))
+        self._other_commands = commands
+        self._package_creation_callback = \
+            self._make_score_into_installable_package
+        self._required_directories = (
+            'build',
+            'distribution',
+            'makers',
+            'materials',
+            'segments',
+            'stylesheets',
+            )
+        self._required_files = (
+            '__init__.py',
+            '__metadata__.py',
+            os.path.join('makers', '__init__.py'),
+            os.path.join('materials', '__init__.py'),
+            os.path.join('segments', '__init__.py'),
+            )
+
+    def _configure_as_segment_package_manager(self):
+        self._basic_breadcrumb = 'SEGMENTS'
+        self._breadcrumb_callback = self._get_name_metadatum
+        self._optional_files = (
+            'illustration.ly',
+            'illustration.pdf',
+            )
+        commands = []
+        commands.append(('check package', 'ck'))
+        commands.append(('illustration.ly - edit', 'ie'))
+        commands.append(('illustration.ly - interpret', 'ii'))
+        commands.append(('definition.py - check', 'dc'))
+        commands.append(('definition.py - edit', 'de'))
+        commands.append(('definition.py - illustrate', 'i'))
+        commands.append(('illustration.pdf - open', 'o'))
+        commands.append(('next package', '>'))
+        commands.append(('previous package', '<'))
+        self._other_commands = commands
+        self._required_files = (
+            '__init__.py',
+            '__metadata__.py',
+            'definition.py',
+            )
+
     def _copy_boilerplate(self, file_name, replacements=None):
         replacements = replacements or {}
         source_path = os.path.join(
@@ -419,6 +512,7 @@ class PackageManager(AssetController):
         else:
             raise ValueError(self)
         return paths
+
 
     def _initialize_file_name_getter(self):
         getter = self._io_manager._make_getter()
