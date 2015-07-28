@@ -680,32 +680,6 @@ class AssetController(Controller):
         elif self._basic_breadcrumb in ('segments', 'SEGMENTS'):
             self._session._is_navigating_to_segments = True
 
-    def _update_order_dependent_segment_metadata(self):
-        managers = self._list_visible_asset_managers()
-        if not managers:
-            return
-        segment_count = len(managers)
-        # update segment numbers and segment count
-        for segment_index, manager in enumerate(managers):
-            segment_number = segment_index + 1
-            manager._add_metadatum('segment_number', segment_number)
-            manager._add_metadatum('segment_count', segment_count)
-        # update first bar numbers and measure counts
-        manager = managers[0]
-        first_bar_number = 1
-        manager._add_metadatum('first_bar_number', first_bar_number)
-        measure_count = manager._get_metadatum('measure_count')
-        if not measure_count:
-            return
-        next_bar_number = first_bar_number + measure_count
-        for manager in managers[1:]:
-            first_bar_number = next_bar_number
-            manager._add_metadatum('first_bar_number', next_bar_number)
-            measure_count = manager._get_metadatum('measure_count')
-            if not measure_count:
-                return
-            next_bar_number = first_bar_number + measure_count
-
     def _write_metadata_py(self, metadata, metadata_py_path=None):
         lines = []
         lines.append(self._configuration.unicode_directive)

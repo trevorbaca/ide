@@ -82,7 +82,3 @@ class SegmentPackageManager(PackageManager):
                 is_hidden=False,
                 name='main visible section',
                 )
-
-    def _update_order_dependent_segment_metadata(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        wrangler._update_order_dependent_segment_metadata()

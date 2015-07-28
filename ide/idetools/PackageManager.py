@@ -778,6 +778,10 @@ class PackageManager(AssetController):
         with systemtools.TemporaryDirectoryChange(directory=self._path):
             self._io_manager.spawn_subprocess(command)
 
+    def _update_order_dependent_segment_metadata(self):
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler._update_order_dependent_segment_metadata()
+
     def _write_enclosing_artifacts(self):
         self._path = self._inner_path
         self._copy_boilerplate('README.md')
