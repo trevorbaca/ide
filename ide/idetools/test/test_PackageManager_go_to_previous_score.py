@@ -34,3 +34,17 @@ def test_PackageManager_go_to_previous_score_02():
         'Étude Example Score (2013)',
         ]
     assert abjad_ide._transcript.titles == titles
+
+
+def test_PackageManager_go_to_previous_score_03():
+    r'''From score package.
+    '''
+
+    input_ = 'red~example~score << q'
+    abjad_ide._run(input_=input_)
+    titles = [
+        'Abjad IDE - scores',
+        'Red Example Score (2013)',
+        'Étude Example Score (2013)',
+        ]
+    assert abjad_ide._transcript.titles == titles

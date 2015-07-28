@@ -36,3 +36,18 @@ def test_PackageManager_go_to_segment_packages_02():
         'Red Example Score (2013) - segments directory',
         ]
     assert abjad_ide._transcript.titles == titles
+
+
+def test_PackageManager_go_to_segment_packages_03():
+    r'''From score package.
+    '''
+
+    input_ = 'red~example~score g q'
+    abjad_ide._run(input_=input_)
+
+    titles = [
+        'Abjad IDE - scores',
+        'Red Example Score (2013)',
+        'Red Example Score (2013) - segments directory',
+        ]
+    assert abjad_ide._transcript.titles == titles

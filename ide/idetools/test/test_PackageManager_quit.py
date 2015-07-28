@@ -24,3 +24,13 @@ def test_PackageManager_quit_02():
     contents = abjad_ide._transcript.contents
 
     assert contents
+
+def test_PackageManager_quit_03():
+    r'''In score package.
+    '''
+
+    input_ = 'red~example~score q'
+    abjad_ide._run(input_=input_)
+    contents = abjad_ide._transcript.contents
+
+    assert contents

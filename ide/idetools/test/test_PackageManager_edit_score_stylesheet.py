@@ -22,3 +22,13 @@ def test_PackageManager_edit_score_stylesheet_02():
     abjad_ide._run(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
+
+
+def test_PackageManager_edit_score_stylesheet_03():
+    r'''In score package.
+    '''
+
+    input_ = 'red~example~score sse q'
+    abjad_ide._run(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file

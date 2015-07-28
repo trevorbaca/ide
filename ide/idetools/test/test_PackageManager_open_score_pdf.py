@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.idetools.AbjadIDE(is_test=True)
 
 
-def test_ScorePackageManager_open_score_pdf_01():
+def test_PackageManager_open_score_pdf_01():
 
     input_ = 'red~example~score so q'
     abjad_ide._run(input_=input_)
@@ -12,7 +12,7 @@ def test_ScorePackageManager_open_score_pdf_01():
     assert abjad_ide._session._attempted_to_open_file
 
 
-def test_ScorePackageManager_open_score_pdf_02():
+def test_PackageManager_open_score_pdf_02():
 
     input_ = 'blue~example~score so q'
     abjad_ide._run(input_=input_)
