@@ -444,10 +444,7 @@ class Wrangler(AssetController):
                 session=self._session,
             )
         elif self._asset_identifier == 'segment package':
-            manager = idetools.SegmentPackageManager(
-                path=path,
-                session=self._session,
-            )
+            manager._configure_as_segment_package_manager()
         return manager
 
     def _get_next_asset_path(self):
