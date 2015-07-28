@@ -24,8 +24,10 @@ def test_Wrangler_rename_01():
         input_ = 'new example~score~100 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path_100)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=path_100, session=abjad_ide._session)
+        manager = ide.idetools.PackageManager(
+            path=path_100, 
+            session=abjad_ide._session,
+            )
         title = 'Example Score 100'
         manager._add_metadatum('title', title)
         input_ = 'ren Example~Score~100 example_score_101 y q'

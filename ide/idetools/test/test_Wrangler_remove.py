@@ -23,8 +23,10 @@ def test_Wrangler_remove_01():
         input_ = 'new example~score~100 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(outer_path)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=inner_path, session=abjad_ide._session)
+        manager = ide.idetools.PackageManager(
+            path=inner_path, 
+            session=abjad_ide._session,
+            )
         title = 'Example Score 100'
         manager._add_metadatum('title', title)
         input_ = 'rm Example~Score~100 remove q'
@@ -65,12 +67,16 @@ def test_Wrangler_remove_02():
         input_ = 'new example~score~101 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(path_101_outer)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=path_100_inner, session=abjad_ide._session)
+        manager = ide.idetools.PackageManager(
+            path=path_100_inner,
+            session=abjad_ide._session,
+            )
         title = 'Example Score 100'
         manager._add_metadatum('title', title)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=path_101_inner, session=abjad_ide._session)
+        manager = ide.idetools.PackageManager(
+            path=path_101_inner,
+            session=abjad_ide._session,
+            )
         title = 'Example Score 101'
         manager._add_metadatum('title', title)
         input_ = 'rm Example~Score~100~-~Example~Score~101 remove~2 q'

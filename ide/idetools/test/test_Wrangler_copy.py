@@ -18,8 +18,10 @@ def test_Wrangler_copy_01():
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(pretty_path)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=pretty_path, session=abjad_ide._session)
+        manager = ide.idetools.PackageManager(
+            path=pretty_path,
+            session=abjad_ide._session,
+            )
         title = 'Pretty Example Score'
         manager._add_metadatum('title', title)
         input_ = 'rm Pretty~Example~Score remove q'

@@ -37,8 +37,10 @@ def test_Wrangler_make_package_01():
         contents = abjad_ide._transcript.contents
         assert os.path.exists(outer_path)
         session = ide.idetools.Session(is_test=True)
-        manager = ide.idetools.ScorePackageManager
-        manager = manager(path=inner_path, session=session)
+        manager = ide.idetools.PackageManager(
+            path=inner_path,
+            session=session,
+            )
         assert manager._list() == inner_directory_entries
         for file_name in outer_directory_entries:
             path = os.path.join(outer_path, file_name)

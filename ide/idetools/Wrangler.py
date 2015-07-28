@@ -439,10 +439,7 @@ class Wrangler(AssetController):
         if self._asset_identifier == 'material package':
             manager._configure_as_material_package_manager()
         elif self._asset_identifier == 'score package':
-            manager = idetools.ScorePackageManager(
-                path=path,
-                session=self._session,
-            )
+            manager._configure_as_score_package_manager()
         elif self._asset_identifier == 'segment package':
             manager._configure_as_segment_package_manager()
         return manager
