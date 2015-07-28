@@ -73,6 +73,7 @@ class PackageManager(AssetController):
         result = result.copy()
         result.update({
             'ck': self.check_package,
+            'so': self.open_score_pdf,
             })
         return result
 
@@ -1019,3 +1020,29 @@ class PackageManager(AssetController):
         result = self._io_manager.run_lilypond(self._illustration_ly_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
+
+    def open_score_pdf(self, dry_run=False):
+        r'''Opens ``score.pdf``.
+
+        Returns none.
+        '''
+        with self._io_manager._make_interaction(dry_run=dry_run):
+            file_name = 'score.pdf'
+            directory = os.path.join(self._path, 'distribution')
+            manager = self._io_manager._make_package_manager(directory)
+            path = manager._get_file_path_ending_with(file_name)
+            if not path:
+                directory = os.path.join(self._path, 'build')
+                manager = self._io_manager._make_package_manager(directory)
+                path = manager._get_file_path_ending_with(file_name)
+            if dry_run:
+                inputs, outputs = [], []
+                if path:
+                    inputs = [path]
+                return inputs, outputs
+            if path:
+                self._io_manager.open_file(path)
+            else:
+                message = "no score.pdf file found"
+                message += ' in either distribution/ or build/ directories.'
+                self._io_manager._display(message)
