@@ -565,8 +565,9 @@ class Session(abctools.AbjadObject):
         '''
         from ide import idetools
         for controller in reversed(self.controller_stack):
-            if isinstance(controller, idetools.ScorePackageManager):
-                return controller
+            if isinstance(controller, idetools.PackageManager):
+                if controller._asset_identifier == 'score package manager':
+                    return controller
 
     @property
     def current_score_package_name(self):
