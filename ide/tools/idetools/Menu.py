@@ -105,13 +105,6 @@ class Menu(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _breadcrumb(self):
-        if self._breadcrumb_callback == 'name':
-            return self.name
-        elif self._breadcrumb_callback:
-            return self._breadcrumb_callback()
-
-    @property
     def _wrangler_navigation_to_session_variable(self):
         result = {
             'd': '_is_navigating_to_distribution_files',
