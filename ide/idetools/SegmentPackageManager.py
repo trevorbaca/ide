@@ -39,10 +39,6 @@ class SegmentPackageManager(PackageManager):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'dc': self.check_definition_py,
-            'de': self.edit_definition_py,
-            'ds': self.write_stub_definition_py,
-            #
             'i': self.illustrate_definition_py,
             #
             'ii': self.interpret_illustration_ly,
@@ -134,13 +130,6 @@ class SegmentPackageManager(PackageManager):
         wrangler._update_order_dependent_segment_metadata()
 
     ### PUBLIC METHODS ###
-
-    def edit_definition_py(self):
-        r'''Edits ``definition.py``.
-
-        Returns none.
-        '''
-        self._io_manager.edit(self._definition_py_path)
 
     def edit_illustration_ly(self):
         r'''Opens ``illustration.ly``.
@@ -276,24 +265,3 @@ class SegmentPackageManager(PackageManager):
         Returns none.
         '''
         self._open_file(self._illustration_pdf_path)
-
-    def write_stub_definition_py(self):
-        r'''Writes stub ``definition.py``.
-
-        Returns none.
-        '''
-        messages = []
-        message = 'will write stub to {}.'
-        message = message.format(self._definition_py_path)
-        messages.append(message)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        source_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            'definition.py',
-            )
-        destination_path = self._definition_py_path
-        shutil.copyfile(source_path, destination_path)

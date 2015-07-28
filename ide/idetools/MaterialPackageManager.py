@@ -59,10 +59,6 @@ class MaterialPackageManager(PackageManager):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'dc': self.check_definition_py,
-            'de': self.edit_definition_py,
-            'ds': self.write_stub_definition_py,
-            #
             'le': self.edit_illustrate_py,
             'ls': self.write_stub_illustrate_py,
             #
@@ -75,7 +71,6 @@ class MaterialPackageManager(PackageManager):
     ### PRIVATE METHODS ###
 
     def _make_definition_py_menu_section(self, menu):
-        name = 'definition.py'
         commands = []
         commands.append(('definition.py - check', 'dc'))
         commands.append(('definition.py - edit', 'de'))
@@ -137,7 +132,7 @@ class MaterialPackageManager(PackageManager):
                 supply_missing=True,
                 )
             self._write_metadata_py(metadata)
-            self.write_stub_definition_py()
+            self._write_stub_definition_py()
 
     def _rename_interactively(
         self,
@@ -181,14 +176,19 @@ class MaterialPackageManager(PackageManager):
     def _set_is_navigating_to_sibling_asset(self):
         self._session._is_navigating_to_materials = True
 
+    def _write_stub_definition_py(self):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        lines.append(self._abjad_import_statement)
+        lines.append('')
+        lines.append('')
+        line = '{} = None'.format(self._package_name)
+        lines.append(line)
+        contents = '\n'.join(lines)
+        with open(self._definition_py_path, 'w') as file_pointer:
+            file_pointer.write(contents)
+
     ### PUBLIC METHODS ###
-
-    def edit_definition_py(self):
-        r'''Edits ``definition.py``.
-
-        Returns none.
-        '''
-        self._io_manager.edit(self._definition_py_path)
 
     def edit_illustrate_py(self):
         r'''Edits ``__illustrate.py__``.
@@ -236,31 +236,6 @@ class MaterialPackageManager(PackageManager):
         message = message .format(name, self._definition_py_path)
         self._session._pending_redraw = True
         self._session._after_redraw_message = message
-
-    # TODO: replace with boilerplate
-    def write_stub_definition_py(self):
-        r'''Writes stub ``definition.py``.
-
-        Returns none.
-        '''
-        message = 'will write stub to {}.'
-        message = message.format(self._definition_py_path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        lines.append(self._abjad_import_statement)
-        lines.append('')
-        lines.append('')
-        line = '{} = None'.format(self._package_name)
-        lines.append(line)
-        contents = '\n'.join(lines)
-        with open(self._definition_py_path, 'w') as file_pointer:
-            file_pointer.write(contents)
-        message = 'wrote stub to {}.'.format(self._definition_py_path)
-        self._io_manager._display(message)
 
     # TODO: replace with boilerplate
     # TODO: maybe eliminate altogether?

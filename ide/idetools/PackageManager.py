@@ -75,6 +75,8 @@ class PackageManager(AssetController):
             '<': self.go_to_previous_package,
             '>': self.go_to_next_package,
             'ck': self.check_package,
+            'dc': self.check_definition_py,
+            'de': self.edit_definition_py,
             'so': self.open_score_pdf,
             })
         return result
@@ -980,6 +982,13 @@ class PackageManager(AssetController):
         else:
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
+
+    def edit_definition_py(self):
+        r'''Edits ``definition.py``.
+
+        Returns none.
+        '''
+        self._io_manager.edit(self._definition_py_path)
 
     def go_to_next_package(self):
         r'''Goes to next package.
