@@ -33,22 +33,6 @@ class SegmentPackageManager(PackageManager):
 
     ### PRIVATE METHODS ###
 
-    def _get_previous_segment_manager(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        managers = wrangler._list_visible_asset_managers()
-        for i, manager in enumerate(managers):
-            if manager._path == self._path:
-                break
-        else:
-            message = 'can not find segment package manager.'
-            raise Exception(message)
-        current_manager_index = i
-        if current_manager_index == 0:
-            return
-        previous_manager_index = current_manager_index - 1
-        previous_manager = managers[previous_manager_index]
-        return previous_manager
-
     def _make_illustration_ly_menu_section(self, menu):
         commands = []
         if os.path.isfile(self._illustration_ly_path):

@@ -74,12 +74,3 @@ class ScorePackageManager(PackageManager):
             commands=commands,
             name='package',
             )
-
-    def _parse_paper_dimensions(self):
-        string = self._get_metadatum('paper_dimensions') or '8.5 x 11 in'
-        parts = string.split()
-        assert len(parts) == 4
-        width, _, height, units = parts
-        width = eval(width)
-        height = eval(height)
-        return width, height, units

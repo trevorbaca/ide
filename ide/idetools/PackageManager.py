@@ -337,6 +337,22 @@ class PackageManager(AssetController):
         next_version_string = '%04d' % next_version_number
         return next_version_string
 
+    def _get_previous_segment_manager(self):
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        managers = wrangler._list_visible_asset_managers()
+        for i, manager in enumerate(managers):
+            if manager._path == self._path:
+                break
+        else:
+            message = 'can not find segment package manager.'
+            raise Exception(message)
+        current_manager_index = i
+        if current_manager_index == 0:
+            return
+        previous_manager_index = current_manager_index - 1
+        previous_manager = managers[previous_manager_index]
+        return previous_manager
+
     def _get_repository_root_directory(self):
         if self._is_in_git_repository():
             command = 'git rev-parse --show-toplevel'
@@ -570,6 +586,15 @@ class PackageManager(AssetController):
         shutil.move(old_path, temporary_path)
         shutil.move(temporary_path, self._inner_path)
         self._write_enclosing_artifacts()
+
+    def _parse_paper_dimensions(self):
+        string = self._get_metadatum('paper_dimensions') or '8.5 x 11 in'
+        parts = string.split()
+        assert len(parts) == 4
+        width, _, height, units = parts
+        width = eval(width)
+        height = eval(height)
+        return width, height, units
 
     def _remove(self):
         path = self._path
