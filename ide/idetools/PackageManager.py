@@ -16,6 +16,7 @@ class PackageManager(AssetController):
     __slots__ = (
         '_asset_identifier',
         '_breadcrumb_callback',
+        '_directory_names',
         '_main_menu',
         '_optional_directories',
         '_optional_files',
@@ -34,6 +35,7 @@ class PackageManager(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = 'package manager'
         self._breadcrumb_callback = None
+        self._directory_names = ()
         self._optional_directories = (
             '__pycache__',
             'test',
@@ -242,6 +244,13 @@ class PackageManager(AssetController):
     def _get_current_directory(self):
         return self._path
 
+    def _get_directory_wranglers(self):
+        wranglers = []
+        for directory_name in self._directory_names:
+            wrangler = self._session.get_wrangler(directory_name)
+            wranglers.append(wrangler)
+        return wranglers
+
     def _get_file_path_ending_with(self, string):
         for file_name in self._list():
             if file_name.endswith(string):
@@ -326,9 +335,6 @@ class PackageManager(AssetController):
             return result
         else:
             return self._get_metadatum('title') or '(untitled score)'
-
-    def _get_top_level_wranglers(self):
-        return ()
 
     def _get_unadded_asset_paths(self):
         paths = []
@@ -854,7 +860,7 @@ class PackageManager(AssetController):
             unrecognized_files
             )
         count = len(names)
-        wranglers = self._get_top_level_wranglers()
+        wranglers = self._get_directory_wranglers()
         if wranglers or not return_messages:
             message = 'top level ({} assets):'.format(count)
             if not found_problems:

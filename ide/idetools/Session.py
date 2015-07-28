@@ -26,7 +26,6 @@ class Session(abctools.AbjadObject):
         ::
 
             >>> session_in_score = ide.idetools.Session()
-            >>> session_in_score._set_test_score('red_example_score')
 
     '''
 
@@ -237,20 +236,6 @@ class Session(abctools.AbjadObject):
         self._is_repository_test = is_add_test
         self._allow_unknown_command_during_test = allow_unknown
 
-    def _set_test_score(self, score_package_name):
-        from ide import idetools
-        assert not self.controller_stack
-        path = os.path.join(
-            self._configuration.example_score_packages_directory,
-            score_package_name,
-            )
-        assert os.path.exists(path)
-        manager = idetools.ScorePackageManager(
-            path=path,
-            session=self,
-            )
-        self._controller_stack.append(manager)
-
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -399,8 +384,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_build_directory
-                '.../red_example_score/build'
+                >>> session_in_score.current_build_directory is None
+                True
 
         Returns string.
         '''
@@ -442,8 +427,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_distribution_directory
-                '.../red_example_score/distribution'
+                >>> session_in_score.current_distribution_directory is None
+                True
 
         Returns string.
         '''
@@ -469,8 +454,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_etc_directory
-                '.../red_example_score/etc'
+                >>> session_in_score.current_etc_directory is None
+                True
 
         Returns string.
         '''
@@ -496,8 +481,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_makers_directory
-                '.../red_example_score/makers'
+                >>> session_in_score.current_makers_directory is None
+                True
 
         Returns string.
         '''
@@ -523,8 +508,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_materials_directory
-                '.../red_example_score/materials'
+                >>> session_in_score.current_materials_directory is None
+                True
 
         Returns string.
         '''
@@ -546,8 +531,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_score_directory
-                '.../red_example_score'
+                >>> session_in_score.current_score_directory is None
+                True
 
         Returns string or none.
         '''
@@ -571,8 +556,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_score_package_manager
-                ScorePackageManager('.../red_example_score')
+                >>> session_in_score.current_score_package_manager is None
+                True
 
         (Ouput will vary according to configuration.)
 
@@ -602,8 +587,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_score_package_name
-                'red_example_score'
+                >>> session_in_score.current_score_package_name is None
+                True
 
         Returns string.
         '''
@@ -625,8 +610,8 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session_in_score.current_segments_directory
-                '.../red_example_score/segments'
+                >>> session_in_score.current_segments_directory is None
+                True
 
         Returns string.
         '''
@@ -1360,3 +1345,22 @@ class Session(abctools.AbjadObject):
             return 'g'
         elif self.is_navigating_to_stylesheets:
             return 'y'
+
+    ### PUBLIC METHODS ###
+
+    def get_wrangler(self, directory_name):
+        r'''Gets wrangler from `directory_name`.
+
+        Returns wrangler or none.
+        '''
+        directory_name_to_wrangler = {
+            'build': self._abjad_ide._build_file_wrangler,
+            'distribution': self._abjad_ide._distribution_file_wrangler,
+            'etc': self._abjad_ide._etc_file_wrangler,
+            'makers': self._abjad_ide._maker_file_wrangler,
+            'materials': self._abjad_ide._material_package_wrangler,
+            'segments': self._abjad_ide._segment_package_wrangler,
+            'stylesheets': self._abjad_ide._stylesheet_wrangler,
+            }
+        wrangler = directory_name_to_wrangler[directory_name]
+        return wrangler

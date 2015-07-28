@@ -49,6 +49,15 @@ class ScorePackageManager(PackageManager):
             segments_init_py,
             ])
         self._required_files = tuple(required_files)
+        self._directory_names = (
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'materials',
+            'segments',
+            'stylesheets',
+            )
 
     ### PRIVATE PROPERTIES ###
 
@@ -98,16 +107,6 @@ class ScorePackageManager(PackageManager):
             lines.append('import materials')
             lines.append('import segments')
         return lines
-
-    def _get_top_level_wranglers(self):
-        return (
-            self._session._abjad_ide._build_file_wrangler,
-            self._session._abjad_ide._distribution_file_wrangler,
-            self._session._abjad_ide._maker_file_wrangler,
-            self._session._abjad_ide._material_package_wrangler,
-            self._session._abjad_ide._segment_package_wrangler,
-            self._session._abjad_ide._stylesheet_wrangler,
-            )
 
     def _make_main_menu(self):
         superclass = super(ScorePackageManager, self)
