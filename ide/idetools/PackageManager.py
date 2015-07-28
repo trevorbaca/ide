@@ -72,6 +72,8 @@ class PackageManager(AssetController):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
+            '<': self.go_to_previous_package,
+            '>': self.go_to_next_package,
             'ck': self.check_package,
             'so': self.open_score_pdf,
             })
