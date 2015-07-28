@@ -25,6 +25,13 @@ class SegmentPackageManager(PackageManager):
             'illustration.ly',
             'illustration.pdf',
             )
+        commands = []
+        commands.append(('check package', 'ck'))
+        commands.append(('illustration.ly - edit', 'ie'))
+        commands.append(('illustration.ly - interpret', 'ii'))
+        commands.append(('definition.py - illustrate', 'i'))
+        commands.append(('illustration.pdf - open', 'o'))
+        self._other_commands = commands
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -33,36 +40,9 @@ class SegmentPackageManager(PackageManager):
 
     ### PRIVATE METHODS ###
 
-    def _make_illustration_ly_menu_section(self, menu):
-        commands = []
-        if os.path.isfile(self._illustration_ly_path):
-            commands.append(('illustration.ly - edit', 'ie'))
-            commands.append(('illustration.ly - interpret', 'ii'))
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='illustration',
-                )
-
     def _make_main_menu(self):
         superclass = super(SegmentPackageManager, self)
         menu = superclass._make_main_menu()
         self._make_definition_py_menu_section(menu)
-        self._make_illustration_ly_menu_section(menu)
-        self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
-        self._make_main_visible_menu_section(menu)
         return menu
-
-    def _make_main_visible_menu_section(self, menu):
-        commands = []
-        commands.append(('definition.py - illustrate', 'i'))
-        if os.path.isfile(self._illustration_pdf_path):
-            commands.append(('illustration.pdf - open', 'o'))
-        if commands:
-            menu.make_command_section(
-                commands=commands,
-                is_hidden=False,
-                name='main visible section',
-                )

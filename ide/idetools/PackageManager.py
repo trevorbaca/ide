@@ -21,6 +21,7 @@ class PackageManager(AssetController):
         '_main_menu',
         '_optional_directories',
         '_optional_files',
+        '_other_commands',
         '_package_creation_callback',
         '_package_name',
         '_path',
@@ -43,6 +44,7 @@ class PackageManager(AssetController):
             'test',
             )
         self._optional_files = ()
+        self._other_commands = ()
         self._package_creation_callback = None
         self._package_name = os.path.basename(path)
         self._path = path
@@ -542,7 +544,16 @@ class PackageManager(AssetController):
         superclass = super(PackageManager, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
+        self._make_other_commands_menu_section(menu)
         return menu
+
+    def _make_other_commands_menu_section(self, menu):
+        if self._other_commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=self._other_commands,
+                name='other commands',
+                )
 
     def _make_package(self):
         assert not os.path.exists(self._path)
@@ -554,18 +565,6 @@ class PackageManager(AssetController):
                 )
         if self._package_creation_callback is not None:
             self._package_creation_callback()
-
-    def _make_package_menu_section(self, menu, commands_only=False):
-        commands = []
-        commands.append(('check package', 'ck'))
-        if commands_only:
-            return commands
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='package',
-                )
 
     def _make_repository_commit_command(self, message):
         if not self._path:

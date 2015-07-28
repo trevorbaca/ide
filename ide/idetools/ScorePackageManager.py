@@ -1,8 +1,5 @@
 # -*- encoding: utf-8 -*-
 import os
-import shutil
-from abjad.tools import indicatortools
-from abjad.tools import systemtools
 from ide.idetools.PackageManager import PackageManager
 
 
@@ -38,6 +35,10 @@ class ScorePackageManager(PackageManager):
             'etc',
             'test',
             )
+        commands = []
+        commands.append(('check package', 'ck'))
+        commands.append(('open score.pdf', 'so'))
+        self._other_commands = commands
         self._package_creation_callback = \
             self._make_score_into_installable_package
         self._required_directories = (
@@ -54,23 +55,4 @@ class ScorePackageManager(PackageManager):
             os.path.join('makers', '__init__.py'),
             os.path.join('materials', '__init__.py'),
             os.path.join('segments', '__init__.py'),
-            )
-
-    ### PRIVATE METHODS ###
-
-    def _make_main_menu(self):
-        superclass = super(ScorePackageManager, self)
-        menu = superclass._make_main_menu()
-        self._make_package_menu_section(menu)
-        return menu
-
-    def _make_package_menu_section(self, menu):
-        superclass = super(ScorePackageManager, self)
-        commands = superclass._make_package_menu_section(
-            menu, commands_only=True)
-        commands.append(('open score.pdf', 'so'))
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='package',
             )

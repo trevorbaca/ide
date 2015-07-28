@@ -24,6 +24,9 @@ class MaterialPackageManager(PackageManager):
             'illustration.pdf',
             'maker.py',
             )
+        commands = []
+        commands.append(('check package', 'ck'))
+        self._other_commands = commands
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -69,6 +72,5 @@ class MaterialPackageManager(PackageManager):
         self._make_illustrate_py_menu_section(menu)
         self._make_illustration_pdf_menu_section(menu)
         self._make_definition_py_menu_section(menu)
-        self._make_package_menu_section(menu)
         self._make_sibling_asset_tour_menu_section(menu)
         return menu
