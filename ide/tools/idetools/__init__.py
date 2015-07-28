@@ -2,10 +2,8 @@
 from abjad.tools import systemtools
 import sys
 if sys.version_info[0] == 2:
-    import getters
     import predicates
 else:
-    from ide.tools.idetools import getters
     from ide.tools.idetools import predicates
 del sys
 
