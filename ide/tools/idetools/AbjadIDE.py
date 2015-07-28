@@ -4,10 +4,10 @@ import shutil
 import sys
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.tools.idetools.AssetController import AssetController
+from ide.tools.idetools.Controller import Controller
 
 
-class AbjadIDE(AssetController):
+class AbjadIDE(Controller):
     r'''Abjad IDE.
 
     ..  container:: example
@@ -23,6 +23,7 @@ class AbjadIDE(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_basic_breadcrumb',
         )
 
     ### INITIALIZER ###
