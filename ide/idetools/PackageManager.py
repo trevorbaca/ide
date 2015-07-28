@@ -695,12 +695,6 @@ class PackageManager(AssetController):
                     if self._exit_run():
                         break
 
-    def _set_is_navigating_to_sibling_asset(self):
-        if self._basic_breadcrumb == 'MATERIALS':
-            self._session._is_navigating_to_materials = True            
-        elif self._basic_breadcrumb == 'SEGMENTS':
-            self._session._is_navigating_to_segments = True
-
     def _space_delimited_lowercase_name_to_asset_name(
         self, space_delimited_lowercase_name):
         space_delimited_lowercase_name = space_delimited_lowercase_name.lower()

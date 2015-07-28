@@ -674,6 +674,12 @@ class AssetController(Controller):
         command = command.format(remove_command, paths)
         self._io_manager.run_command(command)
 
+    def _set_is_navigating_to_sibling_asset(self):
+        if self._basic_breadcrumb in ('materials', 'MATERIALS'):
+            self._session._is_navigating_to_materials = True            
+        elif self._basic_breadcrumb in ('segments', 'SEGMENTS'):
+            self._session._is_navigating_to_segments = True
+
     def _update_order_dependent_segment_metadata(self):
         managers = self._list_visible_asset_managers()
         if not managers:
