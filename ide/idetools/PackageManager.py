@@ -179,6 +179,22 @@ class PackageManager(AssetController):
         with self._io_manager._silent():
             self._write_metadata_py(metadata)
 
+    def _copy_boilerplate(self, file_name, replacements=None):
+        replacements = replacements or {}
+        source_path = os.path.join(
+            self._configuration.abjad_ide_directory,
+            'boilerplate',
+            file_name,
+            )
+        destination_path = os.path.join(
+            self._outer_path,
+            file_name,
+            )
+        shutil.copyfile(source_path, destination_path)
+        for old in replacements:
+            new = replacements[old]
+            self._replace_in_file(destination_path, old, new)
+
     @staticmethod
     def _file_name_to_version_number(file_name):
         root, extension = os.path.splitext(file_name)
@@ -330,6 +346,25 @@ class PackageManager(AssetController):
             return line
         else:
             raise ValueError(self)
+
+    def _get_score_initializer_file_lines(self, missing_file):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        if 'materials' in missing_file or 'makers' in missing_file:
+            lines.append('from abjad.tools import systemtools')
+            lines.append('')
+            line = 'systemtools.ImportManager.import_material_packages('
+            lines.append(line)
+            lines.append('    __path__[0],')
+            lines.append('    globals(),')
+            lines.append('    )')
+        elif 'segments' in missing_file:
+            pass
+        else:
+            lines.append('import makers')
+            lines.append('import materials')
+            lines.append('import segments')
+        return lines
 
     def _get_score_package_directory_name(self):
         line = self._path
@@ -1006,7 +1041,11 @@ class PackageManager(AssetController):
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                lines = self._get_initializer_file_lines(missing_file)
+                if self._asset_identifier == 'score package':
+                    lines = self._get_score_initializer_file_lines(
+                        missing_file)
+                else:
+                    lines = self._get_initializer_file_lines(missing_file)
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
                 lines.append(self._configuration.unicode_directive)

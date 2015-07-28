@@ -58,41 +58,6 @@ class ScorePackageManager(PackageManager):
 
     ### PRIVATE METHODS ###
 
-    def _copy_boilerplate(self, file_name, replacements=None):
-        replacements = replacements or {}
-        source_path = os.path.join(
-            self._configuration.abjad_ide_directory,
-            'boilerplate',
-            file_name,
-            )
-        destination_path = os.path.join(
-            self._outer_path,
-            file_name,
-            )
-        shutil.copyfile(source_path, destination_path)
-        for old in replacements:
-            new = replacements[old]
-            self._replace_in_file(destination_path, old, new)
-
-    def _get_initializer_file_lines(self, missing_file):
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        if 'materials' in missing_file or 'makers' in missing_file:
-            lines.append('from abjad.tools import systemtools')
-            lines.append('')
-            line = 'systemtools.ImportManager.import_material_packages('
-            lines.append(line)
-            lines.append('    __path__[0],')
-            lines.append('    globals(),')
-            lines.append('    )')
-        elif 'segments' in missing_file:
-            pass
-        else:
-            lines.append('import makers')
-            lines.append('import materials')
-            lines.append('import segments')
-        return lines
-
     def _make_main_menu(self):
         superclass = super(ScorePackageManager, self)
         menu = superclass._make_main_menu()
