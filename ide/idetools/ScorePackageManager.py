@@ -23,32 +23,6 @@ class ScorePackageManager(PackageManager):
         self._annotate_year = True
         self._asset_identifier = 'score package manager'
         self._breadcrumb_callback = self._get_title
-        self._include_asset_name = False
-        optional_directories = list(self._optional_directories)
-        optional_directories.extend([
-            'etc',
-            ])
-        self._optional_directories = tuple(optional_directories)
-        required_directories = list(self._required_directories)
-        required_directories.extend([
-            'build',
-            'distribution',
-            'makers',
-            'materials',
-            'segments',
-            'stylesheets',
-            ])
-        self._required_directories = tuple(required_directories)
-        required_files = list(self._required_files)
-        makers_init_py = os.path.join('makers', '__init__.py')
-        materials_init_py = os.path.join('materials', '__init__.py')
-        segments_init_py = os.path.join('segments', '__init__.py')
-        required_files.extend([
-            makers_init_py,
-            materials_init_py,
-            segments_init_py,
-            ])
-        self._required_files = tuple(required_files)
         self._directory_names = (
             'build',
             'distribution',
@@ -57,6 +31,27 @@ class ScorePackageManager(PackageManager):
             'materials',
             'segments',
             'stylesheets',
+            )
+        self._include_asset_name = False
+        self._optional_directories = (
+            '__pycache__',
+            'etc',
+            'test',
+            )
+        self._required_directories = (
+            'build',
+            'distribution',
+            'makers',
+            'materials',
+            'segments',
+            'stylesheets',
+            )
+        self._required_files = (
+            '__init__.py',
+            '__metadata__.py',
+            os.path.join('makers', '__init__.py'),
+            os.path.join('materials', '__init__.py'),
+            os.path.join('segments', '__init__.py'),
             )
 
     ### PRIVATE METHODS ###

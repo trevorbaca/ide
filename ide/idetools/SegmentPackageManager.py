@@ -21,17 +21,15 @@ class SegmentPackageManager(PackageManager):
         superclass = super(SegmentPackageManager, self)
         superclass.__init__(path=path, session=session)
         self._breadcrumb_callback = self._get_name_metadatum
-        optional_files = list(self._optional_files)
-        optional_files.extend([
+        self._optional_files = (
             'illustration.ly',
             'illustration.pdf',
-            ])
-        self._optional_files = tuple(optional_files)
-        required_files = list(self._required_files)
-        required_files.extend([
+            )
+        self._required_files = (
+            '__init__.py',
+            '__metadata__.py',
             'definition.py',
-            ])
-        self._required_files = tuple(required_files)
+            )
 
     ### PRIVATE PROPERTIES ###
 
