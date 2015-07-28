@@ -140,17 +140,6 @@ class Wrangler(AssetController):
             manager = self._views_package_manager
         return manager._metadata_py_path
 
-    @property
-    def _views_py_path(self):
-        if self._session.is_in_score:
-            directory = self._get_current_directory()
-            return os.path.join(directory, '__views__.py')
-        else:
-            directory = self._configuration.wrangler_views_directory
-            class_name = type(self).__name__
-            file_name = '__{}_views__.py'.format(class_name)
-            return os.path.join(directory, file_name)
-
     ### PRIVATE METHODS ###
 
     def _call_lilypond_on_file_ending_with(self, string):
@@ -1007,6 +996,27 @@ class Wrangler(AssetController):
         result = result.strip()
         return result
 
+    def _supply_missing_views_files(self):
+        from ide.tools import idetools
+        if not os.path.exists(self._views_py_path):
+            view_inventory = idetools.ViewInventory()
+            with self._io_manager._silent():
+                self._write_view_inventory(view_inventory)
+        if not os.path.exists(self._metadata_py_path):
+            metadata = self._get_metadata()
+            with self._io_manager._silent():
+                self._write_metadata_py(metadata)
+        if self._session.is_test:
+            with self._io_manager._silent():
+                for wrangler in self._session._abjad_ide._wranglers:
+                    if not os.path.exists(wrangler._views_py_path):
+                        wrangler.write_views_py()
+        else:
+            with self._io_manager._silent():
+                for wrangler in self._session._abjad_ide._wranglers:
+                    view_inventory = idetools.ViewInventory()
+                    wrangler._write_view_inventory(view_inventory)
+
     @staticmethod
     def _to_dash_case(file_name):
         file_name = file_name.replace(' ', '-')
@@ -1060,21 +1070,6 @@ class Wrangler(AssetController):
                 return
             next_bar_number = first_bar_number + measure_count
             
-    def _write_view_inventory(self, view_inventory):
-        lines = []
-        lines.append(self._configuration.unicode_directive)
-        lines.append(self._abjad_import_statement)
-        lines.append('from ide.tools import idetools')
-        lines.append('')
-        lines.append('')
-        view_inventory = self._sort_ordered_dictionary(view_inventory)
-        line = 'view_inventory={}'.format(format(view_inventory))
-        lines.append(line)
-        contents = '\n'.join(lines)
-        self._io_manager.write(self._views_py_path, contents)
-        message = 'view inventory written to disk.'
-        self._io_manager._display(message)
-
     ### PUBLIC METHODS ###
 
     def add_every_asset(self):

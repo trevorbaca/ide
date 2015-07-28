@@ -100,6 +100,17 @@ class AssetController(Controller):
         path = self._configuration.wrangler_views_directory
         return self._io_manager._make_package_manager(path)
 
+    @property
+    def _views_py_path(self):
+        if self._session.is_in_score:
+            directory = self._get_current_directory()
+            return os.path.join(directory, '__views__.py')
+        else:
+            directory = self._configuration.wrangler_views_directory
+            class_name = type(self).__name__
+            file_name = '__{}_views__.py'.format(class_name)
+            return os.path.join(directory, file_name)
+
     ### PRIVATE METHODS ###
 
     def _enter_run(self):
@@ -697,6 +708,21 @@ class AssetController(Controller):
         metadata_py_path = metadata_py_path or self._metadata_py_path
         with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
+
+    def _write_view_inventory(self, view_inventory):
+        lines = []
+        lines.append(self._configuration.unicode_directive)
+        lines.append(self._abjad_import_statement)
+        lines.append('from ide.tools import idetools')
+        lines.append('')
+        lines.append('')
+        view_inventory = self._sort_ordered_dictionary(view_inventory)
+        line = 'view_inventory={}'.format(format(view_inventory))
+        lines.append(line)
+        contents = '\n'.join(lines)
+        self._io_manager.write(self._views_py_path, contents)
+        message = 'view inventory written to disk.'
+        self._io_manager._display(message)
 
     ### PUBLIC METHODS ###
 

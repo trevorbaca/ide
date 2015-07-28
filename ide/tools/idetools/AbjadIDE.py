@@ -4,10 +4,10 @@ import shutil
 import sys
 from abjad.tools import stringtools
 from abjad.tools import systemtools
-from ide.tools.idetools.Wrangler import Wrangler
+from ide.tools.idetools.AssetController import AssetController
 
 
-class AbjadIDE(Wrangler):
+class AbjadIDE(AssetController):
     r'''Abjad IDE.
 
     ..  container:: example
@@ -17,7 +17,6 @@ class AbjadIDE(Wrangler):
             >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
             >>> abjad_ide
             AbjadIDE()
-
 
     '''
 
@@ -41,7 +40,7 @@ class AbjadIDE(Wrangler):
         self._session._abjad_ide = self
         self._simple_score_annotation = True
         self._sort_by_annotation = True
-        self._supply_missing_views_files()
+        self._score_package_wrangler._supply_missing_views_files()
 
     ### PRIVATE PROPERTIES ###
 
@@ -321,27 +320,6 @@ class AbjadIDE(Wrangler):
                     if self._session._clear_terminal_after_quit:
                         self._io_manager.clear_terminal()
                     return
-
-    def _supply_missing_views_files(self):
-        from ide.tools import idetools
-        if not os.path.exists(self._views_py_path):
-            view_inventory = idetools.ViewInventory()
-            with self._io_manager._silent():
-                self._write_view_inventory(view_inventory)
-        if not os.path.exists(self._metadata_py_path):
-            metadata = self._get_metadata()
-            with self._io_manager._silent():
-                self._write_metadata_py(metadata)
-        if self._session.is_test:
-            with self._io_manager._silent():
-                for wrangler in self._wranglers:
-                    if not os.path.exists(wrangler._views_py_path):
-                        wrangler.write_views_py()
-        else:
-            with self._io_manager._silent():
-                for wrangler in self._wranglers:
-                    view_inventory = idetools.ViewInventory()
-                    wrangler._write_view_inventory(view_inventory)
 
     def _update_session_variables(self):
         self._session._is_backtracking_to_score = False
