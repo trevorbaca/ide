@@ -2,6 +2,7 @@
 from __future__ import print_function
 import os
 import shutil
+import time
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.idetools.AssetController import AssetController
@@ -77,11 +78,13 @@ class PackageManager(AssetController):
             'ck': self.check_package,
             'dc': self.check_definition_py,
             'de': self.edit_definition_py,
+            'i': self.illustrate_definition_py,
             'ie': self.edit_illustration_ly,
             'ii': self.interpret_illustration_ly,
             'io': self.open_illustration_pdf,
             'le': self.edit_illustrate_py,
             'ls': self.write_stub_illustrate_py,
+            'o': self.open_illustration_pdf,
             'so': self.open_score_pdf,
             })
         return result
@@ -1022,6 +1025,127 @@ class PackageManager(AssetController):
         Returns none.
         '''
         self._go_to_previous_package()
+
+    def illustrate_definition_py(self, dry_run=False):
+        r'''Illustrates ``definition.py``.
+
+        Makes ``illustration.ly`` and ``illustration.pdf``.
+
+        Returns none.
+        '''
+        if not os.path.isfile(self._definition_py_path):
+            message = 'File not found: {}.'
+            message = message.format(self._definition_py_path)
+            self._io_manager._display(message)
+            return
+        self._update_order_dependent_segment_metadata()
+        boilerplate_path = os.path.join(
+            self._configuration.abjad_ide_directory,
+            'boilerplate',
+            '__illustrate_segment__.py',
+            )
+        illustrate_path = os.path.join(
+            self._path,
+            '__illustrate_segment__.py',
+            )
+        candidate_ly_path = os.path.join(
+            self._path,
+            'illustration.candidate.ly'
+            )
+        candidate_pdf_path = os.path.join(
+            self._path,
+            'illustration.candidate.pdf'
+            )
+        temporary_files = (
+            illustrate_path,
+            candidate_ly_path,
+            candidate_pdf_path,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        illustration_ly_path = os.path.join(
+            self._path,
+            'illustration.ly',
+            )
+        illustration_pdf_path = os.path.join(
+            self._path,
+            'illustration.pdf',
+            )
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(self._definition_py_path)
+            outputs.append((illustration_ly_path, illustration_pdf_path))
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(boilerplate_path, illustrate_path)
+            previous_segment_manager = self._get_previous_segment_manager()
+            if previous_segment_manager is None:
+                statement = 'previous_segment_metadata = None'
+            else:
+                score_name = self._session.current_score_directory
+                score_name = os.path.basename(score_name)
+                previous_segment_name = previous_segment_manager._path
+                previous_segment_name = os.path.basename(previous_segment_name)
+                statement = 'from {}.segments.{}.__metadata__'
+                statement += ' import metadata as previous_segment_metadata'
+                statement = statement.format(score_name, previous_segment_name)
+            self._replace_in_file(
+                illustrate_path,
+                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
+                statement,
+                )
+            with self._io_manager._silent():
+                start_time = time.time()
+                result = self._io_manager.interpret_file(
+                    illustrate_path,
+                    strip=False,
+                    )
+                stop_time = time.time()
+                total_time = stop_time - start_time
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            message = 'total time: {} seconds.'
+            message = message.format(int(total_time))
+            self._io_manager._display(message)
+            if not os.path.exists(illustration_pdf_path):
+                messages = []
+                messages.append('Wrote ...')
+                tab = self._io_manager._tab
+                if os.path.exists(candidate_ly_path):
+                    shutil.move(candidate_ly_path, illustration_ly_path)
+                    messages.append(tab + illustration_ly_path)
+                if os.path.exists(candidate_pdf_path):
+                    shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    messages.append(tab + illustration_pdf_path)
+                self._io_manager._display(messages)
+            else:
+                result = systemtools.TestManager.compare_files(
+                candidate_pdf_path,
+                illustration_pdf_path,
+                )
+                messages = self._make_candidate_messages(
+                    result, candidate_pdf_path, illustration_pdf_path)
+                self._io_manager._display(messages)
+                if result:
+                    message = 'preserved {}.'.format(illustration_pdf_path)
+                    self._io_manager._display(message)
+                    return
+                else:
+                    message = 'overwrite existing PDF with candidate PDF?'
+                    result = self._io_manager._confirm(message=message)
+                    if self._session.is_backtracking or not result:
+                        return
+                    try:
+                        shutil.move(candidate_ly_path, illustration_ly_path)
+                    except IOError:
+                        pass
+                    try:
+                        shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    except IOError:
+                        pass
 
     def interpret_illustration_ly(self, dry_run=False):
         r'''Interprets ``illustration.ly``.
