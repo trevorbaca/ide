@@ -23,7 +23,6 @@ class AbjadIDE(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_sort_by_annotation',
         )
 
     ### INITIALIZER ###
@@ -37,7 +36,6 @@ class AbjadIDE(AssetController):
         superclass.__init__(session=session)
         self._basic_breadcrumb = 'Abjad IDE'
         self._session._abjad_ide = self
-        self._sort_by_annotation = True
         self._score_package_wrangler._supply_missing_views_files()
 
     ### PRIVATE PROPERTIES ###
