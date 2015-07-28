@@ -1066,7 +1066,7 @@ class PromptMakerMixin(AbjadObject):
             return False
         if not x == 'x':
             return False
-        if not is_page_layout_unit(units):
+        if not PromptMakerMixin.is_page_layout_unit(units):
             return False
         return True
 
