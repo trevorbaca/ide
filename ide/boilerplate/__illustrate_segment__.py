@@ -3,7 +3,7 @@ import os
 import sys
 import traceback
 from abjad import persist
-from ide import idetools
+from ide.tools import idetools
 
 
 if __name__ == '__main__':

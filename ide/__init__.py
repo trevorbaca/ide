@@ -53,9 +53,9 @@ all tests pass.
 '''
 import sys
 if sys.version_info[0] == 2:
-    import idetools
+    from tools import idetools
 else:
-    from ide import idetools
+    from ide.tools import idetools
 configuration = idetools.Configuration()
 sys.path.insert(0, configuration.example_score_packages_directory)
 del configuration
