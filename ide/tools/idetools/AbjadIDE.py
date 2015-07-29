@@ -50,8 +50,8 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
+        wrangler._directory_name = 'build'
         wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._score_storehouse_path_infix_parts = ('build',)
         wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
@@ -78,11 +78,11 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
+        wrangler._directory_name = 'distribution'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
-        wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
 
     @property
@@ -92,11 +92,11 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
+        wrangler._directory_name = 'etc'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
-        wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
 
     @property
@@ -106,11 +106,11 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
+        wrangler._directory_name = 'makers'
         wrangler._file_extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._force_lowercase_file_name = False
         wrangler._new_file_contents = wrangler._unicode_directive
-        wrangler._score_storehouse_path_infix_parts = ('makers',)
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
         return wrangler
@@ -122,9 +122,9 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
+        wrangler._directory_name = 'materials'
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry
-        wrangler._score_storehouse_path_infix_parts = ('materials',)
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -177,9 +177,9 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
-        wrangler._score_storehouse_path_infix_parts = ('segments',)
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry
+        wrangler._directory_name = 'segments'
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -198,9 +198,9 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
+        wrangler._directory_name = 'stylesheets'
         wrangler._file_extension = '.ily'
         wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry

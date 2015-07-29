@@ -222,9 +222,10 @@ class AssetController(Controller):
     def _get_current_directory(self):
         score_directory = self._session.current_score_directory
         if score_directory is not None:
-            parts = (score_directory,)
-            parts += self._score_storehouse_path_infix_parts
-            directory = os.path.join(*parts)
+            directory = os.path.join(
+                score_directory,
+                self._directory_name,
+                )
             directory = os.path.abspath(directory)
             return directory
 

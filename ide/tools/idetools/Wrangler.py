@@ -25,13 +25,14 @@ class Wrangler(AssetController):
     __slots__ = (
         '_controller_commands',
         '_copy_to_directory',
+        '_directory_name',
         '_file_extension',
         '_file_name_predicate',
         '_force_lowercase_file_name',
         '_hide_breadcrumb_while_in_score',
         '_new_file_contents',
         '_only_example_scores_during_test',
-        '_score_storehouse_path_infix_parts',
+        '_directory_name',
         '_sort_by_annotation',
         '_use_dash_case',
         )
@@ -53,7 +54,7 @@ class Wrangler(AssetController):
         self._hide_breadcrumb_while_in_score = False
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
-        self._score_storehouse_path_infix_parts = ()
+        self._directory_name = None
         self._sort_by_annotation = True
         self._use_dash_case = False
 
@@ -135,12 +136,11 @@ class Wrangler(AssetController):
     @property
     def _current_storehouse_path(self):
         if self._session.is_in_score:
-            parts = []
-            parts.append(self._session.current_score_directory)
-            parts.extend(self._score_storehouse_path_infix_parts)
-            return os.path.join(*parts)
-        else:
-            return self._configuration.composer_scores_directory
+            return os.path.join(
+                self._session.current_score_directory,
+                self._directory_name,
+                )
+        return self._configuration.composer_scores_directory
 
     @property
     def _init_py_file_path(self):
@@ -614,23 +614,23 @@ class Wrangler(AssetController):
         result = []
         if user_score_packages:
             result.append(self._configuration.composer_scores_directory)
-        if (example_score_packages and
-            self._score_storehouse_path_infix_parts):
+        if (example_score_packages and self._directory_name):
             for score_directory in self._list_score_directories(abjad=True):
                 score_directory = self._path_to_score_path(score_directory)
                 parts = [score_directory]
-                if self._score_storehouse_path_infix_parts:
-                    parts.extend(self._score_storehouse_path_infix_parts)
+                # TODO: should always have directory name?
+                if self._directory_name:
+                    parts.append(self._directory_name)
                 storehouse_path = os.path.join(*parts)
                 result.append(storehouse_path)
-        elif (example_score_packages and
-            not self._score_storehouse_path_infix_parts):
+        elif (example_score_packages and not self._directory_name):
             result.append(self._configuration.abjad_ide_example_scores_directory)
-        if user_score_packages and self._score_storehouse_path_infix_parts:
+        if user_score_packages and self._directory_name:
             for directory in self._list_score_directories(user=True):
                 parts = [directory]
-                if self._score_storehouse_path_infix_parts:
-                    parts.extend(self._score_storehouse_path_infix_parts)
+                # TODO: should always have directory name?
+                if self._directory_name:
+                    parts.append(self._directory_name)
                 path = os.path.join(*parts)
                 result.append(path)
         return result
@@ -704,7 +704,7 @@ class Wrangler(AssetController):
             entries.append(entry)
         if set_view:
             entries = self._filter_asset_menu_entries_by_view(entries)
-        if self._session.is_test and self._only_example_scores_during_test):
+        if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         elif not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
@@ -876,9 +876,10 @@ class Wrangler(AssetController):
         for path in paths:
             manager = wrangler._get_manager(path)
             display_strings.append(manager._get_title(year=False))
-            path_parts = (manager._path,)
-            path_parts = path_parts + self._score_storehouse_path_infix_parts
-            key = os.path.join(*path_parts)
+            key = os.path.join(
+                manager._path,
+                self._directory_name,
+                )
             keys.append(key)
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
