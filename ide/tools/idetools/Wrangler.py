@@ -195,8 +195,7 @@ class Wrangler(AssetController):
             if not os.path.isfile(source_file_path):
                 continue
             score_path = self._session.current_score_directory
-            score_package = self._configuration.path_to_package(
-                score_path)
+            score_package = self._configuration._path_to_package(score_path)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
             target_file_name = directory_entry + file_extension
@@ -571,6 +570,41 @@ class Wrangler(AssetController):
             directories.extend(result)
         return directories
 
+    def _list_score_directories(
+        self,
+        abjad=False,
+        user=False,
+        ):
+        result = []
+        if abjad:
+            scores_directory = self._configuration.example_scores_directory
+            directory_entries = sorted(os.listdir(scores_directory))
+            for directory_entry in directory_entries:
+                if directory_entry[0].isalpha():
+                    path = os.path.join(
+                        self._configuration.example_scores_directory,
+                        directory_entry,
+                        )
+                    result.append(path)
+        if user:
+            scores_directory = self._configuration.scores_directory
+            directory_entries = sorted(os.listdir(scores_directory))
+            for directory_entry in directory_entries:
+                if not directory_entry[0].isalpha():
+                    continue
+                path = os.path.join(
+                    self._configuration.scores_directory,
+                    directory_entry,
+                    )
+                init_path = os.path.join(path, '__init__.py')
+                if not os.path.exists(init_path):
+                    path = os.path.join(path, directory_entry)
+                    init_path = os.path.join(path, '__init__.py')
+                    if not os.path.exists(init_path):
+                        continue
+                result.append(path)
+        return result
+
     def _list_storehouse_paths(
         self,
         example_score_packages=True,
@@ -581,8 +615,7 @@ class Wrangler(AssetController):
             result.append(self._configuration.scores_directory)
         if (example_score_packages and
             self._score_storehouse_path_infix_parts):
-            for score_directory in \
-                self._configuration.list_score_directories(abjad=True):
+            for score_directory in self._list_score_directories(abjad=True):
                 score_directory = self._configuration._path_to_score_path(
                     score_directory)
                 parts = [score_directory]
@@ -594,8 +627,7 @@ class Wrangler(AssetController):
             not self._score_storehouse_path_infix_parts):
             result.append(self._configuration.example_scores_directory)
         if user_score_packages and self._score_storehouse_path_infix_parts:
-            for directory in \
-                self._configuration.list_score_directories(user=True):
+            for directory in self._list_score_directories(user=True):
                 parts = [directory]
                 if self._score_storehouse_path_infix_parts:
                     parts.extend(self._score_storehouse_path_infix_parts)

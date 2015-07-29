@@ -112,6 +112,33 @@ class Configuration(AbjadConfiguration):
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
+    def _path_to_package(self, path):
+        if path is None:
+            return
+        assert isinstance(path, str), repr(path)
+        path = os.path.normpath(path)
+        if path.endswith('.py'):
+            path, file_extension = os.path.splitext(path)
+        if path.startswith(self.example_scores_directory):
+            prefix = len(self.example_scores_directory) + 1
+        elif path.startswith(self.abjad_ide_directory):
+            prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
+        elif path.startswith(self.scores_directory):
+            prefix = len(self.scores_directory) + 1
+        else:
+            message = 'can not change path to package: {!r}.'
+            message = message.format(path)
+            raise Exception(message)
+        package = path[prefix:]
+        if path.startswith(self.example_scores_directory):
+            # change red_example_score/red_example_score/materials/foo
+            # to red_example_score/materials/foo
+            parts = package.split(os.path.sep)
+            parts = parts[1:]
+            package = os.path.sep.join(parts)
+        package = package.replace(os.path.sep, '.')
+        return package
+
     def _path_to_score_path(self, path):
         is_user_score = False
         if path.startswith(self.scores_directory):
@@ -285,21 +312,6 @@ class Configuration(AbjadConfiguration):
         return os.path.join(self.abjad_configuration_directory, 'ide')
 
     @property
-    def configuration_file_name(self):
-        r'''Gets configuration file name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.configuration_file_name
-                'ide.cfg'
-
-        Returns string.
-        '''
-        return 'ide.cfg'
-
-    @property
     def configuration_file_path(self):
         r'''Gets configuration file path.
 
@@ -314,7 +326,7 @@ class Configuration(AbjadConfiguration):
         '''
         return os.path.join(
             self.configuration_directory,
-            self.configuration_file_name,
+            'ide.cfg',
             )
 
     @property
@@ -440,89 +452,3 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(self.configuration_directory, 'views')
-
-    ### PUBLIC METHODS ###
-
-    def list_score_directories(
-        self,
-        abjad=False,
-        user=False,
-        ):
-        r'''Lists score directories.
-
-        ..  container:: example
-
-            Lists Abjad score directories:
-
-            ::
-
-                >>> for x in configuration.list_score_directories(
-                ...     abjad=True,
-                ...     ):
-                ...     x
-                '.../ide/scores/blue_example_score'
-                '.../ide/scores/etude_example_score'
-                '.../ide/scores/red_example_score'
-
-        Returns list.
-        '''
-        result = []
-        if abjad:
-            scores_directory = self.example_scores_directory
-            directory_entries = sorted(os.listdir(scores_directory))
-            for directory_entry in directory_entries:
-                if directory_entry[0].isalpha():
-                    path = os.path.join(
-                        self.example_scores_directory,
-                        directory_entry,
-                        )
-                    result.append(path)
-        if user:
-            scores_directory = self.scores_directory
-            directory_entries = sorted(os.listdir(scores_directory))
-            for directory_entry in directory_entries:
-                if not directory_entry[0].isalpha():
-                    continue
-                path = os.path.join(
-                    self.scores_directory,
-                    directory_entry,
-                    )
-                init_path = os.path.join(path, '__init__.py')
-                if not os.path.exists(init_path):
-                    path = os.path.join(path, directory_entry)
-                    init_path = os.path.join(path, '__init__.py')
-                    if not os.path.exists(init_path):
-                        continue
-                result.append(path)
-        return result
-
-    def path_to_package(self, path):
-        r'''Changes `path` to package.
-
-        Returns string.
-        '''
-        if path is None:
-            return
-        assert isinstance(path, str), repr(path)
-        path = os.path.normpath(path)
-        if path.endswith('.py'):
-            path, file_extension = os.path.splitext(path)
-        if path.startswith(self.example_scores_directory):
-            prefix = len(self.example_scores_directory) + 1
-        elif path.startswith(self.abjad_ide_directory):
-            prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
-        elif path.startswith(self.scores_directory):
-            prefix = len(self.scores_directory) + 1
-        else:
-            message = 'can not change path to package: {!r}.'
-            message = message.format(path)
-            raise Exception(message)
-        package = path[prefix:]
-        if path.startswith(self.example_scores_directory):
-            # change red_example_score/red_example_score/materials/foo
-            # to red_example_score/materials/foo
-            parts = package.split(os.path.sep)
-            parts = parts[1:]
-            package = os.path.sep.join(parts)
-        package = package.replace(os.path.sep, '.')
-        return package
