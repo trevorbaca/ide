@@ -393,22 +393,6 @@ class Session(abctools.AbjadObject):
             return os.path.join(self.current_score_directory, 'build')
 
     @property
-    def current_controller(self):
-        r'''Gets current controller of session.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.current_controller is None
-                True
-
-        Returns wrangler or manager.
-        '''
-        if self.controller_stack:
-            return self.controller_stack[-1]
-
-    @property
     def current_distribution_directory(self):
         r'''Gets session current distribution directory.
 

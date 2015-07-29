@@ -358,6 +358,28 @@ class AssetController(Controller):
             message = message.format(result)
             raise Exception(message)
 
+    @staticmethod
+    def _is_directory_with_metadata_py(path):
+        if os.path.isdir(path):
+            for directory_entry in sorted(os.listdir(path)):
+                if directory_entry == '__metadata__.py':
+                    return True
+        return False
+
+    @staticmethod
+    def _list_directories_with_metadata_pys(path):
+        paths = []
+        for directory, subdirectory_names, file_names in os.walk(path):
+            if AssetController._is_directory_with_metadata_py(directory):
+                if directory not in paths:
+                    paths.append(directory)
+            for subdirectory_name in subdirectory_names:
+                path = os.path.join(directory, subdirectory_name)
+                if AssetController._is_directory_with_metadata_py(path):
+                    if path not in paths:
+                        paths.append(path)
+        return paths
+
     def _is_valid_directory_entry(self, directory_entry):
         if directory_entry[0].isalpha():
             if not directory_entry.endswith('.pyc'):

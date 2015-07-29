@@ -1,5 +1,4 @@
 # -*- encoding: utf -*-
-import abc
 import codecs
 import os
 import sys
@@ -12,8 +11,6 @@ class Controller(object):
 
     ### CLASS VARIABLES ###
 
-    __meta__ = abc.ABCMeta
-
     __slots__ = (
         '_configuration',
         '_io_manager',
@@ -23,7 +20,6 @@ class Controller(object):
 
     ### INTIIALIZER ###
 
-    @abc.abstractmethod
     def __init__(self, session=None):
         from ide.tools import idetools
         self._configuration = idetools.Configuration()
@@ -91,46 +87,6 @@ class Controller(object):
         return 4 * ' '
 
     ### PRIVATE METHODS ###
-
-    @staticmethod
-    def _is_directory_with_metadata_py(path):
-        if os.path.isdir(path):
-            for directory_entry in sorted(os.listdir(path)):
-                if directory_entry == '__metadata__.py':
-                    return True
-        return False
-
-    def _list_directories_with_metadata_pys(self, path=None):
-        path = path or self._path
-        paths = []
-        for directory, subdirectory_names, file_names in os.walk(path):
-            if self._is_directory_with_metadata_py(directory):
-                if directory not in paths:
-                    paths.append(directory)
-            for subdirectory_name in subdirectory_names:
-                path = os.path.join(directory, subdirectory_name)
-                if self._is_directory_with_metadata_py(path):
-                    if path not in paths:
-                        paths.append(path)
-        return paths
-
-    def _list_python_files_in_visible_assets(self):
-        assets = []
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            if os.path.isdir(path):
-                triples = os.walk(path)
-                for directory, subdirectory_names, file_names in triples:
-                    for file_name in file_names:
-                        if file_name.endswith('.py'):
-                            file_path = os.path.join(
-                                directory, 
-                                file_name,
-                                )
-                            assets.append(file_path)
-            elif os.path.isfile(path) and path.endswith('.py'):
-                assets.append(path)
-        return assets
 
     @staticmethod
     def _remove_file_line(file_path, line_to_remove):
