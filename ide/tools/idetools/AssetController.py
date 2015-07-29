@@ -18,7 +18,6 @@ class AssetController(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_annotate_year',
         '_asset_identifier',
         '_basic_breadcrumb',
         )
@@ -35,7 +34,6 @@ class AssetController(Controller):
     def __init__(self, session=None):
         superclass = super(AssetController, self)
         superclass.__init__(session=session)
-        self._annotate_year = False
         self._asset_identifier = None
         self._basic_breadcrumb = None
 
@@ -501,7 +499,8 @@ class AssetController(Controller):
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
-                if self._annotate_year and year:
+                prototype = ('score package manager', 'score package')
+                if self._asset_identifier in prototype and year:
                     annotation = '{} ({})'.format(title, year)
                 else:
                     annotation = str(title)

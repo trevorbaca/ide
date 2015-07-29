@@ -208,7 +208,6 @@ class PackageManager(AssetController):
             )
 
     def _configure_as_score_package_manager(self):
-        self._annotate_year = True
         self._asset_identifier = 'score package manager'
         self._breadcrumb_callback = self._get_title
         self._directory_names = (

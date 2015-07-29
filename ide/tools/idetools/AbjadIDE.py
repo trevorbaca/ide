@@ -141,7 +141,6 @@ class AbjadIDE(Controller):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'score package'
-        wrangler._annotate_year = True
         wrangler._basic_breadcrumb = 'scores'
         wrangler._copy_target_directory = \
             wrangler._configuration.composer_scores_directory
