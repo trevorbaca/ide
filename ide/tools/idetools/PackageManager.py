@@ -15,7 +15,6 @@ class PackageManager(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_asset_identifier',
         '_breadcrumb_callback',
         '_directory_names',
         '_main_menu',

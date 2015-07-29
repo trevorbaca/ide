@@ -24,14 +24,10 @@ class Wrangler(AssetController):
 
     __slots__ = (
         '_allow_depot',
-        '_asset_identifier',
-        '_basic_breadcrumb',
-        '_extension',
+        '_file_extension',
         '_extra_commands',
         '_file_name_predicate',
-        '_force_lowercase',
-        '_in_score_commands',
-        '_main_menu',
+        '_force_lowercase_file_name',
         '_mandatory_copy_target_storehouse',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -50,11 +46,10 @@ class Wrangler(AssetController):
         self._allow_depot = True
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._extension = ''
+        self._file_extension = ''
         self._extra_commands = []
         self._file_name_predicate = None
-        self._force_lowercase = True
-        self._in_score_commands = []
+        self._force_lowercase_file_name = True
         self._mandatory_copy_target_storehouse = None
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
@@ -530,9 +525,9 @@ class Wrangler(AssetController):
         if superclass._is_valid_directory_entry(expr):
             name, extension = os.path.splitext(expr)
             if self._file_name_predicate(name):
-                if self._extension == '':
+                if self._file_extension == '':
                     return True
-                elif self._extension == extension:
+                elif self._file_extension == extension:
                     return True
         return False
 
@@ -678,7 +673,7 @@ class Wrangler(AssetController):
         message='file name', 
         ):
         contents = self._new_file_contents
-        extension = extension or getattr(self, '_extension', '')
+        extension = extension or getattr(self, '_file_extension', '')
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
@@ -694,7 +689,7 @@ class Wrangler(AssetController):
         if self._use_dash_case:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
-        if self._force_lowercase:
+        if self._force_lowercase_file_name:
             name = name.lower()
         if not name.endswith(extension):
             name = name + extension
@@ -702,23 +697,12 @@ class Wrangler(AssetController):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def _make_in_score_commands_menu_section(self, menu):
-        commands = []
-        commands.extend(self._in_score_commands)
-        if commands:
-            menu.make_command_section(
-                commands=self._in_score_commands,
-                is_hidden=True,
-                name='in score commands',
-                )
-
     def _make_main_menu(self):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
         self._make_basic_operations_menu_section(menu)
         self._make_extra_commands_menu_section(menu)
-        self._make_in_score_commands_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 
@@ -1328,7 +1312,7 @@ class Wrangler(AssetController):
             messages.append('')
             self._io_manager._display(messages)
             return
-        extension = extension or getattr(self, '_extension', '')
+        extension = extension or getattr(self, '_file_extension', '')
         old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
         if not old_path:
             return
@@ -1361,7 +1345,7 @@ class Wrangler(AssetController):
         if self._use_dash_case:
             new_name = self._to_dash_case(new_name)
         new_name = new_name.replace(' ', '_')
-        if self._force_lowercase:
+        if self._force_lowercase_file_name:
             new_name = new_name.lower()
         if extension and not new_name.endswith(extension):
             new_name = new_name + extension
@@ -1900,7 +1884,7 @@ class Wrangler(AssetController):
 
         Returns none.
         '''
-        extension = extension or getattr(self, '_extension', '')
+        extension = extension or getattr(self, '_file_extension', '')
         path = self._select_visible_asset_path(infinitive_phrase='to rename')
         if not path:
             return
@@ -1913,7 +1897,7 @@ class Wrangler(AssetController):
         manager._rename_interactively(
             extension=extension,
             file_name_callback=file_name_callback,
-            force_lowercase=self._force_lowercase,
+            force_lowercase=self._force_lowercase_file_name,
             )
         self._session._is_backtracking_locally = False
 

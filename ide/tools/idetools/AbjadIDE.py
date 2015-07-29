@@ -23,7 +23,6 @@ class AbjadIDE(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_basic_breadcrumb',
         )
 
     ### INITIALIZER ###
@@ -35,7 +34,6 @@ class AbjadIDE(Controller):
             session._is_test = is_test
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
-        self._basic_breadcrumb = 'Abjad IDE'
         self._session._abjad_ide = self
         self._score_package_wrangler._supply_missing_views_files()
 
@@ -44,7 +42,7 @@ class AbjadIDE(Controller):
     @property
     def _breadcrumb(self):
         if not self._session.is_in_score:
-            return self._basic_breadcrumb
+            return 'Abjad IDE'
 
     @property
     @systemtools.Memoize
@@ -83,7 +81,7 @@ class AbjadIDE(Controller):
         commands.append(('interpret preface.tex', 'pi'))
         commands.append(('interpret score.tex', 'si'))
         commands.append(('push score to distribution directory', 'sp'))
-        wrangler._in_score_commands = commands
+        wrangler._extra_commands = commands
         return wrangler
 
     @property
@@ -119,9 +117,9 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
-        wrangler._extension = '.py'
+        wrangler._file_extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
-        wrangler._force_lowercase = False
+        wrangler._force_lowercase_file_name = False
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
         wrangler._validator = wrangler._is_valid_file_directory_entry
@@ -223,7 +221,7 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
-        wrangler._extension = '.ily'
+        wrangler._file_extension = '.ily'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         wrangler._use_dash_case = True
