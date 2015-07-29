@@ -21,8 +21,6 @@ class AssetController(Controller):
         '_annotate_year',
         '_asset_identifier',
         '_basic_breadcrumb',
-        '_directory_entry_predicate',
-        '_group_asset_section_by_annotation',
         '_include_asset_name',
         )
 
@@ -41,9 +39,7 @@ class AssetController(Controller):
         self._annotate_year = False
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._group_asset_section_by_annotation = True
         self._include_asset_name = True
-        self._directory_entry_predicate = self._is_valid_directory_entry
 
     ### PRIVATE PROPERTIES ###
 
@@ -374,40 +370,6 @@ class AssetController(Controller):
                 return True
         return False
 
-    def _list_asset_paths(
-        self,
-        example_score_packages=True,
-        user_score_packages=True,
-        valid_only=True,
-        ):
-        result = []
-        directories = self._list_storehouse_paths(
-            example_score_packages=example_score_packages,
-            user_score_packages=user_score_packages,
-            )
-        for directory in directories:
-            if not directory:
-                continue
-            if not os.path.exists(directory):
-                continue
-            directory_entries = sorted(os.listdir(directory))
-            for directory_entry in directory_entries:
-                if valid_only:
-                    if not self._directory_entry_predicate(directory_entry):
-                        continue
-                path = os.path.join(directory, directory_entry)
-                if self._basic_breadcrumb == 'scores':
-                    # test for installable Python package structure
-                    outer_init_path = os.path.join(path, '__init__.py')
-                    inner_directory = os.path.join(path, directory_entry)
-                    inner_init_path = os.path.join(
-                        inner_directory, '__init__.py')
-                    if not os.path.exists(outer_init_path):
-                        if os.path.exists(inner_init_path):
-                            path = inner_directory
-                result.append(path)
-        return result
-
     @staticmethod
     def _list_directories_with_metadata_pys(path):
         paths = []
@@ -421,16 +383,6 @@ class AssetController(Controller):
                     if path not in paths:
                         paths.append(path)
         return paths
-
-    def _make_asset_menu_section(self, menu):
-        menu_entries = []
-        menu_entries.extend(self._make_secondary_asset_menu_entries())
-        menu_entries.extend(self._make_asset_menu_entries())
-        if menu_entries:
-            section = menu.make_asset_section(menu_entries=menu_entries)
-            assert section is not None
-            section._group_by_annotation = \
-                self._group_asset_section_by_annotation
 
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []

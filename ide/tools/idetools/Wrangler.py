@@ -25,11 +25,13 @@ class Wrangler(AssetController):
     __slots__ = (
         '_controller_commands',
         '_copy_target_directory',
+        '_directory_entry_predicate',
         '_directory_name',
         '_file_extension',
         '_file_name_predicate',
         '_force_dash_case_file_name',
         '_force_lowercase_file_name',
+        '_group_asset_section_by_annotation',
         '_hide_breadcrumb_while_in_score',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -47,11 +49,13 @@ class Wrangler(AssetController):
         self._basic_breadcrumb = None
         self._copy_target_directory = None
         self._controller_commands = []
+        self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
         self._file_extension = ''
         self._file_name_predicate = None
         self._force_dash_case_file_name = False
         self._force_lowercase_file_name = True
+        self._group_asset_section_by_annotation = True
         self._hide_breadcrumb_while_in_score = False
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
@@ -570,6 +574,40 @@ class Wrangler(AssetController):
             directories.extend(result)
         return directories
 
+    def _list_asset_paths(
+        self,
+        example_score_packages=True,
+        user_score_packages=True,
+        valid_only=True,
+        ):
+        result = []
+        directories = self._list_storehouse_paths(
+            example_score_packages=example_score_packages,
+            user_score_packages=user_score_packages,
+            )
+        for directory in directories:
+            if not directory:
+                continue
+            if not os.path.exists(directory):
+                continue
+            directory_entries = sorted(os.listdir(directory))
+            for directory_entry in directory_entries:
+                if valid_only:
+                    if not self._directory_entry_predicate(directory_entry):
+                        continue
+                path = os.path.join(directory, directory_entry)
+                if self._basic_breadcrumb == 'scores':
+                    # test for installable Python package structure
+                    outer_init_path = os.path.join(path, '__init__.py')
+                    inner_directory = os.path.join(path, directory_entry)
+                    inner_init_path = os.path.join(
+                        inner_directory, '__init__.py')
+                    if not os.path.exists(outer_init_path):
+                        if os.path.exists(inner_init_path):
+                            path = inner_directory
+                result.append(path)
+        return result
+
     def _list_score_directories(
         self,
         abjad=False,
@@ -706,6 +744,16 @@ class Wrangler(AssetController):
         elif not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
+
+    def _make_asset_menu_section(self, menu):
+        menu_entries = []
+        menu_entries.extend(self._make_secondary_asset_menu_entries())
+        menu_entries.extend(self._make_asset_menu_entries())
+        if menu_entries:
+            section = menu.make_asset_section(menu_entries=menu_entries)
+            assert section is not None
+            section._group_by_annotation = \
+                self._group_asset_section_by_annotation
 
     def _make_asset_selection_breadcrumb(
         self,
