@@ -13,7 +13,7 @@ def main():
         install_requires=install_requires,
         name='PACKAGE_NAME',
         packages=('PACKAGE_NAME',),
-        url='https://github.com/GITHUB_USERNAME/PACKAGE_NAME',
+        url='https://github.com/COMPOSER_GITHUB_USERNAME/PACKAGE_NAME',
         version='0.1',
         zip_safe=False,
         )

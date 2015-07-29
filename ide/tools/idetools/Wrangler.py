@@ -139,7 +139,7 @@ class Wrangler(AssetController):
             parts.extend(self._score_storehouse_path_infix_parts)
             return os.path.join(*parts)
         else:
-            return self._configuration.scores_directory
+            return self._configuration.composer_scores_directory
 
     @property
     def _init_py_file_path(self):
@@ -332,13 +332,13 @@ class Wrangler(AssetController):
 
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
-        example_scores_directory = self._configuration.example_scores_directory
-        scores_directory = self._configuration.scores_directory
+        abjad_ide_example_scores_directory = self._configuration.abjad_ide_example_scores_directory
+        scores_directory = self._configuration.composer_scores_directory
         for path in paths:
             parent_directory = os.path.dirname(path)
             if parent_directory == scores_directory:
                 parent_directories.append(path)
-            elif parent_directory == example_scores_directory:
+            elif parent_directory == abjad_ide_example_scores_directory:
                 parent_directories.append(path)
             elif parent_directory not in parent_directories:
                 parent_directories.append(parent_directory)
@@ -375,9 +375,9 @@ class Wrangler(AssetController):
             )
         if self._basic_breadcrumb == 'scores':
             if system:
-                scores_directory = self._configuration.example_scores_directory
+                scores_directory = self._configuration.abjad_ide_example_scores_directory
             else:
-                scores_directory = self._configuration.scores_directory
+                scores_directory = self._configuration.composer_scores_directory
             asset_paths = []
             for directory_entry in sorted(os.listdir(scores_directory)):
                 if not directory_entry[0].isalpha():
@@ -577,23 +577,23 @@ class Wrangler(AssetController):
         ):
         result = []
         if abjad:
-            scores_directory = self._configuration.example_scores_directory
+            scores_directory = self._configuration.abjad_ide_example_scores_directory
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if directory_entry[0].isalpha():
                     path = os.path.join(
-                        self._configuration.example_scores_directory,
+                        self._configuration.abjad_ide_example_scores_directory,
                         directory_entry,
                         )
                     result.append(path)
         if user:
-            scores_directory = self._configuration.scores_directory
+            scores_directory = self._configuration.composer_scores_directory
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if not directory_entry[0].isalpha():
                     continue
                 path = os.path.join(
-                    self._configuration.scores_directory,
+                    self._configuration.composer_scores_directory,
                     directory_entry,
                     )
                 init_path = os.path.join(path, '__init__.py')
@@ -612,7 +612,7 @@ class Wrangler(AssetController):
         ):
         result = []
         if user_score_packages:
-            result.append(self._configuration.scores_directory)
+            result.append(self._configuration.composer_scores_directory)
         if (example_score_packages and
             self._score_storehouse_path_infix_parts):
             for score_directory in self._list_score_directories(abjad=True):
@@ -624,7 +624,7 @@ class Wrangler(AssetController):
                 result.append(storehouse_path)
         elif (example_score_packages and
             not self._score_storehouse_path_infix_parts):
-            result.append(self._configuration.example_scores_directory)
+            result.append(self._configuration.abjad_ide_example_scores_directory)
         if user_score_packages and self._score_storehouse_path_infix_parts:
             for directory in self._list_score_directories(user=True):
                 parts = [directory]
@@ -788,7 +788,7 @@ class Wrangler(AssetController):
         confirmed = False 
         while not confirmed:
             package_path = os.path.join(
-                self._configuration.scores_directory,
+                self._configuration.composer_scores_directory,
                 package_name,
                 )
             message = 'path will be {}.'.format(package_path)
@@ -935,19 +935,19 @@ class Wrangler(AssetController):
         path = os.path.normpath(path)
         if path.endswith('.py'):
             path, file_extension = os.path.splitext(path)
-        if path.startswith(self._configuration.example_scores_directory):
-            prefix = len(self._configuration.example_scores_directory) + 1
+        if path.startswith(self._configuration.abjad_ide_example_scores_directory):
+            prefix = len(self._configuration.abjad_ide_example_scores_directory) + 1
         elif path.startswith(self._configuration.abjad_ide_directory):
             prefix = len(
                 os.path.dirname(self._configuration.abjad_ide_directory)) + 1
-        elif path.startswith(self._configuration.scores_directory):
-            prefix = len(self._configuration.scores_directory) + 1
+        elif path.startswith(self._configuration.composer_scores_directory):
+            prefix = len(self._configuration.composer_scores_directory) + 1
         else:
             message = 'can not change path to package: {!r}.'
             message = message.format(path)
             raise Exception(message)
         package = path[prefix:]
-        if path.startswith(self._configuration.example_scores_directory):
+        if path.startswith(self._configuration.abjad_ide_example_scores_directory):
             # change red_example_score/red_example_score/materials/foo
             # to red_example_score/materials/foo
             parts = package.split(os.path.sep)
@@ -958,12 +958,12 @@ class Wrangler(AssetController):
 
     def _path_to_storehouse(self, path):
         is_in_score = False
-        if path.startswith(self._configuration.scores_directory):
+        if path.startswith(self._configuration.composer_scores_directory):
             is_in_score = True
-            prefix = len(self._configuration.scores_directory)
-        elif path.startswith(self._configuration.example_scores_directory):
+            prefix = len(self._configuration.composer_scores_directory)
+        elif path.startswith(self._configuration.abjad_ide_example_scores_directory):
             is_in_score = True
-            prefix = len(self._configuration.example_scores_directory)
+            prefix = len(self._configuration.abjad_ide_example_scores_directory)
         else:
             message = 'unidentifiable path: {!r}.'
             message = message.format(path)

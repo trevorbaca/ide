@@ -57,6 +57,6 @@ if sys.version_info[0] == 2:
 else:
     from ide.tools import idetools
 configuration = idetools.Configuration()
-sys.path.insert(0, configuration.example_scores_directory)
+sys.path.insert(0, configuration.abjad_ide_example_scores_directory)
 del configuration
 del sys

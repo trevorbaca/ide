@@ -12,7 +12,7 @@ def test_Wrangler_push_score_pdf_to_distribution_directory_01():
     '''
 
     distribution_score_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'distribution',

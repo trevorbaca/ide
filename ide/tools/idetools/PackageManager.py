@@ -122,14 +122,14 @@ class PackageManager(AssetController):
     @property
     def _outer_path(self):
         if self._path.startswith(
-            self._configuration.scores_directory):
+            self._configuration.composer_scores_directory):
             return os.path.join(
-                self._configuration.scores_directory,
+                self._configuration.composer_scores_directory,
                 self._package_name
                 )
         else:
             return os.path.join(
-                self._configuration.example_scores_directory,
+                self._configuration.abjad_ide_example_scores_directory,
                 self._package_name
                 )
     @property
@@ -477,9 +477,9 @@ class PackageManager(AssetController):
 
     def _get_score_package_directory_name(self):
         line = self._path
-        path = self._configuration.example_scores_directory
+        path = self._configuration.abjad_ide_example_scores_directory
         line = line.replace(path, '')
-        path = self._configuration.scores_directory
+        path = self._configuration.composer_scores_directory
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line
@@ -896,7 +896,7 @@ class PackageManager(AssetController):
         replacements = {
             'COMPOSER_EMAIL': self._configuration.composer_email,
             'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
-            'GITHUB_USERNAME': self._configuration.github_username,
+            'COMPOSER_GITHUB_USERNAME': self._configuration.composer_github_username,
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate('setup.py', replacements=replacements)

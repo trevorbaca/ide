@@ -80,14 +80,14 @@ class Configuration(AbjadConfiguration):
                 ],
                 'spec': "string(default=www.composername.com)",
             },
-            'github_username': {
+            'composer_github_username': {
                 'comment': [
                     '',
                     'Your GitHub username.',
                 ],
                 'spec': "string(default=None)",
             },
-            'scores_directory': {
+            'composer_scores_directory': {
                 'comment': [
                     '',
                     'Your scores directory. Defaults to $HOME/scores/.',
@@ -104,7 +104,7 @@ class Configuration(AbjadConfiguration):
 
     def _make_missing_directories(self):
         directories = (
-            self.scores_directory,
+            self.composer_scores_directory,
             self.abjad_ide_transcripts_directory,
             )
         for directory in directories:
@@ -182,6 +182,25 @@ class Configuration(AbjadConfiguration):
             )
 
     @property
+    def abjad_ide_example_scores_directory(self):
+        r'''Gets Abjad IDE example scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.abjad_ide_example_scores_directory
+                '.../ide/scores'
+
+        Returns string.
+        '''
+        path = os.path.join(
+            self.abjad_ide_directory,
+            'scores',
+            )
+        return path
+
+    @property
     def abjad_ide_transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -252,22 +271,21 @@ class Configuration(AbjadConfiguration):
         return self._settings['composer_full_name']
 
     @property
-    def composer_uppercase_name(self):
-        r'''Gets composer uppercase name.
+    def composer_github_username(self):
+        r'''Gets GitHub username.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.composer_uppercase_name
+                >>> configuration.composer_github_username
                 '...'
 
-        Aliases `composer_uppercase_name` setting in Abjad IDE 
-        configuration file.
+        Aliases `composer_github_username` setting in Abjad IDE configuration file.
 
         Returns string.
         '''
-        return self._settings['composer_uppercase_name']
+        return self._settings['composer_github_username']
 
     @property
     def composer_last_name(self):
@@ -286,6 +304,24 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         return self._settings['composer_last_name']
+
+    @property
+    def composer_uppercase_name(self):
+        r'''Gets composer uppercase name.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.composer_uppercase_name
+                '...'
+
+        Aliases `composer_uppercase_name` setting in Abjad IDE 
+        configuration file.
+
+        Returns string.
+        '''
+        return self._settings['composer_uppercase_name']
 
     @property
     def composer_website(self):
@@ -340,73 +376,22 @@ class Configuration(AbjadConfiguration):
         return self.abjad_ide_configuration_file_path
 
     @property
-    def example_scores_directory(self):
-        r'''Gets example scores directory.
+    def composer_scores_directory(self):
+        r'''Gets composer scores directory.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.example_scores_directory
-                '.../ide/scores'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.abjad_ide_directory,
-            'scores',
-            )
-        return path
-
-    @property
-    def github_username(self):
-        r'''Gets GitHub username.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.github_username
+                >>> configuration.composer_scores_directory
                 '...'
 
-        Aliases `github_username` setting in Abjad IDE configuration file.
+        Aliases `composer_scores_directory` setting in Abjad IDE configuration
+        file.
 
         Returns string.
         '''
-        return self._settings['github_username']
-
-    @property
-    def home_directory(self):
-        r'''Gets home directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.home_directory
-                '...'
-
-        Returns string.
-        '''
-        superclass = super(Configuration, self)
-        return superclass.home_directory
-
-    @property
-    def scores_directory(self):
-        r'''Gets scores directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.scores_directory
-                '...'
-
-        Aliases `scores_directory` setting in Abjad IDE configuration file.
-
-        Returns string.
-        '''
-        path = self._settings['scores_directory']
+        path = self._settings['composer_scores_directory']
         path = os.path.expanduser(path)
         path = os.path.normpath(path)
         return path

@@ -17,7 +17,7 @@ def test_Wrangler__find_up_to_date_manager_01():
         system=True,
         )
 
-    storehouse = configuration.example_scores_directory
+    storehouse = configuration.abjad_ide_example_scores_directory
 
     assert isinstance(manager, ide.tools.idetools.PackageManager)
     assert manager._asset_identifier == 'score package manager'

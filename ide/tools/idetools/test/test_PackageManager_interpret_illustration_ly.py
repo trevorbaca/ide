@@ -10,7 +10,7 @@ def test_PackageManager_interpret_illustration_ly_01():
     '''
 
     ly_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
@@ -18,7 +18,7 @@ def test_PackageManager_interpret_illustration_ly_01():
         'illustration.ly',
         )
     pdf_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
@@ -40,7 +40,7 @@ def test_PackageManager_interpret_illustration_ly_02():
     '''
 
     ly_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
@@ -48,7 +48,7 @@ def test_PackageManager_interpret_illustration_ly_02():
         'illustration.ly',
         )
     pdf_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',

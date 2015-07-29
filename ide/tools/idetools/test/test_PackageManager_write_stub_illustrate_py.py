@@ -9,7 +9,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 def test_PackageManager_write_stub_illustrate_py_01():
 
     path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',

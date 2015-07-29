@@ -41,7 +41,7 @@ def test_Wrangler_invoke_shell_03():
     abjad_ide._run(input_=input_)
 
     path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

@@ -583,8 +583,8 @@ class AssetController(Controller):
 
     def _path_to_annotation(self, path):
         score_storehouses = (
-            self._configuration.example_scores_directory,
-            self._configuration.scores_directory,
+            self._configuration.abjad_ide_example_scores_directory,
+            self._configuration.composer_scores_directory,
             )
         if path.startswith(score_storehouses):
             score_path = self._path_to_score_path(path)
@@ -628,11 +628,11 @@ class AssetController(Controller):
 
     def _path_to_score_path(self, path):
         is_user_score = False
-        if path.startswith(self._configuration.scores_directory):
+        if path.startswith(self._configuration.composer_scores_directory):
             is_user_score = True
-            prefix = len(self._configuration.scores_directory)
-        elif path.startswith(self._configuration.example_scores_directory):
-            prefix = len(self._configuration.example_scores_directory)
+            prefix = len(self._configuration.composer_scores_directory)
+        elif path.startswith(self._configuration.abjad_ide_example_scores_directory):
+            prefix = len(self._configuration.abjad_ide_example_scores_directory)
         else:
             return
         path_prefix = path[:prefix]

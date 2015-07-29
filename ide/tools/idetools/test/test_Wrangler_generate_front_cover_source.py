@@ -13,7 +13,7 @@ def test_Wrangler_generate_front_cover_source_01():
     '''
 
     cover_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -38,7 +38,7 @@ def test_Wrangler_generate_front_cover_source_02():
     '''
 
     cover_path = os.path.join(
-        abjad_ide._configuration.example_scores_directory,
+        abjad_ide._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
