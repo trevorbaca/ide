@@ -4,7 +4,7 @@ import os
 from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
 
 
-class Configuration(AbjadConfiguration):
+class AbjadIDEConfiguration(AbjadConfiguration):
     r'''Abjad IDE configuration.
 
     ..  container:: example
@@ -13,8 +13,11 @@ class Configuration(AbjadConfiguration):
 
             >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
             >>> configuration = abjad_ide._configuration
+
+        ::
+
             >>> configuration
-            Configuration()
+            AbjadIDEConfiguration()
 
     '''
 

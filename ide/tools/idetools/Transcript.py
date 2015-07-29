@@ -21,7 +21,7 @@ class Transcript(AbjadObject):
 
     def __init__(self):
         from ide.tools import idetools
-        self._configuration = idetools.Configuration()
+        self._configuration = idetools.AbjadIDEConfiguration()
         self._entries = []
         current_time = datetime.datetime.fromtimestamp(time.time())
         self._start_time = current_time

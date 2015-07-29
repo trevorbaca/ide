@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-configuration = ide.tools.idetools.Configuration()
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 session = ide.tools.idetools.Session()
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 

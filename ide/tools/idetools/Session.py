@@ -102,7 +102,7 @@ class Session(abctools.AbjadObject):
         self._attempted_to_update = False
         self._clear_terminal_after_quit = False
         self._command_history = []
-        self._configuration = idetools.Configuration()
+        self._configuration = idetools.AbjadIDEConfiguration()
         self._confirm = True
         self._controller_stack = []
         self._current_score_directory = None

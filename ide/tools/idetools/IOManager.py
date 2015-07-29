@@ -37,7 +37,7 @@ class IOManager(IOManager):
     def __init__(self, client=None, session=None):
         from ide.tools import idetools
         self._client = client
-        self._configuration = idetools.Configuration()
+        self._configuration = idetools.AbjadIDEConfiguration()
         self._session = session
 
     ### SPECIAL METHODS ###
