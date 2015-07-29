@@ -14,8 +14,7 @@ class AbjadIDE(Controller):
 
         ::
 
-            >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-            >>> abjad_ide
+            >>> ide.tools.idetools.AbjadIDE(is_test=True)
             AbjadIDE()
 
     '''
