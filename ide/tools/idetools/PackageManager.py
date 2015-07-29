@@ -355,7 +355,7 @@ class PackageManager(AssetController):
         wranglers = []
         directory_names = self._list_directory_names()
         for directory_name in directory_names:
-            wrangler = self._session.get_wrangler(directory_name)
+            wrangler = self._get_wrangler(directory_name)
             if wrangler is not None:
                 wranglers.append(wrangler)
         return wranglers
@@ -496,6 +496,19 @@ class PackageManager(AssetController):
             raise ValueError(self)
         return paths
 
+    def _get_wrangler(self, directory_name):
+        directory_name_to_wrangler = {
+            'build': self._session._abjad_ide._build_file_wrangler,
+            'distribution': 
+                self._session._abjad_ide._distribution_file_wrangler,
+            'etc': self._session._abjad_ide._etc_file_wrangler,
+            'makers': self._session._abjad_ide._maker_file_wrangler,
+            'materials': self._session._abjad_ide._material_package_wrangler,
+            'segments': self._session._abjad_ide._segment_package_wrangler,
+            'stylesheets': self._session._abjad_ide._stylesheet_wrangler,
+            }
+        wrangler = directory_name_to_wrangler.get(directory_name)
+        return wrangler
 
     def _initialize_file_name_getter(self):
         getter = self._io_manager._make_getter()
