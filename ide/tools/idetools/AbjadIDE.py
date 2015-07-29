@@ -236,7 +236,7 @@ class AbjadIDE(Controller):
         directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
         wrangler_views = os.path.join(
-            self._configuration.configuration_directory,
+            self._configuration.abjad_ide_configuration_directory,
             'views',
             '__metadata__.py',
             )
@@ -249,7 +249,7 @@ class AbjadIDE(Controller):
             self._session._pending_redraw = True
             if self._session.is_test:
                 empty_views = os.path.join(
-                    self._configuration.boilerplate_directory,
+                    self._configuration.abjad_ide_boilerplate_directory,
                     '__views_metadata__.py',
                     )
                 shutil.copyfile(empty_views, wrangler_views)

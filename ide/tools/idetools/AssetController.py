@@ -98,7 +98,7 @@ class AssetController(Controller):
 
     @property
     def _views_package_manager(self):
-        path = self._configuration.wrangler_views_directory
+        path = self._configuration.abjad_ide_wrangler_views_directory
         return self._io_manager._make_package_manager(path)
 
     @property
@@ -107,7 +107,7 @@ class AssetController(Controller):
             directory = self._get_current_directory()
             return os.path.join(directory, '__views__.py')
         else:
-            directory = self._configuration.wrangler_views_directory
+            directory = self._configuration.abjad_ide_wrangler_views_directory
             class_name = type(self).__name__
             file_name = '__{}_views__.py'.format(class_name)
             return os.path.join(directory, file_name)

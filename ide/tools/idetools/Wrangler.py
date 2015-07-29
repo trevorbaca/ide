@@ -1592,7 +1592,7 @@ class Wrangler(AssetController):
             old = 'YEAR'
             new = str(year)
             replacements[old] = new
-        composer = self._configuration.upper_case_composer_full_name
+        composer = self._configuration.composer_uppercase_name
         if self._session.is_test:
             composer = 'EXAMPLE COMPOSER NAME'
         if composer:

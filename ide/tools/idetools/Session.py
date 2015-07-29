@@ -169,7 +169,8 @@ class Session(abctools.AbjadObject):
     def _clean_up(self):
         if self.is_test:
             return
-        transcripts_directory = self._configuration.transcripts_directory
+        transcripts_directory = \
+            self._configuration.abjad_ide_transcripts_directory
         transcripts = sorted(os.listdir(transcripts_directory))
         count = len(transcripts)
         if 9000 <= count:
@@ -267,9 +268,9 @@ class Session(abctools.AbjadObject):
         Returns ordered dictionary.
         '''
         aliases = None
-        aliases_file_path = self._configuration.aliases_file_path
-        if os.path.isfile(aliases_file_path):
-            with open(aliases_file_path, 'r') as file_pointer:
+        file_path = self._configuration.abjad_ide_aliases_file_path
+        if os.path.isfile(file_path):
+            with open(file_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
             try:
                 result = self._io_manager.execute_string(
@@ -279,7 +280,7 @@ class Session(abctools.AbjadObject):
                 aliases = result[0]
             except SyntaxError:
                 message = 'syntax error in file: {!r}.'
-                message = message.format(aliases_file_path)
+                message = message.format(file_path)
                 self._io_manager._display(message)
         aliases = aliases or collections.OrderedDict()
         return aliases

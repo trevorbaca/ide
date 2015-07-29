@@ -57,21 +57,28 @@ class Configuration(AbjadConfiguration):
                     '',
                     'Your last name.',
                 ],
-                'spec': "string(default='Last Name')",
+                'spec': "string(default='Name')",
+            },
+            'composer_uppercase_name': {
+                'comment': [
+                    '',
+                    'Your full name in uppercase for score covers.',
+                ],
+                'spec': "string(default='FULL NAME')",
             },
             'composer_email': {
                 'comment': [
                     '',
                     'Your email.',
                 ],
-                'spec': "string(default=None)",
+                'spec': "string(default=first.last@domain.com)",
             },
             'composer_website': {
                 'comment': [
                     '',
                     'Your website.',
                 ],
-                'spec': "string(default=None)",
+                'spec': "string(default=www.composername.com)",
             },
             'github_username': {
                 'comment': [
@@ -83,8 +90,7 @@ class Configuration(AbjadConfiguration):
             'scores_directory': {
                 'comment': [
                     '',
-                    'The directory where you house your scores.',
-                    'Defaults to $HOME/scores/.'
+                    'Your scores directory. Defaults to $HOME/scores/.',
                 ],
                 'spec': 'string(default={!r})'.format(
                     os.path.join(
@@ -93,20 +99,13 @@ class Configuration(AbjadConfiguration):
                         )
                     ),
             },
-            'upper_case_composer_full_name': {
-                'comment': [
-                    '',
-                    'Upper case version of your full name for score covers.',
-                ],
-                'spec': "string(default='Upper Case Full Name')",
-            },
         }
         return options
 
     def _make_missing_directories(self):
         directories = (
             self.scores_directory,
-            self.transcripts_directory,
+            self.abjad_ide_transcripts_directory,
             )
         for directory in directories:
             if not os.path.exists(directory):
@@ -115,30 +114,30 @@ class Configuration(AbjadConfiguration):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def aliases_file_path(self):
-        r'''Gets aliases file path.
+    def abjad_ide_aliases_file_path(self):
+        r'''Gets Abjad IDE aliases file path.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.aliases_file_path
+                >>> configuration.abjad_ide_aliases_file_path
                 '.../.abjad/ide/__aliases__.py'
 
         Returns string.
         '''
         return os.path.join(
-            self.configuration_directory,
+            self.abjad_ide_configuration_directory,
             '__aliases__.py',
             )
 
     @property
-    def boilerplate_directory(self):
-        r'''Gets boilerplate directory.
+    def abjad_ide_boilerplate_directory(self):
+        r'''Gets Abjad IDE boilerplate directory.
 
         ..  container:: example
 
-            >>> configuration.boilerplate_directory
+            >>> configuration.abjad_ide_boilerplate_directory
             '.../ide/boilerplate'
 
         Returns string.
@@ -148,6 +147,74 @@ class Configuration(AbjadConfiguration):
             'boilerplate',
             )
         return path
+
+    @property
+    def abjad_ide_configuration_directory(self):
+        r'''Gets Abjad IDE configuration directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.abjad_ide_configuration_directory
+                '.../.abjad/ide'
+
+        Returns string.
+        '''
+        return os.path.join(self.abjad_configuration_directory, 'ide')
+
+    @property
+    def abjad_ide_configuration_file_path(self):
+        r'''Gets Abjad IDE configuration file path.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.abjad_ide_configuration_file_path
+                '.../.abjad/ide/ide.cfg'
+
+        Returns string.
+        '''
+        return os.path.join(
+            self.abjad_ide_configuration_directory,
+            'ide.cfg',
+            )
+
+    @property
+    def abjad_ide_transcripts_directory(self):
+        r'''Gets Abjad IDE transcripts directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.abjad_ide_transcripts_directory
+                '.../.abjad/ide/transcripts'
+
+        Returns string.
+        '''
+        path = os.path.join(
+            self.abjad_ide_configuration_directory,
+            'transcripts',
+            )
+        return path
+
+    @property
+    def abjad_ide_wrangler_views_directory(self):
+        r'''Gets Abjad IDE wrangler views directory.
+
+        ..  container::
+
+            >>> configuration.abjad_ide_wrangler_views_directory
+            '.../views'
+
+        Defined equal to views/ subdirectory of Abjad IDE configuration 
+        directory.
+
+        Returns string.
+        '''
+        return os.path.join(self.abjad_ide_configuration_directory, 'views')
 
     @property
     def composer_email(self):
@@ -183,6 +250,24 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         return self._settings['composer_full_name']
+
+    @property
+    def composer_uppercase_name(self):
+        r'''Gets composer uppercase name.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.composer_uppercase_name
+                '...'
+
+        Aliases `composer_uppercase_name` setting in Abjad IDE 
+        configuration file.
+
+        Returns string.
+        '''
+        return self._settings['composer_uppercase_name']
 
     @property
     def composer_last_name(self):
@@ -231,9 +316,11 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.configuration_directory
                 '.../.abjad/ide'
 
+        Aliases `abjad_ide_configuration_directory`.
+
         Returns string.
         '''
-        return os.path.join(self.abjad_configuration_directory, 'ide')
+        return self.abjad_ide_configuration_directory
 
     @property
     def configuration_file_path(self):
@@ -246,16 +333,15 @@ class Configuration(AbjadConfiguration):
                 >>> configuration.configuration_file_path
                 '.../.abjad/ide/ide.cfg'
 
+        Aliases `abjad_ide_configuration_file_path`.
+
         Returns string.
         '''
-        return os.path.join(
-            self.configuration_directory,
-            'ide.cfg',
-            )
+        return self.abjad_ide_configuration_file_path
 
     @property
     def example_scores_directory(self):
-        r'''Gets Abjad score packages directory.
+        r'''Gets example scores directory.
 
         ..  container:: example
 
@@ -324,55 +410,3 @@ class Configuration(AbjadConfiguration):
         path = os.path.expanduser(path)
         path = os.path.normpath(path)
         return path
-
-    @property
-    def transcripts_directory(self):
-        r'''Gets Abjad IDE transcripts directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.transcripts_directory
-                '.../.abjad/ide/transcripts'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.configuration_directory,
-            'transcripts',
-            )
-        return path
-
-    @property
-    def upper_case_composer_full_name(self):
-        r'''Gets upper case composer full name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_full_name
-                '...'
-
-        Aliases `upper_case_composer_full_name` setting in Abjad IDE 
-        configuration file.
-
-        Returns string.
-        '''
-        return self._settings['upper_case_composer_full_name']
-
-    @property
-    def wrangler_views_directory(self):
-        r'''Gets wrangler views directory.
-
-        ..  container::
-
-            >>> configuration.wrangler_views_directory
-            '.../views'
-
-        Defined equal to views/ subdirectory of Abjad IDE directory.
-
-        Returns string.
-        '''
-        return os.path.join(self.configuration_directory, 'views')
