@@ -1021,7 +1021,6 @@ class Wrangler(AssetController):
         if path is None:
             return
         assert isinstance(path, str), repr(path)
-        path = os.path.normpath(path)
         if path.endswith('.py'):
             path, file_extension = os.path.splitext(path)
         if path.startswith(self._configuration.abjad_ide_example_scores_directory):

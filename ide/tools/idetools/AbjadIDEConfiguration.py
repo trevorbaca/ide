@@ -396,5 +396,4 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         '''
         path = self._settings['composer_scores_directory']
         path = os.path.expanduser(path)
-        path = os.path.normpath(path)
         return path

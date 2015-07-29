@@ -517,7 +517,6 @@ class AssetController(Controller):
         return annotation
 
     def _path_to_asset_menu_display_string(self, path):
-        path = os.path.normpath(path)
         name = os.path.basename(path)
         if '_' in name:
             name = stringtools.to_space_delimited_lowercase(name)
