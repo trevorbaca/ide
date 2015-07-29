@@ -68,7 +68,7 @@ class AbjadIDE(Controller):
         commands.append(('interpret preface.tex', 'pi'))
         commands.append(('interpret score.tex', 'si'))
         commands.append(('push score to distribution directory', 'sp'))
-        wrangler._extra_commands = commands
+        wrangler._controller_commands = commands
         return wrangler
 
     @property
@@ -132,9 +132,7 @@ class AbjadIDE(Controller):
         commands.append(('open all illustration.pdf files', 'io*'))
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
-        commands.append(('next score', '>>'))
-        commands.append(('previous score', '<<'))
-        wrangler._extra_commands = commands
+        wrangler._controller_commands = commands
         return wrangler
 
     @property
@@ -163,14 +161,14 @@ class AbjadIDE(Controller):
         commands.append(('git status all score packages', 'st*'))
         commands.append(('git update all score packages', 'up*'))
         commands.append(('open all distribution score.pdf files', 'so*'))
-        commands.append(('show all build files', 'uu'))
-        commands.append(('show all distribution', 'dd'))
-        commands.append(('show all etc files', 'ee'))
-        commands.append(('show all maker files', 'kk'))
-        commands.append(('show all material packages', 'mm'))
-        commands.append(('show all segment packages', 'gg'))
-        commands.append(('show all stylesheets', 'yy'))
-        wrangler._extra_commands = commands
+        commands.append(('go to all build files', 'uu'))
+        commands.append(('go to all distribution', 'dd'))
+        commands.append(('go to all etc files', 'ee'))
+        commands.append(('go to all maker files', 'kk'))
+        commands.append(('go to all material packages', 'mm'))
+        commands.append(('go to all segment packages', 'gg'))
+        commands.append(('go to all stylesheets', 'yy'))
+        wrangler._controller_commands = commands
         return wrangler
 
     @property
@@ -191,9 +189,7 @@ class AbjadIDE(Controller):
         commands.append(('open all illustration.pdf files', 'io*'))
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
-        commands.append(('next score', '>>'))
-        commands.append(('previous score', '<<'))
-        wrangler._extra_commands = commands
+        wrangler._controller_commands = commands
         return wrangler
 
     @property

@@ -499,10 +499,10 @@ class AssetController(Controller):
     def _make_go_menu_section(self, menu, commands_only=False, packages=False):
         commands = []
         if packages:
-            commands.append(('next package', '>'))
-            commands.append(('previous package', '<'))
-        commands.append(('next score', '>>'))
-        commands.append(('previous score', '<<'))
+            commands.append(('go to next package', '>'))
+            commands.append(('go to previous package', '<'))
+        commands.append(('go to next score', '>>'))
+        commands.append(('go to previous score', '<<'))
         if commands_only:
             return commands
         if commands:
@@ -515,14 +515,14 @@ class AssetController(Controller):
     def _make_navigation_menu_section(self, menu):
         commands = []
         if self._session.is_in_score:
-            commands.append(('score', 's'))
-            commands.append(('build', 'u'))
-            commands.append(('distribution', 'd'))
-            commands.append(('etc', 'e'))
-            commands.append(('makers', 'k'))
-            commands.append(('materials', 'm'))
-            commands.append(('segments', 'g'))
-            commands.append(('stylesheets', 'y'))
+            commands.append(('go to score directory', 's'))
+            commands.append(('go to build directory', 'u'))
+            commands.append(('go to distribution directory', 'd'))
+            commands.append(('go to etc directory', 'e'))
+            commands.append(('go to makers directory', 'k'))
+            commands.append(('go to materials directory', 'm'))
+            commands.append(('go to segments directory', 'g'))
+            commands.append(('go to stylesheets directory', 'y'))
         if commands:
             menu.make_command_section(
                 is_hidden=True,

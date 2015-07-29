@@ -23,7 +23,7 @@ class Wrangler(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_extra_commands',
+        '_controller_commands',
         '_file_extension',
         '_file_name_predicate',
         '_force_lowercase_file_name',
@@ -46,7 +46,7 @@ class Wrangler(AssetController):
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._file_extension = ''
-        self._extra_commands = []
+        self._controller_commands = []
         self._file_name_predicate = None
         self._force_lowercase_file_name = True
         self._hide_breadcrumb_in_score = False
@@ -677,14 +677,14 @@ class Wrangler(AssetController):
             name='basic operations',
             )
 
-    def _make_extra_commands_menu_section(self, menu):
+    def _make_controller_commands_menu_section(self, menu):
         commands = []
-        commands.extend(self._extra_commands)
+        commands.extend(self._controller_commands)
         if commands:
             menu.make_command_section(
                 is_hidden=True,
                 commands=commands,
-                name='extra commands',
+                name='controller commands',
                 )
 
     def _make_file(
@@ -722,7 +722,7 @@ class Wrangler(AssetController):
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
         self._make_basic_operations_menu_section(menu)
-        self._make_extra_commands_menu_section(menu)
+        self._make_controller_commands_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
 
