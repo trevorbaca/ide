@@ -617,21 +617,19 @@ class Wrangler(AssetController):
         if (example_score_packages and self._directory_name):
             for score_directory in self._list_score_directories(abjad=True):
                 score_directory = self._path_to_score_path(score_directory)
-                parts = [score_directory]
-                # TODO: should always have directory name?
-                if self._directory_name:
-                    parts.append(self._directory_name)
-                storehouse_path = os.path.join(*parts)
-                result.append(storehouse_path)
+                path = os.path.join(
+                    score_directory,
+                    self._directory_name,
+                    )
+                result.append(path)
         elif (example_score_packages and not self._directory_name):
             result.append(self._configuration.abjad_ide_example_scores_directory)
         if user_score_packages and self._directory_name:
-            for directory in self._list_score_directories(user=True):
-                parts = [directory]
-                # TODO: should always have directory name?
-                if self._directory_name:
-                    parts.append(self._directory_name)
-                path = os.path.join(*parts)
+            for score_directory in self._list_score_directories(user=True):
+                path = os.path.join(
+                    score_directory,
+                    self._directory_name,
+                    )
                 result.append(path)
         return result
 
