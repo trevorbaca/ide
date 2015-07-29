@@ -23,7 +23,6 @@ class Wrangler(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_controller_commands',
         '_copy_target_directory',
         '_directory_entry_predicate',
         '_directory_name',
@@ -48,7 +47,6 @@ class Wrangler(AssetController):
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._copy_target_directory = None
-        self._controller_commands = []
         self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
         self._file_extension = ''
@@ -788,16 +786,6 @@ class Wrangler(AssetController):
             commands=commands,
             name='basic operations',
             )
-
-    def _make_controller_commands_menu_section(self, menu):
-        commands = []
-        commands.extend(self._controller_commands)
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='controller commands',
-                )
 
     def _make_file(
         self, 

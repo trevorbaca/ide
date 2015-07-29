@@ -20,6 +20,7 @@ class AssetController(Controller):
     __slots__ = (
         '_asset_identifier',
         '_basic_breadcrumb',
+        '_controller_commands',
         )
 
     known_secondary_assets = (
@@ -36,6 +37,7 @@ class AssetController(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
+        self._controller_commands = ()
 
     ### PRIVATE PROPERTIES ###
 
@@ -379,6 +381,14 @@ class AssetController(Controller):
                     if path not in paths:
                         paths.append(path)
         return paths
+
+    def _make_controller_commands_menu_section(self, menu):
+        if self._controller_commands:
+            menu.make_command_section(
+                is_hidden=True,
+                commands=self._controller_commands,
+                name='controller commands',
+                )
 
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []

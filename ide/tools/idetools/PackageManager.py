@@ -16,9 +16,9 @@ class PackageManager(AssetController):
 
     __slots__ = (
         '_breadcrumb_callback',
+        '_controller_commands',
         '_optional_directories',
         '_optional_files',
-        '_other_commands',
         '_package_creation_callback',
         '_package_name',
         '_path',
@@ -35,12 +35,12 @@ class PackageManager(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = 'package manager'
         self._breadcrumb_callback = None
+        self._controller_commands = ()
         self._optional_directories = (
             '__pycache__',
             'test',
             )
         self._optional_files = ()
-        self._other_commands = ()
         self._package_creation_callback = None
         self._package_name = os.path.basename(path)
         self._path = path
@@ -198,7 +198,7 @@ class PackageManager(AssetController):
         commands.append(('illustration.ly - interpret', 'ii'))
         commands.append(('illustration.ly - edit', 'ie'))
         commands.append(('illustration.pdf - open', 'io'))
-        self._other_commands = commands
+        self._controller_commands = commands
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -216,7 +216,7 @@ class PackageManager(AssetController):
         commands = []
         commands.append(('check package', 'ck'))
         commands.append(('open score.pdf', 'so'))
-        self._other_commands = commands
+        self._controller_commands = commands
         self._package_creation_callback = \
             self._make_score_into_installable_package
         self._required_directories = (
@@ -252,7 +252,7 @@ class PackageManager(AssetController):
         commands.append(('illustration.pdf - open', 'o'))
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
-        self._other_commands = commands
+        self._controller_commands = commands
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -624,16 +624,8 @@ class PackageManager(AssetController):
         superclass = super(PackageManager, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
-        self._make_other_commands_menu_section(menu)
+        self._make_controller_commands_menu_section(menu)
         return menu
-
-    def _make_other_commands_menu_section(self, menu):
-        if self._other_commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=self._other_commands,
-                name='other commands',
-                )
 
     def _make_package(self):
         assert not os.path.exists(self._path)
