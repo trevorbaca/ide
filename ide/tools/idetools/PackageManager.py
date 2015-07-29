@@ -135,8 +135,6 @@ class PackageManager(AssetController):
 
     @property
     def _repository_add_command(self):
-        if not self._path:
-            return
         if self._is_in_git_repository(path=self._path):
             command = 'git add -A {}'.format(self._path)
         else:
@@ -145,8 +143,6 @@ class PackageManager(AssetController):
 
     @property
     def _repository_update_command(self):
-        if not self._path:
-            return
         if self._is_in_git_repository(path=self._path):
             root_directory = self._get_repository_root_directory()
             return 'git pull {}'.format(root_directory)
@@ -162,10 +158,9 @@ class PackageManager(AssetController):
 
     @property
     def _space_delimited_lowercase_name(self):
-        if self._path:
-            base_name = os.path.basename(self._path)
-            result = base_name.replace('_', ' ')
-            return result
+        base_name = os.path.basename(self._path)
+        result = base_name.replace('_', ' ')
+        return result
 
     @property
     def _views_py_path(self):
@@ -642,8 +637,6 @@ class PackageManager(AssetController):
             self._package_creation_callback()
 
     def _make_repository_commit_command(self, message):
-        if not self._path:
-            return
         if self._is_in_git_repository(path=self._path):
             command = 'git commit -m "{}" {}; git push'
             command = command.format(message, self._path)
