@@ -20,7 +20,6 @@ class PackageManager(AssetController):
         '_optional_directories',
         '_optional_files',
         '_package_creation_callback',
-        '_package_name',
         '_path',
         '_required_directories',
         '_required_files',
@@ -42,7 +41,6 @@ class PackageManager(AssetController):
             )
         self._optional_files = ()
         self._package_creation_callback = None
-        self._package_name = os.path.basename(path)
         self._path = path
         self._required_directories = ()
         self._required_files = (
@@ -130,6 +128,11 @@ class PackageManager(AssetController):
                 self._configuration.abjad_ide_example_scores_directory,
                 self._package_name
                 )
+
+    @property
+    def _package_name(self):
+        return os.path.basename(self._path)
+
     @property
     def _repository_add_command(self):
         if not self._path:
