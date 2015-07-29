@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
+import codecs
 import os
 import shutil
+import sys
 from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
@@ -366,20 +368,6 @@ class AssetController(Controller):
                     return True
         return False
 
-    @staticmethod
-    def _list_directories_with_metadata_pys(path):
-        paths = []
-        for directory, subdirectory_names, file_names in os.walk(path):
-            if AssetController._is_directory_with_metadata_py(directory):
-                if directory not in paths:
-                    paths.append(directory)
-            for subdirectory_name in subdirectory_names:
-                path = os.path.join(directory, subdirectory_name)
-                if AssetController._is_directory_with_metadata_py(path):
-                    if path not in paths:
-                        paths.append(path)
-        return paths
-
     def _is_valid_directory_entry(self, directory_entry):
         if directory_entry[0].isalpha():
             if not directory_entry.endswith('.pyc'):
@@ -419,6 +407,20 @@ class AssetController(Controller):
                             path = inner_directory
                 result.append(path)
         return result
+
+    @staticmethod
+    def _list_directories_with_metadata_pys(path):
+        paths = []
+        for directory, subdirectory_names, file_names in os.walk(path):
+            if AssetController._is_directory_with_metadata_py(directory):
+                if directory not in paths:
+                    paths.append(directory)
+            for subdirectory_name in subdirectory_names:
+                path = os.path.join(directory, subdirectory_name)
+                if AssetController._is_directory_with_metadata_py(path):
+                    if path not in paths:
+                        paths.append(path)
+        return paths
 
     def _make_asset_menu_entries(
         self,
@@ -675,6 +677,19 @@ class AssetController(Controller):
             return
         return manager._get_metadatum(metadatum_name)
 
+    @staticmethod
+    def _remove_file_line(file_path, line_to_remove):
+        lines_to_keep = []
+        with open(file_path, 'r') as file_pointer:
+            for line in file_pointer.readlines():
+                if line == line_to_remove:
+                    pass
+                else:
+                    lines_to_keep.append(line)
+        with open(file_path, 'w') as file_pointer:
+            contents = ''.join(lines_to_keep)
+            file_pointer.write(contents)
+
     def _remove_unadded_assets(self, dry_run=False):
         paths = self._get_unadded_asset_paths()
         inputs, outputs = [], []
@@ -700,12 +715,37 @@ class AssetController(Controller):
         command = command.format(remove_command, paths)
         self._io_manager.run_command(command)
 
+    @staticmethod
+    def _replace_in_file(file_path, old, new):
+        assert isinstance(old, str), repr(old)
+        assert isinstance(new, str), repr(new)
+        with open(file_path, 'r') as file_pointer:
+            new_file_lines = []
+            for line in file_pointer.readlines():
+                line = line.replace(old, new)
+                new_file_lines.append(line)
+        new_file_contents = ''.join(new_file_lines)
+        if sys.version_info[0] == 2:
+            new_file_contents = unicode(new_file_contents, 'utf-8')
+            with codecs.open(file_path, 'w', encoding='utf-8') as file_pointer:
+                file_pointer.write(new_file_contents)
+        else:
+            with open(file_path, 'w') as file_pointer:
+                file_pointer.write(new_file_contents)
+
     def _set_is_navigating_to_sibling_asset(self):
         if self._basic_breadcrumb in ('materials', 'MATERIALS'):
             self._session._is_navigating_to_materials = True            
         elif self._basic_breadcrumb in ('segments', 'SEGMENTS'):
             self._session._is_navigating_to_segments = True
 
+    @staticmethod
+    def _sort_ordered_dictionary(dictionary):
+        new_dictionary = type(dictionary)()
+        for key in sorted(dictionary):
+            new_dictionary[key] = dictionary[key]
+        return new_dictionary
+        
     def _write_metadata_py(self, metadata, metadata_py_path=None):
         lines = []
         lines.append(self._configuration.unicode_directive)
