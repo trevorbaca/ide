@@ -421,49 +421,6 @@ class AssetController(Controller):
                         paths.append(path)
         return paths
 
-    def _make_asset_menu_entries(
-        self,
-        apply_current_directory=True,
-        set_view=True,
-        ):
-        paths = self._list_asset_paths()
-        current_directory = self._get_current_directory()
-        if (apply_current_directory or set_view) and current_directory:
-            paths = [_ for _ in paths if _.startswith(current_directory)]
-        strings = [self._path_to_asset_menu_display_string(_) for _ in paths]
-        pairs = list(zip(strings, paths))
-        if not self._session.is_in_score and self._sort_by_annotation:
-            def sort_function(pair):
-                string = pair[0]
-                if '(' not in string:
-                    return string
-                open_parenthesis_index = string.find('(')
-                assert string.endswith(')')
-                annotation = string[open_parenthesis_index:]
-                annotation = annotation.replace("'", '')
-                annotation = stringtools.strip_diacritics(annotation)
-                return annotation
-            pairs.sort(key=lambda _: sort_function(_))
-        else:
-            def sort_function(pair):
-                string = pair[0]
-                string = stringtools.strip_diacritics(string)
-                string = string.replace("'", '')
-                return string
-            pairs.sort(key=lambda _: sort_function(_))
-        entries = []
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        if set_view:
-            entries = self._filter_asset_menu_entries_by_view(entries)
-        if self._session.is_test:
-            if getattr(self, '_only_example_scores_during_test', False):
-                entries = [_ for _ in entries if 'Example Score' in _[0]]
-        elif not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        return entries
-
     def _make_asset_menu_section(self, menu):
         menu_entries = []
         menu_entries.extend(self._make_secondary_asset_menu_entries())
