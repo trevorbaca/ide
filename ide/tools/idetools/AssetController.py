@@ -24,7 +24,6 @@ class AssetController(Controller):
         '_commands',
         '_directory_entry_predicate',
         '_group_asset_section_by_annotation',
-        '_has_breadcrumb_in_score',
         '_include_asset_name',
         )
 
@@ -45,7 +44,6 @@ class AssetController(Controller):
         self._basic_breadcrumb = None
         self._commands = {}
         self._group_asset_section_by_annotation = True
-        self._has_breadcrumb_in_score = True
         self._include_asset_name = True
         self._directory_entry_predicate = self._is_valid_directory_entry
 

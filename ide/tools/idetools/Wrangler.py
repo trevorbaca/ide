@@ -27,6 +27,7 @@ class Wrangler(AssetController):
         '_file_extension',
         '_file_name_predicate',
         '_force_lowercase_file_name',
+        '_hide_breadcrumb_in_score',
         '_mandatory_copy_target_storehouse',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -48,6 +49,7 @@ class Wrangler(AssetController):
         self._extra_commands = []
         self._file_name_predicate = None
         self._force_lowercase_file_name = True
+        self._hide_breadcrumb_in_score = False
         self._mandatory_copy_target_storehouse = None
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
@@ -58,14 +60,14 @@ class Wrangler(AssetController):
 
     @property
     def _breadcrumb(self):
-        if self._session.is_in_score and not self._has_breadcrumb_in_score:
+        if self._session.is_in_score and self._hide_breadcrumb_in_score:
             return
         breadcrumb = self._basic_breadcrumb
         if self._session.is_in_score:
             breadcrumb = '{} directory'.format(breadcrumb)
         else:
-            singular = self._session._inflect.singular_noun(breadcrumb) 
-            breadcrumb = singular or breadcrumb
+            if breadcrumb == 'scores':
+                breadcrumb = 'score'
             breadcrumb = 'all {} directories'.format(breadcrumb)
         view_name = self._read_view_name()
         if not view_name:

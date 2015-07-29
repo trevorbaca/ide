@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import collections
-import inflect
 import os
 from abjad.tools import abctools
 from abjad.tools import stringtools
@@ -53,7 +52,6 @@ class Session(abctools.AbjadObject):
         '_current_score_directory',
         '_display',
         '_display_available_commands',
-        '_inflect',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -110,7 +108,6 @@ class Session(abctools.AbjadObject):
         self._current_score_directory = None
         self._display = True
         self._display_available_commands = False
-        self._inflect = inflect.engine()
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False

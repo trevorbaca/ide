@@ -44,8 +44,8 @@ def test_Wrangler_copy_02():
 
     titles = [
         'Abjad IDE - all score directories',
-        'Abjad IDE - all material directories',
-        'Abjad IDE - all material directories',
+        'Abjad IDE - all materials directories',
+        'Abjad IDE - all materials directories',
         ]
     assert abjad_ide._transcript.titles == titles
     assert 'Select storehouse:' in contents
@@ -109,8 +109,8 @@ def test_Wrangler_copy_05():
 
     titles = [
         'Abjad IDE - all score directories',
-        'Abjad IDE - all segment directories',
-        'Abjad IDE - all segment directories',
+        'Abjad IDE - all segments directories',
+        'Abjad IDE - all segments directories',
         ]
     assert abjad_ide._transcript.titles == titles
     assert 'Select storehouse:' in contents
