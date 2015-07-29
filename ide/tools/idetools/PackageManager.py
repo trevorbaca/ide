@@ -220,7 +220,6 @@ class PackageManager(AssetController):
             'segments',
             'stylesheets',
             )
-        self._include_asset_name = False
         self._optional_directories = (
             '__pycache__',
             'etc',

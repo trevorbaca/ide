@@ -166,7 +166,6 @@ class AbjadIDE(Controller):
         wrangler._controller_commands = commands
         wrangler._group_asset_section_by_annotation = False
         wrangler._hide_breadcrumb_while_in_score = True
-        wrangler._include_asset_name = False
         wrangler._only_example_scores_during_test = True
         wrangler._sort_by_annotation = False
         return wrangler

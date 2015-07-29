@@ -21,7 +21,6 @@ class AssetController(Controller):
         '_annotate_year',
         '_asset_identifier',
         '_basic_breadcrumb',
-        '_include_asset_name',
         )
 
     known_secondary_assets = (
@@ -39,7 +38,6 @@ class AssetController(Controller):
         self._annotate_year = False
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._include_asset_name = True
 
     ### PRIVATE PROPERTIES ###
 
@@ -529,10 +527,11 @@ class AssetController(Controller):
             string = asset_name
         else:
             annotation = self._path_to_annotation(path)
-            if self._include_asset_name:
-                string = '{} ({})'.format(asset_name, annotation)
-            else:
+            prototype = ('score package manager', 'score package')
+            if self._asset_identifier in prototype:
                 string = annotation
+            else:
+                string = '{} ({})'.format(asset_name, annotation)
         return string
 
     def _path_to_score_path(self, path):
