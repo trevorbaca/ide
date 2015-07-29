@@ -9,7 +9,6 @@ def test_Menu__run_01():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -56,7 +55,6 @@ def test_Menu__run_02():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -103,7 +101,6 @@ def test_Menu__run_03():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -150,7 +147,6 @@ def test_Menu__run_04():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -197,7 +193,6 @@ def test_Menu__run_05():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -256,7 +251,6 @@ def test_Menu__run_06():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -313,7 +307,6 @@ def test_Menu__run_07():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -373,7 +366,6 @@ def test_Menu__run_08():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -432,7 +424,6 @@ def test_Menu__run_09():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -492,7 +483,6 @@ def test_Menu__run_10():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -552,7 +542,6 @@ def test_Menu__run_11():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )
@@ -611,7 +600,6 @@ def test_Menu__run_12():
 
     session = ide.tools.idetools.Session(is_test=True)
     menu = ide.tools.idetools.Menu(
-        breadcrumb_callback='name',
         name='test',
         session=session,
         )

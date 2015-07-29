@@ -22,10 +22,10 @@ class AssetController(Controller):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_commands',
+        '_directory_entry_predicate',
         '_group_asset_section_by_annotation',
         '_has_breadcrumb_in_score',
         '_include_asset_name',
-        '_validator',
         )
 
     known_secondary_assets = (
@@ -47,7 +47,7 @@ class AssetController(Controller):
         self._group_asset_section_by_annotation = True
         self._has_breadcrumb_in_score = True
         self._include_asset_name = True
-        self._validator = self._is_valid_directory_entry
+        self._directory_entry_predicate = self._is_valid_directory_entry
 
     ### PRIVATE PROPERTIES ###
 
@@ -393,7 +393,7 @@ class AssetController(Controller):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    if not self._validator(directory_entry):
+                    if not self._directory_entry_predicate(directory_entry):
                         continue
                 path = os.path.join(directory, directory_entry)
                 if self._basic_breadcrumb == 'scores':

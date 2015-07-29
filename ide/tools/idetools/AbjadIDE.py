@@ -54,7 +54,8 @@ class AbjadIDE(Controller):
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('build',)
         wrangler._use_dash_case = True
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         wrangler._commands['bcg'] = wrangler.generate_back_cover_source
         wrangler._commands['bci'] = wrangler.interpret_back_cover
         wrangler._commands['dc'] = wrangler.collect_segment_pdfs
@@ -93,7 +94,8 @@ class AbjadIDE(Controller):
         wrangler._basic_breadcrumb = 'distribution'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._use_dash_case = True
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('distribution',)
         return wrangler
 
@@ -106,7 +108,8 @@ class AbjadIDE(Controller):
         wrangler._basic_breadcrumb = 'etc'
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._use_dash_case = True
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('etc',)
         return wrangler
 
@@ -122,7 +125,8 @@ class AbjadIDE(Controller):
         wrangler._force_lowercase_file_name = False
         wrangler._new_file_contents = self._configuration.unicode_directive
         wrangler._score_storehouse_path_infix_parts = ('makers',)
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         return wrangler
 
     @property
@@ -132,7 +136,8 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
-        wrangler._validator = wrangler._is_valid_package_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_package_directory_entry
         wrangler._score_storehouse_path_infix_parts = ('materials',)
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
@@ -162,7 +167,8 @@ class AbjadIDE(Controller):
             wrangler._configuration.user_score_packages_directory
         wrangler._only_example_scores_during_test = True
         wrangler._sort_by_annotation = False
-        wrangler._validator = wrangler._is_valid_package_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every score packages', 'ck*'))
         commands.append(('git add all score packages', 'add*'))
@@ -200,7 +206,8 @@ class AbjadIDE(Controller):
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
         wrangler._score_storehouse_path_infix_parts = ('segments',)
-        wrangler._validator = wrangler._is_valid_package_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -225,7 +232,8 @@ class AbjadIDE(Controller):
         wrangler._file_name_predicate = stringtools.is_dash_case
         wrangler._score_storehouse_path_infix_parts = ('stylesheets',)
         wrangler._use_dash_case = True
-        wrangler._validator = wrangler._is_valid_file_directory_entry
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         return wrangler
 
     @property

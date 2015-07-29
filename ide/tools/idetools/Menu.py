@@ -36,7 +36,6 @@ class Menu(Controller):
 
     __slots__ = (
         '_asset_section',
-        '_breadcrumb_callback',
         '_menu_sections',
         '_name',
         '_predetermined_input',
@@ -49,7 +48,6 @@ class Menu(Controller):
 
     def __init__(
         self,
-        breadcrumb_callback=None,
         name=None,
         prompt_character='>',
         session=None,
@@ -57,7 +55,6 @@ class Menu(Controller):
         title=None,
         ):
         Controller.__init__(self, session=session)
-        self._breadcrumb_callback = breadcrumb_callback
         self._menu_sections = []
         self._name = name
         self._predetermined_input = None

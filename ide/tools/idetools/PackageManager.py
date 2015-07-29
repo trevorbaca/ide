@@ -17,7 +17,6 @@ class PackageManager(AssetController):
     __slots__ = (
         '_breadcrumb_callback',
         '_directory_names',
-        '_main_menu',
         '_optional_directories',
         '_optional_files',
         '_other_commands',
