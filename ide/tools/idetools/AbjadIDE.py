@@ -144,9 +144,9 @@ class AbjadIDE(Controller):
         wrangler._annotate_year = True
         wrangler._basic_breadcrumb = 'scores'
         wrangler._group_asset_section_by_annotation = False
-        wrangler._hide_breadcrumb_in_score = True
+        wrangler._hide_breadcrumb_while_in_score = True
         wrangler._include_asset_name = False
-        wrangler._mandatory_copy_target_storehouse = \
+        wrangler._copy_to_directory = \
             wrangler._configuration.user_score_packages_directory
         wrangler._only_example_scores_during_test = True
         wrangler._sort_by_annotation = False

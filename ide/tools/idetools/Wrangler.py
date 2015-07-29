@@ -24,11 +24,11 @@ class Wrangler(AssetController):
 
     __slots__ = (
         '_controller_commands',
+        '_copy_to_directory',
         '_file_extension',
         '_file_name_predicate',
         '_force_lowercase_file_name',
-        '_hide_breadcrumb_in_score',
-        '_mandatory_copy_target_storehouse',
+        '_hide_breadcrumb_while_in_score',
         '_new_file_contents',
         '_only_example_scores_during_test',
         '_score_storehouse_path_infix_parts',
@@ -49,8 +49,8 @@ class Wrangler(AssetController):
         self._controller_commands = []
         self._file_name_predicate = None
         self._force_lowercase_file_name = True
-        self._hide_breadcrumb_in_score = False
-        self._mandatory_copy_target_storehouse = None
+        self._hide_breadcrumb_while_in_score = False
+        self._copy_to_directory = None
         self._new_file_contents = ''
         self._score_storehouse_path_infix_parts = ()
         self._sort_by_annotation = True
@@ -60,7 +60,7 @@ class Wrangler(AssetController):
 
     @property
     def _breadcrumb(self):
-        if self._session.is_in_score and self._hide_breadcrumb_in_score:
+        if self._session.is_in_score and self._hide_breadcrumb_while_in_score:
             return
         breadcrumb = self._basic_breadcrumb
         if self._session.is_in_score:
@@ -1379,7 +1379,7 @@ class Wrangler(AssetController):
         if not old_path:
             return
         old_name = os.path.basename(old_path)
-        new_storehouse = self._mandatory_copy_target_storehouse
+        new_storehouse = self._copy_to_directory
         if new_storehouse:
             pass
         elif self._session.is_in_score:
