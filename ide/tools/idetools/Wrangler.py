@@ -24,17 +24,16 @@ class Wrangler(AssetController):
 
     __slots__ = (
         '_controller_commands',
-        '_copy_to_directory',
+        '_copy_target_directory',
         '_directory_name',
         '_file_extension',
         '_file_name_predicate',
+        '_force_dash_case_file_name',
         '_force_lowercase_file_name',
         '_hide_breadcrumb_while_in_score',
         '_new_file_contents',
         '_only_example_scores_during_test',
-        '_directory_name',
         '_sort_by_annotation',
-        '_use_dash_case',
         )
 
     ### INITIALIZER ###
@@ -46,17 +45,17 @@ class Wrangler(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._copy_to_directory = None
+        self._copy_target_directory = None
         self._controller_commands = []
+        self._directory_name = None
         self._file_extension = ''
         self._file_name_predicate = None
+        self._force_dash_case_file_name = False
         self._force_lowercase_file_name = True
         self._hide_breadcrumb_while_in_score = False
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
-        self._directory_name = None
         self._sort_by_annotation = True
-        self._use_dash_case = False
 
     ### PRIVATE PROPERTIES ###
 
@@ -771,7 +770,7 @@ class Wrangler(AssetController):
         if self._session.is_backtracking or name is None:
             return
         name = stringtools.strip_diacritics(name)
-        if self._use_dash_case:
+        if self._force_dash_case_file_name:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
         if self._force_lowercase_file_name:
@@ -1497,7 +1496,7 @@ class Wrangler(AssetController):
         if not old_path:
             return
         old_name = os.path.basename(old_path)
-        new_storehouse = self._copy_to_directory
+        new_storehouse = self._copy_target_directory
         if new_storehouse:
             pass
         elif self._session.is_in_score:
@@ -1522,7 +1521,7 @@ class Wrangler(AssetController):
         if self._session.is_backtracking or new_name is None:
             return
         new_name = stringtools.strip_diacritics(new_name)
-        if self._use_dash_case:
+        if self._force_dash_case_file_name:
             new_name = self._to_dash_case(new_name)
         new_name = new_name.replace(' ', '_')
         if self._force_lowercase_file_name:

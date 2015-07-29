@@ -50,11 +50,6 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
-        wrangler._directory_name = 'build'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._use_dash_case = True
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
         commands = []
         commands.append(('collect music segment files', 'mc'))
         commands.append(('generate back-cover.tex', 'bcg'))
@@ -69,6 +64,11 @@ class AbjadIDE(Controller):
         commands.append(('interpret score.tex', 'si'))
         commands.append(('push score to distribution directory', 'sp'))
         wrangler._controller_commands = commands
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
+        wrangler._directory_name = 'build'
+        wrangler._file_name_predicate = stringtools.is_dash_case
+        wrangler._force_dash_case_file_name = True
         return wrangler
 
     @property
@@ -78,11 +78,11 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'distribution'
-        wrangler._directory_name = 'distribution'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
+        wrangler._directory_name = 'distribution'
+        wrangler._file_name_predicate = stringtools.is_dash_case
+        wrangler._force_dash_case_file_name = True
         return wrangler
 
     @property
@@ -92,11 +92,11 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'etc'
-        wrangler._directory_name = 'etc'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
+        wrangler._directory_name = 'etc'
+        wrangler._file_name_predicate = stringtools.is_dash_case
+        wrangler._force_dash_case_file_name = True
         return wrangler
 
     @property
@@ -106,13 +106,13 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'maker'
         wrangler._basic_breadcrumb = 'makers'
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         wrangler._directory_name = 'makers'
         wrangler._file_extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._force_lowercase_file_name = False
         wrangler._new_file_contents = wrangler._unicode_directive
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
         return wrangler
 
     @property
@@ -122,9 +122,6 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
-        wrangler._directory_name = 'materials'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_package_directory_entry
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -133,6 +130,9 @@ class AbjadIDE(Controller):
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
         wrangler._controller_commands = commands
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_package_directory_entry
+        wrangler._directory_name = 'materials'
         return wrangler
 
     @property
@@ -143,12 +143,8 @@ class AbjadIDE(Controller):
         wrangler._asset_identifier = 'score package'
         wrangler._annotate_year = True
         wrangler._basic_breadcrumb = 'scores'
-        wrangler._group_asset_section_by_annotation = False
-        wrangler._hide_breadcrumb_while_in_score = True
-        wrangler._include_asset_name = False
-        wrangler._copy_to_directory = wrangler._configuration.composer_scores_directory
-        wrangler._only_example_scores_during_test = True
-        wrangler._sort_by_annotation = False
+        wrangler._copy_target_directory = \
+            wrangler._configuration.composer_scores_directory
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry
         commands = []
@@ -168,6 +164,11 @@ class AbjadIDE(Controller):
         commands.append(('go to all segment packages', 'gg'))
         commands.append(('go to all stylesheets', 'yy'))
         wrangler._controller_commands = commands
+        wrangler._group_asset_section_by_annotation = False
+        wrangler._hide_breadcrumb_while_in_score = True
+        wrangler._include_asset_name = False
+        wrangler._only_example_scores_during_test = True
+        wrangler._sort_by_annotation = False
         return wrangler
 
     @property
@@ -177,9 +178,6 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_package_directory_entry
-        wrangler._directory_name = 'segments'
         commands = []
         commands.append(('check every definition.py files', 'dc*'))
         commands.append(('edit every definition.py files', 'de*'))
@@ -189,6 +187,9 @@ class AbjadIDE(Controller):
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
         wrangler._controller_commands = commands
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_package_directory_entry
+        wrangler._directory_name = 'segments'
         return wrangler
 
     @property
@@ -198,12 +199,12 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._asset_identifier = 'stylesheet'
         wrangler._basic_breadcrumb = 'stylesheets'
+        wrangler._directory_entry_predicate = \
+            wrangler._is_valid_file_directory_entry
         wrangler._directory_name = 'stylesheets'
         wrangler._file_extension = '.ily'
         wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._use_dash_case = True
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
+        wrangler._force_dash_case_file_name = True
         return wrangler
 
     @property
