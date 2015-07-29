@@ -594,7 +594,7 @@ class Configuration(AbjadConfiguration):
         assert isinstance(path, str), repr(path)
         path = os.path.normpath(path)
         if path.endswith('.py'):
-            path, extension = os.path.splitext(path)
+            path, file_extension = os.path.splitext(path)
         if path.startswith(self.example_score_packages_directory):
             prefix = len(self.example_score_packages_directory) + 1
         elif path.startswith(self.abjad_ide_directory):

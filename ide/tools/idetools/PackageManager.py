@@ -290,7 +290,7 @@ class PackageManager(AssetController):
 
     @staticmethod
     def _file_name_to_version_number(file_name):
-        root, extension = os.path.splitext(file_name)
+        root, file_extension = os.path.splitext(file_name)
         assert 4 <= len(root), repr(file_name)
         version_number_string = root[-4:]
         try:
@@ -736,7 +736,7 @@ class PackageManager(AssetController):
 
     def _rename_interactively(
         self,
-        extension=None,
+        file_extension=None,
         file_name_callback=None,
         force_lowercase=True,
         ):
@@ -754,8 +754,8 @@ class PackageManager(AssetController):
         new_package_name = new_package_name.replace(' ', '_')
         if force_lowercase:
             new_package_name = new_package_name.lower()
-        if extension and not new_package_name.endswith(extension):
-            new_package_name = new_package_name + extension
+        if file_extension and not new_package_name.endswith(file_extension):
+            new_package_name = new_package_name + file_extension
         lines = []
         line = 'current name: {}'.format(base_name)
         lines.append(line)

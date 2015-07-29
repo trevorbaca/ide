@@ -180,7 +180,7 @@ class Wrangler(AssetController):
         build_directory = self._session.current_build_directory
         directory_entries = sorted(os.listdir(segments_directory))
         source_file_paths, target_file_paths = [], []
-        _, extension = os.path.splitext(file_name)
+        _, file_extension = os.path.splitext(file_name)
         for directory_entry in directory_entries:
             segment_directory = os.path.join(
                 segments_directory,
@@ -199,7 +199,7 @@ class Wrangler(AssetController):
                 score_path)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
-            target_file_name = directory_entry + extension
+            target_file_name = directory_entry + file_extension
             target_file_path = os.path.join(
                 build_directory,
                 target_file_name,
@@ -273,8 +273,8 @@ class Wrangler(AssetController):
             'build',
             file_name,
             )
-        base_name, extension = os.path.splitext(file_name)
-        candidate_name = base_name + '.candidate' + extension
+        base_name, file_extension = os.path.splitext(file_name)
+        candidate_name = base_name + '.candidate' + file_extension
         candidate_path = os.path.join(
             manager._path,
             'build',
@@ -511,7 +511,7 @@ class Wrangler(AssetController):
         input_directory = os.path.dirname(file_path)
         output_directory = input_directory
         basename = os.path.basename(file_path)
-        input_file_name_stem, extension = os.path.splitext(basename)
+        input_file_name_stem, file_extension = os.path.splitext(basename)
         job_name = '{}.candidate'.format(input_file_name_stem)
         candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
         candidate_path = os.path.join(output_directory, candidate_name)
@@ -543,11 +543,11 @@ class Wrangler(AssetController):
     def _is_valid_file_directory_entry(self, expr):
         superclass = super(Wrangler, self)
         if superclass._is_valid_directory_entry(expr):
-            name, extension = os.path.splitext(expr)
+            name, file_extension = os.path.splitext(expr)
             if self._file_name_predicate(name):
                 if self._file_extension == '':
                     return True
-                elif self._file_extension == extension:
+                elif self._file_extension == file_extension:
                     return True
         return False
 
@@ -689,11 +689,11 @@ class Wrangler(AssetController):
 
     def _make_file(
         self, 
-        extension=None, 
+        file_extension=None, 
         message='file name', 
         ):
         contents = self._new_file_contents
-        extension = extension or getattr(self, '_file_extension', '')
+        file_extension = self._file_extension
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
@@ -711,8 +711,8 @@ class Wrangler(AssetController):
         name = name.replace(' ', '_')
         if self._force_lowercase_file_name:
             name = name.lower()
-        if not name.endswith(extension):
-            name = name + extension
+        if not name.endswith(file_extension):
+            name = name + file_extension
         path = os.path.join(path, name)
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
@@ -1361,7 +1361,7 @@ class Wrangler(AssetController):
 
     def copy(
         self, 
-        extension=None,
+        file_extension=None,
         new_storehouse=None
         ):
         r'''Copies asset.
@@ -1374,7 +1374,7 @@ class Wrangler(AssetController):
             messages.append('')
             self._io_manager._display(messages)
             return
-        extension = extension or getattr(self, '_file_extension', '')
+        file_extension = self._file_extension
         old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
         if not old_path:
             return
@@ -1409,8 +1409,8 @@ class Wrangler(AssetController):
         new_name = new_name.replace(' ', '_')
         if self._force_lowercase_file_name:
             new_name = new_name.lower()
-        if extension and not new_name.endswith(extension):
-            new_name = new_name + extension
+        if file_extension and not new_name.endswith(file_extension):
+            new_name = new_name + file_extension
         new_path = os.path.join(new_storehouse, new_name)
         if os.path.exists(new_path):
             message = 'already exists: {}'.format(new_path)
@@ -1895,14 +1895,14 @@ class Wrangler(AssetController):
 
     def rename(
         self,
-        extension=None,
+        file_extension=None,
         file_name_callback=None, 
         ):
         r'''Renames asset.
 
         Returns none.
         '''
-        extension = extension or getattr(self, '_file_extension', '')
+        file_extension = self._file_extension
         path = self._select_visible_asset_path(infinitive_phrase='to rename')
         if not path:
             return
@@ -1913,7 +1913,7 @@ class Wrangler(AssetController):
         manager = self._get_manager(path)
         manager._asset_identifier = self._asset_identifier
         manager._rename_interactively(
-            extension=extension,
+            file_extension=file_extension,
             file_name_callback=file_name_callback,
             force_lowercase=self._force_lowercase_file_name,
             )

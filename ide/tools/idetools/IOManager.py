@@ -130,7 +130,7 @@ class IOManager(IOManager):
             return 0
         greatest_number = 0
         for entry in sorted(os.listdir(version_directory)):
-            base_name, extension = os.path.splitext(entry)
+            base_name, file_extension = os.path.splitext(entry)
             number = 0
             try:
                 number = int(base_name[-4:])
@@ -514,10 +514,10 @@ class IOManager(IOManager):
             message = 'file not found: {}'.format(path)
             self._display(message)
             return False
-        _, extension = os.path.splitext(path)
-        if extension == '.py':
+        _, file_extension = os.path.splitext(path)
+        if file_extension == '.py':
             command = 'python {}'.format(path)
-        elif extension == '.ly':
+        elif file_extension == '.ly':
             command = 'lilypond -dno-point-and-click {}'.format(path)
         else:
             message = 'can not interpret {}.'.format(path)
@@ -604,7 +604,7 @@ class IOManager(IOManager):
         else:
             message = 'cannot find LilyPond executable.'
             raise ValueError(message)
-        base, extension = os.path.splitext(path)
+        base, file_extension = os.path.splitext(path)
         output_path = base + '.pdf'
         input_directory = os.path.dirname(path)
         if not os.path.exists(output_path) or not candidacy:
