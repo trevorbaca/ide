@@ -392,7 +392,7 @@ class PackageManager(AssetController):
 
     def _get_initializer_file_lines(self, missing_file):
         lines = []
-        lines.append(self._configuration.unicode_directive)
+        lines.append(self._unicode_directive)
         return lines
 
     def _get_metadatum(self, metadatum_name, include_score=False):
@@ -458,7 +458,7 @@ class PackageManager(AssetController):
 
     def _get_score_initializer_file_lines(self, missing_file):
         lines = []
-        lines.append(self._configuration.unicode_directive)
+        lines.append(self._unicode_directive)
         if 'materials' in missing_file or 'makers' in missing_file:
             lines.append('from abjad.tools import systemtools')
             lines.append('')
@@ -903,7 +903,7 @@ class PackageManager(AssetController):
 
     def _write_stub_definition_py(self):
         lines = []
-        lines.append(self._configuration.unicode_directive)
+        lines.append(self._unicode_directive)
         lines.append(self._abjad_import_statement)
         lines.append('')
         lines.append('')
@@ -1158,7 +1158,7 @@ class PackageManager(AssetController):
                     lines = self._get_initializer_file_lines(missing_file)
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
-                lines.append(self._configuration.unicode_directive)
+                lines.append(self._unicode_directive)
                 lines.append('from abjad import *')
                 lines.append('')
                 lines.append('')
@@ -1166,7 +1166,7 @@ class PackageManager(AssetController):
                     'metadata = datastructuretools.TypedOrderedDict()')
             elif missing_file.endswith('__views__.py'):
                 lines = []
-                lines.append(self._configuration.unicode_directive)
+                lines.append(self._unicode_directive)
                 lines.append(self._abjad_import_statement)
                 lines.append('from ide.tools import idetools')
                 lines.append('')

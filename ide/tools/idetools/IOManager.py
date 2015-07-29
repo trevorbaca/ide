@@ -677,11 +677,3 @@ class IOManager(IOManager):
         else:
             with open(path, 'w') as file_pointer:
                 file_pointer.write(string)
-
-    def write_stub(self, path):
-        r'''Writes Unicode directive to otherwise empty file at `path`.
-
-        Returns none.
-        '''
-        with open(path, 'w') as file_pointer:
-            file_pointer.write(self._configuration.unicode_directive)

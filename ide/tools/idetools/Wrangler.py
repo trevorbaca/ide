@@ -629,14 +629,11 @@ class Wrangler(AssetController):
             asset_name,
             )
         manager = self._get_manager(path)
-        if hasattr(manager, '_write_stub'):
-            self._io_manager.write_stub(path)
-        else:
-            with self._io_manager._silent():
-                manager.check_package(
-                    return_supply_messages=True,
-                    supply_missing=True,
-                    )
+        with self._io_manager._silent():
+            manager.check_package(
+                return_supply_messages=True,
+                supply_missing=True,
+                )
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._io_manager._silent():

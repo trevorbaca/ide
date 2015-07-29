@@ -93,6 +93,10 @@ class AssetController(Controller):
         return result
 
     @property
+    def _unicode_directive(self):
+        return '# -*- encoding: utf-8 -*-'
+
+    @property
     def _views_package_manager(self):
         path = self._configuration.wrangler_views_directory
         return self._io_manager._make_package_manager(path)
@@ -743,7 +747,7 @@ class AssetController(Controller):
         
     def _write_metadata_py(self, metadata, metadata_py_path=None):
         lines = []
-        lines.append(self._configuration.unicode_directive)
+        lines.append(self._unicode_directive)
         lines.append('from abjad import *')
         lines.append('')
         lines.append('')
@@ -761,7 +765,7 @@ class AssetController(Controller):
 
     def _write_view_inventory(self, view_inventory):
         lines = []
-        lines.append(self._configuration.unicode_directive)
+        lines.append(self._unicode_directive)
         lines.append(self._abjad_import_statement)
         lines.append('from ide.tools import idetools')
         lines.append('')

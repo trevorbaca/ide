@@ -389,21 +389,6 @@ class Configuration(AbjadConfiguration):
         return path
 
     @property
-    def unicode_directive(self):
-        r'''Gets Unicode directive.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.unicode_directive
-                '# -*- encoding: utf-8 -*-'
-
-        Returns string.
-        '''
-        return '# -*- encoding: utf-8 -*-'
-
-    @property
     def upper_case_composer_full_name(self):
         r'''Gets upper case composer full name.
 
