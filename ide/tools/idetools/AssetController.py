@@ -21,7 +21,6 @@ class AssetController(Controller):
         '_annotate_year',
         '_asset_identifier',
         '_basic_breadcrumb',
-        '_commands',
         '_directory_entry_predicate',
         '_group_asset_section_by_annotation',
         '_include_asset_name',
@@ -42,7 +41,6 @@ class AssetController(Controller):
         self._annotate_year = False
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._commands = {}
         self._group_asset_section_by_annotation = True
         self._include_asset_name = True
         self._directory_entry_predicate = self._is_valid_directory_entry
@@ -83,7 +81,6 @@ class AssetController(Controller):
             'abb': self.edit_abbreviations_file,
             'sse': self.edit_score_stylesheet,
             })
-        result.update(self._commands)
         return result
 
     @property

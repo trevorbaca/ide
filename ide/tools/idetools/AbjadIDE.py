@@ -55,19 +55,6 @@ class AbjadIDE(Controller):
         wrangler._use_dash_case = True
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
-        wrangler._commands['bcg'] = wrangler.generate_back_cover_source
-        wrangler._commands['bci'] = wrangler.interpret_back_cover
-        wrangler._commands['dc'] = wrangler.collect_segment_pdfs
-        wrangler._commands['fcg'] = wrangler.generate_front_cover_source
-        wrangler._commands['fci'] = wrangler.interpret_front_cover
-        wrangler._commands['mc'] = wrangler.collect_segment_lilypond_files
-        wrangler._commands['mg'] = wrangler.generate_music_source
-        wrangler._commands['mi'] = wrangler.interpret_music
-        wrangler._commands['pg'] = wrangler.generate_preface_source
-        wrangler._commands['pi'] = wrangler.interpret_preface
-        wrangler._commands['sg'] = wrangler.generate_score_source
-        wrangler._commands['si'] = wrangler.interpret_score
-        wrangler._commands['sp'] = wrangler.push_score_pdf_to_distribution_directory
         commands = []
         commands.append(('collect music segment files', 'mc'))
         commands.append(('generate back-cover.tex', 'bcg'))
@@ -184,16 +171,6 @@ class AbjadIDE(Controller):
         commands.append(('show all segment packages', 'gg'))
         commands.append(('show all stylesheets', 'yy'))
         wrangler._extra_commands = commands
-        commands = {
-            'add*': wrangler.add_every_asset,
-            'ci*': wrangler.commit_every_asset,
-            'clean*': wrangler.remove_every_unadded_asset,
-            'st*': wrangler.display_every_asset_status,
-            'revert*': wrangler.revert_every_asset,
-            'up*': wrangler.update_every_asset,
-            'new': wrangler.make_score_package,
-            }
-        wrangler._commands = commands
         return wrangler
 
     @property

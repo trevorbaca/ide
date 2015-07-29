@@ -100,8 +100,28 @@ class Wrangler(AssetController):
             'ii*': self.interpret_every_illustration_ly,
             'io*': self.open_every_illustration_pdf,
             'so*': self.open_every_score_pdf,
+            #
+            'add*': self.add_every_asset,
+            'ci*': self.commit_every_asset,
+            'clean*': self.remove_every_unadded_asset,
+            'st*': self.display_every_asset_status,
+            'revert*': self.revert_every_asset,
+            'up*': self.update_every_asset,
+            #
+            'bcg': self.generate_back_cover_source,
+            'bci': self.interpret_back_cover,
+            'dc': self.collect_segment_pdfs,
+            'fcg': self.generate_front_cover_source,
+            'fci': self.interpret_front_cover,
+            'mc': self.collect_segment_lilypond_files,
+            'mg': self.generate_music_source,
+            'mi': self.interpret_music,
+            'pg': self.generate_preface_source,
+            'pi': self.interpret_preface,
+            'sg': self.generate_score_source,
+            'si': self.interpret_score,
+            'sp': self.push_score_pdf_to_distribution_directory,
             })
-        result.update(self._commands)
         return result
 
     @property
@@ -728,6 +748,48 @@ class Wrangler(AssetController):
         manager._make_package()
         paths = self._list_visible_asset_paths()
         if path not in paths:
+            with self._io_manager._silent():
+                self._clear_view()
+        manager._run()
+
+    def _make_score_package(self):
+        message = 'enter title'
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        title = getter._run()
+        if self._session.is_backtracking or not title:
+            return
+        package_name = stringtools.strip_diacritics(title)
+        package_name = stringtools.to_snake_case(package_name)
+        confirmed = False 
+        while not confirmed:
+            package_path = os.path.join(
+                self._configuration.user_score_packages_directory,
+                package_name,
+                )
+            message = 'path will be {}.'.format(package_path)
+            self._io_manager._display(message)
+            result = self._io_manager._confirm()
+            if self._session.is_backtracking:
+                return
+            confirmed = result
+            if confirmed:
+                break
+            message = 'enter package name'
+            getter = self._io_manager._make_getter()
+            getter.append_string(message)
+            package_name = getter._run()
+            if self._session.is_backtracking or not package_name:
+                return
+            package_name = stringtools.strip_diacritics(package_name)
+            package_name = stringtools.to_snake_case(package_name)
+        manager = self._get_manager(package_path)
+        manager._make_package()
+        manager._add_metadatum('title', title)
+        year = datetime.date.today().year
+        manager._add_metadatum('year', year)
+        package_paths = self._list_visible_asset_paths()
+        if package_path not in package_paths:
             with self._io_manager._silent():
                 self._clear_view()
         manager._run()
@@ -1590,54 +1652,10 @@ class Wrangler(AssetController):
         '''
         if self._asset_identifier == 'file':
             self._make_file()
+        elif self._asset_identifier == 'score package':
+            self._make_score_package()
         else:
             self._make_package()
-
-    def make_score_package(self):
-        r'''Makes score package.
-
-        Returns none.
-        '''
-        message = 'enter title'
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        title = getter._run()
-        if self._session.is_backtracking or not title:
-            return
-        package_name = stringtools.strip_diacritics(title)
-        package_name = stringtools.to_snake_case(package_name)
-        confirmed = False 
-        while not confirmed:
-            package_path = os.path.join(
-                self._configuration.user_score_packages_directory,
-                package_name,
-                )
-            message = 'path will be {}.'.format(package_path)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking:
-                return
-            confirmed = result
-            if confirmed:
-                break
-            message = 'enter package name'
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            package_name = getter._run()
-            if self._session.is_backtracking or not package_name:
-                return
-            package_name = stringtools.strip_diacritics(package_name)
-            package_name = stringtools.to_snake_case(package_name)
-        manager = self._get_manager(package_path)
-        manager._make_package()
-        manager._add_metadatum('title', title)
-        year = datetime.date.today().year
-        manager._add_metadatum('year', year)
-        package_paths = self._list_visible_asset_paths()
-        if package_path not in package_paths:
-            with self._io_manager._silent():
-                self._clear_view()
-        manager._run()
 
     def illustrate_every_definition_py(self):
         r'''Illustrates ``definition.py`` in every package.
