@@ -16,7 +16,6 @@ class PackageManager(AssetController):
 
     __slots__ = (
         '_breadcrumb_callback',
-        '_directory_names',
         '_optional_directories',
         '_optional_files',
         '_other_commands',
@@ -36,7 +35,6 @@ class PackageManager(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = 'package manager'
         self._breadcrumb_callback = None
-        self._directory_names = ()
         self._optional_directories = (
             '__pycache__',
             'test',
@@ -210,15 +208,6 @@ class PackageManager(AssetController):
     def _configure_as_score_package_manager(self):
         self._asset_identifier = 'score package manager'
         self._breadcrumb_callback = self._get_title
-        self._directory_names = (
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'segments',
-            'stylesheets',
-            )
         self._optional_directories = (
             '__pycache__',
             'etc',
@@ -368,9 +357,11 @@ class PackageManager(AssetController):
 
     def _get_directory_wranglers(self):
         wranglers = []
-        for directory_name in self._directory_names:
+        directory_names = self._list_directory_names()
+        for directory_name in directory_names:
             wrangler = self._session.get_wrangler(directory_name)
-            wranglers.append(wrangler)
+            if wrangler is not None:
+                wranglers.append(wrangler)
         return wranglers
 
     def _get_file_path_ending_with(self, string):
@@ -604,6 +595,15 @@ class PackageManager(AssetController):
                 files.append(entry)
         result = files + directories
         return result
+
+    def _list_directory_names(self):
+        directory_names = []
+        for entry in os.listdir(self._path):
+            path = os.path.join(self._path, entry)
+            if os.path.isdir(path):
+                if not entry == '__pycache__' :
+                    directory_names.append(entry)
+        return directory_names
 
     def _list_visible_asset_paths(self):
         return [self._path]

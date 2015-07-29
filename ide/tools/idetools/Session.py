@@ -1348,5 +1348,5 @@ class Session(abctools.AbjadObject):
             'segments': self._abjad_ide._segment_package_wrangler,
             'stylesheets': self._abjad_ide._stylesheet_wrangler,
             }
-        wrangler = directory_name_to_wrangler[directory_name]
+        wrangler = directory_name_to_wrangler.get(directory_name)
         return wrangler
