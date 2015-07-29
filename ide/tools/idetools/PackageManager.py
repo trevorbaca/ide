@@ -122,14 +122,14 @@ class PackageManager(AssetController):
     @property
     def _outer_path(self):
         if self._path.startswith(
-            self._configuration.user_score_packages_directory):
+            self._configuration.scores_directory):
             return os.path.join(
-                self._configuration.user_score_packages_directory,
+                self._configuration.scores_directory,
                 self._package_name
                 )
         else:
             return os.path.join(
-                self._configuration.example_score_packages_directory,
+                self._configuration.example_scores_directory,
                 self._package_name
                 )
     @property
@@ -477,9 +477,9 @@ class PackageManager(AssetController):
 
     def _get_score_package_directory_name(self):
         line = self._path
-        path = self._configuration.example_score_packages_directory
+        path = self._configuration.example_scores_directory
         line = line.replace(path, '')
-        path = self._configuration.user_score_packages_directory
+        path = self._configuration.scores_directory
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line

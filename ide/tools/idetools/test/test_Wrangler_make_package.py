@@ -10,7 +10,7 @@ def test_Wrangler_make_package_01():
     '''
 
     outer_path = os.path.join(
-        abjad_ide._configuration.user_score_packages_directory,
+        abjad_ide._configuration.scores_directory,
         'example_score',
         )
     inner_path = os.path.join(outer_path, 'example_score')
@@ -54,7 +54,7 @@ def test_Wrangler_make_package_02():
     '''
 
     score_package = os.path.join(
-        abjad_ide._configuration.user_score_packages_directory,
+        abjad_ide._configuration.scores_directory,
         'example_score_1',
         )
 
@@ -86,7 +86,7 @@ def test_Wrangler_make_package_03():
     session = ide.tools.idetools.Session(is_test=True)
     configuration = abjad_ide._configuration
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
@@ -112,7 +112,7 @@ def test_Wrangler_make_package_04():
     '''
 
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',

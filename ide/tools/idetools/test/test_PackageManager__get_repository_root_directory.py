@@ -8,7 +8,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 def test_PackageManager__get_repository_root_directory_01():
 
     score_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         )

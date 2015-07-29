@@ -41,7 +41,7 @@ def test_PackageManager_check_package_03():
     '''
 
     material_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
@@ -61,7 +61,7 @@ def test_PackageManager_check_package_04():
     '''
 
     segment_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
@@ -89,7 +89,7 @@ def test_PackageManager_check_package_05():
     '''
 
     segment_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
@@ -116,7 +116,7 @@ def test_PackageManager_check_package_06():
     '''
 
     segment_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
@@ -174,7 +174,7 @@ def test_PackageManager_check_package_09():
     '''
 
     extra_file = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'extra_file.txt',
@@ -196,7 +196,7 @@ def test_PackageManager_check_package_10():
     '''
 
     score_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         )
@@ -214,7 +214,7 @@ def test_PackageManager_check_package_11():
     '''
 
     segment_directory = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',

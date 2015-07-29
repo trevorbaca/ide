@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.Configuration()
 def test_Configuration__path_to_storehouse_01():
     
     storehouse = os.path.join(
-        configuration.user_score_packages_directory,
+        configuration.scores_directory,
         'foo_score',
         'foo_score',
         'stylesheets',
@@ -26,7 +26,7 @@ def test_Configuration__path_to_storehouse_01():
 def test_Configuration__path_to_storehouse_02():
     
     storehouse = os.path.join(
-        configuration.example_score_packages_directory,
+        configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'stylesheets',

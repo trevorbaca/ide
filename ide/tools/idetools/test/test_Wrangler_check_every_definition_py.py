@@ -21,7 +21,7 @@ def test_Wrangler_check_every_definition_py_01():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            abjad_ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_scores_directory,
             'red_example_score',
             'red_example_score',
             'materials',
@@ -53,7 +53,7 @@ def test_Wrangler_check_every_definition_py_02():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            abjad_ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_scores_directory,
             'red_example_score',
             'red_example_score',
             'segments',

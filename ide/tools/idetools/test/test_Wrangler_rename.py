@@ -12,11 +12,11 @@ def test_Wrangler_rename_01():
     pytest.skip('make me work again.')
 
     path_100 = os.path.join(
-        abjad_ide._configuration.user_score_packages_directory,
+        abjad_ide._configuration.scores_directory,
         'example_score_100',
         )
     path_101 = os.path.join(
-        abjad_ide._configuration.user_score_packages_directory,
+        abjad_ide._configuration.scores_directory,
         'example_score_101',
         )
 
@@ -41,14 +41,14 @@ def test_Wrangler_rename_02():
     '''
 
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
         'test_material',
         )
     new_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
@@ -70,14 +70,14 @@ def test_Wrangler_rename_03():
     '''
 
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
         'segment_04',
         )
     new_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
@@ -99,14 +99,14 @@ def test_Wrangler_rename_04():
     '''
 
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.pdf',
         )
     new_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -134,14 +134,14 @@ def test_Wrangler_rename_05():
     '''
 
     path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.pdf',
         )
     new_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

@@ -11,14 +11,14 @@ def test_Wrangler_interpret_score_01():
     '''
 
     tex_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.tex',
         )
     pdf_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -44,14 +44,14 @@ def test_Wrangler_interpret_score_02():
     '''
 
     tex_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.tex',
         )
     pdf_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

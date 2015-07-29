@@ -14,7 +14,7 @@ def test_Wrangler_generate_music_source_01():
     '''
 
     music_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -40,7 +40,7 @@ def test_Wrangler_generate_music_source_02():
     '''
 
     music_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -62,7 +62,7 @@ def test_Wrangler_generate_music_source_03():
     '''
 
     music_path = os.path.join(
-        abjad_ide._configuration.example_score_packages_directory,
+        abjad_ide._configuration.example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

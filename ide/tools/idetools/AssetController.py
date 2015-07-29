@@ -583,8 +583,8 @@ class AssetController(Controller):
 
     def _path_to_annotation(self, path):
         score_storehouses = (
-            self._configuration.example_score_packages_directory,
-            self._configuration.user_score_packages_directory,
+            self._configuration.example_scores_directory,
+            self._configuration.scores_directory,
             )
         if path.startswith(score_storehouses):
             score_path = self._configuration._path_to_score_path(path)

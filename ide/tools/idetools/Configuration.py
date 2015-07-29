@@ -105,7 +105,7 @@ class Configuration(AbjadConfiguration):
 
     def _make_missing_directories(self):
         directories = (
-            self.user_score_packages_directory,
+            self.scores_directory,
             self.transcripts_directory,
             )
         for directory in directories:
@@ -114,11 +114,11 @@ class Configuration(AbjadConfiguration):
 
     def _path_to_score_path(self, path):
         is_user_score = False
-        if path.startswith(self.user_score_packages_directory):
+        if path.startswith(self.scores_directory):
             is_user_score = True
-            prefix = len(self.user_score_packages_directory)
-        elif path.startswith(self.example_score_packages_directory):
-            prefix = len(self.example_score_packages_directory)
+            prefix = len(self.scores_directory)
+        elif path.startswith(self.example_scores_directory):
+            prefix = len(self.example_scores_directory)
         else:
             return
         path_prefix = path[:prefix]
@@ -139,12 +139,12 @@ class Configuration(AbjadConfiguration):
 
     def _path_to_storehouse(self, path):
         is_in_score = False
-        if path.startswith(self.user_score_packages_directory):
+        if path.startswith(self.scores_directory):
             is_in_score = True
-            prefix = len(self.user_score_packages_directory)
-        elif path.startswith(self.example_score_packages_directory):
+            prefix = len(self.scores_directory)
+        elif path.startswith(self.example_scores_directory):
             is_in_score = True
-            prefix = len(self.example_score_packages_directory)
+            prefix = len(self.example_scores_directory)
         else:
             message = 'unidentifiable path: {!r}.'
             message = message.format(path)
@@ -318,14 +318,14 @@ class Configuration(AbjadConfiguration):
             )
 
     @property
-    def example_score_packages_directory(self):
+    def example_scores_directory(self):
         r'''Gets Abjad score packages directory.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.example_score_packages_directory
+                >>> configuration.example_scores_directory
                 '.../ide/scores'
 
         Returns string.
@@ -370,6 +370,26 @@ class Configuration(AbjadConfiguration):
         return superclass.home_directory
 
     @property
+    def scores_directory(self):
+        r'''Gets scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.scores_directory
+                '...'
+
+        Aliases `scores_directory` setting in Abjad IDE configuration file.
+
+        Returns string.
+        '''
+        path = self._settings['scores_directory']
+        path = os.path.expanduser(path)
+        path = os.path.normpath(path)
+        return path
+
+    @property
     def transcripts_directory(self):
         r'''Gets Abjad IDE transcripts directory.
 
@@ -405,26 +425,6 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         return self._settings['upper_case_composer_full_name']
-
-    @property
-    def user_score_packages_directory(self):
-        r'''Gets user score packages directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.user_score_packages_directory
-                '...'
-
-        Aliases `scores_directory` setting in Abjad IDE configuration file.
-
-        Returns string.
-        '''
-        path = self._settings['scores_directory']
-        path = os.path.expanduser(path)
-        path = os.path.normpath(path)
-        return path
 
     @property
     def wrangler_views_directory(self):
@@ -468,23 +468,23 @@ class Configuration(AbjadConfiguration):
         '''
         result = []
         if abjad:
-            scores_directory = self.example_score_packages_directory
+            scores_directory = self.example_scores_directory
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if directory_entry[0].isalpha():
                     path = os.path.join(
-                        self.example_score_packages_directory,
+                        self.example_scores_directory,
                         directory_entry,
                         )
                     result.append(path)
         if user:
-            scores_directory = self.user_score_packages_directory
+            scores_directory = self.scores_directory
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if not directory_entry[0].isalpha():
                     continue
                 path = os.path.join(
-                    self.user_score_packages_directory,
+                    self.scores_directory,
                     directory_entry,
                     )
                 init_path = os.path.join(path, '__init__.py')
@@ -507,18 +507,18 @@ class Configuration(AbjadConfiguration):
         path = os.path.normpath(path)
         if path.endswith('.py'):
             path, file_extension = os.path.splitext(path)
-        if path.startswith(self.example_score_packages_directory):
-            prefix = len(self.example_score_packages_directory) + 1
+        if path.startswith(self.example_scores_directory):
+            prefix = len(self.example_scores_directory) + 1
         elif path.startswith(self.abjad_ide_directory):
             prefix = len(os.path.dirname(self.abjad_ide_directory)) + 1
-        elif path.startswith(self.user_score_packages_directory):
-            prefix = len(self.user_score_packages_directory) + 1
+        elif path.startswith(self.scores_directory):
+            prefix = len(self.scores_directory) + 1
         else:
             message = 'can not change path to package: {!r}.'
             message = message.format(path)
             raise Exception(message)
         package = path[prefix:]
-        if path.startswith(self.example_score_packages_directory):
+        if path.startswith(self.example_scores_directory):
             # change red_example_score/red_example_score/materials/foo
             # to red_example_score/materials/foo
             parts = package.split(os.path.sep)

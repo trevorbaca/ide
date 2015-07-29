@@ -13,7 +13,7 @@ def test_Wrangler_open_every_illustration_pdf_01():
     paths = []
     for name in package_names:
         path = os.path.join(
-            abjad_ide._configuration.example_score_packages_directory,
+            abjad_ide._configuration.example_scores_directory,
             'red_example_score',
             'red_example_score',
             'materials',
