@@ -164,43 +164,6 @@ class Configuration(AbjadConfiguration):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def abjad_score_package_names(self):
-        r'''Gets Abjad score package names.
-
-        ..  container:: example
-
-            ::
-
-                >>> for x in configuration.abjad_score_package_names:
-                ...     x
-                'blue_example_score'
-                'etude_example_score'
-                'red_example_score'
-
-        Returns tuple of strings.
-        '''
-        return (
-            'blue_example_score',
-            'etude_example_score',
-            'red_example_score',
-            )
-
-    @property
-    def aliases_file_name(self):
-        r'''Gets aliases file name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.aliases_file_name
-                '__aliases__.py'
-
-        Returns string.
-        '''
-        return '__aliases__.py'
-
-    @property
     def aliases_file_path(self):
         r'''Gets aliases file path.
 
@@ -215,7 +178,7 @@ class Configuration(AbjadConfiguration):
         '''
         return os.path.join(
             self.configuration_directory,
-            self.aliases_file_name,
+            '__aliases__.py',
             )
 
     @property
@@ -391,26 +354,6 @@ class Configuration(AbjadConfiguration):
         return self._settings['github_username']
 
     @property
-    def handler_tools_directory(self):
-        r'''Gets handler tools directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.handler_tools_directory
-                '.../tools/handlertools'
-
-        Returns string.
-        '''
-        path = os.path.join(
-            self.abjad_directory,
-            'tools',
-            'handlertools',
-            )
-        return path
-
-    @property
     def home_directory(self):
         r'''Gets home directory.
 
@@ -512,22 +455,6 @@ class Configuration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(self.configuration_directory, 'views')
-
-    @property
-    def wrangler_views_metadata_file(self):
-        r'''Gets wrangler views __metadata__.py file path.
-
-        ..  container::
-
-            >>> configuration.wrangler_views_metadata_file
-            '.../ide/views/__metadata__.py'
-
-        Defined equal to metadata file resident in the wrangler views
-        directory.
-
-        Returns string.
-        '''
-        return os.path.join(self.wrangler_views_directory, '__metadata__.py')
 
     ### PUBLIC METHODS ###
 
