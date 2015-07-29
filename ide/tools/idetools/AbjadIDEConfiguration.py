@@ -48,27 +48,6 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
     def _get_option_definitions(self):
         options = {
-            'composer_full_name': {
-                'comment': [
-                    '',
-                    'Your full name.',
-                ],
-                'spec': "string(default='Full Name')",
-            },
-            'composer_last_name': {
-                'comment': [
-                    '',
-                    'Your last name.',
-                ],
-                'spec': "string(default='Name')",
-            },
-            'composer_uppercase_name': {
-                'comment': [
-                    '',
-                    'Your full name in uppercase for score covers.',
-                ],
-                'spec': "string(default='FULL NAME')",
-            },
             'composer_email': {
                 'comment': [
                     '',
@@ -76,12 +55,12 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                 ],
                 'spec': "string(default=first.last@domain.com)",
             },
-            'composer_website': {
+            'composer_full_name': {
                 'comment': [
                     '',
-                    'Your website.',
+                    'Your full name.',
                 ],
-                'spec': "string(default=www.composername.com)",
+                'spec': "string(default='Full Name')",
             },
             'composer_github_username': {
                 'comment': [
@@ -89,6 +68,13 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                     'Your GitHub username.',
                 ],
                 'spec': "string(default=None)",
+            },
+            'composer_last_name': {
+                'comment': [
+                    '',
+                    'Your last name.',
+                ],
+                'spec': "string(default='Name')",
             },
             'composer_scores_directory': {
                 'comment': [
@@ -101,6 +87,20 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                         'scores',
                         )
                     ),
+            },
+            'composer_uppercase_name': {
+                'comment': [
+                    '',
+                    'Your full name in uppercase for score covers.',
+                ],
+                'spec': "string(default='FULL NAME')",
+            },
+            'composer_website': {
+                'comment': [
+                    '',
+                    'Your website.',
+                ],
+                'spec': "string(default=www.composername.com)",
             },
         }
         return options
