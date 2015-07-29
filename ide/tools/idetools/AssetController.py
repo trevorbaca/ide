@@ -55,12 +55,12 @@ class AssetController(Controller):
             'uu': self.go_to_all_build_files,
             'yy': self.go_to_all_stylesheets,
             #
-            'cc': self.check_contents,
-            #
             '!': self.invoke_shell,
             '?': self.display_available_commands,
             'l': self.open_lilypond_log,
             #
+            '<': self.go_to_previous_package,
+            '>': self.go_to_next_package,
             '<<': self.go_to_previous_score,
             '>>': self.go_to_next_score,
             #
@@ -912,6 +912,13 @@ class AssetController(Controller):
         self.go_to_all_scores()
         self._session._is_navigating_to_stylesheets = True
 
+    def go_to_next_package(self):
+        r'''Goes to next package.
+
+        Returns none.
+        '''
+        self._go_to_next_package()
+
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -920,6 +927,13 @@ class AssetController(Controller):
         self._session._is_navigating_to_next_score = True
         self._session._is_navigating_to_scores = True
         self._session._display_available_commands = False
+
+    def go_to_previous_package(self):
+        r'''Goes to previous package.
+
+        Returns none.
+        '''
+        self._go_to_previous_package()
 
     def go_to_previous_score(self):
         r'''Goes to previous score.

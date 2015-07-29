@@ -71,8 +71,6 @@ class PackageManager(AssetController):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            '<': self.go_to_previous_package,
-            '>': self.go_to_next_package,
             'ck': self.check_package,
             'dc': self.check_definition_py,
             'de': self.edit_definition_py,
@@ -1204,20 +1202,6 @@ class PackageManager(AssetController):
         Returns none.
         '''
         self._io_manager.open_file(self._illustration_ly_path)
-
-    def go_to_next_package(self):
-        r'''Goes to next package.
-
-        Returns none.
-        '''
-        self._go_to_next_package()
-
-    def go_to_previous_package(self):
-        r'''Goes to previous package.
-
-        Returns none.
-        '''
-        self._go_to_previous_package()
 
     def illustrate_definition_py(self, dry_run=False):
         r'''Illustrates ``definition.py``.

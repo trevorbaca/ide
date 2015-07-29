@@ -93,9 +93,6 @@ class Wrangler(AssetController):
             #
             'ws': self.set_view,
             #
-            '<': self.go_to_previous_package,
-            '>': self.go_to_next_package,
-            #
             'ck*': self.check_every_package,
             'dc*': self.check_every_definition_py,
             'de*': self.edit_every_definition_py,
@@ -1782,20 +1779,6 @@ class Wrangler(AssetController):
         Returns none.
         '''
         self._copy_boilerplate('score.tex')
-
-    def go_to_next_package(self):
-        r'''Goes to next package.
-
-        Returns none.
-        '''
-        self._go_to_next_package()
-
-    def go_to_previous_package(self):
-        r'''Goes to previous package.
-
-        Returns none.
-        '''
-        self._go_to_previous_package()
 
     def make(self):
         r'''Makes asset.
