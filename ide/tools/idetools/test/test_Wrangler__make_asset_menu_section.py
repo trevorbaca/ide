@@ -27,7 +27,7 @@ def test_Wrangler__make_asset_menu_section_02():
     input_ = 'blue~example~score m q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Blue Example Score (2013)',
         'Blue Example Score (2013) - materials directory',
         ]

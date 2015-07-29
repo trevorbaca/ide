@@ -23,9 +23,8 @@ class Wrangler(AssetController):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_allow_depot',
-        '_file_extension',
         '_extra_commands',
+        '_file_extension',
         '_file_name_predicate',
         '_force_lowercase_file_name',
         '_mandatory_copy_target_storehouse',
@@ -43,7 +42,6 @@ class Wrangler(AssetController):
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
-        self._allow_depot = True
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._file_extension = ''
@@ -63,12 +61,12 @@ class Wrangler(AssetController):
         if self._session.is_in_score and not self._has_breadcrumb_in_score:
             return
         breadcrumb = self._basic_breadcrumb
-        if not self._allow_depot:
-            pass
-        elif self._session.is_in_score:
+        if self._session.is_in_score:
             breadcrumb = '{} directory'.format(breadcrumb)
         else:
-            breadcrumb = '{} depot'.format(breadcrumb)
+            singular = self._session._inflect.singular_noun(breadcrumb) 
+            breadcrumb = singular or breadcrumb
+            breadcrumb = 'all {} directories'.format(breadcrumb)
         view_name = self._read_view_name()
         if not view_name:
             return breadcrumb

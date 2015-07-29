@@ -11,7 +11,7 @@ def test_Wrangler_go_to_score_maker_files_01():
     input_ = 'red~example~score u k q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
         'Red Example Score (2013) - makers directory',

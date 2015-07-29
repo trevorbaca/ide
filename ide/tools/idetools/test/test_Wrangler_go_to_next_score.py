@@ -11,7 +11,7 @@ def test_Wrangler_go_to_next_score_01():
     input_ = '>> >> q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Blue Example Score (2013)',
         'Étude Example Score (2013)',
         ]
@@ -26,7 +26,7 @@ def test_Wrangler_go_to_next_score_02():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
         'Blue Example Score (2013)',
@@ -42,8 +42,8 @@ def test_Wrangler_go_to_next_score_03():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - build depot',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all build directories',
         'Blue Example Score (2013)',
         ]
     assert abjad_ide._transcript.titles == titles

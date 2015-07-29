@@ -12,7 +12,7 @@ def test_PackageManager_go_to_current_score_01():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
@@ -28,7 +28,7 @@ def test_PackageManager_go_to_current_score_02():
     input_ = 'red~example~score g A s q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
         'Red Example Score (2013) - segments directory - A',
@@ -45,7 +45,7 @@ def test_PackageManager_go_to_current_score_03():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013)',
         ]

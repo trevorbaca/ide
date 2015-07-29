@@ -43,9 +43,9 @@ def test_Wrangler_copy_02():
     contents = abjad_ide._transcript.contents
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - materials depot',
-        'Abjad IDE - materials depot',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all material directories',
+        'Abjad IDE - all material directories',
         ]
     assert abjad_ide._transcript.titles == titles
     assert 'Select storehouse:' in contents
@@ -108,9 +108,9 @@ def test_Wrangler_copy_05():
     contents = abjad_ide._transcript.contents
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - segments depot',
-        'Abjad IDE - segments depot',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all segment directories',
+        'Abjad IDE - all segment directories',
         ]
     assert abjad_ide._transcript.titles == titles
     assert 'Select storehouse:' in contents
@@ -159,9 +159,9 @@ def test_Wrangler_copy_07():
     contents = abjad_ide._transcript.contents
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - build depot',
-        'Abjad IDE - build depot',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all build directories',
+        'Abjad IDE - all build directories',
         ]
     assert abjad_ide._transcript.titles == titles
     assert 'Select storehouse:' in contents

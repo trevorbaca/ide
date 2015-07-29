@@ -11,7 +11,7 @@ def test_PackageManager__make_asset_menu_section_01():
     input_ = 'blue~example~score g segment~01 q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Blue Example Score (2013)',
         'Blue Example Score (2013) - segments directory',
         'Blue Example Score (2013) - segments directory - segment 01',

@@ -11,7 +11,7 @@ def test_PackageManager_go_to_next_package_01():
     input_ = 'red~example~score m tempo~inventory > q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
@@ -27,7 +27,7 @@ def test_PackageManager_go_to_next_package_02():
     input_ = 'red~example~score g A > q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
         'Red Example Score (2013) - segments directory - A',

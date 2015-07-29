@@ -24,8 +24,8 @@ def test_Menu__display_available_commands_02():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - scores - available commands',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all score directories - available commands',
         ]
     assert abjad_ide._transcript.titles == titles
 
@@ -39,8 +39,8 @@ def test_Menu__display_available_commands_03():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - scores - available commands',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all score directories - available commands',
         ]
     assert abjad_ide._transcript.titles == titles
 
@@ -54,7 +54,7 @@ def test_Menu__display_available_commands_04():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - available commands',
         ]

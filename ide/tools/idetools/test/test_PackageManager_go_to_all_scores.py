@@ -12,11 +12,11 @@ def test_PackageManager_go_to_all_scores_01():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         ]
     assert abjad_ide._transcript.titles == titles
 
@@ -28,11 +28,11 @@ def test_PackageManager_go_to_all_scores_02():
     input_ = 'red~example~score g A h q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
         'Red Example Score (2013) - segments directory - A',
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         ]
     assert abjad_ide._transcript.titles == titles
 
@@ -45,8 +45,8 @@ def test_PackageManager_go_to_all_scores_03():
     abjad_ide._run(input_=input_)
 
     titles = [
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         'Red Example Score (2013)',
-        'Abjad IDE - scores',
+        'Abjad IDE - all score directories',
         ]
     assert abjad_ide._transcript.titles == titles

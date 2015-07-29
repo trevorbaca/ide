@@ -5,13 +5,13 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_Wrangler_go_to_all_build_files_01():
-    r'''From scores to build depot.
+    r'''From scores to all build directories.
     '''
 
     input_ = 'uu q'
     abjad_ide._run(input_=input_)
     titles = [
-        'Abjad IDE - scores',
-        'Abjad IDE - build depot',
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all build directories',
         ]
     assert abjad_ide._transcript.titles == titles

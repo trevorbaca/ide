@@ -12,7 +12,7 @@ def test_Wrangler_display_available_commands_01():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'Abjad IDE - scores - available commands' in contents
+    assert 'Abjad IDE - all score directories - available commands' in contents
 
 
 def test_Wrangler_display_available_commands_02():
@@ -34,7 +34,7 @@ def test_Wrangler_display_available_commands_03():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'Abjad IDE - build depot - available commands' in contents
+    assert 'Abjad IDE - all build directories - available commands' in contents
 
 
 def test_Wrangler_display_available_commands_04():
@@ -45,7 +45,7 @@ def test_Wrangler_display_available_commands_04():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    title = 'Abjad IDE - scores - available commands'
+    title = 'Abjad IDE - all score directories - available commands'
     first_blank_line = ''
     first_real_line = '    back (b)'
     string = '\n'.join([title, first_blank_line, first_real_line])

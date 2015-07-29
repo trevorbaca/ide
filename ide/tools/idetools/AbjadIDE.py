@@ -155,7 +155,6 @@ class AbjadIDE(Controller):
     def _score_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._allow_depot = False
         wrangler._asset_identifier = 'score package'
         wrangler._annotate_year = True
         wrangler._basic_breadcrumb = 'scores'
