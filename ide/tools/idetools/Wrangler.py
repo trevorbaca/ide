@@ -195,7 +195,7 @@ class Wrangler(AssetController):
             if not os.path.isfile(source_file_path):
                 continue
             score_path = self._session.current_score_directory
-            score_package = self._configuration._path_to_package(score_path)
+            score_package = self._path_to_package(score_path)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
             target_file_name = directory_entry + file_extension
@@ -487,7 +487,7 @@ class Wrangler(AssetController):
         storehouses = set()
         for menu_entry in asset_section:
             path = menu_entry.return_value
-            storehouse = self._configuration._path_to_storehouse(path)
+            storehouse = self._path_to_storehouse(path)
             storehouses.add(storehouse)
         storehouses = list(sorted(storehouses))
         return storehouses
@@ -616,8 +616,7 @@ class Wrangler(AssetController):
         if (example_score_packages and
             self._score_storehouse_path_infix_parts):
             for score_directory in self._list_score_directories(abjad=True):
-                score_directory = self._configuration._path_to_score_path(
-                    score_directory)
+                score_directory = self._path_to_score_path(score_directory)
                 parts = [score_directory]
                 if self._score_storehouse_path_infix_parts:
                     parts.extend(self._score_storehouse_path_infix_parts)
@@ -928,6 +927,58 @@ class Wrangler(AssetController):
         if self._session.is_backtracking or not result:
             return
         self._io_manager.open_file(paths)
+
+    def _path_to_package(self, path):
+        if path is None:
+            return
+        assert isinstance(path, str), repr(path)
+        path = os.path.normpath(path)
+        if path.endswith('.py'):
+            path, file_extension = os.path.splitext(path)
+        if path.startswith(self._configuration.example_scores_directory):
+            prefix = len(self._configuration.example_scores_directory) + 1
+        elif path.startswith(self._configuration.abjad_ide_directory):
+            prefix = len(
+                os.path.dirname(self._configuration.abjad_ide_directory)) + 1
+        elif path.startswith(self._configuration.scores_directory):
+            prefix = len(self._configuration.scores_directory) + 1
+        else:
+            message = 'can not change path to package: {!r}.'
+            message = message.format(path)
+            raise Exception(message)
+        package = path[prefix:]
+        if path.startswith(self._configuration.example_scores_directory):
+            # change red_example_score/red_example_score/materials/foo
+            # to red_example_score/materials/foo
+            parts = package.split(os.path.sep)
+            parts = parts[1:]
+            package = os.path.sep.join(parts)
+        package = package.replace(os.path.sep, '.')
+        return package
+
+    def _path_to_storehouse(self, path):
+        is_in_score = False
+        if path.startswith(self._configuration.scores_directory):
+            is_in_score = True
+            prefix = len(self._configuration.scores_directory)
+        elif path.startswith(self._configuration.example_scores_directory):
+            is_in_score = True
+            prefix = len(self._configuration.example_scores_directory)
+        else:
+            message = 'unidentifiable path: {!r}.'
+            message = message.format(path)
+            raise Exception(message)
+        path_prefix = path[:prefix]
+        remainder = path[prefix+1:]
+        path_parts = remainder.split(os.path.sep)
+        assert 1 <= len(path_parts)
+        if is_in_score:
+            path_parts = path_parts[:3]
+        else:
+            assert 1 <= len(path_parts)
+            path_parts = path_parts[:1]
+        storehouse_path = os.path.join(path_prefix, *path_parts)
+        return storehouse_path
 
     def _run(self):
         controller = self._io_manager._controller(

@@ -247,7 +247,7 @@ class AssetController(Controller):
         return metadata
 
     def _get_score_metadata(self):
-        score_path = self._configuration._path_to_score_path(self._path)
+        score_path = self._path_to_score_path(self._path)
         if score_path is None:
             return datastructuretools.TypedOrderedDict()
         score_package_manager = self._io_manager._make_package_manager(
@@ -587,7 +587,7 @@ class AssetController(Controller):
             self._configuration.scores_directory,
             )
         if path.startswith(score_storehouses):
-            score_path = self._configuration._path_to_score_path(path)
+            score_path = self._path_to_score_path(path)
             manager = self._io_manager._make_package_manager(path=score_path)
             metadata = manager._get_metadata()
             if metadata:
@@ -625,6 +625,31 @@ class AssetController(Controller):
             else:
                 string = annotation
         return string
+
+    def _path_to_score_path(self, path):
+        is_user_score = False
+        if path.startswith(self._configuration.scores_directory):
+            is_user_score = True
+            prefix = len(self._configuration.scores_directory)
+        elif path.startswith(self._configuration.example_scores_directory):
+            prefix = len(self._configuration.example_scores_directory)
+        else:
+            return
+        path_prefix = path[:prefix]
+        path_suffix = path[prefix + 1:]
+        score_name = path_suffix.split(os.path.sep)[0]
+        score_path = os.path.join(path_prefix, score_name)
+        # test for installable Python package structure
+        outer_init_path = os.path.join(score_path, '__init__.py')
+        inner_init_path = os.path.join(
+            score_path, 
+            score_name, 
+            '__init__.py',
+            )
+        if (not os.path.exists(outer_init_path) and
+            os.path.exists(inner_init_path)):
+            score_path = os.path.join(score_path, score_name)
+        return score_path
 
     def _read_view(self):
         view_name = self._read_view_name()
