@@ -40,7 +40,6 @@ class MenuSection(AbjadObject):
         '_is_asset_section',
         '_is_command_section',
         '_is_hidden',
-        '_is_navigation_section',
         '_is_numbered',
         '_is_ranged',
         '_menu_entries',
@@ -68,7 +67,6 @@ class MenuSection(AbjadObject):
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
-        is_navigation_section=False,
         is_numbered=False,
         is_ranged=False,
         match_on_display_string=True,
@@ -88,7 +86,6 @@ class MenuSection(AbjadObject):
         self._is_asset_section = is_asset_section
         self._is_command_section = is_command_section
         self._is_hidden = is_hidden
-        self._is_navigation_section = is_navigation_section
         self._is_numbered = is_numbered
         self._is_ranged = is_ranged
         self._match_on_display_string = match_on_display_string
@@ -368,20 +365,6 @@ class MenuSection(AbjadObject):
         Returns boolean.
         '''
         return self._is_hidden
-
-    @property
-    def is_navigation_section(self):
-        r'''Is true when menu section is navigation section.
-        Otherwise false:
-
-        ::
-
-            >>> section.is_navigation_section
-            False
-
-        Returns boolean.
-        '''
-        return self._is_navigation_section
 
     @property
     def is_numbered(self):

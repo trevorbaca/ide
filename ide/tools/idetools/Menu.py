@@ -567,7 +567,6 @@ class Menu(Controller):
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
-        is_navigation_section=False,
         is_numbered=False,
         is_ranged=False,
         match_on_display_string=True,
@@ -587,7 +586,6 @@ class Menu(Controller):
             is_asset_section=is_asset_section,
             is_command_section=is_command_section,
             is_hidden=is_hidden,
-            is_navigation_section=is_navigation_section,
             is_numbered=is_numbered,
             is_ranged=is_ranged,
             match_on_display_string=match_on_display_string,
@@ -600,7 +598,7 @@ class Menu(Controller):
         self.menu_sections.sort(key=lambda x: x.name)
         noncommand_sections = [
             x for x in self.menu_sections
-            if (not x.is_command_section and not x.is_navigation_section)
+            if not x.is_command_section
             ]
         for noncommand_section in noncommand_sections:
             self.menu_sections.remove(noncommand_section)
@@ -871,34 +869,6 @@ class Menu(Controller):
             group_by_annotation=group_by_annotation,
             is_numbered=is_numbered,
             menu_entries=menu_entries,
-            name=name,
-            return_value_attribute='key',
-            )
-        return section
-
-    def make_navigation_section(
-        self,
-        is_hidden=False,
-        match_on_display_string=True,
-        commands=None,
-        name=None,
-        ):
-        r'''Makes navigation section.
-
-        Menu section with these attributes:
-
-            * is navigation section
-            * not hidden
-            * match on display string
-            * return value attribute equal to ``'key'``
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            is_hidden=is_hidden,
-            is_navigation_section=True,
-            match_on_display_string=match_on_display_string,
-            menu_entries=commands,
             name=name,
             return_value_attribute='key',
             )
