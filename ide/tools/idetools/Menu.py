@@ -158,15 +158,10 @@ class Menu(Controller):
             self._session._pending_redraw = True
             return input_
         # match on exact case
-        asset_section, material_summary_section = None, None
+        asset_section = None
         for section in self.menu_sections:
-            if section.is_information_section:
-                continue
             if section.is_asset_section:
                 asset_section = section
-                continue
-            if section.is_material_summary_section:
-                material_summary_section = section
                 continue
             for menu_entry in section:
                 if menu_entry.matches(input_):
@@ -181,23 +176,11 @@ class Menu(Controller):
                     if ends_with_bang:
                         return_value = return_value + '!'
                     return self._enclose_in_list(return_value)
-        elif material_summary_section is not None:
-            for menu_entry in asset_section:
-                if menu_entry.matches(input_):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
         # lower case version of the two sections above
         asset_section = None
         for section in self.menu_sections:
-            if section.is_information_section:
-                continue
-            elif section.is_asset_section:
+            if section.is_asset_section:
                 asset_section = section
-                continue
-            elif section.is_material_summary_section:
-                material_summary_section = section
                 continue
             for menu_entry in section:
                 if menu_entry.matches(input_.lower()):
@@ -208,13 +191,6 @@ class Menu(Controller):
         if asset_section is not None:
             for menu_entry in asset_section:
                 #if menu_entry.matches(input_):
-                if menu_entry.matches(input_.lower()):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
-        elif material_summary_section is not None:
-            for menu_entry in asset_section:
                 if menu_entry.matches(input_.lower()):
                     return_value = menu_entry.return_value
                     if ends_with_bang:
@@ -591,8 +567,6 @@ class Menu(Controller):
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
-        is_information_section=False,
-        is_material_summary_section=False,
         is_navigation_section=False,
         is_numbered=False,
         is_ranged=False,
@@ -613,8 +587,6 @@ class Menu(Controller):
             is_asset_section=is_asset_section,
             is_command_section=is_command_section,
             is_hidden=is_hidden,
-            is_information_section=is_information_section,
-            is_material_summary_section=is_material_summary_section,
             is_navigation_section=is_navigation_section,
             is_numbered=is_numbered,
             is_ranged=is_ranged,
@@ -879,32 +851,6 @@ class Menu(Controller):
             )
         return section
 
-    def make_information_section(
-        self,
-        menu_entries=None,
-        name='information',
-        ):
-        r'''Makes information section.
-
-        Menu section with these attributes:
-
-            * is information section
-            * not hidden
-            * does not match on display string
-            * return value attribute equal to ``'key'``
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            group_by_annotation=False,
-            is_hidden=False,
-            is_information_section=True,
-            menu_entries=menu_entries,
-            name=name,
-            return_value_attribute='key',
-            )
-        return section
-
     def make_keyed_attribute_section(
         self,
         group_by_annotation=True,
@@ -927,30 +873,6 @@ class Menu(Controller):
             menu_entries=menu_entries,
             name=name,
             return_value_attribute='key',
-            )
-        return section
-
-    def make_material_summary_section(
-        self,
-        lines=None,
-        name='material summary',
-        ):
-        r'''Makes asset section.
-
-        With these attributes:
-
-            * is material summary section
-            * is not numbered
-            * return value set to explicit
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            is_material_summary_section=True,
-            is_numbered=False,
-            menu_entries=lines,
-            name=name,
-            return_value_attribute='explicit',
             )
         return section
 
