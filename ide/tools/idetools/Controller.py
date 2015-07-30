@@ -1,5 +1,7 @@
 # -*- encoding: utf -*-
+import inspect
 from abjad.tools import stringtools
+from ide.tools.idetools.Command import Command
 
 
 class Controller(object):
@@ -40,12 +42,19 @@ class Controller(object):
 
     @property
     def _command_to_method(self):
-        result = {
-            'b': self.go_back,
-            'q': self.quit_abjad_ide,
-            's': self.go_to_current_score,
-            'h': self.go_to_all_score_directories,
-            }
+#        result = {
+#            'b': self.go_back,
+#            'q': self.quit_abjad_ide,
+#            's': self.go_to_current_score,
+#            'h': self.go_to_all_score_directories,
+#            }
+        result = {}
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command'):
+                        result[value.command] = value
         return result
 
     @property
@@ -54,6 +63,7 @@ class Controller(object):
 
     ### PUBLIC METHODS ###
 
+    @Command('b')
     def go_back(self):
         r'''Goes back.
 
@@ -62,6 +72,7 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_available_commands = False
 
+    @Command('h')
     def go_to_all_score_directories(self):
         r'''Goes to all scores.
 
@@ -71,6 +82,7 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_available_commands = False
 
+    @Command('s')
     def go_to_current_score(self):
         r'''Goes to current score.
 
@@ -80,6 +92,7 @@ class Controller(object):
             self._session._is_backtracking_to_score = True
             self._session._display_available_commands = False
 
+    @Command('q')
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
 
