@@ -1270,7 +1270,7 @@ class Wrangler(AssetController):
             return
         managers = self._list_visible_asset_managers()
         inputs, outputs = [], []
-        method_name = 'add'
+        method_name = '_git_add'
         for manager in managers:
             method = getattr(manager, method_name)
             inputs_, outputs_ = method(dry_run=True)
@@ -1499,7 +1499,7 @@ class Wrangler(AssetController):
         for path in paths:
             manager = self._get_manager(path)
             with self._io_manager._silent():
-                manager.commit(commit_message=commit_message)
+                manager._git_commit(commit_message=commit_message)
 
     def copy(
         self, 
@@ -1595,7 +1595,7 @@ class Wrangler(AssetController):
         paths.sort()
         for path in paths:
             manager = self._io_manager._make_package_manager(path)
-            manager.display_status()
+            manager._git_status()
         if not paths:
             message = 'Repository status for {} ... OK'
             directory = self._get_current_directory()
@@ -1996,7 +1996,7 @@ class Wrangler(AssetController):
         paths.sort()
         inputs, outputs = [], []
         managers = []
-        method_name = 'remove_unadded_assets'
+        method_name = '_remove_unadded_assets'
         for path in paths:
             manager = self._io_manager._make_package_manager(path)
             managers.append(manager)
@@ -2058,7 +2058,7 @@ class Wrangler(AssetController):
         paths = self._list_visible_asset_paths()
         for path in paths:
             manager = self._io_manager._make_package_manager(path)
-            manager.revert()
+            manager._git_revert()
 
     def set_view(self):
         r'''Sets view.
@@ -2093,7 +2093,7 @@ class Wrangler(AssetController):
             message = self._path_to_asset_menu_display_string(manager._path)
             message = self._strip_annotation(message)
             message = message + ':'
-            messages_ = manager.update(messages_only=True)
+            messages_ = manager._git_update(messages_only=True)
             if len(messages_) == 1:
                 message = message + ' ' + messages_[0]
                 messages.append(message)

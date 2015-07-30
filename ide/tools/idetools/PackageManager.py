@@ -843,7 +843,7 @@ class PackageManager(AssetController):
             assert not self._is_up_to_date()
             assert self._get_unadded_asset_paths() == [path_3, path_4]
             with self._io_manager._silent():
-                self.remove_unadded_assets()
+                self._remove_unadded_assets()
         assert self._is_up_to_date()
         return True
 

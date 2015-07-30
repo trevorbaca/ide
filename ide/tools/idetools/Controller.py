@@ -53,8 +53,8 @@ class Controller(object):
             if not name.startswith('_'):
                 value = getattr(self, name)
                 if inspect.ismethod(value):
-                    if hasattr(value, 'command'):
-                        result[value.command] = value
+                    if hasattr(value, 'command_name'):
+                        result[value.command_name] = value
         return result
 
     @property
