@@ -598,9 +598,11 @@ class MenuSection(AbjadObject):
         prototype = (str, tuple, types.MethodType)
         assert isinstance(expr, prototype), repr(expr)
         number = None
+        method = None
         if isinstance(expr, str):
             expr = (expr, )
         elif isinstance(expr, types.MethodType):
+            method = expr
             expr = (
                 expr.description,
                 expr.command_name,
@@ -613,6 +615,8 @@ class MenuSection(AbjadObject):
             )
         kwargs = dict(zip(keys, expr))
         kwargs['menu_section'] = self
+        if method is not None and method.is_navigation:
+            kwargs['is_navigation'] = True
         menu_entry = idetools.MenuEntry(**kwargs)
         self.menu_entries.append(menu_entry)
         if self.is_command_section:

@@ -37,6 +37,7 @@ class MenuEntry(AbjadObject):
         '_display_string',
         '_explicit_return_value',
         '_key',
+        '_is_navigation',
         '_menu_section',
         '_prepopulated_value',
         )
@@ -50,12 +51,14 @@ class MenuEntry(AbjadObject):
         explicit_return_value=None,
         key=None,
         prepopulated_value=None,
+        is_navigation=False,
         ):
-        self._menu_section = menu_section
         self._display_string = display_string
         self._explicit_return_value = explicit_return_value
         assert MenuEntry._is_valid_key(key), repr(key)
         self._key = key
+        self._is_navigation = is_navigation
+        self._menu_section = menu_section
         self._prepopulated_value = prepopulated_value
 
     ### SPECIAL METHODS ###
@@ -153,6 +156,21 @@ class MenuEntry(AbjadObject):
         Returns string without spaces or none.
         '''
         return self._key
+
+    @property
+    def is_navigation(self):
+        r'''Is true when menu entry is navigation. Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> entry.is_navigation
+                False
+
+        Returns true or false.
+        '''
+        return self._is_navigation
 
     @property
     def menu_section(self):

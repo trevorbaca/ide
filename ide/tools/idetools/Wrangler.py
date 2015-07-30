@@ -1968,7 +1968,7 @@ class Wrangler(AssetController):
             manager = self._io_manager._make_package_manager(path)
             manager._git_revert()
 
-    @Command('ws', 'set view', 'navigation')
+    @Command('ws', 'set view', 'navigation', True)
     def set_view(self):
         r'''Sets view.
 

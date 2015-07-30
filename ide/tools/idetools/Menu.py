@@ -148,7 +148,10 @@ class Menu(Controller):
         elif input_ in ('h', 'q', 'b', '<return>'):
             self._session._pending_redraw = True
             return input_
-        elif input_ == '?' and self._has_help_command():
+        elif input_ == '?' and self._has_display_action_commands_command():
+            self._session._pending_redraw = True
+            return input_
+        elif input_ == ';' and self._has_display_navigation_commands_command():
             self._session._pending_redraw = True
             return input_
         elif input_ == 's' and self._session.is_in_score:
@@ -339,10 +342,17 @@ class Menu(Controller):
             result = directive
         return result
 
-    def _has_help_command(self):
+    def _has_display_action_commands_command(self):
         for section in self.menu_sections:
             for entry in section.menu_entries:
                 if entry.key == '?':
+                    return True
+        return False
+
+    def _has_display_navigation_commands_command(self):
+        for section in self.menu_sections:
+            for entry in section.menu_entries:
+                if entry.key == ';':
                     return True
         return False
 
@@ -401,15 +411,20 @@ class Menu(Controller):
     def _make_action_command_section_lines(self):
         lines = []
         for section in self.menu_sections:
+            found_one = False
             if not section.is_command_section:
                 continue
             for menu_entry in section:
+                if menu_entry.is_navigation:
+                    continue
+                found_one = True
                 key = menu_entry.key
                 display_string = menu_entry.display_string
                 menu_line = self._io_manager._tab
                 menu_line += '{} ({})'.format(display_string, key)
                 lines.append(menu_line)
-            lines.append('')
+            if found_one:
+                lines.append('')
         if lines:
             lines.pop()
         lines = self._make_bicolumnar(
@@ -418,6 +433,36 @@ class Menu(Controller):
             )
         title = self._session.menu_header
         title = title + ' - action commands'
+        title = stringtools.capitalize_start(title)
+        lines[0:0] = [title, '']
+        lines.append('')
+        return lines
+
+    def _make_navigation_command_section_lines(self):
+        lines = []
+        for section in self.menu_sections:
+            found_one = False
+            if not section.is_command_section:
+                continue
+            for menu_entry in section:
+                if not menu_entry.is_navigation:
+                    continue
+                found_one = True
+                key = menu_entry.key
+                display_string = menu_entry.display_string
+                menu_line = self._io_manager._tab
+                menu_line += '{} ({})'.format(display_string, key)
+                lines.append(menu_line)
+            if found_one:
+                lines.append('')
+        if lines:
+            lines.pop()
+        lines = self._make_bicolumnar(
+            lines, 
+            break_only_at_blank_lines=True,
+            )
+        title = self._session.menu_header
+        title = title + ' - navigation commands'
         title = stringtools.capitalize_start(title)
         lines[0:0] = [title, '']
         lines.append('')
@@ -516,7 +561,8 @@ class Menu(Controller):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            hide = not self._session.display_action_commands
+            hide = (not self._session.display_action_commands or
+                not self._session.display_navigation_commands)
             if hide and section.is_hidden:
                 continue
             if section.is_asset_section:
@@ -621,6 +667,8 @@ class Menu(Controller):
         self._io_manager.clear_terminal()
         if self._session.display_action_commands:
             lines = self._make_action_command_section_lines()
+        elif self._session.display_navigation_commands:
+            lines = self._make_navigation_command_section_lines()
         else:
             lines = self._make_visible_section_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)

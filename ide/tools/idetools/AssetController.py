@@ -382,11 +382,13 @@ class AssetController(Controller):
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
         self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
         self._set_is_navigating_to_sibling_asset()
 
     def _go_to_previous_package(self):
         self._session._is_navigating_to_previous_asset = True
         self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
         self._set_is_navigating_to_sibling_asset()
 
     def _handle_candidate(self, candidate_path, destination_path):
@@ -583,6 +585,7 @@ class AssetController(Controller):
         commands = []
         commands.append(self.go_back)
         commands.append(self.display_action_commands)
+        commands.append(self.display_navigation_commands)
         commands.append(self.go_to_all_score_directories)
         commands.append(self.open_lilypond_log)
         commands.append(self.quit_abjad_ide)
@@ -811,6 +814,16 @@ class AssetController(Controller):
             show = self._session.display_action_commands
             self._session._display_action_commands = not show
 
+    @Command(';', 'display navigation commands', 'navigation', True)
+    def display_navigation_commands(self):
+        r'''Displays navigation commands.
+
+        Returns none.
+        '''
+        if not self._session.is_in_confirmation_environment:
+            show = self._session.display_navigation_commands
+            self._session._display_navigation_commands = not show
+
     @Command('abb', 'edit abbreviations file', 'score-global')
     def edit_abbreviations_file(self):
         r'''Edits abbreviations file.
@@ -835,7 +848,7 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('uu', 'go to all build directories', 'cross-comparison')
+    @Command('uu', 'go to all build directories', 'cross-comparison', True)
     def go_to_all_build_directories(self):
         r'''Goes to all build files.
 
@@ -844,7 +857,8 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_build_files = True
 
-    @Command('dd', 'go to all distribution directories', 'cross-comparison')
+    @Command(
+        'dd', 'go to all distribution directories', 'cross-comparison', True)
     def go_to_all_distribution_directories(self):
         r'''Goes to all distribution files.
 
@@ -853,7 +867,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_distribution_files = True
 
-    @Command('ee', 'go to all etc directories', 'cross-comparison')
+    @Command('ee', 'go to all etc directories', 'cross-comparison', True)
     def go_to_all_etc_directories(self):
         r'''Goes to all etc files.
 
@@ -862,7 +876,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_etc_files = True
 
-    @Command('kk', 'go to all makers directories', 'cross-comparison')
+    @Command('kk', 'go to all makers directories', 'cross-comparison', True)
     def go_to_all_makers_directories(self):
         r'''Goes to all maker files.
 
@@ -871,7 +885,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_maker_files = True
 
-    @Command('mm', 'go to all materials directories', 'cross-comparison')
+    @Command('mm', 'go to all materials directories', 'cross-comparison', True)
     def go_to_all_materials_directories(self):
         r'''Goes to all materials.
 
@@ -880,7 +894,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_materials = True
 
-    @Command('gg', 'go to all segments directories', 'cross-comparison')
+    @Command('gg', 'go to all segments directories', 'cross-comparison', True)
     def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
@@ -889,7 +903,8 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_segments = True
 
-    @Command('yy', 'go to all stylesheets directories', 'cross-comparison')
+    @Command(
+        'yy', 'go to all stylesheets directories', 'cross-comparison', True)
     def go_to_all_stylesheets_directories(self):
         r'''Goes to all stylesheets.
 
@@ -898,7 +913,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_stylesheets = True
 
-    @Command('>', 'go to next package', 'navigation')
+    @Command('>', 'go to next package', 'navigation', True)
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -906,7 +921,7 @@ class AssetController(Controller):
         '''
         self._go_to_next_package()
 
-    @Command('>>', 'go to next score', 'navigation')
+    @Command('>>', 'go to next score', 'navigation', True)
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -915,8 +930,9 @@ class AssetController(Controller):
         self._session._is_navigating_to_next_score = True
         self._session._is_navigating_to_scores = True
         self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
 
-    @Command('<', 'go to previous package', 'navigation')
+    @Command('<', 'go to previous package', 'navigation', True)
     def go_to_previous_package(self):
         r'''Goes to previous package.
 
@@ -924,7 +940,7 @@ class AssetController(Controller):
         '''
         self._go_to_previous_package()
 
-    @Command('<<', 'go to previous score', 'navigation')
+    @Command('<<', 'go to previous score', 'navigation', True)
     def go_to_previous_score(self):
         r'''Goes to previous score.
 
@@ -933,8 +949,9 @@ class AssetController(Controller):
         self._session._is_navigating_to_previous_score = True
         self._session._is_navigating_to_scores = True
         self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
 
-    @Command('u', 'go to build directory', 'navigation')
+    @Command('u', 'go to build directory', 'navigation', True)
     def go_to_score_build_directory(self):
         r'''Goes to build files.
 
@@ -942,7 +959,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._build_file_wrangler._run()
 
-    @Command('d', 'go to distribution directory', 'navigation')
+    @Command('d', 'go to distribution directory', 'navigation', True)
     def go_to_score_distribution_directory(self):
         r'''Goes to distribution files.
 
@@ -950,7 +967,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._distribution_file_wrangler._run()
 
-    @Command('e', 'go to etc directory', 'navigation')
+    @Command('e', 'go to etc directory', 'navigation', True)
     def go_to_score_etc_directory(self):
         r'''Goes to etc files.
 
@@ -958,7 +975,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._etc_file_wrangler._run()
 
-    @Command('k', 'go to makers directory', 'navigation')
+    @Command('k', 'go to makers directory', 'navigation', True)
     def go_to_score_makers_directory(self):
         r'''Goes to maker files.
 
@@ -966,7 +983,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._maker_file_wrangler._run()
 
-    @Command('m', 'to go materials directory', 'navigation')
+    @Command('m', 'to go materials directory', 'navigation', True)
     def go_to_score_materials_directory(self):
         r'''Goes to material packages.
 
@@ -974,7 +991,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._material_package_wrangler._run()
 
-    @Command('g', 'go to segments directory', 'navigation')
+    @Command('g', 'go to segments directory', 'navigation', True)
     def go_to_score_segments_directory(self):
         r'''Goes to segment packages.
 
@@ -982,7 +999,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._segment_package_wrangler._run()
 
-    @Command('y', 'go to stylehseets directory', 'navigation')
+    @Command('y', 'go to stylehseets directory', 'navigation', True)
     def go_to_score_stylesheets_directory(self):
         r'''Goes to stylesheets.
 
@@ -990,7 +1007,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._stylesheet_wrangler._run()
 
-    @Command('t', 'go to test directory', 'navigation')
+    @Command('t', 'go to test directory', 'navigation', True)
     def go_to_score_test_directory(self):
         r'''Geots to score test files.
 

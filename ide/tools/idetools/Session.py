@@ -51,6 +51,7 @@ class Session(abctools.AbjadObject):
         '_current_score_directory',
         '_display',
         '_display_action_commands',
+        '_display_navigation_commands',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -106,6 +107,7 @@ class Session(abctools.AbjadObject):
         self._current_score_directory = None
         self._display = True
         self._display_action_commands = False
+        self._display_navigation_commands = False
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
@@ -647,6 +649,21 @@ class Session(abctools.AbjadObject):
         Returns boolean.
         '''
         return self._display_action_commands
+
+    @property
+    def display_navigation_commands(self):
+        r'''Is true when navigation commands will display. Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.display_navigation_commands
+                False
+
+        Returns boolean.
+        '''
+        return self._display_navigation_commands
 
     @property
     def explicit_command_history(self):
