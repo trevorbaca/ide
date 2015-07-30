@@ -75,6 +75,19 @@ class AssetController(Controller):
             file_name = '__{}_views__.py'.format(class_name)
             return os.path.join(directory, file_name)
 
+    @property
+    def _wrangler_navigation_to_session_variable(self):
+        result = {
+            'd': '_is_navigating_to_distribution_files',
+            'e': '_is_navigating_to_etc_files',
+            'g': '_is_navigating_to_segments',
+            'k': '_is_navigating_to_maker_files',
+            'm': '_is_navigating_to_materials',
+            'u': '_is_navigating_to_build_files',
+            'y': '_is_navigating_to_stylesheets',
+        }
+        return result
+
     ### PRIVATE METHODS ###
 
     def _git_add(self, dry_run=False):
@@ -459,6 +472,11 @@ class AssetController(Controller):
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
             raise Exception(message)
+
+    def _handle_wrangler_navigation_directive(self, expr):
+        if expr in self._wrangler_navigation_to_session_variable:
+            variable = self._wrangler_navigation_to_session_variable[expr]
+            setattr(self._session, variable, True)
 
     @staticmethod
     def _is_directory_with_metadata_py(path):

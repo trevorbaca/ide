@@ -1061,6 +1061,7 @@ class Wrangler(AssetController):
                 if not result:
                     menu = self._make_main_menu()
                     result = menu._run()
+                    self._handle_wrangler_navigation_directive(result)
                 if self._session.is_backtracking:
                     return
                 if result:

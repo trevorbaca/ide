@@ -94,21 +94,6 @@ class Menu(Controller):
             string = string.format(type(self).__name__, len(self))
         return string
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _wrangler_navigation_to_session_variable(self):
-        result = {
-            'd': '_is_navigating_to_distribution_files',
-            'e': '_is_navigating_to_etc_files',
-            'g': '_is_navigating_to_segments',
-            'k': '_is_navigating_to_maker_files',
-            'm': '_is_navigating_to_materials',
-            'u': '_is_navigating_to_build_files',
-            'y': '_is_navigating_to_stylesheets',
-        }
-        return result
-
     ### PRIVATE METHODS ###
 
     def _change_input_to_directive(self, input_):
@@ -260,9 +245,6 @@ class Menu(Controller):
             return directive
         if not isinstance(directive, str):
             return directive
-        if directive in self._wrangler_navigation_to_session_variable:
-            variable = self._wrangler_navigation_to_session_variable[directive]
-            setattr(self._session, variable, True)
         return directive
 
     def _handle_user_input(self):

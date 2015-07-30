@@ -769,6 +769,7 @@ class PackageManager(AssetController):
                     if not result:
                         menu = self._make_main_menu()
                         result = menu._run()
+                        self._handle_wrangler_navigation_directive(result)
                     if self._exit_run():
                         break
                     elif not result:
