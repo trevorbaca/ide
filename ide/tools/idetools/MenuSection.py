@@ -36,7 +36,6 @@ class MenuSection(AbjadObject):
         '_default_index',
         '_display_prepopulated_values',
         '_group_by_annotation',
-        '_indent_level',
         '_is_alphabetized',
         '_is_asset_section',
         '_is_command_section',
@@ -67,7 +66,6 @@ class MenuSection(AbjadObject):
         default_index=None,
         display_prepopulated_values=False,
         group_by_annotation=True,
-        indent_level=1,
         is_alphabetized=True,
         is_asset_section=False,
         is_command_section=False,
@@ -90,7 +88,6 @@ class MenuSection(AbjadObject):
         self._default_index = default_index
         self._display_prepopulated_values = display_prepopulated_values
         self._group_by_annotation = group_by_annotation
-        self._indent_level = indent_level
         self._is_alphabetized = is_alphabetized
         self._is_asset_section = is_asset_section
         self._is_command_section = is_command_section
@@ -250,13 +247,13 @@ class MenuSection(AbjadObject):
         lines = []
         lines.extend(self._make_title_lines())
         for i, menu_entry in enumerate(self):
-            line = self._make_tab(self.indent_level)
+            line = self._make_tab(1)
             display_string = menu_entry.display_string
             key = menu_entry.key
             prepopulated_value = menu_entry.prepopulated_value
             if self.is_numbered:
                 number_indicator = '{}: '.format(menu_entry.number)
-                tab = self._make_tab(self.indent_level)
+                tab = self._make_tab(1)
                 tab_width = len(tab)
                 number_width = len(str(number_indicator))
                 reduced_tab_width = tab_width - number_width
@@ -298,12 +295,9 @@ class MenuSection(AbjadObject):
         else:
             title_lines = []
         for title_line in title_lines:
-            if self.indent_level:
-                tab_string = self._make_tab(self.indent_level)
-                line = '{}{}'.format(tab_string, title_line)
-                menu_lines.append(line)
-            else:
-                menu_lines.append(title_line)
+            tab_string = self._make_tab(1)
+            line = '{}{}'.format(tab_string, title_line)
+            menu_lines.append(line)
         if menu_lines:
             menu_lines.append('')
         return menu_lines
@@ -350,19 +344,6 @@ class MenuSection(AbjadObject):
         Returns boolean.
         '''
         return self._group_by_annotation
-
-    @property
-    def indent_level(self):
-        r'''Gets menu indent level.
-
-        ::
-
-            >>> section.indent_level
-            1
-
-        Returns nonnegative integer.
-        '''
-        return self._indent_level
 
     @property
     def is_alphabetized(self):
