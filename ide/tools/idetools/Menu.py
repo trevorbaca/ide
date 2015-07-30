@@ -240,13 +240,6 @@ class Menu(Controller):
             result.append(entry)
         return result
 
-    def _handle_directive(self, directive):
-        if not self._is_in_open_environment():
-            return directive
-        if not isinstance(directive, str):
-            return directive
-        return directive
-
     def _handle_user_input(self):
         input_ = self._io_manager._handle_input(
             '', 
@@ -279,7 +272,6 @@ class Menu(Controller):
         if directive == 'user entered alias':
             return
         directive = self._strip_default_notice_from_strings(directive)
-        directive = self._handle_directive(directive)
         if directive is None and user_entered_lone_return:
             result = '<return>'
         elif directive is None and not user_entered_lone_return:
