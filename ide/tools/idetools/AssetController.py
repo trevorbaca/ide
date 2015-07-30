@@ -523,10 +523,10 @@ class AssetController(Controller):
     def _make_go_menu_section(self, menu, commands_only=False, packages=False):
         commands = []
         if packages:
-            commands.append(('go to next package', '>'))
-            commands.append(('go to previous package', '<'))
-        commands.append(('go to next score', '>>'))
-        commands.append(('go to previous score', '<<'))
+            commands.append(self.go_to_next_package)
+            commands.append(self.go_to_previous_package)
+        commands.append(self.go_to_next_score)
+        commands.append(self.go_to_previous_score)
         if commands_only:
             return commands
         if commands:
@@ -539,14 +539,14 @@ class AssetController(Controller):
     def _make_navigation_menu_section(self, menu):
         commands = []
         if self._session.is_in_score:
-            commands.append(('go to score directory', 's'))
-            commands.append(('go to build directory', 'u'))
-            commands.append(('go to distribution directory', 'd'))
-            commands.append(('go to etc directory', 'e'))
-            commands.append(('go to makers directory', 'k'))
-            commands.append(('go to materials directory', 'm'))
-            commands.append(('go to segments directory', 'g'))
-            commands.append(('go to stylesheets directory', 'y'))
+            commands.append(self.go_to_current_score)
+            commands.append(self.go_to_score_build_directory)
+            commands.append(self.go_to_score_distribution_directory)
+            commands.append(self.go_to_score_etc_directory)
+            commands.append(self.go_to_score_makers_directory)
+            commands.append(self.go_to_score_materials_directory)
+            commands.append(self.go_to_score_segments_directory)
+            commands.append(self.go_to_score_stylesheets_directory)
         if commands:
             menu.make_command_section(
                 is_hidden=True,
@@ -566,8 +566,8 @@ class AssetController(Controller):
 
     def _make_score_stylesheet_menu_section(self, menu):
         commands = []
-        commands.append(('edit abbreviations', 'abb'))
-        commands.append(('edit stylesheet', 'sse'))
+        commands.append(self.edit_abbreviations_file)
+        commands.append(self.edit_score_stylesheet)
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -581,12 +581,12 @@ class AssetController(Controller):
 
     def _make_system_menu_section(self, menu):
         commands = []
-        commands.append(('back', 'b'))
-        commands.append(('help', '?'))
-        commands.append(('home', 'h'))
-        commands.append(('log', 'l'))
-        commands.append(('quit', 'q'))
-        commands.append(('shell', '!'))
+        commands.append(self.go_back)
+        commands.append(self.display_available_commands)
+        commands.append(self.go_to_all_score_directories)
+        commands.append(self.open_lilypond_log)
+        commands.append(self.quit_abjad_ide)
+        commands.append(self.invoke_shell)
         menu.make_command_section(
             is_hidden=True,
             commands=commands,
@@ -976,7 +976,7 @@ class AssetController(Controller):
         self._session._abjad_ide._distribution_file_wrangler._run()
 
     @Command('e', 'go to etc directory', 'navigation')
-    def to_to_score_etc_directory(self):
+    def go_to_score_etc_directory(self):
         r'''Goes to etc files.
 
         Returns none.
@@ -1000,7 +1000,7 @@ class AssetController(Controller):
         self._session._abjad_ide._material_package_wrangler._run()
 
     @Command('g', 'go to segments directory', 'navigation')
-    def to_to_score_segments_directory(self):
+    def go_to_score_segments_directory(self):
         r'''Goes to segment packages.
 
         Returns none.
@@ -1008,7 +1008,7 @@ class AssetController(Controller):
         self._session._abjad_ide._segment_package_wrangler._run()
 
     @Command('y', 'go to stylehseets directory', 'navigation')
-    def go_to_score_stylesheets(self):
+    def go_to_score_stylesheets_directory(self):
         r'''Goes to stylesheets.
 
         Returns none.
@@ -1016,7 +1016,7 @@ class AssetController(Controller):
         self._session._abjad_ide._stylesheet_wrangler._run()
 
     @Command('t', 'go to test directory', 'navigation')
-    def go_to_score_test_files(self):
+    def go_to_score_test_directory(self):
         r'''Geots to score test files.
 
         Returns none.

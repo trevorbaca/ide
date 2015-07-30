@@ -163,18 +163,16 @@ class PackageManager(AssetController):
             'maker.py',
             )
         commands = []
-        commands.append(('check package', 'ck'))
-        commands.append(('definition.py - check', 'dc'))
-        commands.append(('definition.py - edit', 'de'))
-        commands.append(('next package', '>'))
-        commands.append(('previous package', '<'))
-        string = '__illustrate__.py - edit'
-        commands.append((string, 'le'))
-        string = '__illustrate__.py - stub'
-        commands.append((string, 'ls'))
-        commands.append(('illustration.ly - interpret', 'ii'))
-        commands.append(('illustration.ly - edit', 'ie'))
-        commands.append(('illustration.pdf - open', 'io'))
+        commands.append(self.check_package)
+        commands.append(self.check_definition_py)
+        commands.append(self.edit_definition_py)
+        commands.append(self.go_to_next_package)
+        commands.append(self.go_to_previous_package)
+        commands.append(self.edit_illustrate_py)
+        commands.append(self.write_stub_illustrate_py)
+        commands.append(self.interpret_illustration_ly)
+        commands.append(self.edit_illustration_ly)
+        commands.append(self.open_illustration_pdf)
         self._controller_commands = commands
         self._required_files = (
             '__init__.py',
@@ -191,8 +189,8 @@ class PackageManager(AssetController):
             'test',
             )
         commands = []
-        commands.append(('check package', 'ck'))
-        commands.append(('open score.pdf', 'so'))
+        commands.append(self.check_package)
+        commands.append(self.open_score_pdf)
         self._controller_commands = commands
         self._package_creation_callback = \
             self._make_score_into_installable_package
@@ -220,15 +218,15 @@ class PackageManager(AssetController):
             'illustration.pdf',
             )
         commands = []
-        commands.append(('check package', 'ck'))
-        commands.append(('illustration.ly - edit', 'ie'))
-        commands.append(('illustration.ly - interpret', 'ii'))
-        commands.append(('definition.py - check', 'dc'))
-        commands.append(('definition.py - edit', 'de'))
-        commands.append(('definition.py - illustrate', 'i'))
-        commands.append(('illustration.pdf - open', 'io'))
-        commands.append(('next package', '>'))
-        commands.append(('previous package', '<'))
+        commands.append(self.check_package)
+        commands.append(self.edit_illustration_ly)
+        commands.append(self.interpret_illustration_ly)
+        commands.append(self.check_definition_py)
+        commands.append(self.edit_definition_py)
+        commands.append(self.illustrate_definition_py)
+        commands.append(self.open_illustration_pdf)
+        commands.append(self.go_to_next_package)
+        commands.append(self.go_to_previous_package)
         self._controller_commands = commands
         self._required_files = (
             '__init__.py',

@@ -767,10 +767,6 @@ class Wrangler(AssetController):
 
     def _make_basic_operations_menu_section(self, menu):
         commands = []
-#        commands.append(('copy', 'cp'))
-#        commands.append(('new', 'new'))
-#        commands.append(('rename', 'ren'))
-#        commands.append(('remove', 'rm'))
         commands.append(self.copy)
         commands.append(self.make)
         commands.append(self.rename)
@@ -911,7 +907,7 @@ class Wrangler(AssetController):
 
     def _make_views_menu_section(self, menu):
         commands = []
-        commands.append(('set view', 'ws'))
+        commands.append(self.set_view)
         menu.make_command_section(
             is_hidden=True,
             commands=commands,

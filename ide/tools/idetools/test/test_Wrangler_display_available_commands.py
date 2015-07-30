@@ -47,6 +47,6 @@ def test_Wrangler_display_available_commands_04():
 
     title = 'Abjad IDE - all score directories - available commands'
     first_blank_line = ''
-    first_real_line = '    back (b)'
+    first_real_line = '    display available commands (?)'
     string = '\n'.join([title, first_blank_line, first_real_line])
     assert string in contents
