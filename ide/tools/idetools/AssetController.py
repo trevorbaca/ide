@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import codecs
+import inspect
 import os
 import shutil
 import sys
@@ -8,6 +9,7 @@ from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
+from ide.tools.idetools.Command import Command
 from ide.tools.idetools.Controller import Controller
 
 
@@ -50,35 +52,41 @@ class AssetController(Controller):
         superclass = super(AssetController, self)
         result = superclass._command_to_method
         result = result.copy()
-        result.update({
-            'dd': self.go_to_all_distribution_directories,
-            'ee': self.go_to_all_etc_files,
-            'gg': self.go_to_all_segments_directories,
-            'kk': self.go_to_all_makers_directories,
-            'mm': self.go_to_all_materials_directories,
-            'uu': self.go_to_all_build_directories,
-            'yy': self.go_to_all_stylesheets_directories,
-            #
-            '!': self.invoke_shell,
-            '?': self.display_available_commands,
-            'l': self.open_lilypond_log,
-            #
-            '<': self.go_to_previous_package,
-            '>': self.go_to_next_package,
-            '<<': self.go_to_previous_score,
-            '>>': self.go_to_next_score,
-            #
-            'd': self.go_to_score_distribution_files,
-            'e': self.go_to_score_etc_files,
-            'g': self.go_to_score_segments,
-            'k': self.go_to_score_maker_files,
-            'm': self.go_to_score_materials,
-            'u': self.go_to_score_build_files,
-            'y': self.go_to_score_stylesheets,
-            #
-            'abb': self.edit_abbreviations_file,
-            'sse': self.edit_score_stylesheet,
-            })
+#        result.update({
+#            'dd': self.go_to_all_distribution_directories,
+#            'ee': self.go_to_all_etc_files,
+#            'gg': self.go_to_all_segments_directories,
+#            'kk': self.go_to_all_makers_directories,
+#            'mm': self.go_to_all_materials_directories,
+#            'uu': self.go_to_all_build_directories,
+#            'yy': self.go_to_all_stylesheets_directories,
+#            #
+#            '!': self.invoke_shell,
+#            '?': self.display_available_commands,
+#            'l': self.open_lilypond_log,
+#            #
+#            '<': self.go_to_previous_package,
+#            '>': self.go_to_next_package,
+#            '<<': self.go_to_previous_score,
+#            '>>': self.go_to_next_score,
+#            #
+#            'd': self.go_to_score_distribution_files,
+#            'e': self.go_to_score_etc_files,
+#            'g': self.go_to_score_segments,
+#            'k': self.go_to_score_maker_files,
+#            'm': self.go_to_score_materials,
+#            'u': self.go_to_score_build_files,
+#            'y': self.go_to_score_stylesheets,
+#            #
+#            'abb': self.edit_abbreviations_file,
+#            'sse': self.edit_score_stylesheet,
+#            })
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        result[value.command_name] = value
         return result
 
     @property
@@ -861,6 +869,7 @@ class AssetController(Controller):
 
     ### PUBLIC METHODS ###
 
+    @Command('?')
     def display_available_commands(self):
         r'''Displays available commands.
 
@@ -870,6 +879,7 @@ class AssetController(Controller):
             show = self._session.display_available_commands
             self._session._display_available_commands = not show
 
+    @Command('abb')
     def edit_abbreviations_file(self):
         r'''Edits abbreviations file.
 
@@ -881,6 +891,7 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
+    @Command('sse')
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
 
@@ -892,6 +903,7 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
+    @Command('uu')
     def go_to_all_build_directories(self):
         r'''Goes to all build files.
 
@@ -900,6 +912,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_build_files = True
 
+    @Command('dd')
     def go_to_all_distribution_directories(self):
         r'''Goes to all distribution files.
 
@@ -908,6 +921,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_distribution_files = True
 
+    @Command('ee')
     def go_to_all_etc_files(self):
         r'''Goes to all etc files.
 
@@ -916,6 +930,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_etc_files = True
 
+    @Command('kk')
     def go_to_all_makers_directories(self):
         r'''Goes to all maker files.
 
@@ -924,6 +939,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_maker_files = True
 
+    @Command('mm')
     def go_to_all_materials_directories(self):
         r'''Goes to all materials.
 
@@ -932,6 +948,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_materials = True
 
+    @Command('gg')
     def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
@@ -940,6 +957,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_segments = True
 
+    @Command('yy')
     def go_to_all_stylesheets_directories(self):
         r'''Goes to all stylesheets.
 
@@ -948,6 +966,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_stylesheets = True
 
+    @Command('>')
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -955,6 +974,7 @@ class AssetController(Controller):
         '''
         self._go_to_next_package()
 
+    @Command('>>')
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -964,6 +984,7 @@ class AssetController(Controller):
         self._session._is_navigating_to_scores = True
         self._session._display_available_commands = False
 
+    @Command('<')
     def go_to_previous_package(self):
         r'''Goes to previous package.
 
@@ -971,6 +992,7 @@ class AssetController(Controller):
         '''
         self._go_to_previous_package()
 
+    @Command('<<')
     def go_to_previous_score(self):
         r'''Goes to previous score.
 
@@ -980,6 +1002,7 @@ class AssetController(Controller):
         self._session._is_navigating_to_scores = True
         self._session._display_available_commands = False
 
+    @Command('u')
     def go_to_score_build_files(self):
         r'''Goes to build files.
 
@@ -987,6 +1010,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._build_file_wrangler._run()
 
+    @Command('d')
     def go_to_score_distribution_files(self):
         r'''Goes to distribution files.
 
@@ -994,6 +1018,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._distribution_file_wrangler._run()
 
+    @Command('e')
     def go_to_score_etc_files(self):
         r'''Goes to etc files.
 
@@ -1001,6 +1026,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._etc_file_wrangler._run()
 
+    @Command('k')
     def go_to_score_maker_files(self):
         r'''Goes to maker files.
 
@@ -1008,6 +1034,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._maker_file_wrangler._run()
 
+    @Command('m')
     def go_to_score_materials(self):
         r'''Goes to material packages.
 
@@ -1015,6 +1042,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._material_package_wrangler._run()
 
+    @Command('g')
     def go_to_score_segments(self):
         r'''Goes to segment packages.
 
@@ -1022,6 +1050,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._segment_package_wrangler._run()
 
+    @Command('y')
     def go_to_score_stylesheets(self):
         r'''Goes to stylesheets.
 
@@ -1029,6 +1058,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._stylesheet_wrangler._run()
 
+    @Command('t')
     def go_to_score_test_files(self):
         r'''Geots to score test files.
 
@@ -1036,6 +1066,7 @@ class AssetController(Controller):
         '''
         raise NotImplementedError
 
+    @Command('!')
     def invoke_shell(self):
         r'''Invokes shell.
 
@@ -1049,6 +1080,7 @@ class AssetController(Controller):
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
 
+    @Command('l')
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
 
@@ -1059,10 +1091,3 @@ class AssetController(Controller):
         if self._session.is_test:
             return
         systemtools.IOManager.open_last_log()
-
-#    def remove_unadded_assets(self, dry_run=False):
-#        r'''Removes files not yet added to repository.
-#
-#        Returns none.
-#        '''
-#        return self._remove_unadded_assets(dry_run=dry_run)

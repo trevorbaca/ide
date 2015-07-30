@@ -1097,7 +1097,7 @@ class PackageManager(AssetController):
                     self._io_manager._display(repr(wrangler))
                     prototype = ('file', 'stylesheet', 'maker')
                     if wrangler._asset_identifier in prototype:
-                        result = wrangler.check_every_file()
+                        result = wrangler._check_every_file()
                     else:
                         result = wrangler.check_every_package(
                             indent=1,
