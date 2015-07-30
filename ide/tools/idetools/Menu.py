@@ -589,7 +589,6 @@ class Menu(Controller):
         group_by_annotation=True,
         is_alphabetized=False,
         is_asset_section=False,
-        is_attribute_section=False,
         is_command_section=False,
         is_hidden=False,
         is_information_section=False,
@@ -612,7 +611,6 @@ class Menu(Controller):
             group_by_annotation=group_by_annotation,
             is_alphabetized=is_alphabetized,
             is_asset_section=is_asset_section,
-            is_attribute_section=is_attribute_section,
             is_command_section=is_command_section,
             is_hidden=is_hidden,
             is_information_section=is_information_section,
@@ -845,34 +843,6 @@ class Menu(Controller):
             return_value_attribute='explicit',
             )
         self._asset_section = section
-        return section
-
-    def make_attribute_section(
-        self, 
-        menu_entries=None, 
-        name=None, 
-        title=None,
-        ):
-        r'''Makes attribute section.
-
-        With these attributes:
-
-            * is attribute section
-            * is numbered
-            * displays prepopulated values
-            * return value set to explicit
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            display_prepopulated_values=True,
-            is_attribute_section=True,
-            is_numbered=True,
-            menu_entries=menu_entries,
-            return_value_attribute='explicit',
-            name=name,
-            title=title,
-            )
         return section
 
     def make_command_section(

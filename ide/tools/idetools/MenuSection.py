@@ -39,7 +39,6 @@ class MenuSection(AbjadObject):
         '_indent_level',
         '_is_alphabetized',
         '_is_asset_section',
-        '_is_attribute_section',
         '_is_command_section',
         '_is_hidden',
         '_is_information_section',
@@ -71,7 +70,6 @@ class MenuSection(AbjadObject):
         indent_level=1,
         is_alphabetized=True,
         is_asset_section=False,
-        is_attribute_section=False,
         is_command_section=False,
         is_hidden=False,
         is_information_section=False,
@@ -95,7 +93,6 @@ class MenuSection(AbjadObject):
         self._indent_level = indent_level
         self._is_alphabetized = is_alphabetized
         self._is_asset_section = is_asset_section
-        self._is_attribute_section = is_attribute_section
         self._is_command_section = is_command_section
         self._is_hidden = is_hidden
         self._is_information_section = is_information_section
@@ -382,14 +379,6 @@ class MenuSection(AbjadObject):
         Returns boolean.
         '''
         return self._is_asset_section
-
-    @property
-    def is_attribute_section(self):
-        r'''Is true when menu section lists attributes. Otherwise false.
-
-        Returns boolean.
-        '''
-        return self._is_attribute_section
 
     @property
     def is_command_section(self):
