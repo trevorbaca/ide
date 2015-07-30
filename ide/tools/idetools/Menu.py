@@ -16,6 +16,9 @@ class Menu(Controller):
 
             >>> session = ide.tools.idetools.Session()
             >>> menu = ide.tools.idetools.Menu(session=session)
+
+        ::
+
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))
@@ -667,30 +670,15 @@ class Menu(Controller):
     def menu_sections(self):
         r'''Gets menu sections.
 
-        ..  container:: example
-
-            ::
-
-                >>> for section in menu.menu_sections:
-                ...     section
-                <MenuSection 'test' (3)>
-
         Returns list.
         '''
         return self._menu_sections
 
     @property
     def name(self):
-        r'''Gets menu name.
+        r'''Gets name.
 
-        ..  container:: example
-
-            ::
-
-                >>> menu.name is None
-                True
-
-        Returns list.
+        Returns string.
         '''
         return self._name
 
@@ -698,27 +686,13 @@ class Menu(Controller):
     def prompt_character(self):
         r'''Gets prompt character.
 
-        ..  container:: example
-
-            ::
-
-                >>> menu.prompt_character
-                '>'
-
-        Returns string.
+        Returns '>'.
         '''
         return '>'
 
     @property
     def subtitle(self):
-        r'''Gets menu subtitle.
-
-        ..  container:: example
-
-            ::
-
-                >>> menu.subtitle is None
-                True
+        r'''Gets subtitle.
 
         Returns string or none.
         '''
@@ -726,14 +700,7 @@ class Menu(Controller):
 
     @property
     def title(self):
-        r'''Gets menu title.
-
-        ..  container:: example
-
-            ::
-
-                >>> menu.title is None
-                True
+        r'''Gets title.
 
         Returns string or none.
         '''

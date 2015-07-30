@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import types
-from abjad.tools import mathtools
 from abjad.tools import stringtools
 from abjad.tools.abctools.AbjadObject import AbjadObject
 
@@ -18,14 +17,17 @@ class MenuSection(AbjadObject):
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))
             >>> commands.append(('foo - modify', 'modify'))
-            >>> section = menu.make_command_section(
+
+        ::
+
+            >>> menu_section = menu.make_command_section(
             ...     commands=commands,
             ...     name='test',
             ...     )
 
         ::
 
-            >>> section
+            >>> menu_section
             <MenuSection 'test' (3)>
 
     '''
@@ -286,12 +288,7 @@ class MenuSection(AbjadObject):
 
     @property
     def default_index(self):
-        r'''Gets menu section default index.
-
-        ::
-
-            >>> section.default_index is None
-            True
+        r'''Gets default index of menu section.
 
         Returns nonnegative integer or none.
         '''
@@ -300,28 +297,17 @@ class MenuSection(AbjadObject):
     @property
     def display_prepopulated_values(self):
         r'''Is true when menu section should show prepopulated values.
-        Otherwise false:
+        Otherwise false.
 
-        ::
-
-            >>> section.display_prepopulated_values
-            False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._display_prepopulated_values
 
     @property
     def group_by_annotation(self):
-        r'''Is true when entries should group by annotation.
-        Otherwise false:
+        r'''Is true when entries should group by annotation. Otherwise false.
 
-        ::
-
-            >>> section.group_by_annotation
-            False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._group_by_annotation
 
@@ -329,7 +315,7 @@ class MenuSection(AbjadObject):
     def is_asset_section(self):
         r'''Is true when menu section lists assets. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_asset_section
 
@@ -337,49 +323,31 @@ class MenuSection(AbjadObject):
     def is_command_section(self):
         r'''Is true when menu section lists commands. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_command_section
 
     @property
     def is_hidden(self):
-        r'''Is true when menu section is hidden.
-        Otherwise false:
+        r'''Is true when menu section is hidden. Otherwise false.
 
-        ::
-
-            >>> section.is_hidden
-            False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_hidden
 
     @property
     def is_numbered(self):
-        r'''Is true when menu section is numbered.
-        Otherwise false:
+        r'''Is true when menu section is numbered. Otherwise false.
 
-        ::
-
-            >>> section.is_numbered
-            False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_numbered
 
     @property
     def is_ranged(self):
-        r'''Is true when menu section is ranged.
-        Otherwise false:
+        r'''Is true when menu section is ranged. Otherwise false.
 
-        ::
-
-            >>> section.is_ranged
-            False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_ranged
 
@@ -388,28 +356,13 @@ class MenuSection(AbjadObject):
         r'''Is true when section should match on display string. Otherwise
         false.
 
-        ..  container::
-
-            ::
-
-                >>> section.match_on_display_string
-                False
-
-        Returns boolean.
+        Returns true or false.
         '''
         return self._match_on_display_string
 
     @property
     def menu_entries(self):
-        r'''Menu section menu entries.
-
-        ::
-
-            >>> for menu_entry in section:
-            ...     menu_entry
-            <MenuEntry: 'foo - add'>
-            <MenuEntry: 'foo - delete'>
-            <MenuEntry: 'foo - modify'>
+        r'''Gets menu entries.
 
         Returns list.
         '''
@@ -417,14 +370,7 @@ class MenuSection(AbjadObject):
 
     @property
     def name(self):
-        r'''Gets name of menu section.
-
-        ..  container:: example
-
-            ::
-
-                >>> section.name
-                'test'
+        r'''Gets name.
 
         Returns string or none.
         '''
@@ -432,12 +378,7 @@ class MenuSection(AbjadObject):
 
     @property
     def return_value_attribute(self):
-        r'''Menu section return value attribute.
-
-        ::
-
-            >>> section.return_value_attribute
-            'key'
+        r'''Gets return value attribute.
 
         Acceptable values:
 
@@ -454,12 +395,7 @@ class MenuSection(AbjadObject):
 
     @property
     def title(self):
-        r'''Gets menu section title.
-
-        ::
-
-            >>> section.title is None
-            True
+        r'''Gets title.
 
         Returns string or none.
         '''
@@ -468,24 +404,6 @@ class MenuSection(AbjadObject):
     ### PUBLIC METHODS ###
 
     def _append(self, expr):
-        r'''Appends `expr` to menu section.
-
-        ::
-
-            >>> section._append(('foo - stub', 'stub'))
-            <MenuEntry: 'foo - stub'>
-
-        ::
-
-            >>> for menu_entry in section:
-            ...     menu_entry
-            <MenuEntry: 'foo - add'>
-            <MenuEntry: 'foo - delete'>
-            <MenuEntry: 'foo - modify'>
-            <MenuEntry: 'foo - stub'>
-
-        Returns menu entry.
-        '''
         from ide.tools import idetools
         if isinstance(expr, idetools.MenuEntry):
             new_expr = (
