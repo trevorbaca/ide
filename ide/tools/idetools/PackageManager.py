@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
-import inspect
 import os
 import shutil
 import time
@@ -66,31 +65,6 @@ class PackageManager(AssetController):
         if self._breadcrumb_callback is not None:
             return self._breadcrumb_callback()
         return self._space_delimited_lowercase_name
-
-    @property
-    def _command_to_method(self):
-        superclass = super(PackageManager, self)
-        result = superclass._command_to_method
-        result = result.copy()
-#        result.update({
-#            'dc': self.check_definition_py,
-#            'ck': self.check_package,
-#            'de': self.edit_definition_py,
-#            'le': self.edit_illustrate_py,
-#            'ie': self.edit_illustration_ly,
-#            'i': self.illustrate_definition_py,
-#            'ii': self.interpret_illustration_ly,
-#            'io': self.open_illustration_pdf,
-#            'so': self.open_score_pdf,
-#            'ls': self.write_stub_illustrate_py,
-#            })
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        result[value.command_name] = value
-        return result
 
     @property
     def _definition_py_path(self):

@@ -42,12 +42,6 @@ class Controller(object):
 
     @property
     def _command_to_method(self):
-#        result = {
-#            'b': self.go_back,
-#            'q': self.quit_abjad_ide,
-#            's': self.go_to_current_score,
-#            'h': self.go_to_all_score_directories,
-#            }
         result = {}
         for name in dir(self):
             if not name.startswith('_'):

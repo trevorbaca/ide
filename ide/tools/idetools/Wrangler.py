@@ -2,7 +2,6 @@
 import copy
 import datetime
 import glob
-import inspect
 import os
 import shutil
 import subprocess
@@ -81,55 +80,6 @@ class Wrangler(AssetController):
         if view_inventory is not None and view_name in view_inventory:
             breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
         return breadcrumb
-
-    @property
-    def _command_to_method(self):
-        superclass = super(Wrangler, self)
-        result = superclass._command_to_method
-        result = result.copy()
-#        result.update({
-#            'cp': self.copy,
-#            'new': self.make,
-#            'ren': self.rename,
-#            'rm': self.remove,
-#            #
-#            'ws': self.set_view,
-#            #
-#            'ck*': self.check_every_package,
-#            'dc*': self.check_every_definition_py,
-#            'de*': self.edit_every_definition_py,
-#            'di*': self.illustrate_every_definition_py,  
-#            'ii*': self.interpret_every_illustration_ly,
-#            'io*': self.open_every_illustration_pdf,
-#            'so*': self.open_every_score_pdf,
-#            #
-#            'add*': self.add_every_asset,
-#            'ci*': self.commit_every_asset,
-#            'clean*': self.remove_every_unadded_asset,
-#            'st*': self.display_every_asset_status,
-#            'revert*': self.revert_every_asset,
-#            'up*': self.update_every_asset,
-#            #
-#            'bcg': self.generate_back_cover_source,
-#            'bci': self.interpret_back_cover,
-#            'fcg': self.generate_front_cover_source,
-#            'fci': self.interpret_front_cover,
-#            'mc': self.collect_segment_lilypond_files,
-#            'mg': self.generate_music_source,
-#            'mi': self.interpret_music,
-#            'pg': self.generate_preface_source,
-#            'pi': self.interpret_preface,
-#            'sg': self.generate_score_source,
-#            'si': self.interpret_score,
-#            'sp': self.push_score_pdf_to_distribution_directory,
-#            })
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        result[value.command_name] = value
-        return result
 
     @property
     def _current_package_manager(self):

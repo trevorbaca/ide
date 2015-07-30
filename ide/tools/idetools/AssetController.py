@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import codecs
-import inspect
 import os
 import shutil
 import sys
@@ -46,48 +45,6 @@ class AssetController(Controller):
     @property
     def _abjad_import_statement(self):
         return 'from abjad import *'
-
-    @property
-    def _command_to_method(self):
-        superclass = super(AssetController, self)
-        result = superclass._command_to_method
-        result = result.copy()
-#        result.update({
-#            'dd': self.go_to_all_distribution_directories,
-#            'ee': self.go_to_all_etc_files,
-#            'gg': self.go_to_all_segments_directories,
-#            'kk': self.go_to_all_makers_directories,
-#            'mm': self.go_to_all_materials_directories,
-#            'uu': self.go_to_all_build_directories,
-#            'yy': self.go_to_all_stylesheets_directories,
-#            #
-#            '!': self.invoke_shell,
-#            '?': self.display_available_commands,
-#            'l': self.open_lilypond_log,
-#            #
-#            '<': self.go_to_previous_package,
-#            '>': self.go_to_next_package,
-#            '<<': self.go_to_previous_score,
-#            '>>': self.go_to_next_score,
-#            #
-#            'd': self.go_to_score_distribution_files,
-#            'e': self.go_to_score_etc_files,
-#            'g': self.go_to_score_segments,
-#            'k': self.go_to_score_maker_files,
-#            'm': self.go_to_score_materials,
-#            'u': self.go_to_score_build_files,
-#            'y': self.go_to_score_stylesheets,
-#            #
-#            'abb': self.edit_abbreviations_file,
-#            'sse': self.edit_score_stylesheet,
-#            })
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        result[value.command_name] = value
-        return result
 
     @property
     def _navigation_commands(self):
