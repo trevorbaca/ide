@@ -10,5 +10,9 @@ class Command(object):
         self.command = command
 
     def __call__(self, method):
+        r'''Calls command decorator on `method`.
+
+        Returns decorated method.
+        '''
         method.command = self.command
         return method
