@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_go_to_all_materials_01():
+def test_Wrangler_go_to_all_materials_directories_01():
     r'''From scores to all materials directories.
     '''
 

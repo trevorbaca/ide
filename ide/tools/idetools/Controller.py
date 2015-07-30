@@ -42,9 +42,9 @@ class Controller(object):
     def _command_to_method(self):
         result = {
             'b': self.go_back,
-            'q': self.quit,
+            'q': self.quit_abjad_ide,
             's': self.go_to_current_score,
-            'h': self.go_to_all_scores,
+            'h': self.go_to_all_score_directories,
             }
         return result
 
@@ -62,7 +62,7 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_available_commands = False
 
-    def go_to_all_scores(self):
+    def go_to_all_score_directories(self):
         r'''Goes to all scores.
 
         Returns none.
@@ -80,8 +80,8 @@ class Controller(object):
             self._session._is_backtracking_to_score = True
             self._session._display_available_commands = False
 
-    def quit(self):
-        r'''Quits.
+    def quit_abjad_ide(self):
+        r'''Quits Abjad IDE.
 
         Returns none.
         '''

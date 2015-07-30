@@ -51,13 +51,13 @@ class AssetController(Controller):
         result = superclass._command_to_method
         result = result.copy()
         result.update({
-            'dd': self.go_to_all_distribution_files,
+            'dd': self.go_to_all_distribution_directories,
             'ee': self.go_to_all_etc_files,
-            'gg': self.go_to_all_segments,
-            'kk': self.go_to_all_maker_files,
-            'mm': self.go_to_all_materials,
-            'uu': self.go_to_all_build_files,
-            'yy': self.go_to_all_stylesheets,
+            'gg': self.go_to_all_segments_directories,
+            'kk': self.go_to_all_makers_directories,
+            'mm': self.go_to_all_materials_directories,
+            'uu': self.go_to_all_build_directories,
+            'yy': self.go_to_all_stylesheets_directories,
             #
             '!': self.invoke_shell,
             '?': self.display_available_commands,
@@ -860,20 +860,20 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    def go_to_all_build_files(self):
+    def go_to_all_build_directories(self):
         r'''Goes to all build files.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_build_files = True
 
-    def go_to_all_distribution_files(self):
+    def go_to_all_distribution_directories(self):
         r'''Goes to all distribution files.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_distribution_files = True
 
     def go_to_all_etc_files(self):
@@ -881,39 +881,39 @@ class AssetController(Controller):
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_etc_files = True
 
-    def go_to_all_maker_files(self):
+    def go_to_all_makers_directories(self):
         r'''Goes to all maker files.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_maker_files = True
 
-    def go_to_all_materials(self):
+    def go_to_all_materials_directories(self):
         r'''Goes to all materials.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_materials = True
 
-    def go_to_all_segments(self):
+    def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_segments = True
 
-    def go_to_all_stylesheets(self):
+    def go_to_all_stylesheets_directories(self):
         r'''Goes to all stylesheets.
 
         Returns none.
         '''
-        self.go_to_all_scores()
+        self.go_to_all_score_directories()
         self._session._is_navigating_to_stylesheets = True
 
     def go_to_next_package(self):

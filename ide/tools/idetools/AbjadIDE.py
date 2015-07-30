@@ -154,13 +154,13 @@ class AbjadIDE(Controller):
         commands.append(('git status all score packages', 'st*'))
         commands.append(('git update all score packages', 'up*'))
         commands.append(('open all distribution score.pdf files', 'so*'))
-        commands.append(('go to all build files', 'uu'))
-        commands.append(('go to all distribution', 'dd'))
-        commands.append(('go to all etc files', 'ee'))
-        commands.append(('go to all maker files', 'kk'))
-        commands.append(('go to all material packages', 'mm'))
-        commands.append(('go to all segment packages', 'gg'))
-        commands.append(('go to all stylesheets', 'yy'))
+        commands.append(('go to all build directories', 'uu'))
+        commands.append(('go to all distribution directories', 'dd'))
+        commands.append(('go to all etc directories', 'ee'))
+        commands.append(('go to all makers directories', 'kk'))
+        commands.append(('go to all materials directories', 'mm'))
+        commands.append(('go to all segments directories', 'gg'))
+        commands.append(('go to all stylesheets directories', 'yy'))
         wrangler._controller_commands = commands
         wrangler._group_asset_section_by_annotation = False
         wrangler._hide_breadcrumb_while_in_score = True

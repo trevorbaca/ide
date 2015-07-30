@@ -4,14 +4,14 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_go_to_all_build_files_01():
-    r'''From scores to all build directories.
+def test_Wrangler_go_to_all_stylesheets_directories_01():
+    r'''From scores to all stylesheets directories.
     '''
 
-    input_ = 'uu q'
+    input_ = 'yy q'
     abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
-        'Abjad IDE - all build directories',
+        'Abjad IDE - all stylesheets directories',
         ]
     assert abjad_ide._transcript.titles == titles
