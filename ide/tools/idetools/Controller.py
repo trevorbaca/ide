@@ -43,10 +43,6 @@ class Controller(object):
         return 'from abjad import *'
 
     @property
-    def _breadcrumb(self):
-        pass
-
-    @property
     def _command_to_method(self):
         result = {
             'b': self.go_back,

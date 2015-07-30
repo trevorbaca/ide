@@ -185,19 +185,22 @@ class Session(abctools.AbjadObject):
 
     def _format_controller_breadcrumbs(self, stop_controller=None):
         from ide.tools import idetools
-        if not self.controller_stack:
+        controller_stack = []
+        prototype = (idetools.AssetController, idetools.AbjadIDE)
+        for controller in self.controller_stack:
+            if isinstance(controller, prototype):
+                controller_stack.append(controller)
+        if not controller_stack:
             return ['']
         result_lines = []
-        first_controller = self.controller_stack[0]
+        first_controller = controller_stack[0]
         breadcrumb = getattr(first_controller, 'breadcrumb', None)
         breadcrumb = breadcrumb or first_controller._breadcrumb
         if breadcrumb:
             result_lines.append(breadcrumb)
-        for controller in self.controller_stack[1:]:
+        for controller in controller_stack[1:]:
             if controller is stop_controller:
                 break
-            if isinstance(controller, idetools.Selector):
-                continue
             breadcrumb = getattr(controller, 'breadcrumb', None)
             breadcrumb = breadcrumb or controller._breadcrumb
             if not breadcrumb:
