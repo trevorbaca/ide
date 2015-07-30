@@ -735,31 +735,6 @@ class AssetController(Controller):
             contents = ''.join(lines_to_keep)
             file_pointer.write(contents)
 
-    def _remove_unadded_assets(self, dry_run=False):
-        paths = self._get_unadded_asset_paths()
-        inputs, outputs = [], []
-        if dry_run:
-            inputs, outputs = paths, []
-            return inputs, outputs
-        elif not paths:
-            message = 'no unadded assets.'
-            self._io_manager._display(message)
-            return
-        messages = []
-        messages.append('will remove ...')
-        for path in paths:
-            message = '    ' + path
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        remove_command = self._shell_remove_command
-        paths = ' '.join(paths)
-        command = '{} {}'
-        command = command.format(remove_command, paths)
-        self._io_manager.run_command(command)
-
     @staticmethod
     def _replace_in_file(file_path, old, new):
         assert isinstance(old, str), repr(old)

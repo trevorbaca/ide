@@ -808,24 +808,6 @@ class PackageManager(AssetController):
         assert self._is_up_to_date()
         return True
 
-    def _test_remove_unadded_assets(self):
-        assert self._is_up_to_date()
-        path_3 = os.path.join(self._path, 'tmp_3.py')
-        path_4 = os.path.join(self._path, 'tmp_4.py')
-        with systemtools.FilesystemState(remove=[path_3, path_4]):
-            with open(path_3, 'w') as file_pointer:
-                file_pointer.write('')
-            with open(path_4, 'w') as file_pointer:
-                file_pointer.write('')
-            assert os.path.exists(path_3)
-            assert os.path.exists(path_4)
-            assert not self._is_up_to_date()
-            assert self._get_unadded_asset_paths() == [path_3, path_4]
-            with self._io_manager._silent():
-                self._remove_unadded_assets()
-        assert self._is_up_to_date()
-        return True
-
     def _test_revert(self):
         assert self._is_up_to_date()
         assert self._get_modified_asset_paths() == []

@@ -37,7 +37,6 @@ class Session(abctools.AbjadObject):
         '_allow_unknown_command_during_test',
         '_after_redraw_message',
         '_attempted_display_status',
-        '_attempted_remove_unadded_assets',
         '_attempted_to_add',
         '_attempted_to_commit',
         '_attempted_to_open_file',
@@ -93,7 +92,6 @@ class Session(abctools.AbjadObject):
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
         self._attempted_display_status = False
-        self._attempted_remove_unadded_assets = False
         self._attempted_to_add = False
         self._attempted_to_commit = False
         self._attempted_to_open_file = False
