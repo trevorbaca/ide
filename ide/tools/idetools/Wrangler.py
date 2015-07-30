@@ -1252,7 +1252,7 @@ class Wrangler(AssetController):
             
     ### PUBLIC METHODS ###
 
-    @Command('add*')
+    @Command('add*', 'git add every package', 'git')
     def add_every_asset(self):
         r'''Adds every asset to repository.
 
@@ -1286,7 +1286,7 @@ class Wrangler(AssetController):
         message = message.format(count, identifier)
         self._io_manager._display(message)
         
-    @Command('dc*')
+    @Command('dc*', 'check every definition.py', 'star')
     def check_every_definition_py(self):
         r'''Checks ``definition.py`` in every package.
 
@@ -1316,7 +1316,7 @@ class Wrangler(AssetController):
         message = message.format(total_time)
         self._io_manager._display(message)
 
-    @Command('ck*')
+    @Command('ck*', 'check every package', 'star')
     def check_every_package(
         self, 
         indent=0,
@@ -1393,7 +1393,7 @@ class Wrangler(AssetController):
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
-    @Command('mc')
+    @Command('mc', 'collect segment lilypond files', 'build')
     def collect_segment_lilypond_files(self):
         r'''Copies ``illustration.ly`` files from segment packages to build 
         directory.
@@ -1421,7 +1421,7 @@ class Wrangler(AssetController):
                 self._handle_candidate(candidate_file_path, target_file_path)
                 self._io_manager._display('')
 
-    @Command('ci*')
+    @Command('ci*', 'git commit every package', 'git')
     def commit_every_asset(self):
         r'''Commits every asset to repository.
 
@@ -1446,7 +1446,7 @@ class Wrangler(AssetController):
             with self._io_manager._silent():
                 manager._git_commit(commit_message=commit_message)
 
-    @Command('cp')
+    @Command('cp', 'copy', 'basic operation')
     def copy(
         self, 
         file_extension=None,
@@ -1530,7 +1530,7 @@ class Wrangler(AssetController):
                     new_name,
                     )
 
-    @Command('st*')
+    @Command('st*', 'git status every package', 'git')
     def display_every_asset_status(self):
         r'''Displays repository status of every asset.
 
@@ -1549,7 +1549,7 @@ class Wrangler(AssetController):
             message = message.format(directory)
             self._io_manager._display(message)
 
-    @Command('de*')
+    @Command('de*', 'edit every definition.py', 'star')
     def edit_every_definition_py(self):
         r'''Opens ``definition.py`` in every package.
 
@@ -1557,7 +1557,7 @@ class Wrangler(AssetController):
         '''
         self._open_in_every_package('definition.py')
 
-    @Command('bcg')
+    @Command('bcg', 'generate back cover source', 'build')
     def generate_back_cover_source(self):
         r'''Generates ``back-cover.tex``.
 
@@ -1584,7 +1584,7 @@ class Wrangler(AssetController):
             replacements[old] = new
         self._copy_boilerplate('back-cover.tex', replacements=replacements)
 
-    @Command('fcg')
+    @Command('fcg', 'generate front cover source', 'build')
     def generate_front_cover_source(self):
         r'''Generates ``front-cover.tex``.
 
@@ -1617,7 +1617,7 @@ class Wrangler(AssetController):
             replacements[old] = new
         self._copy_boilerplate(file_name, replacements=replacements)
 
-    @Command('mg')
+    @Command('mg', 'generate music source', 'build')
     def generate_music_source(self):
         r'''Generates ``music.ly``.
 
@@ -1697,7 +1697,7 @@ class Wrangler(AssetController):
                 self._replace_in_file(candidate_path, old, new)
             self._handle_candidate(candidate_path, destination_path)
 
-    @Command('pg')
+    @Command('pg', 'generate preface source', 'build')
     def generate_preface_source(self):
         r'''Generates ``preface.tex``.
 
@@ -1705,7 +1705,7 @@ class Wrangler(AssetController):
         '''
         self._copy_boilerplate('preface.tex')
 
-    @Command('sg')
+    @Command('sg', 'generate score source', 'build')
     def generate_score_source(self):
         r'''Generates ``score.tex``.
 
@@ -1713,7 +1713,7 @@ class Wrangler(AssetController):
         '''
         self._copy_boilerplate('score.tex')
 
-    @Command('new')
+    @Command('new', 'new', 'basic operation')
     def make(self):
         r'''Makes asset.
 
@@ -1726,7 +1726,7 @@ class Wrangler(AssetController):
         else:
             self._make_package()
 
-    @Command('di*')
+    @Command('di*', 'illustrate every definition.py', 'star')
     def illustrate_every_definition_py(self):
         r'''Illustrates ``definition.py`` in every package.
 
@@ -1749,7 +1749,7 @@ class Wrangler(AssetController):
             method = getattr(manager, method_name)
             method()
 
-    @Command('bci')
+    @Command('bci', 'interpret back cover', 'build')
     def interpret_back_cover(self):
         r'''Interprets ``back-cover.tex``.
 
@@ -1757,7 +1757,7 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('back-cover.tex')
 
-    @Command('ii*')
+    @Command('ii*', 'interpret every illustration.ly', 'star')
     def interpret_every_illustration_ly(
         self, 
         open_every_illustration_pdf=True,
@@ -1790,7 +1790,7 @@ class Wrangler(AssetController):
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
                 
-    @Command('fci')
+    @Command('fci', 'interpret front cover', 'build')
     def interpret_front_cover(self):
         r'''Interprets ``front-cover.tex``.
 
@@ -1798,7 +1798,7 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('front-cover.tex')
 
-    @Command('mi')
+    @Command('mi', 'interpret music', 'build')
     def interpret_music(self):
         r'''Interprets ``music.ly``.
 
@@ -1806,7 +1806,7 @@ class Wrangler(AssetController):
         '''
         self._call_lilypond_on_file_ending_with('music.ly')
 
-    @Command('pi')
+    @Command('pi', 'interpret preface', 'build')
     def interpret_preface(self):
         r'''Interprets ``preface.tex``.
 
@@ -1814,7 +1814,7 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('preface.tex')
 
-    @Command('si')
+    @Command('si', 'interpret score', 'build')
     def interpret_score(self):
         r'''Interprets ``score.tex``.
 
@@ -1822,7 +1822,7 @@ class Wrangler(AssetController):
         '''
         self._interpret_file_ending_with('score.tex')
 
-    @Command('io*')
+    @Command('io*', 'open every illustration.pdf', 'star')
     def open_every_illustration_pdf(self):
         r'''Opens ``illustration.pdf`` in every package.
 
@@ -1830,7 +1830,7 @@ class Wrangler(AssetController):
         '''
         self._open_in_every_package('illustration.pdf')
 
-    @Command('so*')
+    @Command('so*', 'open every score.pdf', 'star')
     def open_every_score_pdf(self):
         r'''Opens ``score.pdf`` in every package.
 
@@ -1852,7 +1852,7 @@ class Wrangler(AssetController):
         if paths:
             self._io_manager.open_file(paths)
 
-    @Command('sp')
+    @Command('sp', 'push score.pdf to distribution directory', 'build')
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
 
@@ -1882,7 +1882,7 @@ class Wrangler(AssetController):
         messages.append(message)
         self._io_manager._display(messages)
 
-    @Command('rm')
+    @Command('rm', 'remove', 'basic operation')
     def remove(self):
         r'''Removes asset.
 
@@ -1927,7 +1927,7 @@ class Wrangler(AssetController):
                 manager._remove()
         self._session._pending_redraw = True
 
-    @Command('clean*')
+    @Command('clean*', 'remove every unadded asset', 'git')
     def remove_every_unadded_asset(self):
         r'''Removes files not yet added to repository of every asset.
 
@@ -1966,7 +1966,7 @@ class Wrangler(AssetController):
         message = message.format(count, identifier)
         self._io_manager._display(message)
 
-    @Command('ren')
+    @Command('ren', 'rename', 'basic operation')
     def rename(
         self,
         file_extension=None,
@@ -1993,7 +1993,7 @@ class Wrangler(AssetController):
             )
         self._session._is_backtracking_locally = False
 
-    @Command('revert*')
+    @Command('revert*', 'git revert every package', 'git')
     def revert_every_asset(self):
         r'''Reverts every asset to repository.
 
@@ -2007,7 +2007,7 @@ class Wrangler(AssetController):
             manager = self._io_manager._make_package_manager(path)
             manager._git_revert()
 
-    @Command('ws')
+    @Command('ws', 'set view', 'navigation')
     def set_view(self):
         r'''Sets view.
 
@@ -2029,7 +2029,7 @@ class Wrangler(AssetController):
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, view_name)
 
-    @Command('up*')
+    @Command('up*', 'git update every package', 'git')
     def update_every_asset(self):
         r'''Updates every asset from repository.
 
