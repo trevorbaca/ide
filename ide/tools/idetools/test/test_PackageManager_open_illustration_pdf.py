@@ -18,7 +18,7 @@ def test_PackageManager_open_illustration_pdf_02():
     r'''In segment package.
     '''
 
-    input_ = 'red~example~score g A o q'
+    input_ = 'red~example~score g A io q'
     abjad_ide._run(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

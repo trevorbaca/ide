@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
+import inspect
 import os
 import shutil
 import time
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AssetController import AssetController
+from ide.tools.idetools.Command import Command
 
 
 class PackageManager(AssetController):
@@ -70,19 +72,24 @@ class PackageManager(AssetController):
         superclass = super(PackageManager, self)
         result = superclass._command_to_method
         result = result.copy()
-        result.update({
-            'ck': self.check_package,
-            'dc': self.check_definition_py,
-            'de': self.edit_definition_py,
-            'i': self.illustrate_definition_py,
-            'ie': self.edit_illustration_ly,
-            'ii': self.interpret_illustration_ly,
-            'io': self.open_illustration_pdf,
-            'le': self.edit_illustrate_py,
-            'ls': self.write_stub_illustrate_py,
-            'o': self.open_illustration_pdf,
-            'so': self.open_score_pdf,
-            })
+#        result.update({
+#            'dc': self.check_definition_py,
+#            'ck': self.check_package,
+#            'de': self.edit_definition_py,
+#            'le': self.edit_illustrate_py,
+#            'ie': self.edit_illustration_ly,
+#            'i': self.illustrate_definition_py,
+#            'ii': self.interpret_illustration_ly,
+#            'io': self.open_illustration_pdf,
+#            'so': self.open_score_pdf,
+#            'ls': self.write_stub_illustrate_py,
+#            })
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        result[value.command_name] = value
         return result
 
     @property
@@ -245,7 +252,7 @@ class PackageManager(AssetController):
         commands.append(('definition.py - check', 'dc'))
         commands.append(('definition.py - edit', 'de'))
         commands.append(('definition.py - illustrate', 'i'))
-        commands.append(('illustration.pdf - open', 'o'))
+        commands.append(('illustration.pdf - open', 'io'))
         commands.append(('next package', '>'))
         commands.append(('previous package', '<'))
         self._controller_commands = commands
@@ -912,6 +919,7 @@ class PackageManager(AssetController):
 
     ### PUBLIC METHODS ###
 
+    @Command('dc')
     def check_definition_py(self, dry_run=False):
         r'''Checks ``definition.py``.
 
@@ -935,6 +943,7 @@ class PackageManager(AssetController):
             message = '{} OK.'.format(self._definition_py_path)
             self._io_manager._display(message)
 
+    @Command('ck')
     def check_package(
         self,
         problems_only=None,
@@ -1195,6 +1204,7 @@ class PackageManager(AssetController):
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
+    @Command('de')
     def edit_definition_py(self):
         r'''Edits ``definition.py``.
 
@@ -1202,6 +1212,7 @@ class PackageManager(AssetController):
         '''
         self._io_manager.edit(self._definition_py_path)
 
+    @Command('le')
     def edit_illustrate_py(self):
         r'''Edits ``__illustrate.py__``.
 
@@ -1209,6 +1220,7 @@ class PackageManager(AssetController):
         '''
         self._io_manager.edit(self._illustrate_py_path)
 
+    @Command('ie')
     def edit_illustration_ly(self):
         r'''Opens ``illustration.ly``.
 
@@ -1216,6 +1228,7 @@ class PackageManager(AssetController):
         '''
         self._io_manager.open_file(self._illustration_ly_path)
 
+    @Command('i')
     def illustrate_definition_py(self, dry_run=False):
         r'''Illustrates ``definition.py``.
 
@@ -1337,6 +1350,7 @@ class PackageManager(AssetController):
                     except IOError:
                         pass
 
+    @Command('ii')
     def interpret_illustration_ly(self, dry_run=False):
         r'''Interprets ``illustration.ly``.
 
@@ -1365,6 +1379,7 @@ class PackageManager(AssetController):
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 
+    @Command('io')
     def open_illustration_pdf(self):
         r'''Opens ``illustration.pdf``.
 
@@ -1372,6 +1387,7 @@ class PackageManager(AssetController):
         '''
         self._io_manager.open_file(self._illustration_pdf_path)
 
+    @Command('so')
     def open_score_pdf(self, dry_run=False):
         r'''Opens ``score.pdf``.
 
@@ -1398,6 +1414,7 @@ class PackageManager(AssetController):
                 message += ' in either distribution/ or build/ directories.'
                 self._io_manager._display(message)
 
+    @Command('ls')
     def write_stub_illustrate_py(self):
         r'''Writes stub ``__illustrate.py__``.
 
