@@ -435,17 +435,17 @@ class AssetController(Controller):
         elif os.path.isdir(result):
             basename = os.path.basename(result)
             if basename == 'build':
-                self.go_to_score_build_files()
+                self.go_to_score_build_directory()
             elif basename == 'distribution':
-                self.go_to_score_distribution_files()
+                self.go_to_score_distribution_directory()
             elif basename == 'etc':
-                self.go_to_score_etc_files()
+                self.to_to_score_etc_directory()
             elif basename == 'makers':
-                self.go_to_score_maker_files()
+                self.go_to_score_makers_directory()
             elif basename == 'materials':
-                self.go_to_score_materials()
+                self.go_to_score_materials_directory()
             elif basename == 'segments':
-                self.go_to_score_segments()
+                self.to_to_score_segments_directory()
             elif basename == 'stylesheets':
                 self.go_to_score_stylesheets()
             elif basename == 'test':
@@ -960,7 +960,7 @@ class AssetController(Controller):
         self._session._display_available_commands = False
 
     @Command('u')
-    def go_to_score_build_files(self):
+    def go_to_score_build_directory(self):
         r'''Goes to build files.
 
         Returns none.
@@ -968,7 +968,7 @@ class AssetController(Controller):
         self._session._abjad_ide._build_file_wrangler._run()
 
     @Command('d')
-    def go_to_score_distribution_files(self):
+    def go_to_score_distribution_directory(self):
         r'''Goes to distribution files.
 
         Returns none.
@@ -976,7 +976,7 @@ class AssetController(Controller):
         self._session._abjad_ide._distribution_file_wrangler._run()
 
     @Command('e')
-    def go_to_score_etc_files(self):
+    def to_to_score_etc_directory(self):
         r'''Goes to etc files.
 
         Returns none.
@@ -984,7 +984,7 @@ class AssetController(Controller):
         self._session._abjad_ide._etc_file_wrangler._run()
 
     @Command('k')
-    def go_to_score_maker_files(self):
+    def go_to_score_makers_directory(self):
         r'''Goes to maker files.
 
         Returns none.
@@ -992,7 +992,7 @@ class AssetController(Controller):
         self._session._abjad_ide._maker_file_wrangler._run()
 
     @Command('m')
-    def go_to_score_materials(self):
+    def go_to_score_materials_directory(self):
         r'''Goes to material packages.
 
         Returns none.
@@ -1000,7 +1000,7 @@ class AssetController(Controller):
         self._session._abjad_ide._material_package_wrangler._run()
 
     @Command('g')
-    def go_to_score_segments(self):
+    def to_to_score_segments_directory(self):
         r'''Goes to segment packages.
 
         Returns none.

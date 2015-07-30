@@ -57,7 +57,7 @@ class Controller(object):
 
     ### PUBLIC METHODS ###
 
-    @Command('b')
+    @Command('b', 'go back', 'system')
     def go_back(self):
         r'''Goes back.
 
@@ -66,9 +66,9 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_available_commands = False
 
-    @Command('h')
+    @Command('h', 'go to all score directories', 'system')
     def go_to_all_score_directories(self):
-        r'''Goes to all scores.
+        r'''Goes to all score directories.
 
         Returns none.
         '''
@@ -76,7 +76,7 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_available_commands = False
 
-    @Command('s')
+    @Command('s', 'go to current score', 'system')
     def go_to_current_score(self):
         r'''Goes to current score.
 
@@ -86,7 +86,7 @@ class Controller(object):
             self._session._is_backtracking_to_score = True
             self._session._display_available_commands = False
 
-    @Command('q')
+    @Command('q', 'quit abjad ide', 'system')
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
 

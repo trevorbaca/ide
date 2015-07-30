@@ -8,10 +8,12 @@ class Command(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, command_name):
+    def __init__(self, command_name, description=None, section=None):
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
+        self.description = description
+        self.section = section
 
     ### SPECIAL METHODS ###
 

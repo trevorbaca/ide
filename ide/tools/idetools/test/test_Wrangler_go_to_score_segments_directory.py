@@ -4,16 +4,16 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_go_to_score_distribution_files_01():
-    r'''From build directory to distribution directory.
+def test_Wrangler_go_to_score_segments_directory_01():
+    r'''Goes from build directory to segments directory.
     '''
 
-    input_ = 'red~example~score u d q'
+    input_ = 'red~example~score u g q'
     abjad_ide._run(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
-        'Red Example Score (2013) - distribution directory',
+        'Red Example Score (2013) - segments directory',
         ]
     assert abjad_ide._transcript.titles == titles

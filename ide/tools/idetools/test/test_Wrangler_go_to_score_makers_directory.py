@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_go_to_score_maker_files_01():
+def test_Wrangler_go_to_score_makers_directory_01():
     r'''From build directory to makers directory.
     '''
 
