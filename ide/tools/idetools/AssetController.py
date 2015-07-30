@@ -42,6 +42,10 @@ class AssetController(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
+    def _abjad_import_statement(self):
+        return 'from abjad import *'
+
+    @property
     def _command_to_method(self):
         superclass = super(AssetController, self)
         result = superclass._command_to_method
