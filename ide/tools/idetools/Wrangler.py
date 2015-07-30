@@ -1092,19 +1092,14 @@ class Wrangler(AssetController):
                 break
         return result
 
-    def _select_storehouse_path(
-        self,
-        example_score_packages=False,
-        ):
-        from ide.tools import idetools
+    def _select_storehouse_path(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
             example_score_packages=example_score_packages,
             user_score_packages=False,
             )
-        selector = idetools.Selector(
-            breadcrumb='storehouse',
+        selector = self._io_manager._make_selector(
             menu_entries=menu_entries,
-            session=self._session,
+            target_name='storehouse',
             )
         result = selector._run()
         if self._session.is_backtracking or result is None:
@@ -1121,13 +1116,13 @@ class Wrangler(AssetController):
         view_names = list(view_inventory.keys())
         view_names.append('none')
         if is_ranged:
-            breadcrumb = 'view(s)'
+            target_name = 'view(s)'
         else:
-            breadcrumb = 'view'
+            target_name = 'view'
         if infinitive_phrase:
-            breadcrumb = '{} {}'.format(breadcrumb, infinitive_phrase)
+            target_name = '{} {}'.format(target_name, infinitive_phrase)
         selector = self._io_manager._make_selector(
-            breadcrumb=breadcrumb,
+            target_name=target_name,
             is_ranged=is_ranged,
             items=view_names,
             )

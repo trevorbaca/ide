@@ -10,48 +10,35 @@ class Selector(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_breadcrumb',
         '_is_numbered',
         '_is_ranged',
         '_items',
         '_menu_entries',
         '_return_value_attribute',
+        '_target_name',
         )
 
     ### INITIALIZER ###
 
     def __init__(
         self,
-        breadcrumb=None,
         is_numbered=True,
         is_ranged=False,
         items=None,
         menu_entries=None,
         return_value_attribute='explicit',
         session=None,
+        target_name=None,
         ):
         assert session is not None
         assert not (menu_entries and items)
         Controller.__init__(self, session=session)
-        self._breadcrumb = breadcrumb
         self._is_numbered = is_numbered
         self._is_ranged = is_ranged
         self._items = items or []
         self._menu_entries = menu_entries or []
         self._return_value_attribute = return_value_attribute
-
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def breadcrumb(self):
-        r'''Gets selector breadcrumb.
-
-        Returns string or none.
-        '''
-        if self._breadcrumb is None:
-            return 'select:'
-        else:
-            return 'select {}:'.format(self._breadcrumb)
+        self._target_name = target_name
 
     ### PRIVATE METHODS ###
 
@@ -72,7 +59,7 @@ class Selector(Controller):
 
     def _make_main_menu(self):
         name = self._spaced_class_name
-        subtitle = stringtools.capitalize_start(self.breadcrumb)
+        subtitle = stringtools.capitalize_start(self.target_name)
         menu = self._io_manager._make_menu(name=name, subtitle=subtitle)
         self._make_asset_menu_section(menu)
         return menu
@@ -144,3 +131,14 @@ class Selector(Controller):
         Returns string.
         '''
         return self._return_value_attribute
+
+    @property
+    def target_name(self):
+        r'''Gets selector target_name.
+
+        Returns string or none.
+        '''
+        if self._target_name is None:
+            return 'select:'
+        else:
+            return 'select {}:'.format(self._target_name)

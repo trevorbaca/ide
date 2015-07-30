@@ -312,16 +312,18 @@ class IOManager(IOManager):
 
     def _make_selector(
         self,
-        breadcrumb=None,
         is_ranged=False,
         items=None,
+        menu_entries=None,
+        target_name=None,
         ):
         from ide.tools import idetools
         return idetools.Selector(
-            breadcrumb=breadcrumb,
             is_ranged=is_ranged,
             items=items,
+            menu_entries=menu_entries,
             session=self._session,
+            target_name=target_name,
             )
 
     def _pop_from_pending_input(self):

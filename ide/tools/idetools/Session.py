@@ -183,7 +183,7 @@ class Session(abctools.AbjadObject):
             self.io_manager._display(messages)
         self.transcript._write()
 
-    def _format_controller_breadcrumbs(self, stop_controller=None):
+    def _format_asset_controller_breadcrumbs(self):
         from ide.tools import idetools
         controller_stack = []
         prototype = (idetools.AssetController, idetools.AbjadIDE)
@@ -194,15 +194,11 @@ class Session(abctools.AbjadObject):
             return ['']
         result_lines = []
         first_controller = controller_stack[0]
-        breadcrumb = getattr(first_controller, 'breadcrumb', None)
-        breadcrumb = breadcrumb or first_controller._breadcrumb
+        breadcrumb = first_controller._breadcrumb
         if breadcrumb:
             result_lines.append(breadcrumb)
         for controller in controller_stack[1:]:
-            if controller is stop_controller:
-                break
-            breadcrumb = getattr(controller, 'breadcrumb', None)
-            breadcrumb = breadcrumb or controller._breadcrumb
+            breadcrumb = controller._breadcrumb
             if not breadcrumb:
                 continue
             if result_lines:
@@ -215,13 +211,9 @@ class Session(abctools.AbjadObject):
                 result_lines.append(candidate_line)
         return result_lines
 
-    def _make_menu_header(self, annotate_edit=True, stop_controller=None):
-        breadcrumbs = self._format_controller_breadcrumbs(
-            stop_controller=stop_controller,
-            )
+    def _make_menu_header(self):
+        breadcrumbs = self._format_asset_controller_breadcrumbs()
         header = '\n'.join(breadcrumbs)
-        if header == 'Abjad IDE':
-            header = 'Abjad IDE - home'
         return header
 
     def _print_transcript(self):
