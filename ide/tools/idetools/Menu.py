@@ -314,11 +314,6 @@ class Menu(Controller):
                     return True
         return False
 
-    def _is_in_open_environment(self):
-        if self._session.is_in_confirmation_environment:
-            return False
-        return True
-
     def _is_recognized_input(self, expr):
         if isinstance(expr, str):
             if expr in self._command_to_method:
@@ -530,7 +525,6 @@ class Menu(Controller):
         self,
         default_index=None,
         display_prepopulated_values=False,
-        # TODO: eventually make group_by_annotation=False
         group_by_annotation=True,
         is_alphabetized=False,
         is_asset_section=False,
@@ -638,7 +632,8 @@ class Menu(Controller):
                 else:
                     return result
 
-    def _strip_default_notice_from_strings(self, expr):
+    @staticmethod
+    def _strip_default_notice_from_strings(expr):
         if isinstance(expr, list):
             cleaned_list = []
             for element in expr:
@@ -653,27 +648,16 @@ class Menu(Controller):
         else:
             return expr
 
-    def _to_last_return_value_in_section(self, return_value):
-        result = self._return_value_to_location_pair(return_value)
-        section_index, entry_index = result
-        section = self.menu_sections[section_index]
-        return section._menu_entry_return_values[-1]
-
-    def _to_next_return_value_in_section(self, return_value):
-        result = self._return_value_to_location_pair(return_value)
-        section_index, entry_index = result
-        section = self.menu_sections[section_index]
-        entry_index = (entry_index + 1) % len(section)
-        return section._menu_entry_return_values[entry_index]
-
-    def _user_enters_argument_range(self, input_):
+    @staticmethod
+    def _user_enters_argument_range(input_):
         if ',' in input_:
             return True
         if '-' in input_:
             return True
         return False
 
-    def _user_enters_nothing(self, input_):
+    @staticmethod
+    def _user_enters_nothing(input_):
         return (
             not input_ or 
             (3 <= len(input_) and '<return>'.startswith(input_))
@@ -815,88 +799,5 @@ class Menu(Controller):
             menu_entries=commands,
             name=name,
             return_value_attribute='key',
-            )
-        return section
-
-    def make_keyed_attribute_section(
-        self,
-        group_by_annotation=True,
-        is_numbered=False,
-        menu_entries=None,
-        name=None,
-        ):
-        r'''Makes keyed attribute section.
-
-        With these attributes:
-
-            * not numbered
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            display_prepopulated_values=True,
-            group_by_annotation=group_by_annotation,
-            is_numbered=is_numbered,
-            menu_entries=menu_entries,
-            name=name,
-            return_value_attribute='key',
-            )
-        return section
-
-    def make_numbered_list_section(
-        self,
-        group_by_annotation=True,
-        menu_entries=None,
-        name=None,
-        title=None,
-        default_index=None,
-        ):
-        r'''Makes numbered list section.
-
-        With these attributes:
-
-            * asset section
-            * numbered
-            * ranged
-            * return value equal to display string
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            default_index=default_index,
-            group_by_annotation=group_by_annotation,
-            is_asset_section=True,
-            is_numbered=True,
-            is_ranged=True,
-            menu_entries=menu_entries,
-            name=name,
-            return_value_attribute='display_string',
-            title=title,
-            )
-        return section
-
-    def make_numbered_section(
-        self, 
-        group_by_annotation=True,
-        menu_entries=None, 
-        name=None,
-        ):
-        r'''Makes numbered section.
-
-        With these attributes:
-
-            * asset section
-            * numbered
-            * return value equal to item number
-
-        Returns menu section.
-        '''
-        section = self._make_section(
-            group_by_annotation=group_by_annotation,
-            is_asset_section=True,
-            is_numbered=True,
-            menu_entries=menu_entries,
-            name=name,
-            return_value_attribute='number',
             )
         return section
