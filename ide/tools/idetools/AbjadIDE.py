@@ -51,18 +51,18 @@ class AbjadIDE(Controller):
         wrangler._asset_identifier = 'file'
         wrangler._basic_breadcrumb = 'build'
         commands = []
-        commands.append(('collect music segment files', 'mc'))
-        commands.append(('generate back-cover.tex', 'bcg'))
-        commands.append(('generate front-cover.tex', 'fcg'))
-        commands.append(('generate music.ly', 'mg'))
-        commands.append(('generate preface.tex', 'pg'))
-        commands.append(('generate score.tex', 'sg'))
-        commands.append(('interpret back-cover.tex', 'bci'))
-        commands.append(('interpret front-cover.tex', 'fci'))
-        commands.append(('interpret music.ly', 'mi'))
-        commands.append(('interpret preface.tex', 'pi'))
-        commands.append(('interpret score.tex', 'si'))
-        commands.append(('push score to distribution directory', 'sp'))
+        commands.append(wrangler.collect_segment_lilypond_files)
+        commands.append(wrangler.generate_back_cover_source)
+        commands.append(wrangler.generate_front_cover_source)
+        commands.append(wrangler.generate_music_source)
+        commands.append(wrangler.generate_preface_source)
+        commands.append(wrangler.generate_score_source)
+        commands.append(wrangler.interpret_back_cover)
+        commands.append(wrangler.interpret_front_cover)
+        commands.append(wrangler.interpret_music)
+        commands.append(wrangler.interpret_preface)
+        commands.append(wrangler.interpret_score)
+        commands.append(wrangler.push_score_pdf_to_distribution_directory)
         wrangler._controller_commands = commands
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_file_directory_entry
@@ -122,12 +122,12 @@ class AbjadIDE(Controller):
         wrangler._asset_identifier = 'material package'
         wrangler._basic_breadcrumb = 'materials'
         commands = []
-        commands.append(('check every definition.py files', 'dc*'))
-        commands.append(('edit every definition.py files', 'de*'))
-        commands.append(('interpret all illustration.ly files', 'ii*'))
-        commands.append(('open all illustration.pdf files', 'io*'))
-        commands.append(('next package', '>'))
-        commands.append(('previous package', '<'))
+        commands.append(wrangler.check_every_definition_py)
+        commands.append(wrangler.edit_every_definition_py)
+        commands.append(wrangler.interpret_every_illustration_ly)
+        commands.append(wrangler.open_every_illustration_pdf)
+        commands.append(wrangler.go_to_next_package)
+        commands.append(wrangler.go_to_previous_package)
         wrangler._controller_commands = commands
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry
@@ -146,21 +146,21 @@ class AbjadIDE(Controller):
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry
         commands = []
-        commands.append(('check every score packages', 'ck*'))
-        commands.append(('git add all score packages', 'add*'))
-        commands.append(('git clean all score packages', 'clean*'))
-        commands.append(('git commit all score packages', 'ci*'))
-        commands.append(('git revert all score packages', 'revert*'))
-        commands.append(('git status all score packages', 'st*'))
-        commands.append(('git update all score packages', 'up*'))
-        commands.append(('open all distribution score.pdf files', 'so*'))
-        commands.append(('go to all build directories', 'uu'))
-        commands.append(('go to all distribution directories', 'dd'))
-        commands.append(('go to all etc directories', 'ee'))
-        commands.append(('go to all makers directories', 'kk'))
-        commands.append(('go to all materials directories', 'mm'))
-        commands.append(('go to all segments directories', 'gg'))
-        commands.append(('go to all stylesheets directories', 'yy'))
+        commands.append(wrangler.check_every_package)
+        commands.append(wrangler.add_every_asset)
+        commands.append(wrangler.remove_every_unadded_asset)
+        commands.append(wrangler.commit_every_asset)
+        commands.append(wrangler.revert_every_asset)
+        commands.append(wrangler.display_every_asset_status)
+        commands.append(wrangler.update_every_asset)
+        commands.append(wrangler.open_every_score_pdf)
+        commands.append(wrangler.go_to_all_build_directories)
+        commands.append(wrangler.go_to_all_distribution_directories)
+        commands.append(wrangler.go_to_all_etc_directories)
+        commands.append(wrangler.go_to_all_makers_directories)
+        commands.append(wrangler.go_to_all_materials_directories)
+        commands.append(wrangler.go_to_all_segments_directories)
+        commands.append(wrangler.go_to_all_stylesheets_directories)
         wrangler._controller_commands = commands
         wrangler._group_asset_section_by_annotation = False
         wrangler._hide_breadcrumb_while_in_score = True
@@ -176,13 +176,13 @@ class AbjadIDE(Controller):
         wrangler._asset_identifier = 'segment package'
         wrangler._basic_breadcrumb = 'segments'
         commands = []
-        commands.append(('check every definition.py files', 'dc*'))
-        commands.append(('edit every definition.py files', 'de*'))
-        commands.append(('illustrate all definition.py files', 'di*'))
-        commands.append(('interpret all illustration.ly files', 'ii*'))
-        commands.append(('open all illustration.pdf files', 'io*'))
-        commands.append(('next package', '>'))
-        commands.append(('previous package', '<'))
+        commands.append(wrangler.check_every_definition_py)
+        commands.append(wrangler.edit_every_definition_py)
+        commands.append(wrangler.illustrate_every_definition_py)
+        commands.append(wrangler.interpret_every_illustration_ly)
+        commands.append(wrangler.open_every_illustration_pdf)
+        commands.append(wrangler.go_to_next_package)
+        commands.append(wrangler.go_to_previous_package)
         wrangler._controller_commands = commands
         wrangler._directory_entry_predicate = \
             wrangler._is_valid_package_directory_entry

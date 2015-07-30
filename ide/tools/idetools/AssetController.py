@@ -879,7 +879,7 @@ class AssetController(Controller):
         self._session._is_navigating_to_distribution_files = True
 
     @Command('ee', 'go to all etc directories', 'cross-comparison')
-    def go_to_all_etc_files(self):
+    def go_to_all_etc_directories(self):
         r'''Goes to all etc files.
 
         Returns none.
