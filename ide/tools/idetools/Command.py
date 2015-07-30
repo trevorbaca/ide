@@ -8,12 +8,12 @@ class Command(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, command_name, description=None, section=None):
+    def __init__(self, command_name, description=None, menu_section=None):
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
         self.description = description
-        self.section = section
+        self.menu_section = menu_section
 
     ### SPECIAL METHODS ###
 
@@ -23,6 +23,8 @@ class Command(object):
         Returns `method` with command name metadatum attached.
         '''
         method.command_name = self.command_name
+        method.description = self.description
+        method.menu_section = self.menu_section
         return method
 
     ### PRIVATE METHODS ###

@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import types
 from abjad.tools import mathtools
 from abjad.tools import stringtools
 from abjad.tools.abctools.AbjadObject import AbjadObject
@@ -594,10 +595,16 @@ class MenuSection(AbjadObject):
                 expr.explicit_return_value,
                 )
             expr = new_expr
-        assert isinstance(expr, (str, tuple))
+        prototype = (str, tuple, types.MethodType)
+        assert isinstance(expr, prototype), repr(expr)
         number = None
         if isinstance(expr, str):
             expr = (expr, )
+        elif isinstance(expr, types.MethodType):
+            expr = (
+                expr.description,
+                expr.command_name,
+                )
         keys = (
             'display_string',
             'key',

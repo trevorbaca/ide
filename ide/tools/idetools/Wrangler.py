@@ -767,10 +767,14 @@ class Wrangler(AssetController):
 
     def _make_basic_operations_menu_section(self, menu):
         commands = []
-        commands.append(('copy', 'cp'))
-        commands.append(('new', 'new'))
-        commands.append(('rename', 'ren'))
-        commands.append(('remove', 'rm'))
+#        commands.append(('copy', 'cp'))
+#        commands.append(('new', 'new'))
+#        commands.append(('rename', 'ren'))
+#        commands.append(('remove', 'rm'))
+        commands.append(self.copy)
+        commands.append(self.make)
+        commands.append(self.rename)
+        commands.append(self.remove)
         menu.make_command_section(
             commands=commands,
             name='basic operations',
