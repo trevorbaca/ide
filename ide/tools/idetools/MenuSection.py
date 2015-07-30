@@ -36,7 +36,6 @@ class MenuSection(AbjadObject):
         '_default_index',
         '_display_prepopulated_values',
         '_group_by_annotation',
-        '_is_alphabetized',
         '_is_asset_section',
         '_is_command_section',
         '_is_hidden',
@@ -63,7 +62,6 @@ class MenuSection(AbjadObject):
         default_index=None,
         display_prepopulated_values=False,
         group_by_annotation=True,
-        is_alphabetized=True,
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
@@ -82,7 +80,6 @@ class MenuSection(AbjadObject):
         self._default_index = default_index
         self._display_prepopulated_values = display_prepopulated_values
         self._group_by_annotation = group_by_annotation
-        self._is_alphabetized = is_alphabetized
         self._is_asset_section = is_asset_section
         self._is_command_section = is_command_section
         self._is_hidden = is_hidden
@@ -329,14 +326,6 @@ class MenuSection(AbjadObject):
         return self._group_by_annotation
 
     @property
-    def is_alphabetized(self):
-        r'''Is true when menu section alphabetizes entries. Otherwise false.
-
-        Returns boolean.
-        '''
-        return self._is_alphabetized
-
-    @property
     def is_asset_section(self):
         r'''Is true when menu section lists assets. Otherwise false.
 
@@ -531,6 +520,5 @@ class MenuSection(AbjadObject):
         menu_entry = idetools.MenuEntry(**kwargs)
         self.menu_entries.append(menu_entry)
         if self.is_command_section:
-            if self.is_alphabetized:
-                self.menu_entries.sort()
+            self.menu_entries.sort()
         return menu_entry

@@ -526,7 +526,6 @@ class Menu(Controller):
         default_index=None,
         display_prepopulated_values=False,
         group_by_annotation=True,
-        is_alphabetized=False,
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
@@ -545,7 +544,6 @@ class Menu(Controller):
             default_index=default_index,
             display_prepopulated_values=display_prepopulated_values,
             group_by_annotation=group_by_annotation,
-            is_alphabetized=is_alphabetized,
             is_asset_section=is_asset_section,
             is_command_section=is_command_section,
             is_hidden=is_hidden,
@@ -770,7 +768,6 @@ class Menu(Controller):
 
     def make_command_section(
         self,
-        is_alphabetized=True,
         is_hidden=False,
         default_index=None,
         match_on_display_string=False,
@@ -782,7 +779,6 @@ class Menu(Controller):
         Menu section with these attributes:
 
             * is command section
-            * is alphabetized
             * is not hidden
             * does NOT match on display string
             * return value attribute equal to ``'key'``
@@ -792,7 +788,6 @@ class Menu(Controller):
         section = self._make_section(
             default_index=default_index,
             group_by_annotation=False,
-            is_alphabetized=is_alphabetized,
             is_command_section=True,
             is_hidden=is_hidden,
             match_on_display_string=match_on_display_string,
