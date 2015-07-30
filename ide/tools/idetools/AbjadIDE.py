@@ -148,7 +148,6 @@ class AbjadIDE(Controller):
         commands = []
         commands.append(wrangler.check_every_package)
         commands.append(wrangler.add_every_asset)
-        commands.append(wrangler.remove_every_unadded_asset)
         commands.append(wrangler.commit_every_asset)
         commands.append(wrangler.revert_every_asset)
         commands.append(wrangler.display_every_asset_status)

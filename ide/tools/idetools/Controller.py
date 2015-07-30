@@ -66,7 +66,7 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_available_commands = False
 
-    @Command('h', 'go to all score directories', 'system')
+    @Command('h', 'go home', 'system')
     def go_to_all_score_directories(self):
         r'''Goes to all score directories.
 

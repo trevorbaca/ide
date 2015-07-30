@@ -1927,45 +1927,6 @@ class Wrangler(AssetController):
                 manager._remove()
         self._session._pending_redraw = True
 
-    @Command('clean*', 'remove every unadded asset', 'git')
-    def remove_every_unadded_asset(self):
-        r'''Removes files not yet added to repository of every asset.
-
-        Returns none.
-        '''
-        self._session._attempted_remove_unadded_assets = True
-        if self._session.is_test and not self._session.is_in_score:
-            return
-        paths = self._list_visible_asset_paths()
-        paths = self._extract_common_parent_directories(paths)
-        paths.sort()
-        inputs, outputs = [], []
-        managers = []
-        method_name = '_remove_unadded_assets'
-        for path in paths:
-            manager = self._io_manager._make_package_manager(path)
-            managers.append(manager)
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='remove')
-        self._io_manager._display(messages)
-        if not inputs:
-            return
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        with self._io_manager._silent():
-            for manager in managers:
-                method = getattr(manager, method_name)
-                method()
-        count = len(inputs)
-        identifier = stringtools.pluralize('asset', count)
-        message = 'removed {} unadded {}.'
-        message = message.format(count, identifier)
-        self._io_manager._display(message)
-
     @Command('ren', 'rename', 'basic operation')
     def rename(
         self,
