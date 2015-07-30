@@ -39,10 +39,6 @@ class Controller(object):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _abjad_import_statement(self):
-        return 'from abjad import *'
-
-    @property
     def _command_to_method(self):
         result = {
             'b': self.go_back,

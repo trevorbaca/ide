@@ -60,6 +60,10 @@ class PackageManager(AssetController):
     ### PRIVATE PROPERTIES ###
 
     @property
+    def _abjad_import_statement(self):
+        return 'from abjad import *'
+
+    @property
     def _breadcrumb(self):
         if self._breadcrumb_callback is not None:
             return self._breadcrumb_callback()

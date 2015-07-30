@@ -784,13 +784,11 @@ class Wrangler(AssetController):
             name='basic operations',
             )
 
-    def _make_file(
-        self, 
-        file_extension=None, 
-        message='file name', 
-        ):
-        contents = self._new_file_contents
+    def _make_file(self, message='file name'):
         file_extension = self._file_extension
+        contents = ''
+        if file_extension == '.py':
+            contents == self._unicode_directive
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:

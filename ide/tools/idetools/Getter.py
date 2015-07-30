@@ -81,10 +81,6 @@ class Getter(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _abjad_import_statement(self):
-        return 'from abjad import *'
-
-    @property
     def _current_prompt(self):
         return self.prompts[self._prompt_index]
 
@@ -386,26 +382,6 @@ class Getter(Controller):
             help_template=help_template,
             )
 
-    def append_markup(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends markup.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be markup.'
-        setup_statements = []
-        setup_statements.append(self._abjad_import_statement)
-        statement = 'evaluated_input = markuptools.Markup({})'
-        setup_statements.append(statement)
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=Getter.is_markup,
-            help_template=help_template,
-            setup_statements=setup_statements,
-            )
-
     def append_menu_section_item(
         self,
         spaced_attribute_name,
@@ -439,26 +415,6 @@ class Getter(Controller):
             validation_function=Getter.is_list,
             help_template=help_template,
             target_menu_section=target_menu_section,
-            )
-
-    def append_named_pitch(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends named pitch.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be named pitch.'
-        setup_statements = []
-        setup_statements.append(self._abjad_import_statement)
-        string = 'evaluated_input = pitchtools.NamedPitch({!r})'
-        setup_statements.append(string)
-        self._make_prompt(
-            spaced_attribute_name,
-            help_template=help_template,
-            validation_function=Getter.is_named_pitch,
-            setup_statements=setup_statements,
             )
 
     def append_string(

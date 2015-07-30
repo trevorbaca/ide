@@ -112,7 +112,6 @@ class AbjadIDE(Controller):
         wrangler._file_extension = '.py'
         wrangler._file_name_predicate = stringtools.is_upper_camel_case
         wrangler._force_lowercase_file_name = False
-        wrangler._new_file_contents = wrangler._unicode_directive
         return wrangler
 
     @property

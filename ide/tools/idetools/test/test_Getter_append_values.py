@@ -12,11 +12,17 @@ def test_Getter_append_values_01():
     getter._session._pending_input = input_
     assert getter._run() == -99
 
+
+def test_Getter_append_values_02():
+
     getter = ide.tools.idetools.Getter(session=session)
     getter.append_integer_in_range('attribute', 1, 10)
     input_ = 'foo -99 99 7'
     getter._session._pending_input = input_
     assert getter._run() == 7
+
+
+def test_Getter_append_values_03():
 
     getter = ide.tools.idetools.Getter(session=session)
     menu_entries = ['apple', 'banana', 'cherry', 'durian', 'endive', 'fennel']
@@ -31,23 +37,17 @@ def test_Getter_append_values_01():
     getter._session._pending_input = input_
     assert getter._run() == result
 
-    getter = ide.tools.idetools.Getter(session=session)
-    getter.append_markup('attribute')
-    input_ = 'foo'
-    getter._session._pending_input = input_
-    assert getter._run() == markuptools.Markup('foo')
 
-    getter = ide.tools.idetools.Getter(session=session)
-    getter.append_named_pitch('attribute')
-    input_ = "cs'"
-    getter._session._pending_input = input_
-    assert getter._run() == NamedPitch("cs'")
+def test_Getter_append_values_04():
 
     getter = ide.tools.idetools.Getter(session=session)
     getter.append_string('attribute')
     input_ = 'None -99 99 1-4 foo'
     getter._session._pending_input = input_
     assert getter._run() == 'foo'
+
+
+def test_Getter_append_values_05():
 
     getter = ide.tools.idetools.Getter(session=session)
     getter.append_string_or_none('attribute')
