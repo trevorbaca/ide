@@ -50,7 +50,7 @@ class Session(abctools.AbjadObject):
         '_controller_stack',
         '_current_score_directory',
         '_display',
-        '_display_available_commands',
+        '_display_action_commands',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -105,7 +105,7 @@ class Session(abctools.AbjadObject):
         self._controller_stack = []
         self._current_score_directory = None
         self._display = True
-        self._display_available_commands = False
+        self._display_action_commands = False
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
@@ -634,19 +634,19 @@ class Session(abctools.AbjadObject):
         return self._display
 
     @property
-    def display_available_commands(self):
-        r'''Is true when available commands will display. Otherwise false.
+    def display_action_commands(self):
+        r'''Is true when action commands will display. Otherwise false.
 
         ..  container:: example
 
             ::
 
-                >>> session.display_available_commands
+                >>> session.display_action_commands
                 False
 
         Returns boolean.
         '''
-        return self._display_available_commands
+        return self._display_action_commands
 
     @property
     def explicit_command_history(self):

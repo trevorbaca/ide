@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageManager_display_available_commands_01():
+def test_PackageManager_display_action_commands_01():
     r'''In material package.
     '''
     
@@ -12,10 +12,10 @@ def test_PackageManager_display_available_commands_01():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'tempo inventory - available commands' in contents
+    assert 'tempo inventory - action commands' in contents
 
 
-def test_PackageManager_display_available_commands_02():
+def test_PackageManager_display_action_commands_02():
     r'''In segment package.
     '''
     
@@ -23,10 +23,10 @@ def test_PackageManager_display_available_commands_02():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'segments directory - A - available commands' in contents
+    assert 'segments directory - A - action commands' in contents
 
 
-def test_PackageManager_display_available_commands_03():
+def test_PackageManager_display_action_commands_03():
     r'''In score package.
     '''
     
@@ -34,4 +34,4 @@ def test_PackageManager_display_available_commands_03():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
-    assert 'Red Example Score (2013) - available commands' in contents
+    assert 'Red Example Score (2013) - action commands' in contents

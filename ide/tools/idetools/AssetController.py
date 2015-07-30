@@ -381,12 +381,12 @@ class AssetController(Controller):
 
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
         self._set_is_navigating_to_sibling_asset()
 
     def _go_to_previous_package(self):
         self._session._is_navigating_to_previous_asset = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
         self._set_is_navigating_to_sibling_asset()
 
     def _handle_candidate(self, candidate_path, destination_path):
@@ -582,7 +582,7 @@ class AssetController(Controller):
     def _make_system_menu_section(self, menu):
         commands = []
         commands.append(self.go_back)
-        commands.append(self.display_available_commands)
+        commands.append(self.display_action_commands)
         commands.append(self.go_to_all_score_directories)
         commands.append(self.open_lilypond_log)
         commands.append(self.quit_abjad_ide)
@@ -801,15 +801,15 @@ class AssetController(Controller):
 
     ### PUBLIC METHODS ###
 
-    @Command('?', 'display available commands', 'system')
-    def display_available_commands(self):
-        r'''Displays available commands.
+    @Command('?', 'display action commands', 'system')
+    def display_action_commands(self):
+        r'''Displays action commands.
 
         Returns none.
         '''
         if not self._session.is_in_confirmation_environment:
-            show = self._session.display_available_commands
-            self._session._display_available_commands = not show
+            show = self._session.display_action_commands
+            self._session._display_action_commands = not show
 
     @Command('abb', 'edit abbreviations file', 'score-global')
     def edit_abbreviations_file(self):
@@ -914,7 +914,7 @@ class AssetController(Controller):
         '''
         self._session._is_navigating_to_next_score = True
         self._session._is_navigating_to_scores = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
 
     @Command('<', 'go to previous package', 'navigation')
     def go_to_previous_package(self):
@@ -932,7 +932,7 @@ class AssetController(Controller):
         '''
         self._session._is_navigating_to_previous_score = True
         self._session._is_navigating_to_scores = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
 
     @Command('u', 'go to build directory', 'navigation')
     def go_to_score_build_directory(self):

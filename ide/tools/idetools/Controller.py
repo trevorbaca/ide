@@ -64,7 +64,7 @@ class Controller(object):
         Returns none.
         '''
         self._session._is_backtracking_locally = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
 
     @Command('h', 'go home', 'system')
     def go_to_all_score_directories(self):
@@ -74,7 +74,7 @@ class Controller(object):
         '''
         self._session._is_navigating_home = False
         self._session._is_navigating_to_scores = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False
 
     @Command('s', 'go to current score', 'system')
     def go_to_current_score(self):
@@ -84,13 +84,13 @@ class Controller(object):
         '''
         if self._session.is_in_score:
             self._session._is_backtracking_to_score = True
-            self._session._display_available_commands = False
+            self._session._display_action_commands = False
 
-    @Command('q', 'quit abjad ide', 'system')
+    @Command('q', 'quit', 'system')
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
 
         Returns none.
         '''
         self._session._is_quitting = True
-        self._session._display_available_commands = False
+        self._session._display_action_commands = False

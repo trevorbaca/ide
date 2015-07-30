@@ -398,7 +398,7 @@ class Menu(Controller):
         lines = self._make_bicolumnar(lines, strip=False)
         return lines
 
-    def _make_available_command_section_lines(self):
+    def _make_action_command_section_lines(self):
         lines = []
         for section in self.menu_sections:
             if not section.is_command_section:
@@ -417,7 +417,7 @@ class Menu(Controller):
             break_only_at_blank_lines=True,
             )
         title = self._session.menu_header
-        title = title + ' - available commands'
+        title = title + ' - action commands'
         title = stringtools.capitalize_start(title)
         lines[0:0] = [title, '']
         lines.append('')
@@ -516,7 +516,7 @@ class Menu(Controller):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            hide = not self._session.display_available_commands
+            hide = not self._session.display_action_commands
             if hide and section.is_hidden:
                 continue
             if section.is_asset_section:
@@ -619,8 +619,8 @@ class Menu(Controller):
     def _redraw(self):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
-        if self._session.display_available_commands:
-            lines = self._make_available_command_section_lines()
+        if self._session.display_action_commands:
+            lines = self._make_action_command_section_lines()
         else:
             lines = self._make_visible_section_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)
