@@ -21,7 +21,6 @@ class Getter(Controller):
         '_include_newlines',
         '_include_chevron',
         '_number_prompts',
-        '_prompt_character',
         '_prompt_index',
         '_messages',
         '_prompts',
@@ -37,7 +36,6 @@ class Getter(Controller):
         include_chevron=True,
         include_newlines=False,
         number_prompts=False,
-        prompt_character=']>',
         ):
         Controller.__init__(self, session=session)
         self._prompts = []
@@ -46,7 +44,6 @@ class Getter(Controller):
         self._include_chevron = include_chevron
         self._include_newlines = include_newlines
         self._number_prompts = number_prompts
-        self._prompt_character = prompt_character
 
     ### SPECIAL METHODS ###
 
@@ -299,7 +296,7 @@ class Getter(Controller):
 
         Returns string.
         '''
-        return self._prompt_character
+        return ']>'
 
     @property
     def prompts(self):

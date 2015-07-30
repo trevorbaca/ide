@@ -292,13 +292,11 @@ class IOManager(IOManager):
     def _make_menu(
         self,
         name=None,
-        prompt_character='>',
         subtitle=None,
         ):
         from ide.tools import idetools
         return idetools.Menu(
             name=name,
-            prompt_character=prompt_character,
             session=self._session,
             subtitle=subtitle,
             )

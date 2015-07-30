@@ -38,8 +38,6 @@ class Menu(Controller):
         '_asset_section',
         '_menu_sections',
         '_name',
-        '_predetermined_input',
-        '_prompt_character',
         '_subtitle',
         '_title',
         )
@@ -49,7 +47,6 @@ class Menu(Controller):
     def __init__(
         self,
         name=None,
-        prompt_character='>',
         session=None,
         subtitle=None,
         title=None,
@@ -57,8 +54,6 @@ class Menu(Controller):
         Controller.__init__(self, session=session)
         self._menu_sections = []
         self._name = name
-        self._predetermined_input = None
-        self._prompt_character = prompt_character
         self._subtitle = subtitle
         self._title = title
 
@@ -656,7 +651,7 @@ class Menu(Controller):
                     if message:
                         self._io_manager._display(message)
                         self._session._after_redraw_message = None
-                result = self._predetermined_input
+                result = None
                 if not result:
                     result = self._handle_user_input()
                 if self._session.is_quitting:
@@ -756,7 +751,7 @@ class Menu(Controller):
 
         Returns string.
         '''
-        return self._prompt_character
+        return '>'
 
     @property
     def subtitle(self):
