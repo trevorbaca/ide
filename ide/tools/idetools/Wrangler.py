@@ -808,11 +808,14 @@ class Wrangler(AssetController):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
-        # HERE
-        #self._make_command_menu_sections(menu, menu_section_names='view')
+        #menu_section_names = ('basic', 'view')
+        menu_section_names = ('view',)
+        self._make_command_menu_sections(
+            menu,
+            menu_section_names=menu_section_names,
+            )
         self._make_basic_menu_section(menu)
         self._make_controller_commands_menu_section(menu)
-        self._make_views_menu_section(menu)
         return menu
 
     def _make_package(self):
@@ -906,15 +909,6 @@ class Wrangler(AssetController):
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
         return sequencetools.zip_sequences(sequences, cyclic=True)
-
-    def _make_views_menu_section(self, menu):
-        commands = []
-        commands.append(self.set_view)
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='views',
-            )
 
     def _match_display_string_view_pattern(self, pattern, entry):
         display_string, _, _, path = entry

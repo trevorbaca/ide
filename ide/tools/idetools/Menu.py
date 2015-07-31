@@ -406,7 +406,7 @@ class Menu(Controller):
             break_only_at_blank_lines=True,
             )
         title = self._session.menu_header
-        title = title + ' - navigation commands'
+        title = title + ' - view & navigation commands'
         title = stringtools.capitalize_start(title)
         lines[0:0] = [title, '']
         lines.append('')

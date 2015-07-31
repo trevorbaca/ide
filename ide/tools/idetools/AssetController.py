@@ -514,9 +514,24 @@ class AssetController(Controller):
                     if hasattr(value, 'command_name'):
                         result[value.command_name] = value
 
-    # HERE
     def _make_command_menu_sections(self, menu, menu_section_names=None):
-        pass
+        methods = self._get_decorated_methods()
+        method_groups = {}
+        for method in methods:
+            if menu_section_names is not None:
+                if method.menu_section_name not in menu_section_names:
+                    continue
+            if method.menu_section_name not in method_groups:
+                method_groups[method.menu_section_name] = []
+            method_group = method_groups[method.menu_section_name]
+            method_group.append(method)
+        for menu_section_name in method_groups:
+            method_group = method_groups[menu_section_name]
+            menu.make_command_section(
+                is_hidden=True,
+                commands=method_group,
+                name=menu_section_name,
+                )
 
     def _make_controller_commands_menu_section(self, menu):
         if self._controller_commands:
