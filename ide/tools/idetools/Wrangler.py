@@ -215,6 +215,127 @@ class Wrangler(AssetController):
         pairs = zip(source_file_paths, target_file_paths)
         return pairs
 
+    def _configure_as_build_file_wrangler(self):
+        self._asset_identifier = 'file'
+        self._basic_breadcrumb = 'build'
+        commands = []
+        commands.append(self.collect_segment_lilypond_files)
+        commands.append(self.generate_back_cover_source)
+        commands.append(self.generate_front_cover_source)
+        commands.append(self.generate_music_source)
+        commands.append(self.generate_preface_source)
+        commands.append(self.generate_score_source)
+        commands.append(self.interpret_back_cover)
+        commands.append(self.interpret_front_cover)
+        commands.append(self.interpret_music)
+        commands.append(self.interpret_preface)
+        commands.append(self.interpret_score)
+        commands.append(self.push_score_pdf_to_distribution_directory)
+        self._controller_commands = commands
+        self._directory_entry_predicate = \
+            self._is_valid_file_directory_entry
+        self._directory_name = 'build'
+        self._file_name_predicate = stringtools.is_dash_case
+        self._force_dash_case_file_name = True
+        return self
+
+    def _configure_as_distribution_file_wrangler(self):
+        self._asset_identifier = 'file'
+        self._basic_breadcrumb = 'distribution'
+        self._directory_entry_predicate = \
+            self._is_valid_file_directory_entry
+        self._directory_name = 'distribution'
+        self._file_name_predicate = stringtools.is_dash_case
+        self._force_dash_case_file_name = True
+
+    def _configure_as_etc_file_wrangler(self):
+        self._asset_identifier = 'file'
+        self._basic_breadcrumb = 'etc'
+        self._directory_entry_predicate = \
+            self._is_valid_file_directory_entry
+        self._directory_name = 'etc'
+        self._file_name_predicate = stringtools.is_dash_case
+        self._force_dash_case_file_name = True
+
+    def _configure_as_maker_file_wrangler(self):
+        self._asset_identifier = 'maker'
+        self._basic_breadcrumb = 'makers'
+        self._directory_entry_predicate = \
+            self._is_valid_file_directory_entry
+        self._directory_name = 'makers'
+        self._file_extension = '.py'
+        self._file_name_predicate = stringtools.is_upper_camel_case
+        self._force_lowercase_file_name = False
+
+    def _configure_as_material_package_wrangler(self):
+        self._asset_identifier = 'material package'
+        self._basic_breadcrumb = 'materials'
+        commands = []
+        commands.append(self.check_every_definition_py)
+        commands.append(self.edit_every_definition_py)
+        commands.append(self.interpret_every_illustration_ly)
+        commands.append(self.open_every_illustration_pdf)
+        commands.append(self.go_to_next_package)
+        commands.append(self.go_to_previous_package)
+        self._controller_commands = commands
+        self._directory_entry_predicate = \
+            self._is_valid_package_directory_entry
+        self._directory_name = 'materials'
+
+    def _configure_as_score_package_wrangler(self):
+        self._asset_identifier = 'score package'
+        self._basic_breadcrumb = 'scores'
+        self._copy_target_directory = \
+            self._configuration.composer_scores_directory
+        self._directory_entry_predicate = \
+            self._is_valid_package_directory_entry
+        commands = []
+        commands.append(self.check_every_package)
+        commands.append(self.add_every_asset)
+        commands.append(self.commit_every_asset)
+        commands.append(self.revert_every_asset)
+        commands.append(self.display_every_asset_status)
+        commands.append(self.update_every_asset)
+        commands.append(self.open_every_score_pdf)
+        commands.append(self.go_to_all_build_directories)
+        commands.append(self.go_to_all_distribution_directories)
+        commands.append(self.go_to_all_etc_directories)
+        commands.append(self.go_to_all_makers_directories)
+        commands.append(self.go_to_all_materials_directories)
+        commands.append(self.go_to_all_segments_directories)
+        commands.append(self.go_to_all_stylesheets_directories)
+        self._controller_commands = commands
+        self._group_asset_section_by_annotation = False
+        self._hide_breadcrumb_while_in_score = True
+        self._only_example_scores_during_test = True
+        self._sort_by_annotation = False
+
+    def _configure_as_segment_package_wrangler(self):
+        self._asset_identifier = 'segment package'
+        self._basic_breadcrumb = 'segments'
+        commands = []
+        commands.append(self.check_every_definition_py)
+        commands.append(self.edit_every_definition_py)
+        commands.append(self.illustrate_every_definition_py)
+        commands.append(self.interpret_every_illustration_ly)
+        commands.append(self.open_every_illustration_pdf)
+        commands.append(self.go_to_next_package)
+        commands.append(self.go_to_previous_package)
+        self._controller_commands = commands
+        self._directory_entry_predicate = \
+            self._is_valid_package_directory_entry
+        self._directory_name = 'segments'
+
+    def _configure_as_stylesheet_wrangler(self):
+        self._asset_identifier = 'stylesheet'
+        self._basic_breadcrumb = 'stylesheets'
+        self._directory_entry_predicate = \
+            self._is_valid_file_directory_entry
+        self._directory_name = 'stylesheets'
+        self._file_extension = '.ily'
+        self._file_name_predicate = stringtools.is_dash_case
+        self._force_dash_case_file_name = True
+
     def _confirm_segment_names(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
         view_name = wrangler._read_view_name()

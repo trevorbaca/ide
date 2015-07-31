@@ -2,7 +2,6 @@
 import os
 import shutil
 import sys
-from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.Controller import Controller
 
@@ -48,27 +47,7 @@ class AbjadIDE(Controller):
     def _build_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'file'
-        wrangler._basic_breadcrumb = 'build'
-        commands = []
-        commands.append(wrangler.collect_segment_lilypond_files)
-        commands.append(wrangler.generate_back_cover_source)
-        commands.append(wrangler.generate_front_cover_source)
-        commands.append(wrangler.generate_music_source)
-        commands.append(wrangler.generate_preface_source)
-        commands.append(wrangler.generate_score_source)
-        commands.append(wrangler.interpret_back_cover)
-        commands.append(wrangler.interpret_front_cover)
-        commands.append(wrangler.interpret_music)
-        commands.append(wrangler.interpret_preface)
-        commands.append(wrangler.interpret_score)
-        commands.append(wrangler.push_score_pdf_to_distribution_directory)
-        wrangler._controller_commands = commands
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
-        wrangler._directory_name = 'build'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._force_dash_case_file_name = True
+        wrangler._configure_as_build_file_wrangler()
         return wrangler
 
     @property
@@ -76,13 +55,7 @@ class AbjadIDE(Controller):
     def _distribution_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'file'
-        wrangler._basic_breadcrumb = 'distribution'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
-        wrangler._directory_name = 'distribution'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._force_dash_case_file_name = True
+        wrangler._configure_as_distribution_file_wrangler()
         return wrangler
 
     @property
@@ -90,13 +63,7 @@ class AbjadIDE(Controller):
     def _etc_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'file'
-        wrangler._basic_breadcrumb = 'etc'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
-        wrangler._directory_name = 'etc'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._force_dash_case_file_name = True
+        wrangler._configure_as_etc_file_wrangler()
         return wrangler
 
     @property
@@ -104,14 +71,7 @@ class AbjadIDE(Controller):
     def _maker_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'maker'
-        wrangler._basic_breadcrumb = 'makers'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
-        wrangler._directory_name = 'makers'
-        wrangler._file_extension = '.py'
-        wrangler._file_name_predicate = stringtools.is_upper_camel_case
-        wrangler._force_lowercase_file_name = False
+        wrangler._configure_as_maker_file_wrangler()
         return wrangler
 
     @property
@@ -119,19 +79,7 @@ class AbjadIDE(Controller):
     def _material_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'material package'
-        wrangler._basic_breadcrumb = 'materials'
-        commands = []
-        commands.append(wrangler.check_every_definition_py)
-        commands.append(wrangler.edit_every_definition_py)
-        commands.append(wrangler.interpret_every_illustration_ly)
-        commands.append(wrangler.open_every_illustration_pdf)
-        commands.append(wrangler.go_to_next_package)
-        commands.append(wrangler.go_to_previous_package)
-        wrangler._controller_commands = commands
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_package_directory_entry
-        wrangler._directory_name = 'materials'
+        wrangler._configure_as_material_package_wrangler()
         return wrangler
 
     @property
@@ -139,32 +87,7 @@ class AbjadIDE(Controller):
     def _score_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'score package'
-        wrangler._basic_breadcrumb = 'scores'
-        wrangler._copy_target_directory = \
-            wrangler._configuration.composer_scores_directory
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_package_directory_entry
-        commands = []
-        commands.append(wrangler.check_every_package)
-        commands.append(wrangler.add_every_asset)
-        commands.append(wrangler.commit_every_asset)
-        commands.append(wrangler.revert_every_asset)
-        commands.append(wrangler.display_every_asset_status)
-        commands.append(wrangler.update_every_asset)
-        commands.append(wrangler.open_every_score_pdf)
-        commands.append(wrangler.go_to_all_build_directories)
-        commands.append(wrangler.go_to_all_distribution_directories)
-        commands.append(wrangler.go_to_all_etc_directories)
-        commands.append(wrangler.go_to_all_makers_directories)
-        commands.append(wrangler.go_to_all_materials_directories)
-        commands.append(wrangler.go_to_all_segments_directories)
-        commands.append(wrangler.go_to_all_stylesheets_directories)
-        wrangler._controller_commands = commands
-        wrangler._group_asset_section_by_annotation = False
-        wrangler._hide_breadcrumb_while_in_score = True
-        wrangler._only_example_scores_during_test = True
-        wrangler._sort_by_annotation = False
+        wrangler._configure_as_score_package_wrangler()
         return wrangler
 
     @property
@@ -172,20 +95,7 @@ class AbjadIDE(Controller):
     def _segment_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'segment package'
-        wrangler._basic_breadcrumb = 'segments'
-        commands = []
-        commands.append(wrangler.check_every_definition_py)
-        commands.append(wrangler.edit_every_definition_py)
-        commands.append(wrangler.illustrate_every_definition_py)
-        commands.append(wrangler.interpret_every_illustration_ly)
-        commands.append(wrangler.open_every_illustration_pdf)
-        commands.append(wrangler.go_to_next_package)
-        commands.append(wrangler.go_to_previous_package)
-        wrangler._controller_commands = commands
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_package_directory_entry
-        wrangler._directory_name = 'segments'
+        wrangler._configure_as_segment_package_wrangler()
         return wrangler
 
     @property
@@ -193,14 +103,7 @@ class AbjadIDE(Controller):
     def _stylesheet_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._asset_identifier = 'stylesheet'
-        wrangler._basic_breadcrumb = 'stylesheets'
-        wrangler._directory_entry_predicate = \
-            wrangler._is_valid_file_directory_entry
-        wrangler._directory_name = 'stylesheets'
-        wrangler._file_extension = '.ily'
-        wrangler._file_name_predicate = stringtools.is_dash_case
-        wrangler._force_dash_case_file_name = True
+        wrangler._configure_as_stylesheet_wrangler()
         return wrangler
 
     @property
