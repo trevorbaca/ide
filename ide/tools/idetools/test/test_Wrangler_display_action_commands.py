@@ -47,6 +47,6 @@ def test_Wrangler_display_action_commands_04():
 
     title = 'Abjad IDE - all score directories - action commands'
     first_blank_line = ''
-    first_real_line = '    display action commands (?)'
+    first_real_line = '    copy (cp)'
     string = '\n'.join([title, first_blank_line, first_real_line])
     assert string in contents

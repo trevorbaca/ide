@@ -765,17 +765,6 @@ class Wrangler(AssetController):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
-    def _make_basic_menu_section(self, menu):
-        commands = []
-        commands.append(self.copy)
-        commands.append(self.make)
-        commands.append(self.rename)
-        commands.append(self.remove)
-        menu.make_command_section(
-            commands=commands,
-            name='basic',
-            )
-
     def _make_file(self, message='file name'):
         file_extension = self._file_extension
         contents = ''
@@ -805,15 +794,9 @@ class Wrangler(AssetController):
         self._io_manager.edit(path)
 
     def _make_main_menu(self):
-        superclass = super(Wrangler, self)
-        menu = superclass._make_main_menu()
+        menu = self._io_manager._make_menu(name=self._spaced_class_name)
         self._make_asset_menu_section(menu)
-        menu_section_names = ('basic', 'view')
-        self._make_command_menu_sections(
-            menu,
-            menu_section_names=menu_section_names,
-            )
-        self._make_controller_commands_menu_section(menu)
+        self._make_command_menu_sections(menu)
         return menu
 
     def _make_package(self):

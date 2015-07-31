@@ -1029,7 +1029,7 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._maker_file_wrangler._run()
 
-    @Command('m', 'to go materials directory', 'navigation', True)
+    @Command('m', 'go to materials directory', 'navigation', True)
     def go_to_score_materials_directory(self):
         r'''Goes to material packages.
 
