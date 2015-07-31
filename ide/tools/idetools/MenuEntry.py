@@ -46,12 +46,12 @@ class MenuEntry(AbjadObject):
 
     def __init__(
         self,
-        menu_section=None,
         display_string=None,
         explicit_return_value=None,
-        key=None,
-        prepopulated_value=None,
         is_navigation=False,
+        key=None,
+        menu_section=None,
+        prepopulated_value=None,
         ):
         self._display_string = display_string
         self._explicit_return_value = explicit_return_value
@@ -67,9 +67,7 @@ class MenuEntry(AbjadObject):
         r'''Is true when `expr` is a menu entry with a display string greater
         than that of this menu entry. Otherwise false.
 
-        Raises type error when `expr` is not a menu entry.
-
-        Returns boolean.
+        Returns true or false.
         '''
         if not isinstance(expr, type(self)):
             raise TypeError(expr)
@@ -114,14 +112,7 @@ class MenuEntry(AbjadObject):
 
     @property
     def display_string(self):
-        r'''Menu entry display string.
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.display_string
-                'foo - modify'
+        r'''Gets display string.
 
         Returns string.
         '''
@@ -129,14 +120,7 @@ class MenuEntry(AbjadObject):
 
     @property
     def explicit_return_value(self):
-        r'''Menu entry prepopulated return value.
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.explicit_return_value is None
-                True
+        r'''Gets explicit return value.
 
         Returns arbitrary value or none.
         '''
@@ -144,16 +128,9 @@ class MenuEntry(AbjadObject):
 
     @property
     def key(self):
-        r'''Menu entry key.
+        r'''Gets key.
 
-        ..  container:: example
-
-            ::
-
-                >>> entry.key
-                'modify'
-
-        Returns string without spaces or none.
+        Returns string or none.
         '''
         return self._key
 
@@ -161,20 +138,13 @@ class MenuEntry(AbjadObject):
     def is_navigation(self):
         r'''Is true when menu entry is navigation. Otherwise false.
 
-        ..  container:: example
-
-            ::
-
-                >>> entry.is_navigation
-                False
-
         Returns true or false.
         '''
         return self._is_navigation
 
     @property
     def menu_section(self):
-        r'''Menu entry menu section.
+        r'''Gets menu section.
 
         Returns menu section.
         '''
@@ -182,14 +152,7 @@ class MenuEntry(AbjadObject):
 
     @property
     def number(self):
-        r'''Menu entry number.
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.number is None
-                True
+        r'''Gets number.
 
         Returns nonnegative integer or none.
         '''
@@ -198,14 +161,7 @@ class MenuEntry(AbjadObject):
 
     @property
     def prepopulated_value(self):
-        r'''Menu entry existing value.
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.prepopulated_value is None
-                True
+        r'''Gets prepopulated value.
 
         Returns arbitrary value or none.
         '''
@@ -213,14 +169,7 @@ class MenuEntry(AbjadObject):
 
     @property
     def return_value(self):
-        r'''Menu entry return value.
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.return_value
-                'modify'
+        r'''Gets return value.
 
         Returns arbitrary value.
         '''
@@ -261,7 +210,7 @@ class MenuEntry(AbjadObject):
                 >>> entry.matches('asdf')
                 False
 
-        Returns boolean.
+        Returns true or false.
         '''
         if self.key is not None and input_ == self.key:
             return True
