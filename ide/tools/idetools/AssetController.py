@@ -38,7 +38,17 @@ class AssetController(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._controller_commands = ()
+        self._controller_commands = []
+        self._controller_commands.extend([
+            self.go_back,
+            self.go_to_all_score_directories,
+            self.go_to_score_directory,
+            self.quit_abjad_ide,
+            self.display_action_commands,
+            self.display_navigation_commands,
+            self.invoke_shell,
+            self.open_lilypond_log,
+            ])
 
     ### PRIVATE PROPERTIES ###
 
@@ -506,16 +516,9 @@ class AssetController(Controller):
                         paths.append(path)
         return paths
 
-        result = {}
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        result[value.command_name] = value
-
     def _make_command_menu_sections(self, menu, menu_section_names=None):
-        methods = self._get_decorated_methods()
+        methods = self._get_decorated_methods(only_my_methods=True)
+        #raise Exception(methods)
         method_groups = {}
         for method in methods:
             if menu_section_names is not None:

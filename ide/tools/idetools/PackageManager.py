@@ -17,7 +17,6 @@ class PackageManager(AssetController):
 
     __slots__ = (
         '_breadcrumb_callback',
-        '_controller_commands',
         '_optional_directories',
         '_optional_files',
         '_package_creation_callback',
@@ -35,7 +34,21 @@ class PackageManager(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = 'package manager'
         self._breadcrumb_callback = None
-        self._controller_commands = ()
+        self._controller_commands.extend([
+            self.edit_abbreviations_file,
+            self.edit_score_stylesheet,
+            self.go_to_score_build_directory,
+            self.go_to_score_distribution_directory,
+            self.go_to_score_etc_directory,
+            self.go_to_score_makers_directory,
+            self.go_to_score_materials_directory,
+            self.go_to_score_segments_directory,
+            self.go_to_score_stylesheets_directory,
+            self.go_to_score_test_directory,
+            self.go_to_score_directory,
+            self.go_to_previous_score,
+            self.go_to_next_score,
+            ])
         self._optional_directories = (
             '__pycache__',
             'test',
@@ -173,7 +186,7 @@ class PackageManager(AssetController):
         commands.append(self.interpret_illustration_ly)
         commands.append(self.edit_illustration_ly)
         commands.append(self.open_illustration_pdf)
-        self._controller_commands = commands
+        self._controller_commands.extend(commands)
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -191,7 +204,7 @@ class PackageManager(AssetController):
         commands = []
         commands.append(self.check_package)
         commands.append(self.open_score_pdf)
-        self._controller_commands = commands
+        self._controller_commands.extend(commands)
         self._package_creation_callback = \
             self._make_score_into_installable_package
         self._required_directories = (
@@ -227,7 +240,7 @@ class PackageManager(AssetController):
         commands.append(self.open_illustration_pdf)
         commands.append(self.go_to_next_package)
         commands.append(self.go_to_previous_package)
-        self._controller_commands = commands
+        self._controller_commands.extend(commands)
         self._required_files = (
             '__init__.py',
             '__metadata__.py',

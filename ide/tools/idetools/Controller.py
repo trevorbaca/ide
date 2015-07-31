@@ -12,6 +12,7 @@ class Controller(object):
 
     __slots__ = (
         '_configuration',
+        '_controller_commands',
         '_io_manager',
         '_session',
         '_transcript',
@@ -22,6 +23,7 @@ class Controller(object):
     def __init__(self, session=None):
         from ide.tools import idetools
         self._configuration = idetools.AbjadIDEConfiguration()
+        self._controller_commands = []
         self._session = session or idetools.Session()
         self._io_manager = idetools.IOManager(
             client=self,
@@ -54,14 +56,17 @@ class Controller(object):
 
     ### PRIVATE METHODS ###
 
-    def _get_decorated_methods(self):
+    def _get_decorated_methods(self, only_my_methods=False):
         result = []
         for name in dir(self):
             if not name.startswith('_'):
                 value = getattr(self, name)
                 if inspect.ismethod(value):
                     if hasattr(value, 'command_name'):
-                        result.append(value)
+                        if not only_my_methods:
+                            result.append(value)
+                        elif value in self._controller_commands:
+                            result.append(value)
         return result
 
     ### PUBLIC METHODS ###
