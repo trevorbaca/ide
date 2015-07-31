@@ -29,6 +29,7 @@ class Command(object):
         description, 
         menu_section_name,
         is_navigation=False,
+        is_hidden=True,
         ):
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
@@ -37,6 +38,9 @@ class Command(object):
         assert menu_section_name in self._allowable_menu_section_names, repr(
             menu_section_name)
         self.menu_section_name = menu_section_name
+        assert isinstance(is_hidden, bool), repr(is_hidden)
+        self.is_hidden = is_hidden
+        assert isinstance(is_navigation, bool), repr(is_navigation)
         self.is_navigation = is_navigation
 
     ### SPECIAL METHODS ###
@@ -49,6 +53,7 @@ class Command(object):
         method.command_name = self.command_name
         method.description = self.description
         method.menu_section_name = self.menu_section_name
+        method.is_hidden = self.is_hidden
         method.is_navigation = self.is_navigation
         return method
 

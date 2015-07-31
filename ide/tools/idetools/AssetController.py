@@ -527,8 +527,11 @@ class AssetController(Controller):
             method_group.append(method)
         for menu_section_name in method_groups:
             method_group = method_groups[menu_section_name]
+            is_hidden = True
+            if menu_section_name == 'basic':
+                is_hidden = False
             menu.make_command_section(
-                is_hidden=True,
+                is_hidden=is_hidden,
                 commands=method_group,
                 name=menu_section_name,
                 )
