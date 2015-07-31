@@ -536,14 +536,6 @@ class AssetController(Controller):
                 name=menu_section_name,
                 )
 
-    def _make_controller_commands_menu_section(self, menu):
-        if self._controller_commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=self._controller_commands,
-                name='controller commands',
-                )
-
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []
         if not self._session.is_in_score:
@@ -570,79 +562,11 @@ class AssetController(Controller):
             messages.append('... compare differently.')
         return messages
 
-    def _make_go_menu_section(self, menu, commands_only=False, packages=False):
-        commands = []
-        if packages:
-            commands.append(self.go_to_next_package)
-            commands.append(self.go_to_previous_package)
-        commands.append(self.go_to_next_score)
-        commands.append(self.go_to_previous_score)
-        if commands_only:
-            return commands
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='go',
-                )
-
-    def _make_navigation_menu_section(self, menu):
-        commands = []
-        if self._session.is_in_score:
-            commands.append(self.go_to_current_score)
-            commands.append(self.go_to_score_build_directory)
-            commands.append(self.go_to_score_distribution_directory)
-            commands.append(self.go_to_score_etc_directory)
-            commands.append(self.go_to_score_makers_directory)
-            commands.append(self.go_to_score_materials_directory)
-            commands.append(self.go_to_score_segments_directory)
-            commands.append(self.go_to_score_stylesheets_directory)
-        if commands:
-            menu.make_command_section(
-                is_hidden=True,
-                commands=commands,
-                name='navigation',
-                )
-
     def _make_main_menu(self):
-        name = self._spaced_class_name
-        menu = self._io_manager._make_menu(name=name)
-        if self._session.is_in_score:
-            self._make_score_stylesheet_menu_section(menu)
-        self._make_go_menu_section(menu)
-        self._make_navigation_menu_section(menu)
-        self._make_system_menu_section(menu)
+        menu = self._io_manager._make_menu(name=self._spaced_class_name)
+        self._make_asset_menu_section(menu)
+        self._make_command_menu_sections(menu)
         return menu
-
-    def _make_score_stylesheet_menu_section(self, menu):
-        commands = []
-        commands.append(self.edit_abbreviations_file)
-        commands.append(self.edit_score_stylesheet)
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='score stylesheet',
-            )
-
-    def _make_sibling_asset_tour_menu_section(self, menu):
-        section = menu['go']
-        menu.menu_sections.remove(section)
-        self._make_go_menu_section(menu, packages=True)
-
-    def _make_system_menu_section(self, menu):
-        commands = []
-        commands.append(self.go_back)
-        commands.append(self.display_action_commands)
-        commands.append(self.display_navigation_commands)
-        commands.append(self.go_to_all_score_directories)
-        commands.append(self.open_lilypond_log)
-        commands.append(self.quit_abjad_ide)
-        commands.append(self.invoke_shell)
-        menu.make_command_section(
-            is_hidden=True,
-            commands=commands,
-            name='aaa',
-            )
 
     def _open_file(self, path):
         if os.path.isfile(path):

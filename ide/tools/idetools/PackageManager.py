@@ -608,13 +608,6 @@ class PackageManager(AssetController):
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
 
-    def _make_main_menu(self):
-        superclass = super(PackageManager, self)
-        menu = superclass._make_main_menu()
-        self._make_asset_menu_section(menu)
-        self._make_controller_commands_menu_section(menu)
-        return menu
-
     def _make_package(self):
         assert not os.path.exists(self._path)
         os.mkdir(self._path)

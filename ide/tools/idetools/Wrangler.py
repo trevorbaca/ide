@@ -793,12 +793,6 @@ class Wrangler(AssetController):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def _make_main_menu(self):
-        menu = self._io_manager._make_menu(name=self._spaced_class_name)
-        self._make_asset_menu_section(menu)
-        self._make_command_menu_sections(menu)
-        return menu
-
     def _make_package(self):
         if self._session.is_in_score:
             storehouse_path = self._current_storehouse_path
