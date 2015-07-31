@@ -786,7 +786,7 @@ class AssetController(Controller):
             show = self._session.display_action_commands
             self._session._display_action_commands = not show
 
-    @Command(';', 'display navigation commands', 'navigation', True)
+    @Command(';', 'display navigation commands', 'display navigation', True)
     def display_navigation_commands(self):
         r'''Displays navigation commands.
 
@@ -796,7 +796,7 @@ class AssetController(Controller):
             show = self._session.display_navigation_commands
             self._session._display_navigation_commands = not show
 
-    @Command('abb', 'edit abbreviations file', 'score-global')
+    @Command('abb', 'edit abbreviations file', 'global files')
     def edit_abbreviations_file(self):
         r'''Edits abbreviations file.
 
@@ -808,7 +808,7 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('sse', 'edit score stylesheet', 'score-global')
+    @Command('sse', 'edit score stylesheet', 'global files')
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
 
@@ -883,7 +883,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_stylesheets = True
 
-    @Command('>', 'go to next package', 'navigation', True)
+    @Command('>', 'go to next package', 'sibling package', True)
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -891,7 +891,7 @@ class AssetController(Controller):
         '''
         self._go_to_next_package()
 
-    @Command('>>', 'go to next score', 'navigation', True)
+    @Command('>>', 'go to next score', 'sibling score', True)
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -902,7 +902,7 @@ class AssetController(Controller):
         self._session._display_action_commands = False
         self._session._display_navigation_commands = False
 
-    @Command('<', 'go to previous package', 'navigation', True)
+    @Command('<', 'go to previous package', 'sibling package', True)
     def go_to_previous_package(self):
         r'''Goes to previous package.
 
@@ -910,7 +910,7 @@ class AssetController(Controller):
         '''
         self._go_to_previous_package()
 
-    @Command('<<', 'go to previous score', 'navigation', True)
+    @Command('<<', 'go to previous score', 'sibling score', True)
     def go_to_previous_score(self):
         r'''Goes to previous score.
 
@@ -999,7 +999,7 @@ class AssetController(Controller):
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
 
-    @Command('l', 'open lilypond log', 'system')
+    @Command('l', 'open lilypond log', 'global files')
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
 

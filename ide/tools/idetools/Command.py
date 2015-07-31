@@ -9,13 +9,17 @@ class Command(object):
     ### CLASS VARIABLES ###
 
     _allowable_menu_section_names = (
+        'back-home-quit',
         'basic',
         'build',
         'comparison',
+        'display navigation',
         'git',
+        'global files',
         'navigation',
         'package',
-        'score-global',
+        'sibling package',
+        'sibling score',
         'star',
         'system',
         'view',

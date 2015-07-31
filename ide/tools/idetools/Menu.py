@@ -354,11 +354,12 @@ class Menu(Controller):
 
     def _make_action_command_section_lines(self):
         lines = []
-        for section in self.menu_sections:
+        menu_sections = self._sort_menu_sections(type_='action')
+        for menu_section in menu_sections:
             found_one = False
-            if not section.is_command_section:
+            if not menu_section.is_command_section:
                 continue
-            for menu_entry in section:
+            for menu_entry in menu_section:
                 if menu_entry.is_navigation:
                     continue
                 found_one = True
@@ -384,11 +385,12 @@ class Menu(Controller):
 
     def _make_navigation_command_section_lines(self):
         lines = []
-        for section in self.menu_sections:
+        menu_sections = self._sort_menu_sections(type_='navigation')
+        for menu_section in menu_sections:
             found_one = False
-            if not section.is_command_section:
+            if not menu_section.is_command_section:
                 continue
-            for menu_entry in section:
+            for menu_entry in menu_section:
                 if not menu_entry.is_navigation:
                     continue
                 found_one = True
@@ -494,11 +496,11 @@ class Menu(Controller):
             conjoined_lines.append(conjoined_line)
         return conjoined_lines
 
+    # HERE 
     def _make_command_section_lines(self):
         result = []
         section_names = []
         for section in self.menu_sections:
-            # TODO: check for duplicate section names at initialization
             if section.name in section_names:
                 message = '{!r} contains duplicate {!r}.'
                 message = message.format(self, section)
@@ -633,6 +635,43 @@ class Menu(Controller):
                     return
                 else:
                     return result
+
+    _action_command_section_order = (
+        'system',
+        'global files',
+        'package',
+        'star',
+        'git',
+        'build',
+        'basic',
+        )
+
+    _navigation_command_section_order = (
+        'display navigation',
+        'back-home-quit',
+        'comparison',
+        'navigation',
+        'sibling package',
+        'sibling score',
+        'view',
+        )
+
+    def _sort_menu_sections(self, type_):
+        ordered_menu_sections = []
+        menu_sections = {}
+        for menu_section in self.menu_sections:
+            menu_sections[menu_section.name] = menu_section
+        if type_ == 'navigation':
+            order = self._navigation_command_section_order
+        elif type_ == 'action':
+            order = self._action_command_section_order
+        else:
+            raise ValueError(repr(type_))
+        for section_name in order:
+            menu_section = menu_sections.get(section_name)
+            if menu_section is not None:
+                ordered_menu_sections.append(menu_section)
+        return ordered_menu_sections
 
     @staticmethod
     def _strip_default_notice_from_strings(expr):
