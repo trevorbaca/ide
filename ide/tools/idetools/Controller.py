@@ -87,8 +87,8 @@ class Controller(object):
         self._session._display_action_commands = False
         self._session._display_navigation_commands = False
 
-    @Command('s', 'go to current score', 'system', True)
-    def go_to_current_score(self):
+    @Command('s', 'go to score', 'system', True)
+    def go_to_score_directory(self):
         r'''Goes to current score.
 
         Returns none.
