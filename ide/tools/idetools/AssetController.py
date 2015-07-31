@@ -434,13 +434,13 @@ class AssetController(Controller):
             if result.startswith('!'):
                 statement = result[1:]
                 self._io_manager._invoke_shell(statement)
-            elif result in self._command_to_method:
-                self._command_to_method[result]()
+            elif result in self._command_name_to_method:
+                self._command_name_to_method[result]()
             elif (result.endswith('!') and 
-                result[:-1] in self._command_to_method):
+                result[:-1] in self._command_name_to_method):
                 result = result[:-1]
                 with self._io_manager._make_interaction(confirm=False):
-                    self._command_to_method[result]()
+                    self._command_name_to_method[result]()
             else:
                 self._handle_numeric_user_input(result)
 
@@ -505,6 +505,18 @@ class AssetController(Controller):
                     if path not in paths:
                         paths.append(path)
         return paths
+
+        result = {}
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        result[value.command_name] = value
+
+    # HERE
+    def _make_command_menu_sections(self, menu, menu_section_names=None):
+        pass
 
     def _make_controller_commands_menu_section(self, menu):
         if self._controller_commands:
@@ -866,7 +878,7 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('uu', 'go to all build directories', 'cross-comparison', True)
+    @Command('uu', 'go to all build directories', 'comparison', True)
     def go_to_all_build_directories(self):
         r'''Goes to all build files.
 
@@ -875,8 +887,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_build_files = True
 
-    @Command(
-        'dd', 'go to all distribution directories', 'cross-comparison', True)
+    @Command('dd', 'go to all distribution directories', 'comparison', True)
     def go_to_all_distribution_directories(self):
         r'''Goes to all distribution files.
 
@@ -885,7 +896,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_distribution_files = True
 
-    @Command('ee', 'go to all etc directories', 'cross-comparison', True)
+    @Command('ee', 'go to all etc directories', 'comparison', True)
     def go_to_all_etc_directories(self):
         r'''Goes to all etc files.
 
@@ -894,7 +905,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_etc_files = True
 
-    @Command('kk', 'go to all makers directories', 'cross-comparison', True)
+    @Command('kk', 'go to all makers directories', 'comparison', True)
     def go_to_all_makers_directories(self):
         r'''Goes to all maker files.
 
@@ -903,7 +914,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_maker_files = True
 
-    @Command('mm', 'go to all materials directories', 'cross-comparison', True)
+    @Command('mm', 'go to all materials directories', 'comparison', True)
     def go_to_all_materials_directories(self):
         r'''Goes to all materials.
 
@@ -912,7 +923,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_materials = True
 
-    @Command('gg', 'go to all segments directories', 'cross-comparison', True)
+    @Command('gg', 'go to all segments directories', 'comparison', True)
     def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
@@ -921,8 +932,7 @@ class AssetController(Controller):
         self.go_to_all_score_directories()
         self._session._is_navigating_to_segments = True
 
-    @Command(
-        'yy', 'go to all stylesheets directories', 'cross-comparison', True)
+    @Command('yy', 'go to all stylesheets directories', 'comparison', True)
     def go_to_all_stylesheets_directories(self):
         r'''Goes to all stylesheets.
 

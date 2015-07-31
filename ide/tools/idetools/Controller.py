@@ -41,19 +41,28 @@ class Controller(object):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _command_to_method(self):
+    def _command_name_to_method(self):
         result = {}
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        result[value.command_name] = value
+        methods = self._get_decorated_methods()
+        for method in methods:
+            result[method.command_name] = method
         return result
 
     @property
     def _spaced_class_name(self):
         return stringtools.to_space_delimited_lowercase(type(self).__name__)
+
+    ### PRIVATE METHODS ###
+
+    def _get_decorated_methods(self):
+        result = []
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        result.append(value)
+        return result
 
     ### PUBLIC METHODS ###
 

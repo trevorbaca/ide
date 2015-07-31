@@ -319,9 +319,10 @@ class Menu(Controller):
 
     def _is_recognized_input(self, expr):
         if isinstance(expr, str):
-            if expr in self._command_to_method:
+            if expr in self._command_name_to_method:
                 return True
-            if expr.endswith('!') and expr[:-1] in self._command_to_method:
+            if (expr.endswith('!') and
+                expr[:-1] in self._command_name_to_method):
                 return True
         return False
 
@@ -628,7 +629,7 @@ class Menu(Controller):
                 elif result == '<return>':
                     self._session._pending_redraw = True
                 elif self._is_recognized_input(result):
-                    self._command_to_method[result]()
+                    self._command_name_to_method[result]()
                     return
                 else:
                     return result

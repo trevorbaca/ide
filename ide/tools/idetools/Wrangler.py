@@ -765,7 +765,7 @@ class Wrangler(AssetController):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
-    def _make_basic_operations_menu_section(self, menu):
+    def _make_basic_menu_section(self, menu):
         commands = []
         commands.append(self.copy)
         commands.append(self.make)
@@ -773,7 +773,7 @@ class Wrangler(AssetController):
         commands.append(self.remove)
         menu.make_command_section(
             commands=commands,
-            name='basic operations',
+            name='basic',
             )
 
     def _make_file(self, message='file name'):
@@ -808,7 +808,9 @@ class Wrangler(AssetController):
         superclass = super(Wrangler, self)
         menu = superclass._make_main_menu()
         self._make_asset_menu_section(menu)
-        self._make_basic_operations_menu_section(menu)
+        # HERE
+        #self._make_command_menu_sections(menu, menu_section_names='view')
+        self._make_basic_menu_section(menu)
         self._make_controller_commands_menu_section(menu)
         self._make_views_menu_section(menu)
         return menu
@@ -1447,7 +1449,7 @@ class Wrangler(AssetController):
             with self._io_manager._silent():
                 manager._git_commit(commit_message=commit_message)
 
-    @Command('cp', 'copy', 'basic operation')
+    @Command('cp', 'copy', 'basic')
     def copy(
         self, 
         file_extension=None,
@@ -1714,7 +1716,7 @@ class Wrangler(AssetController):
         '''
         self._copy_boilerplate('score.tex')
 
-    @Command('new', 'new', 'basic operation')
+    @Command('new', 'new', 'basic')
     def make(self):
         r'''Makes asset.
 
@@ -1883,7 +1885,7 @@ class Wrangler(AssetController):
         messages.append(message)
         self._io_manager._display(messages)
 
-    @Command('rm', 'remove', 'basic operation')
+    @Command('rm', 'remove', 'basic')
     def remove(self):
         r'''Removes asset.
 
@@ -1928,7 +1930,7 @@ class Wrangler(AssetController):
                 manager._remove()
         self._session._pending_redraw = True
 
-    @Command('ren', 'rename', 'basic operation')
+    @Command('ren', 'rename', 'basic')
     def rename(
         self,
         file_extension=None,
@@ -1969,7 +1971,7 @@ class Wrangler(AssetController):
             manager = self._io_manager._make_package_manager(path)
             manager._git_revert()
 
-    @Command('ws', 'set view', 'navigation', True)
+    @Command('ws', 'set view', 'view', True)
     def set_view(self):
         r'''Sets view.
 

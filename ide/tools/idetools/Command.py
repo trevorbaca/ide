@@ -9,15 +9,16 @@ class Command(object):
     ### CLASS VARIABLES ###
 
     _allowable_menu_section_names = (
-        'basic operation',
+        'basic',
         'build',
-        'cross-comparison',
+        'comparison',
         'git',
         'navigation',
         'package',
         'score-global',
         'star',
         'system',
+        'view',
         )
 
     ### INITIALIZER ###
