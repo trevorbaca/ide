@@ -43,7 +43,7 @@ if __name__ == '__main__':
             '__metadata__.py',
             )
         dummy_session = idetools.Session()
-        controller = idetools.AssetController(session=dummy_session)
+        controller = idetools.Controller(session=dummy_session)
         controller._write_metadata_py(
             segment_metadata, 
             metadata_py_path=metadata_py_path,

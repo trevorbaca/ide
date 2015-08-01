@@ -185,7 +185,7 @@ class Session(abctools.AbjadObject):
     def _format_asset_controller_breadcrumbs(self):
         from ide.tools import idetools
         controller_stack = []
-        prototype = (idetools.AssetController, idetools.AbjadIDE)
+        prototype = (idetools.Controller, idetools.AbjadIDE)
         for controller in self.controller_stack:
             if isinstance(controller, prototype):
                 controller_stack.append(controller)

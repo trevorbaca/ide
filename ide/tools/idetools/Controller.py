@@ -14,7 +14,7 @@ from ide.tools.idetools.Command import Command
 configuration = AbjadIDEConfiguration()
 
 
-class AssetController(object):
+class Controller(object):
     r'''Asset controller.
     '''
 
@@ -542,12 +542,12 @@ class AssetController(object):
     def _list_directories_with_metadata_pys(path):
         paths = []
         for directory, subdirectory_names, file_names in os.walk(path):
-            if AssetController._is_directory_with_metadata_py(directory):
+            if Controller._is_directory_with_metadata_py(directory):
                 if directory not in paths:
                     paths.append(directory)
             for subdirectory_name in subdirectory_names:
                 path = os.path.join(directory, subdirectory_name)
-                if AssetController._is_directory_with_metadata_py(path):
+                if Controller._is_directory_with_metadata_py(path):
                     if path not in paths:
                         paths.append(path)
         return paths

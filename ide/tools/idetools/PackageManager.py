@@ -6,12 +6,12 @@ import time
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
-from ide.tools.idetools.AssetController import AssetController
+from ide.tools.idetools.Controller import Controller
 from ide.tools.idetools.Command import Command
 configuration = AbjadIDEConfiguration()
 
 
-class PackageManager(AssetController):
+class PackageManager(Controller):
     r'''Package manager.
     '''
 
