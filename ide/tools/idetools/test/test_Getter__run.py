@@ -8,7 +8,7 @@ def test_Getter__run_01():
     r'''Entering junk during confirmation displays value reminder message.
     '''
 
-    input_ = 'red~example~score u mc foo q'
+    input_ = 'red~example~score u mc foo n q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 

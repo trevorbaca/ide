@@ -33,17 +33,18 @@ def test_Wrangler_copy_02():
     r'''Copies material package outside score.
     
     Partial test because we can't be sure any user score packages will be
-    present. And because Score PackageManager allows copying into user score 
-    packages only (because copying into example score packages could pollute the
-    example score packages).
+    present. And because Score PackageManager allows copying into user score
+    packages only (because copying into example score packages could pollute
+    the example score packages).
     '''
 
-    input_ = 'mm cp performer~inventory~(Red~Example~Score) q'
+    input_ = 'mm cp performer~inventory~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
+        'Abjad IDE - all materials directories',
         'Abjad IDE - all materials directories',
         'Abjad IDE - all materials directories',
         ]
@@ -84,7 +85,7 @@ def test_Wrangler_copy_04():
     r'''Includes preservation message in getter help.
     '''
 
-    input_ = 'red~example~score m cp tempo~inventory ? q'
+    input_ = 'red~example~score m cp tempo~inventory ? foo n q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
         
@@ -103,12 +104,13 @@ def test_Wrangler_copy_05():
     example score packages).
     '''
 
-    input_ = 'gg cp A~(Red~Example~Score) q'
+    input_ = 'gg cp A~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
+        'Abjad IDE - all segments directories',
         'Abjad IDE - all segments directories',
         'Abjad IDE - all segments directories',
         ]
@@ -149,17 +151,18 @@ def test_Wrangler_copy_07():
     r'''Copies build file outside score.
     
     Partial test because we can't be sure any user score packages will be
-    present. And because Score PackageManager allows copying into user score 
-    packages only (because copying into example score packages could pollute the 
-    example score packages).
+    present. And because Score PackageManager allows copying into user score
+    packages only (because copying into example score packages could pollute
+    the example score packages).
     '''
 
-    input_ = 'uu cp score.pdf~(Red~Example~Score) q'
+    input_ = 'uu cp score.pdf~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
     contents = abjad_ide._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
+        'Abjad IDE - all build directories',
         'Abjad IDE - all build directories',
         'Abjad IDE - all build directories',
         ]

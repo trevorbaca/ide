@@ -22,7 +22,7 @@ def test_Menu__run_01():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -69,7 +69,7 @@ def test_Menu__run_02():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -115,7 +115,7 @@ def test_Menu__run_03():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -161,7 +161,7 @@ def test_Menu__run_04():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -207,7 +207,7 @@ def test_Menu__run_05():
         return_value_attribute='key',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -263,7 +263,7 @@ def test_Menu__run_06():
         name='test',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -322,7 +322,7 @@ def test_Menu__run_07():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -380,7 +380,7 @@ def test_Menu__run_08():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -439,7 +439,7 @@ def test_Menu__run_09():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -498,7 +498,7 @@ def test_Menu__run_10():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 
@@ -556,7 +556,7 @@ def test_Menu__run_11():
         title='section',
         )
 
-    menu._session._pending_input = 'q'
+    menu._session._pending_input = '<return>'
     result = menu._run()
     assert result is None
 

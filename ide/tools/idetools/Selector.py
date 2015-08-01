@@ -87,7 +87,9 @@ class Selector(Controller):
                 result = menu._run()
                 if self._session.is_backtracking:
                     return
-                if result and not result == '<return>':
+                elif result is None:
+                    return
+                elif result:
                     return result
 
     ### PUBLIC PROPERTIES ###

@@ -248,7 +248,9 @@ class Menu(Controller):
             '', 
             prompt_character=self.prompt_character,
             )
-        user_entered_lone_return = input_ == ''
+        if input_ == '<return>':
+            input_ = ''
+        user_entered_lone_return = input_ in ('', '<return>')
         directive = None
         parts = shlex.split(input_, posix=False)
         length = len(parts)
@@ -630,6 +632,7 @@ class Menu(Controller):
                     return result
                 elif result == '<return>':
                     self._session._pending_redraw = True
+                    return
                 elif self._is_recognized_input(result):
                     self._command_name_to_method[result]()
                     return

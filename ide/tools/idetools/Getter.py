@@ -197,6 +197,12 @@ class Getter(Controller):
                 self._session._pending_redraw = True
             elif directive is None:
                 continue
+            elif directive == '<return>':
+                self._current_prompt_is_done = True
+                self._all_prompts_are_done = True
+                self._session._pending_redraw = True
+            elif directive is None:
+                break
             elif directive == 'help':
                 self.display_help()
             elif directive == 'previous':

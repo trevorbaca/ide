@@ -68,15 +68,3 @@ class Controller(object):
                         elif value in self._controller_commands:
                             result.append(value)
         return result
-
-    ### PUBLIC METHODS ###
-
-    @Command('q', 'quit', 'back-home-quit', True)
-    def quit_abjad_ide(self):
-        r'''Quits Abjad IDE.
-
-        Returns none.
-        '''
-        self._session._is_quitting = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False

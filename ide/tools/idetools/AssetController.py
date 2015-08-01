@@ -1045,3 +1045,13 @@ class AssetController(Controller):
         if self._session.is_test:
             return
         systemtools.IOManager.open_last_log()
+
+    @Command('q', 'quit', 'back-home-quit', True)
+    def quit_abjad_ide(self):
+        r'''Quits Abjad IDE.
+
+        Returns none.
+        '''
+        self._session._is_quitting = True
+        self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
