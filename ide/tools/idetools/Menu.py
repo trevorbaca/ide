@@ -319,15 +319,6 @@ class Menu(Controller):
                     return True
         return False
 
-    def _is_recognized_input(self, expr):
-        if isinstance(expr, str):
-            if expr in self._command_name_to_method:
-                return True
-            if (expr.endswith('!') and
-                expr[:-1] in self._command_name_to_method):
-                return True
-        return False
-
     @staticmethod
     def _ljust(string, width):
         start_width = len(stringtools.strip_diacritics(string))
@@ -632,9 +623,6 @@ class Menu(Controller):
                     return result
                 elif result == '<return>':
                     self._session._pending_redraw = True
-                    return
-                elif self._is_recognized_input(result):
-                    self._command_name_to_method[result]()
                     return
                 else:
                     return result

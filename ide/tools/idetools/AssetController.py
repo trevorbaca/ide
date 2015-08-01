@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import codecs
+import inspect
 import os
 import shutil
 import sys
@@ -57,6 +58,14 @@ class AssetController(Controller):
         return 'from abjad import *'
 
     @property
+    def _command_name_to_method(self):
+        result = {}
+        methods = self._get_decorated_methods()
+        for method in methods:
+            result[method.command_name] = method
+        return result
+
+    @property
     def _navigation_commands(self):
         result = (
             'b', 'q',
@@ -99,6 +108,19 @@ class AssetController(Controller):
         return result
 
     ### PRIVATE METHODS ###
+
+    def _get_decorated_methods(self, only_my_methods=False):
+        result = []
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        if not only_my_methods:
+                            result.append(value)
+                        elif value in self._controller_commands:
+                            result.append(value)
+        return result
 
     def _git_add(self, dry_run=False):
         directory = self._get_current_directory()
@@ -566,7 +588,8 @@ class AssetController(Controller):
         return messages
 
     def _make_main_menu(self):
-        menu = self._io_manager._make_menu(name=self._spaced_class_name)
+        name = stringtools.to_space_delimited_lowercase(type(self).__name__)
+        menu = self._io_manager._make_menu(name=name)
         self._make_asset_menu_section(menu)
         self._make_command_menu_sections(menu)
         return menu

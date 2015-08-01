@@ -1,6 +1,4 @@
 # -*- encoding: utf -*-
-import inspect
-from abjad.tools import stringtools
 from ide.tools.idetools.Command import Command
 
 
@@ -39,32 +37,3 @@ class Controller(object):
         Returns string.
         '''
         return '{}()'.format(type(self).__name__)
-
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _command_name_to_method(self):
-        result = {}
-        methods = self._get_decorated_methods()
-        for method in methods:
-            result[method.command_name] = method
-        return result
-
-    @property
-    def _spaced_class_name(self):
-        return stringtools.to_space_delimited_lowercase(type(self).__name__)
-
-    ### PRIVATE METHODS ###
-
-    def _get_decorated_methods(self, only_my_methods=False):
-        result = []
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        if not only_my_methods:
-                            result.append(value)
-                        elif value in self._controller_commands:
-                            result.append(value)
-        return result

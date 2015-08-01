@@ -187,8 +187,6 @@ class Getter(Controller):
             elif input_ == '?':
                 self.display_help()
                 continue
-            elif input_ in self._command_name_to_method:
-                self._command_name_to_method[input_]()
             assert isinstance(input_, str), repr(input_)
             directive = input_
             if self._session.is_backtracking:
