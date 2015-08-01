@@ -3,6 +3,8 @@ import datetime
 import os
 import time
 from abjad.tools.abctools.AbjadObject import AbjadObject
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+configuration = AbjadIDEConfiguration()
 
 
 class Transcript(AbjadObject):
@@ -12,7 +14,6 @@ class Transcript(AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_configuration',
         '_entries',
         '_start_time',
         )
@@ -20,8 +21,6 @@ class Transcript(AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self):
-        from ide.tools import idetools
-        self._configuration = idetools.AbjadIDEConfiguration()
         self._entries = []
         current_time = datetime.datetime.fromtimestamp(time.time())
         self._start_time = current_time
@@ -45,7 +44,7 @@ class Transcript(AbjadObject):
     def _write(self, transcripts_directory=None):
         if transcripts_directory is None:
             transcripts_directory = \
-                self._configuration.abjad_ide_transcripts_directory
+                configuration.abjad_ide_transcripts_directory
         start_time = self.start_time.strftime('%Y-%m-%d-%H-%M-%S')
         file_name = 'session-{}.txt'.format(start_time)
         file_path = os.path.join(transcripts_directory, file_name)

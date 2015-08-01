@@ -3,7 +3,9 @@ import os
 import shutil
 import sys
 from abjad.tools import systemtools
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Controller import Controller
+configuration = AbjadIDEConfiguration()
 
 
 class AbjadIDE(Controller):
@@ -132,12 +134,11 @@ class AbjadIDE(Controller):
             consume_local_backtrack=True,
             on_exit_callbacks=(self._session._clean_up,)
             )
-        path = self._session._configuration.abjad_ide_directory
+        path = configuration.abjad_ide_directory
         directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
         wrangler_views = os.path.join(
-            self._session._configuration.abjad_ide_configuration_directory,
-            'views',
+            configuration.abjad_ide_wrangler_views_directory,
             '__metadata__.py',
             )
         if self._session.is_test:
@@ -149,7 +150,7 @@ class AbjadIDE(Controller):
             self._session._pending_redraw = True
             if self._session.is_test:
                 empty_views = os.path.join(
-                    self._session._configuration.abjad_ide_boilerplate_directory,
+                    configuration.abjad_ide_boilerplate_directory,
                     '__views_metadata__.py',
                     )
                 shutil.copyfile(empty_views, wrangler_views)

@@ -13,8 +13,10 @@ from abjad.tools import lilypondfiletools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.AssetController import AssetController
 from ide.tools.idetools.Command import Command
+configuration = AbjadIDEConfiguration()
 
 
 class Wrangler(AssetController):
@@ -113,7 +115,7 @@ class Wrangler(AssetController):
                 self._session.current_score_directory,
                 self._directory_name,
                 )
-        return self._session._configuration.composer_scores_directory
+        return configuration.composer_scores_directory
 
     @property
     def _init_py_file_path(self):
@@ -126,7 +128,7 @@ class Wrangler(AssetController):
         if self._session.is_in_score:
             manager = self._current_package_manager
         else:
-            manager = self._views_package_manager
+            manager = self._get_views_package_manager()
         return manager._metadata_py_path
 
     ### PRIVATE METHODS ###
@@ -180,7 +182,7 @@ class Wrangler(AssetController):
             manager = self._current_package_manager
             metadatum_name = 'view_name'
         else:
-            manager = self._views_package_manager
+            manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, None)
 
@@ -303,8 +305,7 @@ class Wrangler(AssetController):
     def _configure_as_score_package_wrangler(self):
         self._asset_identifier = 'score package'
         self._basic_breadcrumb = 'scores'
-        self._copy_target_directory = \
-            self._session._configuration.composer_scores_directory
+        self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         commands = []
@@ -393,8 +394,7 @@ class Wrangler(AssetController):
         assert manager is not None
         width, height, unit = manager._parse_paper_dimensions()
         source_path = os.path.join(
-            self._session._configuration.abjad_ide_directory,
-            'boilerplate',
+            configuration.abjad_ide_boilerplate_directory,
             file_name,
             )
         destination_path = os.path.join(
@@ -463,9 +463,8 @@ class Wrangler(AssetController):
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
         abjad_ide_example_scores_directory = \
-            self._session._configuration.abjad_ide_example_scores_directory
-        scores_directory = \
-            self._session._configuration.composer_scores_directory
+            configuration.abjad_ide_example_scores_directory
+        scores_directory = configuration.composer_scores_directory
         for path in paths:
             parent_directory = os.path.dirname(path)
             if parent_directory == scores_directory:
@@ -501,14 +500,14 @@ class Wrangler(AssetController):
             user_score_packages = True
         else:
             Exception
-        configuration = self._session._configuration
         asset_paths = self._list_asset_paths(
             example_score_packages=example_score_packages,
             user_score_packages=user_score_packages,
             )
         if self._basic_breadcrumb == 'scores':
             if system:
-                scores_directory = configuration.abjad_ide_example_scores_directory
+                scores_directory = \
+                    configuration.abjad_ide_example_scores_directory
             else:
                 scores_directory = configuration.composer_scores_directory
             asset_paths = []
@@ -743,7 +742,6 @@ class Wrangler(AssetController):
         user=False,
         ):
         result = []
-        configuration = self._session._configuration
         if abjad:
             scores_directory = configuration.abjad_ide_example_scores_directory
             directory_entries = sorted(os.listdir(scores_directory))
@@ -761,7 +759,7 @@ class Wrangler(AssetController):
                 if not directory_entry[0].isalpha():
                     continue
                 path = os.path.join(
-                    self._session._configuration.composer_scores_directory,
+                    configuration.composer_scores_directory,
                     directory_entry,
                     )
                 init_path = os.path.join(path, '__init__.py')
@@ -778,7 +776,6 @@ class Wrangler(AssetController):
         example_score_packages=True,
         user_score_packages=True,
         ):
-        configuration = self._session._configuration
         result = []
         if user_score_packages:
             result.append(configuration.composer_scores_directory)
@@ -975,7 +972,7 @@ class Wrangler(AssetController):
         confirmed = False 
         while not confirmed:
             package_path = os.path.join(
-                self._session._configuration.composer_scores_directory,
+                configuration.composer_scores_directory,
                 package_name,
                 )
             message = 'path will be {}.'.format(package_path)
@@ -1111,7 +1108,6 @@ class Wrangler(AssetController):
         if path is None:
             return
         assert isinstance(path, str), repr(path)
-        configuration = self._session._configuration
         if path.endswith('.py'):
             path, file_extension = os.path.splitext(path)
         if path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1136,7 +1132,6 @@ class Wrangler(AssetController):
         return package
 
     def _path_to_storehouse(self, path):
-        configuration = self._session._configuration
         is_in_score = False
         if path.startswith(configuration.composer_scores_directory):
             is_in_score = True
@@ -1688,7 +1683,7 @@ class Wrangler(AssetController):
             old = 'CATALOG NUMBER'
             new = str(catalog_number)
             replacements[old] = new
-        composer_website = self._session._configuration.composer_website
+        composer_website = configuration.composer_website
         if self._session.is_test:
             composer_website = 'www.composer-website.com'
         if composer_website:
@@ -1726,7 +1721,7 @@ class Wrangler(AssetController):
             old = 'YEAR'
             new = str(year)
             replacements[old] = new
-        composer = self._session._configuration.composer_uppercase_name
+        composer = configuration.composer_uppercase_name
         if self._session.is_test:
             composer = 'EXAMPLE COMPOSER NAME'
         if composer:
@@ -1747,8 +1742,7 @@ class Wrangler(AssetController):
         segment_names = result
         lilypond_names = [_.replace('_', '-') for _ in segment_names]
         source_path = os.path.join(
-            self._session._configuration.abjad_ide_directory,
-            'boilerplate',
+            configuration.abjad_ide_boilerplate_directory,
             'music.ly',
             )
         manager = self._session.current_score_package_manager
@@ -2104,7 +2098,7 @@ class Wrangler(AssetController):
             manager = self._current_package_manager
             metadatum_name = 'view_name'
         else:
-            manager = self._views_package_manager
+            manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, view_name)
 

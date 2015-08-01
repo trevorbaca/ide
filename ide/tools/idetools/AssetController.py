@@ -9,8 +9,10 @@ from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Command import Command
 from ide.tools.idetools.Controller import Controller
+configuration = AbjadIDEConfiguration()
 
 
 class AssetController(Controller):
@@ -79,17 +81,11 @@ class AssetController(Controller):
         return '# -*- encoding: utf-8 -*-'
 
     @property
-    def _views_package_manager(self):
-        path = self._session._configuration.abjad_ide_wrangler_views_directory
-        return self._io_manager._make_package_manager(path)
-
-    @property
     def _views_py_path(self):
         if self._session.is_in_score:
             directory = self._get_current_directory()
             return os.path.join(directory, '__views__.py')
         else:
-            configuration = self._session._configuration
             directory = configuration.abjad_ide_wrangler_views_directory
             class_name = type(self).__name__
             file_name = '__{}_views__.py'.format(class_name)
@@ -122,6 +118,10 @@ class AssetController(Controller):
                         elif value in self._commands:
                             result.append(value)
         return result
+
+    def _get_views_package_manager(self):
+        path = configuration.abjad_ide_wrangler_views_directory
+        return self._io_manager._make_package_manager(path)
 
     def _git_add(self, dry_run=False):
         directory = self._get_current_directory()
@@ -604,7 +604,6 @@ class AssetController(Controller):
             self._io_manager._display(message)
 
     def _path_to_annotation(self, path):
-        configuration = self._session._configuration
         score_storehouses = (
             configuration.abjad_ide_example_scores_directory,
             configuration.composer_scores_directory,
@@ -652,7 +651,6 @@ class AssetController(Controller):
 
     def _path_to_score_path(self, path):
         is_user_score = False
-        configuration = self._session._configuration
         if path.startswith(configuration.composer_scores_directory):
             is_user_score = True
             prefix = len(configuration.composer_scores_directory)
@@ -720,7 +718,7 @@ class AssetController(Controller):
             manager = self._current_package_manager
             metadatum_name = 'view_name'
         else:
-            manager = self._views_package_manager
+            manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         if not manager:
             return
