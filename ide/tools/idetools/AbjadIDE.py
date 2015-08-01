@@ -4,11 +4,10 @@ import shutil
 import sys
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
-from ide.tools.idetools.Controller import Controller
 configuration = AbjadIDEConfiguration()
 
 
-class AbjadIDE(Controller):
+class AbjadIDE(object):
     r'''Abjad IDE.
 
     ..  container:: example

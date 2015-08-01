@@ -11,11 +11,10 @@ from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Command import Command
-from ide.tools.idetools.Controller import Controller
 configuration = AbjadIDEConfiguration()
 
 
-class AssetController(Controller):
+class AssetController(object):
     r'''Asset controller.
     '''
 

@@ -4,10 +4,9 @@ import re
 import shlex
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
-from ide.tools.idetools.Controller import Controller
 
 
-class Menu(Controller):
+class Menu(object):
     r'''Menu.
 
     ..  container:: example

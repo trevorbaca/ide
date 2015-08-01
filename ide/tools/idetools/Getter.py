@@ -3,10 +3,9 @@ import re
 import functools
 import numbers
 from abjad import *
-from ide.tools.idetools.Controller import Controller
 
 
-class Getter(Controller):
+class Getter(object):
     r'''Getter.
     '''
 

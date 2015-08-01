@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
 from abjad.tools import stringtools
-from ide.tools.idetools.Controller import Controller
 
 
-class Selector(Controller):
+class Selector(object):
     r'''Selector.
     '''
 
