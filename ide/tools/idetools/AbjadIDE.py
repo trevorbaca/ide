@@ -35,7 +35,7 @@ class AbjadIDE(Controller):
             session._is_test = is_test
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
-#        self._io_manager = self._session._io_manager
+        self._io_manager = self._session._io_manager
         self._session._abjad_ide = self
         self._score_package_wrangler._supply_missing_views_files()
 

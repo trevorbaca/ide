@@ -34,7 +34,7 @@ class Selector(Controller):
         assert session is not None
         assert not (menu_entries and items)
         Controller.__init__(self, session=session)
-#        self._io_manager = self._session._io_manager
+        self._io_manager = self._session._io_manager
         self._is_numbered = is_numbered
         self._is_ranged = is_ranged
         self._items = items or []

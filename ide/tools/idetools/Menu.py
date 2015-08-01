@@ -56,7 +56,7 @@ class Menu(Controller):
         title=None,
         ):
         Controller.__init__(self, session=session)
-#        self._io_manager = self._session._io_manager
+        self._io_manager = self._session._io_manager
         self._menu_sections = []
         self._name = name
         self._subtitle = subtitle

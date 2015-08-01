@@ -53,7 +53,7 @@ class AssetController(Controller):
             self.invoke_shell,
             self.open_lilypond_log,
             ])
-#        self._io_manager = self._session._io_manager
+        self._io_manager = self._session._io_manager
 
     ### SPECIAL METHODS ###
 

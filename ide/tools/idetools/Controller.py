@@ -10,7 +10,6 @@ class Controller(object):
 
     __slots__ = (
         '_session',
-        '_io_manager',
         )
 
     ### INTIIALIZER ###
@@ -18,4 +17,3 @@ class Controller(object):
     def __init__(self, session=None):
         from ide.tools import idetools
         self._session = session or idetools.Session()
-        self._io_manager = idetools.IOManager(session=self._session)
