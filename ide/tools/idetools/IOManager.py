@@ -34,7 +34,6 @@ class IOManager(IOManager):
     ### INITIALIZER ###
 
     def __init__(self, client=None, session=None):
-        from ide.tools import idetools
         self._client = client
         self._session = session
 

@@ -25,6 +25,7 @@ class AssetController(Controller):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_commands',
+        '_io_manager',
         )
 
     known_secondary_assets = (
@@ -52,6 +53,16 @@ class AssetController(Controller):
             self.invoke_shell,
             self.open_lilypond_log,
             ])
+#        self._io_manager = self._session._io_manager
+
+    ### SPECIAL METHODS ###
+
+    def __repr__(self):
+        r'''Gets interpreter representation of asset controller.
+
+        Returns string.
+        '''
+        return '{}()'.format(type(self).__name__)
 
     ### PRIVATE PROPERTIES ###
 

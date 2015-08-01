@@ -9,8 +9,8 @@ class Controller(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_io_manager',
         '_session',
+        '_io_manager',
         )
 
     ### INTIIALIZER ###
@@ -22,12 +22,3 @@ class Controller(object):
             client=self,
             session=self._session,
             )
-
-    ### SPECIAL METHODS ###
-
-    def __repr__(self):
-        r'''Gets interpreter representation of controller.
-
-        Returns string.
-        '''
-        return '{}()'.format(type(self).__name__)

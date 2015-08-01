@@ -39,6 +39,7 @@ class Menu(Controller):
 
     __slots__ = (
         '_asset_section',
+        '_io_manager',
         '_menu_sections',
         '_name',
         '_subtitle',
@@ -55,6 +56,7 @@ class Menu(Controller):
         title=None,
         ):
         Controller.__init__(self, session=session)
+#        self._io_manager = self._session._io_manager
         self._menu_sections = []
         self._name = name
         self._subtitle = subtitle

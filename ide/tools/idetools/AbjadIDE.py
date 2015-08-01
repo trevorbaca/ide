@@ -23,6 +23,7 @@ class AbjadIDE(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_io_manager',
         )
 
     ### INITIALIZER ###
@@ -34,8 +35,18 @@ class AbjadIDE(Controller):
             session._is_test = is_test
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
+#        self._io_manager = self._session._io_manager
         self._session._abjad_ide = self
         self._score_package_wrangler._supply_missing_views_files()
+
+    ### SPECIAL METHODS ###
+
+    def __repr__(self):
+        r'''Gets interpreter representation of asset controller.
+
+        Returns string.
+        '''
+        return '{}()'.format(type(self).__name__)
 
     ### PRIVATE PROPERTIES ###
 

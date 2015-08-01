@@ -20,6 +20,7 @@ class Getter(Controller):
         '_evaluated_input',
         '_include_newlines',
         '_include_chevron',
+        '_io_manager',
         '_number_prompts',
         '_prompt_index',
         '_messages',
@@ -43,6 +44,7 @@ class Getter(Controller):
         self._capitalize_prompts = capitalize_prompts
         self._include_chevron = include_chevron
         self._include_newlines = include_newlines
+#        self._io_manager = self._session._io_manager
         self._number_prompts = number_prompts
 
     ### SPECIAL METHODS ###
