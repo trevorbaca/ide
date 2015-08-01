@@ -18,7 +18,4 @@ class Controller(object):
     def __init__(self, session=None):
         from ide.tools import idetools
         self._session = session or idetools.Session()
-        self._io_manager = idetools.IOManager(
-            client=self,
-            session=self._session,
-            )
+        self._io_manager = idetools.IOManager(session=self._session)

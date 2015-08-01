@@ -27,14 +27,12 @@ class IOManager(IOManager):
     ### CLASS VARAIBLES ###
 
     __slots__ = (
-        '_client',
         '_session',
         )
 
     ### INITIALIZER ###
 
-    def __init__(self, client=None, session=None):
-        self._client = client
+    def __init__(self, session=None):
         self._session = session
 
     ### SPECIAL METHODS ###
@@ -281,7 +279,6 @@ class IOManager(IOManager):
         from ide.tools import idetools
         return idetools.Interaction(
             confirm=confirm,
-#            controller=self.client,
             controller=controller,
             display=display,
             dry_run=dry_run,
@@ -381,33 +378,11 @@ class IOManager(IOManager):
         from ide.tools import idetools
         return idetools.Interaction(
             confirm=False,
-#            controller=self.client,
             controller=controller,
             display=False,
             dry_run=False,
             task=False,
             )
-
-    ### PUBLIC PROPERTIES ###
-
-    @property
-    def client(self):
-        r'''Gets client of IO manager.
-
-        Returns Abjad IDE object.
-        '''
-        return self._client
-
-    @property
-    def selector(self):
-        r'''Gets dummy selector.
-
-        Use for access to selector make methods.
-
-        Returns selector.
-        '''
-        from ide.tools import idetools
-        return idetools.Selector(session=self._session)
 
     ### PUBLIC METHODS ###
 
