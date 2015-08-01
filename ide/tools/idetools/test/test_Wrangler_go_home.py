@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_go_to_all_score_directories_01():
+def test_Wrangler_go_home_01():
 
     input_ = 'h q'
     abjad_ide._run(input_=input_)

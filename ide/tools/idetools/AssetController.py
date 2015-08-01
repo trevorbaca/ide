@@ -41,7 +41,7 @@ class AssetController(Controller):
         self._controller_commands = []
         self._controller_commands.extend([
             self.go_back,
-            self.go_to_all_score_directories,
+            self.go_home,
             self.go_to_score_directory,
             self.quit_abjad_ide,
             self.display_action_commands,
@@ -833,53 +833,8 @@ class AssetController(Controller):
         self._session._display_action_commands = False
         self._session._display_navigation_commands = False
 
-    @Command('uu', 'go to all build directories', 'comparison', True)
-    def go_to_all_build_directories(self):
-        r'''Goes to all build files.
-
-        Returns none.
-        '''
-        self.go_to_all_score_directories()
-        self._session._is_navigating_to_build_files = True
-
-    @Command('dd', 'go to all distribution directories', 'comparison', True)
-    def go_to_all_distribution_directories(self):
-        r'''Goes to all distribution files.
-
-        Returns none.
-        '''
-        self.go_to_all_score_directories()
-        self._session._is_navigating_to_distribution_files = True
-
-    @Command('ee', 'go to all etc directories', 'comparison', True)
-    def go_to_all_etc_directories(self):
-        r'''Goes to all etc files.
-
-        Returns none.
-        '''
-        self.go_to_all_score_directories()
-        self._session._is_navigating_to_etc_files = True
-
-    @Command('kk', 'go to all makers directories', 'comparison', True)
-    def go_to_all_makers_directories(self):
-        r'''Goes to all maker files.
-
-        Returns none.
-        '''
-        self.go_to_all_score_directories()
-        self._session._is_navigating_to_maker_files = True
-
-    @Command('mm', 'go to all materials directories', 'comparison', True)
-    def go_to_all_materials_directories(self):
-        r'''Goes to all materials.
-
-        Returns none.
-        '''
-        self.go_to_all_score_directories()
-        self._session._is_navigating_to_materials = True
-
     @Command('h', 'home', 'back-home-quit', True)
-    def go_to_all_score_directories(self):
+    def go_home(self):
         r'''Goes to all score directories.
 
         Returns none.
@@ -889,13 +844,58 @@ class AssetController(Controller):
         self._session._display_action_commands = False
         self._session._display_navigation_commands = False
 
+    @Command('uu', 'go to all build directories', 'comparison', True)
+    def go_to_all_build_directories(self):
+        r'''Goes to all build files.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._is_navigating_to_build_files = True
+
+    @Command('dd', 'go to all distribution directories', 'comparison', True)
+    def go_to_all_distribution_directories(self):
+        r'''Goes to all distribution files.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._is_navigating_to_distribution_files = True
+
+    @Command('ee', 'go to all etc directories', 'comparison', True)
+    def go_to_all_etc_directories(self):
+        r'''Goes to all etc files.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._is_navigating_to_etc_files = True
+
+    @Command('kk', 'go to all makers directories', 'comparison', True)
+    def go_to_all_makers_directories(self):
+        r'''Goes to all maker files.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._is_navigating_to_maker_files = True
+
+    @Command('mm', 'go to all materials directories', 'comparison', True)
+    def go_to_all_materials_directories(self):
+        r'''Goes to all materials.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._is_navigating_to_materials = True
+
     @Command('gg', 'go to all segments directories', 'comparison', True)
     def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
         Returns none.
         '''
-        self.go_to_all_score_directories()
+        self.go_home()
         self._session._is_navigating_to_segments = True
 
     @Command('yy', 'go to all stylesheets directories', 'comparison', True)
@@ -904,7 +904,7 @@ class AssetController(Controller):
 
         Returns none.
         '''
-        self.go_to_all_score_directories()
+        self.go_home()
         self._session._is_navigating_to_stylesheets = True
 
     @Command('>', 'go to next package', 'sibling package', True)
