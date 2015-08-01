@@ -47,7 +47,7 @@ class Wrangler(AssetController):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._controller_commands.extend([
+        self._commands.extend([
             self.edit_abbreviations_file,
             self.edit_score_stylesheet,
             self.go_to_score_build_directory,
@@ -249,7 +249,7 @@ class Wrangler(AssetController):
         commands.append(self.interpret_preface)
         commands.append(self.interpret_score)
         commands.append(self.push_score_pdf_to_distribution_directory)
-        self._controller_commands.extend(commands)
+        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_file_directory_entry
         self._directory_name = 'build'
@@ -295,7 +295,7 @@ class Wrangler(AssetController):
         commands.append(self.open_every_illustration_pdf)
         commands.append(self.go_to_next_package)
         commands.append(self.go_to_previous_package)
-        self._controller_commands.extend(commands)
+        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'materials'
@@ -322,7 +322,7 @@ class Wrangler(AssetController):
         commands.append(self.go_to_all_materials_directories)
         commands.append(self.go_to_all_segments_directories)
         commands.append(self.go_to_all_stylesheets_directories)
-        self._controller_commands.extend(commands)
+        self._commands.extend(commands)
         self._group_asset_section_by_annotation = False
         self._hide_breadcrumb_while_in_score = True
         self._only_example_scores_during_test = True
@@ -339,7 +339,7 @@ class Wrangler(AssetController):
         commands.append(self.open_every_illustration_pdf)
         commands.append(self.go_to_next_package)
         commands.append(self.go_to_previous_package)
-        self._controller_commands.extend(commands)
+        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'segments'

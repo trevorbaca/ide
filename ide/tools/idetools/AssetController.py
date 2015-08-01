@@ -22,7 +22,7 @@ class AssetController(Controller):
     __slots__ = (
         '_asset_identifier',
         '_basic_breadcrumb',
-        '_controller_commands',
+        '_commands',
         )
 
     known_secondary_assets = (
@@ -39,8 +39,8 @@ class AssetController(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._controller_commands = []
-        self._controller_commands.extend([
+        self._commands = []
+        self._commands.extend([
             self.go_back,
             self.go_home,
             self.go_to_score_directory,
@@ -118,7 +118,7 @@ class AssetController(Controller):
                     if hasattr(value, 'command_name'):
                         if not only_my_methods:
                             result.append(value)
-                        elif value in self._controller_commands:
+                        elif value in self._commands:
                             result.append(value)
         return result
 
