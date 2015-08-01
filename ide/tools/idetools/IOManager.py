@@ -272,6 +272,7 @@ class IOManager(IOManager):
 
     def _make_interaction(
         self,
+        controller,
         confirm=True,
         display=True,
         dry_run=False,
@@ -280,7 +281,8 @@ class IOManager(IOManager):
         from ide.tools import idetools
         return idetools.Interaction(
             confirm=confirm,
-            controller=self.client,
+#            controller=self.client,
+            controller=controller,
             display=display,
             dry_run=dry_run,
             task=task,
@@ -375,11 +377,12 @@ class IOManager(IOManager):
             line = line.strip()
         return line
 
-    def _silent(self):
+    def _silent(self, controller):
         from ide.tools import idetools
         return idetools.Interaction(
             confirm=False,
-            controller=self.client,
+#            controller=self.client,
+            controller=controller,
             display=False,
             dry_run=False,
             task=False,
@@ -407,17 +410,6 @@ class IOManager(IOManager):
         return idetools.Selector(session=self._session)
 
     ### PUBLIC METHODS ###
-
-    def check_file(self, path):
-        r'''Checks file `path`.
-
-        Silently interprets file `path` with Python or LilyPond.
-
-        Returns stderr lines; nonempty list means interpretation raised errors.
-        '''
-        with self._silent():
-            stdout_lines, stderr_lines = self.interpret_file(path)
-        return stderr_lines
 
     def edit(self, path, line_number=None):
         r'''Edits file `path`.

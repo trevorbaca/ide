@@ -165,7 +165,7 @@ class PackageManager(AssetController):
         assert ' ' not in metadatum_name, repr(metadatum_name)
         metadata = self._get_metadata()
         metadata[metadatum_name] = metadatum_value
-        with self._io_manager._silent():
+        with self._io_manager._silent(self):
             self._write_metadata_py(metadata)
 
     def _configure_as_material_package_manager(self):
@@ -624,7 +624,7 @@ class PackageManager(AssetController):
     def _make_package(self):
         assert not os.path.exists(self._path)
         os.mkdir(self._path)
-        with self._io_manager._silent():
+        with self._io_manager._silent(self):
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
@@ -699,7 +699,7 @@ class PackageManager(AssetController):
         except KeyError:
             pass
         if was_removed:
-            with self._io_manager._silent():
+            with self._io_manager._silent(self):
                 self._write_metadata_py(metadata)
 
     def _rename(self, new_path):
@@ -804,11 +804,11 @@ class PackageManager(AssetController):
             assert not self._is_up_to_date()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
-            with self._io_manager._silent():
+            with self._io_manager._silent(self):
                 self.add()
             assert self._get_unadded_asset_paths() == []
             assert self._get_added_asset_paths() == [path_1, path_2]
-            with self._io_manager._silent():
+            with self._io_manager._silent(self):
                 self._unadd_added_assets()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
@@ -828,7 +828,7 @@ class PackageManager(AssetController):
                 file_pointer.write(string)
             assert not self._is_up_to_date()
             assert self._get_modified_asset_paths() == [file_path]
-            with self._io_manager._silent():
+            with self._io_manager._silent(self):
                 self.revert()
         assert self._get_modified_asset_paths() == []
         assert self._is_up_to_date()
@@ -895,7 +895,9 @@ class PackageManager(AssetController):
         if dry_run:
             inputs.append(self._definition_py_path)
             return inputs, outputs
-        stderr_lines = self._io_manager.check_file(self._definition_py_path)
+        with self._io_manager._silent(self):
+            stdout_lines, stderr_lines = self._io_manager.interpret_file(
+                self._definition_py_path)
         if stderr_lines:
             messages = [self._definition_py_path + ' FAILED:']
             messages.extend('    ' + _ for _ in stderr_lines)
@@ -1060,7 +1062,7 @@ class PackageManager(AssetController):
                 controller=self,
                 current_score_directory=self._path,
                 )
-            silence = self._io_manager._silent()
+            silence = self._io_manager._silent(self)
             with controller, silence:
                 tab = self._io_manager._tab
                 for wrangler in wranglers:
@@ -1257,7 +1259,7 @@ class PackageManager(AssetController):
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
-            with self._io_manager._silent():
+            with self._io_manager._silent(self):
                 start_time = time.time()
                 result = self._io_manager.interpret_file(
                     illustrate_path,
@@ -1352,7 +1354,7 @@ class PackageManager(AssetController):
 
         Returns none.
         '''
-        with self._io_manager._make_interaction(dry_run=dry_run):
+        with self._io_manager._make_interaction(self, dry_run=dry_run):
             file_name = 'score.pdf'
             directory = os.path.join(self._path, 'distribution')
             manager = self._io_manager._make_package_manager(directory)

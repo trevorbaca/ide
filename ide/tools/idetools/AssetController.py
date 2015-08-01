@@ -474,7 +474,7 @@ class AssetController(Controller):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(self):
             if result.startswith('!'):
                 statement = result[1:]
                 self._io_manager._invoke_shell(statement)
@@ -483,7 +483,7 @@ class AssetController(Controller):
             elif (result.endswith('!') and 
                 result[:-1] in self._command_name_to_method):
                 result = result[:-1]
-                with self._io_manager._make_interaction(confirm=False):
+                with self._io_manager._make_interaction(self, confirm=False):
                     self._command_name_to_method[result]()
             else:
                 self._handle_numeric_user_input(result)
