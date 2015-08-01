@@ -49,7 +49,7 @@ def test_Wrangler_check_every_package_02():
     '''
 
     score_directory = os.path.join(
-        abjad_ide._configuration.abjad_ide_example_scores_directory,
+        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         )
@@ -67,7 +67,7 @@ def test_Wrangler_check_every_package_03():
     '''
 
     segment_directory = os.path.join(
-        abjad_ide._configuration.abjad_ide_example_scores_directory,
+        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',

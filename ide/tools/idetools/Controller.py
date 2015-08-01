@@ -9,7 +9,6 @@ class Controller(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_configuration',
         '_io_manager',
         '_session',
         )
@@ -18,7 +17,6 @@ class Controller(object):
 
     def __init__(self, session=None):
         from ide.tools import idetools
-        self._configuration = idetools.AbjadIDEConfiguration()
         self._session = session or idetools.Session()
         self._io_manager = idetools.IOManager(
             client=self,

@@ -80,7 +80,7 @@ class AssetController(Controller):
 
     @property
     def _views_package_manager(self):
-        path = self._configuration.abjad_ide_wrangler_views_directory
+        path = self._session._configuration.abjad_ide_wrangler_views_directory
         return self._io_manager._make_package_manager(path)
 
     @property
@@ -89,7 +89,8 @@ class AssetController(Controller):
             directory = self._get_current_directory()
             return os.path.join(directory, '__views__.py')
         else:
-            directory = self._configuration.abjad_ide_wrangler_views_directory
+            configuration = self._session._configuration
+            directory = configuration.abjad_ide_wrangler_views_directory
             class_name = type(self).__name__
             file_name = '__{}_views__.py'.format(class_name)
             return os.path.join(directory, file_name)
@@ -603,9 +604,10 @@ class AssetController(Controller):
             self._io_manager._display(message)
 
     def _path_to_annotation(self, path):
+        configuration = self._session._configuration
         score_storehouses = (
-            self._configuration.abjad_ide_example_scores_directory,
-            self._configuration.composer_scores_directory,
+            configuration.abjad_ide_example_scores_directory,
+            configuration.composer_scores_directory,
             )
         if path.startswith(score_storehouses):
             score_path = self._path_to_score_path(path)
@@ -622,7 +624,7 @@ class AssetController(Controller):
             else:
                 package_name = os.path.basename(path)
                 annotation = package_name
-        elif path.startswith(self._configuration.abjad_root_directory):
+        elif path.startswith(configuration.abjad_root_directory):
             annotation = 'Abjad'
         else:
             annotation = None
@@ -650,11 +652,12 @@ class AssetController(Controller):
 
     def _path_to_score_path(self, path):
         is_user_score = False
-        if path.startswith(self._configuration.composer_scores_directory):
+        configuration = self._session._configuration
+        if path.startswith(configuration.composer_scores_directory):
             is_user_score = True
-            prefix = len(self._configuration.composer_scores_directory)
-        elif path.startswith(self._configuration.abjad_ide_example_scores_directory):
-            prefix = len(self._configuration.abjad_ide_example_scores_directory)
+            prefix = len(configuration.composer_scores_directory)
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            prefix = len(configuration.abjad_ide_example_scores_directory)
         else:
             return
         path_prefix = path[:prefix]

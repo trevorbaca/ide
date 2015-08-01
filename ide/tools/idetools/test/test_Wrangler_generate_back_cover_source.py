@@ -12,12 +12,12 @@ def test_Wrangler_generate_back_cover_source_01():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.abjad_ide_directory,
+        abjad_ide._session._configuration.abjad_ide_directory,
         'boilerplate',
         'back-cover.tex',
         )
     destination_path = os.path.join(
-        abjad_ide._configuration.abjad_ide_example_scores_directory,
+        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
         'blue_example_score',
         'blue_example_score',
         'build',
@@ -48,12 +48,12 @@ def test_Wrangler_generate_back_cover_source_02():
     '''
 
     source_path = os.path.join(
-        abjad_ide._configuration.abjad_ide_directory,
+        abjad_ide._session._configuration.abjad_ide_directory,
         'boilerplate',
         'back-cover.tex',
         )
     destination_path = os.path.join(
-        abjad_ide._configuration.abjad_ide_example_scores_directory,
+        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

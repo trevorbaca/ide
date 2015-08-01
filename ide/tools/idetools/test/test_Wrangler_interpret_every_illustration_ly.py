@@ -10,7 +10,7 @@ def test_Wrangler_interpret_every_illustration_ly_01():
     r'''Does not display candidate messages for materials.
     '''
 
-    path = abjad_ide._configuration.abjad_ide_example_scores_directory
+    path = abjad_ide._session._configuration.abjad_ide_example_scores_directory
     path = os.path.join(
         path, 
         'red_example_score', 
@@ -58,7 +58,7 @@ def test_Wrangler_interpret_every_illustration_ly_02():
     r'''Does display candidate messages for materials.
     '''
 
-    path = abjad_ide._configuration.abjad_ide_example_scores_directory
+    path = abjad_ide._session._configuration.abjad_ide_example_scores_directory
     path = os.path.join(
         path, 
         'red_example_score', 
@@ -97,7 +97,7 @@ def test_Wrangler_interpret_every_illustration_ly_03():
     r'''Does not display candidate messages for segments.
     '''
 
-    path = abjad_ide._configuration.abjad_ide_example_scores_directory
+    path = abjad_ide._session._configuration.abjad_ide_example_scores_directory
     path = os.path.join(
         path, 
         'red_example_score', 
@@ -145,7 +145,7 @@ def test_Wrangler_interpret_every_illustration_ly_04():
     r'''Does display candidate messages for segments.
     '''
 
-    path = abjad_ide._configuration.abjad_ide_example_scores_directory
+    path = abjad_ide._session._configuration.abjad_ide_example_scores_directory
     path = os.path.join(
         path, 
         'red_example_score', 

@@ -109,15 +109,15 @@ class PackageManager(AssetController):
 
     @property
     def _outer_path(self):
-        if self._path.startswith(
-            self._configuration.composer_scores_directory):
+        configuration = self._session._configuration
+        if self._path.startswith(configuration.composer_scores_directory):
             return os.path.join(
-                self._configuration.composer_scores_directory,
+                configuration.composer_scores_directory,
                 self._package_name
                 )
         else:
             return os.path.join(
-                self._configuration.abjad_ide_example_scores_directory,
+                configuration.abjad_ide_example_scores_directory,
                 self._package_name
                 )
 
@@ -250,7 +250,7 @@ class PackageManager(AssetController):
     def _copy_boilerplate(self, file_name, replacements=None):
         replacements = replacements or {}
         source_path = os.path.join(
-            self._configuration.abjad_ide_directory,
+            self._session._configuration.abjad_ide_directory,
             'boilerplate',
             file_name,
             )
@@ -454,9 +454,9 @@ class PackageManager(AssetController):
 
     def _get_score_package_directory_name(self):
         line = self._path
-        path = self._configuration.abjad_ide_example_scores_directory
+        path = self._session._configuration.abjad_ide_example_scores_directory
         line = line.replace(path, '')
-        path = self._configuration.composer_scores_directory
+        path = self._session._configuration.composer_scores_directory
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line
@@ -858,10 +858,11 @@ class PackageManager(AssetController):
         self._copy_boilerplate('README.md')
         self._copy_boilerplate('requirements.txt')
         self._copy_boilerplate('setup.cfg')
+        configuration = self._session._configuration
         replacements = {
-            'COMPOSER_EMAIL': self._configuration.composer_email,
-            'COMPOSER_FULL_NAME': self._configuration.composer_full_name,
-            'COMPOSER_GITHUB_USERNAME': self._configuration.composer_github_username,
+            'COMPOSER_EMAIL': configuration.composer_email,
+            'COMPOSER_FULL_NAME': configuration.composer_full_name,
+            'COMPOSER_GITHUB_USERNAME': configuration.composer_github_username,
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate('setup.py', replacements=replacements)
@@ -1142,7 +1143,7 @@ class PackageManager(AssetController):
                 lines.append(line)
             elif missing_file.endswith('definition.py'):
                 source_path = os.path.join(
-                    self._configuration.abjad_ide_directory,
+                    self._session._configuration.abjad_ide_directory,
                     'boilerplate',
                     'definition.py',
                     )
@@ -1204,7 +1205,7 @@ class PackageManager(AssetController):
             return
         self._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
-            self._configuration.abjad_ide_directory,
+            self._session._configuration.abjad_ide_directory,
             'boilerplate',
             '__illustrate_segment__.py',
             )

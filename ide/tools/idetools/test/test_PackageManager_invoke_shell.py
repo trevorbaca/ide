@@ -11,7 +11,7 @@ def test_PackageManager_invoke_shell_01():
     abjad_ide._run(input_=input_)
 
     path = os.path.join(
-        abjad_ide._configuration.abjad_ide_example_scores_directory,
+        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
