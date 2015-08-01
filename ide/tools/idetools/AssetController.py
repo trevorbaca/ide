@@ -823,6 +823,16 @@ class AssetController(Controller):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
+    @Command('b', 'back', 'back-home-quit', True)
+    def go_back(self):
+        r'''Goes back.
+
+        Returns none.
+        '''
+        self._session._is_backtracking_locally = True
+        self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
+
     @Command('uu', 'go to all build directories', 'comparison', True)
     def go_to_all_build_directories(self):
         r'''Goes to all build files.
@@ -867,6 +877,17 @@ class AssetController(Controller):
         '''
         self.go_to_all_score_directories()
         self._session._is_navigating_to_materials = True
+
+    @Command('h', 'home', 'back-home-quit', True)
+    def go_to_all_score_directories(self):
+        r'''Goes to all score directories.
+
+        Returns none.
+        '''
+        self._session._is_navigating_home = False
+        self._session._is_navigating_to_scores = True
+        self._session._display_action_commands = False
+        self._session._display_navigation_commands = False
 
     @Command('gg', 'go to all segments directories', 'comparison', True)
     def go_to_all_segments_directories(self):
@@ -932,6 +953,17 @@ class AssetController(Controller):
         '''
         self._session._abjad_ide._build_file_wrangler._run()
 
+    @Command('s', 'go to score', 'system', True)
+    def go_to_score_directory(self):
+        r'''Goes to current score.
+
+        Returns none.
+        '''
+        if self._session.is_in_score:
+            self._session._is_backtracking_to_score = True
+            self._session._display_action_commands = False
+            self._session._display_navigation_commands = False
+            
     @Command('d', 'go to distribution directory', 'navigation', True)
     def go_to_score_distribution_directory(self):
         r'''Goes to distribution files.

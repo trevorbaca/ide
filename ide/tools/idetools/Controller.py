@@ -71,38 +71,6 @@ class Controller(object):
 
     ### PUBLIC METHODS ###
 
-    @Command('b', 'back', 'back-home-quit', True)
-    def go_back(self):
-        r'''Goes back.
-
-        Returns none.
-        '''
-        self._session._is_backtracking_locally = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
-
-    @Command('h', 'home', 'back-home-quit', True)
-    def go_to_all_score_directories(self):
-        r'''Goes to all score directories.
-
-        Returns none.
-        '''
-        self._session._is_navigating_home = False
-        self._session._is_navigating_to_scores = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
-
-    @Command('s', 'go to score', 'system', True)
-    def go_to_score_directory(self):
-        r'''Goes to current score.
-
-        Returns none.
-        '''
-        if self._session.is_in_score:
-            self._session._is_backtracking_to_score = True
-            self._session._display_action_commands = False
-            self._session._display_navigation_commands = False
-
     @Command('q', 'quit', 'back-home-quit', True)
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
