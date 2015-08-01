@@ -3,6 +3,7 @@ import os
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_Wrangler_check_every_definition_py_01():
@@ -21,7 +22,7 @@ def test_Wrangler_check_every_definition_py_01():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+            configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
             'materials',
@@ -53,7 +54,7 @@ def test_Wrangler_check_every_definition_py_02():
     paths = []
     for package_name in package_names:
         path = os.path.join(
-            abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+            configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
             'segments',

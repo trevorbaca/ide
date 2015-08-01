@@ -4,6 +4,7 @@ import os
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_Wrangler_generate_front_cover_source_01():
@@ -13,7 +14,7 @@ def test_Wrangler_generate_front_cover_source_01():
     '''
 
     cover_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -38,7 +39,7 @@ def test_Wrangler_generate_front_cover_source_02():
     '''
 
     cover_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

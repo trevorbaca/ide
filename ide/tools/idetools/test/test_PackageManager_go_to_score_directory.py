@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageManager_go_to_score_director_01():
+def test_PackageManager_go_to_score_directory_01():
     r'''From material package.
     '''
 
@@ -21,7 +21,7 @@ def test_PackageManager_go_to_score_director_01():
     assert abjad_ide._session._transcript.titles == titles
 
 
-def test_PackageManager_go_to_score_director_02():
+def test_PackageManager_go_to_score_directory_02():
     r'''From segment package.
     '''
 
@@ -37,7 +37,7 @@ def test_PackageManager_go_to_score_director_02():
     assert abjad_ide._session._transcript.titles == titles
 
 
-def test_PackageManager_go_to_score_director_03():
+def test_PackageManager_go_to_score_directory_03():
     r'''From score package.
     '''
 

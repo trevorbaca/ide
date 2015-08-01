@@ -3,8 +3,8 @@ import os
 import shutil
 from abjad import *
 import ide
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_Wrangler_push_score_pdf_to_distribution_directory_01():
@@ -12,7 +12,7 @@ def test_Wrangler_push_score_pdf_to_distribution_directory_01():
     '''
 
     distribution_score_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'distribution',

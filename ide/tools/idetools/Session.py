@@ -4,6 +4,8 @@ import os
 from abjad.tools import abctools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+configuration = AbjadIDEConfiguration()
 
 
 class Session(abctools.AbjadObject):
@@ -46,7 +48,6 @@ class Session(abctools.AbjadObject):
         '_clear_terminal_after_quit',
         '_command_history',
         '_confirm',
-        '_configuration',
         '_controller_stack',
         '_current_score_directory',
         '_display',
@@ -101,7 +102,6 @@ class Session(abctools.AbjadObject):
         self._attempted_to_update = False
         self._clear_terminal_after_quit = False
         self._command_history = []
-        self._configuration = idetools.AbjadIDEConfiguration()
         self._confirm = True
         self._controller_stack = []
         self._current_score_directory = None
@@ -169,8 +169,7 @@ class Session(abctools.AbjadObject):
     def _clean_up(self):
         if self.is_test:
             return
-        transcripts_directory = \
-            self._configuration.abjad_ide_transcripts_directory
+        transcripts_directory = configuration.abjad_ide_transcripts_directory
         transcripts = sorted(os.listdir(transcripts_directory))
         count = len(transcripts)
         if 9000 <= count:
@@ -263,7 +262,7 @@ class Session(abctools.AbjadObject):
         Returns ordered dictionary.
         '''
         aliases = None
-        file_path = self._configuration.abjad_ide_aliases_file_path
+        file_path = configuration.abjad_ide_aliases_file_path
         if os.path.isfile(file_path):
             with open(file_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()

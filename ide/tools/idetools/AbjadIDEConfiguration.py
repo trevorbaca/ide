@@ -11,8 +11,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
         ::
 
-            >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-            >>> configuration = abjad_ide._session._configuration
+            >>> configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
         ::
 

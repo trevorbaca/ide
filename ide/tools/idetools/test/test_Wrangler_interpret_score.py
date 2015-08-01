@@ -4,6 +4,7 @@ import os
 import pytest
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_Wrangler_interpret_score_01():
@@ -11,14 +12,14 @@ def test_Wrangler_interpret_score_01():
     '''
 
     tex_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.tex',
         )
     pdf_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
@@ -44,14 +45,14 @@ def test_Wrangler_interpret_score_02():
     '''
 
     tex_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'score.tex',
         )
     pdf_path = os.path.join(
-        abjad_ide._session._configuration.abjad_ide_example_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',

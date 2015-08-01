@@ -3,6 +3,7 @@ import os
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_Wrangler_remove_01():
@@ -10,11 +11,11 @@ def test_Wrangler_remove_01():
     '''
 
     outer_path = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_100',
         )
     inner_path = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_100',
         'example_score_100',
         )
@@ -39,22 +40,22 @@ def test_Wrangler_remove_02():
     '''
 
     path_100_outer = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_100',
         'example_score_100',
         )
     path_100_inner = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_100',
         'example_score_100',
         )
     path_101_outer = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_101',
         'example_score_101',
         )
     path_101_inner = os.path.join(
-        abjad_ide._session._configuration.composer_scores_directory,
+        configuration.composer_scores_directory,
         'example_score_101',
         'example_score_101',
         )
