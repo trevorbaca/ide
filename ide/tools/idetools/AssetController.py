@@ -25,7 +25,7 @@ class AssetController(Controller):
         '_asset_identifier',
         '_basic_breadcrumb',
         '_commands',
-        '_io_manager',
+        '_session',
         )
 
     known_secondary_assets = (
@@ -38,8 +38,8 @@ class AssetController(Controller):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        superclass = super(AssetController, self)
-        superclass.__init__(session=session)
+        assert session is not None
+        self._session = session
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._commands = []
@@ -53,7 +53,6 @@ class AssetController(Controller):
             self.invoke_shell,
             self.open_lilypond_log,
             ])
-        self._io_manager = self._session._io_manager
 
     ### SPECIAL METHODS ###
 
@@ -77,6 +76,10 @@ class AssetController(Controller):
         for method in methods:
             result[method.command_name] = method
         return result
+
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
 
     @property
     def _navigation_commands(self):

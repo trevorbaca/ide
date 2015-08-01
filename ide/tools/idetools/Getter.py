@@ -20,11 +20,11 @@ class Getter(Controller):
         '_evaluated_input',
         '_include_newlines',
         '_include_chevron',
-        '_io_manager',
         '_number_prompts',
         '_prompt_index',
         '_messages',
         '_prompts',
+        '_session',
         )
 
     ### INITIALIZER ###
@@ -38,13 +38,13 @@ class Getter(Controller):
         include_newlines=False,
         number_prompts=False,
         ):
-        Controller.__init__(self, session=session)
+        assert session is not None
+        self._session = session
         self._prompts = []
         self._allow_none = allow_none
         self._capitalize_prompts = capitalize_prompts
         self._include_chevron = include_chevron
         self._include_newlines = include_newlines
-        self._io_manager = self._session._io_manager
         self._number_prompts = number_prompts
 
     ### SPECIAL METHODS ###
@@ -82,6 +82,10 @@ class Getter(Controller):
     @property
     def _current_prompt(self):
         return self.prompts[self._prompt_index]
+
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
 
     ### PRIVATE METHODS ###
 

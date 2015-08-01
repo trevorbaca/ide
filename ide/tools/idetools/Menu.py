@@ -39,9 +39,9 @@ class Menu(Controller):
 
     __slots__ = (
         '_asset_section',
-        '_io_manager',
         '_menu_sections',
         '_name',
+        '_session',
         '_subtitle',
         '_title',
         )
@@ -55,8 +55,8 @@ class Menu(Controller):
         subtitle=None,
         title=None,
         ):
-        Controller.__init__(self, session=session)
-        self._io_manager = self._session._io_manager
+        assert session is not None
+        self._session = session
         self._menu_sections = []
         self._name = name
         self._subtitle = subtitle
@@ -98,6 +98,12 @@ class Menu(Controller):
             string = '<{} ({})>'
             string = string.format(type(self).__name__, len(self))
         return string
+
+    ### PRIVATE PROPERTIES ###
+
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
 
     ### PRIVATE METHODS ###
 

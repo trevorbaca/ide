@@ -10,12 +10,12 @@ class Selector(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_io_manager',
         '_is_numbered',
         '_is_ranged',
         '_items',
         '_menu_entries',
         '_return_value_attribute',
+        '_session',
         '_target_name',
         )
 
@@ -33,8 +33,7 @@ class Selector(Controller):
         ):
         assert session is not None
         assert not (menu_entries and items)
-        Controller.__init__(self, session=session)
-        self._io_manager = self._session._io_manager
+        self._session = session
         self._is_numbered = is_numbered
         self._is_ranged = is_ranged
         self._items = items or []
@@ -50,6 +49,12 @@ class Selector(Controller):
         Returns string.
         '''
         return '{}()'.format(type(self).__name__)
+
+    ### PRIVATE PROPERTIES ###
+
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
 
     ### PRIVATE METHODS ###
 
