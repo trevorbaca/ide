@@ -33,7 +33,7 @@ def test_Wrangler_collect_segment_lilypond_files_01():
         for segment_path in segment_paths:
             assert os.path.isfile(segment_path)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     assert 'Will copy ...' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
@@ -63,7 +63,7 @@ def test_Wrangler_collect_segment_lilypond_files_02():
         input_ = 'red~example~score u mc y q'
         abjad_ide._run(input_=input_)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     assert 'Will copy ...' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents

@@ -18,4 +18,4 @@ def test_PackageManager_invoke_shell_01():
         'tempo_inventory',
         )
     string = '\n{}\n'.format(path)
-    assert string in abjad_ide._transcript.contents
+    assert string in abjad_ide._session._transcript.contents

@@ -14,4 +14,4 @@ def test_Wrangler_go_to_all_segments_directories_01():
         'Abjad IDE - all score directories',
         'Abjad IDE - all segments directories',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles

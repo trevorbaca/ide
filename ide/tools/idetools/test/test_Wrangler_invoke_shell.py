@@ -16,7 +16,7 @@ def test_Wrangler_invoke_shell_01():
         abjad_ide._configuration.abjad_ide_directory,
         )
     string = '\n{}\n'.format(path)
-    assert string in abjad_ide._transcript.contents
+    assert string in abjad_ide._session._transcript.contents
 
 
 def test_Wrangler_invoke_shell_02():
@@ -30,7 +30,7 @@ def test_Wrangler_invoke_shell_02():
         abjad_ide._configuration.abjad_ide_directory,
         )
     string = '\n{}\n'.format(path)
-    assert string in abjad_ide._transcript.contents
+    assert string in abjad_ide._session._transcript.contents
 
 
 def test_Wrangler_invoke_shell_03():
@@ -47,4 +47,4 @@ def test_Wrangler_invoke_shell_03():
         'build',
         )
     string = '\n{}\n'.format(path)
-    assert string in abjad_ide._transcript.contents
+    assert string in abjad_ide._session._transcript.contents

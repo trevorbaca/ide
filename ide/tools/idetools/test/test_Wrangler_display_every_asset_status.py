@@ -10,7 +10,7 @@ def test_Wrangler_display_every_asset_status_01():
 
     input_ = 'st* q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     assert 'Repository status for' in contents
     assert '... OK' in contents

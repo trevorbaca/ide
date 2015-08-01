@@ -10,7 +10,7 @@ def test_Getter_display_help_01():
 
     input_ = 'red~example~score m new ? <return> q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     string  = 'Value must be string.'
     assert string in contents
@@ -22,7 +22,7 @@ def test_Getter_display_help_02():
 
     input_ = 'red~example~score m new help <return> q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     string = 'Value must be string.'
     assert string in contents

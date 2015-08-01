@@ -617,6 +617,6 @@ def test_Menu__run_12():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'asdf'
     menu._run()
-    contents = menu._transcript.contents
+    contents = menu._session._transcript.contents
 
     assert "Unknown command: 'asdf'." in contents

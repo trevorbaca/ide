@@ -16,7 +16,7 @@ def test_PackageManager_open_score_pdf_02():
 
     input_ = 'blue~example~score so q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     string =  "File ending in 'score.pdf' not found." in contents
     assert not abjad_ide._session._attempted_to_open_file

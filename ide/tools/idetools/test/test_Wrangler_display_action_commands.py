@@ -10,7 +10,7 @@ def test_Wrangler_display_action_commands_01():
     
     input_ = '? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     assert 'Abjad IDE - all score directories - action commands' in contents
 
@@ -21,7 +21,7 @@ def test_Wrangler_display_action_commands_02():
     
     input_ = 'red~example~score u ? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     assert 'build directory - action commands' in contents
 
@@ -32,7 +32,7 @@ def test_Wrangler_display_action_commands_03():
     
     input_ = 'uu ? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     assert 'Abjad IDE - all build directories - action commands' in contents
 
@@ -43,7 +43,7 @@ def test_Wrangler_display_action_commands_04():
     
     input_ = '? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     title = 'Abjad IDE - all score directories - action commands'
     first_blank_line = ''

@@ -13,7 +13,6 @@ class Controller(object):
         '_controller_commands',
         '_io_manager',
         '_session',
-        '_transcript',
         )
 
     ### INTIIALIZER ###
@@ -27,7 +26,6 @@ class Controller(object):
             client=self,
             session=self._session,
             )
-        self._transcript = self._session.transcript
 
     ### SPECIAL METHODS ###
 

@@ -38,7 +38,7 @@ def test_Wrangler_interpret_every_illustration_ly_01():
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     for path in paths:
         assert path in contents
 
@@ -81,7 +81,7 @@ def test_Wrangler_interpret_every_illustration_ly_02():
         input_ = 'red~example~score m ii* y q'
         abjad_ide._run(input_=input_)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     for path in paths:
         assert path in contents
 
@@ -125,7 +125,7 @@ def test_Wrangler_interpret_every_illustration_ly_03():
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     for path in paths:
         assert path in contents
 
@@ -168,7 +168,7 @@ def test_Wrangler_interpret_every_illustration_ly_04():
         input_ = 'red~example~score g ii* y q'
         abjad_ide._run(input_=input_)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     for path in paths:
         assert path in contents
 

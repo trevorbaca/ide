@@ -30,7 +30,7 @@ def test_PackageManager_illustrate_definition_py_01():
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     assert 'Wrote ...' in contents
     assert ly_path in contents
     assert pdf_path in contents
@@ -62,7 +62,7 @@ def test_PackageManager_illustrate_definition_py_02():
         input_ = 'red~example~score g A i q'
         abjad_ide._run(input_=input_)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     assert 'The files ...' in contents
     assert pdf_path in contents
     assert candidate_pdf_path in contents
@@ -99,7 +99,7 @@ def test_PackageManager_illustrate_definition_py_03():
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
     assert 'The files ...' in contents
     assert pdf_path in contents
     assert candidate_pdf_path in contents

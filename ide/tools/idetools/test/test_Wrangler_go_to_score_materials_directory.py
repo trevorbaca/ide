@@ -16,4 +16,4 @@ def test_Wrangler_go_to_score_materials_directory_01():
         'Red Example Score (2013) - build directory',
         'Red Example Score (2013) - materials directory',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles

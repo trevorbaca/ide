@@ -40,7 +40,7 @@ def test_Wrangler_copy_02():
 
     input_ = 'mm cp performer~inventory~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
@@ -48,7 +48,7 @@ def test_Wrangler_copy_02():
         'Abjad IDE - all materials directories',
         'Abjad IDE - all materials directories',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles
     assert 'Select storehouse:' in contents
 
 
@@ -75,7 +75,7 @@ def test_Wrangler_copy_03():
         input_ = 'red~example~score m cp'
         input_ += ' performer~inventory copied~performer~inventory y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._transcript.contents
+        contents = abjad_ide._session._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
         assert 'copied_performer_inventory' in contents
@@ -87,7 +87,7 @@ def test_Wrangler_copy_04():
 
     input_ = 'red~example~score m cp tempo~inventory ? foo n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
         
     string = 'Existing material package name> tempo_inventory'
     assert string in contents
@@ -106,7 +106,7 @@ def test_Wrangler_copy_05():
 
     input_ = 'gg cp A~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
@@ -114,7 +114,7 @@ def test_Wrangler_copy_05():
         'Abjad IDE - all segments directories',
         'Abjad IDE - all segments directories',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles
     assert 'Select storehouse:' in contents
 
 
@@ -141,7 +141,7 @@ def test_Wrangler_copy_06():
         input_ = 'red~example~score g cp'
         input_ += ' A copied_segment_01 y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._transcript.contents
+        contents = abjad_ide._session._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
         assert 'copied_segment_01' in contents
@@ -158,7 +158,7 @@ def test_Wrangler_copy_07():
 
     input_ = 'uu cp score.pdf~(Red~Example~Score) <return> q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._transcript.contents
+    contents = abjad_ide._session._transcript.contents
 
     titles = [
         'Abjad IDE - all score directories',
@@ -166,7 +166,7 @@ def test_Wrangler_copy_07():
         'Abjad IDE - all build directories',
         'Abjad IDE - all build directories',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles
     assert 'Select storehouse:' in contents
 
 
@@ -193,7 +193,7 @@ def test_Wrangler_copy_08():
         input_ = 'red~example~score u cp'
         input_ += ' score.pdf copied-score.pdf y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._transcript.contents
+        contents = abjad_ide._session._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
         assert 'copied-score.pdf' in contents

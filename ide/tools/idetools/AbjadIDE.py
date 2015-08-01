@@ -164,7 +164,7 @@ class AbjadIDE(Controller):
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:
-                    if not self._transcript[-1][-1] == '':
+                    if not self._session._transcript[-1][-1] == '':
                         self._io_manager._display('')
                     if self._session._clear_terminal_after_quit:
                         self._io_manager.clear_terminal()

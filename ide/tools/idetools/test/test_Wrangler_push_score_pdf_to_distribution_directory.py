@@ -26,7 +26,7 @@ def test_Wrangler_push_score_pdf_to_distribution_directory_01():
         input_ = 'red~example~score u sp q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(distribution_score_path)
-        contents = abjad_ide._transcript.contents
+        contents = abjad_ide._session._transcript.contents
         assert 'Copied' in contents
         assert 'FROM' in contents
         assert 'TO' in contents

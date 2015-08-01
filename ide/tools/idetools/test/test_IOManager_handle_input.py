@@ -17,4 +17,4 @@ def test_IOManager_handle_input_01():
         'Red Example Score (2013)',
         'Blue Example Score (2013)',
         ]
-    assert abjad_ide._transcript.titles == titles
+    assert abjad_ide._session._transcript.titles == titles

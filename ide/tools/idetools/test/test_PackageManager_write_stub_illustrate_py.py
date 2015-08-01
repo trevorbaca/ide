@@ -22,6 +22,6 @@ def test_PackageManager_write_stub_illustrate_py_01():
         abjad_ide._run(input_=input_)
         assert os.path.isfile(path)
         assert not filecmp.cmp(path, path + '.backup')
-        contents = abjad_ide._transcript.contents
+        contents = abjad_ide._session._transcript.contents
         assert 'Will write stub to' in contents
         assert 'Wrote stub to' in contents
