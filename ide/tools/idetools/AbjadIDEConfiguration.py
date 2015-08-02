@@ -69,7 +69,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                     '',
                     'Your GitHub username.',
                     ],
-                'default': None,
+                'default': 'username',
                 'validator': str,
                 },
             'composer_last_name': {
