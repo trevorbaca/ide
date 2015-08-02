@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import os
+import sys
 from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
 
 
@@ -45,6 +46,14 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             ]
 
     ### PRIVATE METHODS ###
+
+    def _add_example_score_to_sys_path(self):
+        from ide.tools import idetools
+        configuration = idetools.AbjadIDEConfiguration()
+        for name in os.listdir(configuration.abjad_ide_example_scores_directory):
+            path = os.path.join(configuration.abjad_ide_example_scores_directory, name)
+            if os.path.isdir(path):
+                sys.path.insert(0, path)
 
     def _get_option_definitions(self):
         options = {

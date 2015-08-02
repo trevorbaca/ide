@@ -51,12 +51,10 @@ break.
 abjad_ide/ directory to do this. You're ready to use the Abjad IDE when
 all tests pass.
 '''
-import sys
-if sys.version_info[0] == 2:
-    from tools import idetools
-else:
-    from ide.tools import idetools
+
+from ide.tools import idetools
 configuration = idetools.AbjadIDEConfiguration()
-sys.path.insert(0, configuration.abjad_ide_example_scores_directory)
-del configuration
-del sys
+configuration._add_example_score_to_sys_path()
+del(configuration)
+del(tools)
+del(idetools)
