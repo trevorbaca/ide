@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import os
-import pytest
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
@@ -37,10 +36,6 @@ def test_PackageManager_illustrate_definition_py_01():
     assert pdf_path in contents
 
 
-@pytest.mark.skipif(
-    os.environ.get('TRAVIS') == 'true',
-    reason='Cannot build on Travis-CI',
-    )
 def test_PackageManager_illustrate_definition_py_02():
     r'''Preserves existing PDF when candidate compares the same.
     '''

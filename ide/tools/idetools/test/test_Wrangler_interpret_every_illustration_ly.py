@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import os
-import pytest
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
@@ -13,18 +12,18 @@ def test_Wrangler_interpret_every_illustration_ly_01():
 
     path = configuration.abjad_ide_example_scores_directory
     path = os.path.join(
-        path, 
-        'red_example_score', 
-        'red_example_score', 
+        path,
+        'red_example_score',
+        'red_example_score',
         'materials',
         )
     package_names = (
-        'magic_numbers', 
-        'pitch_range_inventory', 
+        'magic_numbers',
+        'pitch_range_inventory',
         'tempo_inventory',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly') 
+        os.path.join(path, _, 'illustration.ly')
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
@@ -51,28 +50,24 @@ def test_Wrangler_interpret_every_illustration_ly_01():
     assert not 'Preserved' in contents
 
 
-@pytest.mark.skipif(
-    os.environ.get('TRAVIS') == 'true',
-    reason='Cannot build on Travis-CI',
-    )
 def test_Wrangler_interpret_every_illustration_ly_02():
     r'''Does display candidate messages for materials.
     '''
 
     path = configuration.abjad_ide_example_scores_directory
     path = os.path.join(
-        path, 
-        'red_example_score', 
-        'red_example_score', 
+        path,
+        'red_example_score',
+        'red_example_score',
         'materials',
         )
     package_names = (
-        'magic_numbers', 
-        'pitch_range_inventory', 
+        'magic_numbers',
+        'pitch_range_inventory',
         'tempo_inventory',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly') 
+        os.path.join(path, _, 'illustration.ly')
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
@@ -100,18 +95,18 @@ def test_Wrangler_interpret_every_illustration_ly_03():
 
     path = configuration.abjad_ide_example_scores_directory
     path = os.path.join(
-        path, 
-        'red_example_score', 
-        'red_example_score', 
+        path,
+        'red_example_score',
+        'red_example_score',
         'segments',
         )
     package_names = (
-        'segment_01', 
-        'segment_02', 
+        'segment_01',
+        'segment_02',
         'segment_03',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly') 
+        os.path.join(path, _, 'illustration.ly')
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
@@ -138,28 +133,24 @@ def test_Wrangler_interpret_every_illustration_ly_03():
     assert not 'Preserved' in contents
 
 
-@pytest.mark.skipif(
-    os.environ.get('TRAVIS') == 'true',
-    reason='Cannot build on Travis-CI',
-    )
 def test_Wrangler_interpret_every_illustration_ly_04():
     r'''Does display candidate messages for segments.
     '''
 
     path = configuration.abjad_ide_example_scores_directory
     path = os.path.join(
-        path, 
-        'red_example_score', 
-        'red_example_score', 
+        path,
+        'red_example_score',
+        'red_example_score',
         'segments',
         )
     package_names = (
-        'segment_01', 
-        'segment_02', 
+        'segment_01',
+        'segment_02',
         'segment_03',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly') 
+        os.path.join(path, _, 'illustration.ly')
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]

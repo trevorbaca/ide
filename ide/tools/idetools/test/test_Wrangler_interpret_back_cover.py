@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import os
-import pytest
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
@@ -35,10 +34,6 @@ def test_Wrangler_interpret_back_cover_01():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
 
-@pytest.mark.skipif(
-    os.environ.get('TRAVIS') == 'true',
-    reason='Cannot build on Travis-CI',
-    )
 def test_Wrangler_interpret_back_cover_02():
     r'''Preserves back-cover.pdf when back-cover.candidate.pdf compares
     the same.
