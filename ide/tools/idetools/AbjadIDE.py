@@ -4,11 +4,10 @@ import shutil
 import sys
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
-from ide.tools.idetools.Controller import Controller
 configuration = AbjadIDEConfiguration()
 
 
-class AbjadIDE(Controller):
+class AbjadIDE(object):
     r'''Abjad IDE.
 
     ..  container:: example
@@ -23,7 +22,7 @@ class AbjadIDE(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_io_manager',
+        '_session',
         )
 
     ### INITIALIZER ###
@@ -33,16 +32,14 @@ class AbjadIDE(Controller):
         if session is None:
             session = idetools.Session()
             session._is_test = is_test
-        superclass = super(AbjadIDE, self)
-        superclass.__init__(session=session)
-        self._io_manager = self._session._io_manager
+        self._session = session
         self._session._abjad_ide = self
         self._score_package_wrangler._supply_missing_views_files()
 
     ### SPECIAL METHODS ###
 
     def __repr__(self):
-        r'''Gets interpreter representation of asset controller.
+        r'''Gets interpreter representation of Abjad IDE.
 
         Returns string.
         '''
@@ -78,6 +75,10 @@ class AbjadIDE(Controller):
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._configure_as_etc_file_wrangler()
         return wrangler
+
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
 
     @property
     @systemtools.Memoize
