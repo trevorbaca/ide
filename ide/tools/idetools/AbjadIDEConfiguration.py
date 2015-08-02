@@ -40,8 +40,9 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             '-*- coding: utf-8 -*-',
             '',
             'Abjad IDE configuration file created on {}.'.format(current_time),
-            'This file is interpreted by ConfigObj and follows ini sytnax.',
-        ]
+            "This file is interpreted by Python's ConfigParser ",
+            'and follows ini sytnax.',
+            ]
 
     ### PRIVATE METHODS ###
 
@@ -51,57 +52,59 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                 'comment': [
                     '',
                     'Your email.',
-                ],
-                'spec': "string(default=first.last@domain.com)",
-            },
+                    ],
+                'default': 'first.last@domain.com',
+                'validator': str,
+                },
             'composer_full_name': {
                 'comment': [
                     '',
                     'Your full name.',
-                ],
-                'spec': "string(default='Full Name')",
-            },
+                    ],
+                'default': 'Full Name',
+                'validator': str,
+                },
             'composer_github_username': {
                 'comment': [
                     '',
                     'Your GitHub username.',
-                ],
-                'spec': "string(default=None)",
-            },
+                    ],
+                'default': None,
+                'validator': str,
+                },
             'composer_last_name': {
                 'comment': [
                     '',
                     'Your last name.',
-                ],
-                'spec': "string(default='Name')",
-            },
+                    ],
+                'default': 'Name',
+                'validator': str,
+                },
             'composer_scores_directory': {
                 'comment': [
                     '',
                     'Your scores directory. Defaults to $HOME/scores/.',
-                ],
-                'spec': 'string(default={!r})'.format(
-                    os.path.join(
-                        self.home_directory,
-                        'scores',
-                        )
-                    ),
-            },
+                    ],
+                'default': os.path.join(self.home_directory, 'scores'),
+                'validator': str,
+                },
             'composer_uppercase_name': {
                 'comment': [
                     '',
                     'Your full name in uppercase for score covers.',
-                ],
-                'spec': "string(default='FULL NAME')",
-            },
+                    ],
+                'default': 'FULL NAME',
+                'validator': str,
+                },
             'composer_website': {
                 'comment': [
                     '',
                     'Your website.',
-                ],
-                'spec': "string(default=www.composername.com)",
-            },
-        }
+                    ],
+                'default': 'www.composername.com',
+                'validator': str,
+                },
+            }
         return options
 
     def _make_missing_directories(self):
@@ -230,7 +233,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             >>> configuration.abjad_ide_wrangler_views_directory
             '.../views'
 
-        Defined equal to views/ subdirectory of Abjad IDE configuration 
+        Defined equal to views/ subdirectory of Abjad IDE configuration
         directory.
 
         Returns string.
@@ -318,7 +321,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                 >>> configuration.composer_uppercase_name
                 '...'
 
-        Aliases `composer_uppercase_name` setting in Abjad IDE 
+        Aliases `composer_uppercase_name` setting in Abjad IDE
         configuration file.
 
         Returns string.
