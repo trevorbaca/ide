@@ -1,4 +1,4 @@
 # -*- encoding: utf-8 -*-
-import makers
-import materials
-import segments
+from etude_example_score import makers
+from etude_example_score import materials
+from etude_example_score import segments
