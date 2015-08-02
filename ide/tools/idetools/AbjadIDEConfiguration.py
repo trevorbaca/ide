@@ -50,8 +50,9 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     def _add_example_score_to_sys_path(self):
         from ide.tools import idetools
         configuration = idetools.AbjadIDEConfiguration()
-        for name in os.listdir(configuration.abjad_ide_example_scores_directory):
-            path = os.path.join(configuration.abjad_ide_example_scores_directory, name)
+        directory = configuration.abjad_ide_example_scores_directory
+        for name in os.listdir(directory):
+            path = os.path.join(directory, name)
             if os.path.isdir(path):
                 sys.path.insert(0, path)
 
