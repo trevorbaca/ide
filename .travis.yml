@@ -21,7 +21,7 @@ install:
     - pip install -e . 
 
 before_script:
-    - scr/prime-parser-tables
+    - ide/scr/prime-parser-tables
 
 script:
     - start-abjad-ide cw q
