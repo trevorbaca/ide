@@ -19,7 +19,7 @@ author_email = ', '.join(author_email)
 
 entry_points = {
     'console_scripts': [
-        'start-abjad-ide = ide.idetools.start_abjad_ide:start_abjad_ide',
+        'start-abjad-ide = ide.tools.idetools:AbjadIDE.start_abjad_ide',
         ],
     }
 
