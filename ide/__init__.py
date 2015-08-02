@@ -56,5 +56,4 @@ from ide.tools import idetools
 configuration = idetools.AbjadIDEConfiguration()
 configuration._add_example_score_to_sys_path()
 del(configuration)
-del(tools)
 del(idetools)
