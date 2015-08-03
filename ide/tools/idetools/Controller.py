@@ -23,7 +23,6 @@ class Controller(object):
     __slots__ = (
         '_asset_identifier',
         '_basic_breadcrumb',
-        '_commands',
         '_session',
         )
 
@@ -51,17 +50,6 @@ class Controller(object):
         self._session = session
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._commands = []
-        self._commands.extend([
-            self.go_back,
-            self.go_home,
-            self.go_to_score_directory,
-            self.quit_abjad_ide,
-            self.display_action_command_help,
-            self.display_navigation_command_help,
-            self.invoke_shell,
-            self.open_lilypond_log,
-            ])
 
     ### SPECIAL METHODS ###
 
@@ -557,7 +545,7 @@ class Controller(object):
 
     def _make_command_menu_sections(self, menu, menu_section_names=None):
         methods = []
-        methods_ = self._get_commands(only_my_methods=True)
+        methods_ = self._get_commands(only_my_methods=False)
         is_in_score = self._session.is_in_score
         current_directory = self._get_current_directory()
         if current_directory is None:

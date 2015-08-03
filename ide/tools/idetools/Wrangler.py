@@ -49,36 +49,6 @@ class Wrangler(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._basic_breadcrumb = None
-        self._commands.extend([
-            self.edit_abbreviations_file,
-            self.edit_score_stylesheet,
-            self.go_to_score_build_directory,
-            self.go_to_score_distribution_directory,
-            self.go_to_score_etc_directory,
-            self.go_to_score_makers_directory,
-            self.go_to_score_materials_directory,
-            self.go_to_score_segments_directory,
-            self.go_to_score_stylesheets_directory,
-            self.go_to_previous_score,
-            self.go_to_next_score,
-            self.set_view,
-            self.copy,
-            self.make,
-            self.remove,
-            self.rename,
-            ])
-        self._commands.append(self.collect_segment_lilypond_files)
-        self._commands.append(self.generate_back_cover_source)
-        self._commands.append(self.generate_front_cover_source)
-        self._commands.append(self.generate_music_source)
-        self._commands.append(self.generate_preface_source)
-        self._commands.append(self.generate_score_source)
-        self._commands.append(self.interpret_back_cover)
-        self._commands.append(self.interpret_front_cover)
-        self._commands.append(self.interpret_music)
-        self._commands.append(self.interpret_preface)
-        self._commands.append(self.interpret_score)
-        self._commands.append(self.push_score_pdf_to_distribution_directory)
         self._copy_target_directory = None
         self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
@@ -284,14 +254,14 @@ class Wrangler(Controller):
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'material package'
         self._basic_breadcrumb = 'materials'
-        commands = []
-        commands.append(self.check_every_definition_py)
-        commands.append(self.edit_every_definition_py)
-        commands.append(self.interpret_every_illustration_ly)
-        commands.append(self.open_every_illustration_pdf)
-        commands.append(self.go_to_next_package)
-        commands.append(self.go_to_previous_package)
-        self._commands.extend(commands)
+#        commands = []
+#        commands.append(self.check_every_definition_py)
+#        commands.append(self.edit_every_definition_py)
+#        commands.append(self.interpret_every_illustration_ly)
+#        commands.append(self.open_every_illustration_pdf)
+#        commands.append(self.go_to_next_package)
+#        commands.append(self.go_to_previous_package)
+#        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'materials'
@@ -302,22 +272,22 @@ class Wrangler(Controller):
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
-        commands = []
-        commands.append(self.check_every_package)
-        commands.append(self.git_add_every_package)
-        commands.append(self.git_commit_every_package)
-        commands.append(self.git_revert_every_package)
-        commands.append(self.git_status_every_package)
-        commands.append(self.git_update_every_package)
-        commands.append(self.open_every_score_pdf)
-        commands.append(self.go_to_all_build_directories)
-        commands.append(self.go_to_all_distribution_directories)
-        commands.append(self.go_to_all_etc_directories)
-        commands.append(self.go_to_all_makers_directories)
-        commands.append(self.go_to_all_materials_directories)
-        commands.append(self.go_to_all_segments_directories)
-        commands.append(self.go_to_all_stylesheets_directories)
-        self._commands.extend(commands)
+#        commands = []
+#        commands.append(self.check_every_package)
+#        commands.append(self.git_add_every_package)
+#        commands.append(self.git_commit_every_package)
+#        commands.append(self.git_revert_every_package)
+#        commands.append(self.git_status_every_package)
+#        commands.append(self.git_update_every_package)
+#        commands.append(self.open_every_score_pdf)
+#        commands.append(self.go_to_all_build_directories)
+#        commands.append(self.go_to_all_distribution_directories)
+#        commands.append(self.go_to_all_etc_directories)
+#        commands.append(self.go_to_all_makers_directories)
+#        commands.append(self.go_to_all_materials_directories)
+#        commands.append(self.go_to_all_segments_directories)
+#        commands.append(self.go_to_all_stylesheets_directories)
+#        self._commands.extend(commands)
         self._group_asset_section_by_annotation = False
         self._hide_breadcrumb_while_in_score = True
         self._only_example_scores_during_test = True
@@ -326,15 +296,15 @@ class Wrangler(Controller):
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'segment package'
         self._basic_breadcrumb = 'segments'
-        commands = []
-        commands.append(self.check_every_definition_py)
-        commands.append(self.edit_every_definition_py)
-        commands.append(self.illustrate_every_definition_py)
-        commands.append(self.interpret_every_illustration_ly)
-        commands.append(self.open_every_illustration_pdf)
-        commands.append(self.go_to_next_package)
-        commands.append(self.go_to_previous_package)
-        self._commands.extend(commands)
+#        commands = []
+#        commands.append(self.check_every_definition_py)
+#        commands.append(self.edit_every_definition_py)
+#        commands.append(self.illustrate_every_definition_py)
+#        commands.append(self.interpret_every_illustration_ly)
+#        commands.append(self.open_every_illustration_pdf)
+#        commands.append(self.go_to_next_package)
+#        commands.append(self.go_to_previous_package)
+#        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'segments'
@@ -342,8 +312,7 @@ class Wrangler(Controller):
     def _configure_as_stylesheet_wrangler(self):
         self._asset_identifier = 'stylesheet'
         self._basic_breadcrumb = 'stylesheets'
-        self._directory_entry_predicate = \
-            self._is_valid_file_directory_entry
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'stylesheets'
         self._file_extension = '.ily'
         self._file_name_predicate = stringtools.is_dash_case
