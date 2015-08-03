@@ -51,8 +51,7 @@ class Session(abctools.AbjadObject):
         '_controller_stack',
         '_current_score_directory',
         '_display',
-        '_display_action_command_help',
-        '_display_navigation_command_help',
+        '_display_command_help',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -106,8 +105,7 @@ class Session(abctools.AbjadObject):
         self._controller_stack = []
         self._current_score_directory = None
         self._display = True
-        self._display_action_command_help = False
-        self._display_navigation_command_help = False
+        self._display_command_help = None
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
@@ -635,21 +633,6 @@ class Session(abctools.AbjadObject):
         return self._display
 
     @property
-    def display_action_command_help(self):
-        r'''Is true when action commands will display. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.display_action_command_help
-                False
-
-        Returns true or false..
-        '''
-        return self._display_action_command_help
-
-    @property
     def display_command_help(self):
         r'''Is true when either action commands or navigation commands will
         display. Otherwise false.
@@ -663,27 +646,7 @@ class Session(abctools.AbjadObject):
 
         Returns 'action', 'navigation' or none.
         '''
-        assert not (self.display_action_command_help and
-            self.display_navigation_command_help)
-        if self.display_action_command_help:
-            return 'action'
-        if self.display_navigation_command_help:
-            return 'navigation'
-
-    @property
-    def display_navigation_command_help(self):
-        r'''Is true when navigation commands will display. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.display_navigation_command_help
-                False
-
-        Returns true or false..
-        '''
-        return self._display_navigation_command_help
+        return self._display_command_help
 
     @property
     def explicit_command_history(self):

@@ -569,6 +569,7 @@ class Menu(object):
         if self._session.display_command_help:
             command_type = self._session.display_command_help
             lines = self._make_help_lines(command_type=command_type)
+            self._session._display_command_help = None
         else:
             lines = self._make_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)
