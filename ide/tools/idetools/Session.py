@@ -56,33 +56,47 @@ class Session(abctools.AbjadObject):
         '_io_manager',
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
-        '_is_navigating_home',
         '_is_backtracking_to_score',
-        '_is_navigating_to_scores',
+        '_is_navigating_home',
         '_is_in_confirmation_environment',
         '_is_in_user_input_getter',
-        '_is_navigating_to_build_files',
-        '_is_navigating_to_distribution_files',
-        '_is_navigating_to_etc_files',
         '_is_navigating_to_next_asset',
         '_is_navigating_to_next_score',
         '_is_navigating_to_previous_asset',
         '_is_navigating_to_previous_score',
-        '_is_navigating_to_maker_files',
-        '_is_navigating_to_materials',
-        '_is_navigating_to_segments',
-        '_is_navigating_to_stylesheets',
+        '_is_navigating_to_scores',
         '_is_quitting',
         '_is_repository_test',
         '_is_test',
         '_last_asset_path',
         '_last_command_was_composite',
         '_last_score_path',
+        '_navigation_target',
         '_pending_done',
         '_pending_input',
         '_pending_redraw',
         '_transcript',
         )
+
+    _directory_name_to_navigation_command_name = {
+        'build': 'u',
+        'distribution': 'd',
+        'etc': 'e',
+        'makers': 'k',
+        'materials': 'm',
+        'segments': 'g',
+        'stylesheets': 'y',
+        }
+
+    _navigation_command_name_to_directory_name = {
+        'd': 'distribution',
+        'e': 'etc',
+        'g': 'segments',
+        'k': 'makers',
+        'm': 'materials',
+        'u': 'build',
+        'y': 'stylesheets',
+        }
 
     ### INITIALIZER ###
 
@@ -110,27 +124,21 @@ class Session(abctools.AbjadObject):
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
         self._is_backtracking_to_all_build_files = False
-        self._is_navigating_home = False
         self._is_backtracking_to_score = False
-        self._is_navigating_to_scores = False
         self._is_in_confirmation_environment = False
-        self._is_navigating_to_build_files = False
-        self._is_navigating_to_distribution_files = False
-        self._is_navigating_to_etc_files = False
+        self._is_navigating_home = False
         self._is_navigating_to_next_asset = False
         self._is_navigating_to_next_score = False
         self._is_navigating_to_previous_asset = False
         self._is_navigating_to_previous_score = False
-        self._is_navigating_to_maker_files = False
-        self._is_navigating_to_materials = False
-        self._is_navigating_to_segments = False
-        self._is_navigating_to_stylesheets = False
+        self._is_navigating_to_scores = False
         self._is_quitting = False
         self._is_repository_test = False
         self._is_test = is_test
         self._last_asset_path = None
         self._last_command_was_composite = False
         self._last_score_path = None
+        self._navigation_target = None
         self._pending_done = False
         self._pending_input = input_
         self._pending_redraw = True
@@ -731,7 +739,7 @@ class Session(abctools.AbjadObject):
 
         Returns true or false..
         '''
-        return self.wrangler_navigation_directive is not None
+        return self.navigation_target is not None
 
     @property
     def is_backtracking(self):
@@ -875,86 +883,6 @@ class Session(abctools.AbjadObject):
         return self._is_navigating_home
 
     @property
-    def is_navigating_to_build_files(self):
-        r'''Is true when session is navigating to build directory.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_build_files
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_build_files
-
-    @property
-    def is_navigating_to_distribution_files(self):
-        r'''Is true when session is navigating to distribution directory.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_distribution_files
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_distribution_files
-
-    @property
-    def is_navigating_to_etc_files(self):
-        r'''Is true when session is navigating to etc directory.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_etc_files
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_etc_files
-
-    @property
-    def is_navigating_to_maker_files(self):
-        r'''Is true when session is navigating to score makers.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_maker_files
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_maker_files
-
-    @property
-    def is_navigating_to_materials(self):
-        r'''Is true when session is navigating to score materials.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_materials
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_materials
-
-    @property
     def is_navigating_to_next_asset(self):
         r'''Is true when session is navigating to next material.
         Otherwise false.
@@ -1018,22 +946,6 @@ class Session(abctools.AbjadObject):
         return self._is_navigating_to_previous_score
 
     @property
-    def is_navigating_to_segments(self):
-        r'''Is true when session is navigating to score segments.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_segments
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_segments
-
-    @property
     def is_navigating_to_sibling_asset(self):
         r'''Is true when session is navigating to sibling asset.
         Otherwise false:
@@ -1072,22 +984,6 @@ class Session(abctools.AbjadObject):
         if self.is_navigating_to_previous_score:
             return True
         return False
-
-    @property
-    def is_navigating_to_stylesheets(self):
-        r'''Is true when session is navigating to score stylesheets.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_stylesheets
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_stylesheets
 
     @property
     def is_quitting(self):
@@ -1218,6 +1114,39 @@ class Session(abctools.AbjadObject):
         return self._make_menu_header()
 
     @property
+    def navigation_command_name(self):
+        r'''Gets navigation command name.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.navigation_command_name is None
+                True
+
+        Returns 'd', 'm', 'g, 'k', 'y', 'u', 'e' or none.
+        '''
+        directory_name = self.navigation_target
+        return self._directory_name_to_navigation_command_name.get(
+            directory_name)
+
+    @property
+    def navigation_target(self):
+        r'''Gets navigation target.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.navigation_target is None
+                True
+
+        Returns 'build', 'distribution', 'etc', 'makers', 'stylesheets',
+        'segments', 'materials' or none.
+        '''
+        return self._navigation_target
+
+    @property
     def pending_done(self):
         r'''Is true when something is pending done. Otherwise false.
 
@@ -1296,31 +1225,3 @@ class Session(abctools.AbjadObject):
         Returns IO transcript.
         '''
         return self._transcript
-
-    @property
-    def wrangler_navigation_directive(self):
-        r'''Gets wrangler navigation directive.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.wrangler_navigation_directive is None
-                True
-
-        Returns u, d, k, m, g, y or none.
-        '''
-        if self.is_navigating_to_build_files:
-            return 'u'
-        elif self.is_navigating_to_distribution_files:
-            return 'd'
-        elif self.is_navigating_to_etc_files:
-            return 'e'
-        elif self.is_navigating_to_maker_files:
-            return 'k'
-        elif self.is_navigating_to_materials:
-            return 'm'
-        elif self.is_navigating_to_segments:
-            return 'g'
-        elif self.is_navigating_to_stylesheets:
-            return 'y'

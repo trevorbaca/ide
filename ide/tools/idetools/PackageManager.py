@@ -771,7 +771,7 @@ class PackageManager(Controller):
                 self._enter_run()
                 self._session._pending_redraw = True
                 while True:
-                    result = self._session.wrangler_navigation_directive
+                    result = self._session.navigation_command_name
                     if not result:
                         menu = self._make_main_menu()
                         result = menu._run()

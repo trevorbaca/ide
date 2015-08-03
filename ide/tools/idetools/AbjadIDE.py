@@ -168,8 +168,7 @@ class AbjadIDE(object):
                 shutil.copyfile(empty_views, wrangler_views)
             while True:
                 result = self._score_package_wrangler._get_sibling_score_path()
-                if not result:
-                    result = self._session.wrangler_navigation_directive
+                result = result or self._session.navigation_command_name
                 if result:
                     self._score_package_wrangler._handle_input(result)
                 else:

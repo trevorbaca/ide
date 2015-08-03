@@ -27,7 +27,17 @@ class Controller(object):
         '_session',
         )
 
-    known_secondary_assets = (
+    _navigation_command_name_to_directory_name = {
+        'd': 'distribution',
+        'e': 'etc',
+        'g': 'segments',
+        'k': 'makers',
+        'm': 'materials',
+        'u': 'build',
+        'y': 'stylesheets',
+        }
+
+    _known_secondary_assets = (
         '__init__.py',
         '__metadata__.py',
         '__views__.py',
@@ -104,36 +114,12 @@ class Controller(object):
             file_name = '__{}_views__.py'.format(class_name)
             return os.path.join(directory, file_name)
 
-    @property
-    def _wrangler_navigation_to_session_variable(self):
-        result = {
-            'd': '_is_navigating_to_distribution_files',
-            'e': '_is_navigating_to_etc_files',
-            'g': '_is_navigating_to_segments',
-            'k': '_is_navigating_to_maker_files',
-            'm': '_is_navigating_to_materials',
-            'u': '_is_navigating_to_build_files',
-            'y': '_is_navigating_to_stylesheets',
-        }
-        return result
-
     ### PRIVATE METHODS ###
 
     def _enter_run(self):
-        if self._basic_breadcrumb == 'build':
-            self._session._is_navigating_to_build_files = False   
-        elif self._basic_breadcrumb == 'distribution':
-            self._session._is_navigating_to_distribution_files = False
-        elif self._basic_breadcrumb == 'etc':
-            self._session._is_navigating_to_etc_files = False
-        elif self._basic_breadcrumb == 'makers':
-            self._session._is_navigating_to_maker_files = False
-        elif self._basic_breadcrumb == 'stylesheets':
-            self._session._is_navigating_to_stylesheets = False
-        elif self._basic_breadcrumb == 'segments':
-            self._session._is_navigating_to_segments = False
-        elif self._basic_breadcrumb == 'materials':
-            self._session._is_navigating_to_materials = False
+        if (self._session.navigation_target is not None and
+            self._session.navigation_target == self._basic_breadcrumb):
+            self._session._navigation_target = None
         elif self._asset_identifier == 'package manager':
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
@@ -522,9 +508,10 @@ class Controller(object):
             self._session._pending_redraw = True
 
     def _handle_wrangler_navigation_directive(self, expr):
-        if expr in self._wrangler_navigation_to_session_variable:
-            variable = self._wrangler_navigation_to_session_variable[expr]
-            setattr(self._session, variable, True)
+        directory_name = \
+            self._navigation_command_name_to_directory_name.get(expr)
+        if directory_name is not None:
+            self._session._navigation_target = directory_name
 
     @staticmethod
     def _is_directory_with_metadata_py(path):
@@ -604,7 +591,7 @@ class Controller(object):
         if not current_directory:
             return menu_entries
         for name in os.listdir(current_directory):
-            if name in self.known_secondary_assets:
+            if name in self._known_secondary_assets:
                 path = os.path.join(current_directory, name)
                 menu_entry = (name, None, None, path)
                 menu_entries.append(menu_entry)
@@ -771,10 +758,7 @@ class Controller(object):
                 file_pointer.write(new_file_contents)
 
     def _set_is_navigating_to_sibling_asset(self):
-        if self._basic_breadcrumb in ('materials', 'MATERIALS'):
-            self._session._is_navigating_to_materials = True            
-        elif self._basic_breadcrumb in ('segments', 'SEGMENTS'):
-            self._session._is_navigating_to_segments = True
+        self._session._navigation_target = self._basic_breadcrumb.lower()
 
     @staticmethod
     def _sort_ordered_dictionary(dictionary):
@@ -886,7 +870,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_build_files = True
+        self._session._navigation_target = 'build'
 
     @Command('dd', 'go to all distribution directories', 'comparison', True)
     def go_to_all_distribution_directories(self):
@@ -895,7 +879,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_distribution_files = True
+        self._session._navigation_target = 'distribution'
 
     @Command('ee', 'go to all etc directories', 'comparison', True)
     def go_to_all_etc_directories(self):
@@ -904,7 +888,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_etc_files = True
+        self._session._navigation_target = 'etc'
 
     @Command('kk', 'go to all makers directories', 'comparison', True)
     def go_to_all_makers_directories(self):
@@ -913,7 +897,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_maker_files = True
+        self._session._navigation_target = 'makers'
 
     @Command('mm', 'go to all materials directories', 'comparison', True)
     def go_to_all_materials_directories(self):
@@ -922,7 +906,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_materials = True
+        self._session._navigation_target = 'materials'
 
     @Command('gg', 'go to all segments directories', 'comparison', True)
     def go_to_all_segments_directories(self):
@@ -931,7 +915,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_segments = True
+        self._session._navigation_target = 'segments'
 
     @Command('yy', 'go to all stylesheets directories', 'comparison', True)
     def go_to_all_stylesheets_directories(self):
@@ -940,7 +924,7 @@ class Controller(object):
         Returns none.
         '''
         self.go_home()
-        self._session._is_navigating_to_stylesheets = True
+        self._session._navigation_target = 'stylesheets'
 
     @Command('>', 'go to next package', 'sibling package', True)
     def go_to_next_package(self):
