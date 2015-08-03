@@ -837,7 +837,7 @@ class Controller(object):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('sse', section='global files', outside_score=False)
+    @Command('sty', section='global files', outside_score=False)
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
 
@@ -1055,7 +1055,7 @@ class Controller(object):
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
 
-    @Command('l', section='global files')
+    @Command('log', section='global files')
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
 
