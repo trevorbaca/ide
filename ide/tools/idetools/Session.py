@@ -658,12 +658,17 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session.display_command_help
-                False
+                >>> session.display_command_help is None
+                True
 
-        Returns true or false.
+        Returns 'action', 'navigation' or none.
         '''
-        return self.display_action_command_help or self.display_navigation_command_help
+        assert not (self.display_action_command_help and
+            self.display_navigation_command_help)
+        if self.display_action_command_help:
+            return 'action'
+        if self.display_navigation_command_help:
+            return 'navigation'
 
     @property
     def display_navigation_command_help(self):

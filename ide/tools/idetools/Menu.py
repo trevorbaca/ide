@@ -45,6 +45,26 @@ class Menu(object):
         '_title',
         )
 
+    _action_command_section_order = (
+        'system',
+        'global files',
+        'package',
+        'star',
+        'git',
+        'build',
+        'basic',
+        )
+
+    _navigation_command_section_order = (
+        'display navigation',
+        'back-home-quit',
+        'comparison',
+        'navigation',
+        'sibling package',
+        'sibling score',
+        'view',
+        )
+
     ### INITIALIZER ###
 
     def __init__(
@@ -447,7 +467,7 @@ class Menu(object):
     def _make_help_lines(self, command_type):
         assert command_type in ('action', 'navigation'), repr(command_type)
         lines = []
-        menu_sections = self._sort_menu_sections(type_=command_type)
+        menu_sections = self._sort_menu_sections(command_type=command_type)
         for menu_section in menu_sections:
             found_one = False
             if not menu_section.is_command_section:
@@ -565,10 +585,9 @@ class Menu(object):
     def _redraw(self):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
-        if self._session.display_action_command_help:
-            lines = self._make_help_lines(command_type='action')
-        elif self._session.display_navigation_command_help:
-            lines = self._make_help_lines(command_type='navigation')
+        if self._session.display_command_help:
+            command_type = self._session.display_command_help
+            lines = self._make_help_lines(command_type=command_type)
         else:
             lines = self._make_visible_section_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)
@@ -599,37 +618,17 @@ class Menu(object):
                 else:
                     return result
 
-    _action_command_section_order = (
-        'system',
-        'global files',
-        'package',
-        'star',
-        'git',
-        'build',
-        'basic',
-        )
-
-    _navigation_command_section_order = (
-        'display navigation',
-        'back-home-quit',
-        'comparison',
-        'navigation',
-        'sibling package',
-        'sibling score',
-        'view',
-        )
-
-    def _sort_menu_sections(self, type_):
+    def _sort_menu_sections(self, command_type):
         ordered_menu_sections = []
         menu_sections = {}
         for menu_section in self.menu_sections:
             menu_sections[menu_section.name] = menu_section
-        if type_ == 'navigation':
+        if command_type == 'navigation':
             order = self._navigation_command_section_order
-        elif type_ == 'action':
+        elif command_type == 'action':
             order = self._action_command_section_order
         else:
-            raise ValueError(repr(type_))
+            raise ValueError(repr(command_type))
         for section_name in order:
             menu_section = menu_sections.get(section_name)
             if menu_section is not None:
