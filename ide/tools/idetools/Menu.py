@@ -154,9 +154,6 @@ class Menu(object):
                     default_value = section._default_value
             if default_value is not None:
                 return self._enclose_in_list(default_value)
-        elif input_ == '<return>':
-            self._session._pending_redraw = True
-            return input_
         elif input_ in ('?', ';') and self._has_command(input_):
             self._session._pending_redraw = True
             return input_
@@ -642,10 +639,11 @@ class Menu(object):
 
     @staticmethod
     def _user_enters_nothing(input_):
-        return (
-            not input_ or 
-            (3 <= len(input_) and '<return>'.startswith(input_))
-            )
+        if not input_:
+            return True
+        if 3 <= len(input_) and '<return>'.startswith(input_):
+            return True
+        return False
 
     ### PUBLIC PROPERTIES ###
 
