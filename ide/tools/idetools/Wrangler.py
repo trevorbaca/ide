@@ -310,11 +310,11 @@ class Wrangler(Controller):
             self._is_valid_package_directory_entry
         commands = []
         commands.append(self.check_every_package)
-        commands.append(self.add_every_asset)
-        commands.append(self.commit_every_asset)
-        commands.append(self.revert_every_asset)
-        commands.append(self.display_every_asset_status)
-        commands.append(self.update_every_asset)
+        commands.append(self.git_add_every_package)
+        commands.append(self.git_commit_every_package)
+        commands.append(self.git_revert_every_package)
+        commands.append(self.git_status_every_package)
+        commands.append(self.git_update_every_package)
         commands.append(self.open_every_score_pdf)
         commands.append(self.go_to_all_build_directories)
         commands.append(self.go_to_all_distribution_directories)
@@ -1366,45 +1366,6 @@ class Wrangler(Controller):
             
     ### PUBLIC METHODS ###
 
-    @Command(
-        'add*', 
-        description='git add every package', 
-        section='git',
-        in_score=False,
-        )
-    def add_every_asset(self):
-        r'''Adds every asset to repository.
-
-        Returns none.
-        '''
-        self._session._attempted_to_add = True
-        if self._session.is_repository_test:
-            return
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = '_git_add'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='add')
-        self._io_manager._display(messages)
-        if not inputs:
-            return
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        with self._io_manager._silent(self):
-            for manager in managers:
-                method = getattr(manager, method_name)
-                method()
-        count = len(inputs)
-        identifier = stringtools.pluralize('file', count)
-        message = 'added {} {} to repository.'
-        message = message.format(count, identifier)
-        self._io_manager._display(message)
-        
     @Command('dc*', section='star', outside_score=False)
     def check_every_definition_py(self):
         r'''Checks ``definition.py`` in every package.
@@ -1540,36 +1501,6 @@ class Wrangler(Controller):
                 self._handle_candidate(candidate_file_path, target_file_path)
                 self._io_manager._display('')
 
-    @Command(
-        'ci*', 
-        description='git commit every package', 
-        section='git',
-        in_score=False,
-        )
-    def commit_every_asset(self):
-        r'''Commits every asset to repository.
-
-        Returns none.
-        '''
-        self._session._attempted_to_commit = True
-        if self._session.is_repository_test:
-            return
-        getter = self._io_manager._make_getter()
-        getter.append_string('commit message')
-        commit_message = getter._run()
-        if self._session.is_backtracking or commit_message is None:
-            return
-        line = 'commit message will be: "{}"'.format(commit_message)
-        self._io_manager._display(line)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            manager = self._get_manager(path)
-            with self._io_manager._silent(self):
-                manager._git_commit(commit_message=commit_message)
-
     @Command('cp', section='basic', is_hidden=False)
     def copy(
         self, 
@@ -1653,30 +1584,6 @@ class Wrangler(Controller):
                     old_name,
                     new_name,
                     )
-
-    @Command(
-        'st*', 
-        description='git status every package', 
-        section='git',
-        in_score=False,
-        )
-    def display_every_asset_status(self):
-        r'''Displays repository status of every asset.
-
-        Returns none.
-        '''
-        self._session._attempted_display_status = True
-        paths = self._list_visible_asset_paths()
-        paths = self._extract_common_parent_directories(paths)
-        paths.sort()
-        for path in paths:
-            manager = self._io_manager._make_package_manager(path)
-            manager._git_status()
-        if not paths:
-            message = 'Repository status for {} ... OK'
-            directory = self._get_current_directory()
-            message = message.format(directory)
-            self._io_manager._display(message)
 
     @Command('de*', section='star')
     def edit_every_definition_py(self):
@@ -1840,6 +1747,120 @@ class Wrangler(Controller):
         Returns none.
         '''
         self._copy_boilerplate('score.tex')
+
+    @Command('add*', section='git', in_score=False)
+    def git_add_every_package(self):
+        r'''Adds every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_add = True
+        if self._session.is_repository_test:
+            return
+        managers = self._list_visible_asset_managers()
+        inputs, outputs = [], []
+        method_name = '_git_add'
+        for manager in managers:
+            method = getattr(manager, method_name)
+            inputs_, outputs_ = method(dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='add')
+        self._io_manager._display(messages)
+        if not inputs:
+            return
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        with self._io_manager._silent(self):
+            for manager in managers:
+                method = getattr(manager, method_name)
+                method()
+        count = len(inputs)
+        identifier = stringtools.pluralize('file', count)
+        message = 'added {} {} to repository.'
+        message = message.format(count, identifier)
+        self._io_manager._display(message)
+        
+    @Command('ci*', section='git', in_score=False)
+    def git_commit_every_package(self):
+        r'''Commits every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_commit = True
+        if self._session.is_repository_test:
+            return
+        getter = self._io_manager._make_getter()
+        getter.append_string('commit message')
+        commit_message = getter._run()
+        if self._session.is_backtracking or commit_message is None:
+            return
+        line = 'commit message will be: "{}"'.format(commit_message)
+        self._io_manager._display(line)
+        result = self._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        paths = self._list_visible_asset_paths()
+        for path in paths:
+            manager = self._get_manager(path)
+            with self._io_manager._silent(self):
+                manager._git_commit(commit_message=commit_message)
+
+    @Command('revert*', section='git', in_score=False)
+    def git_revert_every_package(self):
+        r'''Reverts every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_revert = True
+        if self._session.is_repository_test:
+            return
+        paths = self._list_visible_asset_paths()
+        for path in paths:
+            manager = self._io_manager._make_package_manager(path)
+            manager._git_revert()
+
+    @Command('st*', section='git', in_score=False)
+    def git_status_every_package(self):
+        r'''Displays repository status of every asset.
+
+        Returns none.
+        '''
+        self._session._attempted_display_status = True
+        paths = self._list_visible_asset_paths()
+        paths = self._extract_common_parent_directories(paths)
+        paths.sort()
+        for path in paths:
+            manager = self._io_manager._make_package_manager(path)
+            manager._git_status()
+        if not paths:
+            message = 'Repository status for {} ... OK'
+            directory = self._get_current_directory()
+            message = message.format(directory)
+            self._io_manager._display(message)
+
+    @Command('up*', section='git', in_score=False)
+    def git_update_every_package(self):
+        r'''Updates every asset from repository.
+
+        Returns none.
+        '''
+        tab = self._io_manager._tab
+        managers = self._list_visible_asset_managers()
+        for manager in managers:
+            messages = []
+            message = self._path_to_asset_menu_display_string(manager._path)
+            message = self._strip_annotation(message)
+            message = message + ':'
+            messages_ = manager._git_update(messages_only=True)
+            if len(messages_) == 1:
+                message = message + ' ' + messages_[0]
+                messages.append(message)
+            else:
+                messages_ = [tab + _ for _ in messages_]
+                messages.extend(messages_)
+            self._io_manager._display(messages, capitalize=False)
 
     @Command('di*', section='star', outside_score=False)
     def illustrate_every_definition_py(self):
@@ -2082,25 +2103,6 @@ class Wrangler(Controller):
             )
         self._session._is_backtracking_locally = False
 
-    @Command(
-        'revert*', 
-        description='git revert every package', 
-        section='git',
-        in_score=False,
-        )
-    def revert_every_asset(self):
-        r'''Reverts every asset to repository.
-
-        Returns none.
-        '''
-        self._session._attempted_to_revert = True
-        if self._session.is_repository_test:
-            return
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            manager = self._io_manager._make_package_manager(path)
-            manager._git_revert()
-
     @Command('ws', section='view')
     def set_view(self):
         r'''Sets view.
@@ -2122,30 +2124,3 @@ class Wrangler(Controller):
             manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(metadatum_name, view_name)
-
-    @Command(
-        'up*', 
-        description='git update every package', 
-        section='git',
-        in_score=False,
-        )
-    def update_every_asset(self):
-        r'''Updates every asset from repository.
-
-        Returns none.
-        '''
-        tab = self._io_manager._tab
-        managers = self._list_visible_asset_managers()
-        for manager in managers:
-            messages = []
-            message = self._path_to_asset_menu_display_string(manager._path)
-            message = self._strip_annotation(message)
-            message = message + ':'
-            messages_ = manager._git_update(messages_only=True)
-            if len(messages_) == 1:
-                message = message + ' ' + messages_[0]
-                messages.append(message)
-            else:
-                messages_ = [tab + _ for _ in messages_]
-                messages.extend(messages_)
-            self._io_manager._display(messages, capitalize=False)

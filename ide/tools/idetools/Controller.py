@@ -210,16 +210,6 @@ class Controller(object):
                 messages.append('')
         return messages
 
-    def _get_current_directory(self):
-        score_directory = self._session.current_score_directory
-        if score_directory is not None:
-            directory = os.path.join(
-                score_directory,
-                self._directory_name,
-                )
-            directory = os.path.abspath(directory)
-            return directory
-
     def _get_commands(self, only_my_methods=False):
         result = []
         for name in dir(self):
@@ -234,6 +224,16 @@ class Controller(object):
                 elif command in self._commands:
                     result.append(command)
         return result
+
+    def _get_current_directory(self):
+        score_directory = self._session.current_score_directory
+        if score_directory is not None:
+            directory = os.path.join(
+                score_directory,
+                self._directory_name,
+                )
+            directory = os.path.abspath(directory)
+            return directory
 
     def _get_metadata(self):
         metadata = None

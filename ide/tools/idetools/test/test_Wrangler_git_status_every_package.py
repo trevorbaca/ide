@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_display_every_asset_status_01():
+def test_Wrangler_git_status_every_package_01():
     r'''Works with all scores.
     '''
 
