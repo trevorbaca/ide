@@ -131,8 +131,7 @@ class Menu(object):
         
             1. all command sections
             2. 'assets' section, if it exists
-            3. 'material summary', if it exists
-            4. aliases, if any are defined
+            3. aliases, if any are defined
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
@@ -140,7 +139,7 @@ class Menu(object):
         if input_ == '!':
             return
         if input_.startswith('!'):
-            if self._has_shell_command():
+            if self._has_command('!'):
                 return input_
             else:
                 return
@@ -158,7 +157,7 @@ class Menu(object):
         elif input_ in ('h', 'q', 'b', '<return>'):
             self._session._pending_redraw = True
             return input_
-        elif input_ in ('?', ';') and self._has_display_command(input_):
+        elif input_ in ('?', ';') and self._has_command(input_):
             self._session._pending_redraw = True
             return input_
         elif input_ == 's' and self._session.is_in_score:
@@ -316,7 +315,7 @@ class Menu(object):
             result = directive
         return result
 
-    def _has_display_command(self, command_name):
+    def _has_command(self, command_name):
         for section in self.menu_sections:
             for entry in section.menu_entries:
                 if entry.key == command_name:
@@ -329,15 +328,8 @@ class Menu(object):
     def _has_ranged_section(self):
         return any(x.is_ranged for x in self.menu_sections)
 
-    def _has_shell_command(self):
-        for section in self.menu_sections:
-            for entry in section.menu_entries:
-                if entry.key == '!':
-                    return True
-        return False
-
     @staticmethod
-    def _ljust(string, width):
+    def _left_justify(string, width):
         start_width = len(stringtools.strip_diacritics(string))
         if start_width < width:
             needed = width - start_width
@@ -416,8 +408,8 @@ class Menu(object):
         else:
             left_width = max(len(_) for _ in left_lines)
             right_width = max(len(_) for _ in right_lines)
-        left_lines = [self._ljust(_, left_width) for _ in left_lines]
-        right_lines = [self._ljust(_, right_width) for _ in right_lines]
+        left_lines = [self._left_justify(_, left_width) for _ in left_lines]
+        right_lines = [self._left_justify(_, right_width) for _ in right_lines]
         if strip:
             left_margin_width, gutter_width = 4, 4 
         else:
@@ -444,7 +436,7 @@ class Menu(object):
             conjoined_lines.append(conjoined_line)
         return conjoined_lines
 
-    def _make_command_section_lines(self):
+    def _make_command_lines(self):
         result = []
         section_names = []
         for section in self.menu_sections:
@@ -457,8 +449,6 @@ class Menu(object):
             if not self._session.display_command_help and section.is_hidden:
                 continue
             if section.is_asset_section:
-                continue
-            if section.name == 'material summary':
                 continue
             section_menu_lines = section._make_lines()
             result.extend(section_menu_lines)
@@ -504,12 +494,13 @@ class Menu(object):
         lines.append('')
         return lines
 
-    def _make_material_summary_lines(self):
-        try:
-            section = self['material summary']
-        except KeyError:
-            return []
-        lines = section._make_lines()
+    def _make_lines(self):
+        lines = []
+        lines.extend(self._make_title_lines())
+        lines.extend(self._make_asset_lines())
+        if lines and not all(_ == ' ' for _ in lines[-1]):
+            lines.append('')
+        lines.extend(self._make_command_lines())
         return lines
 
     def _make_section(
@@ -572,16 +563,6 @@ class Menu(object):
         result.append('')
         return result
 
-    def _make_visible_section_lines(self):
-        lines = []
-        lines.extend(self._make_title_lines())
-        lines.extend(self._make_material_summary_lines())
-        lines.extend(self._make_asset_lines())
-        if lines and not all(_ == ' ' for _ in lines[-1]):
-            lines.append('')
-        lines.extend(self._make_command_section_lines())
-        return lines
-
     def _redraw(self):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
@@ -589,7 +570,7 @@ class Menu(object):
             command_type = self._session.display_command_help
             lines = self._make_help_lines(command_type=command_type)
         else:
-            lines = self._make_visible_section_lines()
+            lines = self._make_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)
 
     def _return_value_to_location_pair(self, return_value):

@@ -148,14 +148,6 @@ class MenuSection(AbjadObject):
         return self.default_index is not None
 
     @property
-    def _information_message_bullet(self):
-        return '=>'
-
-    @property
-    def _material_summary_bullet(self):
-        return '*'
-
-    @property
     def _menu_entry_display_strings(self):
         return [_.display_string for _ in self]
 
