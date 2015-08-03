@@ -138,10 +138,7 @@ class Menu(object):
         elif input_ in ('h', 'q', 'b', '<return>'):
             self._session._pending_redraw = True
             return input_
-        elif input_ == '?' and self._has_display_action_commands_command():
-            self._session._pending_redraw = True
-            return input_
-        elif input_ == ';' and self._has_display_navigation_commands_command():
+        elif input_ in ('?', ';') and self._has_display_command(input_):
             self._session._pending_redraw = True
             return input_
         elif input_ == 's' and self._session.is_in_score:
@@ -299,17 +296,10 @@ class Menu(object):
             result = directive
         return result
 
-    def _has_display_action_commands_command(self):
+    def _has_display_command(self, command_name):
         for section in self.menu_sections:
             for entry in section.menu_entries:
-                if entry.key == '?':
-                    return True
-        return False
-
-    def _has_display_navigation_commands_command(self):
-        for section in self.menu_sections:
-            for entry in section.menu_entries:
-                if entry.key == ';':
+                if entry.key == command_name:
                     return True
         return False
 
