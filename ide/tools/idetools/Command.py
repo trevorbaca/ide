@@ -41,27 +41,23 @@ class Command(object):
         self, 
         command_name, 
         description=None, 
-        section=None,
-        is_navigation=False,
-        is_hidden=True,
         in_score=True,
+        is_hidden=True,
         outside_score=True,
+        section=None,
         ):
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
         self.description = description
-        assert section in self._allowable_sections, repr(
-            section)
-        self.section = section
-        assert isinstance(is_hidden, bool), repr(is_hidden)
-        self.is_hidden = is_hidden
-        assert isinstance(is_navigation, bool), repr(is_navigation)
-        self.is_navigation = is_navigation
         assert isinstance(in_score, bool), repr(in_score)
         self.in_score = in_score
+        assert isinstance(is_hidden, bool), repr(is_hidden)
+        self.is_hidden = is_hidden
         assert isinstance(outside_score, bool), repr(outside_score)
         self.outside_score = outside_score
+        assert section in self._allowable_sections, repr(section)
+        self.section = section
 
     ### SPECIAL METHODS ###
 
