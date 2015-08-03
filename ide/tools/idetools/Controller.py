@@ -198,7 +198,7 @@ class Controller(object):
                 messages.append('')
         return messages
 
-    def _get_commands(self, only_my_methods=False):
+    def _get_commands(self):
         result = []
         for name in dir(self):
             if name.startswith('_'):
@@ -206,11 +206,7 @@ class Controller(object):
             command = getattr(self, name)
             if not inspect.ismethod(command):
                 continue
-            if hasattr(command, 'command_name'):
-                if not only_my_methods:
-                    result.append(command)
-                elif command in self._commands:
-                    result.append(command)
+            result.append(command)
         return result
 
     def _get_current_directory(self):
@@ -545,20 +541,24 @@ class Controller(object):
 
     def _make_command_menu_sections(self, menu, menu_section_names=None):
         methods = []
-        methods_ = self._get_commands(only_my_methods=False)
+        methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
         current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         current_directory = os.path.normpath(current_directory)
-        parts = current_directory.split(os.path.sep)
+        required_files = getattr(self, '_required_files', ())
+        optional_files = getattr(self, '_optional_files', ())
+        files = required_files + optional_files
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
             if not is_in_score and not method_.outside_score:
                 continue
             if (method_.directory is not None and
-                method_.directory not in parts):
+                not os.path.basename(current_directory) == method_.directory):
+                continue
+            if method_.file_ is not None and method_.file_ not in files:
                 continue
             methods.append(method_)
         method_groups = {}

@@ -42,6 +42,7 @@ class Command(object):
         command_name, 
         description=None, 
         directory=None,
+        file_=None,
         in_score=True,
         is_hidden=True,
         outside_score=True,
@@ -58,6 +59,8 @@ class Command(object):
         self.is_hidden = is_hidden
         assert isinstance(outside_score, bool), repr(outside_score)
         self.outside_score = outside_score
+        assert isinstance(file_, (str, type(None)))
+        self.file_ = file_
         assert section in self._allowable_sections, repr(section)
         self.section = section
 
@@ -74,6 +77,7 @@ class Command(object):
         else:
             method.description = method.__name__.replace('_', ' ')
         method.directory = self.directory
+        method.file_ = self.file_
         method.in_score = self.in_score
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
