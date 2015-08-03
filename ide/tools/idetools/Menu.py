@@ -327,37 +327,6 @@ class Menu(object):
             result = string
         return result
 
-    def _make_action_command_section_lines(self):
-        lines = []
-        menu_sections = self._sort_menu_sections(type_='action')
-        for menu_section in menu_sections:
-            found_one = False
-            if not menu_section.is_command_section:
-                continue
-            for menu_entry in menu_section:
-                if menu_entry.is_navigation:
-                    continue
-                found_one = True
-                key = menu_entry.key
-                display_string = menu_entry.display_string
-                menu_line = self._io_manager._tab
-                menu_line += '{} ({})'.format(display_string, key)
-                lines.append(menu_line)
-            if found_one:
-                lines.append('')
-        if lines:
-            lines.pop()
-        lines = self._make_bicolumnar(
-            lines, 
-            break_only_at_blank_lines=True,
-            )
-        title = self._session.menu_header
-        title = title + ' - action commands'
-        title = stringtools.capitalize_start(title)
-        lines[0:0] = [title, '']
-        lines.append('')
-        return lines
-
     def _make_asset_lines(self):
         has_asset_section = False
         for section in self:
@@ -455,7 +424,6 @@ class Menu(object):
             conjoined_lines.append(conjoined_line)
         return conjoined_lines
 
-    # HERE 
     def _make_command_section_lines(self):
         result = []
         section_names = []
@@ -466,9 +434,7 @@ class Menu(object):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            hide = (not self._session.display_action_commands or
-                not self._session.display_navigation_commands)
-            if hide and section.is_hidden:
+            if not self._session.display_commands and section.is_hidden:
                 continue
             if section.is_asset_section:
                 continue
@@ -478,23 +444,19 @@ class Menu(object):
             result.extend(section_menu_lines)
         return result
 
-    def _make_material_summary_lines(self):
-        try:
-            section = self['material summary']
-        except KeyError:
-            return []
-        lines = section._make_lines()
-        return lines
-
-    def _make_navigation_command_section_lines(self):
+    def _make_help_lines(self, command_type):
+        assert command_type in ('action', 'navigation'), repr(command_type)
         lines = []
-        menu_sections = self._sort_menu_sections(type_='navigation')
+        menu_sections = self._sort_menu_sections(type_=command_type)
         for menu_section in menu_sections:
             found_one = False
             if not menu_section.is_command_section:
                 continue
             for menu_entry in menu_section:
-                if not menu_entry.is_navigation:
+                if command_type == 'action' and menu_entry.is_navigation:
+                    continue
+                if (command_type == 'navigation' and not
+                    menu_entry.is_navigation):
                     continue
                 found_one = True
                 key = menu_entry.key
@@ -511,10 +473,23 @@ class Menu(object):
             break_only_at_blank_lines=True,
             )
         title = self._session.menu_header
-        title = title + ' - view & navigation commands'
+        if command_type == 'action':
+            title = title + ' - action commands'
+        elif command_type == 'navigation':
+            title = title + ' - view & navigation commands'
+        else:
+            raise ValueError(repr(command_type))
         title = stringtools.capitalize_start(title)
         lines[0:0] = [title, '']
         lines.append('')
+        return lines
+
+    def _make_material_summary_lines(self):
+        try:
+            section = self['material summary']
+        except KeyError:
+            return []
+        lines = section._make_lines()
         return lines
 
     def _make_section(
@@ -591,9 +566,9 @@ class Menu(object):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
         if self._session.display_action_commands:
-            lines = self._make_action_command_section_lines()
+            lines = self._make_help_lines(command_type='action')
         elif self._session.display_navigation_commands:
-            lines = self._make_navigation_command_section_lines()
+            lines = self._make_help_lines(command_type='navigation')
         else:
             lines = self._make_visible_section_lines()
         self._io_manager._display(lines, capitalize=False, is_menu=True)

@@ -321,7 +321,7 @@ class Session(abctools.AbjadObject):
                 >>> session.confirm
                 True
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._confirm
 
@@ -630,7 +630,7 @@ class Session(abctools.AbjadObject):
                 >>> session.display
                 True
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._display
 
@@ -645,9 +645,25 @@ class Session(abctools.AbjadObject):
                 >>> session.display_action_commands
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._display_action_commands
+
+    @property
+    def display_commands(self):
+        r'''Is true when either action commands or navigation commands will
+        display. Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.display_commands
+                False
+
+        Returns true or false.
+        '''
+        return self.display_action_commands or self.display_navigation_commands
 
     @property
     def display_navigation_commands(self):
@@ -660,7 +676,7 @@ class Session(abctools.AbjadObject):
                 >>> session.display_navigation_commands
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._display_navigation_commands
 
@@ -726,7 +742,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_at_top_level
                 True
 
-        Returns boolean.
+        Returns true or false..
         '''
         from ide.tools import idetools
         for controller in self.controller_stack:
@@ -745,7 +761,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_autonavigating_within_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self.wrangler_navigation_directive is not None
 
@@ -760,7 +776,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_backtracking
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         if (
             self.is_autonavigating_within_score or
@@ -786,7 +802,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_backtracking_locally
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_backtracking_locally
 
@@ -802,7 +818,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_backtracking_to_all_scores
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_scores
 
@@ -818,7 +834,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_backtracking_to_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_backtracking_to_score
 
@@ -834,7 +850,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_in_confirmation_environment
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_in_confirmation_environment
 
@@ -849,7 +865,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_in_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         if self.current_score_package_manager is not None:
             return True
@@ -866,7 +882,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_in_user_input_getter
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         from ide.tools import idetools
         for controller in reversed(self.controller_stack):
@@ -886,7 +902,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_home
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_home
 
@@ -902,7 +918,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_build_files
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_build_files
 
@@ -918,7 +934,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_distribution_files
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_distribution_files
 
@@ -934,7 +950,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_etc_files
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_etc_files
 
@@ -950,7 +966,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_maker_files
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_maker_files
 
@@ -966,7 +982,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_materials
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_materials
 
@@ -982,7 +998,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_next_asset
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_next_asset
 
@@ -997,7 +1013,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_next_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_next_score
 
@@ -1013,7 +1029,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_previous_asset
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_previous_asset
 
@@ -1029,7 +1045,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_previous_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_previous_score
 
@@ -1045,7 +1061,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_segments
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_segments
 
@@ -1061,7 +1077,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_sibling_asset
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         if self.is_navigating_to_next_asset:
             return True
@@ -1081,7 +1097,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_sibling_score
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         if self.is_navigating_to_next_score:
             return True
@@ -1101,7 +1117,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_navigating_to_stylesheets
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_navigating_to_stylesheets
 
@@ -1116,7 +1132,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_quitting
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_quitting
 
@@ -1131,7 +1147,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_repository_test
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_repository_test
 
@@ -1146,7 +1162,7 @@ class Session(abctools.AbjadObject):
                 >>> session.is_test
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._is_test
 
@@ -1179,7 +1195,7 @@ class Session(abctools.AbjadObject):
                 >>> session.last_command_was_composite
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._last_command_was_composite
 
@@ -1244,7 +1260,7 @@ class Session(abctools.AbjadObject):
                 >>> session.pending_done
                 False
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._pending_done
 
@@ -1274,7 +1290,7 @@ class Session(abctools.AbjadObject):
                 >>> session.pending_redraw
                 True
 
-        Returns boolean.
+        Returns true or false..
         '''
         return self._pending_redraw
 
