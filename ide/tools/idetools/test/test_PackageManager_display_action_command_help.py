@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_PackageManager_display_action_commands_01():
+def test_PackageManager_display_action_command_help_01():
     r'''In material package.
     '''
     
@@ -15,7 +15,7 @@ def test_PackageManager_display_action_commands_01():
     assert 'tempo inventory - action commands' in contents
 
 
-def test_PackageManager_display_action_commands_02():
+def test_PackageManager_display_action_command_help_02():
     r'''In segment package.
     '''
     
@@ -26,7 +26,7 @@ def test_PackageManager_display_action_commands_02():
     assert 'segments directory - A - action commands' in contents
 
 
-def test_PackageManager_display_action_commands_03():
+def test_PackageManager_display_action_command_help_03():
     r'''In score package.
     '''
     

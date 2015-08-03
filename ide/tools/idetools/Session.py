@@ -51,8 +51,8 @@ class Session(abctools.AbjadObject):
         '_controller_stack',
         '_current_score_directory',
         '_display',
-        '_display_action_commands',
-        '_display_navigation_commands',
+        '_display_action_command_help',
+        '_display_navigation_command_help',
         '_initial_input',
         '_io_manager',
         '_is_backtracking_locally',
@@ -106,8 +106,8 @@ class Session(abctools.AbjadObject):
         self._controller_stack = []
         self._current_score_directory = None
         self._display = True
-        self._display_action_commands = False
-        self._display_navigation_commands = False
+        self._display_action_command_help = False
+        self._display_navigation_command_help = False
         self._initial_input = input_
         self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
@@ -635,22 +635,22 @@ class Session(abctools.AbjadObject):
         return self._display
 
     @property
-    def display_action_commands(self):
+    def display_action_command_help(self):
         r'''Is true when action commands will display. Otherwise false.
 
         ..  container:: example
 
             ::
 
-                >>> session.display_action_commands
+                >>> session.display_action_command_help
                 False
 
         Returns true or false..
         '''
-        return self._display_action_commands
+        return self._display_action_command_help
 
     @property
-    def display_commands(self):
+    def display_command_help(self):
         r'''Is true when either action commands or navigation commands will
         display. Otherwise false.
 
@@ -658,27 +658,27 @@ class Session(abctools.AbjadObject):
 
             ::
 
-                >>> session.display_commands
+                >>> session.display_command_help
                 False
 
         Returns true or false.
         '''
-        return self.display_action_commands or self.display_navigation_commands
+        return self.display_action_command_help or self.display_navigation_command_help
 
     @property
-    def display_navigation_commands(self):
+    def display_navigation_command_help(self):
         r'''Is true when navigation commands will display. Otherwise false.
 
         ..  container:: example
 
             ::
 
-                >>> session.display_navigation_commands
+                >>> session.display_navigation_command_help
                 False
 
         Returns true or false..
         '''
-        return self._display_navigation_commands
+        return self._display_navigation_command_help
 
     @property
     def explicit_command_history(self):

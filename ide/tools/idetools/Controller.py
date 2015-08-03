@@ -47,8 +47,8 @@ class Controller(object):
             self.go_home,
             self.go_to_score_directory,
             self.quit_abjad_ide,
-            self.display_action_commands,
-            self.display_navigation_commands,
+            self.display_action_command_help,
+            self.display_navigation_command_help,
             self.invoke_shell,
             self.open_lilypond_log,
             ])
@@ -440,14 +440,14 @@ class Controller(object):
 
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
         self._set_is_navigating_to_sibling_asset()
 
     def _go_to_previous_package(self):
         self._session._is_navigating_to_previous_asset = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
         self._set_is_navigating_to_sibling_asset()
 
     def _handle_candidate(self, candidate_path, destination_path):
@@ -817,24 +817,24 @@ class Controller(object):
     ### PUBLIC METHODS ###
 
     @Command('?', 'display action commands', 'system')
-    def display_action_commands(self):
+    def display_action_command_help(self):
         r'''Displays action commands.
 
         Returns none.
         '''
         if not self._session.is_in_confirmation_environment:
-            show = self._session.display_action_commands
-            self._session._display_action_commands = not show
+            show = self._session.display_action_command_help
+            self._session._display_action_command_help = not show
 
     @Command(';', 'display navigation commands', 'display navigation', True)
-    def display_navigation_commands(self):
+    def display_navigation_command_help(self):
         r'''Displays navigation commands.
 
         Returns none.
         '''
         if not self._session.is_in_confirmation_environment:
-            show = self._session.display_navigation_commands
-            self._session._display_navigation_commands = not show
+            show = self._session.display_navigation_command_help
+            self._session._display_navigation_command_help = not show
 
     @Command('abb', 'edit abbreviations file', 'global files')
     def edit_abbreviations_file(self):
@@ -867,8 +867,8 @@ class Controller(object):
         Returns none.
         '''
         self._session._is_backtracking_locally = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
 
     @Command('h', 'home', 'back-home-quit', True)
     def go_home(self):
@@ -878,8 +878,8 @@ class Controller(object):
         '''
         self._session._is_navigating_home = False
         self._session._is_navigating_to_scores = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
 
     @Command('uu', 'go to all build directories', 'comparison', True)
     def go_to_all_build_directories(self):
@@ -960,8 +960,8 @@ class Controller(object):
         '''
         self._session._is_navigating_to_next_score = True
         self._session._is_navigating_to_scores = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
 
     @Command('<', 'go to previous package', 'sibling package', True)
     def go_to_previous_package(self):
@@ -979,8 +979,8 @@ class Controller(object):
         '''
         self._session._is_navigating_to_previous_score = True
         self._session._is_navigating_to_scores = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False
 
     @Command('u', 'go to build directory', 'navigation', True)
     def go_to_score_build_directory(self):
@@ -998,8 +998,8 @@ class Controller(object):
         '''
         if self._session.is_in_score:
             self._session._is_backtracking_to_score = True
-            self._session._display_action_commands = False
-            self._session._display_navigation_commands = False
+            self._session._display_action_command_help = False
+            self._session._display_navigation_command_help = False
             
     @Command('d', 'go to distribution directory', 'navigation', True)
     def go_to_score_distribution_directory(self):
@@ -1090,5 +1090,5 @@ class Controller(object):
         Returns none.
         '''
         self._session._is_quitting = True
-        self._session._display_action_commands = False
-        self._session._display_navigation_commands = False
+        self._session._display_action_command_help = False
+        self._session._display_navigation_command_help = False

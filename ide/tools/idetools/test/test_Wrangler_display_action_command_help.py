@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_Wrangler_display_action_commands_01():
+def test_Wrangler_display_action_command_help_01():
     r'''Displays correct title at home.
     '''
     
@@ -15,7 +15,7 @@ def test_Wrangler_display_action_commands_01():
     assert 'Abjad IDE - all score directories - action commands' in contents
 
 
-def test_Wrangler_display_action_commands_02():
+def test_Wrangler_display_action_command_help_02():
     r'''Displays correct title in build directory.
     '''
     
@@ -26,7 +26,7 @@ def test_Wrangler_display_action_commands_02():
     assert 'build directory - action commands' in contents
 
 
-def test_Wrangler_display_action_commands_03():
+def test_Wrangler_display_action_command_help_03():
     r'''Displays correct title with all build files.
     '''
     
@@ -37,7 +37,7 @@ def test_Wrangler_display_action_commands_03():
     assert 'Abjad IDE - all build directories - action commands' in contents
 
 
-def test_Wrangler_display_action_commands_04():
+def test_Wrangler_display_action_command_help_04():
     r'''Displays only one blank line after title.
     '''
     

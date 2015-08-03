@@ -434,7 +434,7 @@ class Menu(object):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            if not self._session.display_commands and section.is_hidden:
+            if not self._session.display_command_help and section.is_hidden:
                 continue
             if section.is_asset_section:
                 continue
@@ -565,9 +565,9 @@ class Menu(object):
     def _redraw(self):
         self._session._pending_redraw = False
         self._io_manager.clear_terminal()
-        if self._session.display_action_commands:
+        if self._session.display_action_command_help:
             lines = self._make_help_lines(command_type='action')
-        elif self._session.display_navigation_commands:
+        elif self._session.display_navigation_command_help:
             lines = self._make_help_lines(command_type='navigation')
         else:
             lines = self._make_visible_section_lines()
