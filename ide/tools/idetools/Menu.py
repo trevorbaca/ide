@@ -130,7 +130,7 @@ class Menu(object):
         r'''Match order:
         
             1. all command sections
-            2. 'assets' section, if it exists
+            2. assets section, if it exists
             3. aliases, if any are defined
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
@@ -154,7 +154,7 @@ class Menu(object):
                     default_value = section._default_value
             if default_value is not None:
                 return self._enclose_in_list(default_value)
-        elif input_ in ('h', 'q', 'b', '<return>'):
+        elif input_ == '<return>':
             self._session._pending_redraw = True
             return input_
         elif input_ in ('?', ';') and self._has_command(input_):
@@ -196,7 +196,6 @@ class Menu(object):
                     return self._enclose_in_list(return_value)
         if asset_section is not None:
             for menu_entry in asset_section:
-                #if menu_entry.matches(input_):
                 if menu_entry.matches(input_.lower()):
                     return_value = menu_entry.return_value
                     if ends_with_bang:

@@ -448,6 +448,10 @@ class Controller(object):
         self._session._display_command_help = None
         self._set_is_navigating_to_sibling_asset()
 
+    def _handle_back_home_quit_directive(self, directive):
+        if directive in ('b', 'h', 'q'):
+            self._session._pending_redraw = True
+
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
