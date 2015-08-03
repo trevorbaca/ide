@@ -44,6 +44,7 @@ class Command(object):
         directory=None,
         file_=None,
         in_score=True,
+        in_score_directory_only=False,
         is_hidden=True,
         outside_score=True,
         section=None,
@@ -55,6 +56,8 @@ class Command(object):
         self.directory = directory
         assert isinstance(in_score, bool), repr(in_score)
         self.in_score = in_score
+        assert isinstance(in_score_directory_only, bool)
+        self.in_score_directory_only = in_score_directory_only
         assert isinstance(is_hidden, bool), repr(is_hidden)
         self.is_hidden = is_hidden
         assert isinstance(outside_score, bool), repr(outside_score)
@@ -79,6 +82,7 @@ class Command(object):
         method.directory = self.directory
         method.file_ = self.file_
         method.in_score = self.in_score
+        method.in_score_directory_only = self.in_score_directory_only
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
         method.outside_score = self.outside_score

@@ -507,6 +507,23 @@ class Controller(object):
                     return True
         return False
 
+    def _is_in_score_directory(self):
+        current_directory = self._get_current_directory()
+        if current_directory is None:
+            current_directory = configuration.composer_scores_directory
+        current_directory = os.path.normpath(current_directory)
+        current_directory_parts = current_directory.split(os.path.sep)
+        grandparent_directory_parts = current_directory_parts[:-2]
+        scores_directory = configuration.composer_scores_directory
+        scores_directory_parts = scores_directory.split(os.path.sep)
+        if grandparent_directory_parts == scores_directory_parts:
+            return True
+        scores_directory = configuration.abjad_ide_example_scores_directory
+        scores_directory_parts = scores_directory.split(os.path.sep)
+        if grandparent_directory_parts == scores_directory_parts:
+            return True
+        return False
+
     def _is_valid_directory_entry(self, directory_entry):
         if directory_entry[0].isalpha():
             if not directory_entry.endswith('.pyc'):
@@ -546,10 +563,10 @@ class Controller(object):
         current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
-        current_directory = os.path.normpath(current_directory)
         required_files = getattr(self, '_required_files', ())
         optional_files = getattr(self, '_optional_files', ())
         files = required_files + optional_files
+        is_in_score_directory = self._is_in_score_directory()
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
@@ -559,6 +576,8 @@ class Controller(object):
                 not os.path.basename(current_directory) == method_.directory):
                 continue
             if method_.file_ is not None and method_.file_ not in files:
+                continue
+            if method_.in_score_directory_only and not is_in_score_directory:
                 continue
             methods.append(method_)
         method_groups = {}

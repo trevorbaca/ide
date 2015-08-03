@@ -1364,6 +1364,7 @@ class PackageManager(Controller):
 
     @Command(
         'so', 
+        in_score_directory_only=True,
         outside_score=False,
         section='package', 
         )
