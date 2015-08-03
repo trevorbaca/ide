@@ -41,6 +41,7 @@ class Command(object):
         self, 
         command_name, 
         description=None, 
+        directory=None,
         in_score=True,
         is_hidden=True,
         outside_score=True,
@@ -50,6 +51,7 @@ class Command(object):
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
         self.description = description
+        self.directory = directory
         assert isinstance(in_score, bool), repr(in_score)
         self.in_score = in_score
         assert isinstance(is_hidden, bool), repr(is_hidden)
@@ -71,11 +73,12 @@ class Command(object):
             method.description = self.description
         else:
             method.description = method.__name__.replace('_', ' ')
-        method.section = self.section
+        method.directory = self.directory
+        method.in_score = self.in_score
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
-        method.in_score = self.in_score
         method.outside_score = self.outside_score
+        method.section = self.section
         return method
 
     ### PRIVATE METHODS ###

@@ -559,10 +559,18 @@ class Controller(object):
         methods = []
         methods_ = self._get_commands(only_my_methods=True)
         is_in_score = self._session.is_in_score
+        current_directory = self._get_current_directory()
+        if current_directory is None:
+            current_directory = configuration.composer_scores_directory
+        current_directory = os.path.normpath(current_directory)
+        parts = current_directory.split(os.path.sep)
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
             if not is_in_score and not method_.outside_score:
+                continue
+            if (method_.directory is not None and
+                method_.directory not in parts):
                 continue
             methods.append(method_)
         method_groups = {}

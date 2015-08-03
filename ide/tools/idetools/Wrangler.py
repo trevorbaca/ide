@@ -67,6 +67,18 @@ class Wrangler(Controller):
             self.remove,
             self.rename,
             ])
+        self._commands.append(self.collect_segment_lilypond_files)
+        self._commands.append(self.generate_back_cover_source)
+        self._commands.append(self.generate_front_cover_source)
+        self._commands.append(self.generate_music_source)
+        self._commands.append(self.generate_preface_source)
+        self._commands.append(self.generate_score_source)
+        self._commands.append(self.interpret_back_cover)
+        self._commands.append(self.interpret_front_cover)
+        self._commands.append(self.interpret_music)
+        self._commands.append(self.interpret_preface)
+        self._commands.append(self.interpret_score)
+        self._commands.append(self.push_score_pdf_to_distribution_directory)
         self._copy_target_directory = None
         self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
@@ -238,22 +250,7 @@ class Wrangler(Controller):
     def _configure_as_build_file_wrangler(self):
         self._asset_identifier = 'file'
         self._basic_breadcrumb = 'build'
-        commands = []
-        commands.append(self.collect_segment_lilypond_files)
-        commands.append(self.generate_back_cover_source)
-        commands.append(self.generate_front_cover_source)
-        commands.append(self.generate_music_source)
-        commands.append(self.generate_preface_source)
-        commands.append(self.generate_score_source)
-        commands.append(self.interpret_back_cover)
-        commands.append(self.interpret_front_cover)
-        commands.append(self.interpret_music)
-        commands.append(self.interpret_preface)
-        commands.append(self.interpret_score)
-        commands.append(self.push_score_pdf_to_distribution_directory)
-        self._commands.extend(commands)
-        self._directory_entry_predicate = \
-            self._is_valid_file_directory_entry
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'build'
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
@@ -262,8 +259,7 @@ class Wrangler(Controller):
     def _configure_as_distribution_file_wrangler(self):
         self._asset_identifier = 'file'
         self._basic_breadcrumb = 'distribution'
-        self._directory_entry_predicate = \
-            self._is_valid_file_directory_entry
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'distribution'
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
@@ -271,8 +267,7 @@ class Wrangler(Controller):
     def _configure_as_etc_file_wrangler(self):
         self._asset_identifier = 'file'
         self._basic_breadcrumb = 'etc'
-        self._directory_entry_predicate = \
-            self._is_valid_file_directory_entry
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'etc'
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
@@ -280,8 +275,7 @@ class Wrangler(Controller):
     def _configure_as_maker_file_wrangler(self):
         self._asset_identifier = 'maker'
         self._basic_breadcrumb = 'makers'
-        self._directory_entry_predicate = \
-            self._is_valid_file_directory_entry
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'makers'
         self._file_extension = '.py'
         self._file_name_predicate = stringtools.is_upper_camel_case
@@ -1473,7 +1467,7 @@ class Wrangler(Controller):
         self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
-    @Command('mc', section='build', outside_score=False)
+    @Command('mc', directory='build', section='build', outside_score=False)
     def collect_segment_lilypond_files(self):
         r'''Copies ``illustration.ly`` files from segment packages to build 
         directory.
@@ -1593,7 +1587,7 @@ class Wrangler(Controller):
         '''
         self._open_in_every_package('definition.py')
 
-    @Command('bcg', section='build', outside_score=False)
+    @Command('bcg', directory='build', section='build', outside_score=False)
     def generate_back_cover_source(self):
         r'''Generates ``back-cover.tex``.
 
@@ -1620,7 +1614,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate('back-cover.tex', replacements=replacements)
 
-    @Command('fcg', section='build', outside_score=False)
+    @Command('fcg', directory='build', section='build', outside_score=False)
     def generate_front_cover_source(self):
         r'''Generates ``front-cover.tex``.
 
@@ -1653,7 +1647,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate(file_name, replacements=replacements)
 
-    @Command('mg', section='build', outside_score=False)
+    @Command('mg', directory='build', section='build', outside_score=False)
     def generate_music_source(self):
         r'''Generates ``music.ly``.
 
@@ -1732,7 +1726,7 @@ class Wrangler(Controller):
                 self._replace_in_file(candidate_path, old, new)
             self._handle_candidate(candidate_path, destination_path)
 
-    @Command('pg', section='build', outside_score=False)
+    @Command('pg', directory='build', section='build', outside_score=False)
     def generate_preface_source(self):
         r'''Generates ``preface.tex``.
 
@@ -1740,7 +1734,7 @@ class Wrangler(Controller):
         '''
         self._copy_boilerplate('preface.tex')
 
-    @Command('sg', section='build', outside_score=False)
+    @Command('sg', directory='build', section='build', outside_score=False)
     def generate_score_source(self):
         r'''Generates ``score.tex``.
 
@@ -1885,7 +1879,7 @@ class Wrangler(Controller):
             method = getattr(manager, method_name)
             method()
 
-    @Command('bci', section='build', outside_score=False)
+    @Command('bci', directory='build', section='build', outside_score=False)
     def interpret_back_cover(self):
         r'''Interprets ``back-cover.tex``.
 
@@ -1926,7 +1920,7 @@ class Wrangler(Controller):
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
                 
-    @Command('fci', section='build', outside_score=False)
+    @Command('fci', directory='build', section='build', outside_score=False)
     def interpret_front_cover(self):
         r'''Interprets ``front-cover.tex``.
 
@@ -1934,7 +1928,7 @@ class Wrangler(Controller):
         '''
         self._interpret_file_ending_with('front-cover.tex')
 
-    @Command('mi', section='build', outside_score=False)
+    @Command('mi', directory='build', section='build', outside_score=False)
     def interpret_music(self):
         r'''Interprets ``music.ly``.
 
@@ -1942,7 +1936,7 @@ class Wrangler(Controller):
         '''
         self._call_lilypond_on_file_ending_with('music.ly')
 
-    @Command('pi', section='build', outside_score=False)
+    @Command('pi', directory='build', section='build', outside_score=False)
     def interpret_preface(self):
         r'''Interprets ``preface.tex``.
 
@@ -1950,7 +1944,7 @@ class Wrangler(Controller):
         '''
         self._interpret_file_ending_with('preface.tex')
 
-    @Command('si', section='build', outside_score=False)
+    @Command('si', directory='build', section='build', outside_score=False)
     def interpret_score(self):
         r'''Interprets ``score.tex``.
 
@@ -2001,7 +1995,7 @@ class Wrangler(Controller):
         if paths:
             self._io_manager.open_file(paths)
 
-    @Command('sp', section='build', outside_score=False)
+    @Command('sp', directory='build', section='build', outside_score=False)
     def push_score_pdf_to_distribution_directory(self):
         r'''Pushes ``score.pdf`` to distribution directory.
 
