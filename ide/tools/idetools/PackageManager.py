@@ -889,7 +889,11 @@ class PackageManager(Controller):
             message = '{} OK.'.format(self._definition_py_path)
             self._io_manager._display(message)
 
-    @Command('ck', section='package', outside_score=False)
+    @Command(
+        'ck', 
+        outside_score=False,
+        section='package', 
+        )
     def check_package(
         self,
         problems_only=None,
@@ -1193,6 +1197,7 @@ class PackageManager(Controller):
         'i', 
         file_='definition.py',
         outside_score=False,
+        parent_directories=('segments',),
         section='package', 
         )
     def illustrate_definition_py(self, dry_run=False):

@@ -1329,7 +1329,12 @@ class Wrangler(Controller):
             
     ### PUBLIC METHODS ###
 
-    @Command('dc*', section='star', outside_score=False)
+    @Command(
+        'dc*',
+        directories=('materials', 'segments'),
+        outside_score=False,
+        section='star',
+        )
     def check_every_definition_py(self):
         r'''Checks ``definition.py`` in every package.
 
@@ -1855,7 +1860,12 @@ class Wrangler(Controller):
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
 
-    @Command('di*', section='star', outside_score=False)
+    @Command(
+        'di*',
+        directories=('segments'),
+        outside_score=False,
+        section='star',
+        )
     def illustrate_every_definition_py(self):
         r'''Illustrates ``definition.py`` in every package.
 
@@ -1891,7 +1901,12 @@ class Wrangler(Controller):
         '''
         self._interpret_file_ending_with('back-cover.tex')
 
-    @Command('ii*', section='star', outside_score=False)
+    @Command(
+        'ii*',
+        directories=('materials', 'segments'),
+        outside_score=False,
+        section='star',
+        )
     def interpret_every_illustration_ly(
         self, 
         open_every_illustration_pdf=True,
@@ -1989,7 +2004,12 @@ class Wrangler(Controller):
         else:
             self._make_package()
 
-    @Command('io*', section='star', outside_score=False)
+    @Command(
+        'io*',
+        directories=('materials', 'segments'),
+        outside_score=False,
+        section='star',
+        )
     def open_every_illustration_pdf(self):
         r'''Opens ``illustration.pdf`` in every package.
 
