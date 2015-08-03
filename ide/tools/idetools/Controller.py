@@ -568,13 +568,15 @@ class Controller(object):
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
         directory_name = os.path.basename(current_directory)
+        parent_directory_name = current_directory.split(os.path.sep)[-2]
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
             if not is_in_score and not method_.outside_score:
                 continue
-            if (method_.directories and
-                directory_name not in method_.directories):
+            if ((method_.directories or method_.parent_directories) and
+                directory_name not in method_.directories and
+                parent_directory_name not in method_.parent_directories):
                 continue
             if method_.file_ is not None and method_.file_ not in files:
                 continue
@@ -953,7 +955,8 @@ class Controller(object):
 
     @Command(
         '>',
-        #directories=('materials', 'segments'),
+        directories=('materials', 'segments'),
+        parent_directories=('materials', 'segments'),
         section='sibling package',
         )
     def go_to_next_package(self):
@@ -975,7 +978,8 @@ class Controller(object):
 
     @Command(
         '<', 
-        #directories=('materials', 'segments'),
+        directories=('materials', 'segments'),
+        parent_directories=('materials', 'segments'),
         section='sibling package',
         )
     def go_to_previous_package(self):
