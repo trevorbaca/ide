@@ -448,10 +448,6 @@ class Controller(object):
         self._session._display_command_help = None
         self._set_is_navigating_to_sibling_asset()
 
-    def _handle_back_home_quit_directive(self, directive):
-        if directive in ('b', 'h', 'q'):
-            self._session._pending_redraw = True
-
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
@@ -520,6 +516,10 @@ class Controller(object):
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
             raise Exception(message)
+
+    def _handle_pending_redraw_directive(self, directive):
+        if directive in ('b', 'h', 'q', 's', '?', ';'):
+            self._session._pending_redraw = True
 
     def _handle_wrangler_navigation_directive(self, expr):
         if expr in self._wrangler_navigation_to_session_variable:

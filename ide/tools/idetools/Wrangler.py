@@ -1173,7 +1173,7 @@ class Wrangler(Controller):
                 if not result:
                     menu = self._make_main_menu()
                     result = menu._run()
-                    self._handle_back_home_quit_directive(result)
+                    self._handle_pending_redraw_directive(result)
                     self._handle_wrangler_navigation_directive(result)
                 if self._session.is_backtracking:
                     return

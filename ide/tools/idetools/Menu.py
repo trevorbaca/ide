@@ -136,13 +136,8 @@ class Menu(object):
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
         input_ = stringtools.strip_diacritics(input_)
-        if input_ == '!':
-            return
-        if input_.startswith('!'):
-            if self._has_command('!'):
-                return input_
-            else:
-                return
+        if input_.startswith('!') and self._has_command('!'):
+            return input_
         ends_with_bang = input_.endswith('!')
         if ends_with_bang and input_[:-1] == 'q':
             self._session._clear_terminal_after_quit = True
@@ -154,12 +149,6 @@ class Menu(object):
                     default_value = section._default_value
             if default_value is not None:
                 return self._enclose_in_list(default_value)
-        elif input_ in ('?', ';') and self._has_command(input_):
-            self._session._pending_redraw = True
-            return input_
-        elif input_ == 's' and self._session.is_in_score:
-            self._session._pending_redraw = True
-            return input_
         # match on exact case
         asset_section = None
         for section in self.menu_sections:
