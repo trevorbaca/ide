@@ -327,21 +327,6 @@ class Menu(object):
             result = string
         return result
 
-    def _make_asset_lines(self):
-        has_asset_section = False
-        for section in self:
-            if section.is_asset_section:
-                has_asset_section = True
-                break
-        if not has_asset_section:
-            return []
-        assert section.is_asset_section
-        lines = section._make_lines()
-        if section.group_by_annotation:
-            lines = self._group_by_annotation(lines)
-        lines = self._make_bicolumnar(lines, strip=False)
-        return lines
-
     def _make_action_command_section_lines(self):
         lines = []
         menu_sections = self._sort_menu_sections(type_='action')
@@ -373,35 +358,19 @@ class Menu(object):
         lines.append('')
         return lines
 
-    def _make_navigation_command_section_lines(self):
-        lines = []
-        menu_sections = self._sort_menu_sections(type_='navigation')
-        for menu_section in menu_sections:
-            found_one = False
-            if not menu_section.is_command_section:
-                continue
-            for menu_entry in menu_section:
-                if not menu_entry.is_navigation:
-                    continue
-                found_one = True
-                key = menu_entry.key
-                display_string = menu_entry.display_string
-                menu_line = self._io_manager._tab
-                menu_line += '{} ({})'.format(display_string, key)
-                lines.append(menu_line)
-            if found_one:
-                lines.append('')
-        if lines:
-            lines.pop()
-        lines = self._make_bicolumnar(
-            lines, 
-            break_only_at_blank_lines=True,
-            )
-        title = self._session.menu_header
-        title = title + ' - view & navigation commands'
-        title = stringtools.capitalize_start(title)
-        lines[0:0] = [title, '']
-        lines.append('')
+    def _make_asset_lines(self):
+        has_asset_section = False
+        for section in self:
+            if section.is_asset_section:
+                has_asset_section = True
+                break
+        if not has_asset_section:
+            return []
+        assert section.is_asset_section
+        lines = section._make_lines()
+        if section.group_by_annotation:
+            lines = self._group_by_annotation(lines)
+        lines = self._make_bicolumnar(lines, strip=False)
         return lines
 
     def _make_bicolumnar(
@@ -515,6 +484,37 @@ class Menu(object):
         except KeyError:
             return []
         lines = section._make_lines()
+        return lines
+
+    def _make_navigation_command_section_lines(self):
+        lines = []
+        menu_sections = self._sort_menu_sections(type_='navigation')
+        for menu_section in menu_sections:
+            found_one = False
+            if not menu_section.is_command_section:
+                continue
+            for menu_entry in menu_section:
+                if not menu_entry.is_navigation:
+                    continue
+                found_one = True
+                key = menu_entry.key
+                display_string = menu_entry.display_string
+                menu_line = self._io_manager._tab
+                menu_line += '{} ({})'.format(display_string, key)
+                lines.append(menu_line)
+            if found_one:
+                lines.append('')
+        if lines:
+            lines.pop()
+        lines = self._make_bicolumnar(
+            lines, 
+            break_only_at_blank_lines=True,
+            )
+        title = self._session.menu_header
+        title = title + ' - view & navigation commands'
+        title = stringtools.capitalize_start(title)
+        lines[0:0] = [title, '']
+        lines.append('')
         return lines
 
     def _make_section(

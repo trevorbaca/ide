@@ -320,6 +320,27 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         '''
         return self._settings['composer_last_name']
 
+
+    @property
+    def composer_scores_directory(self):
+        r'''Gets composer scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.composer_scores_directory
+                '...'
+
+        Aliases `composer_scores_directory` setting in Abjad IDE configuration
+        file.
+
+        Returns string.
+        '''
+        path = self._settings['composer_scores_directory']
+        path = os.path.expanduser(path)
+        return path
+
     @property
     def composer_uppercase_name(self):
         r'''Gets composer uppercase name.
@@ -389,23 +410,3 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return self.abjad_ide_configuration_file_path
-
-    @property
-    def composer_scores_directory(self):
-        r'''Gets composer scores directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_scores_directory
-                '...'
-
-        Aliases `composer_scores_directory` setting in Abjad IDE configuration
-        file.
-
-        Returns string.
-        '''
-        path = self._settings['composer_scores_directory']
-        path = os.path.expanduser(path)
-        return path

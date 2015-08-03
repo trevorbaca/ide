@@ -98,12 +98,12 @@ class PackageManager(Controller):
         return os.path.join(self._path, 'illustration.pdf')
 
     @property
-    def _inner_path(self):
-        return os.path.join(self._outer_path, self._package_name)
-
-    @property
     def _init_py_file_path(self):
         return os.path.join(self._path, '__init__.py')
+
+    @property
+    def _inner_path(self):
+        return os.path.join(self._outer_path, self._package_name)
 
     @property
     def _metadata_py_path(self):

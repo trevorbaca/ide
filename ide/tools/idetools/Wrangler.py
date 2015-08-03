@@ -1825,19 +1825,6 @@ class Wrangler(Controller):
         '''
         self._copy_boilerplate('score.tex')
 
-    @Command('new', 'new', 'basic', is_hidden=False)
-    def make(self):
-        r'''Makes asset.
-
-        Returns none.
-        '''
-        if self._asset_identifier == 'file':
-            self._make_file()
-        elif self._asset_identifier == 'score package':
-            self._make_score_package()
-        else:
-            self._make_package()
-
     @Command('di*', 'illustrate every definition.py', 'star')
     def illustrate_every_definition_py(self):
         r'''Illustrates ``definition.py`` in every package.
@@ -1933,6 +1920,19 @@ class Wrangler(Controller):
         Returns none.
         '''
         self._interpret_file_ending_with('score.tex')
+
+    @Command('new', 'new', 'basic', is_hidden=False)
+    def make(self):
+        r'''Makes asset.
+
+        Returns none.
+        '''
+        if self._asset_identifier == 'file':
+            self._make_file()
+        elif self._asset_identifier == 'score package':
+            self._make_score_package()
+        else:
+            self._make_package()
 
     @Command('io*', 'open every illustration.pdf', 'star')
     def open_every_illustration_pdf(self):

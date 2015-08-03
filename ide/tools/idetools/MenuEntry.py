@@ -127,20 +127,20 @@ class MenuEntry(AbjadObject):
         return self._explicit_return_value
 
     @property
-    def key(self):
-        r'''Gets key.
-
-        Returns string or none.
-        '''
-        return self._key
-
-    @property
     def is_navigation(self):
         r'''Is true when menu entry is navigation. Otherwise false.
 
         Returns true or false.
         '''
         return self._is_navigation
+
+    @property
+    def key(self):
+        r'''Gets key.
+
+        Returns string or none.
+        '''
+        return self._key
 
     @property
     def menu_section(self):

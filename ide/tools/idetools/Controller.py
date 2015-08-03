@@ -119,158 +119,6 @@ class Controller(object):
 
     ### PRIVATE METHODS ###
 
-    def _get_decorated_methods(self, only_my_methods=False):
-        result = []
-        for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        if not only_my_methods:
-                            result.append(value)
-                        elif value in self._commands:
-                            result.append(value)
-        return result
-
-    def _get_views_package_manager(self):
-        path = configuration.abjad_ide_wrangler_views_directory
-        return self._io_manager._make_package_manager(path)
-
-    def _git_add(self, dry_run=False):
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            inputs = self._get_unadded_asset_paths()
-            outputs = []
-            if dry_run:
-                return inputs, outputs
-            if not inputs:
-                message = 'nothing to add.'
-                self._io_manager._display(message)
-                return
-            messages = []
-            messages.append('will add ...')
-            for path in inputs:
-                messages.append(self._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking or not result:
-                return
-            command = self._repository_add_command
-            assert isinstance(command, str)
-            self._io_manager.run_command(command)
-
-    def _git_commit(self, commit_message=None):
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            self._session._attempted_to_commit = True
-            if self._session.is_repository_test:
-                return
-            if commit_message is None:
-                getter = self._io_manager._make_getter()
-                getter.append_string('commit message')
-                commit_message = getter._run()
-                if self._session.is_backtracking or commit_message is None:
-                    return
-                message = 'commit message will be: "{}"'
-                message = message.format(commit_message)
-                self._io_manager._display(message)
-                result = self._io_manager._confirm()
-                if self._session.is_backtracking or not result:
-                    return
-            message = self._get_score_package_directory_name()
-            message = message + ' ...'
-            command = self._make_repository_commit_command(commit_message)
-            self._io_manager.run_command(command, capitalize=False)
-
-    def _git_status(self):
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            command = 'git status {}'.format(directory)
-            messages = []
-            self._session._attempted_display_status = True
-            message = 'Repository status for {} ...'
-            message = message.format(directory)
-            messages.append(message)
-            directory = self._get_current_directory()
-            with systemtools.TemporaryDirectoryChange(directory=directory):
-                process = self._io_manager.make_subprocess(command)
-            path = directory
-            path = path + os.path.sep
-            clean_lines = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                clean_line = line.strip()
-                clean_line = clean_line.replace(path, '')
-                clean_lines.append(clean_line)
-            everything_ok = False
-            for line in clean_lines:
-                if 'nothing to commit' in line:
-                    everything_ok = True
-                    break
-            if clean_lines and not everything_ok:
-                messages.extend(clean_lines)
-            else:
-                first_message = messages[0]
-                first_message = first_message + ' OK'
-                messages[0] = first_message
-                clean_lines.append(message)
-            self._io_manager._display(messages, capitalize=False)
-
-    def _git_revert(self):
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            self._session._attempted_to_revert = True
-            if self._session.is_repository_test:
-                return
-            paths = []
-            paths.extend(self._get_added_asset_paths())
-            paths.extend(self._get_modified_asset_paths())
-            messages = []
-            messages.append('will revert ...')
-            for path in paths:
-                messages.append(self._io_manager._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking or not result:
-                return
-            commands = []
-            if self._is_in_git_repository():
-                for path in paths:
-                    command = 'git checkout {}'.format(path)
-                    commands.append(command)
-            else:
-                raise ValueError(self)
-            command = ' && '.join(commands)
-            directory = self._get_current_directory()
-            with systemtools.TemporaryDirectoryChange(directory=directory):
-                self._io_manager.spawn_subprocess(command)
-
-    def _git_update(self, messages_only=False):
-        messages = []
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            self._session._attempted_to_update = True
-            if self._session.is_repository_test:
-                return messages
-            command = self._repository_update_command
-            messages = self._io_manager.run_command(
-                command,
-                messages_only=True,
-                )
-        if messages and messages[-1].startswith('At revision'):
-            messages = messages[-1:]
-        elif messages and 'Already up-to-date' in messages[-1]:
-            messages = messages[-1:]
-        if messages_only:
-            return messages
-        self._io_manager._display(messages)
-
     def _enter_run(self):
         if self._basic_breadcrumb == 'build':
             self._session._is_navigating_to_build_files = False   
@@ -386,6 +234,19 @@ class Controller(object):
             directory = os.path.abspath(directory)
             return directory
 
+    def _get_decorated_methods(self, only_my_methods=False):
+        result = []
+        for name in dir(self):
+            if not name.startswith('_'):
+                value = getattr(self, name)
+                if inspect.ismethod(value):
+                    if hasattr(value, 'command_name'):
+                        if not only_my_methods:
+                            result.append(value)
+                        elif value in self._commands:
+                            result.append(value)
+        return result
+
     def _get_metadata(self):
         metadata = None
         if os.path.isfile(self._metadata_py_path):
@@ -437,6 +298,145 @@ class Controller(object):
             self._session._is_navigating_to_previous_score = False
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(next_=False)
+
+    def _get_views_package_manager(self):
+        path = configuration.abjad_ide_wrangler_views_directory
+        return self._io_manager._make_package_manager(path)
+
+    def _git_add(self, dry_run=False):
+        directory = self._get_current_directory()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with change:
+            inputs = self._get_unadded_asset_paths()
+            outputs = []
+            if dry_run:
+                return inputs, outputs
+            if not inputs:
+                message = 'nothing to add.'
+                self._io_manager._display(message)
+                return
+            messages = []
+            messages.append('will add ...')
+            for path in inputs:
+                messages.append(self._tab + path)
+            self._io_manager._display(messages)
+            result = self._io_manager._confirm()
+            if self._session.is_backtracking or not result:
+                return
+            command = self._repository_add_command
+            assert isinstance(command, str)
+            self._io_manager.run_command(command)
+
+    def _git_commit(self, commit_message=None):
+        directory = self._get_current_directory()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with change:
+            self._session._attempted_to_commit = True
+            if self._session.is_repository_test:
+                return
+            if commit_message is None:
+                getter = self._io_manager._make_getter()
+                getter.append_string('commit message')
+                commit_message = getter._run()
+                if self._session.is_backtracking or commit_message is None:
+                    return
+                message = 'commit message will be: "{}"'
+                message = message.format(commit_message)
+                self._io_manager._display(message)
+                result = self._io_manager._confirm()
+                if self._session.is_backtracking or not result:
+                    return
+            message = self._get_score_package_directory_name()
+            message = message + ' ...'
+            command = self._make_repository_commit_command(commit_message)
+            self._io_manager.run_command(command, capitalize=False)
+
+    def _git_revert(self):
+        directory = self._get_current_directory()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with change:
+            self._session._attempted_to_revert = True
+            if self._session.is_repository_test:
+                return
+            paths = []
+            paths.extend(self._get_added_asset_paths())
+            paths.extend(self._get_modified_asset_paths())
+            messages = []
+            messages.append('will revert ...')
+            for path in paths:
+                messages.append(self._io_manager._tab + path)
+            self._io_manager._display(messages)
+            result = self._io_manager._confirm()
+            if self._session.is_backtracking or not result:
+                return
+            commands = []
+            if self._is_in_git_repository():
+                for path in paths:
+                    command = 'git checkout {}'.format(path)
+                    commands.append(command)
+            else:
+                raise ValueError(self)
+            command = ' && '.join(commands)
+            directory = self._get_current_directory()
+            with systemtools.TemporaryDirectoryChange(directory=directory):
+                self._io_manager.spawn_subprocess(command)
+
+    def _git_status(self):
+        directory = self._get_current_directory()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with change:
+            command = 'git status {}'.format(directory)
+            messages = []
+            self._session._attempted_display_status = True
+            message = 'Repository status for {} ...'
+            message = message.format(directory)
+            messages.append(message)
+            directory = self._get_current_directory()
+            with systemtools.TemporaryDirectoryChange(directory=directory):
+                process = self._io_manager.make_subprocess(command)
+            path = directory
+            path = path + os.path.sep
+            clean_lines = []
+            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+            for line in stdout_lines.splitlines():
+                line = str(line)
+                clean_line = line.strip()
+                clean_line = clean_line.replace(path, '')
+                clean_lines.append(clean_line)
+            everything_ok = False
+            for line in clean_lines:
+                if 'nothing to commit' in line:
+                    everything_ok = True
+                    break
+            if clean_lines and not everything_ok:
+                messages.extend(clean_lines)
+            else:
+                first_message = messages[0]
+                first_message = first_message + ' OK'
+                messages[0] = first_message
+                clean_lines.append(message)
+            self._io_manager._display(messages, capitalize=False)
+
+    def _git_update(self, messages_only=False):
+        messages = []
+        directory = self._get_current_directory()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with change:
+            self._session._attempted_to_update = True
+            if self._session.is_repository_test:
+                return messages
+            command = self._repository_update_command
+            messages = self._io_manager.run_command(
+                command,
+                messages_only=True,
+                )
+        if messages and messages[-1].startswith('At revision'):
+            messages = messages[-1:]
+        elif messages and 'Already up-to-date' in messages[-1]:
+            messages = messages[-1:]
+        if messages_only:
+            return messages
+        self._io_manager._display(messages)
 
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
@@ -552,6 +552,18 @@ class Controller(object):
                         paths.append(path)
         return paths
 
+    def _make_candidate_messages(self, result, candidate_path, incumbent_path):
+        messages = []
+        tab = self._io_manager._tab
+        messages.append('the files ...')
+        messages.append(tab + candidate_path)
+        messages.append(tab + incumbent_path)
+        if result:
+            messages.append('... compare the same.')
+        else:
+            messages.append('... compare differently.')
+        return messages
+
     def _make_command_menu_sections(self, menu, menu_section_names=None):
         methods = self._get_decorated_methods(only_my_methods=True)
         #raise Exception(methods)
@@ -575,6 +587,13 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
+    def _make_main_menu(self):
+        name = stringtools.to_space_delimited_lowercase(type(self).__name__)
+        menu = self._io_manager._make_menu(name=name)
+        self._make_asset_menu_section(menu)
+        self._make_command_menu_sections(menu)
+        return menu
+
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []
         if not self._session.is_in_score:
@@ -588,25 +607,6 @@ class Controller(object):
                 menu_entry = (name, None, None, path)
                 menu_entries.append(menu_entry)
         return menu_entries
-
-    def _make_candidate_messages(self, result, candidate_path, incumbent_path):
-        messages = []
-        tab = self._io_manager._tab
-        messages.append('the files ...')
-        messages.append(tab + candidate_path)
-        messages.append(tab + incumbent_path)
-        if result:
-            messages.append('... compare the same.')
-        else:
-            messages.append('... compare differently.')
-        return messages
-
-    def _make_main_menu(self):
-        name = stringtools.to_space_delimited_lowercase(type(self).__name__)
-        menu = self._io_manager._make_menu(name=name)
-        self._make_asset_menu_section(menu)
-        self._make_command_menu_sections(menu)
-        return menu
 
     def _open_file(self, path):
         if os.path.isfile(path):
