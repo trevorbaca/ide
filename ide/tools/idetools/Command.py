@@ -41,7 +41,7 @@ class Command(object):
         self, 
         command_name, 
         description=None, 
-        directory=None,
+        directories=None,
         file_=None,
         in_score=True,
         in_score_directory_only=False,
@@ -53,7 +53,10 @@ class Command(object):
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
         self.description = description
-        self.directory = directory
+        directories = directories or ()
+        if isinstance(directories, str):
+            directories = (directories,)
+        self.directories = directories
         assert isinstance(in_score, bool), repr(in_score)
         self.in_score = in_score
         assert isinstance(in_score_directory_only, bool)
@@ -79,7 +82,7 @@ class Command(object):
             method.description = self.description
         else:
             method.description = method.__name__.replace('_', ' ')
-        method.directory = self.directory
+        method.directories = self.directories
         method.file_ = self.file_
         method.in_score = self.in_score
         method.in_score_directory_only = self.in_score_directory_only

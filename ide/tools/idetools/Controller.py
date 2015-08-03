@@ -567,13 +567,14 @@ class Controller(object):
         optional_files = getattr(self, '_optional_files', ())
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
+        directory_name = os.path.basename(current_directory)
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
             if not is_in_score and not method_.outside_score:
                 continue
-            if (method_.directory is not None and
-                not os.path.basename(current_directory) == method_.directory):
+            if (method_.directories and
+                directory_name not in method_.directories):
                 continue
             if method_.file_ is not None and method_.file_ not in files:
                 continue
@@ -950,7 +951,11 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'stylesheets'
 
-    @Command('>', section='sibling package', outside_score=False)
+    @Command(
+        '>',
+        #directories=('materials', 'segments'),
+        section='sibling package',
+        )
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -968,7 +973,11 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_command_help = None
 
-    @Command('<', section='sibling package')
+    @Command(
+        '<', 
+        #directories=('materials', 'segments'),
+        section='sibling package',
+        )
     def go_to_previous_package(self):
         r'''Goes to previous package.
 
