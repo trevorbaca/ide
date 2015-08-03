@@ -881,7 +881,7 @@ class PackageManager(Controller):
 
     ### PUBLIC METHODS ###
 
-    @Command('dc', 'check definition.py', 'package')
+    @Command('dc', section='package', outside_score=False)
     def check_definition_py(self, dry_run=False):
         r'''Checks ``definition.py``.
 
@@ -907,7 +907,7 @@ class PackageManager(Controller):
             message = '{} OK.'.format(self._definition_py_path)
             self._io_manager._display(message)
 
-    @Command('ck', 'check pacakge', 'package')
+    @Command('ck', section='package', outside_score=False)
     def check_package(
         self,
         problems_only=None,
@@ -1167,7 +1167,7 @@ class PackageManager(Controller):
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
-    @Command('de', 'edit definition.py', 'package')
+    @Command('de', section='package', outside_score=False)
     def edit_definition_py(self):
         r'''Edits ``definition.py``.
 
@@ -1175,7 +1175,12 @@ class PackageManager(Controller):
         '''
         self._io_manager.edit(self._definition_py_path)
 
-    @Command('le', 'edit __illustrate__.py', 'package')
+    @Command(
+        'le', 
+        description='edit __illustrate__.py', 
+        outside_score=False,
+        section='package',
+        )
     def edit_illustrate_py(self):
         r'''Edits ``__illustrate.py__``.
 
@@ -1183,7 +1188,7 @@ class PackageManager(Controller):
         '''
         self._io_manager.edit(self._illustrate_py_path)
 
-    @Command('ie', 'edit illustration.ly', 'package')
+    @Command('ie', section='package', outside_score=False)
     def edit_illustration_ly(self):
         r'''Opens ``illustration.ly``.
 
@@ -1191,7 +1196,7 @@ class PackageManager(Controller):
         '''
         self._io_manager.open_file(self._illustration_ly_path)
 
-    @Command('i', 'illustrate definition.py', 'package')
+    @Command('i', section='package', outside_score=False)
     def illustrate_definition_py(self, dry_run=False):
         r'''Illustrates ``definition.py``.
 
@@ -1312,7 +1317,7 @@ class PackageManager(Controller):
                     except IOError:
                         pass
 
-    @Command('ii', 'interpret illustration.ly', 'package')
+    @Command('ii', section='package', outside_score=False)
     def interpret_illustration_ly(self, dry_run=False):
         r'''Interprets ``illustration.ly``.
 
@@ -1341,7 +1346,7 @@ class PackageManager(Controller):
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 
-    @Command('io', 'open illustration.pdf', 'package')
+    @Command('io', section='package', outside_score=False)
     def open_illustration_pdf(self):
         r'''Opens ``illustration.pdf``.
 
@@ -1349,7 +1354,7 @@ class PackageManager(Controller):
         '''
         self._io_manager.open_file(self._illustration_pdf_path)
 
-    @Command('so', 'open score.pdf', 'package')
+    @Command('so', section='package', outside_score=False)
     def open_score_pdf(self, dry_run=False):
         r'''Opens ``score.pdf``.
 
@@ -1376,7 +1381,12 @@ class PackageManager(Controller):
                 message += ' in either distribution/ or build/ directories.'
                 self._io_manager._display(message)
 
-    @Command('ls', 'write stub __illustrate__.py', 'package')
+    @Command(
+        'ls', 
+        description='write stub __illustrate__.py', 
+        section='package',
+        outside_score=False,
+        )
     def write_stub_illustrate_py(self):
         r'''Writes stub ``__illustrate.py__``.
 

@@ -555,15 +555,14 @@ class Controller(object):
 
     def _make_command_menu_sections(self, menu, menu_section_names=None):
         methods = self._get_decorated_methods(only_my_methods=True)
-        #raise Exception(methods)
         method_groups = {}
         for method in methods:
             if menu_section_names is not None:
                 if method.menu_section_name not in menu_section_names:
                     continue
-            if method.menu_section_name not in method_groups:
-                method_groups[method.menu_section_name] = []
-            method_group = method_groups[method.menu_section_name]
+            if method.section not in method_groups:
+                method_groups[method.section] = []
+            method_group = method_groups[method.section]
             method_group.append(method)
         for menu_section_name in method_groups:
             method_group = method_groups[menu_section_name]
@@ -802,7 +801,7 @@ class Controller(object):
 
     ### PUBLIC METHODS ###
 
-    @Command('?', 'display action commands', 'system')
+    @Command('?', section='system')
     def display_action_command_help(self):
         r'''Displays action commands.
 
@@ -811,7 +810,7 @@ class Controller(object):
         if not self._session.is_in_confirmation_environment:
             self._session._display_command_help = 'action'
 
-    @Command(';', 'display navigation commands', 'display navigation', True)
+    @Command(';', section='display navigation')
     def display_navigation_command_help(self):
         r'''Displays navigation commands.
 
@@ -820,7 +819,7 @@ class Controller(object):
         if not self._session.is_in_confirmation_environment:
             self._session._display_command_help = 'navigation'
 
-    @Command('abb', 'edit abbreviations file', 'global files')
+    @Command('abb', section='global files', outside_score=False)
     def edit_abbreviations_file(self):
         r'''Edits abbreviations file.
 
@@ -832,7 +831,7 @@ class Controller(object):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('sse', 'edit score stylesheet', 'global files')
+    @Command('sse', section='global files', outside_score=False)
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
 
@@ -844,7 +843,7 @@ class Controller(object):
                 file_pointer.write('')
         self._io_manager.edit(path)
 
-    @Command('b', 'back', 'back-home-quit', True)
+    @Command('b', description='back', section='back-home-quit')
     def go_back(self):
         r'''Goes back.
 
@@ -853,7 +852,7 @@ class Controller(object):
         self._session._is_backtracking_locally = True
         self._session._display_command_help = None
 
-    @Command('h', 'home', 'back-home-quit', True)
+    @Command('h', description='home', section='back-home-quit')
     def go_home(self):
         r'''Goes to all score directories.
 
@@ -863,7 +862,7 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_command_help = None
 
-    @Command('uu', 'go to all build directories', 'comparison', True)
+    @Command('uu', section='comparison', in_score=False)
     def go_to_all_build_directories(self):
         r'''Goes to all build files.
 
@@ -872,7 +871,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'build'
 
-    @Command('dd', 'go to all distribution directories', 'comparison', True)
+    @Command('dd', section='comparison', in_score=False)
     def go_to_all_distribution_directories(self):
         r'''Goes to all distribution files.
 
@@ -881,7 +880,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'distribution'
 
-    @Command('ee', 'go to all etc directories', 'comparison', True)
+    @Command('ee', section='comparison', in_score=False)
     def go_to_all_etc_directories(self):
         r'''Goes to all etc files.
 
@@ -890,7 +889,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'etc'
 
-    @Command('kk', 'go to all makers directories', 'comparison', True)
+    @Command('kk', section='comparison', in_score=False)
     def go_to_all_makers_directories(self):
         r'''Goes to all maker files.
 
@@ -899,7 +898,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'makers'
 
-    @Command('mm', 'go to all materials directories', 'comparison', True)
+    @Command('mm', section='comparison', in_score=False)
     def go_to_all_materials_directories(self):
         r'''Goes to all materials.
 
@@ -908,7 +907,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'materials'
 
-    @Command('gg', 'go to all segments directories', 'comparison', True)
+    @Command('gg', section='comparison', in_score=False)
     def go_to_all_segments_directories(self):
         r'''Goes to all segments.
 
@@ -917,7 +916,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'segments'
 
-    @Command('yy', 'go to all stylesheets directories', 'comparison', True)
+    @Command('yy', section='comparison', in_score=False)
     def go_to_all_stylesheets_directories(self):
         r'''Goes to all stylesheets.
 
@@ -926,7 +925,7 @@ class Controller(object):
         self.go_home()
         self._session._navigation_target = 'stylesheets'
 
-    @Command('>', 'go to next package', 'sibling package', True)
+    @Command('>', section='sibling package', outside_score=False)
     def go_to_next_package(self):
         r'''Goes to next package.
 
@@ -934,7 +933,7 @@ class Controller(object):
         '''
         self._go_to_next_package()
 
-    @Command('>>', 'go to next score', 'sibling score', True)
+    @Command('>>', section='sibling score')
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -944,7 +943,7 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_command_help = None
 
-    @Command('<', 'go to previous package', 'sibling package', True)
+    @Command('<', section='sibling package')
     def go_to_previous_package(self):
         r'''Goes to previous package.
 
@@ -952,7 +951,7 @@ class Controller(object):
         '''
         self._go_to_previous_package()
 
-    @Command('<<', 'go to previous score', 'sibling score', True)
+    @Command('<<', section='sibling score')
     def go_to_previous_score(self):
         r'''Goes to previous score.
 
@@ -962,7 +961,7 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_command_help = None
 
-    @Command('u', 'go to build directory', 'navigation', True)
+    @Command('u', section='navigation', outside_score=False)
     def go_to_score_build_directory(self):
         r'''Goes to build files.
 
@@ -970,7 +969,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._build_file_wrangler._run()
 
-    @Command('s', 'go to score', 'system', True)
+    @Command('s', section='navigation', outside_score=False)
     def go_to_score_directory(self):
         r'''Goes to current score.
 
@@ -980,7 +979,7 @@ class Controller(object):
             self._session._is_backtracking_to_score = True
             self._session._display_command_help = None
             
-    @Command('d', 'go to distribution directory', 'navigation', True)
+    @Command('d', section='navigation', outside_score=False)
     def go_to_score_distribution_directory(self):
         r'''Goes to distribution files.
 
@@ -988,7 +987,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._distribution_file_wrangler._run()
 
-    @Command('e', 'go to etc directory', 'navigation', True)
+    @Command('e', section='navigation', outside_score=False)
     def go_to_score_etc_directory(self):
         r'''Goes to etc files.
 
@@ -996,7 +995,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._etc_file_wrangler._run()
 
-    @Command('k', 'go to makers directory', 'navigation', True)
+    @Command('k', section='navigation', outside_score=False)
     def go_to_score_makers_directory(self):
         r'''Goes to maker files.
 
@@ -1004,7 +1003,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._maker_file_wrangler._run()
 
-    @Command('m', 'go to materials directory', 'navigation', True)
+    @Command('m', section='navigation', outside_score=False)
     def go_to_score_materials_directory(self):
         r'''Goes to material packages.
 
@@ -1012,7 +1011,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._material_package_wrangler._run()
 
-    @Command('g', 'go to segments directory', 'navigation', True)
+    @Command('g', section='navigation', outside_score=False)
     def go_to_score_segments_directory(self):
         r'''Goes to segment packages.
 
@@ -1020,7 +1019,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._segment_package_wrangler._run()
 
-    @Command('y', 'go to stylehseets directory', 'navigation', True)
+    @Command('y', section='navigation', outside_score=False)
     def go_to_score_stylesheets_directory(self):
         r'''Goes to stylesheets.
 
@@ -1028,7 +1027,7 @@ class Controller(object):
         '''
         self._session._abjad_ide._stylesheet_wrangler._run()
 
-    @Command('t', 'go to test directory', 'navigation', True)
+    @Command('t', section='navigation', outside_score=False)
     def go_to_score_test_directory(self):
         r'''Geots to score test files.
 
@@ -1036,7 +1035,7 @@ class Controller(object):
         '''
         raise NotImplementedError
 
-    @Command('!', 'invoke shell', 'system')
+    @Command('!', section='system')
     def invoke_shell(self):
         r'''Invokes shell.
 
@@ -1050,7 +1049,7 @@ class Controller(object):
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
 
-    @Command('l', 'open lilypond log', 'global files')
+    @Command('l', section='global files')
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
 
@@ -1062,7 +1061,7 @@ class Controller(object):
             return
         systemtools.IOManager.open_last_log()
 
-    @Command('q', 'quit', 'back-home-quit', True)
+    @Command('q', description='quit', section='back-home-quit')
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
 
