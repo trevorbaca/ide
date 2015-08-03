@@ -81,7 +81,7 @@ class Controller(object):
     @property
     def _command_name_to_method(self):
         result = {}
-        methods = self._get_decorated_methods()
+        methods = self._get_commands()
         for method in methods:
             result[method.command_name] = method
         return result
@@ -220,17 +220,19 @@ class Controller(object):
             directory = os.path.abspath(directory)
             return directory
 
-    def _get_decorated_methods(self, only_my_methods=False):
+    def _get_commands(self, only_my_methods=False):
         result = []
         for name in dir(self):
-            if not name.startswith('_'):
-                value = getattr(self, name)
-                if inspect.ismethod(value):
-                    if hasattr(value, 'command_name'):
-                        if not only_my_methods:
-                            result.append(value)
-                        elif value in self._commands:
-                            result.append(value)
+            if name.startswith('_'):
+                continue
+            command = getattr(self, name)
+            if not inspect.ismethod(command):
+                continue
+            if hasattr(command, 'command_name'):
+                if not only_my_methods:
+                    result.append(command)
+                elif command in self._commands:
+                    result.append(command)
         return result
 
     def _get_metadata(self):
@@ -554,7 +556,15 @@ class Controller(object):
         return messages
 
     def _make_command_menu_sections(self, menu, menu_section_names=None):
-        methods = self._get_decorated_methods(only_my_methods=True)
+        methods = []
+        methods_ = self._get_commands(only_my_methods=True)
+        is_in_score = self._session.is_in_score
+        for method_ in methods_:
+            if is_in_score and not method_.in_score:
+                continue
+            if not is_in_score and not method_.outside_score:
+                continue
+            methods.append(method_)
         method_groups = {}
         for method in methods:
             if menu_section_names is not None:

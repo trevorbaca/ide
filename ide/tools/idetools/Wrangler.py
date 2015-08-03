@@ -1678,7 +1678,7 @@ class Wrangler(Controller):
             message = message.format(directory)
             self._io_manager._display(message)
 
-    @Command('de*', section='star', in_score=False)
+    @Command('de*', section='star')
     def edit_every_definition_py(self):
         r'''Opens ``definition.py`` in every package.
 
