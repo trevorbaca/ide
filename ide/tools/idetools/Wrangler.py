@@ -243,7 +243,7 @@ class Wrangler(Controller):
         self._force_dash_case_file_name = True
 
     def _configure_as_maker_file_wrangler(self):
-        self._asset_identifier = 'maker'
+        self._asset_identifier = 'file'
         self._basic_breadcrumb = 'makers'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'makers'
@@ -277,7 +277,7 @@ class Wrangler(Controller):
         self._directory_name = 'segments'
 
     def _configure_as_stylesheet_wrangler(self):
-        self._asset_identifier = 'stylesheets'
+        self._asset_identifier = 'file'
         self._basic_breadcrumb = 'stylesheets'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'stylesheets'
