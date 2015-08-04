@@ -161,16 +161,6 @@ class PackageManager(Controller):
             'illustration.pdf',
             'maker.py',
             )
-#        commands = []
-#        commands.append(self.check_package)
-#        commands.append(self.check_definition_py)
-#        commands.append(self.edit_definition_py)
-#        commands.append(self.edit_illustrate_py)
-#        commands.append(self.write_stub_illustrate_py)
-#        commands.append(self.interpret_illustration_ly)
-#        commands.append(self.edit_illustration_ly)
-#        commands.append(self.open_illustration_pdf)
-#        self._commands.extend(commands)
         self._required_files = (
             '__init__.py',
             '__metadata__.py',
@@ -210,15 +200,6 @@ class PackageManager(Controller):
             'illustration.ly',
             'illustration.pdf',
             )
-#        commands = []
-#        commands.append(self.check_package)
-#        commands.append(self.edit_illustration_ly)
-#        commands.append(self.interpret_illustration_ly)
-#        commands.append(self.check_definition_py)
-#        commands.append(self.edit_definition_py)
-#        commands.append(self.illustrate_definition_py)
-#        commands.append(self.open_illustration_pdf)
-#        self._commands.extend(commands)
         self._required_files = (
             '__init__.py',
             '__metadata__.py',

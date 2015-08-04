@@ -66,7 +66,7 @@ class Command(object):
         self.in_score_directory_only = in_score_directory_only
         assert isinstance(is_hidden, bool), repr(is_hidden)
         self.is_hidden = is_hidden
-        assert isinstance(outside_score, bool), repr(outside_score)
+        assert isinstance(outside_score, bool) or outside_score == 'home'
         self.outside_score = outside_score
         parent_directories = parent_directories or ()
         if isinstance(parent_directories, str):

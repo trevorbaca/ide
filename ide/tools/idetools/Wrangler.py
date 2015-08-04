@@ -254,14 +254,6 @@ class Wrangler(Controller):
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'material package'
         self._basic_breadcrumb = 'materials'
-#        commands = []
-#        commands.append(self.check_every_definition_py)
-#        commands.append(self.edit_every_definition_py)
-#        commands.append(self.interpret_every_illustration_ly)
-#        commands.append(self.open_every_illustration_pdf)
-#        commands.append(self.go_to_next_package)
-#        commands.append(self.go_to_previous_package)
-#        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'materials'
@@ -272,22 +264,6 @@ class Wrangler(Controller):
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
-#        commands = []
-#        commands.append(self.check_every_package)
-#        commands.append(self.git_add_every_package)
-#        commands.append(self.git_commit_every_package)
-#        commands.append(self.git_revert_every_package)
-#        commands.append(self.git_status_every_package)
-#        commands.append(self.git_update_every_package)
-#        commands.append(self.open_every_score_pdf)
-#        commands.append(self.go_to_all_build_directories)
-#        commands.append(self.go_to_all_distribution_directories)
-#        commands.append(self.go_to_all_etc_directories)
-#        commands.append(self.go_to_all_makers_directories)
-#        commands.append(self.go_to_all_materials_directories)
-#        commands.append(self.go_to_all_segments_directories)
-#        commands.append(self.go_to_all_stylesheets_directories)
-#        self._commands.extend(commands)
         self._group_asset_section_by_annotation = False
         self._hide_breadcrumb_while_in_score = True
         self._only_example_scores_during_test = True
@@ -296,15 +272,6 @@ class Wrangler(Controller):
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'segment package'
         self._basic_breadcrumb = 'segments'
-#        commands = []
-#        commands.append(self.check_every_definition_py)
-#        commands.append(self.edit_every_definition_py)
-#        commands.append(self.illustrate_every_definition_py)
-#        commands.append(self.interpret_every_illustration_ly)
-#        commands.append(self.open_every_illustration_pdf)
-#        commands.append(self.go_to_next_package)
-#        commands.append(self.go_to_previous_package)
-#        self._commands.extend(commands)
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'segments'
@@ -688,7 +655,7 @@ class Wrangler(Controller):
                         continue
                 path = os.path.join(directory, directory_entry)
                 if self._basic_breadcrumb == 'scores':
-                    # test for installable Python package structure
+                    # test for installable python package structure
                     outer_init_path = os.path.join(path, '__init__.py')
                     inner_directory = os.path.join(path, directory_entry)
                     inner_init_path = os.path.join(
@@ -1364,7 +1331,7 @@ class Wrangler(Controller):
         message = message.format(total_time)
         self._io_manager._display(message)
 
-    @Command('ck*', section='star', in_score=False)
+    @Command('ck*', section='star', in_score=False, outside_score='home')
     def check_every_package(
         self, 
         indent=0,
@@ -1746,7 +1713,7 @@ class Wrangler(Controller):
         '''
         self._copy_boilerplate('score.tex')
 
-    @Command('add*', section='git', in_score=False)
+    @Command('add*', section='git', in_score=False, outside_score='home')
     def git_add_every_package(self):
         r'''Adds every asset to repository.
 
@@ -1780,7 +1747,7 @@ class Wrangler(Controller):
         message = message.format(count, identifier)
         self._io_manager._display(message)
         
-    @Command('ci*', section='git', in_score=False)
+    @Command('ci*', section='git', in_score=False, outside_score='home')
     def git_commit_every_package(self):
         r'''Commits every asset to repository.
 
@@ -1805,7 +1772,7 @@ class Wrangler(Controller):
             with self._io_manager._silent(self):
                 manager._git_commit(commit_message=commit_message)
 
-    @Command('revert*', section='git', in_score=False)
+    @Command('revert*', section='git', in_score=False, outside_score='home')
     def git_revert_every_package(self):
         r'''Reverts every asset to repository.
 
@@ -1819,7 +1786,7 @@ class Wrangler(Controller):
             manager = self._io_manager._make_package_manager(path)
             manager._git_revert()
 
-    @Command('st*', section='git', in_score=False)
+    @Command('st*', section='git', in_score=False, outside_score='home')
     def git_status_every_package(self):
         r'''Displays repository status of every asset.
 
@@ -1838,7 +1805,7 @@ class Wrangler(Controller):
             message = message.format(directory)
             self._io_manager._display(message)
 
-    @Command('up*', section='git', in_score=False)
+    @Command('up*', section='git', in_score=False, outside_score='home')
     def git_update_every_package(self):
         r'''Updates every asset from repository.
 
@@ -2017,7 +1984,7 @@ class Wrangler(Controller):
         '''
         self._open_in_every_package('illustration.pdf')
 
-    @Command('so*', section='star', in_score=False)
+    @Command('so*', section='star', in_score=False, outside_score='home')
     def open_every_score_pdf(self):
         r'''Opens ``score.pdf`` in every package.
 
@@ -2146,7 +2113,7 @@ class Wrangler(Controller):
             )
         self._session._is_backtracking_locally = False
 
-    @Command('ws', section='view')
+    @Command('ws', section='view', outside_score='home')
     def set_view(self):
         r'''Sets view.
 

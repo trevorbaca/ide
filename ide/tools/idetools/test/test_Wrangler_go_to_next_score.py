@@ -32,18 +32,3 @@ def test_Wrangler_go_to_next_score_02():
         'Blue Example Score (2013)',
         ]
     assert abjad_ide._session._transcript.titles == titles
-
-
-def test_Wrangler_go_to_next_score_03():
-    r'''Works with all build files.
-    '''
-
-    input_ = 'uu >> q'
-    abjad_ide._run(input_=input_)
-
-    titles = [
-        'Abjad IDE - all score directories',
-        'Abjad IDE - all build directories',
-        'Blue Example Score (2013)',
-        ]
-    assert abjad_ide._session._transcript.titles == titles

@@ -569,10 +569,17 @@ class Controller(object):
         is_in_score_directory = self._is_in_score_directory()
         directory_name = os.path.basename(current_directory)
         parent_directory_name = current_directory.split(os.path.sep)[-2]
+        is_home = False
+        if current_directory == configuration.composer_scores_directory:
+            if self._basic_breadcrumb == 'scores':
+                is_home = True
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
             if not is_in_score and not method_.outside_score:
+                continue
+            if (method_.outside_score == 'home' and
+                (not is_home and not is_in_score)):
                 continue
             if ((method_.directories or method_.parent_directories) and
                 directory_name not in method_.directories and
@@ -691,7 +698,7 @@ class Controller(object):
         path_suffix = path[prefix + 1:]
         score_name = path_suffix.split(os.path.sep)[0]
         score_path = os.path.join(path_prefix, score_name)
-        # test for installable Python package structure
+        # test for installable python package structure
         outer_init_path = os.path.join(score_path, '__init__.py')
         inner_init_path = os.path.join(
             score_path, 
@@ -966,7 +973,7 @@ class Controller(object):
         '''
         self._go_to_next_package()
 
-    @Command('>>', section='sibling score')
+    @Command('>>', section='sibling score', outside_score='home')
     def go_to_next_score(self):
         r'''Goes to next score.
 
@@ -989,7 +996,7 @@ class Controller(object):
         '''
         self._go_to_previous_package()
 
-    @Command('<<', section='sibling score')
+    @Command('<<', section='sibling score', outside_score='home')
     def go_to_previous_score(self):
         r'''Goes to previous score.
 
