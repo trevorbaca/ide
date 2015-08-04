@@ -1035,7 +1035,7 @@ class PackageManager(Controller):
                 tab = self._io_manager._tab
                 for wrangler in wranglers:
                     self._io_manager._display(repr(wrangler))
-                    prototype = ('file', 'stylesheet', 'maker')
+                    prototype = ('file', 'stylesheets', 'maker')
                     if wrangler._asset_identifier in prototype:
                         result = wrangler._check_every_file()
                     else:

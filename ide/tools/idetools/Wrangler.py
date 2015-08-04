@@ -252,7 +252,7 @@ class Wrangler(Controller):
         self._force_lowercase_file_name = False
 
     def _configure_as_material_package_wrangler(self):
-        self._asset_identifier = 'material package'
+        self._asset_identifier = 'materials'
         self._basic_breadcrumb = 'materials'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
@@ -270,14 +270,14 @@ class Wrangler(Controller):
         self._sort_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
-        self._asset_identifier = 'segment package'
+        self._asset_identifier = 'segments'
         self._basic_breadcrumb = 'segments'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'segments'
 
     def _configure_as_stylesheet_wrangler(self):
-        self._asset_identifier = 'stylesheet'
+        self._asset_identifier = 'stylesheets'
         self._basic_breadcrumb = 'stylesheets'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'stylesheets'
@@ -497,11 +497,11 @@ class Wrangler(Controller):
             path=path,
             session=self._session,
             )
-        if self._asset_identifier == 'material package':
+        if self._asset_identifier == 'materials':
             manager._configure_as_material_package_manager()
         elif self._asset_identifier == 'score package':
             manager._configure_as_score_package_manager()
-        elif self._asset_identifier == 'segment package':
+        elif self._asset_identifier == 'segments':
             manager._configure_as_segment_package_manager()
         return manager
 
@@ -1471,8 +1471,8 @@ class Wrangler(Controller):
             new_storehouse = self._select_storehouse_path()
             if self._session.is_backtracking or new_storehouse is None:
                 return
-        message = 'existing {} name> {}'
-        message = message.format(self._asset_identifier, old_name)
+        message = 'existing name> {}'
+        message = message.format(old_name)
         self._io_manager._display(message)
         message = 'new {} name'
         message = message.format(self._asset_identifier)
