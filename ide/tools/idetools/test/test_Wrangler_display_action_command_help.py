@@ -197,6 +197,7 @@ def test_Wrangler_display_action_command_help_09():
         '',
         '    check every definition py (dc*)',
         '    edit every definition py (de*)',
+        '    illustrate every definition py (di*)',
         '    interpret every illustration ly (ii*)',
         '    open every illustration pdf (io*)',
         '',
