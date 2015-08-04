@@ -169,6 +169,7 @@ class PackageManager(Controller):
 
     def _configure_as_score_package_manager(self):
         self._asset_identifier = 'score package manager'
+        self._basic_breadcrumb = 'SCORES'
         self._breadcrumb_callback = self._get_title
         self._optional_directories = (
             '__pycache__',
@@ -1087,7 +1088,7 @@ class PackageManager(Controller):
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                if self._asset_identifier == 'scores':
+                if self._basic_breadcrumb == 'scores':
                     lines = self._get_score_initializer_file_lines(
                         missing_file)
                 else:

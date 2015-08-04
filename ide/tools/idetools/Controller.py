@@ -651,8 +651,8 @@ class Controller(object):
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
-                prototype = ('score package manager', 'scores')
-                if self._asset_identifier in prototype and year:
+                prototype = ('SCORES', 'scores')
+                if self._basic_breadcrumb in prototype and year:
                     annotation = '{} ({})'.format(title, year)
                 else:
                     annotation = str(title)
@@ -678,8 +678,8 @@ class Controller(object):
             string = asset_name
         else:
             annotation = self._path_to_annotation(path)
-            prototype = ('score package manager', 'scores')
-            if self._asset_identifier in prototype:
+            prototype = ('SCORES', 'scores')
+            if self._basic_breadcrumb in prototype:
                 string = annotation
             else:
                 string = '{} ({})'.format(asset_name, annotation)

@@ -252,14 +252,14 @@ class Wrangler(Controller):
         self._force_lowercase_file_name = False
 
     def _configure_as_material_package_wrangler(self):
-        self._asset_identifier = 'materials'
+        self._asset_identifier = 'package'
         self._basic_breadcrumb = 'materials'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'materials'
 
     def _configure_as_score_package_wrangler(self):
-        self._asset_identifier = 'scores'
+        self._asset_identifier = 'package'
         self._basic_breadcrumb = 'scores'
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
@@ -270,7 +270,7 @@ class Wrangler(Controller):
         self._sort_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
-        self._asset_identifier = 'segments'
+        self._asset_identifier = 'package'
         self._basic_breadcrumb = 'segments'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
@@ -497,12 +497,18 @@ class Wrangler(Controller):
             path=path,
             session=self._session,
             )
-        if self._asset_identifier == 'materials':
+        if self._asset_identifier == 'file':
+            return manager
+        else:
+            assert self._asset_identifier == 'package'
+        if self._basic_breadcrumb == 'materials':
             manager._configure_as_material_package_manager()
-        elif self._asset_identifier == 'scores':
+        elif self._basic_breadcrumb == 'scores':
             manager._configure_as_score_package_manager()
-        elif self._asset_identifier == 'segments':
+        elif self._basic_breadcrumb == 'segments':
             manager._configure_as_segment_package_manager()
+        else:
+            raise ValueError(self._basic_breadcrumb)
         return manager
 
     def _get_next_asset_path(self):
@@ -1966,7 +1972,7 @@ class Wrangler(Controller):
         '''
         if self._asset_identifier == 'file':
             self._make_file()
-        elif self._asset_identifier == 'scores':
+        elif self._basic_breadcrumb == 'scores':
             self._make_score_package()
         else:
             self._make_package()
