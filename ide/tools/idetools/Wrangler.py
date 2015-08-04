@@ -259,7 +259,7 @@ class Wrangler(Controller):
         self._directory_name = 'materials'
 
     def _configure_as_score_package_wrangler(self):
-        self._asset_identifier = 'score package'
+        self._asset_identifier = 'scores'
         self._basic_breadcrumb = 'scores'
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
@@ -499,7 +499,7 @@ class Wrangler(Controller):
             )
         if self._asset_identifier == 'materials':
             manager._configure_as_material_package_manager()
-        elif self._asset_identifier == 'score package':
+        elif self._asset_identifier == 'scores':
             manager._configure_as_score_package_manager()
         elif self._asset_identifier == 'segments':
             manager._configure_as_segment_package_manager()
@@ -1966,7 +1966,7 @@ class Wrangler(Controller):
         '''
         if self._asset_identifier == 'file':
             self._make_file()
-        elif self._asset_identifier == 'score package':
+        elif self._asset_identifier == 'scores':
             self._make_score_package()
         else:
             self._make_package()
