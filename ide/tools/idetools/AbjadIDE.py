@@ -53,7 +53,6 @@ class AbjadIDE(object):
             return 'Abjad IDE'
 
     @property
-    @systemtools.Memoize
     def _build_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -61,7 +60,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _distribution_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -69,7 +67,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _etc_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -81,7 +78,6 @@ class AbjadIDE(object):
         return self._session._io_manager
 
     @property
-    @systemtools.Memoize
     def _maker_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -89,7 +85,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _material_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -97,7 +92,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _score_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -105,7 +99,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _segment_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -113,7 +106,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    @systemtools.Memoize
     def _stylesheet_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
