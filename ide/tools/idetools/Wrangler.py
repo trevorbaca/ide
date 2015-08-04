@@ -26,6 +26,7 @@ class Wrangler(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_asset_identifier',
         '_copy_target_directory',
         '_directory_entry_predicate',
         '_directory_name',
@@ -2111,7 +2112,6 @@ class Wrangler(Controller):
         message = message.format(file_name)
         self._io_manager._display(message)
         manager = self._get_manager(path)
-        manager._asset_identifier = self._asset_identifier
         manager._rename_interactively(
             file_extension=file_extension,
             file_name_callback=file_name_callback,

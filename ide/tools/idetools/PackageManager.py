@@ -34,7 +34,6 @@ class PackageManager(Controller):
         assert path is not None and os.path.sep in path
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
-        self._asset_identifier = 'package manager'
         self._breadcrumb_callback = None
         self._optional_directories = (
             '__pycache__',
@@ -168,7 +167,6 @@ class PackageManager(Controller):
             )
 
     def _configure_as_score_package_manager(self):
-        self._asset_identifier = 'foo'
         self._basic_breadcrumb = 'SCORES'
         self._breadcrumb_callback = self._get_title
         self._optional_directories = (
