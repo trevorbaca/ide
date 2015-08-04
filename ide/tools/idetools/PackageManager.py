@@ -461,13 +461,6 @@ class PackageManager(Controller):
         wrangler = directory_name_to_wrangler.get(directory_name)
         return wrangler
 
-    def _initialize_file_name_getter(self):
-        getter = self._io_manager._make_getter()
-        prompt = 'new {} name'
-        prompt = prompt.format.format(self._asset_identifier)
-        getter.append_dash_case_file_name(prompt)
-        return getter
-
     def _is_git_added(self, path=None):
         path = path or self._path
         if path is None:

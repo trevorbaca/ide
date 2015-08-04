@@ -108,7 +108,7 @@ class Controller(object):
         if (self._session.navigation_target is not None and
             self._session.navigation_target == self._basic_breadcrumb):
             self._session._navigation_target = None
-        elif self._asset_identifier == 'package manager':
+        elif self._basic_breadcrumb in ('MATERIALS', 'SEGMENTS'):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
             self._session._last_asset_path = self._path
@@ -119,7 +119,7 @@ class Controller(object):
             self._session._last_score_path = self._path
 
     def _exit_run(self):
-        if self._asset_identifier == 'package manager':
+        if self._basic_breadcrumb in ('MATERIALS', 'SEGMENTS'):
             return self._session.is_backtracking
         elif self._basic_breadcrumb == 'SCORES':
             result = self._session.is_backtracking
