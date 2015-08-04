@@ -824,17 +824,15 @@ class Wrangler(Controller):
         infinitival_phrase=None,
         is_storehouse=False,
         ):
-        name = self._asset_identifier
-        name = stringtools.to_space_delimited_lowercase(name)
         if infinitival_phrase:
             return 'select {} {}:'.format(
-                name,
+                self._asset_identifier,
                 infinitival_phrase,
                 )
         elif is_storehouse:
             return 'select storehouse'
         else:
-            return 'select {}:'.format(name)
+            return 'select {}:'.format(self._asset_identifier)
 
     def _make_asset_selection_menu(self):
         menu = self._io_manager._make_menu(name='asset selection')
@@ -1200,9 +1198,8 @@ class Wrangler(Controller):
 
     def _select_visible_asset_paths(self):
         getter = self._io_manager._make_getter()
-        plural_identifier = stringtools.pluralize(self._asset_identifier)
         message = 'enter {}(s) to remove'
-        message = message.format(plural_identifier)
+        message = message.format(self._asset_identifier)
         menu = self._make_asset_selection_menu()
         asset_section = menu['assets']
         getter.append_menu_section_range(
@@ -1477,8 +1474,11 @@ class Wrangler(Controller):
             new_storehouse = self._select_storehouse_path()
             if self._session.is_backtracking or new_storehouse is None:
                 return
-        message = 'existing name> {}'
-        message = message.format(old_name)
+        message = 'existing {} name> {}'
+        message = message.format(
+            self._asset_identifier,
+            old_name,
+            )
         self._io_manager._display(message)
         message = 'new {} name'
         message = message.format(self._asset_identifier)

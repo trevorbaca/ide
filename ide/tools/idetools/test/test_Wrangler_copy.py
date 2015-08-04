@@ -90,7 +90,7 @@ def test_Wrangler_copy_04():
     abjad_ide._run(input_=input_)
     contents = abjad_ide._session._transcript.contents
         
-    string = 'Existing name> tempo_inventory'
+    string = 'Existing package name> tempo_inventory'
     assert string in contents
     string = 'Value must be string. Press <return> to preserve existing name.'
     assert string in contents
