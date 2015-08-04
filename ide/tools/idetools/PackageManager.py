@@ -168,7 +168,7 @@ class PackageManager(Controller):
             )
 
     def _configure_as_score_package_manager(self):
-        self._asset_identifier = 'score package manager'
+        self._asset_identifier = 'foo'
         self._basic_breadcrumb = 'SCORES'
         self._breadcrumb_callback = self._get_title
         self._optional_directories = (
