@@ -463,11 +463,8 @@ class PackageManager(Controller):
 
     def _initialize_file_name_getter(self):
         getter = self._io_manager._make_getter()
-        asset_identifier = getattr(self, '_asset_identifier', None)
-        if asset_identifier:
-            prompt = 'new {} name'.format(asset_identifier)
-        else:
-            prompt = 'new name'
+        prompt = 'new {} name'
+        prompt = prompt.format.format(self._asset_identifier)
         getter.append_dash_case_file_name(prompt)
         return getter
 
