@@ -1223,7 +1223,7 @@ class Wrangler(Controller):
 
     def _supply_missing_views_files(self):
         from ide.tools import idetools
-        if not os.path.exists(self._views_py_path):
+        if not os.path.exists(self._get_views_py_path()):
             view_inventory = idetools.ViewInventory()
             with self._session._io_manager._silent(self._session):
                 self._write_view_inventory(view_inventory)
@@ -1234,7 +1234,7 @@ class Wrangler(Controller):
         if self._session.is_test:
             with self._session._io_manager._silent(self._session):
                 for wrangler in self._session._abjad_ide._wranglers:
-                    if not os.path.exists(wrangler._views_py_path):
+                    if not os.path.exists(wrangler._get_views_py_path()):
                         wrangler.write_views_py()
         else:
             with self._session._io_manager._silent(self._session):
