@@ -193,24 +193,6 @@ class PackageManager(Controller):
             'definition.py',
             )
 
-    @staticmethod
-    def _file_name_to_version_number(file_name):
-        root, file_extension = os.path.splitext(file_name)
-        assert 4 <= len(root), repr(file_name)
-        version_number_string = root[-4:]
-        try:
-            version_number = int(version_number_string)
-        except ValueError:
-            version_number = None
-        return version_number
-
-    def _find_first_file_name(self):
-        for directory_entry in sorted(os.listdir(self._path)):
-            if not directory_entry.startswith('.'):
-                path = os.path.join(self._path, directory_entry)
-                if (os.path.isfile(path) and not '__init__.py' in path):
-                    return directory_entry
-
     def _format_counted_check_messages(
         self,
         paths,
@@ -739,7 +721,7 @@ class PackageManager(Controller):
     def _test_revert(self):
         assert self._is_up_to_date()
         assert self._get_modified_asset_paths() == []
-        file_name = self._find_first_file_name()
+        file_name = self._find_first_file_name(self._path)
         if not file_name:
             return
         file_path = os.path.join(self._path, file_name)

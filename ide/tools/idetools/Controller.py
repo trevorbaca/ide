@@ -209,6 +209,14 @@ class Controller(object):
         return filtered_entries
 
     @staticmethod
+    def _find_first_file_name(directory_path):
+        for directory_entry in sorted(os.listdir(directory_path)):
+            if not directory_entry.startswith('.'):
+                path = os.path.join(directory_path, directory_entry)
+                if (os.path.isfile(path) and not '__init__.py' in path):
+                    return directory_entry
+
+    @staticmethod
     def _format_messaging(inputs, outputs, verb='interpret'):
         messages = []
         if not inputs and not outputs:

@@ -402,7 +402,8 @@ class Wrangler(Controller):
             manager = self._get_manager(asset_path)
             if (manager._is_git_versioned() and
                 manager._is_up_to_date() and
-                (not must_have_file or manager._find_first_file_name())):
+                (not must_have_file or
+                manager._find_first_file_name(manager._path))):
                 return manager
 
     def _get_available_path(
