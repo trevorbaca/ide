@@ -276,21 +276,22 @@ class Controller(object):
             directory = os.path.abspath(directory)
             return directory
 
-    def _get_metadata(self):
+    @staticmethod
+    def _get_metadata(session, metadata_py_path):
         metadata = None
-        if os.path.isfile(self._metadata_py_path):
-            with open(self._metadata_py_path, 'r') as file_pointer:
+        if os.path.isfile(metadata_py_path):
+            with open(metadata_py_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
             try:
-                result = self._session._io_manager.execute_string(
+                result = session._io_manager.execute_string(
                     file_contents_string,
                     attribute_names=('metadata',),
                     )
                 metadata = result[0]
             except SyntaxError:
                 message = 'can not interpret metadata py: {!r}.'
-                message = message.format(self)
-                self._session._io_manager._display(message)
+                message = message.format(metadata_py_path)
+                session._io_manager._display(message)
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
@@ -300,7 +301,10 @@ class Controller(object):
             return datastructuretools.TypedOrderedDict()
         score_package_manager = self._session._io_manager._make_package_manager(
             path=score_path)
-        return score_package_manager._get_metadata()
+        return score_package_manager._get_metadata(
+            score_package_manager._session,
+            score_package_manager._metadata_py_path,
+            )
 
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths()
@@ -709,7 +713,10 @@ class Controller(object):
         if path.startswith(score_storehouses):
             score_path = self._path_to_score_path(path)
             manager = self._session._io_manager._make_package_manager(path=score_path)
-            metadata = manager._get_metadata()
+            metadata = manager._get_metadata(
+                manager._session,
+                manager._metadata_py_path,
+                )
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')

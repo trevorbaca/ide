@@ -135,7 +135,10 @@ class PackageManager(Controller):
 
     def _add_metadatum(self, metadatum_name, metadatum_value):
         assert ' ' not in metadatum_name, repr(metadatum_name)
-        metadata = self._get_metadata()
+        metadata = self._get_metadata(
+            self._session,
+            self._metadata_py_path,
+            )
         metadata[metadatum_name] = metadatum_value
         with self._session._io_manager._silent(self):
             self._write_metadata_py(metadata)
@@ -286,7 +289,10 @@ class PackageManager(Controller):
         return lines
 
     def _get_metadatum(self, metadatum_name, include_score=False):
-        metadata = self._get_metadata()
+        metadata = self._get_metadata(
+            self._session,
+            self._metadata_py_path,
+            )
         metadatum = metadata.get(metadatum_name, None)
         if metadatum is None:
             metadata = self._get_score_metadata()
@@ -620,7 +626,10 @@ class PackageManager(Controller):
         return True
 
     def _remove_metadatum(self, metadatum_name):
-        metadata = self._get_metadata()
+        metadata = self._get_metadata(
+            self._session,
+            self._metadata_py_path,
+            )
         was_removed = False
         try:
             del(metadata[metadatum_name])
