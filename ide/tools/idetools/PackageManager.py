@@ -1295,7 +1295,11 @@ class PackageManager(Controller):
                 illustration_pdf_path,
                 )
                 messages = self._make_candidate_messages(
-                    result, candidate_pdf_path, illustration_pdf_path)
+                    self._session,
+                    result,
+                    candidate_pdf_path,
+                    illustration_pdf_path,
+                    )
                 self._session._io_manager._display(messages)
                 if result:
                     message = 'preserved {}.'.format(illustration_pdf_path)

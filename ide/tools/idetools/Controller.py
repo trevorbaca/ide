@@ -418,7 +418,11 @@ class Controller(object):
             ):
             tab = self._session._io_manager._tab
             messages_ = self._make_candidate_messages(
-                True, candidate_path, destination_path)
+                self._session,
+                True,
+                candidate_path,
+                destination_path,
+                )
             messages.extend(messages_)
             message = 'preserved {}.'.format(destination_path)
             messages.append(message)
@@ -530,9 +534,10 @@ class Controller(object):
                         paths.append(path)
         return paths
 
-    def _make_candidate_messages(self, result, candidate_path, incumbent_path):
+    @staticmethod
+    def _make_candidate_messages(session, result, candidate_path, incumbent_path):
         messages = []
-        tab = self._session._io_manager._tab
+        tab = session._io_manager._tab
         messages.append('the files ...')
         messages.append(tab + candidate_path)
         messages.append(tab + incumbent_path)

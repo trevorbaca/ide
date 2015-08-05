@@ -331,8 +331,10 @@ class Wrangler(Controller):
             return False
         return segment_names
 
+    @classmethod
     def _copy_boilerplate(
-        self, 
+        class_, 
+        session,
         source_file_name, 
         destination_directory,
         candidacy=True, 
@@ -358,7 +360,7 @@ class Wrangler(Controller):
             shutil.copyfile(source_path, candidate_path)
             for old in replacements:
                 new = replacements[old]
-                self._replace_in_file(candidate_path, old, new)
+                class_._replace_in_file(candidate_path, old, new)
             if not os.path.exists(destination_path):
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'wrote {}.'.format(destination_path)
@@ -366,8 +368,8 @@ class Wrangler(Controller):
             elif not candidacy:
                 message = 'overwrite {}?'
                 message = message.format(destination_path)
-                result = self._session._io_manager._confirm(message)
-                if self._session.is_backtracking or not result:
+                result = session._io_manager._confirm(message)
+                if session.is_backtracking or not result:
                     return False
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
@@ -376,7 +378,8 @@ class Wrangler(Controller):
                 candidate_path, 
                 destination_path,
                 ):
-                messages_ = self._make_candidate_messages(
+                messages_ = class_._make_candidate_messages(
+                    session,
                     True, 
                     candidate_path, 
                     destination_path,
@@ -388,7 +391,7 @@ class Wrangler(Controller):
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
                 messages.append(message)
-            self._session._io_manager._display(messages)
+            session._io_manager._display(messages)
             return True
 
     def _edit_file_ending_with(self, string):
@@ -1586,6 +1589,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
+            self._session,
             'back-cover.tex',
             self._session.current_build_directory,
             replacements=replacements,
@@ -1634,6 +1638,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
+            self._session,
             file_name,
             self._session.current_build_directory,
             replacements=replacements,
@@ -1743,6 +1748,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
+            self._session,
             'preface.tex',
             self._session.current_build_directory,
             replacements=replacements,
@@ -1768,6 +1774,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
+            self._session,
             'score.tex',
             self._session.current_build_directory,
             replacements=replacements,
