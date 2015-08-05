@@ -327,6 +327,16 @@ class Controller(object):
                 return file_path
 
     @staticmethod
+    def _get_git_status_lines(session, directory_path):
+        command = 'git status --porcelain {}'
+        command = command.format(directory_path)
+        with systemtools.TemporaryDirectoryChange(directory=directory_path):
+            process = session._io_manager.make_subprocess(command)
+        stdout_lines = session._io_manager._read_from_pipe(process.stdout)
+        stdout_lines = stdout_lines.splitlines()
+        return stdout_lines
+
+    @staticmethod
     def _get_metadata(session, metadata_py_path):
         metadata = None
         if os.path.isfile(metadata_py_path):

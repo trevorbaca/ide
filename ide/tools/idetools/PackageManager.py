@@ -235,21 +235,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    @staticmethod
-    def _get_git_status_lines(session, directory_path):
-        command = 'git status --porcelain {}'
-        command = command.format(directory_path)
-        with systemtools.TemporaryDirectoryChange(directory=directory_path):
-            process = session._io_manager.make_subprocess(command)
-        stdout_lines = session._io_manager._read_from_pipe(process.stdout)
-        stdout_lines = stdout_lines.splitlines()
-        return stdout_lines
-
-    def _get_initializer_file_lines(self, missing_file):
-        lines = []
-        lines.append(self._unicode_directive)
-        return lines
-
     def _get_metadatum(self, metadatum_name, include_score=False):
         metadata = self._get_metadata(
             self._session,
@@ -999,7 +984,7 @@ class PackageManager(Controller):
                     lines = self._get_score_initializer_file_lines(
                         missing_file)
                 else:
-                    lines = self._get_initializer_file_lines(missing_file)
+                    lines = [self._unicode_directive]
             elif missing_file.endswith('__metadata__.py'):
                 lines = []
                 lines.append(self._unicode_directive)
