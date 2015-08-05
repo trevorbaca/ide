@@ -238,18 +238,18 @@ class PackageManager(Controller):
 
     def _get_added_asset_paths(self):
         paths = []
-        if self._is_in_git_repository():
-            git_status_lines = self._get_git_status_lines()
-            for line in git_status_lines:
-                line = str(line)
-                if line.startswith('A'):
-                    path = line.strip('A')
-                    path = path.strip()
-                    root_directory = self._get_repository_root_directory()
-                    path = os.path.join(root_directory, path)
-                    paths.append(path)
-        else:
-            raise ValueError(self)
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith('A'):
+                path = line.strip('A')
+                path = path.strip()
+                root_directory = self._get_repository_root_directory()
+                path = os.path.join(root_directory, path)
+                paths.append(path)
         return paths
 
     def _get_current_directory(self):
@@ -270,12 +270,13 @@ class PackageManager(Controller):
                 file_path = os.path.join(self._path, file_name)
                 return file_path
 
-    def _get_git_status_lines(self):
+    @staticmethod
+    def _get_git_status_lines(session, directory_path):
         command = 'git status --porcelain {}'
-        command = command.format(self._path)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._session._io_manager.make_subprocess(command)
-        stdout_lines = self._session._io_manager._read_from_pipe(process.stdout)
+        command = command.format(directory_path)
+        with systemtools.TemporaryDirectoryChange(directory=directory_path):
+            process = session._io_manager.make_subprocess(command)
+        stdout_lines = session._io_manager._read_from_pipe(process.stdout)
         stdout_lines = stdout_lines.splitlines()
         return stdout_lines
 
@@ -295,7 +296,10 @@ class PackageManager(Controller):
     def _get_modified_asset_paths(self):
         paths = []
         if self._is_in_git_repository():
-            git_status_lines = self._get_git_status_lines()
+            git_status_lines = self._get_git_status_lines(
+                self._session,
+                self._path,
+                )
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith(('M', ' M')):
@@ -388,7 +392,10 @@ class PackageManager(Controller):
         paths = []
         if self._is_in_git_repository():
             root_directory = self._get_repository_root_directory()
-            git_status_lines = self._get_git_status_lines()
+            git_status_lines = self._get_git_status_lines(
+                self._session,
+                self._path,
+                )
             for line in git_status_lines:
                 line = str(line)
                 if line.startswith('?'):
@@ -420,7 +427,11 @@ class PackageManager(Controller):
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = self._get_git_status_lines() or ['']
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('A'):
             return True
@@ -432,7 +443,11 @@ class PackageManager(Controller):
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = self._get_git_status_lines() or ['']
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('?'):
             return True
@@ -442,7 +457,11 @@ class PackageManager(Controller):
         path = path or self._path
         if not self._is_in_git_repository(path=path):
             return False
-        git_status_lines = self._get_git_status_lines() or ['']
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('?'):
             return False
@@ -454,7 +473,11 @@ class PackageManager(Controller):
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = self._get_git_status_lines() or ['']
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('fatal:'):
             return False
@@ -462,7 +485,11 @@ class PackageManager(Controller):
 
     def _is_up_to_date(self):
         if self._is_in_git_repository():
-            git_status_lines = self._get_git_status_lines() or ['']
+            git_status_lines = self._get_git_status_lines(
+                self._session,
+                self._path,
+                )
+            git_status_lines = git_status_lines or ['']
             first_line = git_status_lines[0]
         else:
             raise ValueError(self)
