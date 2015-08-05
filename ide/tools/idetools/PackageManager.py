@@ -235,10 +235,11 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_file_path_ending_with(self, string):
-        for file_name in self._list_directory(self._path):
+    @classmethod
+    def _get_file_path_ending_with(class_, directory_path, string):
+        for file_name in class_._list_directory(directory_path):
             if file_name.endswith(string):
-                file_path = os.path.join(self._path, file_name)
+                file_path = os.path.join(directory_path, file_name)
                 return file_path
 
     @staticmethod
@@ -1323,11 +1324,14 @@ class PackageManager(Controller):
             file_name = 'score.pdf'
             directory = os.path.join(self._path, 'distribution')
             manager = self._session._io_manager._make_package_manager(directory)
-            path = manager._get_file_path_ending_with(file_name)
+            path = manager._get_file_path_ending_with(manager._path, file_name)
             if not path:
                 directory = os.path.join(self._path, 'build')
                 manager = self._session._io_manager._make_package_manager(directory)
-                path = manager._get_file_path_ending_with(file_name)
+                path = manager._get_file_path_ending_with(
+                    manager._path, 
+                    file_name,
+                    )
             if dry_run:
                 inputs, outputs = [], []
                 if path:
