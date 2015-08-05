@@ -10,7 +10,6 @@ class Interaction(ContextManager):
 
     __slots__ = (
         '_confirm',
-        '_controller',
         '_display',
         '_dry_run',
         '_original_confirm',
@@ -24,18 +23,17 @@ class Interaction(ContextManager):
     def __init__(
         self, 
         confirm=True,
-        controller=None, 
         display=True, 
         dry_run=False,
+        session=None,
         task=True,
         ):
         self._confirm = confirm
-        self._controller = controller
         self._display = display
         self._dry_run = dry_run
         self._original_confirm = None
         self._original_display = None
-        self._session = controller._session
+        self._session = session
         self._task = task
 
     ### SPECIAL METHODS ###
@@ -73,14 +71,6 @@ class Interaction(ContextManager):
         Returns boolean.
         '''
         return self._confirm
-
-    @property
-    def controller(self):
-        r'''Gets controller of interaction.
-
-        Returns controller.
-        '''
-        return self._controller
 
     @property
     def display(self):

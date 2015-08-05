@@ -507,7 +507,7 @@ class Controller(object):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._session._io_manager._make_interaction(self):
+        with self._session._io_manager._make_interaction(self._session):
             if result.startswith('!'):
                 statement = result[1:]
                 self._session._io_manager._invoke_shell(statement)
@@ -516,7 +516,10 @@ class Controller(object):
             elif (result.endswith('!') and 
                 result[:-1] in self._command_name_to_method):
                 result = result[:-1]
-                with self._session._io_manager._make_interaction(self, confirm=False):
+                with self._session._io_manager._make_interaction(
+                    self._session,
+                    confirm=False,
+                    ):
                     self._command_name_to_method[result]()
             else:
                 self._handle_numeric_user_input(result)

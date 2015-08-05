@@ -140,7 +140,7 @@ class PackageManager(Controller):
             self._metadata_py_path,
             )
         metadata[metadatum_name] = metadatum_value
-        with self._session._io_manager._silent(self):
+        with self._session._io_manager._silent(self._session):
             self._write_metadata_py(self._metadata_py_path, metadata)
 
     def _configure_as_material_package_manager(self):
@@ -559,7 +559,7 @@ class PackageManager(Controller):
     def _make_package(self):
         assert not os.path.exists(self._path)
         os.mkdir(self._path)
-        with self._session._io_manager._silent(self):
+        with self._session._io_manager._silent(self._session):
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
@@ -637,7 +637,7 @@ class PackageManager(Controller):
         except KeyError:
             pass
         if was_removed:
-            with self._session._io_manager._silent(self):
+            with self._session._io_manager._silent(self._session):
                 self._write_metadata_py(self._metadata_py_path, metadata)
 
     def _rename(self, new_path):
@@ -743,11 +743,11 @@ class PackageManager(Controller):
             assert not self._is_up_to_date()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
-            with self._session._io_manager._silent(self):
+            with self._session._io_manager._silent(self._session):
                 self.add()
             assert self._get_unadded_asset_paths() == []
             assert self._get_added_asset_paths() == [path_1, path_2]
-            with self._session._io_manager._silent(self):
+            with self._session._io_manager._silent(self._session):
                 self._unadd_added_assets()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
@@ -767,7 +767,7 @@ class PackageManager(Controller):
                 file_pointer.write(string)
             assert not self._is_up_to_date()
             assert self._get_modified_asset_paths() == [file_path]
-            with self._session._io_manager._silent(self):
+            with self._session._io_manager._silent(self._session):
                 self.revert()
         assert self._get_modified_asset_paths() == []
         assert self._is_up_to_date()
@@ -844,7 +844,7 @@ class PackageManager(Controller):
         if dry_run:
             inputs.append(self._definition_py_path)
             return inputs, outputs
-        with self._session._io_manager._silent(self):
+        with self._session._io_manager._silent(self._session):
             stdout_lines, stderr_lines = self._session._io_manager.interpret_file(
                 self._definition_py_path)
         if stderr_lines:
@@ -1023,7 +1023,7 @@ class PackageManager(Controller):
                 controller=self,
                 current_score_directory=self._path,
                 )
-            silence = self._session._io_manager._silent(self)
+            silence = self._session._io_manager._silent(self._session)
             with controller, silence:
                 tab = self._session._io_manager._tab
                 for wrangler in wranglers:
@@ -1281,7 +1281,7 @@ class PackageManager(Controller):
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
-            with self._session._io_manager._silent(self):
+            with self._session._io_manager._silent(self._session):
                 start_time = time.time()
                 result = self._session._io_manager.interpret_file(
                     illustrate_path,
@@ -1395,7 +1395,10 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        with self._session._io_manager._make_interaction(self, dry_run=dry_run):
+        with self._session._io_manager._make_interaction(
+            self._session,
+            dry_run=dry_run,
+            ):
             file_name = 'score.pdf'
             directory = os.path.join(self._path, 'distribution')
             manager = self._session._io_manager._make_package_manager(directory)

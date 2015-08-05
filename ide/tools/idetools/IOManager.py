@@ -270,18 +270,19 @@ class IOManager(IOManager):
 
     def _make_interaction(
         self,
-        controller,
+        session,
         confirm=True,
         display=True,
         dry_run=False,
         task=True,
         ):
         from ide.tools import idetools
+        assert session is not None
         return idetools.Interaction(
             confirm=confirm,
-            controller=controller,
             display=display,
             dry_run=dry_run,
+            session=session,
             task=task,
             )
 
@@ -374,13 +375,14 @@ class IOManager(IOManager):
             line = line.strip()
         return line
 
-    def _silent(self, controller):
+    def _silent(self, session):
         from ide.tools import idetools
+        assert session is not None
         return idetools.Interaction(
             confirm=False,
-            controller=controller,
             display=False,
             dry_run=False,
+            session=session,
             task=False,
             )
 
