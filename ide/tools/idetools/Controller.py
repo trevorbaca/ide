@@ -1383,6 +1383,19 @@ class Controller(object):
         return True
 
     @classmethod
+    def _unadd_added_assets(class_, session, path):
+        paths = []
+        paths.extend(class_._get_added_asset_paths(session, path))
+        paths.extend(class_._get_modified_asset_paths(session, path))
+        commands = []
+        for path in paths:
+            command = 'git reset -- {}'.format(path)
+            commands.append(command)
+        command = ' && '.join(commands)
+        with systemtools.TemporaryDirectoryChange(directory=path):
+            session._io_manager.spawn_subprocess(command)
+
+    @classmethod
     def _write_metadata_py(class_, metadata_py_path, metadata):
         lines = []
         lines.append(class_._unicode_directive)

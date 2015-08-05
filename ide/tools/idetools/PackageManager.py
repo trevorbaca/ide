@@ -268,21 +268,6 @@ class PackageManager(Controller):
                     if self._exit_run():
                         break
 
-    def _unadd_added_assets(self):
-        paths = []
-        paths.extend(self._get_added_asset_paths())
-        paths.extend(self._get_modified_asset_paths(self._session, self._path))
-        commands = []
-        if self._is_git_versioned():
-            for path in paths:
-                command = 'git reset -- {}'.format(path)
-                commands.append(command)
-        else:
-            raise ValueError(self)
-        command = ' && '.join(commands)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
-            self._session._io_manager.spawn_subprocess(command)
-
     def _update_order_dependent_segment_metadata(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
         wrangler._update_order_dependent_segment_metadata()
