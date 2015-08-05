@@ -197,65 +197,30 @@ class PackageManager(Controller):
 
     def _get_unadded_asset_paths(self):
         paths = []
-        if self._is_in_git_repository():
-            root_directory = self._get_repository_root_directory(
-                self._session,
-                self._path,
-                )
-            git_status_lines = self._get_git_status_lines(
-                self._session,
-                self._path,
-                )
-            for line in git_status_lines:
-                line = str(line)
-                if line.startswith('?'):
-                    path = line.strip('?')
-                    path = path.strip()
-                    path = os.path.join(root_directory, path)
-                    paths.append(path)
-        else:
-            raise ValueError(self)
+        root_directory = self._get_repository_root_directory(
+            self._session,
+            self._path,
+            )
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith('?'):
+                path = line.strip('?')
+                path = path.strip()
+                path = os.path.join(root_directory, path)
+                paths.append(path)
         return paths
 
-    def _is_git_added(self, path=None):
-        path = path or self._path
-        if path is None:
+    @classmethod
+    def _is_git_versioned(class_, session, path):
+        if not class_._is_in_git_repository(session, path):
             return False
-        if not os.path.exists(path):
-            return False
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
-            )
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('A'):
-            return True
-        return False
-
-    def _is_git_unknown(self, path=None):
-        path = path or self._path
-        if path is None:
-            return False
-        if not os.path.exists(path):
-            return False
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
-            )
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('?'):
-            return True
-        return False
-
-    def _is_git_versioned(self, path=None):
-        path = path or self._path
-        if not self._is_in_git_repository(path=path):
-            return False
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
             )
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
@@ -263,15 +228,15 @@ class PackageManager(Controller):
             return False
         return True
 
-    def _is_in_git_repository(self, path=None):
-        path = path or self._path
+    @classmethod
+    def _is_in_git_repository(class_, session, path):
         if path is None:
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
             )
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
@@ -280,15 +245,12 @@ class PackageManager(Controller):
         return True
 
     def _is_up_to_date(self):
-        if self._is_in_git_repository():
-            git_status_lines = self._get_git_status_lines(
-                self._session,
-                self._path,
-                )
-            git_status_lines = git_status_lines or ['']
-            first_line = git_status_lines[0]
-        else:
-            raise ValueError(self)
+        git_status_lines = self._get_git_status_lines(
+            self._session,
+            self._path,
+            )
+        git_status_lines = git_status_lines or ['']
+        first_line = git_status_lines[0]
         return first_line == ''
 
     def _list_visible_asset_paths(self):
@@ -318,11 +280,8 @@ class PackageManager(Controller):
             self._package_creation_callback()
 
     def _make_repository_commit_command(self, message):
-        if self._is_in_git_repository(path=self._path):
-            command = 'git commit -m "{}" {}; git push'
-            command = command.format(message, self._path)
-        else:
-            raise ValueError(self)
+        command = 'git commit -m "{}" {}; git push'
+        command = command.format(message, self._path)
         return command
 
     def _make_score_into_installable_package(self):
@@ -367,8 +326,8 @@ class PackageManager(Controller):
                 return
             if not result == 'remove':
                 return
-        if self._is_in_git_repository():
-            if self._is_git_unknown():
+        if self._is_in_git_repository(self._session, self._path):
+            if self._is_git_unknown(self._session, self._path):
                 command = 'rm -rf {}'
             else:
                 command = 'git rm --force -r {}'
@@ -381,8 +340,8 @@ class PackageManager(Controller):
         return True
 
     def _rename(self, new_path):
-        if self._is_in_git_repository():
-            if self._is_git_unknown():
+        if self._is_in_git_repository(self._session, self._path):
+            if self._is_git_unknown(self._session, self._path):
                 command = 'mv {} {}'
             else:
                 command = 'git mv --force {} {}'

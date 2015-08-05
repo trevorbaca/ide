@@ -632,7 +632,7 @@ class Controller(object):
             if self._session.is_backtracking or not result:
                 return
             commands = []
-            if self._is_in_git_repository():
+            if self._is_in_git_repository(self._session, self._path):
                 for path in paths:
                     command = 'git checkout {}'.format(path)
                     commands.append(command)
@@ -802,6 +802,22 @@ class Controller(object):
             for directory_entry in sorted(os.listdir(path)):
                 if directory_entry == '__metadata__.py':
                     return True
+        return False
+
+    @classmethod
+    def _is_git_unknown(class_, session, path):
+        if path is None:
+            return False
+        if not os.path.exists(path):
+            return False
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        git_status_lines = git_status_lines or ['']
+        first_line = git_status_lines[0]
+        if first_line.startswith('?'):
+            return True
         return False
 
     def _is_in_score_directory(self):
