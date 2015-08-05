@@ -1038,6 +1038,27 @@ class Controller(object):
         self._make_command_menu_sections(menu)
         return menu
 
+    @classmethod
+    def _make_score_into_installable_package(
+        class_,
+        session,
+        inner_path,
+        outer_path,
+        ):
+        old_path = outer_path
+        temporary_path = os.path.join(
+            os.path.dirname(outer_path),
+            '_TEMPORARY_SCORE_PACKAGE',
+            )
+        shutil.move(old_path, temporary_path)
+        shutil.move(temporary_path, inner_path)
+        class_._write_enclosing_artifacts(
+            session,
+            inner_path,
+            outer_path,
+            )
+        return inner_path
+
     def _make_secondary_asset_menu_entries(self):
         menu_entries = []
         if not self._session.is_in_score:
@@ -1394,6 +1415,37 @@ class Controller(object):
         command = ' && '.join(commands)
         with systemtools.TemporaryDirectoryChange(directory=path):
             session._io_manager.spawn_subprocess(command)
+
+    @classmethod
+    def _write_enclosing_artifacts(class_, session, inner_path, outer_path):
+        class_._copy_boilerplate(
+            session,
+            'README.md',
+            outer_path,
+            )
+        class_._copy_boilerplate(
+            session,
+            'requirements.txt',
+            outer_path,
+            )
+        class_._copy_boilerplate(
+            session,
+            'setup.cfg',
+            outer_path,
+            )
+        package_name = os.path.basename(outer_path)
+        replacements = {
+            'COMPOSER_EMAIL': configuration.composer_email,
+            'COMPOSER_FULL_NAME': configuration.composer_full_name,
+            'COMPOSER_GITHUB_USERNAME': configuration.composer_github_username,
+            'PACKAGE_NAME': package_name,
+            }
+        class_._copy_boilerplate(
+            session,
+            'setup.py',
+            outer_path,
+            replacements=replacements,
+            )
 
     @classmethod
     def _write_metadata_py(class_, metadata_py_path, metadata):

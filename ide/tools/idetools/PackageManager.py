@@ -227,26 +227,6 @@ class PackageManager(Controller):
             if new_path is not None:
                 self._path = new_path
 
-    def _make_score_into_installable_package(
-        self,
-        session,
-        inner_path,
-        outer_path,
-        ):
-        old_path = outer_path
-        temporary_path = os.path.join(
-            os.path.dirname(outer_path),
-            '_TEMPORARY_SCORE_PACKAGE',
-            )
-        shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, inner_path)
-        self._write_enclosing_artifacts(
-            session,
-            inner_path,
-            outer_path,
-            )
-        return inner_path
-
     def _run(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
@@ -274,37 +254,6 @@ class PackageManager(Controller):
     def _update_order_dependent_segment_metadata(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
         wrangler._update_order_dependent_segment_metadata()
-
-    @classmethod
-    def _write_enclosing_artifacts(class_, session, inner_path, outer_path):
-        class_._copy_boilerplate(
-            session,
-            'README.md',
-            outer_path,
-            )
-        class_._copy_boilerplate(
-            session,
-            'requirements.txt',
-            outer_path,
-            )
-        class_._copy_boilerplate(
-            session,
-            'setup.cfg',
-            outer_path,
-            )
-        package_name = os.path.basename(outer_path)
-        replacements = {
-            'COMPOSER_EMAIL': configuration.composer_email,
-            'COMPOSER_FULL_NAME': configuration.composer_full_name,
-            'COMPOSER_GITHUB_USERNAME': configuration.composer_github_username,
-            'PACKAGE_NAME': package_name,
-            }
-        class_._copy_boilerplate(
-            session,
-            'setup.py',
-            outer_path,
-            replacements=replacements,
-            )
 
     ### PUBLIC METHODS ###
 
