@@ -334,35 +334,28 @@ class Wrangler(Controller):
     def _copy_boilerplate(
         self, 
         source_file_name, 
+        destination_directory,
         candidacy=True, 
         replacements=None,
         ):
         replacements = replacements or {}
-        manager = self._session.current_score_package_manager
-        assert manager is not None
-        width, height, unit = manager._parse_paper_dimensions()
         source_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
             source_file_name,
             )
-        current_build_directory = self._session.current_build_directory
         destination_path = os.path.join(
-            current_build_directory,
+            destination_directory,
             source_file_name,
             )
         base_name, file_extension = os.path.splitext(source_file_name)
         candidate_name = base_name + '.candidate' + file_extension
         candidate_path = os.path.join(
-            current_build_directory,
+            destination_directory,
             candidate_name,
             )
         messages = []
         with systemtools.FilesystemState(remove=[candidate_path]):
             shutil.copyfile(source_path, candidate_path)
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            self._replace_in_file(candidate_path, old, new)
             for old in replacements:
                 new = replacements[old]
                 self._replace_in_file(candidate_path, old, new)
@@ -1586,7 +1579,17 @@ class Wrangler(Controller):
             old = 'PRICE'
             new = str(price)
             replacements[old] = new
-        self._copy_boilerplate('back-cover.tex', replacements=replacements)
+        width, height, unit = manager._parse_paper_dimensions()
+        if width and height:
+            old = '{PAPER_SIZE}'
+            new = '{{{}{}, {}{}}}'
+            new = new.format(width, unit, height, unit)
+            replacements[old] = new
+        self._copy_boilerplate(
+            'back-cover.tex',
+            self._session.current_build_directory,
+            replacements=replacements,
+            )
 
     @Command(
         'fcg',
@@ -1624,7 +1627,17 @@ class Wrangler(Controller):
             old = 'COMPOSER'
             new = str(composer)
             replacements[old] = new
-        self._copy_boilerplate(file_name, replacements=replacements)
+        width, height, unit = manager._parse_paper_dimensions()
+        if width and height:
+            old = '{PAPER_SIZE}'
+            new = '{{{}{}, {}{}}}'
+            new = new.format(width, unit, height, unit)
+            replacements[old] = new
+        self._copy_boilerplate(
+            file_name,
+            self._session.current_build_directory,
+            replacements=replacements,
+            )
 
     @Command(
         'mg',
@@ -1721,7 +1734,19 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        self._copy_boilerplate('preface.tex')
+        replacements = {}
+        manager = self._session.current_score_package_manager
+        width, height, unit = manager._parse_paper_dimensions()
+        if width and height:
+            old = '{PAPER_SIZE}'
+            new = '{{{}{}, {}{}}}'
+            new = new.format(width, unit, height, unit)
+            replacements[old] = new
+        self._copy_boilerplate(
+            'preface.tex',
+            self._session.current_build_directory,
+            replacements=replacements,
+            )
 
     @Command(
         'sg',
@@ -1734,7 +1759,19 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        self._copy_boilerplate('score.tex')
+        replacements = {}
+        manager = self._session.current_score_package_manager
+        width, height, unit = manager._parse_paper_dimensions()
+        if width and height:
+            old = '{PAPER_SIZE}'
+            new = '{{{}{}, {}{}}}'
+            new = new.format(width, unit, height, unit)
+            replacements[old] = new
+        self._copy_boilerplate(
+            'score.tex',
+            self._session.current_build_directory,
+            replacements=replacements,
+            )
 
     @Command('add*', section='git', in_score=False, outside_score='home')
     def git_add_every_package(self):
