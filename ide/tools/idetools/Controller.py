@@ -87,6 +87,23 @@ class Controller(object):
     ### PRIVATE METHODS ###
 
     @classmethod
+    def _add_metadatum(
+        class_,
+        session,
+        metadata_py_path,
+        metadatum_name, 
+        metadatum_value,
+        ):
+        assert ' ' not in metadatum_name, repr(metadatum_name)
+        metadata = class_._get_metadata(
+            session,
+            metadata_py_path,
+            )
+        metadata[metadatum_name] = metadatum_value
+        with session._io_manager._silent(session):
+            class_._write_metadata_py(metadata_py_path, metadata)
+
+    @classmethod
     def _copy_boilerplate(
         class_, 
         session,
@@ -250,6 +267,26 @@ class Controller(object):
                         messages.append('{}{}'.format(output_label, path))
                 messages.append('')
         return messages
+
+    @classmethod
+    def _get_added_asset_paths(class_, session, path):
+        paths = []
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith('A'):
+                path = line.strip('A')
+                path = path.strip()
+                root_directory = class_._get_repository_root_directory(
+                    session,
+                    path,
+                    )
+                path = os.path.join(root_directory, path)
+                paths.append(path)
+        return paths
 
     def _get_commands(self):
         result = []

@@ -18,5 +18,8 @@ def test_PackageManager__get_repository_root_directory_01():
         session=abjad_ide._session,
         )
 
-    repository_root_directory = manager._get_repository_root_directory()
+    repository_root_directory = manager._get_repository_root_directory(
+        manager._session,
+        manager._path,
+        )
     assert repository_root_directory == configuration.abjad_ide_root_directory

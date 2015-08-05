@@ -114,7 +114,10 @@ class PackageManager(Controller):
 
     @property
     def _repository_update_command(self):
-        root_directory = self._get_repository_root_directory()
+        root_directory = self._get_repository_root_directory(
+            self._session,
+            self._path,
+            )
         command = 'git pull {}'
         command = command.format(root_directory)
         return command
@@ -132,23 +135,6 @@ class PackageManager(Controller):
         return result
 
     ### PRIVATE METHODS ###
-
-    @classmethod
-    def _add_metadatum(
-        class_,
-        session,
-        metadata_py_path,
-        metadatum_name, 
-        metadatum_value,
-        ):
-        assert ' ' not in metadatum_name, repr(metadatum_name)
-        metadata = class_._get_metadata(
-            session,
-            metadata_py_path,
-            )
-        metadata[metadatum_name] = metadatum_value
-        with session._io_manager._silent(session):
-            class_._write_metadata_py(metadata_py_path, metadata)
 
     def _configure_as_material_package_manager(self):
         self._basic_breadcrumb = 'MATERIALS'
@@ -246,22 +232,6 @@ class PackageManager(Controller):
             messages.append(message)
         return messages
 
-    def _get_added_asset_paths(self):
-        paths = []
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
-            )
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith('A'):
-                path = line.strip('A')
-                path = path.strip()
-                root_directory = self._get_repository_root_directory()
-                path = os.path.join(root_directory, path)
-                paths.append(path)
-        return paths
-
     def _get_current_directory(self):
         return self._path
 
@@ -318,7 +288,10 @@ class PackageManager(Controller):
                 if line.startswith(('M', ' M')):
                     path = line.strip('M ')
                     path = path.strip()
-                    root_directory = self._get_repository_root_directory()
+                    root_directory = self._get_repository_root_directory(
+                        self._session,
+                        self._path,
+                        )
                     path = os.path.join(root_directory, path)
                     paths.append(path)
         else:
@@ -352,15 +325,13 @@ class PackageManager(Controller):
         previous_manager = managers[previous_manager_index]
         return previous_manager
 
-    def _get_repository_root_directory(self):
-        if self._is_in_git_repository():
-            command = 'git rev-parse --show-toplevel'
-            with systemtools.TemporaryDirectoryChange(directory=self._path):
-                process = self._session._io_manager.make_subprocess(command)
-            line = self._session._io_manager._read_one_line_from_pipe(process.stdout)
-            return line
-        else:
-            raise ValueError(self)
+    @staticmethod
+    def _get_repository_root_directory(session, path):
+        command = 'git rev-parse --show-toplevel'
+        with systemtools.TemporaryDirectoryChange(directory=path):
+            process = session._io_manager.make_subprocess(command)
+        line = session._io_manager._read_one_line_from_pipe(process.stdout)
+        return line
 
     def _get_score_initializer_file_lines(self, missing_file):
         lines = []
@@ -404,7 +375,10 @@ class PackageManager(Controller):
     def _get_unadded_asset_paths(self):
         paths = []
         if self._is_in_git_repository():
-            root_directory = self._get_repository_root_directory()
+            root_directory = self._get_repository_root_directory(
+                self._session,
+                self._path,
+                )
             git_status_lines = self._get_git_status_lines(
                 self._session,
                 self._path,
