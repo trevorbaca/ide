@@ -820,6 +820,36 @@ class Controller(object):
             return True
         return False
 
+    @classmethod
+    def _is_git_versioned(class_, session, path):
+        if not class_._is_in_git_repository(session, path):
+            return False
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        git_status_lines = git_status_lines or ['']
+        first_line = git_status_lines[0]
+        if first_line.startswith('?'):
+            return False
+        return True
+
+    @classmethod
+    def _is_in_git_repository(class_, session, path):
+        if path is None:
+            return False
+        if not os.path.exists(path):
+            return False
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        git_status_lines = git_status_lines or ['']
+        first_line = git_status_lines[0]
+        if first_line.startswith('fatal:'):
+            return False
+        return True
+
     def _is_in_score_directory(self):
         current_directory = self._get_current_directory()
         if current_directory is None:
@@ -836,6 +866,16 @@ class Controller(object):
         if grandparent_directory_parts == scores_directory_parts:
             return True
         return False
+
+    @classmethod
+    def _is_up_to_date(class_, session, path):
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        git_status_lines = git_status_lines or ['']
+        first_line = git_status_lines[0]
+        return first_line == ''
 
     def _is_valid_directory_entry(self, directory_entry):
         if directory_entry[0].isalpha():

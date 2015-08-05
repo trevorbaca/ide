@@ -12,7 +12,7 @@ def test_PackageManager__get_unadded_asset_paths_01():
         )
     temporary_file = os.path.join(manager._path, 'test_temporary.txt')
 
-    assert manager._is_up_to_date()
+    assert manager._is_up_to_date(manager._session, manager._path)
     assert manager._get_unadded_asset_paths() == []
     assert not os.path.exists(temporary_file)
     with systemtools.FilesystemState(remove=[temporary_file]):

@@ -214,45 +214,6 @@ class PackageManager(Controller):
                 paths.append(path)
         return paths
 
-    @classmethod
-    def _is_git_versioned(class_, session, path):
-        if not class_._is_in_git_repository(session, path):
-            return False
-        git_status_lines = class_._get_git_status_lines(
-            session,
-            path,
-            )
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('?'):
-            return False
-        return True
-
-    @classmethod
-    def _is_in_git_repository(class_, session, path):
-        if path is None:
-            return False
-        if not os.path.exists(path):
-            return False
-        git_status_lines = class_._get_git_status_lines(
-            session,
-            path,
-            )
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('fatal:'):
-            return False
-        return True
-
-    def _is_up_to_date(self):
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
-            )
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        return first_line == ''
-
     def _list_visible_asset_paths(self):
         return [self._path]
 
@@ -429,7 +390,7 @@ class PackageManager(Controller):
         return asset_name
 
     def _test_add(self):
-        assert self._is_up_to_date()
+        assert self._is_up_to_date(self._session, self._path)
         path_1 = os.path.join(self._path, 'tmp_1.py')
         path_2 = os.path.join(self._path, 'tmp_2.py')
         with systemtools.FilesystemState(remove=[path_1, path_2]):
@@ -439,7 +400,7 @@ class PackageManager(Controller):
                 file_pointer.write('')
             assert os.path.exists(path_1)
             assert os.path.exists(path_2)
-            assert not self._is_up_to_date()
+            assert not self._is_up_to_date(self._session, self._path)
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
             with self._session._io_manager._silent(self._session):
@@ -450,11 +411,11 @@ class PackageManager(Controller):
                 self._unadd_added_assets()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
-        assert self._is_up_to_date()
+        assert self._is_up_to_date(self._session, self._path)
         return True
 
     def _test_revert(self):
-        assert self._is_up_to_date()
+        assert self._is_up_to_date(self._session, self._path)
         assert self._get_modified_asset_paths(self._session, self._path) == []
         file_name = self._find_first_file_name(self._path)
         if not file_name:
@@ -464,13 +425,13 @@ class PackageManager(Controller):
             with open(file_path, 'a') as file_pointer:
                 string = '# extra text appended during testing'
                 file_pointer.write(string)
-            assert not self._is_up_to_date()
+            assert not self._is_up_to_date(self._session, self._path)
             assert self._get_modified_asset_paths(
                 self._session, self._path) == [file_path]
             with self._session._io_manager._silent(self._session):
                 self.revert()
         assert self._get_modified_asset_paths(self._session, self._path) == []
-        assert self._is_up_to_date()
+        assert self._is_up_to_date(self._session, self._path)
         return True
 
     def _unadd_added_assets(self):
