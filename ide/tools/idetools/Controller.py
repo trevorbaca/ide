@@ -560,6 +560,26 @@ class Controller(object):
             result = result or '(untitled score)'
             return result
 
+    @classmethod
+    def _get_unadded_asset_paths(class_, session, path):
+        paths = []
+        root_directory = class_._get_repository_root_directory(
+            session,
+            path,
+            )
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith('?'):
+                path = line.strip('?')
+                path = path.strip()
+                path = os.path.join(root_directory, path)
+                paths.append(path)
+        return paths
+
     def _get_views_package_manager(self):
         path = configuration.abjad_ide_wrangler_views_directory
         return self._session._io_manager._make_package_manager(path)
@@ -568,7 +588,7 @@ class Controller(object):
         directory = self._get_current_directory()
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
-            inputs = self._get_unadded_asset_paths()
+            inputs = self._get_unadded_asset_paths(self._session, self._path)
             outputs = []
             if dry_run:
                 return inputs, outputs

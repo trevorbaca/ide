@@ -195,25 +195,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_unadded_asset_paths(self):
-        paths = []
-        root_directory = self._get_repository_root_directory(
-            self._session,
-            self._path,
-            )
-        git_status_lines = self._get_git_status_lines(
-            self._session,
-            self._path,
-            )
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith('?'):
-                path = line.strip('?')
-                path = path.strip()
-                path = os.path.join(root_directory, path)
-                paths.append(path)
-        return paths
-
     def _list_visible_asset_paths(self):
         return [self._path]
 
@@ -401,15 +382,18 @@ class PackageManager(Controller):
             assert os.path.exists(path_1)
             assert os.path.exists(path_2)
             assert not self._is_up_to_date(self._session, self._path)
-            assert self._get_unadded_asset_paths() == [path_1, path_2]
+            assert self._get_unadded_asset_paths(
+                self._session, self._path) == [path_1, path_2]
             assert self._get_added_asset_paths() == []
             with self._session._io_manager._silent(self._session):
                 self.add()
-            assert self._get_unadded_asset_paths() == []
+            assert self._get_unadded_asset_paths(
+                self._session, self._path) == []
             assert self._get_added_asset_paths() == [path_1, path_2]
             with self._session._io_manager._silent(self._session):
                 self._unadd_added_assets()
-            assert self._get_unadded_asset_paths() == [path_1, path_2]
+            assert self._get_unadded_asset_paths(
+                self._session, self._path) == [path_1, path_2]
             assert self._get_added_asset_paths() == []
         assert self._is_up_to_date(self._session, self._path)
         return True
