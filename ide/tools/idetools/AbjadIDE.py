@@ -74,10 +74,6 @@ class AbjadIDE(object):
         return wrangler
 
     @property
-    def _io_manager(self):
-        return self._session._io_manager
-
-    @property
     def _maker_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -141,7 +137,7 @@ class AbjadIDE(object):
         type(self).__init__(self, session=self._session)
         if input_:
             self._session._pending_input = input_
-        controller = self._io_manager._controller(
+        controller = self._session._io_manager._controller(
             controller=self,
             consume_local_backtrack=True,
             on_exit_callbacks=(self._session._clean_up,)
@@ -157,7 +153,7 @@ class AbjadIDE(object):
             paths_to_keep = []
             paths_to_keep.append(wrangler_views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
-        interaction = self._io_manager._make_interaction(self, task=False)
+        interaction = self._session._io_manager._make_interaction(self, task=False)
         with controller, directory_change, state, interaction:
             self._session._pending_redraw = True
             if self._session.is_test:
@@ -177,9 +173,9 @@ class AbjadIDE(object):
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:
                     if not self._session._transcript[-1][-1] == '':
-                        self._io_manager._display('')
+                        self._session._io_manager._display('')
                     if self._session._clear_terminal_after_quit:
-                        self._io_manager.clear_terminal()
+                        self._session._io_manager.clear_terminal()
                     return
 
     ### PUBLIC METHODS ###

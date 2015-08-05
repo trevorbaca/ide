@@ -118,12 +118,6 @@ class Menu(object):
             string = string.format(type(self).__name__, len(self))
         return string
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _io_manager(self):
-        return self._session._io_manager
-
     ### PRIVATE METHODS ###
 
     def _change_input_to_directive(self, input_):
@@ -194,11 +188,11 @@ class Menu(object):
         if current_score_directory and aliased_path:
             aliased_path = os.path.join(current_score_directory, aliased_path)
             if os.path.isfile(aliased_path):
-                self._io_manager.open_file(aliased_path)
+                self._session._io_manager.open_file(aliased_path)
             else:
                 message = 'file does not exist: {}.'
                 message = message.format(aliased_path)
-                self._io_manager._display(message)
+                self._session._io_manager._display(message)
             return 'user entered alias'
 
     def _enclose_in_list(self, expr):
@@ -218,7 +212,7 @@ class Menu(object):
         new_lines = []
         current_annotation = ''
         pattern = re.compile('(.*)(\s+)\((.+)\)')
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         for line in lines:
             line = line.replace('', '')
             match = pattern.match(line)
@@ -252,7 +246,7 @@ class Menu(object):
         return result
 
     def _handle_user_input(self):
-        input_ = self._io_manager._handle_input(
+        input_ = self._session._io_manager._handle_input(
             '', 
             prompt_character=self.prompt_character,
             )
@@ -290,7 +284,7 @@ class Menu(object):
         elif directive is None and not user_entered_lone_return:
             message = 'unknown command: {!r}.'
             message = message.format(input_)
-            self._io_manager._display([message, ''])
+            self._session._io_manager._display([message, ''])
             result = None
             if (self._session.is_test and 
                 not self._session._allow_unknown_command_during_test):
@@ -456,7 +450,7 @@ class Menu(object):
                 found_one = True
                 key = menu_entry.key
                 display_string = menu_entry.display_string
-                menu_line = self._io_manager._tab
+                menu_line = self._session._io_manager._tab
                 menu_line += '{} ({})'.format(display_string, key)
                 lines.append(menu_line)
             if found_one:
@@ -550,14 +544,14 @@ class Menu(object):
 
     def _redraw(self):
         self._session._pending_redraw = False
-        self._io_manager.clear_terminal()
+        self._session._io_manager.clear_terminal()
         if self._session.display_command_help:
             command_type = self._session.display_command_help
             lines = self._make_help_lines(command_type=command_type)
             self._session._display_command_help = None
         else:
             lines = self._make_lines()
-        self._io_manager._display(lines, capitalize=False, is_menu=True)
+        self._session._io_manager._display(lines, capitalize=False, is_menu=True)
 
     def _return_value_to_location_pair(self, return_value):
         for i, section in enumerate(self.menu_sections):
@@ -566,13 +560,13 @@ class Menu(object):
                 return i, j
 
     def _run(self):
-        with self._io_manager._controller(controller=self):
+        with self._session._io_manager._controller(controller=self):
             while True:
                 if self._session.pending_redraw:
                     self._redraw()
                     message = self._session._after_redraw_message
                     if message:
-                        self._io_manager._display(message)
+                        self._session._io_manager._display(message)
                         self._session._after_redraw_message = None
                 result = None
                 if not result:

@@ -57,7 +57,7 @@ class Interaction(ContextManager):
             if self.task:
                 if 0 < len(self._controller._session._transcript.entries):
                     if not self._controller._session._transcript[-1][-1] == '':
-                        self.controller._io_manager._display('')
+                        self.controller._session._io_manager._display('')
         self._controller._session._confirm = self._original_confirm
         self._controller._session._display = self._original_display
 

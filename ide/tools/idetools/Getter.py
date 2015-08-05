@@ -82,10 +82,6 @@ class Getter(object):
     def _current_prompt(self):
         return self.prompts[self._prompt_index]
 
-    @property
-    def _io_manager(self):
-        return self._session._io_manager
-
     ### PRIVATE METHODS ###
 
     def _evaluate_input(self, input_, namespace):
@@ -179,7 +175,7 @@ class Getter(object):
             message = self._messages[-1]
             message = self._indent_and_number_message(message)
             include_chevron = self._current_prompt.include_chevron
-            input_ = self._io_manager._handle_input(
+            input_ = self._session._io_manager._handle_input(
                 message,
                 include_chevron=include_chevron,
                 include_newline=self.include_newlines,
@@ -216,7 +212,7 @@ class Getter(object):
             elif isinstance(directive, str):
                 self._evaluate_input(directive, namespace)
             else:
-                self._io_manager._display_not_yet_implemented()
+                self._session._io_manager._display_not_yet_implemented()
 
     def _present_prompts(self, include_chevron=True):
         self._prompt_index = 0
@@ -228,7 +224,7 @@ class Getter(object):
             self._present_prompt(include_chevron=include_chevron)
 
     def _run(self, clear_terminal=False, title=False):
-        with self._io_manager._controller(
+        with self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             is_in_confirmation_environment=True,
@@ -484,7 +480,7 @@ class Getter(object):
         lines = []
         lines.append(self._current_prompt.help_string)
         lines.append('')
-        self._io_manager._display(lines)
+        self._session._io_manager._display(lines)
 
     @staticmethod
     def is_boolean(expr):

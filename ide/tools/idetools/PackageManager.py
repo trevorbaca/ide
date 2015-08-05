@@ -121,7 +121,7 @@ class PackageManager(Controller):
 
     @property
     def _shell_remove_command(self):
-        if self._io_manager.find_executable('trash'):
+        if self._session._io_manager.find_executable('trash'):
             return 'trash'
         return 'rm'
 
@@ -137,7 +137,7 @@ class PackageManager(Controller):
         assert ' ' not in metadatum_name, repr(metadatum_name)
         metadata = self._get_metadata()
         metadata[metadatum_name] = metadatum_value
-        with self._io_manager._silent(self):
+        with self._session._io_manager._silent(self):
             self._write_metadata_py(metadata)
 
     def _configure_as_material_package_manager(self):
@@ -240,7 +240,7 @@ class PackageManager(Controller):
         ):
         messages = []
         if paths:
-            tab = self._io_manager._tab
+            tab = self._session._io_manager._tab
             count = len(paths)
             identifier = stringtools.pluralize(identifier, count)
             message = '{} {} {}:'
@@ -269,7 +269,7 @@ class PackageManager(Controller):
         message = message.format(
             numerator, denominator, identifier, participal)
         messages.append(message)
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         for path in sorted(found_paths):
             message = tab + path
             messages.append(message)
@@ -313,8 +313,8 @@ class PackageManager(Controller):
         command = 'git status --porcelain {}'
         command = command.format(self._path)
         with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._io_manager.make_subprocess(command)
-        stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+            process = self._session._io_manager.make_subprocess(command)
+        stdout_lines = self._session._io_manager._read_from_pipe(process.stdout)
         stdout_lines = stdout_lines.splitlines()
         return stdout_lines
 
@@ -378,8 +378,8 @@ class PackageManager(Controller):
         if self._is_in_git_repository():
             command = 'git rev-parse --show-toplevel'
             with systemtools.TemporaryDirectoryChange(directory=self._path):
-                process = self._io_manager.make_subprocess(command)
-            line = self._io_manager._read_one_line_from_pipe(process.stdout)
+                process = self._session._io_manager.make_subprocess(command)
+            line = self._session._io_manager._read_one_line_from_pipe(process.stdout)
             return line
         else:
             raise ValueError(self)
@@ -565,7 +565,7 @@ class PackageManager(Controller):
     def _make_package(self):
         assert not os.path.exists(self._path)
         os.mkdir(self._path)
-        with self._io_manager._silent(self):
+        with self._session._io_manager._silent(self):
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
@@ -609,8 +609,8 @@ class PackageManager(Controller):
         path = os.path.sep.join(parts)
         message = '{} will be removed.'
         message = message.format(path)
-        self._io_manager._display(message)
-        getter = self._io_manager._make_getter()
+        self._session._io_manager._display(message)
+        getter = self._session._io_manager._make_getter()
         getter.append_string("type 'remove' to proceed")
         if self._session.confirm:
             result = getter._run()
@@ -627,8 +627,8 @@ class PackageManager(Controller):
             command = 'rm -rf {}'
         command = command.format(path)
         with systemtools.TemporaryDirectoryChange(directory=path):
-            process = self._io_manager.make_subprocess(command)
-        self._io_manager._read_one_line_from_pipe(process.stdout)
+            process = self._session._io_manager.make_subprocess(command)
+        self._session._io_manager._read_one_line_from_pipe(process.stdout)
         return True
 
     def _remove_metadatum(self, metadatum_name):
@@ -640,7 +640,7 @@ class PackageManager(Controller):
         except KeyError:
             pass
         if was_removed:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._write_metadata_py(metadata)
 
     def _rename(self, new_path):
@@ -653,8 +653,8 @@ class PackageManager(Controller):
             command = 'mv {} {}'
         command = command.format(self._path, new_path)
         with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._io_manager.make_subprocess(command)
-        self._io_manager._read_from_pipe(process.stdout)
+            process = self._session._io_manager.make_subprocess(command)
+        self._session._io_manager._read_from_pipe(process.stdout)
         self._path = new_path
 
     def _rename_interactively(
@@ -665,8 +665,8 @@ class PackageManager(Controller):
         ):
         base_name = os.path.basename(self._path)
         line = 'current name: {}'.format(base_name)
-        self._io_manager._display(line)
-        getter = self._io_manager._make_getter()
+        self._session._io_manager._display(line)
+        getter = self._session._io_manager._make_getter()
         getter.append_string('new name')
         new_package_name = getter._run()
         if self._session.is_backtracking or new_package_name is None:
@@ -684,8 +684,8 @@ class PackageManager(Controller):
         lines.append(line)
         line = 'new name:     {}'.format(new_package_name)
         lines.append(line)
-        self._io_manager._display(lines)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(lines)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         new_directory = os.path.join(
@@ -695,7 +695,7 @@ class PackageManager(Controller):
         if os.path.exists(new_directory):
             message = 'path already exists: {!r}.'
             message = message.format(new_directory)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         shutil.move(self._path, new_directory)
         # update path name to reflect change
@@ -703,7 +703,7 @@ class PackageManager(Controller):
         self._session._is_backtracking_locally = True
 
     def _run(self):
-        controller = self._io_manager._controller(
+        controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             )
@@ -746,11 +746,11 @@ class PackageManager(Controller):
             assert not self._is_up_to_date()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self.add()
             assert self._get_unadded_asset_paths() == []
             assert self._get_added_asset_paths() == [path_1, path_2]
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._unadd_added_assets()
             assert self._get_unadded_asset_paths() == [path_1, path_2]
             assert self._get_added_asset_paths() == []
@@ -770,7 +770,7 @@ class PackageManager(Controller):
                 file_pointer.write(string)
             assert not self._is_up_to_date()
             assert self._get_modified_asset_paths() == [file_path]
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self.revert()
         assert self._get_modified_asset_paths() == []
         assert self._is_up_to_date()
@@ -789,7 +789,7 @@ class PackageManager(Controller):
             raise ValueError(self)
         command = ' && '.join(commands)
         with systemtools.TemporaryDirectoryChange(directory=self._path):
-            self._io_manager.spawn_subprocess(command)
+            self._session._io_manager.spawn_subprocess(command)
 
     def _update_order_dependent_segment_metadata(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
@@ -828,22 +828,22 @@ class PackageManager(Controller):
         if not os.path.isfile(self._definition_py_path):
             message = 'File not found: {}.'
             message = message.format(self._definition_py_path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         inputs, outputs = [], []
         if dry_run:
             inputs.append(self._definition_py_path)
             return inputs, outputs
-        with self._io_manager._silent(self):
-            stdout_lines, stderr_lines = self._io_manager.interpret_file(
+        with self._session._io_manager._silent(self):
+            stdout_lines, stderr_lines = self._session._io_manager.interpret_file(
                 self._definition_py_path)
         if stderr_lines:
             messages = [self._definition_py_path + ' FAILED:']
             messages.extend('    ' + _ for _ in stderr_lines)
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
         else:
             message = '{} OK.'.format(self._definition_py_path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
 
     @Command(
         'ck', 
@@ -863,11 +863,11 @@ class PackageManager(Controller):
         '''
         if problems_only is None:
             prompt = 'show problem assets only?'
-            result = self._io_manager._confirm(prompt)
+            result = self._session._io_manager._confirm(prompt)
             if self._session.is_backtracking or result is None:
                 return
             problems_only = bool(result)
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         optional_directories, optional_files = [], []
         missing_directories, missing_files = [], []
         required_directories, required_files = [], []
@@ -978,7 +978,7 @@ class PackageManager(Controller):
             participal='found',
             )
         messages.extend(messages_)
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         messages = [tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(self._path)
         found_problems = (
@@ -1001,15 +1001,15 @@ class PackageManager(Controller):
             message = '{} OK'.format(message)
         messages.insert(0, message)
         if wranglers:
-            controller = self._io_manager._controller(
+            controller = self._session._io_manager._controller(
                 controller=self,
                 current_score_directory=self._path,
                 )
-            silence = self._io_manager._silent(self)
+            silence = self._session._io_manager._silent(self)
             with controller, silence:
-                tab = self._io_manager._tab
+                tab = self._session._io_manager._tab
                 for wrangler in wranglers:
-                    self._io_manager._display(repr(wrangler))
+                    self._session._io_manager._display(repr(wrangler))
                     if wrangler._asset_identifier == 'file':
                         result = wrangler._check_every_file()
                     else:
@@ -1028,7 +1028,7 @@ class PackageManager(Controller):
         if return_messages:
             return messages, missing_directories, missing_files
         else:
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
         if not missing_directories + missing_files:
             return messages, missing_directories, missing_files
         if supply_missing is None:
@@ -1044,7 +1044,7 @@ class PackageManager(Controller):
                 prompt = 'supply missing {}?'.format(files)
             else:
                 raise ValueError
-            result = self._io_manager._confirm(prompt)
+            result = self._session._io_manager._confirm(prompt)
             if self._session.is_backtracking or result is None:
                 return
             supply_missing = bool(result)
@@ -1105,7 +1105,7 @@ class PackageManager(Controller):
         if return_supply_messages:
             return messages, supplied_directories, supplied_files
         else:
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
     @Command(
@@ -1119,7 +1119,7 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._io_manager.edit(self._definition_py_path)
+        self._session._io_manager.edit(self._definition_py_path)
 
     @Command(
         'le', 
@@ -1133,7 +1133,7 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._io_manager.edit(self._illustrate_py_path)
+        self._session._io_manager.edit(self._illustrate_py_path)
 
     @Command(
         'ie', 
@@ -1146,7 +1146,7 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._io_manager.open_file(self._illustration_ly_path)
+        self._session._io_manager.open_file(self._illustration_ly_path)
 
     @Command(
         'i', 
@@ -1165,7 +1165,7 @@ class PackageManager(Controller):
         if not os.path.isfile(self._definition_py_path):
             message = 'File not found: {}.'
             message = message.format(self._definition_py_path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         self._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
@@ -1223,9 +1223,9 @@ class PackageManager(Controller):
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 start_time = time.time()
-                result = self._io_manager.interpret_file(
+                result = self._session._io_manager.interpret_file(
                     illustrate_path,
                     strip=False,
                     )
@@ -1233,22 +1233,22 @@ class PackageManager(Controller):
                 total_time = stop_time - start_time
             stdout_lines, stderr_lines = result
             if stderr_lines:
-                self._io_manager._display_errors(stderr_lines)
+                self._session._io_manager._display_errors(stderr_lines)
                 return
             message = 'total time: {} seconds.'
             message = message.format(int(total_time))
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             if not os.path.exists(illustration_pdf_path):
                 messages = []
                 messages.append('Wrote ...')
-                tab = self._io_manager._tab
+                tab = self._session._io_manager._tab
                 if os.path.exists(candidate_ly_path):
                     shutil.move(candidate_ly_path, illustration_ly_path)
                     messages.append(tab + illustration_ly_path)
                 if os.path.exists(candidate_pdf_path):
                     shutil.move(candidate_pdf_path, illustration_pdf_path)
                     messages.append(tab + illustration_pdf_path)
-                self._io_manager._display(messages)
+                self._session._io_manager._display(messages)
             else:
                 result = systemtools.TestManager.compare_files(
                 candidate_pdf_path,
@@ -1256,14 +1256,14 @@ class PackageManager(Controller):
                 )
                 messages = self._make_candidate_messages(
                     result, candidate_pdf_path, illustration_pdf_path)
-                self._io_manager._display(messages)
+                self._session._io_manager._display(messages)
                 if result:
                     message = 'preserved {}.'.format(illustration_pdf_path)
-                    self._io_manager._display(message)
+                    self._session._io_manager._display(message)
                     return
                 else:
                     message = 'overwrite existing PDF with candidate PDF?'
-                    result = self._io_manager._confirm(message=message)
+                    result = self._session._io_manager._confirm(message=message)
                     if self._session.is_backtracking or not result:
                         return
                     try:
@@ -1298,14 +1298,14 @@ class PackageManager(Controller):
         if not os.path.isfile(self._illustration_ly_path):
             message = 'The file {} does not exist.'
             message = message.format(self._illustration_ly_path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return [], []
         messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return [], []
-        result = self._io_manager.run_lilypond(self._illustration_ly_path)
+        result = self._session._io_manager.run_lilypond(self._illustration_ly_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 
@@ -1320,7 +1320,7 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._io_manager.open_file(self._illustration_pdf_path)
+        self._session._io_manager.open_file(self._illustration_pdf_path)
 
     @Command(
         'so', 
@@ -1333,14 +1333,14 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        with self._io_manager._make_interaction(self, dry_run=dry_run):
+        with self._session._io_manager._make_interaction(self, dry_run=dry_run):
             file_name = 'score.pdf'
             directory = os.path.join(self._path, 'distribution')
-            manager = self._io_manager._make_package_manager(directory)
+            manager = self._session._io_manager._make_package_manager(directory)
             path = manager._get_file_path_ending_with(file_name)
             if not path:
                 directory = os.path.join(self._path, 'build')
-                manager = self._io_manager._make_package_manager(directory)
+                manager = self._session._io_manager._make_package_manager(directory)
                 path = manager._get_file_path_ending_with(file_name)
             if dry_run:
                 inputs, outputs = [], []
@@ -1348,11 +1348,11 @@ class PackageManager(Controller):
                     inputs = [path]
                 return inputs, outputs
             if path:
-                self._io_manager.open_file(path)
+                self._session._io_manager.open_file(path)
             else:
                 message = "no score.pdf file found"
                 message += ' in either distribution/ or build/ directories.'
-                self._io_manager._display(message)
+                self._session._io_manager._display(message)
 
     @Command(
         'ls', 
@@ -1368,8 +1368,8 @@ class PackageManager(Controller):
         '''
         message = 'will write stub to {}.'
         message = message.format(self._illustrate_py_path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(message)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         lines = []
@@ -1392,4 +1392,4 @@ class PackageManager(Controller):
             file_pointer.write(contents)
         message = 'wrote stub to {}.'
         message = message.format(self._illustrate_py_path)
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)

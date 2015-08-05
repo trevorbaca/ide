@@ -49,12 +49,6 @@ class Selector(object):
         '''
         return '{}()'.format(type(self).__name__)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _io_manager(self):
-        return self._session._io_manager
-
     ### PRIVATE METHODS ###
 
     def _make_asset_menu_section(self, menu):
@@ -75,7 +69,7 @@ class Selector(object):
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         subtitle = stringtools.capitalize_start(self.target_name)
-        menu = self._io_manager._make_menu(name=name, subtitle=subtitle)
+        menu = self._session._io_manager._make_menu(name=name, subtitle=subtitle)
         self._make_asset_menu_section(menu)
         return menu
 
@@ -83,7 +77,7 @@ class Selector(object):
         entries = []
         for item in self.items:
             entry = (
-                self._io_manager._get_one_line_menu_summary(item),
+                self._session._io_manager._get_one_line_menu_summary(item),
                 None,
                 None,
                 item,
@@ -92,7 +86,7 @@ class Selector(object):
         return entries
 
     def _run(self):
-        with self._io_manager._controller(
+        with self._session._io_manager._controller(
             clear_terminal=True,
             consume_local_backtrack=True,
             controller=self,

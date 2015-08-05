@@ -74,10 +74,6 @@ class Controller(object):
         return result
 
     @property
-    def _io_manager(self):
-        return self._session._io_manager
-
-    @property
     def _unicode_directive(self):
         return '# -*- encoding: utf-8 -*-'
 
@@ -215,7 +211,7 @@ class Controller(object):
             with open(self._metadata_py_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
             try:
-                result = self._io_manager.execute_string(
+                result = self._session._io_manager.execute_string(
                     file_contents_string,
                     attribute_names=('metadata',),
                     )
@@ -223,7 +219,7 @@ class Controller(object):
             except SyntaxError:
                 message = 'can not interpret metadata py: {!r}.'
                 message = message.format(self)
-                self._io_manager._display(message)
+                self._session._io_manager._display(message)
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
@@ -231,7 +227,7 @@ class Controller(object):
         score_path = self._path_to_score_path(self._path)
         if score_path is None:
             return datastructuretools.TypedOrderedDict()
-        score_package_manager = self._io_manager._make_package_manager(
+        score_package_manager = self._session._io_manager._make_package_manager(
             path=score_path)
         return score_package_manager._get_metadata()
 
@@ -263,7 +259,7 @@ class Controller(object):
 
     def _get_views_package_manager(self):
         path = configuration.abjad_ide_wrangler_views_directory
-        return self._io_manager._make_package_manager(path)
+        return self._session._io_manager._make_package_manager(path)
 
     def _git_add(self, dry_run=False):
         directory = self._get_current_directory()
@@ -275,19 +271,19 @@ class Controller(object):
                 return inputs, outputs
             if not inputs:
                 message = 'nothing to add.'
-                self._io_manager._display(message)
+                self._session._io_manager._display(message)
                 return
             messages = []
             messages.append('will add ...')
             for path in inputs:
                 messages.append(self._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
+            self._session._io_manager._display(messages)
+            result = self._session._io_manager._confirm()
             if self._session.is_backtracking or not result:
                 return
             command = self._repository_add_command
             assert isinstance(command, str)
-            self._io_manager.run_command(command)
+            self._session._io_manager.run_command(command)
 
     def _git_commit(self, commit_message=None):
         directory = self._get_current_directory()
@@ -297,21 +293,21 @@ class Controller(object):
             if self._session.is_repository_test:
                 return
             if commit_message is None:
-                getter = self._io_manager._make_getter()
+                getter = self._session._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run()
                 if self._session.is_backtracking or commit_message is None:
                     return
                 message = 'commit message will be: "{}"'
                 message = message.format(commit_message)
-                self._io_manager._display(message)
-                result = self._io_manager._confirm()
+                self._session._io_manager._display(message)
+                result = self._session._io_manager._confirm()
                 if self._session.is_backtracking or not result:
                     return
             message = self._get_score_package_directory_name()
             message = message + ' ...'
             command = self._make_repository_commit_command(commit_message)
-            self._io_manager.run_command(command, capitalize=False)
+            self._session._io_manager.run_command(command, capitalize=False)
 
     def _git_revert(self):
         directory = self._get_current_directory()
@@ -326,9 +322,9 @@ class Controller(object):
             messages = []
             messages.append('will revert ...')
             for path in paths:
-                messages.append(self._io_manager._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
+                messages.append(self._session._io_manager._tab + path)
+            self._session._io_manager._display(messages)
+            result = self._session._io_manager._confirm()
             if self._session.is_backtracking or not result:
                 return
             commands = []
@@ -341,7 +337,7 @@ class Controller(object):
             command = ' && '.join(commands)
             directory = self._get_current_directory()
             with systemtools.TemporaryDirectoryChange(directory=directory):
-                self._io_manager.spawn_subprocess(command)
+                self._session._io_manager.spawn_subprocess(command)
 
     def _git_status(self):
         directory = self._get_current_directory()
@@ -355,11 +351,11 @@ class Controller(object):
             messages.append(message)
             directory = self._get_current_directory()
             with systemtools.TemporaryDirectoryChange(directory=directory):
-                process = self._io_manager.make_subprocess(command)
+                process = self._session._io_manager.make_subprocess(command)
             path = directory
             path = path + os.path.sep
             clean_lines = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+            stdout_lines = self._session._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
                 clean_line = line.strip()
@@ -377,7 +373,7 @@ class Controller(object):
                 first_message = first_message + ' OK'
                 messages[0] = first_message
                 clean_lines.append(message)
-            self._io_manager._display(messages, capitalize=False)
+            self._session._io_manager._display(messages, capitalize=False)
 
     def _git_update(self, messages_only=False):
         messages = []
@@ -388,7 +384,7 @@ class Controller(object):
             if self._session.is_repository_test:
                 return messages
             command = self._repository_update_command
-            messages = self._io_manager.run_command(
+            messages = self._session._io_manager.run_command(
                 command,
                 messages_only=True,
                 )
@@ -398,7 +394,7 @@ class Controller(object):
             messages = messages[-1:]
         if messages_only:
             return messages
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
 
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
@@ -420,7 +416,7 @@ class Controller(object):
             candidate_path,
             destination_path,
             ):
-            tab = self._io_manager._tab
+            tab = self._session._io_manager._tab
             messages_ = self._make_candidate_messages(
                 True, candidate_path, destination_path)
             messages.extend(messages_)
@@ -430,29 +426,29 @@ class Controller(object):
             shutil.copyfile(candidate_path, destination_path)
             message = 'overwrote {}.'.format(destination_path)
             messages.append(message)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
 
     def _handle_input(self, result):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._io_manager._make_interaction(self):
+        with self._session._io_manager._make_interaction(self):
             if result.startswith('!'):
                 statement = result[1:]
-                self._io_manager._invoke_shell(statement)
+                self._session._io_manager._invoke_shell(statement)
             elif result in self._command_name_to_method:
                 self._command_name_to_method[result]()
             elif (result.endswith('!') and 
                 result[:-1] in self._command_name_to_method):
                 result = result[:-1]
-                with self._io_manager._make_interaction(self, confirm=False):
+                with self._session._io_manager._make_interaction(self, confirm=False):
                     self._command_name_to_method[result]()
             else:
                 self._handle_numeric_user_input(result)
 
     def _handle_numeric_user_input(self, result):
         if os.path.isfile(result):
-            self._io_manager.open_file(result)
+            self._session._io_manager.open_file(result)
         elif os.path.isdir(result):
             basename = os.path.basename(result)
             if basename == 'build':
@@ -536,7 +532,7 @@ class Controller(object):
 
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         messages.append('the files ...')
         messages.append(tab + candidate_path)
         messages.append(tab + incumbent_path)
@@ -602,7 +598,7 @@ class Controller(object):
 
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
-        menu = self._io_manager._make_menu(name=name)
+        menu = self._session._io_manager._make_menu(name=name)
         self._make_asset_menu_section(menu)
         self._make_command_menu_sections(menu)
         return menu
@@ -623,11 +619,11 @@ class Controller(object):
 
     def _open_file(self, path):
         if os.path.isfile(path):
-            self._io_manager.open_file(path)
+            self._session._io_manager.open_file(path)
         else:
             message = 'can not find file: {}.'
             message = message.format(path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
 
     def _path_to_annotation(self, path):
         score_storehouses = (
@@ -636,7 +632,7 @@ class Controller(object):
             )
         if path.startswith(score_storehouses):
             score_path = self._path_to_score_path(path)
-            manager = self._io_manager._make_package_manager(path=score_path)
+            manager = self._session._io_manager._make_package_manager(path=score_path)
             metadata = manager._get_metadata()
             if metadata:
                 year = metadata.get('year')
@@ -665,7 +661,7 @@ class Controller(object):
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
-            manager = self._io_manager._make_package_manager(path=path)
+            manager = self._session._io_manager._make_package_manager(path=path)
             name = manager._get_metadatum('name')
             asset_name = name or asset_name
         if self._session.is_in_score:
@@ -719,7 +715,7 @@ class Controller(object):
             return
         if not os.path.exists(self._views_py_path):
             return
-        result = self._io_manager.execute_file(
+        result = self._session._io_manager.execute_file(
             path=self._views_py_path,
             attribute_names=('view_inventory',),
             )
@@ -731,7 +727,7 @@ class Controller(object):
             messages.append('')
             message = '    {}'.format(self._views_py_path)
             messages.append(message)
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
             return
         if not result:
             return
@@ -824,9 +820,9 @@ class Controller(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        self._io_manager.write(self._views_py_path, contents)
+        self._session._io_manager.write(self._views_py_path, contents)
         message = 'view inventory written to disk.'
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)
 
     ### PUBLIC METHODS ###
 
@@ -858,7 +854,7 @@ class Controller(object):
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
-        self._io_manager.edit(path)
+        self._session._io_manager.edit(path)
 
     @Command('sty', section='global files', outside_score=False)
     def edit_score_stylesheet(self):
@@ -870,7 +866,7 @@ class Controller(object):
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
-        self._io_manager.edit(path)
+        self._session._io_manager.edit(path)
 
     @Command('b', description='back', section='back-home-quit')
     def go_back(self):
@@ -1089,13 +1085,13 @@ class Controller(object):
 
         Returns none.
         '''
-        statement = self._io_manager._handle_input(
+        statement = self._session._io_manager._handle_input(
             '$',
             include_chevron=False,
             include_newline=False,
             )
         statement = statement.strip()
-        self._io_manager._invoke_shell(statement)
+        self._session._io_manager._invoke_shell(statement)
 
     @Command('log', section='global files')
     def open_lilypond_log(self):

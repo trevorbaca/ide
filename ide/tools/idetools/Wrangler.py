@@ -91,7 +91,7 @@ class Wrangler(Controller):
         path = self._get_current_directory()
         if path is None:
             return
-        return self._io_manager._make_package_manager(path)
+        return self._session._io_manager._make_package_manager(path)
 
     @property
     def _current_storehouse_path(self):
@@ -121,11 +121,11 @@ class Wrangler(Controller):
     def _call_lilypond_on_file_ending_with(self, string):
         file_path = self._get_file_path_ending_with(string)
         if file_path:
-            self._io_manager.run_lilypond(file_path)
+            self._session._io_manager.run_lilypond(file_path)
         else:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             
     def _check_every_file(self):
         paths = self._list_asset_paths(valid_only=False)
@@ -152,13 +152,13 @@ class Wrangler(Controller):
             identifier = stringtools.pluralize(identifier, count)
             message = '{} unrecognized {} found:'
             message = message.format(count, identifier)
-            tab = self._io_manager._tab
+            tab = self._session._io_manager._tab
             message = tab + message
             messages.append(message)
             for invalid_path in invalid_paths:
                 message = tab + tab + invalid_path
                 messages.append(message)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
         missing_files, missing_directories = [], []
         return messages, missing_files, missing_directories
 
@@ -210,8 +210,8 @@ class Wrangler(Controller):
                 messages.append(message)
                 message = '   TO: {}'.format(target_file_path)
                 messages.append(message)
-            self._io_manager._display(messages)
-            if not self._io_manager._confirm():
+            self._session._io_manager._display(messages)
+            if not self._session._io_manager._confirm():
                 return
             if self._session.is_backtracking:
                 return
@@ -325,8 +325,8 @@ class Wrangler(Controller):
             message = 'no segments found:'
             message += ' will generate source without segments.'
             messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return False
         return segment_names
@@ -366,7 +366,7 @@ class Wrangler(Controller):
             elif not candidacy:
                 message = 'overwrite {}?'
                 message = message.format(destination_path)
-                result = self._io_manager._confirm(message)
+                result = self._session._io_manager._confirm(message)
                 if self._session.is_backtracking or not result:
                     return False
                 shutil.copyfile(candidate_path, destination_path)
@@ -388,17 +388,17 @@ class Wrangler(Controller):
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
                 messages.append(message)
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
             return True
 
     def _edit_file_ending_with(self, string):
         file_path = self._get_file_path_ending_with(string)
         if file_path:
-            self._io_manager.edit(file_path)
+            self._session._io_manager.edit(file_path)
         else:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
 
     def _extract_common_parent_directories(self, paths):
         parent_directories = []
@@ -474,7 +474,7 @@ class Wrangler(Controller):
         while True:
             default_prompt = 'enter {} name'.format(self._asset_identifier)
             message = message or default_prompt
-            getter = self._io_manager._make_getter()
+            getter = self._session._io_manager._make_getter()
             getter.append_string(message)
             name = getter._run()
             if self._session.is_backtracking or not name:
@@ -489,7 +489,7 @@ class Wrangler(Controller):
             if os.path.exists(path):
                 line = 'path already exists: {!r}.'
                 line = line.format(path)
-                self._io_manager._display(line)
+                self._session._io_manager._display(line)
             else:
                 return path
 
@@ -579,7 +579,7 @@ class Wrangler(Controller):
         if not file_path:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         input_directory = os.path.dirname(file_path)
         output_directory = input_directory
@@ -601,7 +601,7 @@ class Wrangler(Controller):
         filesystem = systemtools.FilesystemState(remove=[candidate_path])
         directory = systemtools.TemporaryDirectoryChange(input_directory)
         with filesystem, directory:
-            self._io_manager.spawn_subprocess(command_called_twice)
+            self._session._io_manager.spawn_subprocess(command_called_twice)
             for file_name in glob.glob('*.aux'):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
@@ -634,7 +634,7 @@ class Wrangler(Controller):
     def _list(self, public_entries_only=False):
         result = []
         path = self._get_current_directory()
-        result = self._io_manager._list_directory(
+        result = self._session._io_manager._list_directory(
             path, 
             public_entries_only=public_entries_only,
             )
@@ -766,14 +766,14 @@ class Wrangler(Controller):
             asset_name,
             )
         manager = self._get_manager(path)
-        with self._io_manager._silent(self):
+        with self._session._io_manager._silent(self):
             manager.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
                 )
         paths = self._list_visible_asset_paths()
         if path not in paths:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._clear_view()
         self._session._pending_redraw = True
 
@@ -845,7 +845,7 @@ class Wrangler(Controller):
             return 'select {}:'.format(self._asset_identifier)
 
     def _make_asset_selection_menu(self):
-        menu = self._io_manager._make_menu(name='asset selection')
+        menu = self._session._io_manager._make_menu(name='asset selection')
         menu_entries = self._make_asset_menu_entries()
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
@@ -861,7 +861,7 @@ class Wrangler(Controller):
             path = self._select_storehouse_path()
             if self._session.is_backtracking or path is None:
                 return
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         getter.append_string(message)
         name = getter._run()
         if self._session.is_backtracking or name is None:
@@ -875,8 +875,8 @@ class Wrangler(Controller):
         if not name.endswith(file_extension):
             name = name + file_extension
         path = os.path.join(path, name)
-        self._io_manager.write(path, contents)
-        self._io_manager.edit(path)
+        self._session._io_manager.write(path, contents)
+        self._session._io_manager.edit(path)
 
     def _make_package(self):
         if self._session.is_in_score:
@@ -892,21 +892,21 @@ class Wrangler(Controller):
         if self._session.is_backtracking or not path:
             return
         message = 'path will be {}.'.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(message)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         manager = self._get_manager(path)
         manager._make_package()
         paths = self._list_visible_asset_paths()
         if path not in paths:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._clear_view()
         manager._run()
 
     def _make_score_package(self):
         message = 'enter title'
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         getter.append_string(message)
         title = getter._run()
         if self._session.is_backtracking or not title:
@@ -920,15 +920,15 @@ class Wrangler(Controller):
                 package_name,
                 )
             message = 'path will be {}.'.format(package_path)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
+            self._session._io_manager._display(message)
+            result = self._session._io_manager._confirm()
             if self._session.is_backtracking:
                 return
             confirmed = result
             if confirmed:
                 break
             message = 'enter package name'
-            getter = self._io_manager._make_getter()
+            getter = self._session._io_manager._make_getter()
             getter.append_string(message)
             package_name = getter._run()
             if self._session.is_backtracking or not package_name:
@@ -942,7 +942,7 @@ class Wrangler(Controller):
         manager._add_metadatum('year', year)
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._clear_view()
         manager._run()
 
@@ -984,7 +984,7 @@ class Wrangler(Controller):
 
     def _match_metadata_view_pattern(self, pattern, entry):
         display_string, _, _, path = entry
-        manager = self._io_manager._make_package_manager(path)
+        manager = self._session._io_manager._make_package_manager(path)
         count = pattern.count('md:')
         for _ in range(count+1):
             parts = pattern.split()
@@ -1019,11 +1019,11 @@ class Wrangler(Controller):
     def _open_file_ending_with(self, string):
         path = self._get_file_path_ending_with(string)
         if path:
-            self._io_manager.open_file(path)
+            self._session._io_manager.open_file(path)
         else:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
 
     def _open_in_every_package(self, file_name, verb='open'):
         paths = []
@@ -1034,7 +1034,7 @@ class Wrangler(Controller):
         if not paths:
             message = 'no {} files found.'
             message = message.format(file_name)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         messages = []
         message = 'will {} ...'.format(verb)
@@ -1042,11 +1042,11 @@ class Wrangler(Controller):
         for path in paths:
             message = '   ' + path
             messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
-        self._io_manager.open_file(paths)
+        self._session._io_manager.open_file(paths)
 
     def _path_to_package(self, path):
         if path is None:
@@ -1100,7 +1100,7 @@ class Wrangler(Controller):
         return storehouse_path
 
     def _run(self):
-        controller = self._io_manager._controller(
+        controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             on_enter_callbacks=(self._enter_run,),
@@ -1145,7 +1145,7 @@ class Wrangler(Controller):
             example_score_packages=example_score_packages,
             user_score_packages=False,
             )
-        selector = self._io_manager._make_selector(
+        selector = self._session._io_manager._make_selector(
             menu_entries=menu_entries,
             target_name='storehouse',
             )
@@ -1159,7 +1159,7 @@ class Wrangler(Controller):
         view_inventory = self._read_view_inventory()
         if view_inventory is None:
             message = 'no views found.'
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         view_names = list(view_inventory.keys())
         view_names.append('none')
@@ -1169,7 +1169,7 @@ class Wrangler(Controller):
             target_name = 'view'
         if infinitive_phrase:
             target_name = '{} {}'.format(target_name, infinitive_phrase)
-        selector = self._io_manager._make_selector(
+        selector = self._session._io_manager._make_selector(
             target_name=target_name,
             is_ranged=is_ranged,
             items=view_names,
@@ -1180,12 +1180,12 @@ class Wrangler(Controller):
         return result
 
     def _select_visible_asset_path(self, infinitive_phrase=None):
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         message = 'enter {}'.format(self._asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
         if hasattr(self, '_make_asset_menu_section'):
-            dummy_menu = self._io_manager._make_menu()
+            dummy_menu = self._session._io_manager._make_menu()
             self._make_asset_menu_section(dummy_menu)
             asset_section = dummy_menu._asset_section
         else:
@@ -1207,7 +1207,7 @@ class Wrangler(Controller):
         return path
 
     def _select_visible_asset_paths(self):
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         message = 'enter {}(s) to remove'
         message = message.format(self._asset_identifier)
         menu = self._make_asset_selection_menu()
@@ -1237,19 +1237,19 @@ class Wrangler(Controller):
         from ide.tools import idetools
         if not os.path.exists(self._views_py_path):
             view_inventory = idetools.ViewInventory()
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._write_view_inventory(view_inventory)
         if not os.path.exists(self._metadata_py_path):
             metadata = self._get_metadata()
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 self._write_metadata_py(metadata)
         if self._session.is_test:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 for wrangler in self._session._abjad_ide._wranglers:
                     if not os.path.exists(wrangler._views_py_path):
                         wrangler.write_views_py()
         else:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 for wrangler in self._session._abjad_ide._wranglers:
                     view_inventory = idetools.ViewInventory()
                     wrangler._write_view_inventory(view_inventory)
@@ -1329,8 +1329,8 @@ class Wrangler(Controller):
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='check')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         start_time = time.time()
@@ -1342,7 +1342,7 @@ class Wrangler(Controller):
         total_time = int(total_time)
         message = 'total time: {} seconds.'
         message = message.format(total_time)
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)
 
     @Command('ck*', section='star', in_score=False, outside_score='home')
     def check_every_package(
@@ -1358,17 +1358,17 @@ class Wrangler(Controller):
         messages = []
         missing_directories, missing_files = [], []
         supplied_directories, supplied_files = [], []
-        tab = indent * self._io_manager._tab
+        tab = indent * self._session._io_manager._tab
         if problems_only is None:
             prompt = 'show problem assets only?'
-            result = self._io_manager._confirm(prompt)
+            result = self._session._io_manager._confirm(prompt)
             if self._session.is_backtracking or result is None:
                 return messages, missing_directories, missing_files
             problems_only = bool(result)
         managers = self._list_visible_asset_managers()
         found_problem = False
         for manager in managers:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 result = manager.check_package(
                     return_messages=True,
                     problems_only=problems_only,
@@ -1394,12 +1394,12 @@ class Wrangler(Controller):
             if not found_problems:
                 message = '{} OK'.format(message)
             messages.insert(0, message)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
         if not found_problem:
             return messages, missing_directories, missing_files
         if supply_missing is None:
             prompt = 'supply missing directories and files?'
-            result = self._io_manager._confirm(prompt)
+            result = self._session._io_manager._confirm(prompt)
             if self._session.is_backtracking or result is None:
                 return messages, missing_directories, missing_files
             supply_missing = bool(result)
@@ -1407,7 +1407,7 @@ class Wrangler(Controller):
             return messages, missing_directories, missing_files
         messages = []
         for manager in managers:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 result = manager.check_package(
                     return_supply_messages=True,
                     supply_missing=True,
@@ -1418,7 +1418,7 @@ class Wrangler(Controller):
             if messages_:
                 messages_ = [tab + tab + _ for _ in messages_]
                 messages.extend(messages_)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
     @Command(
@@ -1452,7 +1452,7 @@ class Wrangler(Controller):
                 shutil.copyfile(source_file_path, candidate_file_path)
                 self._trim_lilypond_file(candidate_file_path)
                 self._handle_candidate(candidate_file_path, target_file_path)
-                self._io_manager._display('')
+                self._session._io_manager._display('')
 
     @Command('cp', section='basic', is_hidden=False)
     def copy(
@@ -1468,7 +1468,7 @@ class Wrangler(Controller):
         if not visible_asset_paths:
             messages = ['nothing to copy.']
             messages.append('')
-            self._io_manager._display(messages)
+            self._session._io_manager._display(messages)
             return
         file_extension = self._file_extension
         old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
@@ -1489,10 +1489,10 @@ class Wrangler(Controller):
             self._asset_identifier,
             old_name,
             )
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)
         message = 'new {} name'
         message = message.format(self._asset_identifier)
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         getter.append_string(message)
         help_template = getter.prompts[0].help_template
         string = 'Press <return> to preserve existing name.'
@@ -1513,15 +1513,15 @@ class Wrangler(Controller):
         new_path = os.path.join(new_storehouse, new_name)
         if os.path.exists(new_path):
             message = 'already exists: {}'.format(new_path)
-            self._io_manager._display(message)
-            self._io_manager._acknowledge()
+            self._session._io_manager._display(message)
+            self._session._io_manager._acknowledge()
             return
         messages = []
         messages.append('will copy ...')
         messages.append(' FROM: {}'.format(old_path))
         messages.append('   TO: {}'.format(new_path))
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         if os.path.isfile(old_path):
@@ -1791,13 +1791,13 @@ class Wrangler(Controller):
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='add')
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
         if not inputs:
             return
-        result = self._io_manager._confirm()
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
-        with self._io_manager._silent(self):
+        with self._session._io_manager._silent(self):
             for manager in managers:
                 method = getattr(manager, method_name)
                 method()
@@ -1805,7 +1805,7 @@ class Wrangler(Controller):
         identifier = stringtools.pluralize('file', count)
         message = 'added {} {} to repository.'
         message = message.format(count, identifier)
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)
         
     @Command('ci*', section='git', in_score=False, outside_score='home')
     def git_commit_every_package(self):
@@ -1816,20 +1816,20 @@ class Wrangler(Controller):
         self._session._attempted_to_commit = True
         if self._session.is_repository_test:
             return
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         getter.append_string('commit message')
         commit_message = getter._run()
         if self._session.is_backtracking or commit_message is None:
             return
         line = 'commit message will be: "{}"'.format(commit_message)
-        self._io_manager._display(line)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(line)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         paths = self._list_visible_asset_paths()
         for path in paths:
             manager = self._get_manager(path)
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 manager._git_commit(commit_message=commit_message)
 
     @Command('revert*', section='git', in_score=False, outside_score='home')
@@ -1843,7 +1843,7 @@ class Wrangler(Controller):
             return
         paths = self._list_visible_asset_paths()
         for path in paths:
-            manager = self._io_manager._make_package_manager(path)
+            manager = self._session._io_manager._make_package_manager(path)
             manager._git_revert()
 
     @Command('st*', section='git', in_score=False, outside_score='home')
@@ -1857,13 +1857,13 @@ class Wrangler(Controller):
         paths = self._extract_common_parent_directories(paths)
         paths.sort()
         for path in paths:
-            manager = self._io_manager._make_package_manager(path)
+            manager = self._session._io_manager._make_package_manager(path)
             manager._git_status()
         if not paths:
             message = 'Repository status for {} ... OK'
             directory = self._get_current_directory()
             message = message.format(directory)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
 
     @Command('up*', section='git', in_score=False, outside_score='home')
     def git_update_every_package(self):
@@ -1871,7 +1871,7 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         managers = self._list_visible_asset_managers()
         for manager in managers:
             messages = []
@@ -1885,7 +1885,7 @@ class Wrangler(Controller):
             else:
                 messages_ = [tab + _ for _ in messages_]
                 messages.extend(messages_)
-            self._io_manager._display(messages, capitalize=False)
+            self._session._io_manager._display(messages, capitalize=False)
 
     @Command(
         'di*',
@@ -1907,8 +1907,8 @@ class Wrangler(Controller):
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='illustrate')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         for manager in managers:
@@ -1953,18 +1953,18 @@ class Wrangler(Controller):
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         for manager in managers:
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 method = getattr(manager, method_name)
                 subprocess_messages, candidate_messages = method()
             if subprocess_messages:
-                self._io_manager._display(subprocess_messages)
-                self._io_manager._display(candidate_messages)
-                self._io_manager._display('')
+                self._session._io_manager._display(subprocess_messages)
+                self._session._io_manager._display(candidate_messages)
+                self._session._io_manager._display('')
                 
     @Command(
         'fci',
@@ -2056,15 +2056,15 @@ class Wrangler(Controller):
             inputs, outputs = manager.open_score_pdf(dry_run=True)
             paths.extend(inputs)
         messages = ['will open ...']
-        tab = self._io_manager._tab
+        tab = self._session._io_manager._tab
         paths = [tab + _ for _ in paths]
         messages.extend(paths)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
+        self._session._io_manager._display(messages)
+        result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
         if paths:
-            self._io_manager.open_file(paths)
+            self._session._io_manager.open_file(paths)
 
     @Command(
         'sp', 
@@ -2082,7 +2082,7 @@ class Wrangler(Controller):
         if not os.path.exists(build_score_path):
             message = 'does not exist: {!r}.'
             message = message.format(build_score_path)
-            self._io_manager._display(message)
+            self._session._io_manager._display(message)
             return
         score_package_name = self._session.current_score_package_name
         score_package_name = score_package_name.replace('_', '-')
@@ -2099,7 +2099,7 @@ class Wrangler(Controller):
         messages.append(message)
         message = '   TO: {}'.format(distribution_score_path)
         messages.append(message)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
 
     @Command('rm', section='basic', is_hidden=False)
     def remove(self):
@@ -2124,7 +2124,7 @@ class Wrangler(Controller):
             for path in paths:
                 message = '    {}'.format(path)
                 messages.append(message)
-        self._io_manager._display(messages)
+        self._session._io_manager._display(messages)
         if count == 1:
             confirmation_string = 'remove'
         else:
@@ -2132,7 +2132,7 @@ class Wrangler(Controller):
             confirmation_string = confirmation_string.format(count)
         message = "type {!r} to proceed"
         message = message.format(confirmation_string)
-        getter = self._io_manager._make_getter()
+        getter = self._session._io_manager._make_getter()
         getter.append_string(message)
         if self._session.confirm:
             result = getter._run()
@@ -2142,7 +2142,7 @@ class Wrangler(Controller):
                 return
         for path in paths:
             manager = self._get_manager(path)
-            with self._io_manager._silent(self):
+            with self._session._io_manager._silent(self):
                 manager._remove()
         self._session._pending_redraw = True
 
@@ -2163,7 +2163,7 @@ class Wrangler(Controller):
         file_name = os.path.basename(path)
         message = 'existing file name> {}'
         message = message.format(file_name)
-        self._io_manager._display(message)
+        self._session._io_manager._display(message)
         manager = self._get_manager(path)
         manager._rename_interactively(
             file_extension=file_extension,
