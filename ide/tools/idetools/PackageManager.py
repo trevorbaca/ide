@@ -235,15 +235,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_directory_wranglers(self):
-        wranglers = []
-        directory_names = self._list_directory_names()
-        for directory_name in directory_names:
-            wrangler = self._get_wrangler(directory_name)
-            if wrangler is not None:
-                wranglers.append(wrangler)
-        return wranglers
-
     def _get_file_path_ending_with(self, string):
         for file_name in self._list():
             if file_name.endswith(string):
@@ -394,20 +385,6 @@ class PackageManager(Controller):
             raise ValueError(self)
         return paths
 
-    def _get_wrangler(self, directory_name):
-        directory_name_to_wrangler = {
-            'build': self._session._abjad_ide._build_file_wrangler,
-            'distribution': 
-                self._session._abjad_ide._distribution_file_wrangler,
-            'etc': self._session._abjad_ide._etc_file_wrangler,
-            'makers': self._session._abjad_ide._maker_file_wrangler,
-            'materials': self._session._abjad_ide._material_package_wrangler,
-            'segments': self._session._abjad_ide._segment_package_wrangler,
-            'stylesheets': self._session._abjad_ide._stylesheet_wrangler,
-            }
-        wrangler = directory_name_to_wrangler.get(directory_name)
-        return wrangler
-
     def _is_git_added(self, path=None):
         path = path or self._path
         if path is None:
@@ -512,15 +489,6 @@ class PackageManager(Controller):
                 files.append(entry)
         result = files + directories
         return result
-
-    def _list_directory_names(self):
-        directory_names = []
-        for entry in os.listdir(self._path):
-            path = os.path.join(self._path, entry)
-            if os.path.isdir(path):
-                if not entry == '__pycache__' :
-                    directory_names.append(entry)
-        return directory_names
 
     def _list_visible_asset_paths(self):
         return [self._path]
@@ -987,7 +955,10 @@ class PackageManager(Controller):
             unrecognized_files
             )
         count = len(names)
-        wranglers = self._get_directory_wranglers()
+        wranglers = self._get_directory_wranglers(
+            self._session,
+            self._path,
+            )
         if wranglers or not return_messages:
             message = 'top level ({} assets):'.format(count)
             if not found_problems:

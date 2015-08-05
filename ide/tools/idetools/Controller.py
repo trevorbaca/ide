@@ -309,6 +309,16 @@ class Controller(object):
             directory = os.path.abspath(directory)
             return directory
 
+    @classmethod
+    def _get_directory_wranglers(class_, session, path):
+        wranglers = []
+        directory_names = class_._list_directory_names(path)
+        for directory_name in directory_names:
+            wrangler = session._get_wrangler(directory_name)
+            if wrangler is not None:
+                wranglers.append(wrangler)
+        return wranglers
+
     @staticmethod
     def _get_metadata(session, metadata_py_path):
         metadata = None
@@ -644,6 +654,16 @@ class Controller(object):
                     if path not in paths:
                         paths.append(path)
         return paths
+
+    @staticmethod
+    def _list_directory_names(path):
+        directory_names = []
+        for entry in os.listdir(path):
+            path_ = os.path.join(path, entry)
+            if os.path.isdir(path_):
+                if not entry == '__pycache__' :
+                    directory_names.append(entry)
+        return directory_names
 
     @staticmethod
     def _make_candidate_messages(session, result, candidate_path, incumbent_path):
