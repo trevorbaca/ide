@@ -1860,7 +1860,11 @@ class Wrangler(Controller):
         for path in paths:
             manager = self._get_manager(path)
             with self._session._io_manager._silent(self._session):
-                manager._git_commit(commit_message=commit_message)
+                manager._git_commit(
+                    manager._session,
+                    manager._path,
+                    commit_message=commit_message,
+                    )
 
     @Command('revert*', section='git', in_score=False, outside_score='home')
     def git_revert_every_package(self):
@@ -1874,7 +1878,10 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         for path in paths:
             manager = self._session._io_manager._make_package_manager(path)
-            manager._git_revert()
+            manager._git_revert(
+                manager._session,
+                manager._path,
+                )
 
     @Command('st*', section='git', in_score=False, outside_score='home')
     def git_status_every_package(self):
@@ -1888,7 +1895,10 @@ class Wrangler(Controller):
         paths.sort()
         for path in paths:
             manager = self._session._io_manager._make_package_manager(path)
-            manager._git_status()
+            manager._git_status(
+                manager._session,
+                manager._path,
+                )
         if not paths:
             message = 'Repository status for {} ... OK'
             directory = self._get_current_directory()
@@ -1908,7 +1918,11 @@ class Wrangler(Controller):
             message = self._path_to_asset_menu_display_string(manager._path)
             message = self._strip_annotation(message)
             message = message + ':'
-            messages_ = manager._git_update(messages_only=True)
+            messages_ = manager._git_update(
+                manager._session,
+                manager._path,
+                messages_only=True,
+                )
             if len(messages_) == 1:
                 message = message + ' ' + messages_[0]
                 messages.append(message)

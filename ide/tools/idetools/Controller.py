@@ -599,88 +599,76 @@ class Controller(object):
             assert isinstance(command, str)
             session._io_manager.run_command(command)
 
-    def _git_commit(self, commit_message=None):
-#        directory = self._get_current_directory()
-        directory = self._path
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
+    @classmethod
+    def _git_commit(class_, session, path, commit_message=None):
+        change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._session._attempted_to_commit = True
-            if self._session.is_repository_test:
+            session._attempted_to_commit = True
+            if session.is_repository_test:
                 return
             if commit_message is None:
-                getter = self._session._io_manager._make_getter()
+                getter = session._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run()
-                if self._session.is_backtracking or commit_message is None:
+                if session.is_backtracking or commit_message is None:
                     return
                 message = 'commit message will be: "{}"'
                 message = message.format(commit_message)
-                self._session._io_manager._display(message)
-                result = self._session._io_manager._confirm()
-                if self._session.is_backtracking or not result:
+                session._io_manager._display(message)
+                result = session._io_manager._confirm()
+                if session.is_backtracking or not result:
                     return
-            message = self._get_score_package_directory_name(self._path)
+            message = class_._get_score_package_directory_name(path)
             message = message + ' ...'
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, self._path)
-            self._session._io_manager.run_command(command, capitalize=False)
+            session._io_manager.run_command(command, capitalize=False)
 
-    def _git_revert(self):
-#        directory = self._get_current_directory()
-        directory = self._path
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
+    @classmethod
+    def _git_revert(class_, session, path):
+        change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._session._attempted_to_revert = True
-            if self._session.is_repository_test:
+            session._attempted_to_revert = True
+            if session.is_repository_test:
                 return
             paths = []
-            paths.extend(self._get_added_asset_paths())
-            paths.extend(
-                self._get_modified_asset_paths(self._session, self._path))
+            paths.extend(class_._get_added_asset_paths(session, path))
+            paths.extend(class_._get_modified_asset_paths(session, path))
             messages = []
             messages.append('will revert ...')
             for path in paths:
-                messages.append(self._session._io_manager._tab + path)
-            self._session._io_manager._display(messages)
-            result = self._session._io_manager._confirm()
-            if self._session.is_backtracking or not result:
+                messages.append(session._io_manager._tab + path)
+            session._io_manager._display(messages)
+            result = session._io_manager._confirm()
+            if session.is_backtracking or not result:
                 return
             commands = []
-            if self._is_in_git_repository(self._session, self._path):
-                for path in paths:
-                    command = 'git checkout {}'.format(path)
-                    commands.append(command)
-            else:
-                raise ValueError(self)
+            for path in paths:
+                command = 'git checkout {}'.format(path)
+                commands.append(command)
             command = ' && '.join(commands)
-#            directory = self._get_current_directory()
-            directory = self._path
-            with systemtools.TemporaryDirectoryChange(directory=directory):
-                self._session._io_manager.spawn_subprocess(command)
+            with systemtools.TemporaryDirectoryChange(directory=path):
+                session._io_manager.spawn_subprocess(command)
 
-    def _git_status(self):
-#        directory = self._get_current_directory()
-        directory = self._path
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
+    @classmethod
+    def _git_status(class_, session, path):
+        change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            command = 'git status {}'.format(directory)
+            command = 'git status {}'.format(path)
             messages = []
-            self._session._attempted_display_status = True
+            session._attempted_display_status = True
             message = 'Repository status for {} ...'
-            message = message.format(directory)
+            message = message.format(path)
             messages.append(message)
-#            directory = self._get_current_directory()
-            directory = self._path
-            with systemtools.TemporaryDirectoryChange(directory=directory):
-                process = self._session._io_manager.make_subprocess(command)
-            path = directory
-            path = path + os.path.sep
+            with systemtools.TemporaryDirectoryChange(directory=path):
+                process = session._io_manager.make_subprocess(command)
+            path_ = path + os.path.sep
             clean_lines = []
-            stdout_lines = self._session._io_manager._read_from_pipe(process.stdout)
+            stdout_lines = session._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
                 clean_line = line.strip()
-                clean_line = clean_line.replace(path, '')
+                clean_line = clean_line.replace(path_, '')
                 clean_lines.append(clean_line)
             everything_ok = False
             for line in clean_lines:
@@ -694,24 +682,23 @@ class Controller(object):
                 first_message = first_message + ' OK'
                 messages[0] = first_message
                 clean_lines.append(message)
-            self._session._io_manager._display(messages, capitalize=False)
+            session._io_manager._display(messages, capitalize=False)
 
-    def _git_update(self, messages_only=False):
+    @classmethod
+    def _git_update(class_, session, path, messages_only=False):
         messages = []
-#        directory = self._get_current_directory()
-        directory = self._path
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._session._attempted_to_update = True
-            if self._session.is_repository_test:
+            session._attempted_to_update = True
+            if session.is_repository_test:
                 return messages
-            root_directory = self._get_repository_root_directory(
-                self._session,
-                self._path,
+            root_directory = class_._get_repository_root_directory(
+                session,
+                path,
                 )
             command = 'git pull {}'
             command = command.format(root_directory)
-            messages = self._session._io_manager.run_command(
+            messages = session._io_manager.run_command(
                 command,
                 messages_only=True,
                 )
@@ -721,7 +708,7 @@ class Controller(object):
             messages = messages[-1:]
         if messages_only:
             return messages
-        self._session._io_manager._display(messages)
+        session._io_manager._display(messages)
 
     def _go_to_next_package(self):
         self._session._is_navigating_to_next_asset = True
