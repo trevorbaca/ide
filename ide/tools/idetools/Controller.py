@@ -78,15 +78,6 @@ class Controller(object):
         return self._session._io_manager
 
     @property
-    def _navigation_commands(self):
-        result = (
-            'b', 'h', 'q',
-            'dd', 'ee', 'gg', 'kk', 'mm', 'tt', 'uu', 'yy',
-            'd', 'e', 'g', 'k', 'm', 's', 't', 'u', 'y',
-            )
-        return result
-
-    @property
     def _unicode_directive(self):
         return '# -*- encoding: utf-8 -*-'
 
