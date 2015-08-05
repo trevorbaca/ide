@@ -424,6 +424,26 @@ class Controller(object):
             )
         return metadata.get(metadatum_name)
 
+    @classmethod
+    def _get_modified_asset_paths(class_, session, path):
+        paths = []
+        git_status_lines = class_._get_git_status_lines(
+            session,
+            path,
+            )
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith(('M', ' M')):
+                path = line.strip('M ')
+                path = path.strip()
+                root_directory = class_._get_repository_root_directory(
+                    session,
+                    path,
+                    )
+                path = os.path.join(root_directory, path)
+                paths.append(path)
+        return paths
+
     @staticmethod
     def _get_repository_root_directory(session, path):
         command = 'git rev-parse --show-toplevel'
@@ -554,7 +574,8 @@ class Controller(object):
                 return
             paths = []
             paths.extend(self._get_added_asset_paths())
-            paths.extend(self._get_modified_asset_paths())
+            paths.extend(
+                self._get_modified_asset_paths(self._session, self._path))
             messages = []
             messages.append('will revert ...')
             for path in paths:

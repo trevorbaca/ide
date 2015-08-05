@@ -195,28 +195,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_modified_asset_paths(self):
-        paths = []
-        if self._is_in_git_repository():
-            git_status_lines = self._get_git_status_lines(
-                self._session,
-                self._path,
-                )
-            for line in git_status_lines:
-                line = str(line)
-                if line.startswith(('M', ' M')):
-                    path = line.strip('M ')
-                    path = path.strip()
-                    root_directory = self._get_repository_root_directory(
-                        self._session,
-                        self._path,
-                        )
-                    path = os.path.join(root_directory, path)
-                    paths.append(path)
-        else:
-            raise ValueError(self._path)
-        return paths
-
     def _get_next_version_string(self):
         last_version_number = self._get_last_version_number()
         last_version_number = last_version_number or 0
@@ -453,21 +431,6 @@ class PackageManager(Controller):
         self._session._io_manager._read_one_line_from_pipe(process.stdout)
         return True
 
-    def _remove_metadatum(self, metadatum_name):
-        metadata = self._get_metadata(
-            self._session,
-            self._metadata_py_path,
-            )
-        was_removed = False
-        try:
-            del(metadata[metadatum_name])
-            was_removed = True
-        except KeyError:
-            pass
-        if was_removed:
-            with self._session._io_manager._silent(self._session):
-                self._write_metadata_py(self._metadata_py_path, metadata)
-
     def _rename(self, new_path):
         if self._is_in_git_repository():
             if self._is_git_unknown():
@@ -584,7 +547,7 @@ class PackageManager(Controller):
 
     def _test_revert(self):
         assert self._is_up_to_date()
-        assert self._get_modified_asset_paths() == []
+        assert self._get_modified_asset_paths(self._session, self._path) == []
         file_name = self._find_first_file_name(self._path)
         if not file_name:
             return
@@ -594,17 +557,18 @@ class PackageManager(Controller):
                 string = '# extra text appended during testing'
                 file_pointer.write(string)
             assert not self._is_up_to_date()
-            assert self._get_modified_asset_paths() == [file_path]
+            assert self._get_modified_asset_paths(
+                self._session, self._path) == [file_path]
             with self._session._io_manager._silent(self._session):
                 self.revert()
-        assert self._get_modified_asset_paths() == []
+        assert self._get_modified_asset_paths(self._session, self._path) == []
         assert self._is_up_to_date()
         return True
 
     def _unadd_added_assets(self):
         paths = []
         paths.extend(self._get_added_asset_paths())
-        paths.extend(self._get_modified_asset_paths())
+        paths.extend(self._get_modified_asset_paths(self._session, self._path))
         commands = []
         if self._is_git_versioned():
             for path in paths:
