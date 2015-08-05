@@ -1193,7 +1193,10 @@ class Controller(object):
         return score_path
 
     def _read_view(self):
-        view_name = self._read_view_name()
+        view_name = self._read_view_name(
+            self._session,
+            self._directory_name,
+            )
         if not view_name:
             return
         view_inventory = self._read_view_inventory()
@@ -1235,16 +1238,17 @@ class Controller(object):
         view_inventory = idetools.ViewInventory(items)
         return view_inventory
 
-    def _read_view_name(self):
-        if self._session.is_in_score:
-            manager = self._get_current_package_manager(
-                self._session,
-                self._directory_name,
+    @classmethod
+    def _read_view_name(class_, session, directory_name):
+        if session.is_in_score:
+            manager = class_._get_current_package_manager(
+                session,
+                directory_name,
                 )
             metadatum_name = 'view_name'
         else:
-            manager = self._get_views_package_manager(self._session)
-            metadatum_name = '{}_view_name'.format(type(self).__name__)
+            manager = class_._get_views_package_manager(session)
+            metadatum_name = '{}_view_name'.format(class_.__name__)
         if not manager:
             return
         return manager._get_metadatum(
