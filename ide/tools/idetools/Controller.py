@@ -185,7 +185,10 @@ class Controller(object):
             return result
 
     def _filter_asset_menu_entries_by_view(self, entries):
-        view = self._read_view()
+        view = self._read_view(
+            self._session,
+            self._directory_name,
+            )
         if view is None:
             return entries
         entries = entries[:]
@@ -1192,41 +1195,46 @@ class Controller(object):
             score_path = os.path.join(score_path, score_name)
         return score_path
 
-    def _read_view(self):
-        view_name = self._read_view_name(
-            self._session,
-            self._directory_name,
+    @classmethod
+    def _read_view(class_, session, directory_name):
+        view_name = class_._read_view_name(
+            session,
+            directory_name,
             )
         if not view_name:
             return
-        view_inventory = self._read_view_inventory()
+        view_inventory = class_._read_view_inventory(
+            session,
+            directory_name,
+            )
         if not view_inventory:
             return
         return view_inventory.get(view_name)
 
-    def _read_view_inventory(self):
+    @classmethod
+    def _read_view_inventory(class_, session, directory_name):
         from ide.tools import idetools
-        views_py_path = self._get_views_py_path(
-            self._session,
-            self._directory_name,
+        views_py_path = class_._get_views_py_path(
+            session,
+            directory_name,
             )
         if views_py_path is None:
             return
         if not os.path.exists(views_py_path):
             return
-        result = self._session._io_manager.execute_file(
+        result = session._io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
             )
         if result == 'corrupt':
             messages = []
             message = '{} __views.py__ is corrupt:'
-            message = message.format(type(self).__name__)
+            message = message.format(class_.__name__)
             messages.append(message)
             messages.append('')
             message = '    {}'.format(views_py_path)
             messages.append(message)
-            self._session._io_manager._display(messages)
+            session._io_manager._display(messages)
             return
         if not result:
             return

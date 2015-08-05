@@ -84,7 +84,10 @@ class Wrangler(Controller):
             )
         if not view_name:
             return breadcrumb
-        view_inventory = self._read_view_inventory()
+        view_inventory = self._read_view_inventory(
+            self._session,
+            self._directory_name,
+            )
         if view_inventory is not None and view_name in view_inventory:
             breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
         return breadcrumb
@@ -318,7 +321,10 @@ class Wrangler(Controller):
             self._session,
             self._directory_name,
             )
-        view_inventory = wrangler._read_view_inventory()
+        view_inventory = wrangler._read_view_inventory(
+            self._session,
+            self._directory_name,
+            )
         if not view_inventory or view_name not in view_inventory:
             view_name = None
         segment_paths = wrangler._list_visible_asset_paths()
@@ -1157,7 +1163,10 @@ class Wrangler(Controller):
 
     def _select_view(self, infinitive_phrase=None, is_ranged=False):
         from ide.tools import idetools
-        view_inventory = self._read_view_inventory()
+        view_inventory = self._read_view_inventory(
+            self._session,
+            self._directory_name,
+            )
         if view_inventory is None:
             message = 'no views found.'
             self._session._io_manager._display(message)
