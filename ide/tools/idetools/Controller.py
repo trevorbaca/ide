@@ -1113,14 +1113,16 @@ class Controller(object):
         height = eval(height)
         return width, height, units
 
-    def _path_to_annotation(self, path):
+    @classmethod
+    def _path_to_annotation(class_, session, path, basic_breadcrumb):
         score_storehouses = (
             configuration.abjad_ide_example_scores_directory,
             configuration.composer_scores_directory,
             )
         if path.startswith(score_storehouses):
-            score_path = self._path_to_score_path(path)
-            manager = self._session._io_manager._make_package_manager(path=score_path)
+            score_path = class_._path_to_score_path(path)
+            manager = session._io_manager._make_package_manager(
+                path=score_path)
             metadata = manager._get_metadata(
                 manager._session,
                 manager._metadata_py_path,
@@ -1129,7 +1131,7 @@ class Controller(object):
                 year = metadata.get('year')
                 title = metadata.get('title')
                 prototype = ('SCORES', 'scores')
-                if self._basic_breadcrumb in prototype and year:
+                if basic_breadcrumb in prototype and year:
                     annotation = '{} ({})'.format(title, year)
                 else:
                     annotation = str(title)
@@ -1162,7 +1164,11 @@ class Controller(object):
         if self._session.is_in_score:
             string = asset_name
         else:
-            annotation = self._path_to_annotation(path)
+            annotation = self._path_to_annotation(
+                self._session,
+                path,
+                self._basic_breadcrumb,
+                )
             prototype = ('SCORES', 'scores')
             if self._basic_breadcrumb in prototype:
                 string = annotation
@@ -1170,7 +1176,8 @@ class Controller(object):
                 string = '{} ({})'.format(asset_name, annotation)
         return string
 
-    def _path_to_score_path(self, path):
+    @staticmethod
+    def _path_to_score_path(path):
         is_user_score = False
         if path.startswith(configuration.composer_scores_directory):
             is_user_score = True
