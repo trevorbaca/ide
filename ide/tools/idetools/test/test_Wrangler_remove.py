@@ -29,7 +29,12 @@ def test_Wrangler_remove_01():
             session=abjad_ide._session,
             )
         title = 'Example Score 100'
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         input_ = 'rm Example~Score~100 remove q'
         abjad_ide._run(input_=input_)
         assert not os.path.exists(outer_path)
@@ -73,13 +78,23 @@ def test_Wrangler_remove_02():
             session=abjad_ide._session,
             )
         title = 'Example Score 100'
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         manager = ide.tools.idetools.PackageManager(
             path=path_101_inner,
             session=abjad_ide._session,
             )
         title = 'Example Score 101'
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         input_ = 'rm Example~Score~100~-~Example~Score~101 remove~2 q'
         abjad_ide._run(input_=input_)
         assert not os.path.exists(path_100_outer)

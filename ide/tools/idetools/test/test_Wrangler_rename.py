@@ -30,7 +30,12 @@ def test_Wrangler_rename_01():
             session=abjad_ide._session,
             )
         title = 'Example Score 100'
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         input_ = 'ren Example~Score~100 example_score_101 y q'
         abjad_ide._run(input_=input_)
         assert not os.path.exists(path_100)

@@ -24,7 +24,12 @@ def test_Wrangler_copy_01():
             session=abjad_ide._session,
             )
         title = 'Pretty Example Score'
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         input_ = 'rm Pretty~Example~Score remove q'
         abjad_ide._run(input_=input_)
         assert not os.path.exists(pretty_path)

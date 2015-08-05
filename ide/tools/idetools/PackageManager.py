@@ -133,15 +133,22 @@ class PackageManager(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _add_metadatum(self, metadatum_name, metadatum_value):
+    @classmethod
+    def _add_metadatum(
+        class_,
+        session,
+        metadata_py_path,
+        metadatum_name, 
+        metadatum_value,
+        ):
         assert ' ' not in metadatum_name, repr(metadatum_name)
-        metadata = self._get_metadata(
-            self._session,
-            self._metadata_py_path,
+        metadata = class_._get_metadata(
+            session,
+            metadata_py_path,
             )
         metadata[metadatum_name] = metadatum_value
-        with self._session._io_manager._silent(self._session):
-            self._write_metadata_py(self._metadata_py_path, metadata)
+        with session._io_manager._silent(session):
+            class_._write_metadata_py(metadata_py_path, metadata)
 
     def _configure_as_material_package_manager(self):
         self._basic_breadcrumb = 'MATERIALS'

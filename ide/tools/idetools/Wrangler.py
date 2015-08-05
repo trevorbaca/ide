@@ -169,7 +169,12 @@ class Wrangler(Controller):
         else:
             manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
-        manager._add_metadatum(metadatum_name, None)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            metadatum_name,
+            None,
+            )
 
     def _collect_segment_files(self, file_name):
         segments_directory = self._session.current_segments_directory
@@ -878,9 +883,19 @@ class Wrangler(Controller):
             package_name = stringtools.to_snake_case(package_name)
         manager = self._get_manager(package_path)
         manager._make_package()
-        manager._add_metadatum('title', title)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'title',
+            title,
+            )
         year = datetime.date.today().year
-        manager._add_metadatum('year', year)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'year',
+            year,
+            )
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
             with self._session._io_manager._silent(self._session):
@@ -1230,19 +1245,39 @@ class Wrangler(Controller):
         # update segment numbers and segment count
         for segment_index, manager in enumerate(managers):
             segment_number = segment_index + 1
-            manager._add_metadatum('segment_number', segment_number)
-            manager._add_metadatum('segment_count', segment_count)
+            manager._add_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'segment_number',
+                segment_number,
+                )
+            manager._add_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'segment_count', 
+                segment_count,
+                )
         # update first bar numbers and measure counts
         manager = managers[0]
         first_bar_number = 1
-        manager._add_metadatum('first_bar_number', first_bar_number)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'first_bar_number',
+            first_bar_number,
+            )
         measure_count = manager._get_metadatum('measure_count')
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
         for manager in managers[1:]:
             first_bar_number = next_bar_number
-            manager._add_metadatum('first_bar_number', next_bar_number)
+            manager._add_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'first_bar_number',
+                next_bar_number,
+                )
             measure_count = manager._get_metadatum('measure_count')
             if not measure_count:
                 return
@@ -2137,4 +2172,9 @@ class Wrangler(Controller):
         else:
             manager = self._get_views_package_manager()
             metadatum_name = '{}_view_name'.format(type(self).__name__)
-        manager._add_metadatum(metadatum_name, view_name)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            metadatum_name,
+            view_name,
+            )
