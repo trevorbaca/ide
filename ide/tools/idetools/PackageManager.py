@@ -219,11 +219,13 @@ class PackageManager(Controller):
                 supply_missing=True,
                 )
         if self._package_creation_callback is not None:
-            self._package_creation_callback(
+            new_path = self._package_creation_callback(
                 self._session,
                 self._inner_path,
                 self._outer_path,
                 )
+            if new_path is not None:
+                self._path = new_path
 
     def _make_score_into_installable_package(
         self,
@@ -243,6 +245,7 @@ class PackageManager(Controller):
             inner_path,
             outer_path,
             )
+        return inner_path
 
     def _run(self):
         controller = self._session._io_manager._controller(
@@ -272,31 +275,31 @@ class PackageManager(Controller):
         wrangler = self._session._abjad_ide._segment_package_wrangler
         wrangler._update_order_dependent_segment_metadata()
 
-    def _write_enclosing_artifacts(self, session, inner_path, outer_path):
-        # CAUTION
-        self._path = inner_path
-        self._copy_boilerplate(
+    @classmethod
+    def _write_enclosing_artifacts(class_, session, inner_path, outer_path):
+        class_._copy_boilerplate(
             session,
             'README.md',
             outer_path,
             )
-        self._copy_boilerplate(
+        class_._copy_boilerplate(
             session,
             'requirements.txt',
             outer_path,
             )
-        self._copy_boilerplate(
+        class_._copy_boilerplate(
             session,
             'setup.cfg',
             outer_path,
             )
+        package_name = os.path.basename(outer_path)
         replacements = {
             'COMPOSER_EMAIL': configuration.composer_email,
             'COMPOSER_FULL_NAME': configuration.composer_full_name,
             'COMPOSER_GITHUB_USERNAME': configuration.composer_github_username,
-            'PACKAGE_NAME': self._package_name,
+            'PACKAGE_NAME': package_name,
             }
-        self._copy_boilerplate(
+        class_._copy_boilerplate(
             session,
             'setup.py',
             outer_path,
