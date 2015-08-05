@@ -241,9 +241,6 @@ class PackageManager(Controller):
             self._metadata_py_path,
             )
         metadatum = metadata.get(metadatum_name, None)
-        if metadatum is None:
-            metadata = self._get_score_metadata()
-            metadatum = metadata.get(metadatum_name, None)
         return metadatum
 
     def _get_modified_asset_paths(self):

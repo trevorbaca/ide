@@ -355,17 +355,6 @@ class Controller(object):
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
-    def _get_score_metadata(self):
-        score_path = self._path_to_score_path(self._path)
-        if score_path is None:
-            return datastructuretools.TypedOrderedDict()
-        score_package_manager = self._session._io_manager._make_package_manager(
-            path=score_path)
-        return score_package_manager._get_metadata(
-            score_package_manager._session,
-            score_package_manager._metadata_py_path,
-            )
-
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths()
         if self._session.last_asset_path is None:
