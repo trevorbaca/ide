@@ -441,6 +441,16 @@ class Wrangler(Controller):
             else:
                 return path
 
+    def _get_current_directory(self):
+        score_directory = self._session.current_score_directory
+        if score_directory is not None:
+            directory = os.path.join(
+                score_directory,
+                self._directory_name,
+                )
+            directory = os.path.abspath(directory)
+            return directory
+
     def _get_manager(self, path):
         from ide.tools import idetools
         assert os.path.sep in path, repr(path)
@@ -1803,7 +1813,11 @@ class Wrangler(Controller):
         method_name = '_git_add'
         for manager in managers:
             method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
+            inputs_, outputs_ = method(
+                manager._session,
+                manager._path,
+                dry_run=True,
+                )
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='add')

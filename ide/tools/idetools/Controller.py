@@ -342,16 +342,6 @@ class Controller(object):
             result.append(command)
         return result
 
-    def _get_current_directory(self):
-        score_directory = self._session.current_score_directory
-        if score_directory is not None:
-            directory = os.path.join(
-                score_directory,
-                self._directory_name,
-                )
-            directory = os.path.abspath(directory)
-            return directory
-
     @classmethod
     def _get_directory_wranglers(class_, session, path):
         wranglers = []
@@ -584,33 +574,34 @@ class Controller(object):
         path = configuration.abjad_ide_wrangler_views_directory
         return self._session._io_manager._make_package_manager(path)
 
-    def _git_add(self, dry_run=False):
-        directory = self._get_current_directory()
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
+    @classmethod
+    def _git_add(class_, session, path, dry_run=False):
+        change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            inputs = self._get_unadded_asset_paths(self._session, self._path)
+            inputs = class_._get_unadded_asset_paths(session, path)
             outputs = []
             if dry_run:
                 return inputs, outputs
             if not inputs:
                 message = 'nothing to add.'
-                self._session._io_manager._display(message)
+                session._io_manager._display(message)
                 return
             messages = []
             messages.append('will add ...')
             for path in inputs:
-                messages.append(self._tab + path)
-            self._session._io_manager._display(messages)
-            result = self._session._io_manager._confirm()
-            if self._session.is_backtracking or not result:
+                messages.append(session._io_manager._tab + path)
+            session._io_manager._display(messages)
+            result = session._io_manager._confirm()
+            if session.is_backtracking or not result:
                 return
             command = 'git add -A {}'
-            command = command.format(self._path)
+            command = command.format(path)
             assert isinstance(command, str)
-            self._session._io_manager.run_command(command)
+            session._io_manager.run_command(command)
 
     def _git_commit(self, commit_message=None):
-        directory = self._get_current_directory()
+#        directory = self._get_current_directory()
+        directory = self._path
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             self._session._attempted_to_commit = True
@@ -635,7 +626,8 @@ class Controller(object):
             self._session._io_manager.run_command(command, capitalize=False)
 
     def _git_revert(self):
-        directory = self._get_current_directory()
+#        directory = self._get_current_directory()
+        directory = self._path
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             self._session._attempted_to_revert = True
@@ -661,12 +653,14 @@ class Controller(object):
             else:
                 raise ValueError(self)
             command = ' && '.join(commands)
-            directory = self._get_current_directory()
+#            directory = self._get_current_directory()
+            directory = self._path
             with systemtools.TemporaryDirectoryChange(directory=directory):
                 self._session._io_manager.spawn_subprocess(command)
 
     def _git_status(self):
-        directory = self._get_current_directory()
+#        directory = self._get_current_directory()
+        directory = self._path
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             command = 'git status {}'.format(directory)
@@ -675,7 +669,8 @@ class Controller(object):
             message = 'Repository status for {} ...'
             message = message.format(directory)
             messages.append(message)
-            directory = self._get_current_directory()
+#            directory = self._get_current_directory()
+            directory = self._path
             with systemtools.TemporaryDirectoryChange(directory=directory):
                 process = self._session._io_manager.make_subprocess(command)
             path = directory
@@ -703,7 +698,8 @@ class Controller(object):
 
     def _git_update(self, messages_only=False):
         messages = []
-        directory = self._get_current_directory()
+#        directory = self._get_current_directory()
+        directory = self._path
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             self._session._attempted_to_update = True
