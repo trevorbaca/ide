@@ -236,7 +236,7 @@ class PackageManager(Controller):
         return self._path
 
     def _get_file_path_ending_with(self, string):
-        for file_name in self._list():
+        for file_name in self._list_directory(self._path):
             if file_name.endswith(string):
                 file_path = os.path.join(self._path, file_name)
                 return file_path
@@ -459,42 +459,11 @@ class PackageManager(Controller):
             raise ValueError(self)
         return first_line == ''
 
-    def _list(self, public_entries_only=False, smart_sort=False):
-        entries = []
-        if not os.path.exists(self._path):
-            return entries
-        if public_entries_only:
-            for entry in sorted(os.listdir(self._path)):
-                if entry == '__pycache__':
-                    continue
-                if entry[0].isalpha():
-                    if not entry.endswith('.pyc'):
-                        if not entry in ('test',):
-                            entries.append(entry)
-        else:
-            for entry in sorted(os.listdir(self._path)):
-                if entry == '__pycache__':
-                    continue
-                if not entry.startswith('.'):
-                    if not entry.endswith('.pyc'):
-                        entries.append(entry)
-        if not smart_sort:
-            return entries
-        files, directories = [], []
-        for entry in entries:
-            path = os.path.join(self._path, entry)
-            if os.path.isdir(path):
-                directories.append(entry + '/')
-            else:
-                files.append(entry)
-        result = files + directories
-        return result
-
     def _list_visible_asset_paths(self):
         return [self._path]
 
     def _make_asset_menu_section(self, menu):
-        directory_entries = self._list(smart_sort=True)
+        directory_entries = self._list_directory(self._path, smart_sort=True)
         menu_entries = []
         for directory_entry in directory_entries:
             clean_directory_entry = directory_entry
@@ -832,7 +801,7 @@ class PackageManager(Controller):
         required_directories, required_files = [], []
         supplied_directories, supplied_files = [], []
         unrecognized_directories, unrecognized_files = [], []
-        names = self._list()
+        names = self._list_directory(self._path)
         if 'makers' in names:
             makers_initializer = os.path.join('makers', '__init__.py')
             if makers_initializer in self._required_files:

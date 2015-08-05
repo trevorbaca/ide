@@ -42,7 +42,7 @@ def test_Wrangler_make_package_01():
             path=inner_path,
             session=session,
             )
-        assert manager._list() == inner_directory_entries
+        assert manager._list_directory(manager._path) == inner_directory_entries
         for file_name in outer_directory_entries:
             path = os.path.join(outer_path, file_name)
             assert os.path.exists(path)
@@ -104,7 +104,7 @@ def test_Wrangler_make_package_03():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         manager = ide.tools.idetools.PackageManager(path=path, session=session)
-        assert manager._list() == directory_entries
+        assert manager._list_directory(manager._path) == directory_entries
 
 
 def test_Wrangler_make_package_04():
@@ -132,4 +132,4 @@ def test_Wrangler_make_package_04():
         session = ide.tools.idetools.Session(is_test=True)
         manager = ide.tools.idetools.PackageManager
         manager = manager(path=path, session=session)
-        assert manager._list() == directory_entries
+        assert manager._list_directory(manager._path) == directory_entries

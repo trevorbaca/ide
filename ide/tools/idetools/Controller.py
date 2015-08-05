@@ -656,6 +656,42 @@ class Controller(object):
         return paths
 
     @staticmethod
+    def _list_directory(
+        path,
+        public_entries_only=False,
+        smart_sort=False,
+        ):
+        entries = []
+        if not os.path.exists(path):
+            return entries
+        if public_entries_only:
+            for entry in sorted(os.listdir(path)):
+                if entry == '__pycache__':
+                    continue
+                if entry[0].isalpha():
+                    if not entry.endswith('.pyc'):
+                        if not entry in ('test',):
+                            entries.append(entry)
+        else:
+            for entry in sorted(os.listdir(path)):
+                if entry == '__pycache__':
+                    continue
+                if not entry.startswith('.'):
+                    if not entry.endswith('.pyc'):
+                        entries.append(entry)
+        if not smart_sort:
+            return entries
+        files, directories = [], []
+        for entry in entries:
+            path = os.path.join(path, entry)
+            if os.path.isdir(path):
+                directories.append(entry + '/')
+            else:
+                files.append(entry)
+        result = files + directories
+        return result
+
+    @staticmethod
     def _list_directory_names(path):
         directory_names = []
         for entry in os.listdir(path):
