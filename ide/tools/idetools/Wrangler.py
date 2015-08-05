@@ -1183,7 +1183,7 @@ class Wrangler(Controller):
         if not os.path.exists(self._metadata_py_path):
             metadata = self._get_metadata()
             with self._session._io_manager._silent(self):
-                self._write_metadata_py(metadata)
+                self._write_metadata_py(self._metadata_py_path, metadata)
         if self._session.is_test:
             with self._session._io_manager._silent(self):
                 for wrangler in self._session._abjad_ide._wranglers:

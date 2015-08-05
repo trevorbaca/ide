@@ -141,7 +141,7 @@ class PackageManager(Controller):
             )
         metadata[metadatum_name] = metadatum_value
         with self._session._io_manager._silent(self):
-            self._write_metadata_py(metadata)
+            self._write_metadata_py(self._metadata_py_path, metadata)
 
     def _configure_as_material_package_manager(self):
         self._basic_breadcrumb = 'MATERIALS'
@@ -638,7 +638,7 @@ class PackageManager(Controller):
             pass
         if was_removed:
             with self._session._io_manager._silent(self):
-                self._write_metadata_py(metadata)
+                self._write_metadata_py(self._metadata_py_path, metadata)
 
     def _rename(self, new_path):
         if self._is_in_git_repository():

@@ -25,6 +25,15 @@ class Controller(object):
         '_session',
         )
 
+    _abjad_import_statement = 'from abjad import *'
+
+    _known_secondary_assets = (
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        '__abbreviations__.py',
+        )
+
     _navigation_command_name_to_directory_name = {
         'd': 'distribution',
         'e': 'etc',
@@ -36,12 +45,7 @@ class Controller(object):
         'y': 'stylesheets',
         }
 
-    _known_secondary_assets = (
-        '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
-        '__abbreviations__.py',
-        )
+    _unicode_directive = '# -*- encoding: utf-8 -*-'
 
     ### INITIALIZER ###
 
@@ -62,20 +66,12 @@ class Controller(object):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _abjad_import_statement(self):
-        return 'from abjad import *'
-
-    @property
     def _command_name_to_method(self):
         result = {}
         methods = self._get_commands()
         for method in methods:
             result[method.command_name] = method
         return result
-
-    @property
-    def _unicode_directive(self):
-        return '# -*- encoding: utf-8 -*-'
 
     @property
     def _views_py_path(self):
@@ -874,9 +870,10 @@ class Controller(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
         
-    def _write_metadata_py(self, metadata, metadata_py_path=None):
+    @classmethod
+    def _write_metadata_py(class_, metadata_py_path, metadata):
         lines = []
-        lines.append(self._unicode_directive)
+        lines.append(class_._unicode_directive)
         lines.append('from abjad import *')
         lines.append('')
         lines.append('')
@@ -888,7 +885,6 @@ class Controller(object):
         metadata_lines = format(metadata, 'storage')
         metadata_lines = 'metadata = {}'.format(metadata_lines)
         contents = contents + '\n' + metadata_lines
-        metadata_py_path = metadata_py_path or self._metadata_py_path
         with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
 

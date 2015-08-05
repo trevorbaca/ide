@@ -45,8 +45,8 @@ if __name__ == '__main__':
         dummy_session = idetools.Session()
         controller = idetools.Controller(session=dummy_session)
         controller._write_metadata_py(
+            metadata_py_path,
             segment_metadata, 
-            metadata_py_path=metadata_py_path,
             )
     except:
         traceback.print_exc()
