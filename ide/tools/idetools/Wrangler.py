@@ -26,6 +26,7 @@ class Wrangler(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_allow_asset_name_underscores',
         '_asset_identifier',
         '_copy_target_directory',
         '_directory_entry_predicate',
@@ -48,6 +49,7 @@ class Wrangler(Controller):
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
+        self._allow_asset_name_underscores = False
         self._asset_identifier = None
         self._basic_breadcrumb = None
         self._copy_target_directory = None
@@ -285,6 +287,16 @@ class Wrangler(Controller):
         self._file_extension = '.ily'
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
+
+    def _configure_as_test_file_wrangler(self):
+        self._asset_identifier = 'file'
+        self._basic_breadcrumb = 'test'
+        self._directory_entry_predicate = self._is_valid_file_directory_entry
+        self._directory_name = 'test'
+        self._allow_asset_name_underscores = True
+        self._file_extension = '.py'
+        self._file_name_predicate = stringtools.is_snake_case
+        return self
 
     def _confirm_segment_names(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler

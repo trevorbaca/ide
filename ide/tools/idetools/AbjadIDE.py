@@ -113,6 +113,13 @@ class AbjadIDE(object):
         return wrangler
 
     @property
+    def _test_file_wrangler(self):
+        from ide.tools import idetools
+        wrangler = idetools.Wrangler(session=self._session)
+        wrangler._configure_as_test_file_wrangler()
+        return wrangler
+
+    @property
     def _wranglers(self):
         return (
             self._build_file_wrangler,
@@ -123,6 +130,7 @@ class AbjadIDE(object):
             self._score_package_wrangler,
             self._segment_package_wrangler,
             self._stylesheet_wrangler,
+            self._test_file_wrangler,
             )
 
     ### PRIVATE METHODS ###

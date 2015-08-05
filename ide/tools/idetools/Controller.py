@@ -31,6 +31,7 @@ class Controller(object):
         'g': 'segments',
         'k': 'makers',
         'm': 'materials',
+        't': 'test',
         'u': 'build',
         'y': 'stylesheets',
         }
@@ -81,7 +82,7 @@ class Controller(object):
         result = (
             'b', 'q',
             'dd', 'ee', 'gg', 'kk', 'mm', 'h', 'uu', 'yy',
-            'd', 'e', 'g', 'k', 'm', 's', 'u', 'y',
+            'd', 'e', 'g', 'k', 'm', 's', 't', 'u', 'y',
             )
         return result
 
@@ -664,10 +665,14 @@ class Controller(object):
         return annotation
 
     def _path_to_asset_menu_display_string(self, path):
-        name = os.path.basename(path)
-        if '_' in name:
-            name = stringtools.to_space_delimited_lowercase(name)
-        asset_name = name
+        asset_name = os.path.basename(path)
+        allow_asset_name_underscores = getattr(
+            self,
+            '_allow_asset_name_underscores',
+            False,
+            )
+        if '_' in asset_name and not allow_asset_name_underscores:
+            asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
             manager = self._io_manager._make_package_manager(path=path)
             name = manager._get_metadatum('name')
@@ -1072,11 +1077,11 @@ class Controller(object):
 
     @Command('t', section='navigation', outside_score=False)
     def go_to_score_test_directory(self):
-        r'''Geots to score test files.
+        r'''Goes to score test files.
 
         Returns none.
         '''
-        raise NotImplementedError
+        self._session._abjad_ide._test_file_wrangler._run()
 
     @Command('!', section='system')
     def invoke_shell(self):

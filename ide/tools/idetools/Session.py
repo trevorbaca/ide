@@ -86,6 +86,7 @@ class Session(abctools.AbjadObject):
         'materials': 'm',
         'segments': 'g',
         'stylesheets': 'y',
+        'test': 't',
         }
 
     _navigation_command_name_to_directory_name = {
@@ -94,6 +95,7 @@ class Session(abctools.AbjadObject):
         'g': 'segments',
         'k': 'makers',
         'm': 'materials',
+        't': 'test',
         'u': 'build',
         'y': 'stylesheets',
         }
@@ -1123,7 +1125,7 @@ class Session(abctools.AbjadObject):
                 >>> session.navigation_command_name is None
                 True
 
-        Returns 'd', 'm', 'g, 'k', 'y', 'u', 'e' or none.
+        Returns 'd', 'e', 'g, 'k', 'm', 't', 'u', 'y' or none.
         '''
         directory_name = self.navigation_target
         return self._directory_name_to_navigation_command_name.get(
