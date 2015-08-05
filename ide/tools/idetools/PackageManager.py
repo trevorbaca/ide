@@ -219,17 +219,30 @@ class PackageManager(Controller):
                 supply_missing=True,
                 )
         if self._package_creation_callback is not None:
-            self._package_creation_callback()
+            self._package_creation_callback(
+                self._session,
+                self._inner_path,
+                self._outer_path,
+                )
 
-    def _make_score_into_installable_package(self):
-        old_path = self._outer_path
+    def _make_score_into_installable_package(
+        self,
+        session,
+        inner_path,
+        outer_path,
+        ):
+        old_path = outer_path
         temporary_path = os.path.join(
-            os.path.dirname(self._outer_path),
+            os.path.dirname(outer_path),
             '_TEMPORARY_SCORE_PACKAGE',
             )
         shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, self._inner_path)
-        self._write_enclosing_artifacts()
+        shutil.move(temporary_path, inner_path)
+        self._write_enclosing_artifacts(
+            session,
+            inner_path,
+            outer_path,
+            )
 
     def _remove(self):
         path = self._path
@@ -418,22 +431,23 @@ class PackageManager(Controller):
         wrangler = self._session._abjad_ide._segment_package_wrangler
         wrangler._update_order_dependent_segment_metadata()
 
-    def _write_enclosing_artifacts(self):
-        self._path = self._inner_path
+    def _write_enclosing_artifacts(self, session, inner_path, outer_path):
+        # CAUTION
+        self._path = inner_path
         self._copy_boilerplate(
-            self._session,
+            session,
             'README.md',
-            self._outer_path,
+            outer_path,
             )
         self._copy_boilerplate(
-            self._session,
+            session,
             'requirements.txt',
-            self._outer_path,
+            outer_path,
             )
         self._copy_boilerplate(
-            self._session,
+            session,
             'setup.cfg',
-            self._outer_path,
+            outer_path,
             )
         replacements = {
             'COMPOSER_EMAIL': configuration.composer_email,
@@ -442,9 +456,9 @@ class PackageManager(Controller):
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate(
-            self._session,
+            session,
             'setup.py',
-            self._outer_path,
+            outer_path,
             replacements=replacements,
             )
 
