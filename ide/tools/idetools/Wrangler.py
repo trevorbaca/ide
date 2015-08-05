@@ -1050,6 +1050,52 @@ class Wrangler(Controller):
         storehouse_path = os.path.join(path_prefix, *path_parts)
         return storehouse_path
 
+    @staticmethod
+    def _rename(
+        session,
+        path,
+        file_extension=None,
+        file_name_callback=None,
+        force_lowercase=True,
+        ):
+        base_name = os.path.basename(path)
+        line = 'current name: {}'.format(base_name)
+        session._io_manager._display(line)
+        getter = session._io_manager._make_getter()
+        getter.append_string('new name')
+        new_package_name = getter._run()
+        if session.is_backtracking or new_package_name is None:
+            return
+        new_package_name = stringtools.strip_diacritics(new_package_name)
+        if file_name_callback:
+            new_package_name = file_name_callback(new_package_name)
+        new_package_name = new_package_name.replace(' ', '_')
+        if force_lowercase:
+            new_package_name = new_package_name.lower()
+        if file_extension and not new_package_name.endswith(file_extension):
+            new_package_name = new_package_name + file_extension
+        lines = []
+        line = 'current name: {}'.format(base_name)
+        lines.append(line)
+        line = 'new name:     {}'.format(new_package_name)
+        lines.append(line)
+        session._io_manager._display(lines)
+        result = session._io_manager._confirm()
+        if session.is_backtracking or not result:
+            return
+        new_path = os.path.join(
+            os.path.dirname(path),
+            new_package_name,
+            )
+        if os.path.exists(new_path):
+            message = 'path already exists: {!r}.'
+            message = message.format(new_path)
+            session._io_manager._display(message)
+            return
+        shutil.move(path, new_path)
+        session._is_backtracking_locally = True
+        return new_path
+
     def _run(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
@@ -2181,11 +2227,15 @@ class Wrangler(Controller):
         message = message.format(file_name)
         self._session._io_manager._display(message)
         manager = self._get_manager(path)
-        manager._rename_interactively(
+        new_path = manager._rename(
+            manager._session,
+            manager._path,
             file_extension=file_extension,
             file_name_callback=file_name_callback,
             force_lowercase=self._force_lowercase_file_name,
             )
+        if new_path is not None:
+            manager._path = new_path
         self._session._is_backtracking_locally = False
 
     @Command('ws', section='view', outside_score='home')

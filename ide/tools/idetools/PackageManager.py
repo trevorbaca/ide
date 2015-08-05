@@ -244,51 +244,6 @@ class PackageManager(Controller):
             outer_path,
             )
 
-    def _rename_interactively(
-        self,
-        file_extension=None,
-        file_name_callback=None,
-        force_lowercase=True,
-        ):
-        base_name = os.path.basename(self._path)
-        line = 'current name: {}'.format(base_name)
-        self._session._io_manager._display(line)
-        getter = self._session._io_manager._make_getter()
-        getter.append_string('new name')
-        new_package_name = getter._run()
-        if self._session.is_backtracking or new_package_name is None:
-            return
-        new_package_name = stringtools.strip_diacritics(new_package_name)
-        if file_name_callback:
-            new_package_name = file_name_callback(new_package_name)
-        new_package_name = new_package_name.replace(' ', '_')
-        if force_lowercase:
-            new_package_name = new_package_name.lower()
-        if file_extension and not new_package_name.endswith(file_extension):
-            new_package_name = new_package_name + file_extension
-        lines = []
-        line = 'current name: {}'.format(base_name)
-        lines.append(line)
-        line = 'new name:     {}'.format(new_package_name)
-        lines.append(line)
-        self._session._io_manager._display(lines)
-        result = self._session._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        new_directory = os.path.join(
-            os.path.dirname(self._path),
-            new_package_name,
-            )
-        if os.path.exists(new_directory):
-            message = 'path already exists: {!r}.'
-            message = message.format(new_directory)
-            self._session._io_manager._display(message)
-            return
-        shutil.move(self._path, new_directory)
-        # update path name to reflect change
-        self._path = new_directory
-        self._session._is_backtracking_locally = True
-
     def _run(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
