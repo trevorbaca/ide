@@ -80,8 +80,8 @@ class Controller(object):
     @property
     def _navigation_commands(self):
         result = (
-            'b', 'q',
-            'dd', 'ee', 'gg', 'kk', 'mm', 'h', 'uu', 'yy',
+            'b', 'h', 'q',
+            'dd', 'ee', 'gg', 'kk', 'mm', 'tt', 'uu', 'yy',
             'd', 'e', 'g', 'k', 'm', 's', 't', 'u', 'y',
             )
         return result
@@ -892,7 +892,7 @@ class Controller(object):
 
     @Command('h', description='home', section='back-home-quit')
     def go_home(self):
-        r'''Goes to all score directories.
+        r'''Goes home.
 
         Returns none.
         '''
@@ -902,7 +902,7 @@ class Controller(object):
 
     @Command('uu', section='comparison', in_score=False)
     def go_to_all_build_directories(self):
-        r'''Goes to all build files.
+        r'''Goes to all build directories.
 
         Returns none.
         '''
@@ -911,7 +911,7 @@ class Controller(object):
 
     @Command('dd', section='comparison', in_score=False)
     def go_to_all_distribution_directories(self):
-        r'''Goes to all distribution files.
+        r'''Goes to all distribution directories.
 
         Returns none.
         '''
@@ -920,7 +920,7 @@ class Controller(object):
 
     @Command('ee', section='comparison', in_score=False)
     def go_to_all_etc_directories(self):
-        r'''Goes to all etc files.
+        r'''Goes to all etc directories.
 
         Returns none.
         '''
@@ -929,7 +929,7 @@ class Controller(object):
 
     @Command('kk', section='comparison', in_score=False)
     def go_to_all_makers_directories(self):
-        r'''Goes to all maker files.
+        r'''Goes to all makers directories.
 
         Returns none.
         '''
@@ -938,7 +938,7 @@ class Controller(object):
 
     @Command('mm', section='comparison', in_score=False)
     def go_to_all_materials_directories(self):
-        r'''Goes to all materials.
+        r'''Goes to all materials directories.
 
         Returns none.
         '''
@@ -947,7 +947,7 @@ class Controller(object):
 
     @Command('gg', section='comparison', in_score=False)
     def go_to_all_segments_directories(self):
-        r'''Goes to all segments.
+        r'''Goes to all segments directories.
 
         Returns none.
         '''
@@ -956,12 +956,21 @@ class Controller(object):
 
     @Command('yy', section='comparison', in_score=False)
     def go_to_all_stylesheets_directories(self):
-        r'''Goes to all stylesheets.
+        r'''Goes to all stylesheets directories.
 
         Returns none.
         '''
         self.go_home()
         self._session._navigation_target = 'stylesheets'
+
+    @Command('tt', section='comparison', in_score=False)
+    def go_to_all_test_directories(self):
+        r'''Goes to all test directories.
+
+        Returns none.
+        '''
+        self.go_home()
+        self._session._navigation_target = 'test'
 
     @Command(
         '>',

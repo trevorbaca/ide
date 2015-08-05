@@ -24,6 +24,7 @@ def test_Wrangler_display_navigation_command_help_01():
         '    go to all materials directories (mm)',
         '    go to all segments directories (gg)',
         '    go to all stylesheets directories (yy)',
+        '    go to all test directories (tt)',
         '',
         '    go to next score (>>)',
         '    go to previous score (<<)',
@@ -61,6 +62,7 @@ def test_Wrangler_display_navigation_command_help_02():
         '    go to all materials directories (mm)',
         '    go to all segments directories (gg)',
         '    go to all stylesheets directories (yy)',
+        '    go to all test directories (tt)',
         '',
         '>',
         ]
@@ -93,6 +95,7 @@ def test_Wrangler_display_navigation_command_help_03():
         '    go to all materials directories (mm)',
         '    go to all segments directories (gg)',
         '    go to all stylesheets directories (yy)',
+        '    go to all test directories (tt)',
         '',
         '>',
         ]
