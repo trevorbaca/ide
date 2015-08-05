@@ -2159,7 +2159,7 @@ class Wrangler(Controller):
         for path in paths:
             manager = self._get_manager(path)
             with self._session._io_manager._silent(self._session):
-                manager._remove()
+                manager._remove(manager._session, manager._path)
         self._session._pending_redraw = True
 
     @Command('ren', section='basic', is_hidden=False)

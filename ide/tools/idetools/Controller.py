@@ -1214,6 +1214,37 @@ class Controller(object):
             metadatum_name,
             )
 
+    @classmethod
+    def _remove(class_, session, path):
+        # handle score packages correctly
+        parts = path.split(os.path.sep)
+        if parts[-2] == parts[-1]:
+            parts = parts[:-1]
+        path = os.path.sep.join(parts)
+        message = '{} will be removed.'
+        message = message.format(path)
+        session._io_manager._display(message)
+        getter = session._io_manager._make_getter()
+        getter.append_string("type 'remove' to proceed")
+        if session.confirm:
+            result = getter._run()
+            if session.is_backtracking or result is None:
+                return
+            if not result == 'remove':
+                return
+        if class_._is_in_git_repository(session, path):
+            if class_._is_git_unknown(session, path):
+                command = 'rm -rf {}'
+            else:
+                command = 'git rm --force -r {}'
+        else:
+            command = 'rm -rf {}'
+        command = command.format(path)
+        with systemtools.TemporaryDirectoryChange(directory=path):
+            process = session._io_manager.make_subprocess(command)
+        session._io_manager._read_one_line_from_pipe(process.stdout)
+        return True
+
     @staticmethod
     def _remove_file_line(file_path, line_to_remove):
         lines_to_keep = []

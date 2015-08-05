@@ -244,37 +244,6 @@ class PackageManager(Controller):
             outer_path,
             )
 
-    def _remove(self):
-        path = self._path
-        # handle score packages correctly
-        parts = path.split(os.path.sep)
-        if parts[-2] == parts[-1]:
-            parts = parts[:-1]
-        path = os.path.sep.join(parts)
-        message = '{} will be removed.'
-        message = message.format(path)
-        self._session._io_manager._display(message)
-        getter = self._session._io_manager._make_getter()
-        getter.append_string("type 'remove' to proceed")
-        if self._session.confirm:
-            result = getter._run()
-            if self._session.is_backtracking or result is None:
-                return
-            if not result == 'remove':
-                return
-        if self._is_in_git_repository(self._session, self._path):
-            if self._is_git_unknown(self._session, self._path):
-                command = 'rm -rf {}'
-            else:
-                command = 'git rm --force -r {}'
-        else:
-            command = 'rm -rf {}'
-        command = command.format(path)
-        with systemtools.TemporaryDirectoryChange(directory=path):
-            process = self._session._io_manager.make_subprocess(command)
-        self._session._io_manager._read_one_line_from_pipe(process.stdout)
-        return True
-
     def _rename(self, new_path):
         if self._is_in_git_repository(self._session, self._path):
             if self._is_git_unknown(self._session, self._path):
