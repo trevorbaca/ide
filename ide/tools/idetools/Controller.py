@@ -1144,33 +1144,35 @@ class Controller(object):
             annotation = None
         return annotation
 
-    def _path_to_asset_menu_display_string(self, path):
+    @classmethod
+    def _path_to_asset_menu_display_string(
+        class_, 
+        session, 
+        path,
+        basic_breadcrumb,
+        allow_asset_name_underscores=False,
+        ):
         asset_name = os.path.basename(path)
-        allow_asset_name_underscores = getattr(
-            self,
-            '_allow_asset_name_underscores',
-            False,
-            )
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
-            manager = self._session._io_manager._make_package_manager(path=path)
+            manager = session._io_manager._make_package_manager(path=path)
             name = manager._get_metadatum(
                 manager._session,
                 manager._metadata_py_path,
                 'name',
                 )
             asset_name = name or asset_name
-        if self._session.is_in_score:
+        if session.is_in_score:
             string = asset_name
         else:
-            annotation = self._path_to_annotation(
-                self._session,
+            annotation = class_._path_to_annotation(
+                session,
                 path,
-                self._basic_breadcrumb,
+                basic_breadcrumb,
                 )
             prototype = ('SCORES', 'scores')
-            if self._basic_breadcrumb in prototype:
+            if basic_breadcrumb in prototype:
                 string = annotation
             else:
                 string = '{} ({})'.format(asset_name, annotation)
