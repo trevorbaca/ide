@@ -62,7 +62,10 @@ class PackageManager(Controller):
     @property
     def _breadcrumb(self):
         if self._breadcrumb_callback is not None:
-            return self._breadcrumb_callback()
+            return self._breadcrumb_callback(
+                self._session,
+                self._metadata_py_path,
+                )
         return self._space_delimited_lowercase_name
 
     @property
@@ -152,7 +155,7 @@ class PackageManager(Controller):
 
     def _configure_as_score_package_manager(self):
         self._basic_breadcrumb = 'SCORES'
-        self._breadcrumb_callback = self._get_title
+        self._breadcrumb_callback = self._get_title_metadatum
         self._optional_directories = (
             '__pycache__',
             'etc',
@@ -257,13 +260,18 @@ class PackageManager(Controller):
             raise ValueError(self._path)
         return paths
 
-    def _get_name_metadatum(self):
-        name = self._get_metadatum(
-            self._session,
-            self._metadata_py_path,
+    @classmethod
+    def _get_name_metadatum(class_, session, metadata_py_path):
+        name = class_._get_metadatum(
+            session,
+            metadata_py_path,
             'name',
             )
-        return name or self._space_delimited_lowercase_name
+        if not name:
+            parts = metadata_py_path.split(os.path.sep)
+            directory_name = parts[-2]
+            name = directory_name.replace('_', ' ')
+        return name
 
     def _get_next_version_string(self):
         last_version_number = self._get_last_version_number()
@@ -324,26 +332,36 @@ class PackageManager(Controller):
         line = line.lstrip(os.path.sep)
         return line
 
-    def _get_title(self, year=True):
-        if year and self._get_metadatum(
-            self._session,
-            self._metadata_py_path,
+    @classmethod
+    def _get_title_metadatum(
+        class_, 
+        session, 
+        metadata_py_path, 
+        year=True,
+        ):
+        if year and class_._get_metadatum(
+            session,
+            metadata_py_path,
             'year',
             ):
             result = '{} ({})'
             result = result.format(
-                self._get_title(year=False),
-                self._get_metadatum(
-                    self._session,
-                    self._metadata_py_path,
+                class_._get_title_metadatum(
+                    session,
+                    metadata_py_path,
+                    year=False,
+                    ),
+                class_._get_metadatum(
+                    session,
+                    metadata_py_path,
                     'year',
                     )
                 )
             return result
         else:
-            result = self._get_metadatum(
-                self._session,
-                self._metadata_py_path,
+            result = class_._get_metadatum(
+                session,
+                metadata_py_path,
                 'title',
                 )
             result = result or '(untitled score)'

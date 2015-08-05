@@ -903,7 +903,12 @@ class Wrangler(Controller):
             )
         for path in paths:
             manager = wrangler._get_manager(path)
-            display_strings.append(manager._get_title(year=False))
+            title = manager._get_title_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                year=False,
+                )
+            display_strings.append(title)
             key = os.path.join(
                 manager._path,
                 self._directory_name,
@@ -1588,7 +1593,11 @@ class Wrangler(Controller):
         file_name = 'front-cover.tex'
         replacements = {}
         manager = self._session.current_score_package_manager
-        score_title = manager._get_title(year=False)
+        score_title = manager._get_title_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            year=False,
+            )
         if score_title:
             old = 'TITLE'
             new = str(score_title.upper())
@@ -1698,12 +1707,20 @@ class Wrangler(Controller):
             old = '% LILYPOND_VERSION_DIRECTIVE'
             new = lilypond_version_directive
             self._replace_in_file(candidate_path, old, new)
-            score_title = manager._get_title(year=False)
+            score_title = manager._get_title_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                year=False,
+                )
             if score_title:
                 old = 'SCORE_NAME'
                 new = score_title
                 self._replace_in_file(candidate_path, old, new)
-            annotated_title = manager._get_title(year=True)
+            annotated_title = manager._get_title_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                year=True,
+                )
             if annotated_title:
                 old = 'SCORE_TITLE'
                 new = annotated_title
