@@ -221,11 +221,6 @@ class PackageManager(Controller):
         if self._package_creation_callback is not None:
             self._package_creation_callback()
 
-#    def _make_repository_commit_command(path, message):
-#        command = 'git commit -m "{}" {}; git push'
-#        command = command.format(message, path)
-#        return command
-
     def _make_score_into_installable_package(self):
         old_path = self._outer_path
         temporary_path = os.path.join(
@@ -235,20 +230,6 @@ class PackageManager(Controller):
         shutil.move(old_path, temporary_path)
         shutil.move(temporary_path, self._inner_path)
         self._write_enclosing_artifacts()
-
-    def _parse_paper_dimensions(self):
-        string = self._get_metadatum(
-            self._session,
-            self._metadata_py_path, 
-            'paper_dimensions',
-            )
-        string = string or '8.5 x 11 in'
-        parts = string.split()
-        assert len(parts) == 4
-        width, _, height, units = parts
-        width = eval(width)
-        height = eval(height)
-        return width, height, units
 
     def _remove(self):
         path = self._path

@@ -1060,6 +1060,24 @@ class Controller(object):
             message = message.format(path)
             self._session._io_manager._display(message)
 
+    @classmethod
+    def _parse_paper_dimensions(class_, session):
+        manager = session.current_score_package_manager
+        if manager is None:
+            return
+        string = class_._get_metadatum(
+            session,
+            manager._metadata_py_path, 
+            'paper_dimensions',
+            )
+        string = string or '8.5 x 11 in'
+        parts = string.split()
+        assert len(parts) == 4
+        width, _, height, units = parts
+        width = eval(width)
+        height = eval(height)
+        return width, height, units
+
     def _path_to_annotation(self, path):
         score_storehouses = (
             configuration.abjad_ide_example_scores_directory,

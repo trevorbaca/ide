@@ -1566,7 +1566,7 @@ class Wrangler(Controller):
             old = 'PRICE'
             new = str(price)
             replacements[old] = new
-        width, height, unit = manager._parse_paper_dimensions()
+        width, height, unit = manager._parse_paper_dimensions(manager._session)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1627,7 +1627,7 @@ class Wrangler(Controller):
             old = 'COMPOSER'
             new = str(composer)
             replacements[old] = new
-        width, height, unit = manager._parse_paper_dimensions()
+        width, height, unit = manager._parse_paper_dimensions(manager._session)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1673,7 +1673,8 @@ class Wrangler(Controller):
             )
         with systemtools.FilesystemState(remove=[candidate_path]):
             shutil.copyfile(source_path, candidate_path)
-            width, height, unit = manager._parse_paper_dimensions()
+            width, height, unit = manager._parse_paper_dimensions(
+                manager._session)
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
             new = new.format(width, unit, height, unit)
@@ -1749,7 +1750,7 @@ class Wrangler(Controller):
         '''
         replacements = {}
         manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions()
+        width, height, unit = manager._parse_paper_dimensions(manager._session)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1775,7 +1776,7 @@ class Wrangler(Controller):
         '''
         replacements = {}
         manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions()
+        width, height, unit = manager._parse_paper_dimensions(manager._session)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
