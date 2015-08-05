@@ -1230,7 +1230,11 @@ class Wrangler(Controller):
         if not os.path.exists(views_py_path):
             view_inventory = idetools.ViewInventory()
             with self._session._io_manager._silent(self._session):
-                self._write_view_inventory(view_inventory)
+                self._write_view_inventory(
+                    self._session,
+                    self._directory_name,
+                    view_inventory,
+                    )
         if not os.path.exists(self._metadata_py_path):
             metadata = self._get_metadata()
             with self._session._io_manager._silent(self._session):
@@ -1248,7 +1252,11 @@ class Wrangler(Controller):
             with self._session._io_manager._silent(self._session):
                 for wrangler in self._session._abjad_ide._wranglers:
                     view_inventory = idetools.ViewInventory()
-                    wrangler._write_view_inventory(view_inventory)
+                    wrangler._write_view_inventory(
+                        self._session,
+                        self._diretory_name,
+                        view_inventory,
+                        )
 
     @staticmethod
     def _to_dash_case(file_name):

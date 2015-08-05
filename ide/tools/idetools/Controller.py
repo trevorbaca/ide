@@ -1480,24 +1480,30 @@ class Controller(object):
         with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
 
-    def _write_view_inventory(self, view_inventory):
+    @classmethod
+    def _write_view_inventory(
+        class_, 
+        session, 
+        directory_name, 
+        view_inventory,
+        ):
         lines = []
-        lines.append(self._unicode_directive)
-        lines.append(self._abjad_import_statement)
+        lines.append(class_._unicode_directive)
+        lines.append(class_._abjad_import_statement)
         lines.append('from ide.tools import idetools')
         lines.append('')
         lines.append('')
-        view_inventory = self._sort_ordered_dictionary(view_inventory)
+        view_inventory = class_._sort_ordered_dictionary(view_inventory)
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        views_py_path = self._get_views_py_path(
-            self._session,
-            self._directory_name,
+        views_py_path = class_._get_views_py_path(
+            session,
+            directory_name,
             )
-        self._session._io_manager.write(views_py_path, contents)
+        session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
-        self._session._io_manager._display(message)
+        session._io_manager._display(message)
 
     ### PUBLIC METHODS ###
 
