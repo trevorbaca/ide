@@ -193,15 +193,15 @@ class PackageManager(Controller):
             'definition.py',
             )
 
+    @staticmethod
     def _format_counted_check_messages(
-        self,
         paths,
         identifier,
         participal,
+        tab,
         ):
         messages = []
         if paths:
-            tab = self._session._io_manager._tab
             count = len(paths)
             identifier = stringtools.pluralize(identifier, count)
             message = '{} {} {}:'
@@ -212,12 +212,13 @@ class PackageManager(Controller):
                 messages.append(message)
         return messages
 
+    @staticmethod
     def _format_ratio_check_messages(
-        self,
         found_paths,
         total_paths,
         identifier,
         participal='found',
+        tab=None,
         ):
         messages = []
         denominator = len(total_paths)
@@ -230,7 +231,6 @@ class PackageManager(Controller):
         message = message.format(
             numerator, denominator, identifier, participal)
         messages.append(message)
-        tab = self._session._io_manager._tab
         for path in sorted(found_paths):
             message = tab + path
             messages.append(message)
@@ -901,6 +901,7 @@ class PackageManager(Controller):
                 self._required_directories,
                 'required directory',
                 participal='found',
+                tab=self._session._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_directories:
@@ -909,6 +910,7 @@ class PackageManager(Controller):
                 self._required_directories,
                 'required directory',
                 'missing',
+                tab=self._session._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -917,6 +919,7 @@ class PackageManager(Controller):
                 self._required_files,
                 'required file',
                 'found',
+                tab=self._session._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_files:
@@ -925,6 +928,7 @@ class PackageManager(Controller):
                 self._required_files,
                 'required file',
                 'missing',
+                tab=self._session._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -932,24 +936,28 @@ class PackageManager(Controller):
                 optional_directories,
                 'optional directory',
                 participal='found',
+                tab=self._session._io_manager._tab
                 )
             messages.extend(messages_)
             messages_ = self._format_counted_check_messages(
                 optional_files,
                 'optional file',
                 participal='found',
+                tab=self._session._io_manager._tab
                 )
             messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_directories,
             'unrecognized directory',
             participal='found',
+            tab=self._session._io_manager._tab
             )
         messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_files,
             'unrecognized file',
             participal='found',
+            tab=self._session._io_manager._tab
             )
         messages.extend(messages_)
         tab = self._session._io_manager._tab
