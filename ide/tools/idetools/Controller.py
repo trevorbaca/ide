@@ -76,7 +76,10 @@ class Controller(object):
     @property
     def _views_py_path(self):
         if self._session.is_in_score:
-            directory = self._get_current_directory()
+            directory = self._get_current_directory(
+                self._session,
+                self._directory_name,
+                )
             return os.path.join(directory, '__views__.py')
         else:
             directory = configuration.abjad_ide_wrangler_views_directory
@@ -862,7 +865,13 @@ class Controller(object):
         return True
 
     def _is_in_score_directory(self):
-        current_directory = self._get_current_directory()
+        if hasattr(self, '_directory_name'):
+            current_directory = self._get_current_directory(
+                self._session,
+                self._directory_name,
+                )
+        else:
+            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         current_directory = os.path.normpath(current_directory)
@@ -971,7 +980,13 @@ class Controller(object):
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
-        current_directory = self._get_current_directory()
+        if hasattr(self, '_directory_name'):
+            current_directory = self._get_current_directory(
+                self._session,
+                self._directory_name
+                )
+        else:
+            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         required_files = getattr(self, '_required_files', ())
@@ -1053,7 +1068,13 @@ class Controller(object):
         menu_entries = []
         if not self._session.is_in_score:
             return menu_entries
-        current_directory = self._get_current_directory()
+        if hasattr(self, '_directory_name'):
+            current_directory = self._get_current_directory(
+                self._session,
+                self._directory_name,
+                )
+        else:
+            current_directory = self._get_current_directory()
         if not current_directory:
             return menu_entries
         for name in os.listdir(current_directory):
