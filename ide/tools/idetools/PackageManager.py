@@ -244,20 +244,6 @@ class PackageManager(Controller):
             outer_path,
             )
 
-    def _rename(self, new_path):
-        if self._is_in_git_repository(self._session, self._path):
-            if self._is_git_unknown(self._session, self._path):
-                command = 'mv {} {}'
-            else:
-                command = 'git mv --force {} {}'
-        else:
-            command = 'mv {} {}'
-        command = command.format(self._path, new_path)
-        with systemtools.TemporaryDirectoryChange(directory=self._path):
-            process = self._session._io_manager.make_subprocess(command)
-        self._session._io_manager._read_from_pipe(process.stdout)
-        self._path = new_path
-
     def _rename_interactively(
         self,
         file_extension=None,
