@@ -445,11 +445,58 @@ class Controller(object):
         return paths
 
     @staticmethod
+    def _get_previous_segment_manager(session, path):
+        wrangler = session._abjad_ide._segment_package_wrangler
+        managers = wrangler._list_visible_asset_managers()
+        for i, manager in enumerate(managers):
+            if manager._path == path:
+                break
+        else:
+            message = 'can not find segment package manager.'
+            raise Exception(message)
+        current_manager_index = i
+        if current_manager_index == 0:
+            return
+        previous_manager_index = current_manager_index - 1
+        previous_manager = managers[previous_manager_index]
+        return previous_manager
+
+    @staticmethod
     def _get_repository_root_directory(session, path):
         command = 'git rev-parse --show-toplevel'
         with systemtools.TemporaryDirectoryChange(directory=path):
             process = session._io_manager.make_subprocess(command)
         line = session._io_manager._read_one_line_from_pipe(process.stdout)
+        return line
+
+    @classmethod
+    def _get_score_initializer_file_lines(class_, missing_file):
+        lines = []
+        lines.append(class_._unicode_directive)
+        if 'materials' in missing_file or 'makers' in missing_file:
+            lines.append('from abjad.tools import systemtools')
+            lines.append('')
+            line = 'systemtools.ImportManager.import_material_packages('
+            lines.append(line)
+            lines.append('    __path__[0],')
+            lines.append('    globals(),')
+            lines.append('    )')
+        elif 'segments' in missing_file:
+            pass
+        else:
+            lines.append('import makers')
+            lines.append('import materials')
+            lines.append('import segments')
+        return lines
+
+    @staticmethod
+    def _get_score_package_directory_name(path):
+        line = path
+        path = configuration.abjad_ide_example_scores_directory
+        line = line.replace(path, '')
+        path = configuration.composer_scores_directory
+        line = line.replace(path, '')
+        line = line.lstrip(os.path.sep)
         return line
 
     def _get_sibling_score_directory(self, next_=True):
@@ -560,7 +607,7 @@ class Controller(object):
                 result = self._session._io_manager._confirm()
                 if self._session.is_backtracking or not result:
                     return
-            message = self._get_score_package_directory_name()
+            message = self._get_score_package_directory_name(self._path)
             message = message + ' ...'
             command = self._make_repository_commit_command(commit_message)
             self._session._io_manager.run_command(command, capitalize=False)

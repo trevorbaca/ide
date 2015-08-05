@@ -195,57 +195,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_next_version_string(self):
-        last_version_number = self._get_last_version_number()
-        last_version_number = last_version_number or 0
-        next_version_number = last_version_number + 1
-        next_version_string = '%04d' % next_version_number
-        return next_version_string
-
-    def _get_previous_segment_manager(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        managers = wrangler._list_visible_asset_managers()
-        for i, manager in enumerate(managers):
-            if manager._path == self._path:
-                break
-        else:
-            message = 'can not find segment package manager.'
-            raise Exception(message)
-        current_manager_index = i
-        if current_manager_index == 0:
-            return
-        previous_manager_index = current_manager_index - 1
-        previous_manager = managers[previous_manager_index]
-        return previous_manager
-
-    def _get_score_initializer_file_lines(self, missing_file):
-        lines = []
-        lines.append(self._unicode_directive)
-        if 'materials' in missing_file or 'makers' in missing_file:
-            lines.append('from abjad.tools import systemtools')
-            lines.append('')
-            line = 'systemtools.ImportManager.import_material_packages('
-            lines.append(line)
-            lines.append('    __path__[0],')
-            lines.append('    globals(),')
-            lines.append('    )')
-        elif 'segments' in missing_file:
-            pass
-        else:
-            lines.append('import makers')
-            lines.append('import materials')
-            lines.append('import segments')
-        return lines
-
-    def _get_score_package_directory_name(self):
-        line = self._path
-        path = configuration.abjad_ide_example_scores_directory
-        line = line.replace(path, '')
-        path = configuration.composer_scores_directory
-        line = line.replace(path, '')
-        line = line.lstrip(os.path.sep)
-        return line
-
     def _get_unadded_asset_paths(self):
         paths = []
         if self._is_in_git_repository():
@@ -1060,7 +1009,10 @@ class PackageManager(Controller):
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
-            previous_segment_manager = self._get_previous_segment_manager()
+            previous_segment_manager = self._get_previous_segment_manager(
+                self._session,
+                self._path,
+                )
             if previous_segment_manager is None:
                 statement = 'previous_segment_metadata = None'
             else:
