@@ -193,27 +193,6 @@ class PackageManager(Controller):
             'definition.py',
             )
 
-    @classmethod
-    def _copy_boilerplate(
-        class_, 
-        source_file_name, 
-        destination_directory,
-        replacements=None,
-        ):
-        replacements = replacements or {}
-        source_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            source_file_name,
-            )
-        destination_path = os.path.join(
-            destination_directory,
-            source_file_name,
-            )
-        shutil.copyfile(source_path, destination_path)
-        for old in replacements:
-            new = replacements[old]
-            class_._replace_in_file(destination_path, old, new)
-
     @staticmethod
     def _file_name_to_version_number(file_name):
         root, file_extension = os.path.splitext(file_name)
@@ -797,9 +776,21 @@ class PackageManager(Controller):
 
     def _write_enclosing_artifacts(self):
         self._path = self._inner_path
-        self._copy_boilerplate('README.md', self._outer_path)
-        self._copy_boilerplate('requirements.txt', self._outer_path)
-        self._copy_boilerplate('setup.cfg', self._outer_path)
+        self._copy_boilerplate(
+            self._session,
+            'README.md',
+            self._outer_path,
+            )
+        self._copy_boilerplate(
+            self._session,
+            'requirements.txt',
+            self._outer_path,
+            )
+        self._copy_boilerplate(
+            self._session,
+            'setup.cfg',
+            self._outer_path,
+            )
         replacements = {
             'COMPOSER_EMAIL': configuration.composer_email,
             'COMPOSER_FULL_NAME': configuration.composer_full_name,
@@ -807,6 +798,7 @@ class PackageManager(Controller):
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate(
+            self._session,
             'setup.py',
             self._outer_path,
             replacements=replacements,

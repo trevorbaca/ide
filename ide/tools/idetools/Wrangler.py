@@ -331,69 +331,6 @@ class Wrangler(Controller):
             return False
         return segment_names
 
-    @classmethod
-    def _copy_boilerplate(
-        class_, 
-        session,
-        source_file_name, 
-        destination_directory,
-        candidacy=True, 
-        replacements=None,
-        ):
-        replacements = replacements or {}
-        source_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            source_file_name,
-            )
-        destination_path = os.path.join(
-            destination_directory,
-            source_file_name,
-            )
-        base_name, file_extension = os.path.splitext(source_file_name)
-        candidate_name = base_name + '.candidate' + file_extension
-        candidate_path = os.path.join(
-            destination_directory,
-            candidate_name,
-            )
-        messages = []
-        with systemtools.FilesystemState(remove=[candidate_path]):
-            shutil.copyfile(source_path, candidate_path)
-            for old in replacements:
-                new = replacements[old]
-                class_._replace_in_file(candidate_path, old, new)
-            if not os.path.exists(destination_path):
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'wrote {}.'.format(destination_path)
-                messages.append(message)
-            elif not candidacy:
-                message = 'overwrite {}?'
-                message = message.format(destination_path)
-                result = session._io_manager._confirm(message)
-                if session.is_backtracking or not result:
-                    return False
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
-                messages.append(message)
-            elif systemtools.TestManager.compare_files(
-                candidate_path, 
-                destination_path,
-                ):
-                messages_ = class_._make_candidate_messages(
-                    session,
-                    True, 
-                    candidate_path, 
-                    destination_path,
-                    )
-                messages.extend(messages_)
-                message = 'preserved {}.'.format(destination_path)
-                messages.append(message)
-            else:
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
-                messages.append(message)
-            session._io_manager._display(messages)
-            return True
-
     def _edit_file_ending_with(self, string):
         file_path = self._get_file_path_ending_with(string)
         if file_path:
