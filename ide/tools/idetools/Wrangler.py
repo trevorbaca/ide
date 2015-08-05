@@ -766,7 +766,15 @@ class Wrangler(Controller):
             )
         if (apply_current_directory or set_view) and current_directory:
             paths = [_ for _ in paths if _.startswith(current_directory)]
-        strings = [self._path_to_asset_menu_display_string(_) for _ in paths]
+        strings = []
+        for path in paths:
+            string = self._path_to_asset_menu_display_string(
+                self._session,
+                path,
+                self._basic_breadcrumb,
+                self._allow_asset_name_underscores,
+                )
+            strings.append(string)
         pairs = list(zip(strings, paths))
         if not self._session.is_in_score and self._sort_by_annotation:
             def sort_function(pair):
@@ -1989,7 +1997,12 @@ class Wrangler(Controller):
         managers = self._list_visible_asset_managers()
         for manager in managers:
             messages = []
-            message = self._path_to_asset_menu_display_string(manager._path)
+            message = self._path_to_asset_menu_display_string(
+                self._session,
+                manager._path,
+                self._basic_breadcrumb,
+                self._allow_asset_name_underscores,
+                )
             message = self._strip_annotation(message)
             message = message + ':'
             messages_ = manager._git_update(

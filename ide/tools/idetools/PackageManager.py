@@ -405,7 +405,11 @@ class PackageManager(Controller):
         messages.extend(messages_)
         tab = self._session._io_manager._tab
         messages = [tab + _ for _ in messages]
-        name = self._path_to_asset_menu_display_string(self._path)
+        name = self._path_to_asset_menu_display_string(
+            self._session,
+            self._path,
+            self._basic_breadcrumb,
+            )
         found_problems = (
             missing_directories or
             missing_files or
