@@ -441,7 +441,11 @@ class Wrangler(Controller):
 
     def _get_file_path_ending_with(self, string):
         path = self._get_current_directory()
-        for file_name in self._list():
+        file_names = self._session._io_manager._list_directory(
+            path,
+            public_entries_only=False,
+            )
+        for file_name in file_names:
             if file_name.endswith(string):
                 file_path = os.path.join(path, file_name)
                 return file_path
@@ -576,15 +580,6 @@ class Wrangler(Controller):
             if '.' not in expr:
                 return True
         return False
-
-    def _list(self, public_entries_only=False):
-        result = []
-        path = self._get_current_directory()
-        result = self._session._io_manager._list_directory(
-            path, 
-            public_entries_only=public_entries_only,
-            )
-        return result
 
     def _list_all_directories_with_metadata_pys(self):
         directories = []
