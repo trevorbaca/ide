@@ -604,7 +604,8 @@ class Controller(object):
             result = self._session._io_manager._confirm()
             if self._session.is_backtracking or not result:
                 return
-            command = self._repository_add_command
+            command = 'git add -A {}'
+            command = command.format(self._path)
             assert isinstance(command, str)
             self._session._io_manager.run_command(command)
 
@@ -708,7 +709,12 @@ class Controller(object):
             self._session._attempted_to_update = True
             if self._session.is_repository_test:
                 return messages
-            command = self._repository_update_command
+            root_directory = self._get_repository_root_directory(
+                self._session,
+                self._path,
+                )
+            command = 'git pull {}'
+            command = command.format(root_directory)
             messages = self._session._io_manager.run_command(
                 command,
                 messages_only=True,

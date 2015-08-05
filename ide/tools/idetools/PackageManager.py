@@ -66,7 +66,9 @@ class PackageManager(Controller):
                 self._session,
                 self._metadata_py_path,
                 )
-        return self._space_delimited_lowercase_name
+        base_name = os.path.basename(self._path)
+        result = base_name.replace('_', ' ')
+        return result
 
     @property
     def _definition_py_path(self):
@@ -108,34 +110,6 @@ class PackageManager(Controller):
     @property
     def _package_name(self):
         return os.path.basename(self._path)
-
-    @property
-    def _repository_add_command(self):
-        command = 'git add -A {}'
-        command = command.format(self._path)
-        return command
-
-    @property
-    def _repository_update_command(self):
-        root_directory = self._get_repository_root_directory(
-            self._session,
-            self._path,
-            )
-        command = 'git pull {}'
-        command = command.format(root_directory)
-        return command
-
-    @property
-    def _shell_remove_command(self):
-        if self._session._io_manager.find_executable('trash'):
-            return 'trash'
-        return 'rm'
-
-    @property
-    def _space_delimited_lowercase_name(self):
-        base_name = os.path.basename(self._path)
-        result = base_name.replace('_', ' ')
-        return result
 
     ### PRIVATE METHODS ###
 
