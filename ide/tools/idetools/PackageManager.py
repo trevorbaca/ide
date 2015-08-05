@@ -192,49 +192,6 @@ class PackageManager(Controller):
             'definition.py',
             )
 
-    @staticmethod
-    def _format_counted_check_messages(
-        paths,
-        identifier,
-        participal,
-        tab,
-        ):
-        messages = []
-        if paths:
-            count = len(paths)
-            identifier = stringtools.pluralize(identifier, count)
-            message = '{} {} {}:'
-            message = message.format(count, identifier, participal)
-            messages.append(message)
-            for path in paths:
-                message = tab + path
-                messages.append(message)
-        return messages
-
-    @staticmethod
-    def _format_ratio_check_messages(
-        found_paths,
-        total_paths,
-        identifier,
-        participal='found',
-        tab=None,
-        ):
-        messages = []
-        denominator = len(total_paths)
-        numerator = len(found_paths)
-        identifier = stringtools.pluralize(identifier, denominator)
-        if denominator:
-            message = '{} of {} {} {}:'
-        else:
-            message = '{} of {} {} {}.'
-        message = message.format(
-            numerator, denominator, identifier, participal)
-        messages.append(message)
-        for path in sorted(found_paths):
-            message = tab + path
-            messages.append(message)
-        return messages
-
     def _get_current_directory(self):
         return self._path
 
@@ -260,19 +217,6 @@ class PackageManager(Controller):
             raise ValueError(self._path)
         return paths
 
-    @classmethod
-    def _get_name_metadatum(class_, session, metadata_py_path):
-        name = class_._get_metadatum(
-            session,
-            metadata_py_path,
-            'name',
-            )
-        if not name:
-            parts = metadata_py_path.split(os.path.sep)
-            directory_name = parts[-2]
-            name = directory_name.replace('_', ' ')
-        return name
-
     def _get_next_version_string(self):
         last_version_number = self._get_last_version_number()
         last_version_number = last_version_number or 0
@@ -295,14 +239,6 @@ class PackageManager(Controller):
         previous_manager_index = current_manager_index - 1
         previous_manager = managers[previous_manager_index]
         return previous_manager
-
-    @staticmethod
-    def _get_repository_root_directory(session, path):
-        command = 'git rev-parse --show-toplevel'
-        with systemtools.TemporaryDirectoryChange(directory=path):
-            process = session._io_manager.make_subprocess(command)
-        line = session._io_manager._read_one_line_from_pipe(process.stdout)
-        return line
 
     def _get_score_initializer_file_lines(self, missing_file):
         lines = []
@@ -331,41 +267,6 @@ class PackageManager(Controller):
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line
-
-    @classmethod
-    def _get_title_metadatum(
-        class_, 
-        session, 
-        metadata_py_path, 
-        year=True,
-        ):
-        if year and class_._get_metadatum(
-            session,
-            metadata_py_path,
-            'year',
-            ):
-            result = '{} ({})'
-            result = result.format(
-                class_._get_title_metadatum(
-                    session,
-                    metadata_py_path,
-                    year=False,
-                    ),
-                class_._get_metadatum(
-                    session,
-                    metadata_py_path,
-                    'year',
-                    )
-                )
-            return result
-        else:
-            result = class_._get_metadatum(
-                session,
-                metadata_py_path,
-                'title',
-                )
-            result = result or '(untitled score)'
-            return result
 
     def _get_unadded_asset_paths(self):
         paths = []

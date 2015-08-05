@@ -230,6 +230,25 @@ class Controller(object):
                     return directory_entry
 
     @staticmethod
+    def _format_counted_check_messages(
+        paths,
+        identifier,
+        participal,
+        tab,
+        ):
+        messages = []
+        if paths:
+            count = len(paths)
+            identifier = stringtools.pluralize(identifier, count)
+            message = '{} {} {}:'
+            message = message.format(count, identifier, participal)
+            messages.append(message)
+            for path in paths:
+                message = tab + path
+                messages.append(message)
+        return messages
+
+    @staticmethod
     def _format_messaging(inputs, outputs, verb='interpret'):
         messages = []
         if not inputs and not outputs:
@@ -266,6 +285,30 @@ class Controller(object):
                     for path in path_list:
                         messages.append('{}{}'.format(output_label, path))
                 messages.append('')
+        return messages
+
+    @staticmethod
+    def _format_ratio_check_messages(
+        found_paths,
+        total_paths,
+        identifier,
+        participal='found',
+        tab=None,
+        ):
+        messages = []
+        denominator = len(total_paths)
+        numerator = len(found_paths)
+        identifier = stringtools.pluralize(identifier, denominator)
+        if denominator:
+            message = '{} of {} {} {}:'
+        else:
+            message = '{} of {} {} {}.'
+        message = message.format(
+            numerator, denominator, identifier, participal)
+        messages.append(message)
+        for path in sorted(found_paths):
+            message = tab + path
+            messages.append(message)
         return messages
 
     @classmethod
@@ -326,6 +369,19 @@ class Controller(object):
                 file_path = os.path.join(directory_path, file_name)
                 return file_path
 
+    @classmethod
+    def _get_name_metadatum(class_, session, metadata_py_path):
+        name = class_._get_metadatum(
+            session,
+            metadata_py_path,
+            'name',
+            )
+        if not name:
+            parts = metadata_py_path.split(os.path.sep)
+            directory_name = parts[-2]
+            name = directory_name.replace('_', ' ')
+        return name
+
     @staticmethod
     def _get_git_status_lines(session, directory_path):
         command = 'git status --porcelain {}'
@@ -368,6 +424,14 @@ class Controller(object):
             )
         return metadata.get(metadatum_name)
 
+    @staticmethod
+    def _get_repository_root_directory(session, path):
+        command = 'git rev-parse --show-toplevel'
+        with systemtools.TemporaryDirectoryChange(directory=path):
+            process = session._io_manager.make_subprocess(command)
+        line = session._io_manager._read_one_line_from_pipe(process.stdout)
+        return line
+
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths()
         if self._session.last_asset_path is None:
@@ -393,6 +457,41 @@ class Controller(object):
             self._session._is_navigating_to_previous_score = False
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(next_=False)
+
+    @classmethod
+    def _get_title_metadatum(
+        class_, 
+        session, 
+        metadata_py_path, 
+        year=True,
+        ):
+        if year and class_._get_metadatum(
+            session,
+            metadata_py_path,
+            'year',
+            ):
+            result = '{} ({})'
+            result = result.format(
+                class_._get_title_metadatum(
+                    session,
+                    metadata_py_path,
+                    year=False,
+                    ),
+                class_._get_metadatum(
+                    session,
+                    metadata_py_path,
+                    'year',
+                    )
+                )
+            return result
+        else:
+            result = class_._get_metadatum(
+                session,
+                metadata_py_path,
+                'title',
+                )
+            result = result or '(untitled score)'
+            return result
 
     def _get_views_package_manager(self):
         path = configuration.abjad_ide_wrangler_views_directory
