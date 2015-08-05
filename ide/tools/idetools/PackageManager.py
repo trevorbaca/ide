@@ -82,10 +82,6 @@ class PackageManager(Controller):
         return os.path.join(self._path, 'illustration.pdf')
 
     @property
-    def _init_py_file_path(self):
-        return os.path.join(self._path, '__init__.py')
-
-    @property
     def _inner_path(self):
         return os.path.join(self._outer_path, self._package_name)
 
@@ -112,24 +108,20 @@ class PackageManager(Controller):
 
     @property
     def _repository_add_command(self):
-        if self._is_in_git_repository(path=self._path):
-            command = 'git add -A {}'.format(self._path)
-        else:
-            raise ValueError(self)
+        command = 'git add -A {}'
+        command = command.format(self._path)
         return command
 
     @property
     def _repository_update_command(self):
-        if self._is_in_git_repository(path=self._path):
-            root_directory = self._get_repository_root_directory()
-            return 'git pull {}'.format(root_directory)
-        else:
-            raise ValueError(self)
+        root_directory = self._get_repository_root_directory()
+        command = 'git pull {}'
+        command = command.format(root_directory)
+        return command
 
     @property
     def _shell_remove_command(self):
-        paths = self._io_manager.find_executable('trash')
-        if paths:
+        if self._io_manager.find_executable('trash'):
             return 'trash'
         return 'rm'
 
@@ -138,10 +130,6 @@ class PackageManager(Controller):
         base_name = os.path.basename(self._path)
         result = base_name.replace('_', ' ')
         return result
-
-    @property
-    def _views_py_path(self):
-        return os.path.join(self._path, '__views__.py')
 
     ### PRIVATE METHODS ###
 
@@ -813,18 +801,6 @@ class PackageManager(Controller):
             'PACKAGE_NAME': self._package_name,
             }
         self._copy_boilerplate('setup.py', replacements=replacements)
-
-    def _write_stub_definition_py(self):
-        lines = []
-        lines.append(self._unicode_directive)
-        lines.append(self._abjad_import_statement)
-        lines.append('')
-        lines.append('')
-        line = '{} = None'.format(self._package_name)
-        lines.append(line)
-        contents = '\n'.join(lines)
-        with open(self._definition_py_path, 'w') as file_pointer:
-            file_pointer.write(contents)
 
     ### PUBLIC METHODS ###
 
