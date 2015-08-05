@@ -935,6 +935,8 @@ class Wrangler(Controller):
                 if part.startswith('md:'):
                     metadatum_name = part[3:]
                     metadatum = manager._get_metadatum(
+                        manager._session,
+                        manager._metadata_py_path,
                         metadatum_name,
                         include_score=True,
                         )
@@ -1254,7 +1256,11 @@ class Wrangler(Controller):
             'first_bar_number',
             first_bar_number,
             )
-        measure_count = manager._get_metadatum('measure_count')
+        measure_count = manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'measure_count',
+            )
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
@@ -1266,7 +1272,11 @@ class Wrangler(Controller):
                 'first_bar_number',
                 next_bar_number,
                 )
-            measure_count = manager._get_metadatum('measure_count')
+            measure_count = manager._get_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'measure_count',
+                )
             if not measure_count:
                 return
             next_bar_number = first_bar_number + measure_count
@@ -1526,7 +1536,11 @@ class Wrangler(Controller):
         '''
         replacements = {}
         manager = self._session.current_score_package_manager
-        catalog_number = manager._get_metadatum('catalog_number')
+        catalog_number = manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'catalog_number',
+            )
         if catalog_number:
             old = 'CATALOG NUMBER'
             new = str(catalog_number)
@@ -1538,7 +1552,11 @@ class Wrangler(Controller):
             old = 'COMPOSER WEBSITE'
             new = str(composer_website)
             replacements[old] = new
-        price = manager._get_metadatum('price')
+        price = manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'price',
+            )
         if price:
             old = 'PRICE'
             new = str(price)
@@ -1575,12 +1593,20 @@ class Wrangler(Controller):
             old = 'TITLE'
             new = str(score_title.upper())
             replacements[old] = new
-        forces_tagline = manager._get_metadatum('forces_tagline')
+        forces_tagline = manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'forces_tagline',
+            )
         if forces_tagline:
             old = 'FOR INSTRUMENTS'
             new = str(forces_tagline)
             replacements[old] = new
-        year = manager._get_metadatum('year')
+        year = manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            'year',
+            )
         if year:
             old = 'YEAR'
             new = str(year)
@@ -1682,7 +1708,11 @@ class Wrangler(Controller):
                 old = 'SCORE_TITLE'
                 new = annotated_title
                 self._replace_in_file(candidate_path, old, new)
-            forces_tagline = manager._get_metadatum('forces_tagline')
+            forces_tagline = manager._get_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'forces_tagline',
+                )
             if forces_tagline:
                 old = 'FORCES_TAGLINE'
                 new = forces_tagline

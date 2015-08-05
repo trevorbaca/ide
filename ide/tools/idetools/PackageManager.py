@@ -235,14 +235,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _get_metadatum(self, metadatum_name, include_score=False):
-        metadata = self._get_metadata(
-            self._session,
-            self._metadata_py_path,
-            )
-        metadatum = metadata.get(metadatum_name, None)
-        return metadatum
-
     def _get_modified_asset_paths(self):
         paths = []
         if self._is_in_git_repository():
@@ -266,7 +258,11 @@ class PackageManager(Controller):
         return paths
 
     def _get_name_metadatum(self):
-        name = self._get_metadatum('name')
+        name = self._get_metadatum(
+            self._session,
+            self._metadata_py_path,
+            'name',
+            )
         return name or self._space_delimited_lowercase_name
 
     def _get_next_version_string(self):
@@ -329,15 +325,29 @@ class PackageManager(Controller):
         return line
 
     def _get_title(self, year=True):
-        if year and self._get_metadatum('year'):
+        if year and self._get_metadatum(
+            self._session,
+            self._metadata_py_path,
+            'year',
+            ):
             result = '{} ({})'
             result = result.format(
                 self._get_title(year=False),
-                self._get_metadatum('year')
+                self._get_metadatum(
+                    self._session,
+                    self._metadata_py_path,
+                    'year',
+                    )
                 )
             return result
         else:
-            return self._get_metadatum('title') or '(untitled score)'
+            result = self._get_metadatum(
+                self._session,
+                self._metadata_py_path,
+                'title',
+                )
+            result = result or '(untitled score)'
+            return result
 
     def _get_unadded_asset_paths(self):
         paths = []
@@ -480,7 +490,12 @@ class PackageManager(Controller):
         self._write_enclosing_artifacts()
 
     def _parse_paper_dimensions(self):
-        string = self._get_metadatum('paper_dimensions') or '8.5 x 11 in'
+        string = self._get_metadatum(
+            self._session,
+            self._metadata_py_path, 
+            'paper_dimensions',
+            )
+        string = string or '8.5 x 11 in'
         parts = string.split()
         assert len(parts) == 4
         width, _, height, units = parts

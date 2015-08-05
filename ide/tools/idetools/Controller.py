@@ -355,6 +355,19 @@ class Controller(object):
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
+    @classmethod
+    def _get_metadatum(
+        class_,
+        session,
+        metadata_py_path,
+        metadatum_name,
+        ):
+        metadata = class_._get_metadata(
+            session,
+            metadata_py_path,
+            )
+        return metadata.get(metadatum_name)
+
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths()
         if self._session.last_asset_path is None:
@@ -843,7 +856,11 @@ class Controller(object):
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
             manager = self._session._io_manager._make_package_manager(path=path)
-            name = manager._get_metadatum('name')
+            name = manager._get_metadatum(
+                manager._session,
+                manager._metadata_py_path,
+                'name',
+                )
             asset_name = name or asset_name
         if self._session.is_in_score:
             string = asset_name
@@ -929,7 +946,11 @@ class Controller(object):
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         if not manager:
             return
-        return manager._get_metadatum(metadatum_name)
+        return manager._get_metadatum(
+            manager._session,
+            manager._metadata_py_path, 
+            metadatum_name,
+            )
 
     @staticmethod
     def _remove_file_line(file_path, line_to_remove):
