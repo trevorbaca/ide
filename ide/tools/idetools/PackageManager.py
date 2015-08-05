@@ -268,60 +268,6 @@ class PackageManager(Controller):
                     if self._exit_run():
                         break
 
-    def _space_delimited_lowercase_name_to_asset_name(
-        self, space_delimited_lowercase_name):
-        space_delimited_lowercase_name = space_delimited_lowercase_name.lower()
-        asset_name = space_delimited_lowercase_name.replace(' ', '_')
-        return asset_name
-
-    def _test_add(self):
-        assert self._is_up_to_date(self._session, self._path)
-        path_1 = os.path.join(self._path, 'tmp_1.py')
-        path_2 = os.path.join(self._path, 'tmp_2.py')
-        with systemtools.FilesystemState(remove=[path_1, path_2]):
-            with open(path_1, 'w') as file_pointer:
-                file_pointer.write('')
-            with open(path_2, 'w') as file_pointer:
-                file_pointer.write('')
-            assert os.path.exists(path_1)
-            assert os.path.exists(path_2)
-            assert not self._is_up_to_date(self._session, self._path)
-            assert self._get_unadded_asset_paths(
-                self._session, self._path) == [path_1, path_2]
-            assert self._get_added_asset_paths() == []
-            with self._session._io_manager._silent(self._session):
-                self.add()
-            assert self._get_unadded_asset_paths(
-                self._session, self._path) == []
-            assert self._get_added_asset_paths() == [path_1, path_2]
-            with self._session._io_manager._silent(self._session):
-                self._unadd_added_assets()
-            assert self._get_unadded_asset_paths(
-                self._session, self._path) == [path_1, path_2]
-            assert self._get_added_asset_paths() == []
-        assert self._is_up_to_date(self._session, self._path)
-        return True
-
-    def _test_revert(self):
-        assert self._is_up_to_date(self._session, self._path)
-        assert self._get_modified_asset_paths(self._session, self._path) == []
-        file_name = self._find_first_file_name(self._path)
-        if not file_name:
-            return
-        file_path = os.path.join(self._path, file_name)
-        with systemtools.FilesystemState(keep=[file_path]):
-            with open(file_path, 'a') as file_pointer:
-                string = '# extra text appended during testing'
-                file_pointer.write(string)
-            assert not self._is_up_to_date(self._session, self._path)
-            assert self._get_modified_asset_paths(
-                self._session, self._path) == [file_path]
-            with self._session._io_manager._silent(self._session):
-                self.revert()
-        assert self._get_modified_asset_paths(self._session, self._path) == []
-        assert self._is_up_to_date(self._session, self._path)
-        return True
-
     def _unadd_added_assets(self):
         paths = []
         paths.extend(self._get_added_asset_paths())

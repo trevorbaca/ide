@@ -1259,6 +1259,52 @@ class Controller(object):
             file_pointer.write(contents)
 
     @staticmethod
+    def _rename(
+        session,
+        path,
+        file_extension=None,
+        file_name_callback=None,
+        force_lowercase=True,
+        ):
+        base_name = os.path.basename(path)
+        line = 'current name: {}'.format(base_name)
+        session._io_manager._display(line)
+        getter = session._io_manager._make_getter()
+        getter.append_string('new name')
+        new_package_name = getter._run()
+        if session.is_backtracking or new_package_name is None:
+            return
+        new_package_name = stringtools.strip_diacritics(new_package_name)
+        if file_name_callback:
+            new_package_name = file_name_callback(new_package_name)
+        new_package_name = new_package_name.replace(' ', '_')
+        if force_lowercase:
+            new_package_name = new_package_name.lower()
+        if file_extension and not new_package_name.endswith(file_extension):
+            new_package_name = new_package_name + file_extension
+        lines = []
+        line = 'current name: {}'.format(base_name)
+        lines.append(line)
+        line = 'new name:     {}'.format(new_package_name)
+        lines.append(line)
+        session._io_manager._display(lines)
+        result = session._io_manager._confirm()
+        if session.is_backtracking or not result:
+            return
+        new_path = os.path.join(
+            os.path.dirname(path),
+            new_package_name,
+            )
+        if os.path.exists(new_path):
+            message = 'path already exists: {!r}.'
+            message = message.format(new_path)
+            session._io_manager._display(message)
+            return
+        shutil.move(path, new_path)
+        session._is_backtracking_locally = True
+        return new_path
+
+    @staticmethod
     def _replace_in_file(file_path, old, new):
         assert isinstance(old, str), repr(old)
         assert isinstance(new, str), repr(new)
@@ -1286,6 +1332,56 @@ class Controller(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
         
+    @classmethod
+    def _test_add(class_, session, path):
+        assert class_._is_up_to_date(session, path)
+        path_1 = os.path.join(path, 'tmp_1.py')
+        path_2 = os.path.join(path, 'tmp_2.py')
+        with systemtools.FilesystemState(remove=[path_1, path_2]):
+            with open(path_1, 'w') as file_pointer:
+                file_pointer.write('')
+            with open(path_2, 'w') as file_pointer:
+                file_pointer.write('')
+            assert os.path.exists(path_1)
+            assert os.path.exists(path_2)
+            assert not class_._is_up_to_date(session, path)
+            assert class_._get_unadded_asset_paths(
+                session, path) == [path_1, path_2]
+            assert class_._get_added_asset_paths(session, path) == []
+            with session._io_manager._silent(session):
+                class_._git_add(session, path)
+            assert class_._get_unadded_asset_paths(session, path) == []
+            assert class_._get_added_asset_paths(
+                session, path) == [path_1, path_2]
+            with session._io_manager._silent(session):
+                class_._unadd_added_assets(session, path)
+            assert class_._get_unadded_asset_paths(
+                session, path) == [path_1, path_2]
+            assert class_._get_added_asset_paths(session, path) == []
+        assert class_._is_up_to_date(session, path)
+        return True
+
+    @classmethod
+    def _test_revert(class_, session, path):
+        assert class_._is_up_to_date(session, path)
+        assert class_._get_modified_asset_paths(session, path) == []
+        file_name = class_._find_first_file_name(path)
+        if not file_name:
+            return
+        file_path = os.path.join(path, file_name)
+        with systemtools.FilesystemState(keep=[file_path]):
+            with open(file_path, 'a') as file_pointer:
+                string = '# extra text appended during testing'
+                file_pointer.write(string)
+            assert not class_._is_up_to_date(session, path)
+            assert class_._get_modified_asset_paths(
+                session, path) == [file_path]
+            with session._io_manager._silent(session):
+                class_._get_revert(session, path)
+        assert class_._get_modified_asset_paths(session, path) == []
+        assert class_._is_up_to_date(session, path)
+        return True
+
     @classmethod
     def _write_metadata_py(class_, metadata_py_path, metadata):
         lines = []
