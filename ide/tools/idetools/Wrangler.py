@@ -119,7 +119,8 @@ class Wrangler(Controller):
     ### PRIVATE METHODS ###
 
     def _call_lilypond_on_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
+        directory_path = self._get_current_directory()
+        file_path = self._get_file_path_ending_with(directory_path, string)
         if file_path:
             self._session._io_manager.run_lilypond(file_path)
         else:
@@ -337,7 +338,8 @@ class Wrangler(Controller):
         return segment_names
 
     def _edit_file_ending_with(self, string):
-        file_path = self._get_file_path_ending_with(string)
+        directory_path = self._get_current_directory()
+        file_path = self._get_file_path_ending_with(directory_path, string)
         if file_path:
             self._session._io_manager.edit(file_path)
         else:
@@ -439,17 +441,6 @@ class Wrangler(Controller):
             else:
                 return path
 
-    def _get_file_path_ending_with(self, string):
-        path = self._get_current_directory()
-        file_names = self._list_directory(
-            path,
-            public_entries_only=False,
-            )
-        for file_name in file_names:
-            if file_name.endswith(string):
-                file_path = os.path.join(path, file_name)
-                return file_path
-
     def _get_manager(self, path):
         from ide.tools import idetools
         assert os.path.sep in path, repr(path)
@@ -525,7 +516,8 @@ class Wrangler(Controller):
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
-        file_path = self._get_file_path_ending_with(string)
+        directory_path = self._get_current_directory()
+        file_path = self._get_file_path_ending_with(directory_path, string)
         if not file_path:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
@@ -968,7 +960,8 @@ class Wrangler(Controller):
         return result
 
     def _open_file_ending_with(self, string):
-        path = self._get_file_path_ending_with(string)
+        directory_path = self._get_current_directory()
+        path = self._get_file_path_ending_with(directory_path, string)
         if path:
             self._session._io_manager.open_file(path)
         else:

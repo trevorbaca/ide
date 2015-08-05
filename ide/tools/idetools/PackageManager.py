@@ -235,13 +235,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    @classmethod
-    def _get_file_path_ending_with(class_, directory_path, string):
-        for file_name in class_._list_directory(directory_path):
-            if file_name.endswith(string):
-                file_path = os.path.join(directory_path, file_name)
-                return file_path
-
     @staticmethod
     def _get_git_status_lines(session, directory_path):
         command = 'git status --porcelain {}'

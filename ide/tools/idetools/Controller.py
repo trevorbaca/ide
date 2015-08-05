@@ -319,6 +319,13 @@ class Controller(object):
                 wranglers.append(wrangler)
         return wranglers
 
+    @classmethod
+    def _get_file_path_ending_with(class_, directory_path, string):
+        for file_name in class_._list_directory(directory_path):
+            if file_name.endswith(string):
+                file_path = os.path.join(directory_path, file_name)
+                return file_path
+
     @staticmethod
     def _get_metadata(session, metadata_py_path):
         metadata = None
