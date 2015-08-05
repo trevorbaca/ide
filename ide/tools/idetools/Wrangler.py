@@ -441,7 +441,7 @@ class Wrangler(Controller):
 
     def _get_file_path_ending_with(self, string):
         path = self._get_current_directory()
-        file_names = self._session._io_manager._list_directory(
+        file_names = self._list_directory(
             path,
             public_entries_only=False,
             )
