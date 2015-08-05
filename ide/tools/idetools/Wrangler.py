@@ -104,7 +104,10 @@ class Wrangler(Controller):
     @property
     def _metadata_py_path(self):
         if self._session.is_in_score:
-            manager = self._get_current_package_manager()
+            manager = self._get_current_package_manager(
+                self._session,
+                self._directory_name,
+                )
         else:
             manager = self._get_views_package_manager(self._session)
         return manager._metadata_py_path
@@ -164,7 +167,10 @@ class Wrangler(Controller):
 
     def _clear_view(self):
         if self._session.is_in_score:
-            manager = self._get_current_package_manager()
+            manager = self._get_current_package_manager(
+                self._session,
+                self._directory_name,
+                )
             metadatum_name = 'view_name'
         else:
             manager = self._get_views_package_manager(self._session)
@@ -454,14 +460,15 @@ class Wrangler(Controller):
             directory = os.path.abspath(directory)
             return directory
 
-    def _get_current_package_manager(self):
-        path = self._get_current_directory(
-            self._session,
-            self._directory_name,
+    @classmethod
+    def _get_current_package_manager(class_, session, directory_name):
+        directory_path = class_._get_current_directory(
+            session,
+            directory_name,
             )
-        if path is None:
+        if directory_path is None:
             return
-        return self._session._io_manager._make_package_manager(path)
+        return session._io_manager._make_package_manager(directory_path)
 
     def _get_manager(self, path):
         from ide.tools import idetools
@@ -1254,7 +1261,7 @@ class Wrangler(Controller):
                     view_inventory = idetools.ViewInventory()
                     wrangler._write_view_inventory(
                         self._session,
-                        self._diretory_name,
+                        self._directory_name,
                         view_inventory,
                         )
 
@@ -2287,7 +2294,10 @@ class Wrangler(Controller):
         if view_name == 'none':
             view_name = None
         if self._session.is_in_score:
-            manager = self._get_current_package_manager()
+            manager = self._get_current_package_manager(
+                self._session,
+                self._directory_name,
+                )
             metadatum_name = 'view_name'
         else:
             manager = self._get_views_package_manager(self._session)

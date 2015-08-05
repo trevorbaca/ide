@@ -1237,7 +1237,10 @@ class Controller(object):
 
     def _read_view_name(self):
         if self._session.is_in_score:
-            manager = self._get_current_package_manager()
+            manager = self._get_current_package_manager(
+                self._session,
+                self._directory_name,
+                )
             metadatum_name = 'view_name'
         else:
             manager = self._get_views_package_manager(self._session)
