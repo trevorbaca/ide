@@ -570,9 +570,10 @@ class Controller(object):
                 paths.append(path)
         return paths
 
-    def _get_views_package_manager(self):
+    @staticmethod
+    def _get_views_package_manager(session):
         path = configuration.abjad_ide_wrangler_views_directory
-        return self._session._io_manager._make_package_manager(path)
+        return session._io_manager._make_package_manager(path)
 
     @classmethod
     def _git_add(class_, session, path, dry_run=False):
@@ -1211,10 +1212,10 @@ class Controller(object):
 
     def _read_view_name(self):
         if self._session.is_in_score:
-            manager = self._current_package_manager
+            manager = self._get_current_package_manager()
             metadatum_name = 'view_name'
         else:
-            manager = self._get_views_package_manager()
+            manager = self._get_views_package_manager(self._session)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         if not manager:
             return

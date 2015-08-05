@@ -87,13 +87,6 @@ class Wrangler(Controller):
         return breadcrumb
 
     @property
-    def _current_package_manager(self):
-        path = self._get_current_directory()
-        if path is None:
-            return
-        return self._session._io_manager._make_package_manager(path)
-
-    @property
     def _current_storehouse_path(self):
         if self._session.is_in_score:
             return os.path.join(
@@ -111,9 +104,9 @@ class Wrangler(Controller):
     @property
     def _metadata_py_path(self):
         if self._session.is_in_score:
-            manager = self._current_package_manager
+            manager = self._get_current_package_manager()
         else:
-            manager = self._get_views_package_manager()
+            manager = self._get_views_package_manager(self._session)
         return manager._metadata_py_path
 
     ### PRIVATE METHODS ###
@@ -165,10 +158,10 @@ class Wrangler(Controller):
 
     def _clear_view(self):
         if self._session.is_in_score:
-            manager = self._current_package_manager
+            manager = self._get_current_package_manager()
             metadatum_name = 'view_name'
         else:
-            manager = self._get_views_package_manager()
+            manager = self._get_views_package_manager(self._session)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(
             manager._session,
@@ -450,6 +443,12 @@ class Wrangler(Controller):
                 )
             directory = os.path.abspath(directory)
             return directory
+
+    def _get_current_package_manager(self):
+        path = self._get_current_directory()
+        if path is None:
+            return
+        return self._session._io_manager._make_package_manager(path)
 
     def _get_manager(self, path):
         from ide.tools import idetools
@@ -2235,10 +2234,10 @@ class Wrangler(Controller):
         if view_name == 'none':
             view_name = None
         if self._session.is_in_score:
-            manager = self._current_package_manager
+            manager = self._get_current_package_manager()
             metadatum_name = 'view_name'
         else:
-            manager = self._get_views_package_manager()
+            manager = self._get_views_package_manager(self._session)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(
             manager._session,
