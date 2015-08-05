@@ -564,18 +564,19 @@ class Controller(object):
         path = configuration.abjad_ide_wrangler_views_directory
         return session._io_manager._make_package_manager(path)
 
-    def _get_views_py_path(self):
-        if self._session.is_in_score:
-            directory = self._get_current_directory(
-                self._session,
-                self._directory_name,
+    @classmethod
+    def _get_views_py_path(class_, session, directory_name):
+        if session.is_in_score:
+            directory_path = class_._get_current_directory(
+                session,
+                directory_name,
                 )
-            return os.path.join(directory, '__views__.py')
+            return os.path.join(directory_path, '__views__.py')
         else:
-            directory = configuration.abjad_ide_wrangler_views_directory
-            class_name = type(self).__name__
+            directory_path = configuration.abjad_ide_wrangler_views_directory
+            class_name = class_.__name__
             file_name = '__{}_views__.py'.format(class_name)
-            return os.path.join(directory, file_name)
+            return os.path.join(directory_path, file_name)
 
     @classmethod
     def _git_add(class_, session, path, dry_run=False):
@@ -1202,12 +1203,16 @@ class Controller(object):
 
     def _read_view_inventory(self):
         from ide.tools import idetools
-        if self._get_views_py_path() is None:
+        views_py_path = self._get_views_py_path(
+            self._session,
+            self._directory_name,
+            )
+        if views_py_path is None:
             return
-        if not os.path.exists(self._get_views_py_path()):
+        if not os.path.exists(views_py_path):
             return
         result = self._session._io_manager.execute_file(
-            path=self._get_views_py_path(),
+            path=views_py_path,
             attribute_names=('view_inventory',),
             )
         if result == 'corrupt':
@@ -1216,7 +1221,7 @@ class Controller(object):
             message = message.format(type(self).__name__)
             messages.append(message)
             messages.append('')
-            message = '    {}'.format(self._get_views_py_path())
+            message = '    {}'.format(views_py_path)
             messages.append(message)
             self._session._io_manager._display(messages)
             return
@@ -1486,7 +1491,11 @@ class Controller(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        self._session._io_manager.write(self._get_views_py_path(), contents)
+        views_py_path = self._get_views_py_path(
+            self._session,
+            self._directory_name,
+            )
+        self._session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
         self._session._io_manager._display(message)
 
