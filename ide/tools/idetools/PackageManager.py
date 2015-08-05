@@ -221,10 +221,10 @@ class PackageManager(Controller):
         if self._package_creation_callback is not None:
             self._package_creation_callback()
 
-    def _make_repository_commit_command(self, message):
-        command = 'git commit -m "{}" {}; git push'
-        command = command.format(message, self._path)
-        return command
+#    def _make_repository_commit_command(path, message):
+#        command = 'git commit -m "{}" {}; git push'
+#        command = command.format(message, path)
+#        return command
 
     def _make_score_into_installable_package(self):
         old_path = self._outer_path

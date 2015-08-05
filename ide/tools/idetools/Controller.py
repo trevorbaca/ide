@@ -629,7 +629,8 @@ class Controller(object):
                     return
             message = self._get_score_package_directory_name(self._path)
             message = message + ' ...'
-            command = self._make_repository_commit_command(commit_message)
+            command = 'git commit -m "{}" {}; git push'
+            command = command.format(commit_message, self._path)
             self._session._io_manager.run_command(command, capitalize=False)
 
     def _git_revert(self):
