@@ -15,6 +15,7 @@ class Interaction(ContextManager):
         '_dry_run',
         '_original_confirm',
         '_original_display',
+        '_session',
         '_task',
         )
 
@@ -34,6 +35,7 @@ class Interaction(ContextManager):
         self._dry_run = dry_run
         self._original_confirm = None
         self._original_display = None
+        self._session = controller._session
         self._task = task
 
     ### SPECIAL METHODS ###
@@ -43,10 +45,10 @@ class Interaction(ContextManager):
 
         Returns none.
         '''
-        self._original_confirm = self._controller._session.confirm
-        self._original_display = self._controller._session.display
-        self._controller._session._confirm = self.confirm
-        self._controller._session._display = self.display
+        self._original_confirm = self.session.confirm
+        self._original_display = self.session.display
+        self.session._confirm = self.confirm
+        self.session._display = self.display
 
     def __exit__(self, exg_type, exc_value, trackeback):
         r'''Exits interaction manager.
@@ -55,11 +57,11 @@ class Interaction(ContextManager):
         '''
         if self.display and not self.dry_run:
             if self.task:
-                if 0 < len(self._controller._session._transcript.entries):
-                    if not self._controller._session._transcript[-1][-1] == '':
-                        self.controller._session._io_manager._display('')
-        self._controller._session._confirm = self._original_confirm
-        self._controller._session._display = self._original_display
+                if 0 < len(self.session._transcript.entries):
+                    if not self.session._transcript[-1][-1] == '':
+                        self.session._io_manager._display('')
+        self.session._confirm = self._original_confirm
+        self.session._display = self._original_display
 
     ### PUBLIC PROPERTIES ###
 
@@ -100,6 +102,14 @@ class Interaction(ContextManager):
         Returns boolean.
         '''
         return self._dry_run
+
+    @property
+    def session(self):
+        r'''Gets session.
+
+        Returns session.
+        '''
+        return self._session
 
     @property
     def task(self):
