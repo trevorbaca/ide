@@ -1149,6 +1149,46 @@ class PackageManager(Controller):
         self._session._io_manager.open_file(self._illustration_ly_path)
 
     @Command(
+        'gl', 
+        description='generate __illustrate__.py', 
+        file_='__illustrate__.py',
+        outside_score=False,
+        section='package',
+        )
+    def generate_illustrate_py(self):
+        r'''Generates ``__illustrate.py__``.
+
+        Returns none.
+        '''
+        message = 'will generate {}.'
+        message = message.format(self._illustrate_py_path)
+        self._session._io_manager._display(message)
+        result = self._session._io_manager._confirm()
+        if self._session.is_backtracking or not result:
+            return
+        lines = []
+        lines.append(self._abjad_import_statement)
+        line = 'from output import {}'
+        line = line.format(self._package_name)
+        lines.append(line)
+        lines.append('')
+        lines.append('')
+        line = 'triple = scoretools.make_piano_score_from_leaves({})'
+        line = line.format(self._package_name)
+        lines.append(line)
+        line = 'score, treble_staff, bass_staff = triple'
+        lines.append(line)
+        line = 'illustration = lilypondfiletools.'
+        line += 'make_basic_lilypond_file(score)'
+        lines.append(line)
+        contents = '\n'.join(lines)
+        with open(self._illustrate_py_path, 'w') as file_pointer:
+            file_pointer.write(contents)
+        message = 'generated {}.'
+        message = message.format(self._illustrate_py_path)
+        self._session._io_manager._display(message)
+
+    @Command(
         'i', 
         file_='definition.py',
         outside_score=False,
@@ -1353,43 +1393,3 @@ class PackageManager(Controller):
                 message = "no score.pdf file found"
                 message += ' in either distribution/ or build/ directories.'
                 self._session._io_manager._display(message)
-
-    @Command(
-        'ls', 
-        description='write stub __illustrate__.py', 
-        file_='__illustrate__.py',
-        outside_score=False,
-        section='package',
-        )
-    def write_stub_illustrate_py(self):
-        r'''Writes stub ``__illustrate.py__``.
-
-        Returns none.
-        '''
-        message = 'will write stub to {}.'
-        message = message.format(self._illustrate_py_path)
-        self._session._io_manager._display(message)
-        result = self._session._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        lines = []
-        lines.append(self._abjad_import_statement)
-        line = 'from output import {}'
-        line = line.format(self._package_name)
-        lines.append(line)
-        lines.append('')
-        lines.append('')
-        line = 'triple = scoretools.make_piano_score_from_leaves({})'
-        line = line.format(self._package_name)
-        lines.append(line)
-        line = 'score, treble_staff, bass_staff = triple'
-        lines.append(line)
-        line = 'illustration = lilypondfiletools.'
-        line += 'make_basic_lilypond_file(score)'
-        lines.append(line)
-        contents = '\n'.join(lines)
-        with open(self._illustrate_py_path, 'w') as file_pointer:
-            file_pointer.write(contents)
-        message = 'wrote stub to {}.'
-        message = message.format(self._illustrate_py_path)
-        self._session._io_manager._display(message)

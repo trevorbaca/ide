@@ -85,9 +85,9 @@ def test_PackageManager_display_action_command_help_05():
         '    edit __illustrate__.py (le)',
         '    edit definition py (de)',
         '    edit illustration ly (ie)',
+        '    generate __illustrate__.py (gl)',
         '    interpret illustration ly (ii)',
         '    open illustration pdf (io)',
-        '    write stub __illustrate__.py (ls)',
         '',
         '>',
     ]

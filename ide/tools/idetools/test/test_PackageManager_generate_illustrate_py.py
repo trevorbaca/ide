@@ -7,7 +7,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_PackageManager_write_stub_illustrate_py_01():
+def test_PackageManager_generate_illustrate_py_01():
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
@@ -19,10 +19,10 @@ def test_PackageManager_write_stub_illustrate_py_01():
         )
 
     with systemtools.FilesystemState(keep=[path]):
-        input_ = 'red~example~score m magic~numbers ls y q'
+        input_ = 'red~example~score m magic~numbers gl y q'
         abjad_ide._run(input_=input_)
         assert os.path.isfile(path)
         assert not filecmp.cmp(path, path + '.backup')
         contents = abjad_ide._session._transcript.contents
-        assert 'Will write stub to' in contents
-        assert 'Wrote stub to' in contents
+        assert 'Will generate' in contents
+        assert 'Generated' in contents
