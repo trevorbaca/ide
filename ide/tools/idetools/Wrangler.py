@@ -331,25 +331,29 @@ class Wrangler(Controller):
             return False
         return segment_names
 
-    def _copy_boilerplate(self, file_name, candidacy=True, replacements=None):
+    def _copy_boilerplate(
+        self, 
+        source_file_name, 
+        candidacy=True, 
+        replacements=None,
+        ):
         replacements = replacements or {}
         manager = self._session.current_score_package_manager
         assert manager is not None
         width, height, unit = manager._parse_paper_dimensions()
         source_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
-            file_name,
+            source_file_name,
             )
+        current_build_directory = self._session.current_build_directory
         destination_path = os.path.join(
-            manager._path,
-            'build',
-            file_name,
+            current_build_directory,
+            source_file_name,
             )
-        base_name, file_extension = os.path.splitext(file_name)
+        base_name, file_extension = os.path.splitext(source_file_name)
         candidate_name = base_name + '.candidate' + file_extension
         candidate_path = os.path.join(
-            manager._path,
-            'build',
+            current_build_directory,
             candidate_name,
             )
         messages = []
