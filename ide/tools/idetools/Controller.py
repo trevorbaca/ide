@@ -719,15 +719,18 @@ class Controller(object):
         path = configuration.abjad_ide_wrangler_views_directory
         return session._io_manager._make_package_manager(path)
 
-    @classmethod
-    def _get_views_py_path(class_, directory_path):
-        if directory_path:
-            return os.path.join(directory_path, '__views__.py')
+    @staticmethod
+    def _get_views_py_path(directory_token):
+        if os.path.sep in directory_token:
+            return os.path.join(directory_token, '__views__.py')
         else:
             directory_path = configuration.abjad_ide_wrangler_views_directory
-            class_name = class_.__name__
-            file_name = '__{}_views__.py'.format(class_name)
-            return os.path.join(directory_path, file_name)
+            file_name = '__all_{}_directories_views__.py'
+            file_name = file_name.format(directory_token)
+            return os.path.join(
+                configuration.abjad_ide_wrangler_views_directory,
+                file_name,
+                )
 
     @classmethod
     def _git_add(class_, io_manager, path, dry_run=False):
@@ -1787,7 +1790,8 @@ class Controller(object):
             session,
             directory_name,
             )
-        views_py_path = class_._get_views_py_path(current_directory)
+        directory_token = current_directory or directory_name
+        views_py_path = class_._get_views_py_path(directory_token)
         session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
         session._io_manager._display(message)

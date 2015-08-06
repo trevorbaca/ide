@@ -1041,7 +1041,8 @@ class Wrangler(Controller):
             self._session,
             self._directory_name,
             )
-        views_py_path = self._get_views_py_path(current_directory)
+        directory_token = current_directory or self._directory_name
+        views_py_path = self._get_views_py_path(directory_token)
         if not os.path.exists(views_py_path):
             view_inventory = idetools.ViewInventory()
             with self._session._io_manager._silent():
