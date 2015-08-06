@@ -51,7 +51,6 @@ class Wrangler(Controller):
         superclass.__init__(session=session)
         self._allow_asset_name_underscores = False
         self._asset_identifier = None
-#        self._basic_breadcrumb = None
         self._copy_target_directory = None
         self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
@@ -121,12 +120,17 @@ class Wrangler(Controller):
             if not self._is_valid_directory_entry(file_name):
                 invalid_paths.append(path)
         messages = []
+        breadcrumb = self._get_breadcrumb(
+            self._session,
+            self._directory_name,
+            self._hide_breadcrumb_while_in_score,
+            )
         if not invalid_paths:
             count = len(paths)
-            message = '{} ({} files): OK'.format(self._breadcrumb, count)
+            message = '{} ({} files): OK'.format(breadcrumb, count)
             messages.append(message)
         else:
-            message = '{}:'.format(self._breadcrumb)
+            message = '{}:'.format(breadcrumb)
             messages.append(message)
             identifier = 'file'
             count = len(invalid_paths)
