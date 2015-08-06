@@ -1492,13 +1492,13 @@ class Controller(object):
 
     @classmethod
     def _read_view(class_, session, directory_name):
-        current_directory = class_._get_current_directory(
+        directory_token = class_._get_current_directory_token(
             session,
             directory_name,
             )
         view_name = class_._read_view_name(
             session._io_manager,
-            current_directory,
+            directory_token,
             )
         if not view_name:
             return
@@ -1543,13 +1543,12 @@ class Controller(object):
         return view_inventory
 
     @classmethod
-    def _read_view_name(class_, io_manager, directory_path):
-        if directory_path:
-            metadata_py_path = os.path.join(directory_path, '__metadata__.py')
+    def _read_view_name(class_, io_manager, directory_token):
+        if os.path.sep in directory_token:
+            metadata_py_path = os.path.join(directory_token, '__metadata__.py')
             metadatum_name = 'view_name'
         else:
-            metadata_py_path = \
-                configuration.abjad_ide_views_metadata_py_path
+            metadata_py_path = configuration.abjad_ide_views_metadata_py_path
             metadatum_name = '{}_view_name'.format(class_.__name__)
         return class_._get_metadatum(
             io_manager,

@@ -347,13 +347,13 @@ class Wrangler(Controller):
             if breadcrumb == 'scores':
                 breadcrumb = 'score'
             breadcrumb = 'all {} directories'.format(breadcrumb)
-        current_directory = class_._get_current_directory(
+        directory_token = class_._get_current_directory_token(
             session,
             directory_name,
             )
         view_name = class_._read_view_name(
             session._io_manager,
-            current_directory,
+            directory_token,
             )
         if not view_name:
             return breadcrumb
