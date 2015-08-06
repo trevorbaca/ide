@@ -637,25 +637,16 @@ class Wrangler(Controller):
         user_score_packages=True,
         ):
         result = []
-        if user_score_packages:
-            result.append(configuration.composer_scores_directory)
-        if example_score_packages:
-            if self._directory_name == 'scores':
+        if self._directory_name == 'scores':
+            if example_score_packages:
                 result.append(configuration.abjad_ide_example_scores_directory)
-            else:
-                score_directories = self._list_score_directories(
-                    example_score_packages=True)
-                for score_directory in score_directories:
-                    score_directory = self._path_to_score_directory(
-                        score_directory)
-                    path = os.path.join(
-                        score_directory,
-                        self._directory_name,
-                        )
-                    result.append(path)
-        if user_score_packages and self._directory_name:
+            if user_score_packages:
+                result.append(configuration.composer_scores_directory)
+        else:
             score_directories = self._list_score_directories(
-                user_score_packages=True)
+                example_score_packages=example_score_packages,
+                user_score_packages=user_score_packages,
+                )
             for score_directory in score_directories:
                 path = os.path.join(
                     score_directory,
