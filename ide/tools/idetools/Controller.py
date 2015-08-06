@@ -1206,19 +1206,17 @@ class Controller(object):
         return width, height, units
 
     @classmethod
-    def _path_to_annotation(class_, session, path, basic_breadcrumb):
+    def _path_to_annotation(class_, io_manager, path, basic_breadcrumb):
         score_storehouses = (
             configuration.abjad_ide_example_scores_directory,
             configuration.composer_scores_directory,
             )
         if path.startswith(score_storehouses):
-            score_path = class_._path_to_score_path(path)
-            # TODO: implmenet Session.current_score_metadata_py_path
-            manager = session._io_manager._make_package_manager(
-                path=score_path)
-            metadata = manager._get_metadata(
-                manager._io_manager,
-                manager._metadata_py_path,
+            score_directory = class_._path_to_score_path(path)
+            metadata_py_path = os.path.join(score_directory, '__metadata__.py')
+            metadata = class_._get_metadata(
+                io_manager,
+                metadata_py_path,
                 )
             if metadata:
                 year = metadata.get('year')
@@ -1261,7 +1259,7 @@ class Controller(object):
             string = asset_name
         else:
             annotation = class_._path_to_annotation(
-                session,
+                session._io_manager,
                 path,
                 basic_breadcrumb,
                 )
