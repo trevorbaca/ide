@@ -1503,22 +1503,18 @@ class Controller(object):
         if not view_name:
             return
         view_inventory = class_._read_view_inventory(
-            session,
-            directory_name,
+            session._io_manager,
+            directory_token,
             )
         if not view_inventory:
             return
         return view_inventory.get(view_name)
 
     @classmethod
-    def _read_view_inventory(class_, session, directory_name):
+    def _read_view_inventory(class_, io_manager, directory_token):
         from ide.tools import idetools
-        current_directory = class_._get_current_directory(
-            session,
-            directory_name,
-            )
-        views_py_path = class_._get_views_py_path(current_directory)
-        result = session._io_manager.execute_file(
+        views_py_path = class_._get_views_py_path(directory_token)
+        result = io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
             )
@@ -1530,7 +1526,7 @@ class Controller(object):
             messages.append('')
             message = '    {}'.format(views_py_path)
             messages.append(message)
-            session._io_manager._display(messages)
+            io_manager._display(messages)
             return
         if not result:
             return

@@ -185,7 +185,7 @@ class Wrangler(Controller):
             session.current_segments_directory,
             )
         view_inventory = segment_package_wrangler._read_view_inventory(
-            session,
+            session._io_manager,
             'segments',
             )
         if not view_inventory or view_name not in view_inventory:
@@ -358,8 +358,8 @@ class Wrangler(Controller):
         if not view_name:
             return breadcrumb
         view_inventory = class_._read_view_inventory(
-            session,
-            directory_name,
+            session._io_manager,
+            directory_token,
             )
         if view_inventory is not None and view_name in view_inventory:
             breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
@@ -954,9 +954,13 @@ class Wrangler(Controller):
 
     def _select_view(self, infinitive_phrase=None, is_ranged=False):
         from ide.tools import idetools
-        view_inventory = self._read_view_inventory(
+        directory_token = self._get_current_directory_token(
             self._session,
             self._directory_name,
+            )
+        view_inventory = self._read_view_inventory(
+            self._io_manager,
+            directory_token,
             )
         if view_inventory is None:
             message = 'no views found.'
