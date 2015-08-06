@@ -65,6 +65,15 @@ class Wrangler(Controller):
         self._only_example_scores_during_test = False
         self._sort_by_annotation = True
 
+    ### SPECIAL METHODS ###
+
+    def __repr__(self):
+        r'''Gets interpreter representation of wrangler.
+
+        Returns string.
+        '''
+        return '{}({!r})'.format(type(self).__name__, self._directory_name)
+
     ### PRIVATE PROPERTIES ###
 
     @property
@@ -1171,28 +1180,16 @@ class Wrangler(Controller):
                 )
             with self._session._io_manager._silent():
                 self._write_metadata_py(self._metadata_py_path, metadata)
-        if self._session.is_test:
-            with self._session._io_manager._silent():
-                for wrangler in self._session._abjad_ide._wranglers:
-                    directory_path = wrangler._get_current_directory(
-                        wrangler._session,
-                        wrangler._directory_name,
-                        )
-                    views_py_path = wrangler._get_views_py_path(
-                        wrangler._io_manager,
-                        directory_path,
-                        )
-                    if not os.path.exists(views_py_path):
-                        wrangler.write_views_py()
-        else:
-            with self._session._io_manager._silent():
-                for wrangler in self._session._abjad_ide._wranglers:
-                    view_inventory = idetools.ViewInventory()
-                    wrangler._write_view_inventory(
-                        self._session,
-                        self._directory_name,
-                        view_inventory,
-                        )
+#        wranglers = self._session._abjad_ide._wranglers
+#        raise Exception(wranglers)
+        with self._session._io_manager._silent():
+            for wrangler in self._session._abjad_ide._wranglers:
+                view_inventory = idetools.ViewInventory()
+                wrangler._write_view_inventory(
+                    self._session,
+                    self._directory_name,
+                    view_inventory,
+                    )
 
     @staticmethod
     def _to_dash_case(file_name):
