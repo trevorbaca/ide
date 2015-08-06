@@ -170,23 +170,23 @@ class Wrangler(Controller):
         self._file_name_predicate = stringtools.is_snake_case
         return self
 
-    def _confirm_segment_names(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        current_directory = self._get_current_directory(
-            self._session,
-            self._directory_name,
+    @classmethod
+    def _confirm_segment_names(
+        class_,
+        session,
+        ):
+        segment_package_wrangler = session._abjad_ide._segment_package_wrangler
+        view_name = segment_package_wrangler._read_view_name(
+            session._io_manager,
+            session.current_segments_directory,
             )
-        view_name = wrangler._read_view_name(
-            self._io_manager,
-            current_directory,
-            )
-        view_inventory = wrangler._read_view_inventory(
-            self._session,
-            self._directory_name,
+        view_inventory = segment_package_wrangler._read_view_inventory(
+            session,
+            'segments',
             )
         if not view_inventory or view_name not in view_inventory:
             view_name = None
-        segment_paths = wrangler._list_visible_asset_paths()
+        segment_paths = segment_package_wrangler._list_visible_asset_paths()
         segment_paths = segment_paths or []
         segment_names = []
         for segment_path in segment_paths:
@@ -207,9 +207,9 @@ class Wrangler(Controller):
             message = 'no segments found:'
             message += ' will generate source without segments.'
             messages.append(message)
-        self._session._io_manager._display(messages)
-        result = self._session._io_manager._confirm()
-        if self._session.is_backtracking or not result:
+        session._io_manager._display(messages)
+        result = session._io_manager._confirm()
+        if session.is_backtracking or not result:
             return False
         return segment_names
 
@@ -1529,7 +1529,7 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        result = self._confirm_segment_names()
+        result = self._confirm_segment_names(self._session)
         if self._session.is_backtracking or not isinstance(result, list):
             return
         segment_names = result
