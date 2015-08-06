@@ -164,15 +164,15 @@ class Controller(object):
         return messages, missing_files, missing_directories
 
     @classmethod
-    def _clear_view(class_, session, directory_name):
-        if session.is_in_score:
+    def _clear_view(class_, io_manager, directory_token):
+        if os.path.sep in directory_token:
             manager = self._get_current_package_manager(
-                session,
-                directory_name,
+                io_manager,
+                directory_token,
                 )
             metadatum_name = 'view_name'
         else:
-            manager = class_._get_views_package_manager(session)
+            manager = class_._get_views_package_manager(io_manager)
             metadatum_name = '{}_view_name'.format(class_.__name__)
         manager._add_metadatum(
             manager._io_manager,
@@ -730,9 +730,9 @@ class Controller(object):
         return manager._metadata_py_path
 
     @staticmethod
-    def _get_views_package_manager(session):
+    def _get_views_package_manager(io_manager):
         path = configuration.abjad_ide_views_directory
-        return session._io_manager._make_package_manager(path)
+        return io_manager._make_package_manager(path)
 
     @staticmethod
     def _get_views_py_path(directory_token):

@@ -90,12 +90,16 @@ class Wrangler(Controller):
     @property
     def _metadata_py_path(self):
         if self._session.is_in_score:
-            manager = self._get_current_package_manager(
+            directory_token = self._get_current_directory_token(
                 self._session,
                 self._directory_name,
                 )
+            manager = self._get_current_package_manager(
+                self._io_manager,
+                directory_token,
+                )
         else:
-            manager = self._get_views_package_manager(self._session)
+            manager = self._get_views_package_manager(self._io_manager)
         return manager._metadata_py_path
 
     ### PRIVATE METHODS ###
@@ -373,14 +377,9 @@ class Wrangler(Controller):
             return directory
 
     @classmethod
-    def _get_current_package_manager(class_, session, directory_name):
-        directory_path = class_._get_current_directory(
-            session,
-            directory_name,
-            )
-        if directory_path is None:
-            return
-        return session._io_manager._make_package_manager(directory_path)
+    def _get_current_package_manager(class_, io_manager, directory_token):
+        if os.path.sep in directory_token:
+            return io_manager._make_package_manager(directory_token)
 
     @staticmethod
     def _get_current_storehouse(session, directory_name):
@@ -572,7 +571,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._session._io_manager._silent():
-                self._clear_view(self._session, self._directory_name)
+                self._clear_view(self._io_manager, self._directory_name)
         self._session._pending_redraw = True
 
     def _make_asset_menu_entries(
@@ -730,7 +729,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._session._io_manager._silent():
-                self._clear_view(self._session, self._directory_name)
+                self._clear_view(self._io_manager, self._directory_name)
         manager._run()
 
     def _make_score_package(self):
@@ -782,7 +781,7 @@ class Wrangler(Controller):
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
             with self._session._io_manager._silent():
-                self._clear_view(self._session, self._directory_name)
+                self._clear_view(self._io_manager, self._directory_name)
         manager._run()
 
     def _make_storehouse_menu_entries(
@@ -2085,13 +2084,17 @@ class Wrangler(Controller):
         if view_name == 'none':
             view_name = None
         if self._session.is_in_score:
-            manager = self._get_current_package_manager(
+            directory_token = self._get_current_directory_token(
                 self._session,
                 self._directory_name,
                 )
+            manager = self._get_current_package_manager(
+                self._io_manager,
+                directory_token,
+                )
             metadatum_name = 'view_name'
         else:
-            manager = self._get_views_package_manager(self._session)
+            manager = self._get_views_package_manager(self._io_manager)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(
             manager._io_manager,
