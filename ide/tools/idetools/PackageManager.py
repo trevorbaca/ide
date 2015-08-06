@@ -63,7 +63,7 @@ class PackageManager(Controller):
     def _breadcrumb(self):
         if self._breadcrumb_callback is not None:
             return self._breadcrumb_callback(
-                self._session,
+                self._io_manager,
                 self._metadata_py_path,
                 )
         base_name = os.path.basename(self._path)
@@ -194,7 +194,7 @@ class PackageManager(Controller):
                 )
         if self._package_creation_callback is not None:
             new_path = self._package_creation_callback(
-                self._session,
+                self._io_manager,
                 self._inner_path,
                 self._outer_path,
                 )
@@ -736,7 +736,7 @@ class PackageManager(Controller):
                 illustration_pdf_path,
                 )
                 messages = self._make_candidate_messages(
-                    self._session,
+                    self._io_manager,
                     result,
                     candidate_pdf_path,
                     illustration_pdf_path,

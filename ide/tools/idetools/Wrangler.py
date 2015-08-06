@@ -333,9 +333,10 @@ class Wrangler(Controller):
         session = idetools.Session()
         for asset_path in asset_paths:
             manager = self._get_manager(asset_path)
-            if (manager._is_git_versioned(manager._session, manager._path) and
-                manager._is_up_to_date(manager._session, manager._path) and
-                (not must_have_file or
+            if (manager._is_git_versioned(manager._io_manager, manager._path)
+                and manager._is_up_to_date(manager._io_manager, manager._path)
+                and
+                (not must_have_file or 
                 manager._find_first_file_name(manager._path))):
                 return manager
 
@@ -517,7 +518,7 @@ class Wrangler(Controller):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
             self._handle_candidate(
-                self._session,
+                self._io_manager,
                 candidate_path,
                 destination_path,
                 )
@@ -867,14 +868,14 @@ class Wrangler(Controller):
         manager = self._get_manager(package_path)
         manager._make_package()
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,
             )
         year = datetime.date.today().year
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'year',
             year,
@@ -900,7 +901,7 @@ class Wrangler(Controller):
         for path in paths:
             manager = wrangler._get_manager(path)
             title = manager._get_title_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 year=False,
                 )
@@ -937,7 +938,7 @@ class Wrangler(Controller):
                 if part.startswith('md:'):
                     metadatum_name = part[3:]
                     metadatum = manager._get_metadatum(
-                        manager._session,
+                        manager._io_manager,
                         manager._metadata_py_path,
                         metadatum_name,
                         include_score=True,
@@ -1148,7 +1149,10 @@ class Wrangler(Controller):
                     view_inventory,
                     )
         if not os.path.exists(self._metadata_py_path):
-            metadata = self._get_metadata()
+            metadata = self._get_metadata(
+                self._io_manager,
+                self._metadata_py_path,
+                )
             with self._session._io_manager._silent(self._session):
                 self._write_metadata_py(self._metadata_py_path, metadata)
         if self._session.is_test:
@@ -1206,13 +1210,13 @@ class Wrangler(Controller):
         for segment_index, manager in enumerate(managers):
             segment_number = segment_index + 1
             manager._add_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'segment_number',
                 segment_number,
                 )
             manager._add_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'segment_count', 
                 segment_count,
@@ -1221,13 +1225,13 @@ class Wrangler(Controller):
         manager = managers[0]
         first_bar_number = 1
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'first_bar_number',
             first_bar_number,
             )
         measure_count = manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'measure_count',
             )
@@ -1237,13 +1241,13 @@ class Wrangler(Controller):
         for manager in managers[1:]:
             first_bar_number = next_bar_number
             manager._add_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'first_bar_number',
                 next_bar_number,
                 )
             measure_count = manager._get_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'measure_count',
                 )
@@ -1403,7 +1407,7 @@ class Wrangler(Controller):
                 shutil.copyfile(source_file_path, candidate_file_path)
                 self._trim_lilypond_file(candidate_file_path)
                 self._handle_candidate(
-                    self._session,
+                    self._io_manager,
                     candidate_file_path,
                     target_file_path,
                     )
@@ -1521,7 +1525,7 @@ class Wrangler(Controller):
         replacements = {}
         manager = self._session.current_score_package_manager
         catalog_number = manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'catalog_number',
             )
@@ -1537,7 +1541,7 @@ class Wrangler(Controller):
             new = str(composer_website)
             replacements[old] = new
         price = manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'price',
             )
@@ -1552,7 +1556,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
-            self._session,
+            self._io_manager,
             'back-cover.tex',
             self._session.current_build_directory,
             replacements=replacements,
@@ -1573,7 +1577,7 @@ class Wrangler(Controller):
         replacements = {}
         manager = self._session.current_score_package_manager
         score_title = manager._get_title_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             year=False,
             )
@@ -1582,7 +1586,7 @@ class Wrangler(Controller):
             new = str(score_title.upper())
             replacements[old] = new
         forces_tagline = manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'forces_tagline',
             )
@@ -1591,7 +1595,7 @@ class Wrangler(Controller):
             new = str(forces_tagline)
             replacements[old] = new
         year = manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'year',
             )
@@ -1613,7 +1617,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
-            self._session,
+            self._io_manager,
             file_name,
             self._session.current_build_directory,
             replacements=replacements,
@@ -1688,7 +1692,7 @@ class Wrangler(Controller):
             new = lilypond_version_directive
             self._replace_in_file(candidate_path, old, new)
             score_title = manager._get_title_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 year=False,
                 )
@@ -1697,7 +1701,7 @@ class Wrangler(Controller):
                 new = score_title
                 self._replace_in_file(candidate_path, old, new)
             annotated_title = manager._get_title_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 year=True,
                 )
@@ -1706,7 +1710,7 @@ class Wrangler(Controller):
                 new = annotated_title
                 self._replace_in_file(candidate_path, old, new)
             forces_tagline = manager._get_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'forces_tagline',
                 )
@@ -1715,7 +1719,7 @@ class Wrangler(Controller):
                 new = forces_tagline
                 self._replace_in_file(candidate_path, old, new)
             self._handle_candidate(
-                self._session,
+                self._io_manager,
                 candidate_path, 
                 destination_path,
                 )
@@ -1740,7 +1744,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
-            self._session,
+            self._io_manager,
             'preface.tex',
             self._session.current_build_directory,
             replacements=replacements,
@@ -1766,7 +1770,7 @@ class Wrangler(Controller):
             new = new.format(width, unit, height, unit)
             replacements[old] = new
         self._copy_boilerplate(
-            self._session,
+            self._io_manager,
             'score.tex',
             self._session.current_build_directory,
             replacements=replacements,
@@ -1869,7 +1873,7 @@ class Wrangler(Controller):
         for path in paths:
             manager = self._session._io_manager._make_package_manager(path)
             manager._git_status(
-                manager._session,
+                manager._io_manager,
                 manager._path,
                 )
         if not paths:
@@ -1900,7 +1904,7 @@ class Wrangler(Controller):
             message = self._strip_annotation(message)
             message = message + ':'
             messages_ = manager._git_update(
-                manager._session,
+                manager._io_manager,
                 manager._path,
                 messages_only=True,
                 )
@@ -2172,7 +2176,7 @@ class Wrangler(Controller):
         for path in paths:
             manager = self._get_manager(path)
             with self._session._io_manager._silent(self._session):
-                manager._remove(manager._session, manager._path)
+                manager._remove(manager._io_manager, manager._path)
         self._session._pending_redraw = True
 
     @Command('ren', section='basic', is_hidden=False)
@@ -2195,7 +2199,7 @@ class Wrangler(Controller):
         self._session._io_manager._display(message)
         manager = self._get_manager(path)
         new_path = manager._rename(
-            manager._session,
+            manager._io_manager,
             manager._path,
             file_extension=file_extension,
             file_name_callback=file_name_callback,
@@ -2229,7 +2233,7 @@ class Wrangler(Controller):
             manager = self._get_views_package_manager(self._session)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             metadatum_name,
             view_name,

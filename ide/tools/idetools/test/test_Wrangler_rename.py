@@ -31,7 +31,7 @@ def test_Wrangler_rename_01():
             )
         title = 'Example Score 100'
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,

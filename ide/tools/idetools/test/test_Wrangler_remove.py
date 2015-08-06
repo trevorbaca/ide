@@ -30,7 +30,7 @@ def test_Wrangler_remove_01():
             )
         title = 'Example Score 100'
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,
@@ -79,7 +79,7 @@ def test_Wrangler_remove_02():
             )
         title = 'Example Score 100'
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,
@@ -90,7 +90,7 @@ def test_Wrangler_remove_02():
             )
         title = 'Example Score 101'
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,

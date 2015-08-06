@@ -73,23 +73,28 @@ class Controller(object):
             result[method.command_name] = method
         return result
 
+    @property
+    def _io_manager(self):
+        return self._session._io_manager
+
     ### PRIVATE METHODS ###
 
     @classmethod
     def _add_metadatum(
         class_,
-        session,
+        io_manager,
         metadata_py_path,
         metadatum_name, 
         metadatum_value,
         ):
         assert ' ' not in metadatum_name, repr(metadatum_name)
         metadata = class_._get_metadata(
-            session,
+            io_manager,
             metadata_py_path,
             )
         metadata[metadatum_name] = metadatum_value
-        with session._io_manager._silent(session):
+        # TODO: Change IOManager._silent() to allow zero arguments
+        with io_manager._silent(io_manager._session):
             class_._write_metadata_py(metadata_py_path, metadata)
 
     @classmethod
@@ -123,7 +128,7 @@ class Controller(object):
             manager = class_._get_views_package_manager(session)
             metadatum_name = '{}_view_name'.format(class_.__name__)
         manager._add_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path,
             metadatum_name,
             None,
@@ -182,7 +187,7 @@ class Controller(object):
     @classmethod
     def _copy_boilerplate(
         class_, 
-        session,
+        io_manager,
         source_file_name, 
         destination_directory,
         candidacy=True, 
@@ -216,8 +221,8 @@ class Controller(object):
             elif not candidacy:
                 message = 'overwrite {}?'
                 message = message.format(destination_path)
-                result = session._io_manager._confirm(message)
-                if session.is_backtracking or not result:
+                result = io_manager._confirm(message)
+                if io_manager._session.is_backtracking or not result:
                     return False
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
@@ -227,7 +232,7 @@ class Controller(object):
                 destination_path,
                 ):
                 messages_ = class_._make_candidate_messages(
-                    session,
+                    io_manager,
                     True, 
                     candidate_path, 
                     destination_path,
@@ -239,7 +244,7 @@ class Controller(object):
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
                 messages.append(message)
-            session._io_manager._display(messages)
+            io_manager._display(messages)
             return True
 
     def _enter_run(self):
@@ -398,10 +403,10 @@ class Controller(object):
         return messages
 
     @classmethod
-    def _get_added_asset_paths(class_, session, path):
+    def _get_added_asset_paths(class_, io_manager, path):
         paths = []
         git_status_lines = class_._get_git_status_lines(
-            session,
+            io_manager,
             path,
             )
         for line in git_status_lines:
@@ -410,7 +415,7 @@ class Controller(object):
                 path = line.strip('A')
                 path = path.strip()
                 root_directory = class_._get_repository_root_directory(
-                    session,
+                    io_manager,
                     path,
                     )
                 path = os.path.join(root_directory, path)
@@ -446,9 +451,9 @@ class Controller(object):
                 return file_path
 
     @classmethod
-    def _get_name_metadatum(class_, session, metadata_py_path):
+    def _get_name_metadatum(class_, io_manager, metadata_py_path):
         name = class_._get_metadatum(
-            session,
+            io_manager,
             metadata_py_path,
             'name',
             )
@@ -459,23 +464,23 @@ class Controller(object):
         return name
 
     @staticmethod
-    def _get_git_status_lines(session, directory_path):
+    def _get_git_status_lines(io_manager, directory_path):
         command = 'git status --porcelain {}'
         command = command.format(directory_path)
         with systemtools.TemporaryDirectoryChange(directory=directory_path):
-            process = session._io_manager.make_subprocess(command)
-        stdout_lines = session._io_manager._read_from_pipe(process.stdout)
+            process = io_manager.make_subprocess(command)
+        stdout_lines = io_manager._read_from_pipe(process.stdout)
         stdout_lines = stdout_lines.splitlines()
         return stdout_lines
 
     @staticmethod
-    def _get_metadata(session, metadata_py_path):
+    def _get_metadata(io_manager, metadata_py_path):
         metadata = None
         if os.path.isfile(metadata_py_path):
             with open(metadata_py_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
             try:
-                result = session._io_manager.execute_string(
+                result = io_manager.execute_string(
                     file_contents_string,
                     attribute_names=('metadata',),
                     )
@@ -483,28 +488,28 @@ class Controller(object):
             except SyntaxError:
                 message = 'can not interpret metadata py: {!r}.'
                 message = message.format(metadata_py_path)
-                session._io_manager._display(message)
+                io_manager._display(message)
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
     @classmethod
     def _get_metadatum(
         class_,
-        session,
+        io_manager,
         metadata_py_path,
         metadatum_name,
         ):
         metadata = class_._get_metadata(
-            session,
+            io_manager,
             metadata_py_path,
             )
         return metadata.get(metadatum_name)
 
     @classmethod
-    def _get_modified_asset_paths(class_, session, path):
+    def _get_modified_asset_paths(class_, io_manager, path):
         paths = []
         git_status_lines = class_._get_git_status_lines(
-            session,
+            io_manager,
             path,
             )
         for line in git_status_lines:
@@ -513,7 +518,7 @@ class Controller(object):
                 path = line.strip('M ')
                 path = path.strip()
                 root_directory = class_._get_repository_root_directory(
-                    session,
+                    io_manager,
                     path,
                     )
                 path = os.path.join(root_directory, path)
@@ -538,11 +543,11 @@ class Controller(object):
         return previous_manager
 
     @staticmethod
-    def _get_repository_root_directory(session, path):
+    def _get_repository_root_directory(io_manager, path):
         command = 'git rev-parse --show-toplevel'
         with systemtools.TemporaryDirectoryChange(directory=path):
-            process = session._io_manager.make_subprocess(command)
-        line = session._io_manager._read_one_line_from_pipe(process.stdout)
+            process = io_manager.make_subprocess(command)
+        line = io_manager._read_one_line_from_pipe(process.stdout)
         return line
 
     @classmethod
@@ -604,24 +609,24 @@ class Controller(object):
     @classmethod
     def _get_title_metadatum(
         class_, 
-        session, 
+        io_manager, 
         metadata_py_path, 
         year=True,
         ):
         if year and class_._get_metadatum(
-            session,
+            io_manager,
             metadata_py_path,
             'year',
             ):
             result = '{} ({})'
             result = result.format(
                 class_._get_title_metadatum(
-                    session,
+                    io_manager,
                     metadata_py_path,
                     year=False,
                     ),
                 class_._get_metadatum(
-                    session,
+                    io_manager,
                     metadata_py_path,
                     'year',
                     )
@@ -629,7 +634,7 @@ class Controller(object):
             return result
         else:
             result = class_._get_metadatum(
-                session,
+                io_manager,
                 metadata_py_path,
                 'title',
                 )
@@ -637,14 +642,14 @@ class Controller(object):
             return result
 
     @classmethod
-    def _get_unadded_asset_paths(class_, session, path):
+    def _get_unadded_asset_paths(class_, io_manager, path):
         paths = []
         root_directory = class_._get_repository_root_directory(
-            session,
+            io_manager,
             path,
             )
         git_status_lines = class_._get_git_status_lines(
-            session,
+            io_manager,
             path,
             )
         for line in git_status_lines:
@@ -676,72 +681,74 @@ class Controller(object):
             return os.path.join(directory_path, file_name)
 
     @classmethod
-    def _git_add(class_, session, path, dry_run=False):
+    def _git_add(class_, io_manager, path, dry_run=False):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            inputs = class_._get_unadded_asset_paths(session, path)
+            inputs = class_._get_unadded_asset_paths(io_manager, path)
             outputs = []
             if dry_run:
                 return inputs, outputs
             if not inputs:
                 message = 'nothing to add.'
-                session._io_manager._display(message)
+                io_manager._display(message)
                 return
             messages = []
             messages.append('will add ...')
             for path in inputs:
-                messages.append(session._io_manager._tab + path)
-            session._io_manager._display(messages)
-            result = session._io_manager._confirm()
-            if session.is_backtracking or not result:
+                messages.append(io_manager._tab + path)
+            io_manager._display(messages)
+            result = io_manager._confirm()
+            if io_manager._session.is_backtracking or not result:
                 return
             command = 'git add -A {}'
             command = command.format(path)
             assert isinstance(command, str)
-            session._io_manager.run_command(command)
+            io_manager.run_command(command)
 
     @classmethod
-    def _git_commit(class_, session, path, commit_message=None):
+    def _git_commit(class_, io_manager, path, commit_message=None):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            session._attempted_to_commit = True
-            if session.is_repository_test:
+            io_manager._session._attempted_to_commit = True
+            if io_manager._session.is_repository_test:
                 return
             if commit_message is None:
-                getter = session._io_manager._make_getter()
+                getter = io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run()
-                if session.is_backtracking or commit_message is None:
+                if io_manager._session.is_backtracking:
+                    return
+                if commit_message is None:
                     return
                 message = 'commit message will be: "{}"'
                 message = message.format(commit_message)
-                session._io_manager._display(message)
-                result = session._io_manager._confirm()
-                if session.is_backtracking or not result:
+                io_manager._display(message)
+                result = io_manager._confirm()
+                if io_manager._session.is_backtracking or not result:
                     return
             message = class_._get_score_package_directory_name(path)
             message = message + ' ...'
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, self._path)
-            session._io_manager.run_command(command, capitalize=False)
+            io_manager.run_command(command, capitalize=False)
 
     @classmethod
-    def _git_revert(class_, session, path):
+    def _git_revert(class_, io_manager, path):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            session._attempted_to_revert = True
-            if session.is_repository_test:
+            io_manager._session._attempted_to_revert = True
+            if io_manager._session.is_repository_test:
                 return
             paths = []
-            paths.extend(class_._get_added_asset_paths(session, path))
-            paths.extend(class_._get_modified_asset_paths(session, path))
+            paths.extend(class_._get_added_asset_paths(io_manager, path))
+            paths.extend(class_._get_modified_asset_paths(io_manager, path))
             messages = []
             messages.append('will revert ...')
             for path in paths:
-                messages.append(session._io_manager._tab + path)
-            session._io_manager._display(messages)
-            result = session._io_manager._confirm()
-            if session.is_backtracking or not result:
+                messages.append(io_manager._tab + path)
+            io_manager._display(messages)
+            result = io_manager._confirm()
+            if io_manager._session.is_backtracking or not result:
                 return
             commands = []
             for path in paths:
@@ -749,23 +756,23 @@ class Controller(object):
                 commands.append(command)
             command = ' && '.join(commands)
             with systemtools.TemporaryDirectoryChange(directory=path):
-                session._io_manager.spawn_subprocess(command)
+                io_manager.spawn_subprocess(command)
 
     @classmethod
-    def _git_status(class_, session, path):
+    def _git_status(class_, io_manager, path):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
             command = 'git status {}'.format(path)
             messages = []
-            session._attempted_display_status = True
+            io_manager._session._attempted_display_status = True
             message = 'Repository status for {} ...'
             message = message.format(path)
             messages.append(message)
             with systemtools.TemporaryDirectoryChange(directory=path):
-                process = session._io_manager.make_subprocess(command)
+                process = io_manager.make_subprocess(command)
             path_ = path + os.path.sep
             clean_lines = []
-            stdout_lines = session._io_manager._read_from_pipe(process.stdout)
+            stdout_lines = io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
                 line = str(line)
                 clean_line = line.strip()
@@ -783,23 +790,23 @@ class Controller(object):
                 first_message = first_message + ' OK'
                 messages[0] = first_message
                 clean_lines.append(message)
-            session._io_manager._display(messages, capitalize=False)
+            io_manager._display(messages, capitalize=False)
 
     @classmethod
-    def _git_update(class_, session, path, messages_only=False):
+    def _git_update(class_, io_manager, path, messages_only=False):
         messages = []
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            session._attempted_to_update = True
-            if session.is_repository_test:
+            io_manager._session._attempted_to_update = True
+            if io_manager._session.is_repository_test:
                 return messages
             root_directory = class_._get_repository_root_directory(
-                session,
+                io_manager,
                 path,
                 )
             command = 'git pull {}'
             command = command.format(root_directory)
-            messages = session._io_manager.run_command(
+            messages = io_manager.run_command(
                 command,
                 messages_only=True,
                 )
@@ -809,10 +816,10 @@ class Controller(object):
             messages = messages[-1:]
         if messages_only:
             return messages
-        session._io_manager._display(messages)
+        io_manager._display(messages)
 
     @classmethod
-    def _handle_candidate(class_, session, candidate_path, destination_path):
+    def _handle_candidate(class_, io_manager, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
             shutil.copyfile(candidate_path, destination_path)
@@ -822,9 +829,9 @@ class Controller(object):
             candidate_path,
             destination_path,
             ):
-            tab = session._io_manager._tab
+            tab = io_manager._tab
             messages_ = class_._make_candidate_messages(
-                session,
+                io_manager,
                 True,
                 candidate_path,
                 destination_path,
@@ -836,7 +843,7 @@ class Controller(object):
             shutil.copyfile(candidate_path, destination_path)
             message = 'overwrote {}.'.format(destination_path)
             messages.append(message)
-        session._io_manager._display(messages)
+        io_manager._display(messages)
 
     def _handle_input(self, result):
         assert isinstance(result, str), repr(result)
@@ -888,11 +895,15 @@ class Controller(object):
             message = message.format(result)
             raise Exception(message)
 
+    # TODO: implement Command.redraw_immediately_after
+    #       so enumeration can be derived introspectively
     @staticmethod
     def _handle_pending_redraw_directive(session, directive):
         if directive in ('b', 'h', 'q', 's', '?', ';'):
             session._pending_redraw = True
 
+    # TODO: implement something on Command
+    #       so enumeration can be derived introspectively
     @classmethod
     def _handle_wrangler_navigation_directive(class_, session, expr):
         dictionary = class_._navigation_command_name_to_directory_name
@@ -909,15 +920,12 @@ class Controller(object):
         return False
 
     @classmethod
-    def _is_git_unknown(class_, session, path):
+    def _is_git_unknown(class_, io_manager, path):
         if path is None:
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = class_._get_git_status_lines(
-            session,
-            path,
-            )
+        git_status_lines = class_._get_git_status_lines(io_manager, path)
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('?'):
@@ -925,13 +933,10 @@ class Controller(object):
         return False
 
     @classmethod
-    def _is_git_versioned(class_, session, path):
-        if not class_._is_in_git_repository(session, path):
+    def _is_git_versioned(class_, io_manager, path):
+        if not class_._is_in_git_repository(io_manager, path):
             return False
-        git_status_lines = class_._get_git_status_lines(
-            session,
-            path,
-            )
+        git_status_lines = class_._get_git_status_lines(io_manager, path)
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('?'):
@@ -939,15 +944,12 @@ class Controller(object):
         return True
 
     @classmethod
-    def _is_in_git_repository(class_, session, path):
+    def _is_in_git_repository(class_, io_manager, path):
         if path is None:
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = class_._get_git_status_lines(
-            session,
-            path,
-            )
+        git_status_lines = class_._get_git_status_lines(io_manager, path)
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('fatal:'):
@@ -978,9 +980,9 @@ class Controller(object):
         return False
 
     @classmethod
-    def _is_up_to_date(class_, session, path):
+    def _is_up_to_date(class_, io_manager, path):
         git_status_lines = class_._get_git_status_lines(
-            session,
+            io_manager,
             path,
             )
         git_status_lines = git_status_lines or ['']
@@ -1056,16 +1058,15 @@ class Controller(object):
 
     @staticmethod
     def _make_candidate_messages(
-        session, 
+        io_manager, 
         result, 
         candidate_path, 
         incumbent_path,
         ):
         messages = []
-        tab = session._io_manager._tab
         messages.append('the files ...')
-        messages.append(tab + candidate_path)
-        messages.append(tab + incumbent_path)
+        messages.append(io_manager._tab + candidate_path)
+        messages.append(io_manager._tab + incumbent_path)
         if result:
             messages.append('... compare the same.')
         else:
@@ -1142,7 +1143,7 @@ class Controller(object):
     @classmethod
     def _make_score_into_installable_package(
         class_,
-        session,
+        io_manager,
         inner_path,
         outer_path,
         ):
@@ -1154,7 +1155,7 @@ class Controller(object):
         shutil.move(old_path, temporary_path)
         shutil.move(temporary_path, inner_path)
         class_._write_enclosing_artifacts(
-            session,
+            io_manager,
             inner_path,
             outer_path,
             )
@@ -1197,7 +1198,7 @@ class Controller(object):
         if manager is None:
             return
         string = class_._get_metadatum(
-            session,
+            session._io_manager,
             manager._metadata_py_path, 
             'paper_dimensions',
             )
@@ -1217,10 +1218,11 @@ class Controller(object):
             )
         if path.startswith(score_storehouses):
             score_path = class_._path_to_score_path(path)
+            # TODO: implmenet Session.current_score_metadata_py_path
             manager = session._io_manager._make_package_manager(
                 path=score_path)
             metadata = manager._get_metadata(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 )
             if metadata:
@@ -1252,9 +1254,10 @@ class Controller(object):
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
+            # TODO: implement Session.current_segments_metadata_py_path
             manager = session._io_manager._make_package_manager(path=path)
             name = manager._get_metadatum(
-                manager._session,
+                manager._io_manager,
                 manager._metadata_py_path,
                 'name',
                 )
@@ -1418,13 +1421,13 @@ class Controller(object):
         if not manager:
             return
         return manager._get_metadatum(
-            manager._session,
+            manager._io_manager,
             manager._metadata_py_path, 
             metadatum_name,
             )
 
     @classmethod
-    def _remove(class_, session, path):
+    def _remove(class_, io_manager, path):
         # handle score packages correctly
         parts = path.split(os.path.sep)
         if parts[-2] == parts[-1]:
@@ -1432,17 +1435,17 @@ class Controller(object):
         path = os.path.sep.join(parts)
         message = '{} will be removed.'
         message = message.format(path)
-        session._io_manager._display(message)
-        getter = session._io_manager._make_getter()
+        io_manager._display(message)
+        getter = io_manager._make_getter()
         getter.append_string("type 'remove' to proceed")
-        if session.confirm:
+        if io_manager._session.confirm:
             result = getter._run()
-            if session.is_backtracking or result is None:
+            if io_manager._session.is_backtracking or result is None:
                 return
             if not result == 'remove':
                 return
-        if class_._is_in_git_repository(session, path):
-            if class_._is_git_unknown(session, path):
+        if class_._is_in_git_repository(io_manager, path):
+            if class_._is_git_unknown(io_manager, path):
                 command = 'rm -rf {}'
             else:
                 command = 'git rm --force -r {}'
@@ -1450,8 +1453,8 @@ class Controller(object):
             command = 'rm -rf {}'
         command = command.format(path)
         with systemtools.TemporaryDirectoryChange(directory=path):
-            process = session._io_manager.make_subprocess(command)
-        session._io_manager._read_one_line_from_pipe(process.stdout)
+            process = io_manager.make_subprocess(command)
+        io_manager._read_one_line_from_pipe(process.stdout)
         return True
 
     @staticmethod
@@ -1469,7 +1472,7 @@ class Controller(object):
 
     @staticmethod
     def _rename(
-        session,
+        io_manager,
         path,
         file_extension=None,
         file_name_callback=None,
@@ -1477,11 +1480,11 @@ class Controller(object):
         ):
         base_name = os.path.basename(path)
         line = 'current name: {}'.format(base_name)
-        session._io_manager._display(line)
-        getter = session._io_manager._make_getter()
+        io_manager._display(line)
+        getter = io_manager._make_getter()
         getter.append_string('new name')
         new_package_name = getter._run()
-        if session.is_backtracking or new_package_name is None:
+        if io_manager._session.is_backtracking or new_package_name is None:
             return
         new_package_name = stringtools.strip_diacritics(new_package_name)
         if file_name_callback:
@@ -1496,9 +1499,9 @@ class Controller(object):
         lines.append(line)
         line = 'new name:     {}'.format(new_package_name)
         lines.append(line)
-        session._io_manager._display(lines)
-        result = session._io_manager._confirm()
-        if session.is_backtracking or not result:
+        io_manager._display(lines)
+        result = io_manager._confirm()
+        if io_manager._session.is_backtracking or not result:
             return
         new_path = os.path.join(
             os.path.dirname(path),
@@ -1507,10 +1510,10 @@ class Controller(object):
         if os.path.exists(new_path):
             message = 'path already exists: {!r}.'
             message = message.format(new_path)
-            session._io_manager._display(message)
+            io_manager._display(message)
             return
         shutil.move(path, new_path)
-        session._is_backtracking_locally = True
+        io_manager._session._is_backtracking_locally = True
         return new_path
 
     @staticmethod
@@ -1539,8 +1542,8 @@ class Controller(object):
         return new_dictionary
         
     @classmethod
-    def _test_add(class_, session, path):
-        assert class_._is_up_to_date(session, path)
+    def _test_add(class_, io_manager, path):
+        assert class_._is_up_to_date(io_manager, path)
         path_1 = os.path.join(path, 'tmp_1.py')
         path_2 = os.path.join(path, 'tmp_2.py')
         with systemtools.FilesystemState(remove=[path_1, path_2]):
@@ -1550,27 +1553,27 @@ class Controller(object):
                 file_pointer.write('')
             assert os.path.exists(path_1)
             assert os.path.exists(path_2)
-            assert not class_._is_up_to_date(session, path)
+            assert not class_._is_up_to_date(io_manager, path)
             assert class_._get_unadded_asset_paths(
-                session, path) == [path_1, path_2]
-            assert class_._get_added_asset_paths(session, path) == []
-            with session._io_manager._silent(session):
-                class_._git_add(session, path)
-            assert class_._get_unadded_asset_paths(session, path) == []
+                io_manager, path) == [path_1, path_2]
+            assert class_._get_added_asset_paths(io_manager, path) == []
+            with io_manager._silent(io_manager._session):
+                class_._git_add(io_manager, path)
+            assert class_._get_unadded_asset_paths(io_manager, path) == []
             assert class_._get_added_asset_paths(
-                session, path) == [path_1, path_2]
-            with session._io_manager._silent(session):
-                class_._unadd_added_assets(session, path)
+                io_manager, path) == [path_1, path_2]
+            with io_manager._silent(io_manager._session):
+                class_._unadd_added_assets(io_manager, path)
             assert class_._get_unadded_asset_paths(
-                session, path) == [path_1, path_2]
-            assert class_._get_added_asset_paths(session, path) == []
-        assert class_._is_up_to_date(session, path)
+                io_manager, path) == [path_1, path_2]
+            assert class_._get_added_asset_paths(io_manager, path) == []
+        assert class_._is_up_to_date(io_manager, path)
         return True
 
     @classmethod
-    def _test_revert(class_, session, path):
-        assert class_._is_up_to_date(session, path)
-        assert class_._get_modified_asset_paths(session, path) == []
+    def _test_revert(class_, io_manager, path):
+        assert class_._is_up_to_date(io_manager, path)
+        assert class_._get_modified_asset_paths(io_manager, path) == []
         file_name = class_._find_first_file_name(path)
         if not file_name:
             return
@@ -1579,42 +1582,42 @@ class Controller(object):
             with open(file_path, 'a') as file_pointer:
                 string = '# extra text appended during testing'
                 file_pointer.write(string)
-            assert not class_._is_up_to_date(session, path)
+            assert not class_._is_up_to_date(io_manager, path)
             assert class_._get_modified_asset_paths(
-                session, path) == [file_path]
-            with session._io_manager._silent(session):
-                class_._get_revert(session, path)
-        assert class_._get_modified_asset_paths(session, path) == []
-        assert class_._is_up_to_date(session, path)
+                io_manager, path) == [file_path]
+            with io_manager._silent(io_manager._session):
+                class_._get_revert(io_manager, path)
+        assert class_._get_modified_asset_paths(io_manager, path) == []
+        assert class_._is_up_to_date(io_manager, path)
         return True
 
     @classmethod
-    def _unadd_added_assets(class_, session, path):
+    def _unadd_added_assets(class_, io_manager, path):
         paths = []
-        paths.extend(class_._get_added_asset_paths(session, path))
-        paths.extend(class_._get_modified_asset_paths(session, path))
+        paths.extend(class_._get_added_asset_paths(io_manager, path))
+        paths.extend(class_._get_modified_asset_paths(io_manager, path))
         commands = []
         for path in paths:
             command = 'git reset -- {}'.format(path)
             commands.append(command)
         command = ' && '.join(commands)
         with systemtools.TemporaryDirectoryChange(directory=path):
-            session._io_manager.spawn_subprocess(command)
+            io_manager.spawn_subprocess(command)
 
     @classmethod
-    def _write_enclosing_artifacts(class_, session, inner_path, outer_path):
+    def _write_enclosing_artifacts(class_, io_manager, inner_path, outer_path):
         class_._copy_boilerplate(
-            session,
+            io_manager,
             'README.md',
             outer_path,
             )
         class_._copy_boilerplate(
-            session,
+            io_manager,
             'requirements.txt',
             outer_path,
             )
         class_._copy_boilerplate(
-            session,
+            io_manager,
             'setup.cfg',
             outer_path,
             )
@@ -1626,7 +1629,7 @@ class Controller(object):
             'PACKAGE_NAME': package_name,
             }
         class_._copy_boilerplate(
-            session,
+            io_manager,
             'setup.py',
             outer_path,
             replacements=replacements,
