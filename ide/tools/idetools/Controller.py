@@ -1293,9 +1293,9 @@ class Controller(object):
 
     @staticmethod
     def _path_to_score_directory(path):
-        is_user_score = False
+        is_composer_score = False
         if path.startswith(configuration.composer_scores_directory):
-            is_user_score = True
+            is_composer_score = True
             prefix = len(configuration.composer_scores_directory)
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
             prefix = len(configuration.abjad_ide_example_scores_directory)

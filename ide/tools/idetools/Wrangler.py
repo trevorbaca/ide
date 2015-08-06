@@ -324,16 +324,16 @@ class Wrangler(Controller):
         ):
         from ide.tools import idetools
         example_score_packages = False
-        user_score_packages = False
+        composer_score_packages = False
         if system and inside_score:
             example_score_packages = True
         elif not system and inside_score:
-            user_score_packages = True
+            composer_score_packages = True
         else:
             Exception
         asset_paths = self._list_asset_paths(
             example_score_packages=example_score_packages,
-            user_score_packages=user_score_packages,
+            composer_score_packages=composer_score_packages,
             )
         if self._basic_breadcrumb == 'scores':
             if system:
@@ -570,13 +570,13 @@ class Wrangler(Controller):
     def _list_asset_paths(
         self,
         example_score_packages=True,
-        user_score_packages=True,
+        composer_score_packages=True,
         valid_only=True,
         ):
         result = []
         directories = self._list_storehouse_paths(
             example_score_packages=example_score_packages,
-            user_score_packages=user_score_packages,
+            composer_score_packages=composer_score_packages,
             )
         for directory in directories:
             if not directory:
@@ -604,14 +604,14 @@ class Wrangler(Controller):
     def _list_score_directories(
         self,
         example_score_packages=False,
-        user_score_packages=False,
+        composer_score_packages=False,
         ):
         result = []
         scores_directories = []
         if example_score_packages:
             scores_directories.append(
                 configuration.abjad_ide_example_scores_directory)
-        if user_score_packages:
+        if composer_score_packages:
             scores_directories.append(configuration.composer_scores_directory)
         for scores_directory in scores_directories:
             directory_entries = sorted(os.listdir(scores_directory))
@@ -634,18 +634,18 @@ class Wrangler(Controller):
     def _list_storehouse_paths(
         self,
         example_score_packages=True,
-        user_score_packages=True,
+        composer_score_packages=True,
         ):
         result = []
         if self._directory_name == 'scores':
             if example_score_packages:
                 result.append(configuration.abjad_ide_example_scores_directory)
-            if user_score_packages:
+            if composer_score_packages:
                 result.append(configuration.composer_scores_directory)
         else:
             score_directories = self._list_score_directories(
                 example_score_packages=example_score_packages,
-                user_score_packages=user_score_packages,
+                composer_score_packages=composer_score_packages,
                 )
             for score_directory in score_directories:
                 path = os.path.join(
@@ -902,14 +902,14 @@ class Wrangler(Controller):
     def _make_storehouse_menu_entries(
         self,
         example_score_packages=True,
-        user_score_packages=True,
+        composer_score_packages=True,
         ):
         from ide.tools import idetools
         display_strings, keys = [], []
         wrangler = self._session._abjad_ide._score_package_wrangler
         paths = wrangler._list_asset_paths(
             example_score_packages=example_score_packages,
-            user_score_packages=user_score_packages,
+            composer_score_packages=composer_score_packages,
             )
         for path in paths:
             manager = wrangler._get_manager(path)
@@ -1054,7 +1054,7 @@ class Wrangler(Controller):
     def _select_storehouse_path(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
             example_score_packages=example_score_packages,
-            user_score_packages=False,
+            composer_score_packages=False,
             )
         selector = self._session._io_manager._make_selector(
             menu_entries=menu_entries,
