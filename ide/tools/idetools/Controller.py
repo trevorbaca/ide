@@ -1157,20 +1157,12 @@ class Controller(object):
         return inner_path
 
     @classmethod
-    def _make_secondary_asset_menu_entries(class_, session, directory_name):
-        if not session.is_in_score:
-            return []
-        current_directory = class_._get_current_directory(
-            session,
-            directory_name,
-            )
-        if not current_directory:
-            return []
+    def _make_secondary_asset_menu_entries(class_, directory_path):
         menu_entries = []
-        for name in os.listdir(current_directory):
-            if name in class_._known_secondary_assets:
-                path = os.path.join(current_directory, name)
-                menu_entry = (name, None, None, path)
+        for entry in os.listdir(directory_path):
+            if entry in class_._known_secondary_assets:
+                path = os.path.join(directory_path, entry)
+                menu_entry = (entry, None, None, path)
                 menu_entries.append(menu_entry)
         return menu_entries
 

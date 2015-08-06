@@ -742,11 +742,14 @@ class Wrangler(Controller):
 
     def _make_asset_menu_section(self, menu):
         menu_entries = []
-        menu_entries_ = self._make_secondary_asset_menu_entries(
+        current_directory = self._get_current_directory(
             self._session,
             self._directory_name,
             )
-        menu_entries.extend(menu_entries_)
+        if current_directory:
+            menu_entries_ = self._make_secondary_asset_menu_entries(
+                current_directory)
+            menu_entries.extend(menu_entries_)
         menu_entries.extend(self._make_asset_menu_entries())
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
