@@ -326,16 +326,12 @@ class Controller(object):
     @classmethod
     def _filter_asset_menu_entries_by_view(
         class_,
-        session,
-        directory_name,
+        io_manager,
+        directory_token,
         entries,
         ):
-        directory_token = class_._get_current_directory_token(
-            session,
-            directory_name,
-            )
         view = class_._read_view(
-            session._io_manager,
+            io_manager,
             directory_token,
             )
         if view is None:

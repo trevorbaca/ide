@@ -623,9 +623,13 @@ class Wrangler(Controller):
             entry = (string, None, None, path)
             entries.append(entry)
         if set_view:
-            entries = self._filter_asset_menu_entries_by_view(
+            directory_token = self._get_current_directory_token(
                 self._session,
                 self._directory_name,
+                )
+            entries = self._filter_asset_menu_entries_by_view(
+                self._io_manager,
+                directory_token,
                 entries,
                 )
         if self._session.is_test and self._only_example_scores_during_test:
