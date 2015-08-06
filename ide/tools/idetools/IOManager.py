@@ -357,14 +357,13 @@ class IOManager(IOManager):
             line = line.strip()
         return line
 
-    def _silent(self, session):
+    def _silent(self):
         from ide.tools import idetools
-        assert session is not None
         return idetools.Interaction(
             confirm=False,
             display=False,
             dry_run=False,
-            session=session,
+            session=self._session,
             task=False,
             )
 

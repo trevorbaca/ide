@@ -671,14 +671,14 @@ class Wrangler(Controller):
             asset_name,
             )
         manager = self._get_manager(path)
-        with self._session._io_manager._silent(self._session):
+        with self._session._io_manager._silent():
             manager.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
                 )
         paths = self._list_visible_asset_paths()
         if path not in paths:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 self._clear_view(self._session, self._directory_name)
         self._session._pending_redraw = True
 
@@ -830,7 +830,7 @@ class Wrangler(Controller):
         manager._make_package()
         paths = self._list_visible_asset_paths()
         if path not in paths:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 self._clear_view(self._session, self._directory_name)
         manager._run()
 
@@ -882,7 +882,7 @@ class Wrangler(Controller):
             )
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 self._clear_view(self._session, self._directory_name)
         manager._run()
 
@@ -1142,7 +1142,7 @@ class Wrangler(Controller):
             )
         if not os.path.exists(views_py_path):
             view_inventory = idetools.ViewInventory()
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 self._write_view_inventory(
                     self._session,
                     self._directory_name,
@@ -1153,10 +1153,10 @@ class Wrangler(Controller):
                 self._io_manager,
                 self._metadata_py_path,
                 )
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 self._write_metadata_py(self._metadata_py_path, metadata)
         if self._session.is_test:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 for wrangler in self._session._abjad_ide._wranglers:
                     views_py_path = wrangler._get_views_py_path(
                         wrangler._session,
@@ -1165,7 +1165,7 @@ class Wrangler(Controller):
                     if not os.path.exists(views_py_path):
                         wrangler.write_views_py()
         else:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 for wrangler in self._session._abjad_ide._wranglers:
                     view_inventory = idetools.ViewInventory()
                     wrangler._write_view_inventory(
@@ -1316,7 +1316,7 @@ class Wrangler(Controller):
         managers = self._list_visible_asset_managers()
         found_problem = False
         for manager in managers:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 result = manager.check_package(
                     return_messages=True,
                     problems_only=problems_only,
@@ -1358,7 +1358,7 @@ class Wrangler(Controller):
             return messages, missing_directories, missing_files
         messages = []
         for manager in managers:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 result = manager.check_package(
                     return_supply_messages=True,
                     supply_missing=True,
@@ -1804,7 +1804,7 @@ class Wrangler(Controller):
         result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return
-        with self._session._io_manager._silent(self._session):
+        with self._session._io_manager._silent():
             for manager in managers:
                 method = getattr(manager, method_name)
                 method()
@@ -1836,7 +1836,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         for path in paths:
             manager = self._get_manager(path)
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 manager._git_commit(
                     manager._session,
                     manager._path,
@@ -1987,7 +1987,7 @@ class Wrangler(Controller):
         if self._session.is_backtracking or not result:
             return
         for manager in managers:
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 method = getattr(manager, method_name)
                 subprocess_messages, candidate_messages = method()
             if subprocess_messages:
@@ -2020,8 +2020,8 @@ class Wrangler(Controller):
         Returns none.
         '''
         self._call_lilypond_on_file_ending_with(
-            self._session,
-            self._directory_name,
+            self._io_manager,
+            self._session.current_build_directory,
             'music.ly',
             )
 
@@ -2175,7 +2175,7 @@ class Wrangler(Controller):
                 return
         for path in paths:
             manager = self._get_manager(path)
-            with self._session._io_manager._silent(self._session):
+            with self._session._io_manager._silent():
                 manager._remove(manager._io_manager, manager._path)
         self._session._pending_redraw = True
 

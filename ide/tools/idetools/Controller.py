@@ -93,28 +93,23 @@ class Controller(object):
             metadata_py_path,
             )
         metadata[metadatum_name] = metadatum_value
-        # TODO: Change IOManager._silent() to allow zero arguments
-        with io_manager._silent(io_manager._session):
+        with io_manager._silent():
             class_._write_metadata_py(metadata_py_path, metadata)
 
     @classmethod
     def _call_lilypond_on_file_ending_with(
         class_,
-        session,
-        directory_name,
+        io_manager,
+        directory_path,
         string,
         ):
-        directory_path = class_._get_current_directory(
-            session,
-            directory_name,
-            )
         file_path = class_._get_file_path_ending_with(directory_path, string)
         if file_path:
-            session._io_manager.run_lilypond(file_path)
+            io_manager.run_lilypond(file_path)
         else:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
-            session._io_manager._display(message)
+            io_manager._display(message)
             
     @classmethod
     def _clear_view(class_, session, directory_name):
@@ -1557,12 +1552,12 @@ class Controller(object):
             assert class_._get_unadded_asset_paths(
                 io_manager, path) == [path_1, path_2]
             assert class_._get_added_asset_paths(io_manager, path) == []
-            with io_manager._silent(io_manager._session):
+            with io_manager._silent():
                 class_._git_add(io_manager, path)
             assert class_._get_unadded_asset_paths(io_manager, path) == []
             assert class_._get_added_asset_paths(
                 io_manager, path) == [path_1, path_2]
-            with io_manager._silent(io_manager._session):
+            with io_manager._silent():
                 class_._unadd_added_assets(io_manager, path)
             assert class_._get_unadded_asset_paths(
                 io_manager, path) == [path_1, path_2]
@@ -1585,7 +1580,7 @@ class Controller(object):
             assert not class_._is_up_to_date(io_manager, path)
             assert class_._get_modified_asset_paths(
                 io_manager, path) == [file_path]
-            with io_manager._silent(io_manager._session):
+            with io_manager._silent():
                 class_._get_revert(io_manager, path)
         assert class_._get_modified_asset_paths(io_manager, path) == []
         assert class_._is_up_to_date(io_manager, path)
