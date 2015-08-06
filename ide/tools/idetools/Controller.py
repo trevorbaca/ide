@@ -724,16 +724,6 @@ class Controller(object):
             return messages
         session._io_manager._display(messages)
 
-    def _go_to_next_package(self):
-        self._session._is_navigating_to_next_asset = True
-        self._session._display_command_help = None
-        self._set_is_navigating_to_sibling_asset()
-
-    def _go_to_previous_package(self):
-        self._session._is_navigating_to_previous_asset = True
-        self._session._display_command_help = None
-        self._set_is_navigating_to_sibling_asset()
-
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
@@ -1389,9 +1379,6 @@ class Controller(object):
             with open(file_path, 'w') as file_pointer:
                 file_pointer.write(new_file_contents)
 
-    def _set_is_navigating_to_sibling_asset(self):
-        self._session._navigation_target = self._basic_breadcrumb.lower()
-
     @staticmethod
     def _sort_ordered_dictionary(dictionary):
         new_dictionary = type(dictionary)()
@@ -1682,7 +1669,9 @@ class Controller(object):
 
         Returns none.
         '''
-        self._go_to_next_package()
+        self._session._is_navigating_to_next_asset = True
+        self._session._display_command_help = None
+        self._session._navigation_target = self._basic_breadcrumb.lower()
 
     @Command('>>', section='sibling score', outside_score='home')
     def go_to_next_score(self):
@@ -1705,7 +1694,9 @@ class Controller(object):
 
         Returns none.
         '''
-        self._go_to_previous_package()
+        self._session._is_navigating_to_previous_asset = True
+        self._session._display_command_help = None
+        self._session._navigation_target = self._basic_breadcrumb.lower()
 
     @Command('<<', section='sibling score', outside_score='home')
     def go_to_previous_score(self):
