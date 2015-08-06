@@ -1038,7 +1038,7 @@ class Wrangler(Controller):
     @classmethod
     def _supply_views_metadata_py(class_, io_manager):
         metadata_py_path = \
-            configuration.abjad_ide_wrangler_views_metadata_py_path
+            configuration.abjad_ide_views_metadata_py_path
         if not os.path.exists(metadata_py_path):
             metadata = class_._get_metadata(
                 io_manager,

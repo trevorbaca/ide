@@ -152,13 +152,13 @@ class AbjadIDE(object):
         path = configuration.abjad_ide_directory
         directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
-        wrangler_views = os.path.join(
-            configuration.abjad_ide_wrangler_views_directory,
+        views = os.path.join(
+            configuration.abjad_ide_views_directory,
             '__metadata__.py',
             )
         if self._session.is_test:
             paths_to_keep = []
-            paths_to_keep.append(wrangler_views)
+            paths_to_keep.append(views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
         interaction = self._session._io_manager._make_interaction(
             self._session,
@@ -171,7 +171,7 @@ class AbjadIDE(object):
                     configuration.abjad_ide_boilerplate_directory,
                     '__views_metadata__.py',
                     )
-                shutil.copyfile(empty_views, wrangler_views)
+                shutil.copyfile(empty_views, views)
             while True:
                 result = self._score_package_wrangler._get_sibling_score_path()
                 result = result or self._session.navigation_command_name

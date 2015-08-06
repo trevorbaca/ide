@@ -235,12 +235,12 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         return path
 
     @property
-    def abjad_ide_wrangler_views_directory(self):
+    def abjad_ide_views_directory(self):
         r'''Gets Abjad IDE wrangler views directory.
 
         ..  container::
 
-            >>> configuration.abjad_ide_wrangler_views_directory
+            >>> configuration.abjad_ide_views_directory
             '.../views'
 
         Defined equal to views/ subdirectory of Abjad IDE configuration
@@ -251,12 +251,12 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         return os.path.join(self.abjad_ide_configuration_directory, 'views')
 
     @property
-    def abjad_ide_wrangler_views_metadata_py_path(self):
+    def abjad_ide_views_metadata_py_path(self):
         r'''Gets Abjad IDE wrangler views __metadata__.py path.
 
         ..  container::
 
-            >>> configuration.abjad_ide_wrangler_views_metadata_py_path
+            >>> configuration.abjad_ide_views_metadata_py_path
             '.../views/__metadata__.py'
 
         Defined equal to __metadata__.py file in the views/ subdirectory of
@@ -265,7 +265,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(
-            self.abjad_ide_wrangler_views_directory,
+            self.abjad_ide_views_directory,
             '__metadata__.py',
             )
 
