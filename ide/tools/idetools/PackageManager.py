@@ -18,6 +18,7 @@ class PackageManager(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_basic_breadcrumb',
         '_breadcrumb_callback',
         '_optional_directories',
         '_optional_files',
@@ -34,6 +35,7 @@ class PackageManager(Controller):
         assert path is not None and os.path.sep in path
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
+        self._basic_breadcrumb = None
         self._breadcrumb_callback = None
         self._optional_directories = (
             '__pycache__',

@@ -51,7 +51,7 @@ class Wrangler(Controller):
         superclass.__init__(session=session)
         self._allow_asset_name_underscores = False
         self._asset_identifier = None
-        self._basic_breadcrumb = None
+#        self._basic_breadcrumb = None
         self._copy_target_directory = None
         self._directory_entry_predicate = self._is_valid_directory_entry
         self._directory_name = None
@@ -75,6 +75,10 @@ class Wrangler(Controller):
         return '{}({!r})'.format(type(self).__name__, self._directory_name)
 
     ### PRIVATE PROPERTIES ###
+
+    @property
+    def _basic_breadcrumb(self):
+        return self._directory_name
 
     @property
     def _breadcrumb(self):
@@ -162,7 +166,6 @@ class Wrangler(Controller):
 
     def _configure_as_build_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'build'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'build'
         self._file_name_predicate = stringtools.is_dash_case
@@ -171,7 +174,6 @@ class Wrangler(Controller):
 
     def _configure_as_distribution_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'distribution'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'distribution'
         self._file_name_predicate = stringtools.is_dash_case
@@ -179,7 +181,6 @@ class Wrangler(Controller):
 
     def _configure_as_etc_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'etc'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'etc'
         self._file_name_predicate = stringtools.is_dash_case
@@ -187,7 +188,6 @@ class Wrangler(Controller):
 
     def _configure_as_maker_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'makers'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'makers'
         self._file_extension = '.py'
@@ -196,14 +196,12 @@ class Wrangler(Controller):
 
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._basic_breadcrumb = 'materials'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'materials'
 
     def _configure_as_score_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._basic_breadcrumb = 'scores'
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
@@ -215,14 +213,12 @@ class Wrangler(Controller):
 
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._basic_breadcrumb = 'segments'
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
         self._directory_name = 'segments'
 
     def _configure_as_stylesheet_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'stylesheets'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'stylesheets'
         self._file_extension = '.ily'
@@ -231,7 +227,6 @@ class Wrangler(Controller):
 
     def _configure_as_test_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._basic_breadcrumb = 'test'
         self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'test'
         self._allow_asset_name_underscores = True

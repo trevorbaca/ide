@@ -21,7 +21,6 @@ class Controller(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_basic_breadcrumb',
         '_session',
         )
 
@@ -52,7 +51,6 @@ class Controller(object):
     def __init__(self, session=None):
         assert session is not None
         self._session = session
-        self._basic_breadcrumb = None
 
     ### SPECIAL METHODS ###
 
