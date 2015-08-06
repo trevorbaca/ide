@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os
+import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -9,6 +10,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_Wrangler_copy_01():
     r'''Copies score package.
     '''
+    pytest.skip()
 
     pretty_path = os.path.join(
         configuration.composer_scores_directory,

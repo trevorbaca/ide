@@ -1305,16 +1305,7 @@ class Controller(object):
         path_suffix = path[prefix + 1:]
         score_name = path_suffix.split(os.path.sep)[0]
         score_path = os.path.join(path_prefix, score_name)
-        # test for installable python package structure
-        outer_init_path = os.path.join(score_path, '__init__.py')
-        inner_init_path = os.path.join(
-            score_path, 
-            score_name, 
-            '__init__.py',
-            )
-        if (not os.path.exists(outer_init_path) and
-            os.path.exists(inner_init_path)):
-            score_path = os.path.join(score_path, score_name)
+        score_path = os.path.join(score_path, score_name)
         return score_path
 
     @staticmethod
