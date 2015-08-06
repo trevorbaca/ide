@@ -657,6 +657,12 @@ class Controller(object):
         return paths
 
     @staticmethod
+    def _get_views_metadata_py_path(session):
+        path = configuration.abjad_ide_wrangler_views_directory
+        manager = session._io_manager._make_package_manager(path)
+        return manager._metadata_py_path
+
+    @staticmethod
     def _get_views_package_manager(session):
         path = configuration.abjad_ide_wrangler_views_directory
         return session._io_manager._make_package_manager(path)
@@ -1398,15 +1404,15 @@ class Controller(object):
                 session,
                 directory_name,
                 )
+            metadata_py_path = manager._metadata_py_path
             metadatum_name = 'view_name'
         else:
-            manager = class_._get_views_package_manager(session)
+            metadata_py_path = \
+                configuration.abjad_ide_wrangler_views_metadata_py_path
             metadatum_name = '{}_view_name'.format(class_.__name__)
-        if not manager:
-            return
-        return manager._get_metadatum(
-            manager._io_manager,
-            manager._metadata_py_path, 
+        return class_._get_metadatum(
+            session._io_manager,
+            metadata_py_path,
             metadatum_name,
             )
 
