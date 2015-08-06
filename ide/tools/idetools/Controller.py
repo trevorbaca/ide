@@ -1400,11 +1400,11 @@ class Controller(object):
     @classmethod
     def _read_view_name(class_, session, directory_name):
         if session.is_in_score:
-            manager = class_._get_current_package_manager(
+            directory_path = class_._get_current_directory(
                 session,
                 directory_name,
                 )
-            metadata_py_path = manager._metadata_py_path
+            metadata_py_path = os.path.join(directory_path, '__metadata__.py')
             metadatum_name = 'view_name'
         else:
             metadata_py_path = \
