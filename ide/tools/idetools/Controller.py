@@ -900,7 +900,8 @@ class Controller(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    def _is_valid_directory_entry(self, directory_entry):
+    @staticmethod
+    def _is_valid_directory_entry(directory_entry):
         if directory_entry[0].isalpha():
             if not directory_entry.endswith('.pyc'):
                 return True
@@ -1072,25 +1073,36 @@ class Controller(object):
             )
         return inner_path
 
-    def _make_secondary_asset_menu_entries(self):
-        menu_entries = []
-        if not self._session.is_in_score:
-            return menu_entries
-        if hasattr(self, '_directory_name'):
-            current_directory = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
-        else:
-            current_directory = self._get_current_directory()
+    @classmethod
+    def _make_secondary_asset_menu_entries(class_, session, directory_name):
+        if not session.is_in_score:
+            return []
+        current_directory = class_._get_current_directory(
+            session,
+            directory_name,
+            )
         if not current_directory:
-            return menu_entries
+            return []
+        menu_entries = []
         for name in os.listdir(current_directory):
-            if name in self._known_secondary_assets:
+            if name in class_._known_secondary_assets:
                 path = os.path.join(current_directory, name)
                 menu_entry = (name, None, None, path)
                 menu_entries.append(menu_entry)
         return menu_entries
+
+    @staticmethod
+    def _match_path_view_pattern(pattern, entry):
+        display_string, _, _, path = entry
+        token = ':path:'
+        assert token in pattern, repr(pattern)
+        pattern = pattern.replace(token, repr(path))
+        try:
+            result = eval(pattern)
+        except:
+            traceback.print_exc()
+            return False
+        return result
 
     def _open_file(self, path):
         if os.path.isfile(path):

@@ -817,7 +817,11 @@ class Wrangler(Controller):
 
     def _make_asset_menu_section(self, menu):
         menu_entries = []
-        menu_entries.extend(self._make_secondary_asset_menu_entries())
+        menu_entries_ = self._make_secondary_asset_menu_entries(
+            self._session,
+            self._directory_name,
+            )
+        menu_entries.extend(menu_entries_)
         menu_entries.extend(self._make_asset_menu_entries())
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
@@ -1014,18 +1018,6 @@ class Wrangler(Controller):
                         )
                     metadatum = repr(metadatum)
                     pattern = pattern.replace(part, metadatum)
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    def _match_path_view_pattern(self, pattern, entry):
-        display_string, _, _, path = entry
-        token = ':path:'
-        assert token in pattern, repr(pattern)
-        pattern = pattern.replace(token, repr(path))
         try:
             result = eval(pattern)
         except:
