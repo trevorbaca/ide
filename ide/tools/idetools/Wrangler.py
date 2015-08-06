@@ -630,8 +630,8 @@ class Wrangler(Controller):
                 )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-#        elif not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        elif not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_menu_section(self, menu):

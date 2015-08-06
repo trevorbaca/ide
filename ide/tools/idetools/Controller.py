@@ -330,9 +330,13 @@ class Controller(object):
         directory_name,
         entries,
         ):
-        view = class_._read_view(
+        directory_token = class_._get_current_directory_token(
             session,
             directory_name,
+            )
+        view = class_._read_view(
+            session._io_manager,
+            directory_token,
             )
         if view is None:
             return entries
@@ -1491,19 +1495,15 @@ class Controller(object):
         return storehouse
 
     @classmethod
-    def _read_view(class_, session, directory_name):
-        directory_token = class_._get_current_directory_token(
-            session,
-            directory_name,
-            )
+    def _read_view(class_, io_manager, directory_token):
         view_name = class_._read_view_name(
-            session._io_manager,
+            io_manager,
             directory_token,
             )
         if not view_name:
             return
         view_inventory = class_._read_view_inventory(
-            session._io_manager,
+            io_manager,
             directory_token,
             )
         if not view_inventory:
