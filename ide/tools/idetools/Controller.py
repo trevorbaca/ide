@@ -668,10 +668,8 @@ class Controller(object):
         return session._io_manager._make_package_manager(path)
 
     @classmethod
-    #def _get_views_py_path(class_, session, directory_name):
     def _get_views_py_path(class_, io_manager, directory_path):
         if directory_path:
-            # TODO: looks like flow can never enter here
             return os.path.join(directory_path, '__views__.py')
         else:
             directory_path = configuration.abjad_ide_wrangler_views_directory
