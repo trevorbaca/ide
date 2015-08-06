@@ -600,14 +600,7 @@ class Wrangler(Controller):
                         continue
                 path = os.path.join(directory, directory_entry)
                 if directory_name == 'scores':
-                    # test for installable python package structure
-                    outer_init_path = os.path.join(path, '__init__.py')
-                    inner_directory = os.path.join(path, directory_entry)
-                    inner_init_path = os.path.join(
-                        inner_directory, '__init__.py')
-                    if not os.path.exists(outer_init_path):
-                        if os.path.exists(inner_init_path):
-                            path = inner_directory
+                    path = os.path.join(path, directory_entry)
                 result.append(path)
         return result
 
