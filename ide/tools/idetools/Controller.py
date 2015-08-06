@@ -720,7 +720,7 @@ class Controller(object):
         return session._io_manager._make_package_manager(path)
 
     @classmethod
-    def _get_views_py_path(class_, io_manager, directory_path):
+    def _get_views_py_path(class_, directory_path):
         if directory_path:
             return os.path.join(directory_path, '__views__.py')
         else:
@@ -1499,10 +1499,7 @@ class Controller(object):
             session,
             directory_name,
             )
-        views_py_path = class_._get_views_py_path(
-            session._io_manager,
-            current_directory,
-            )
+        views_py_path = class_._get_views_py_path(current_directory)
         result = session._io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
@@ -1790,10 +1787,7 @@ class Controller(object):
             session,
             directory_name,
             )
-        views_py_path = class_._get_views_py_path(
-            session._io_manager,
-            current_directory,
-            )
+        views_py_path = class_._get_views_py_path(current_directory)
         session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
         session._io_manager._display(message)
