@@ -203,6 +203,7 @@ class Wrangler(Controller):
         self._copy_target_directory = configuration.composer_scores_directory
         self._directory_entry_predicate = \
             self._is_valid_package_directory_entry
+        self._directory_name = 'scores'
         self._group_asset_section_by_annotation = False
         self._hide_breadcrumb_while_in_score = True
         self._only_example_scores_during_test = True
@@ -643,19 +644,22 @@ class Wrangler(Controller):
         result = []
         if user_score_packages:
             result.append(configuration.composer_scores_directory)
-        if (example_score_packages and self._directory_name):
-            for score_directory in self._list_score_directories(abjad=True):
-                score_directory = self._path_to_score_directory(
-                    score_directory)
-                path = os.path.join(
-                    score_directory,
-                    self._directory_name,
-                    )
-                result.append(path)
-        elif (example_score_packages and not self._directory_name):
-            result.append(configuration.abjad_ide_example_scores_directory)
+        if example_score_packages:
+            if self._directory_name == 'scores':
+                result.append(configuration.abjad_ide_example_scores_directory)
+            else:
+                score_directories = self._list_score_directories(abjad=True)
+                for score_directory in score_directories:
+                    score_directory = self._path_to_score_directory(
+                        score_directory)
+                    path = os.path.join(
+                        score_directory,
+                        self._directory_name,
+                        )
+                    result.append(path)
         if user_score_packages and self._directory_name:
-            for score_directory in self._list_score_directories(user=True):
+            score_directories = self._list_score_directories(user=True)
+            for score_directory in score_directories:
                 path = os.path.join(
                     score_directory,
                     self._directory_name,
@@ -753,8 +757,8 @@ class Wrangler(Controller):
                 )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-        elif not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        elif not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_menu_section(self, menu):
@@ -1180,8 +1184,6 @@ class Wrangler(Controller):
                 )
             with self._session._io_manager._silent():
                 self._write_metadata_py(self._metadata_py_path, metadata)
-#        wranglers = self._session._abjad_ide._wranglers
-#        raise Exception(wranglers)
         with self._session._io_manager._silent():
             for wrangler in self._session._abjad_ide._wranglers:
                 view_inventory = idetools.ViewInventory()
