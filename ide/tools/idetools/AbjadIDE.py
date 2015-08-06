@@ -34,12 +34,13 @@ class AbjadIDE(object):
             session._is_test = is_test
         self._session = session
         self._session._abjad_ide = self
-        self._score_package_wrangler._supply_missing_views_files()
         for wrangler in self._wranglers:
             wrangler._supply_missing_view_file(
                 wrangler._io_manager,
                 wrangler._directory_name,
                 )
+        self._score_package_wrangler._supply_views_metadata_py(
+            self._session._io_manager)
 
     ### SPECIAL METHODS ###
 
