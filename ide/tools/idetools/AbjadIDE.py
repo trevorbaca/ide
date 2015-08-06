@@ -35,11 +35,11 @@ class AbjadIDE(object):
         self._session = session
         self._session._abjad_ide = self
         for wrangler in self._wranglers:
-            wrangler._supply_missing_view_file(
+            wrangler._supply_global_views_file(
                 wrangler._io_manager,
                 wrangler._directory_name,
                 )
-        self._score_package_wrangler._supply_views_metadata_py(
+        self._score_package_wrangler._supply_global_metadata_py(
             self._session._io_manager)
 
     ### SPECIAL METHODS ###

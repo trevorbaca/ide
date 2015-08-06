@@ -1035,27 +1035,6 @@ class Wrangler(Controller):
         result = result.strip()
         return result
 
-    @classmethod
-    def _supply_views_metadata_py(class_, io_manager):
-        metadata_py_path = \
-            configuration.abjad_ide_views_metadata_py_path
-        if not os.path.exists(metadata_py_path):
-            metadata = class_._get_metadata(
-                io_manager,
-                metadata_py_path,
-                )
-            with self._session._io_manager._silent():
-                class_._write_metadata_py(metadata_py_path, metadata)
-
-    @classmethod
-    def _supply_missing_view_file(class_, io_manager, directory_name):
-        from ide.tools import idetools
-        class_._write_view_inventory(
-            io_manager,
-            directory_name,
-            idetools.ViewInventory(),
-            )
-
     @staticmethod
     def _to_dash_case(file_name):
         file_name = file_name.replace(' ', '-')

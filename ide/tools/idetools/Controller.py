@@ -1673,6 +1673,29 @@ class Controller(object):
         return new_dictionary
         
     @classmethod
+    def _supply_global_metadata_py(class_, io_manager):
+        metadata_py_path = \
+            configuration.abjad_ide_views_metadata_py_path
+        if not os.path.exists(metadata_py_path):
+            metadata = class_._get_metadata(
+                io_manager,
+                metadata_py_path,
+                )
+            with self._session._io_manager._silent():
+                class_._write_metadata_py(metadata_py_path, metadata)
+
+    @classmethod
+    def _supply_global_views_file(class_, io_manager, directory_name):
+        from ide.tools import idetools
+        views_py_path = class_._get_views_py_path(directory_name)
+        if not os.path.isfile(views_py_path):
+            class_._write_view_inventory(
+                io_manager,
+                directory_name,
+                idetools.ViewInventory(),
+                )
+
+    @classmethod
     def _test_add(class_, io_manager, path):
         assert class_._is_up_to_date(io_manager, path)
         path_1 = os.path.join(path, 'tmp_1.py')
