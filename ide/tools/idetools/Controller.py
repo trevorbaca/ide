@@ -93,6 +93,43 @@ class Controller(object):
             class_._write_metadata_py(metadata_py_path, metadata)
 
     @classmethod
+    def _call_lilypond_on_file_ending_with(
+        class_,
+        session,
+        directory_name,
+        string,
+        ):
+        directory_path = class_._get_current_directory(
+            session,
+            directory_name,
+            )
+        file_path = class_._get_file_path_ending_with(directory_path, string)
+        if file_path:
+            session._io_manager.run_lilypond(file_path)
+        else:
+            message = 'file ending in {!r} not found.'
+            message = message.format(string)
+            session._io_manager._display(message)
+            
+    @classmethod
+    def _clear_view(class_, session, directory_name):
+        if session.is_in_score:
+            manager = self._get_current_package_manager(
+                session,
+                directory_name,
+                )
+            metadatum_name = 'view_name'
+        else:
+            manager = class_._get_views_package_manager(session)
+            metadatum_name = '{}_view_name'.format(class_.__name__)
+        manager._add_metadatum(
+            manager._session,
+            manager._metadata_py_path,
+            metadatum_name,
+            None,
+            )
+
+    @classmethod
     def _copy_boilerplate(
         class_, 
         session,

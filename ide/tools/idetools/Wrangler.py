@@ -93,12 +93,6 @@ class Wrangler(Controller):
         return breadcrumb
 
     @property
-    def _init_py_file_path(self):
-        path = self._get_current_directory(self._session, self._directory_name)
-        if path:
-            return os.path.join(path, '__init__.py')
-
-    @property
     def _metadata_py_path(self):
         if self._session.is_in_score:
             manager = self._get_current_package_manager(
@@ -111,19 +105,6 @@ class Wrangler(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _call_lilypond_on_file_ending_with(self, string):
-        directory_path = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
-        file_path = self._get_file_path_ending_with(directory_path, string)
-        if file_path:
-            self._session._io_manager.run_lilypond(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._session._io_manager._display(message)
-            
     def _check_every_file(self):
         paths = self._list_asset_paths(valid_only=False)
         paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
@@ -161,23 +142,6 @@ class Wrangler(Controller):
         self._session._io_manager._display(messages)
         missing_files, missing_directories = [], []
         return messages, missing_files, missing_directories
-
-    def _clear_view(self):
-        if self._session.is_in_score:
-            manager = self._get_current_package_manager(
-                self._session,
-                self._directory_name,
-                )
-            metadatum_name = 'view_name'
-        else:
-            manager = self._get_views_package_manager(self._session)
-            metadatum_name = '{}_view_name'.format(type(self).__name__)
-        manager._add_metadatum(
-            manager._session,
-            manager._metadata_py_path,
-            metadatum_name,
-            None,
-            )
 
     def _collect_segment_files(self, file_name):
         segments_directory = self._session.current_segments_directory
@@ -763,7 +727,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._session._io_manager._silent(self._session):
-                self._clear_view()
+                self._clear_view(self._session, self._directory_name)
         self._session._pending_redraw = True
 
     def _make_asset_menu_entries(
@@ -915,7 +879,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._session._io_manager._silent(self._session):
-                self._clear_view()
+                self._clear_view(self._session, self._directory_name)
         manager._run()
 
     def _make_score_package(self):
@@ -967,7 +931,7 @@ class Wrangler(Controller):
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
             with self._session._io_manager._silent(self._session):
-                self._clear_view()
+                self._clear_view(self._session, self._directory_name)
         manager._run()
 
     def _make_storehouse_menu_entries(
@@ -2147,7 +2111,11 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        self._call_lilypond_on_file_ending_with('music.ly')
+        self._call_lilypond_on_file_ending_with(
+            self._session,
+            self._directory_name,
+            'music.ly',
+            )
 
     @Command(
         'pi',
