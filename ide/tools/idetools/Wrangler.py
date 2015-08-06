@@ -575,6 +575,7 @@ class Wrangler(Controller):
         ):
         result = []
         directories = self._list_storehouses(
+            self._directory_name,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -601,8 +602,8 @@ class Wrangler(Controller):
                 result.append(path)
         return result
 
+    @staticmethod
     def _list_score_directories(
-        self,
         example_score_packages=False,
         composer_score_packages=False,
         ):
@@ -631,26 +632,28 @@ class Wrangler(Controller):
                 result.append(path)
         return result
 
+    @classmethod
     def _list_storehouses(
-        self,
+        class_,
+        directory_name,
         example_score_packages=True,
         composer_score_packages=True,
         ):
         result = []
-        if self._directory_name == 'scores':
+        if directory_name == 'scores':
             if example_score_packages:
                 result.append(configuration.abjad_ide_example_scores_directory)
             if composer_score_packages:
                 result.append(configuration.composer_scores_directory)
         else:
-            score_directories = self._list_score_directories(
+            score_directories = class_._list_score_directories(
                 example_score_packages=example_score_packages,
                 composer_score_packages=composer_score_packages,
                 )
             for score_directory in score_directories:
                 path = os.path.join(
                     score_directory,
-                    self._directory_name,
+                    directory_name,
                     )
                 result.append(path)
         return result
