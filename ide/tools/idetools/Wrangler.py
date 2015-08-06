@@ -800,7 +800,11 @@ class Wrangler(Controller):
             entry = (string, None, None, path)
             entries.append(entry)
         if set_view:
-            entries = self._filter_asset_menu_entries_by_view(entries)
+            entries = self._filter_asset_menu_entries_by_view(
+                self._session,
+                self._directory_name,
+                entries,
+                )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         elif not self._session.is_test:
@@ -976,7 +980,8 @@ class Wrangler(Controller):
         sequences = [display_strings, [None], [None], keys]
         return sequencetools.zip_sequences(sequences, cyclic=True)
 
-    def _match_display_string_view_pattern(self, pattern, entry):
+    @staticmethod
+    def _match_display_string_view_pattern(pattern, entry):
         display_string, _, _, path = entry
         token = ':ds:'
         assert token in pattern, repr(pattern)

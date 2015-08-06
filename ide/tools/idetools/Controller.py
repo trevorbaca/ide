@@ -184,10 +184,16 @@ class Controller(object):
                     result = False
             return result
 
-    def _filter_asset_menu_entries_by_view(self, entries):
-        view = self._read_view(
-            self._session,
-            self._directory_name,
+    @classmethod
+    def _filter_asset_menu_entries_by_view(
+        class_,
+        session,
+        directory_name,
+        entries,
+        ):
+        view = class_._read_view(
+            session,
+            directory_name,
             )
         if view is None:
             return entries
@@ -196,15 +202,16 @@ class Controller(object):
         for pattern in view:
             if ':ds:' in pattern:
                 for entry in entries:
-                    if self._match_display_string_view_pattern(pattern, entry):
+                    if class_._match_display_string_view_pattern(
+                        pattern, entry):
                         filtered_entries.append(entry)
             elif 'md:' in pattern:
                 for entry in entries:
-                    if self._match_metadata_view_pattern(pattern, entry):
+                    if class_._match_metadata_view_pattern(pattern, entry):
                         filtered_entries.append(entry)
             elif ':path:' in pattern:
                 for entry in entries:
-                    if self._match_path_view_pattern(pattern, entry):
+                    if class_._match_path_view_pattern(pattern, entry):
                         filtered_entries.append(entry)
             else:
                 for entry in entries:
