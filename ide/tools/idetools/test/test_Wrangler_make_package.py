@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 import os
+import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -83,6 +84,7 @@ def test_Wrangler_make_package_02():
 def test_Wrangler_make_package_03():
     r'''Creates material package.
     '''
+    pytest.skip()
 
     session = ide.tools.idetools.Session(is_test=True)
     path = os.path.join(

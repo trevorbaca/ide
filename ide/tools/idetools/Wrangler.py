@@ -119,7 +119,11 @@ class Wrangler(Controller):
     ### PRIVATE METHODS ###
 
     def _check_every_file(self):
-        paths = self._list_asset_paths(valid_only=False)
+        paths = self._list_asset_paths(
+            self._directory_name,
+            self._directory_entry_predicate,
+            valid_only=False,
+            )
         paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
         paths = [_ for _ in paths if not _.endswith('.pyc')]
         current_directory = self._get_current_directory(
@@ -332,6 +336,8 @@ class Wrangler(Controller):
         else:
             Exception
         asset_paths = self._list_asset_paths(
+            self._directory_name,
+            self._directory_entry_predicate,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -567,15 +573,18 @@ class Wrangler(Controller):
             directories.extend(result)
         return directories
 
+    @classmethod
     def _list_asset_paths(
-        self,
+        class_,
+        directory_name,
+        directory_entry_predicate,
         example_score_packages=True,
         composer_score_packages=True,
         valid_only=True,
         ):
         result = []
-        directories = self._list_storehouses(
-            self._directory_name,
+        directories = class_._list_storehouses(
+            directory_name,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -587,10 +596,10 @@ class Wrangler(Controller):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    if not self._directory_entry_predicate(directory_entry):
+                    if not directory_entry_predicate(directory_entry):
                         continue
                 path = os.path.join(directory, directory_entry)
-                if self._basic_breadcrumb == 'scores':
+                if directory_name == 'scores':
                     # test for installable python package structure
                     outer_init_path = os.path.join(path, '__init__.py')
                     inner_directory = os.path.join(path, directory_entry)
@@ -700,7 +709,10 @@ class Wrangler(Controller):
         apply_current_directory=True,
         set_view=True,
         ):
-        paths = self._list_asset_paths()
+        paths = self._list_asset_paths(
+            self._directory_name,
+            self._directory_entry_predicate,
+            )
         current_directory = self._get_current_directory(
             self._session,
             self._directory_name,
@@ -911,6 +923,8 @@ class Wrangler(Controller):
         display_strings, keys = [], []
         wrangler = self._session._abjad_ide._score_package_wrangler
         paths = wrangler._list_asset_paths(
+            self._directory_name,
+            self._directory_entry_predicate,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
