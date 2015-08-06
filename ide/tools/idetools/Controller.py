@@ -668,12 +668,10 @@ class Controller(object):
         return session._io_manager._make_package_manager(path)
 
     @classmethod
-    def _get_views_py_path(class_, session, directory_name):
-        if session.is_in_score:
-            directory_path = class_._get_current_directory(
-                session,
-                directory_name,
-                )
+    #def _get_views_py_path(class_, session, directory_name):
+    def _get_views_py_path(class_, io_manager, directory_path):
+        if directory_path:
+            # TODO: looks like flow can never enter here
             return os.path.join(directory_path, '__views__.py')
         else:
             directory_path = configuration.abjad_ide_wrangler_views_directory
@@ -1369,9 +1367,13 @@ class Controller(object):
     @classmethod
     def _read_view_inventory(class_, session, directory_name):
         from ide.tools import idetools
-        views_py_path = class_._get_views_py_path(
+        current_directory = class_._get_current_directory(
             session,
             directory_name,
+            )
+        views_py_path = class_._get_views_py_path(
+            session._io_manager,
+            current_directory,
             )
         if views_py_path is None:
             return
@@ -1660,9 +1662,13 @@ class Controller(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        views_py_path = class_._get_views_py_path(
+        current_directory = class_._get_current_directory(
             session,
             directory_name,
+            )
+        views_py_path = class_._get_views_py_path(
+            session._io_manager,
+            current_directory,
             )
         session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
