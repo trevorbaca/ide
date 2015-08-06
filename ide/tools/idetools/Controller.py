@@ -1803,8 +1803,6 @@ class Controller(object):
         contents = '\n'.join(lines)
         views_py_path = class_._get_views_py_path(directory_token)
         io_manager.write(views_py_path, contents)
-        message = 'view inventory written to disk.'
-        io_manager._display(message)
 
     ### PUBLIC METHODS ###
 

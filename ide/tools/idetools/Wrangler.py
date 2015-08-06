@@ -1057,18 +1057,15 @@ class Wrangler(Controller):
                 )
             with self._session._io_manager._silent():
                 self._write_metadata_py(self._metadata_py_path, metadata)
-        with self._session._io_manager._silent():
-            for wrangler in self._session._abjad_ide._wranglers:
-                view_inventory = idetools.ViewInventory()
-                directory_token = wrangler._get_current_directory_token(
-                    wrangler._session,
-                    wrangler._directory_name,
-                    )
-                self._write_view_inventory(
-                    self._io_manager,
-                    directory_token,
-                    view_inventory,
-                    )
+
+    @classmethod
+    def _supply_missing_view_file(class_, io_manager, directory_name):
+        from ide.tools import idetools
+        class_._write_view_inventory(
+            io_manager,
+            directory_name,
+            idetools.ViewInventory(),
+            )
 
     @staticmethod
     def _to_dash_case(file_name):
