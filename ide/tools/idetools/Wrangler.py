@@ -361,10 +361,10 @@ class Wrangler(Controller):
     def _get_available_path(
         self,
         message=None,
-        storehouse_path=None,
+        storehouse=None,
         ):
-        if storehouse_path is None:
-            storehouse_path = self._get_current_storehouse_path(
+        if storehouse is None:
+            storehouse = self._get_current_storehouse(
                 self._session,
                 self._directory_name,
                 )
@@ -382,7 +382,7 @@ class Wrangler(Controller):
             name = '_'.join(words)
             if not stringtools.is_snake_case_package_name(name):
                 continue
-            path = os.path.join(storehouse_path, name)
+            path = os.path.join(storehouse, name)
             if os.path.exists(path):
                 line = 'path already exists: {!r}.'
                 line = line.format(path)
@@ -412,7 +412,7 @@ class Wrangler(Controller):
         return session._io_manager._make_package_manager(directory_path)
 
     @staticmethod
-    def _get_current_storehouse_path(session, directory_name):
+    def _get_current_storehouse(session, directory_name):
         if session.is_in_score:
             return os.path.join(
                 session.current_score_directory,
@@ -574,7 +574,7 @@ class Wrangler(Controller):
         valid_only=True,
         ):
         result = []
-        directories = self._list_storehouse_paths(
+        directories = self._list_storehouses(
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -631,7 +631,7 @@ class Wrangler(Controller):
                 result.append(path)
         return result
 
-    def _list_storehouse_paths(
+    def _list_storehouses(
         self,
         example_score_packages=True,
         composer_score_packages=True,
@@ -672,12 +672,12 @@ class Wrangler(Controller):
         if os.path.sep in asset_name:
             asset_name = os.path.basename(asset_name)
         assert stringtools.is_snake_case(asset_name)
-        current_storehouse_path = self._get_current_storehouse_path(
+        current_storehouse = self._get_current_storehouse(
             self._session,
             self._directory_name,
             )
         path = os.path.join(
-            current_storehouse_path,
+            current_storehouse,
             asset_name,
             )
         manager = self._get_manager(path)
@@ -798,7 +798,7 @@ class Wrangler(Controller):
                 self._directory_name,
                 )
         else:
-            path = self._select_storehouse_path()
+            path = self._select_storehouse()
             if self._session.is_backtracking or path is None:
                 return
         getter = self._session._io_manager._make_getter()
@@ -820,18 +820,18 @@ class Wrangler(Controller):
 
     def _make_package(self):
         if self._session.is_in_score:
-            storehouse_path = self._get_current_storehouse_path(
+            storehouse = self._get_current_storehouse(
                 self._session,
                 self._directory_name,
                 )
         else:
             example_score_packages = self._session.is_test
-            storehouse_path = self._select_storehouse_path(
+            storehouse = self._select_storehouse(
                 example_score_packages=example_score_packages,
                 )
-            if self._session.is_backtracking or storehouse_path is None:
+            if self._session.is_backtracking or storehouse is None:
                 return
-        path = self._get_available_path(storehouse_path=storehouse_path)
+        path = self._get_available_path(storehouse=storehouse)
         if self._session.is_backtracking or not path:
             return
         message = 'path will be {}.'.format(path)
@@ -1051,7 +1051,7 @@ class Wrangler(Controller):
                 break
         return result
 
-    def _select_storehouse_path(self, example_score_packages=False):
+    def _select_storehouse(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
             example_score_packages=example_score_packages,
             composer_score_packages=False,
@@ -1450,7 +1450,7 @@ class Wrangler(Controller):
                 self._directory_name,
                 )
         else:
-            new_storehouse = self._select_storehouse_path()
+            new_storehouse = self._select_storehouse()
             if self._session.is_backtracking or new_storehouse is None:
                 return
         message = 'existing {} name> {}'

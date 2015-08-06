@@ -1339,8 +1339,8 @@ class Controller(object):
         else:
             assert 1 <= len(path_parts)
             path_parts = path_parts[:1]
-        storehouse_path = os.path.join(path_prefix, *path_parts)
-        return storehouse_path
+        storehouse = os.path.join(path_prefix, *path_parts)
+        return storehouse
 
     @classmethod
     def _read_view(class_, session, directory_name):
