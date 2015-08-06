@@ -1212,7 +1212,7 @@ class Controller(object):
             configuration.composer_scores_directory,
             )
         if path.startswith(score_storehouses):
-            score_directory = class_._path_to_score_path(path)
+            score_directory = class_._path_to_score_directory(path)
             metadata_py_path = os.path.join(score_directory, '__metadata__.py')
             metadata = class_._get_metadata(
                 io_manager,
@@ -1247,14 +1247,13 @@ class Controller(object):
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if 'segments' in path:
-            # TODO: implement Session.current_segments_metadata_py_path
-            manager = session._io_manager._make_package_manager(path=path)
-            name = manager._get_metadatum(
-                manager._io_manager,
-                manager._metadata_py_path,
+            metadata_py_path = os.path.join(path, '__metadata__.py')
+            segment_name = class_._get_metadatum(
+                session._io_manager,
+                metadata_py_path,
                 'name',
                 )
-            asset_name = name or asset_name
+            asset_name = segment_name or asset_name
         if session.is_in_score:
             string = asset_name
         else:
@@ -1299,7 +1298,7 @@ class Controller(object):
         return package
 
     @staticmethod
-    def _path_to_score_path(path):
+    def _path_to_score_directory(path):
         is_user_score = False
         if path.startswith(configuration.composer_scores_directory):
             is_user_score = True

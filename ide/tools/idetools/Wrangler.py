@@ -628,7 +628,8 @@ class Wrangler(Controller):
             result.append(configuration.composer_scores_directory)
         if (example_score_packages and self._directory_name):
             for score_directory in self._list_score_directories(abjad=True):
-                score_directory = self._path_to_score_path(score_directory)
+                score_directory = self._path_to_score_directory(
+                    score_directory)
                 path = os.path.join(
                     score_directory,
                     self._directory_name,
