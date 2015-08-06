@@ -480,6 +480,21 @@ class Controller(object):
             result.append(command)
         return result
 
+    @staticmethod
+    def _get_current_directory_token(session, directory_name):
+        assert isinstance(directory_name, str), repr(directory_name)
+        assert os.path.sep not in directory_name, repr(directory_name)
+        score_directory = session.current_score_directory
+        if score_directory is not None:
+            directory = os.path.join(
+                score_directory,
+                directory_name,
+                )
+            directory = os.path.abspath(directory)
+            return directory
+        else:
+            return directory_name
+
     @classmethod
     def _get_directory_wranglers(class_, session, path):
         wranglers = []
@@ -1786,11 +1801,10 @@ class Controller(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        current_directory = class_._get_current_directory(
+        directory_token = class_._get_current_directory_token(
             session,
             directory_name,
             )
-        directory_token = current_directory or directory_name
         views_py_path = class_._get_views_py_path(directory_token)
         session._io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
