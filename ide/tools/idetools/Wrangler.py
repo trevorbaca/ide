@@ -82,32 +82,11 @@ class Wrangler(Controller):
 
     @property
     def _breadcrumb(self):
-        if self._session.is_in_score and self._hide_breadcrumb_while_in_score:
-            return
-        breadcrumb = self._basic_breadcrumb
-        if self._session.is_in_score:
-            breadcrumb = '{} directory'.format(breadcrumb)
-        else:
-            if breadcrumb == 'scores':
-                breadcrumb = 'score'
-            breadcrumb = 'all {} directories'.format(breadcrumb)
-        current_directory = self._get_current_directory(
+        return self._get_breadcrumb(
             self._session,
             self._directory_name,
+            self._hide_breadcrumb_while_in_score,
             )
-        view_name = self._read_view_name(
-            self._io_manager,
-            current_directory,
-            )
-        if not view_name:
-            return breadcrumb
-        view_inventory = self._read_view_inventory(
-            self._session,
-            self._directory_name,
-            )
-        if view_inventory is not None and view_name in view_inventory:
-            breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
-        return breadcrumb
 
     @property
     def _metadata_py_path(self):
@@ -390,6 +369,40 @@ class Wrangler(Controller):
                 self._session._io_manager._display(line)
             else:
                 return path
+
+    @classmethod
+    def _get_breadcrumb(
+        class_,
+        session,
+        directory_name,
+        hide_breadcrumb_while_in_score,
+        ):
+        if session.is_in_score and hide_breadcrumb_while_in_score:
+            return
+        breadcrumb = directory_name
+        if session.is_in_score:
+            breadcrumb = '{} directory'.format(breadcrumb)
+        else:
+            if breadcrumb == 'scores':
+                breadcrumb = 'score'
+            breadcrumb = 'all {} directories'.format(breadcrumb)
+        current_directory = class_._get_current_directory(
+            session,
+            directory_name,
+            )
+        view_name = class_._read_view_name(
+            session._io_manager,
+            current_directory,
+            )
+        if not view_name:
+            return breadcrumb
+        view_inventory = class_._read_view_inventory(
+            session,
+            directory_name,
+            )
+        if view_inventory is not None and view_name in view_inventory:
+            breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
+        return breadcrumb
 
     @staticmethod
     def _get_current_directory(session, directory_name):
