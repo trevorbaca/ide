@@ -603,28 +603,23 @@ class Wrangler(Controller):
 
     def _list_score_directories(
         self,
-        abjad=False,
-        user=False,
+        example_score_packages=False,
+        user_score_packages=False,
         ):
         result = []
-        if abjad:
-            scores_directory = configuration.abjad_ide_example_scores_directory
-            directory_entries = sorted(os.listdir(scores_directory))
-            for directory_entry in directory_entries:
-                if directory_entry[0].isalpha():
-                    path = os.path.join(
-                        configuration.abjad_ide_example_scores_directory,
-                        directory_entry,
-                        )
-                    result.append(path)
-        if user:
-            scores_directory = configuration.composer_scores_directory
+        scores_directories = []
+        if example_score_packages:
+            scores_directories.append(
+                configuration.abjad_ide_example_scores_directory)
+        if user_score_packages:
+            scores_directories.append(configuration.composer_scores_directory)
+        for scores_directory in scores_directories:
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
                 if not directory_entry[0].isalpha():
                     continue
                 path = os.path.join(
-                    configuration.composer_scores_directory,
+                    scores_directory,
                     directory_entry,
                     )
                 init_path = os.path.join(path, '__init__.py')
@@ -648,7 +643,8 @@ class Wrangler(Controller):
             if self._directory_name == 'scores':
                 result.append(configuration.abjad_ide_example_scores_directory)
             else:
-                score_directories = self._list_score_directories(abjad=True)
+                score_directories = self._list_score_directories(
+                    example_score_packages=True)
                 for score_directory in score_directories:
                     score_directory = self._path_to_score_directory(
                         score_directory)
@@ -658,7 +654,8 @@ class Wrangler(Controller):
                         )
                     result.append(path)
         if user_score_packages and self._directory_name:
-            score_directories = self._list_score_directories(user=True)
+            score_directories = self._list_score_directories(
+                user_score_packages=True)
             for score_directory in score_directories:
                 path = os.path.join(
                     score_directory,
