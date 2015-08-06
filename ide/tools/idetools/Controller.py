@@ -130,6 +130,56 @@ class Controller(object):
             )
 
     @classmethod
+    def _collect_segment_files(class_, session, io_manager, file_name):
+        segments_directory = session.current_segments_directory
+        build_directory = session.current_build_directory
+        directory_entries = sorted(os.listdir(segments_directory))
+        source_file_paths, target_file_paths = [], []
+        _, file_extension = os.path.splitext(file_name)
+        for directory_entry in directory_entries:
+            segment_directory = os.path.join(
+                segments_directory,
+                directory_entry,
+                )
+            if not os.path.isdir(segment_directory):
+                continue
+            source_file_path = os.path.join(
+                segment_directory,
+                file_name,
+                )
+            if not os.path.isfile(source_file_path):
+                continue
+            score_path = session.current_score_directory
+            score_package = class_._path_to_package(score_path)
+            score_name = score_package.replace('_', '-')
+            directory_entry = directory_entry.replace('_', '-')
+            target_file_name = directory_entry + file_extension
+            target_file_path = os.path.join(
+                build_directory,
+                target_file_name,
+                )
+            source_file_paths.append(source_file_path)
+            target_file_paths.append(target_file_path)
+        if source_file_paths:
+            messages = []
+            messages.append('will copy ...')
+            pairs = zip(source_file_paths, target_file_paths)
+            for source_file_path, target_file_path in pairs:
+                message = ' FROM: {}'.format(source_file_path)
+                messages.append(message)
+                message = '   TO: {}'.format(target_file_path)
+                messages.append(message)
+            io_manager._display(messages)
+            if not io_manager._confirm():
+                return
+            if session.is_backtracking:
+                return
+        if not os.path.exists(build_directory):
+            os.mkdir(build_directory)
+        pairs = zip(source_file_paths, target_file_paths)
+        return pairs
+
+    @classmethod
     def _copy_boilerplate(
         class_, 
         session,
@@ -1225,6 +1275,34 @@ class Controller(object):
         return string
 
     @staticmethod
+    def _path_to_package(path):
+        if path is None:
+            return
+        assert isinstance(path, str), repr(path)
+        if path.endswith('.py'):
+            path, file_extension = os.path.splitext(path)
+        if path.startswith(configuration.abjad_ide_example_scores_directory):
+            prefix = len(configuration.abjad_ide_example_scores_directory) + 1
+        elif path.startswith(configuration.abjad_ide_directory):
+            prefix = len(
+                os.path.dirname(configuration.abjad_ide_directory)) + 1
+        elif path.startswith(configuration.composer_scores_directory):
+            prefix = len(configuration.composer_scores_directory) + 1
+        else:
+            message = 'can not change path to package: {!r}.'
+            message = message.format(path)
+            raise Exception(message)
+        package = path[prefix:]
+        if path.startswith(configuration.abjad_ide_example_scores_directory):
+            # change red_example_score/red_example_score/materials/foo
+            # to red_example_score/materials/foo
+            parts = package.split(os.path.sep)
+            parts = parts[1:]
+            package = os.path.sep.join(parts)
+        package = package.replace(os.path.sep, '.')
+        return package
+
+    @staticmethod
     def _path_to_score_path(path):
         is_user_score = False
         if path.startswith(configuration.composer_scores_directory):
@@ -1249,6 +1327,31 @@ class Controller(object):
             os.path.exists(inner_init_path)):
             score_path = os.path.join(score_path, score_name)
         return score_path
+
+    @staticmethod
+    def _path_to_storehouse(path):
+        is_in_score = False
+        if path.startswith(configuration.composer_scores_directory):
+            is_in_score = True
+            prefix = len(configuration.composer_scores_directory)
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            is_in_score = True
+            prefix = len(configuration.abjad_ide_example_scores_directory)
+        else:
+            message = 'unidentifiable path: {!r}.'
+            message = message.format(path)
+            raise Exception(message)
+        path_prefix = path[:prefix]
+        remainder = path[prefix+1:]
+        path_parts = remainder.split(os.path.sep)
+        assert 1 <= len(path_parts)
+        if is_in_score:
+            path_parts = path_parts[:3]
+        else:
+            assert 1 <= len(path_parts)
+            path_parts = path_parts[:1]
+        storehouse_path = os.path.join(path_prefix, *path_parts)
+        return storehouse_path
 
     @classmethod
     def _read_view(class_, session, directory_name):
