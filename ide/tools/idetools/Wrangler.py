@@ -78,9 +78,13 @@ class Wrangler(Controller):
             if breadcrumb == 'scores':
                 breadcrumb = 'score'
             breadcrumb = 'all {} directories'.format(breadcrumb)
-        view_name = self._read_view_name(
+        current_directory = self._get_current_directory(
             self._session,
             self._directory_name,
+            )
+        view_name = self._read_view_name(
+            self._io_manager,
+            current_directory,
             )
         if not view_name:
             return breadcrumb
@@ -223,9 +227,13 @@ class Wrangler(Controller):
 
     def _confirm_segment_names(self):
         wrangler = self._session._abjad_ide._segment_package_wrangler
-        view_name = wrangler._read_view_name(
+        current_directory = self._get_current_directory(
             self._session,
             self._directory_name,
+            )
+        view_name = wrangler._read_view_name(
+            self._io_manager,
+            current_directory,
             )
         view_inventory = wrangler._read_view_inventory(
             self._session,
