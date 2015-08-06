@@ -452,9 +452,14 @@ class PackageManager(Controller):
                 for wrangler in wranglers:
                     self._session._io_manager._display(repr(wrangler))
                     if wrangler._asset_identifier == 'file':
-                        result = wrangler._check_every_file(
+                        directory_token = \
+                            wrangler._get_current_directory_token(
                             wrangler._session,
                             wrangler._directory_name,
+                            )
+                        result = wrangler._check_every_file(
+                            wrangler._io_manager,
+                            directory_token,
                             wrangler._directory_entry_predicate,
                             wrangler._hide_breadcrumb_while_in_score,
                             )

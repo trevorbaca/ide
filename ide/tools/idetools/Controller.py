@@ -112,11 +112,12 @@ class Controller(object):
     @classmethod
     def _check_every_file(
         class_,
-        session,
-        directory_name,
-        directory_entry_predicate,
-        hide_breadcrumb_while_in_score,
+        io_manager,
+        directory_token,
+        directory_entry_predicate=None,
+        hide_breadcrumb_while_in_score=None,
         ):
+        directory_name = os.path.basename(directory_token)
         paths = class_._list_asset_paths(
             directory_name,
             directory_entry_predicate,
@@ -124,24 +125,16 @@ class Controller(object):
             )
         paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
         paths = [_ for _ in paths if not _.endswith('.pyc')]
-        current_directory = class_._get_current_directory(
-            session,
-            directory_name,
-            )
-        if current_directory:
-            paths = [_ for _ in paths if _.startswith(current_directory)]
+        if os.path.sep in directory_token:
+            paths = [_ for _ in paths if _.startswith(directory_token)]
         invalid_paths = []
         for path in paths:
             file_name = os.path.basename(path)
             if not class_._is_valid_directory_entry(file_name):
                 invalid_paths.append(path)
         messages = []
-        directory_token = class_._get_current_directory_token(
-            session,
-            directory_name,
-            )
         breadcrumb = class_._get_breadcrumb(
-            session._io_manager,
+            io_manager,
             directory_token,
             hide_breadcrumb_while_in_score,
             )
@@ -157,13 +150,13 @@ class Controller(object):
             identifier = stringtools.pluralize(identifier, count)
             message = '{} unrecognized {} found:'
             message = message.format(count, identifier)
-            tab = session._io_manager._tab
+            tab = io_manager._tab
             message = tab + message
             messages.append(message)
             for invalid_path in invalid_paths:
                 message = tab + tab + invalid_path
                 messages.append(message)
-        session._io_manager._display(messages)
+        io_manager._display(messages)
         missing_files, missing_directories = [], []
         return messages, missing_files, missing_directories
 
