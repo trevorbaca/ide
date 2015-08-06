@@ -1104,14 +1104,6 @@ class Controller(object):
             return False
         return result
 
-    def _open_file(self, path):
-        if os.path.isfile(path):
-            self._session._io_manager.open_file(path)
-        else:
-            message = 'can not find file: {}.'
-            message = message.format(path)
-            self._session._io_manager._display(message)
-
     @classmethod
     def _parse_paper_dimensions(class_, session):
         manager = session.current_score_package_manager

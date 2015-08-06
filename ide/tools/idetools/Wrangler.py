@@ -93,15 +93,6 @@ class Wrangler(Controller):
         return breadcrumb
 
     @property
-    def _current_storehouse_path(self):
-        if self._session.is_in_score:
-            return os.path.join(
-                self._session.current_score_directory,
-                self._directory_name,
-                )
-        return configuration.composer_scores_directory
-
-    @property
     def _init_py_file_path(self):
         path = self._get_current_directory(self._session, self._directory_name)
         if path:
@@ -438,7 +429,11 @@ class Wrangler(Controller):
         message=None,
         storehouse_path=None,
         ):
-        storehouse_path = storehouse_path or self._current_storehouse_path
+        if storehouse_path is None:
+            storehouse_path = self._get_current_storehouse_path(
+                self._session,
+                self._directory_name,
+                )
         while True:
             default_prompt = 'enter {} name'.format(self._asset_identifier)
             message = message or default_prompt
@@ -481,6 +476,15 @@ class Wrangler(Controller):
         if directory_path is None:
             return
         return session._io_manager._make_package_manager(directory_path)
+
+    @staticmethod
+    def _get_current_storehouse_path(session, directory_name):
+        if session.is_in_score:
+            return os.path.join(
+                session.current_score_directory,
+                directory_name,
+                )
+        return configuration.composer_scores_directory
 
     def _get_manager(self, path):
         from ide.tools import idetools
@@ -742,8 +746,12 @@ class Wrangler(Controller):
         if os.path.sep in asset_name:
             asset_name = os.path.basename(asset_name)
         assert stringtools.is_snake_case(asset_name)
+        current_storehouse_path = self._get_current_storehouse_path(
+            self._session,
+            self._directory_name,
+            )
         path = os.path.join(
-            self._current_storehouse_path,
+            current_storehouse_path,
             asset_name,
             )
         manager = self._get_manager(path)
@@ -883,7 +891,10 @@ class Wrangler(Controller):
 
     def _make_package(self):
         if self._session.is_in_score:
-            storehouse_path = self._current_storehouse_path
+            storehouse_path = self._get_current_storehouse_path(
+                self._session,
+                self._directory_name,
+                )
         else:
             example_score_packages = self._session.is_test
             storehouse_path = self._select_storehouse_path(
