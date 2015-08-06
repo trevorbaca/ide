@@ -89,17 +89,6 @@ class Session(abctools.AbjadObject):
         'test': 't',
         }
 
-    _navigation_command_name_to_directory_name = {
-        'd': 'distribution',
-        'e': 'etc',
-        'g': 'segments',
-        'k': 'makers',
-        'm': 'materials',
-        't': 'test',
-        'u': 'build',
-        'y': 'stylesheets',
-        }
-
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_test=False):

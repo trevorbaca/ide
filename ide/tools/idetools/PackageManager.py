@@ -215,8 +215,14 @@ class PackageManager(Controller):
                     if not result:
                         menu = self._make_main_menu()
                         result = menu._run()
-                        self._handle_pending_redraw_directive(result)
-                        self._handle_wrangler_navigation_directive(result)
+                        self._handle_pending_redraw_directive(
+                            self._session,
+                            result,
+                            )
+                        self._handle_wrangler_navigation_directive(
+                            self._session,
+                            result,
+                            )
                     if self._exit_run():
                         break
                     elif not result:

@@ -801,15 +801,17 @@ class Controller(object):
             message = message.format(result)
             raise Exception(message)
 
-    def _handle_pending_redraw_directive(self, directive):
+    @staticmethod
+    def _handle_pending_redraw_directive(session, directive):
         if directive in ('b', 'h', 'q', 's', '?', ';'):
-            self._session._pending_redraw = True
+            session._pending_redraw = True
 
-    def _handle_wrangler_navigation_directive(self, expr):
-        directory_name = \
-            self._navigation_command_name_to_directory_name.get(expr)
+    @classmethod
+    def _handle_wrangler_navigation_directive(class_, session, expr):
+        dictionary = class_._navigation_command_name_to_directory_name
+        directory_name = dictionary.get(expr)
         if directory_name is not None:
-            self._session._navigation_target = directory_name
+            session._navigation_target = directory_name
 
     @staticmethod
     def _is_directory_with_metadata_py(path):
