@@ -1373,10 +1373,6 @@ class Controller(object):
             session._io_manager,
             current_directory,
             )
-        if views_py_path is None:
-            return
-        if not os.path.exists(views_py_path):
-            return
         result = session._io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
