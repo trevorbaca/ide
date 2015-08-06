@@ -81,9 +81,13 @@ class Wrangler(Controller):
 
     @property
     def _breadcrumb(self):
-        return self._get_breadcrumb(
+        directory_token = self._get_current_directory_token(
             self._session,
             self._directory_name,
+            )
+        return self._get_breadcrumb(
+            self._io_manager,
+            directory_token,
             self._hide_breadcrumb_while_in_score,
             )
 
@@ -334,31 +338,27 @@ class Wrangler(Controller):
     @classmethod
     def _get_breadcrumb(
         class_,
-        session,
-        directory_name,
+        io_manager,
+        directory_token,
         hide_breadcrumb_while_in_score,
         ):
-        if session.is_in_score and hide_breadcrumb_while_in_score:
-            return
-        breadcrumb = directory_name
-        if session.is_in_score:
+        breadcrumb = os.path.basename(directory_token)
+        if breadcrumb == 'scores':
+            breadcrumb = 'score'
+        if os.path.sep in directory_token:
+            if hide_breadcrumb_while_in_score:
+                return
             breadcrumb = '{} directory'.format(breadcrumb)
         else:
-            if breadcrumb == 'scores':
-                breadcrumb = 'score'
             breadcrumb = 'all {} directories'.format(breadcrumb)
-        directory_token = class_._get_current_directory_token(
-            session,
-            directory_name,
-            )
         view_name = class_._read_view_name(
-            session._io_manager,
+            io_manager,
             directory_token,
             )
         if not view_name:
             return breadcrumb
         view_inventory = class_._read_view_inventory(
-            session._io_manager,
+            io_manager,
             directory_token,
             )
         if view_inventory is not None and view_name in view_inventory:

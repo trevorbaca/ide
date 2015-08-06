@@ -136,9 +136,13 @@ class Controller(object):
             if not class_._is_valid_directory_entry(file_name):
                 invalid_paths.append(path)
         messages = []
-        breadcrumb = class_._get_breadcrumb(
+        directory_token = class_._get_current_directory_token(
             session,
             directory_name,
+            )
+        breadcrumb = class_._get_breadcrumb(
+            session._io_manager,
+            directory_token,
             hide_breadcrumb_while_in_score,
             )
         if not invalid_paths:
