@@ -1787,8 +1787,8 @@ class Controller(object):
     @classmethod
     def _write_view_inventory(
         class_, 
-        session, 
-        directory_name, 
+        io_manager,
+        directory_token,
         view_inventory,
         ):
         lines = []
@@ -1801,14 +1801,10 @@ class Controller(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        directory_token = class_._get_current_directory_token(
-            session,
-            directory_name,
-            )
         views_py_path = class_._get_views_py_path(directory_token)
-        session._io_manager.write(views_py_path, contents)
+        io_manager.write(views_py_path, contents)
         message = 'view inventory written to disk.'
-        session._io_manager._display(message)
+        io_manager._display(message)
 
     ### PUBLIC METHODS ###
 
