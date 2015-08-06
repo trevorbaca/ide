@@ -724,7 +724,8 @@ class Controller(object):
             return messages
         session._io_manager._display(messages)
 
-    def _handle_candidate(self, candidate_path, destination_path):
+    @classmethod
+    def _handle_candidate(class_, session, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
             shutil.copyfile(candidate_path, destination_path)
@@ -734,9 +735,9 @@ class Controller(object):
             candidate_path,
             destination_path,
             ):
-            tab = self._session._io_manager._tab
-            messages_ = self._make_candidate_messages(
-                self._session,
+            tab = session._io_manager._tab
+            messages_ = class_._make_candidate_messages(
+                session,
                 True,
                 candidate_path,
                 destination_path,
@@ -748,7 +749,7 @@ class Controller(object):
             shutil.copyfile(candidate_path, destination_path)
             message = 'overwrote {}.'.format(destination_path)
             messages.append(message)
-        self._session._io_manager._display(messages)
+        session._io_manager._display(messages)
 
     def _handle_input(self, result):
         assert isinstance(result, str), repr(result)
@@ -964,7 +965,12 @@ class Controller(object):
         return directory_names
 
     @staticmethod
-    def _make_candidate_messages(session, result, candidate_path, incumbent_path):
+    def _make_candidate_messages(
+        session, 
+        result, 
+        candidate_path, 
+        incumbent_path,
+        ):
         messages = []
         tab = session._io_manager._tab
         messages.append('the files ...')

@@ -597,7 +597,11 @@ class Wrangler(Controller):
             for file_name in glob.glob('*.log'):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
-            self._handle_candidate(candidate_path, destination_path)
+            self._handle_candidate(
+                self._session,
+                candidate_path,
+                destination_path,
+                )
 
     def _is_valid_file_directory_entry(self, expr):
         superclass = super(Wrangler, self)
@@ -1521,7 +1525,11 @@ class Wrangler(Controller):
             with systemtools.FilesystemState(remove=[candidate_file_path]):
                 shutil.copyfile(source_file_path, candidate_file_path)
                 self._trim_lilypond_file(candidate_file_path)
-                self._handle_candidate(candidate_file_path, target_file_path)
+                self._handle_candidate(
+                    self._session,
+                    candidate_file_path,
+                    target_file_path,
+                    )
                 self._session._io_manager._display('')
 
     @Command('cp', section='basic', is_hidden=False)
@@ -1829,7 +1837,11 @@ class Wrangler(Controller):
                 old = 'FORCES_TAGLINE'
                 new = forces_tagline
                 self._replace_in_file(candidate_path, old, new)
-            self._handle_candidate(candidate_path, destination_path)
+            self._handle_candidate(
+                self._session,
+                candidate_path, 
+                destination_path,
+                )
 
     @Command(
         'pg',
