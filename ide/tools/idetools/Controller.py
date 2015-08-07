@@ -44,6 +44,10 @@ class Controller(object):
         'y': 'stylesheets',
         }
 
+    _known_directory_names = \
+        _navigation_command_name_to_directory_name.values()
+    _known_directory_names.sort()
+
     _unicode_directive = '# -*- encoding: utf-8 -*-'
 
     ### INITIALIZER ###
@@ -1660,25 +1664,22 @@ class Controller(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
         
-    @classmethod
-    def _supply_global_metadata_py(class_, io_manager):
-        metadata_py_path = \
-            configuration.abjad_ide_views_metadata_py_path
+    def _supply_global_metadata_py(self):
+        metadata_py_path = configuration.abjad_ide_views_metadata_py_path
         if not os.path.exists(metadata_py_path):
             metadata = class_._get_metadata(
-                io_manager,
+                self._io_manager,
                 metadata_py_path,
                 )
-            with self._session._io_manager._silent():
-                class_._write_metadata_py(metadata_py_path, metadata)
+            with self._io_manager._silent():
+                self._write_metadata_py(metadata_py_path, metadata)
 
-    @classmethod
-    def _supply_global_views_file(class_, io_manager, directory_name):
+    def _supply_global_views_file(self, directory_name):
         from ide.tools import idetools
-        views_py_path = class_._get_views_py_path(directory_name)
+        views_py_path = self._get_views_py_path(directory_name)
         if not os.path.isfile(views_py_path):
-            class_._write_view_inventory(
-                io_manager,
+            self._write_view_inventory(
+                self._io_manager,
                 directory_name,
                 idetools.ViewInventory(),
                 )

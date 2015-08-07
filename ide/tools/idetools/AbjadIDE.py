@@ -35,13 +35,9 @@ class AbjadIDE(Controller):
         session._abjad_ide = self
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
-        for wrangler in self._wranglers:
-            wrangler._supply_global_views_file(
-                wrangler._io_manager,
-                wrangler._directory_name,
-                )
-        self._score_package_wrangler._supply_global_metadata_py(
-            self._session._io_manager)
+        for directory_name in self._known_directory_names:
+            self._supply_global_views_file(directory_name)
+        self._supply_global_metadata_py()
 
     ### SPECIAL METHODS ###
 
