@@ -1137,6 +1137,14 @@ class Controller(object):
                 result.append(path)
         return result
 
+    def _list_visible_asset_paths(self):
+        if hasattr(self, '_path'):
+            return [self._path]
+        else:
+            entries = self._make_asset_menu_entries()
+            paths = [_[-1] for _ in entries]
+            return paths
+
     def _make_candidate_messages(
         self, 
         result, 

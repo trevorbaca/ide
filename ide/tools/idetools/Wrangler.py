@@ -522,11 +522,6 @@ class Wrangler(Controller):
             managers.append(manager)
         return managers
 
-    def _list_visible_asset_paths(self):
-        entries = self._make_asset_menu_entries()
-        paths = [_[-1] for _ in entries]
-        return paths
-
     def _make_asset(self, asset_name):
         if os.path.sep in asset_name:
             asset_name = os.path.basename(asset_name)

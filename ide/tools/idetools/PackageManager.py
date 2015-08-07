@@ -159,9 +159,6 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
-    def _list_visible_asset_paths(self):
-        return [self._path]
-
     def _make_asset_menu_section(self, menu):
         directory_entries = self._list_directory(self._path, smart_sort=True)
         menu_entries = []
