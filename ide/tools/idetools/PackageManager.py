@@ -199,7 +199,7 @@ class PackageManager(Controller):
             if new_path is not None:
                 self._path = new_path
 
-    def _run(self):
+    def _run_package_manager(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
@@ -228,10 +228,6 @@ class PackageManager(Controller):
                     self._handle_input(result)
                     if self._exit_run():
                         break
-
-    def _update_order_dependent_segment_metadata(self):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
-        wrangler._update_order_dependent_segment_metadata()
 
     ### PUBLIC METHODS ###
 
@@ -652,7 +648,8 @@ class PackageManager(Controller):
             message = message.format(self._definition_py_path)
             self._session._io_manager._display(message)
             return
-        self._update_order_dependent_segment_metadata()
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
             '__illustrate_segment__.py',

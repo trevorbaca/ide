@@ -175,7 +175,7 @@ class AbjadIDE(Controller):
                 if result:
                     self._score_package_wrangler._handle_input(result)
                 else:
-                    self._score_package_wrangler._run()
+                    self._score_package_wrangler._run_wrangler()
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:

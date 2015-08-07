@@ -720,7 +720,7 @@ class Wrangler(Controller):
         if path not in paths:
             with self._session._io_manager._silent():
                 self._clear_view(self._io_manager, self._directory_name)
-        manager._run()
+        manager._run_package_manager()
 
     def _make_score_package(self):
         message = 'enter title'
@@ -770,7 +770,7 @@ class Wrangler(Controller):
         if package_path not in package_paths:
             with self._session._io_manager._silent():
                 self._clear_view(self._io_manager, self._directory_name)
-        manager._run()
+        manager._run_package_manager()
 
     def _make_storehouse_menu_entries(
         self,
@@ -874,7 +874,7 @@ class Wrangler(Controller):
             return
         self._session._io_manager.open_file(paths)
 
-    def _run(self):
+    def _run_wrangler(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,

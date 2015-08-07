@@ -872,7 +872,7 @@ class Controller(object):
                 self.go_to_score_test_files()
             else:
                 manager = self._get_manager(result)
-                manager._run()
+                manager._run_package_manager()
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
@@ -1868,7 +1868,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._build_file_wrangler._run()
+        self._session._abjad_ide._build_file_wrangler._run_wrangler()
 
     @Command('s', section='navigation', outside_score=False)
     def go_to_score_directory(self):
@@ -1886,7 +1886,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._distribution_file_wrangler._run()
+        self._session._abjad_ide._distribution_file_wrangler._run_wrangler()
 
     @Command('e', section='navigation', outside_score=False)
     def go_to_score_etc_directory(self):
@@ -1894,7 +1894,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._etc_file_wrangler._run()
+        self._session._abjad_ide._etc_file_wrangler._run_wrangler()
 
     @Command('k', section='navigation', outside_score=False)
     def go_to_score_makers_directory(self):
@@ -1902,7 +1902,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._maker_file_wrangler._run()
+        self._session._abjad_ide._maker_file_wrangler._run_wrangler()
 
     @Command('m', section='navigation', outside_score=False)
     def go_to_score_materials_directory(self):
@@ -1910,7 +1910,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._material_package_wrangler._run()
+        self._session._abjad_ide._material_package_wrangler._run_wrangler()
 
     @Command('g', section='navigation', outside_score=False)
     def go_to_score_segments_directory(self):
@@ -1918,7 +1918,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._segment_package_wrangler._run()
+        self._session._abjad_ide._segment_package_wrangler._run_wrangler()
 
     @Command('y', section='navigation', outside_score=False)
     def go_to_score_stylesheets_directory(self):
@@ -1926,7 +1926,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._stylesheet_wrangler._run()
+        self._session._abjad_ide._stylesheet_wrangler._run_wrangler()
 
     @Command('t', section='navigation', outside_score=False)
     def go_to_score_test_directory(self):
@@ -1934,7 +1934,7 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._test_file_wrangler._run()
+        self._session._abjad_ide._test_file_wrangler._run_wrangler()
 
     @Command('!', section='system')
     def invoke_shell(self):
