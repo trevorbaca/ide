@@ -61,22 +61,6 @@ class PackageManager(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _definition_py_path(self):
-        return os.path.join(self._path, 'definition.py')
-
-    @property
-    def _illustrate_py_path(self):
-        return os.path.join(self._path, '__illustrate__.py')
-
-    @property
-    def _illustration_ly_path(self):
-        return os.path.join(self._path, 'illustration.ly')
-
-    @property
-    def _illustration_pdf_path(self):
-        return os.path.join(self._path, 'illustration.pdf')
-
-    @property
     def _inner_path(self):
         return os.path.join(self._outer_path, self._package_name)
 
@@ -230,25 +214,25 @@ class PackageManager(Controller):
 
         Display errors generated during interpretation.
         '''
-        if not os.path.isfile(self._definition_py_path):
+        definition_py_path = os.path.join(self._path, 'definition.py')
+        if not os.path.isfile(definition_py_path):
             message = 'File not found: {}.'
-            message = message.format(self._definition_py_path)
+            message = message.format(definition_py_path)
             self._session._io_manager._display(message)
             return
         inputs, outputs = [], []
         if dry_run:
-            inputs.append(self._definition_py_path)
+            inputs.append(definition_py_path)
             return inputs, outputs
         with self._session._io_manager._silent():
-            stdout_lines, stderr_lines = \
-                self._session._io_manager.interpret_file(
-                self._definition_py_path)
+            stdout_lines, stderr_lines = self._io_manager.interpret_file(
+                definition_py_path)
         if stderr_lines:
-            messages = [self._definition_py_path + ' FAILED:']
+            messages = [definition_py_path + ' FAILED:']
             messages.extend('    ' + _ for _ in stderr_lines)
             self._session._io_manager._display(messages)
         else:
-            message = '{} OK.'.format(self._definition_py_path)
+            message = '{} OK.'.format(definition_py_path)
             self._session._io_manager._display(message)
 
     @Command(
@@ -548,7 +532,8 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._session._io_manager.edit(self._definition_py_path)
+        definition_py_path = os.path.join(self._path, 'definition.py')
+        self._session._io_manager.edit(definition_py_path)
 
     @Command(
         'le', 
@@ -562,7 +547,8 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._session._io_manager.edit(self._illustrate_py_path)
+        illustrate_py_path = os.path.join('__illustrate__.py')
+        self._session._io_manager.edit(illustrate_py_path)
 
     @Command(
         'ie', 
@@ -575,7 +561,8 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._session._io_manager.open_file(self._illustration_ly_path)
+        illustration_ly_path = os.path.join(self._path, 'illustration.ly')
+        self._session._io_manager.open_file(illustration_ly_path)
 
     @Command(
         'gl', 
@@ -589,8 +576,9 @@ class PackageManager(Controller):
 
         Returns none.
         '''
+        illustrate_py_path = os.path.join(self._path, '__illustrate__.py')
         message = 'will generate {}.'
-        message = message.format(self._illustrate_py_path)
+        message = message.format(illustrate_py_path)
         self._session._io_manager._display(message)
         result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
@@ -611,10 +599,10 @@ class PackageManager(Controller):
         line += 'make_basic_lilypond_file(score)'
         lines.append(line)
         contents = '\n'.join(lines)
-        with open(self._illustrate_py_path, 'w') as file_pointer:
+        with open(illustrate_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
         message = 'generated {}.'
-        message = message.format(self._illustrate_py_path)
+        message = message.format(illustrate_py_path)
         self._session._io_manager._display(message)
 
     @Command(
@@ -631,9 +619,10 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        if not os.path.isfile(self._definition_py_path):
+        definition_py_path = os.path.join(self._path, 'definition.py')
+        if not os.path.isfile(definition_py_path):
             message = 'File not found: {}.'
-            message = message.format(self._definition_py_path)
+            message = message.format(definition_py_path)
             self._session._io_manager._display(message)
             return
         wrangler = self._session._abjad_ide._segment_package_wrangler
@@ -672,7 +661,7 @@ class PackageManager(Controller):
             )
         inputs, outputs = [], []
         if dry_run:
-            inputs.append(self._definition_py_path)
+            inputs.append(definition_py_path)
             outputs.append((illustration_ly_path, illustration_pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
@@ -766,15 +755,17 @@ class PackageManager(Controller):
         Returns pair. List of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
+        illustration_ly_path = os.path.join(self._path, 'illustration.ly')
+        illustration_pdf_path = os.path.join(self._path, 'illustration.pdf')
         inputs, outputs = [], []
-        if os.path.isfile(self._illustration_ly_path):
-            inputs.append(self._illustration_ly_path)
-            outputs.append((self._illustration_pdf_path,))
+        if os.path.isfile(illustration_ly_path):
+            inputs.append(illustration_ly_path)
+            outputs.append((illustration_pdf_path,))
         if dry_run:
             return inputs, outputs
-        if not os.path.isfile(self._illustration_ly_path):
+        if not os.path.isfile(illustration_ly_path):
             message = 'The file {} does not exist.'
-            message = message.format(self._illustration_ly_path)
+            message = message.format(illustration_ly_path)
             self._session._io_manager._display(message)
             return [], []
         messages = self._format_messaging(inputs, outputs)
@@ -782,7 +773,7 @@ class PackageManager(Controller):
         result = self._session._io_manager._confirm()
         if self._session.is_backtracking or not result:
             return [], []
-        result = self._session._io_manager.run_lilypond(self._illustration_ly_path)
+        result = self._session._io_manager.run_lilypond(illustration_ly_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 
@@ -797,7 +788,8 @@ class PackageManager(Controller):
 
         Returns none.
         '''
-        self._session._io_manager.open_file(self._illustration_pdf_path)
+        illustration_pdf_path = os.path.join(self._path, 'illustration.pdf')
+        self._session._io_manager.open_file(illustration_pdf_path)
 
     @Command(
         'so', 
