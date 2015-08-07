@@ -21,8 +21,9 @@ class Controller(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_session',
+        '_breadcrumb_callback',
         '_io_manager',
+        '_session',
         )
 
     _abjad_import_statement = 'from abjad import *'
@@ -55,8 +56,9 @@ class Controller(object):
 
     def __init__(self, session=None):
         assert session is not None
-        self._session = session
+        self._breadcrumb_callback = None
         self._io_manager = session._io_manager
+        self._session = session
 
     ### SPECIAL METHODS ###
 
@@ -68,6 +70,24 @@ class Controller(object):
         return '{}()'.format(type(self).__name__)
 
     ### PRIVATE PROPERTIES ###
+
+    @property
+    def _breadcrumb(self):
+        if self._breadcrumb_callback is not None:
+            return self._breadcrumb_callback(self._metadata_py_path)
+        if hasattr(self, '_path'):
+            base_name = os.path.basename(self._path)
+            result = base_name.replace('_', ' ')
+            return result
+        else:
+            directory_token = self._get_current_directory_token(
+                self._session,
+                self._directory_name,
+                )
+            return self._get_breadcrumb(
+                directory_token,
+                self._hide_breadcrumb_while_in_score,
+                )
 
     @property
     def _command_name_to_method(self):

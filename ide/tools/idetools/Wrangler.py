@@ -80,17 +80,6 @@ class Wrangler(Controller):
         return self._directory_name
 
     @property
-    def _breadcrumb(self):
-        directory_token = self._get_current_directory_token(
-            self._session,
-            self._directory_name,
-            )
-        return self._get_breadcrumb(
-            directory_token,
-            self._hide_breadcrumb_while_in_score,
-            )
-
-    @property
     def _metadata_py_path(self):
         if self._session.is_in_score:
             directory_token = self._get_current_directory_token(

@@ -19,7 +19,6 @@ class PackageManager(Controller):
 
     __slots__ = (
         '_basic_breadcrumb',
-        '_breadcrumb_callback',
         '_optional_directories',
         '_optional_files',
         '_package_creation_callback',
@@ -60,14 +59,6 @@ class PackageManager(Controller):
         return '{}({!r})'.format(type(self).__name__, self._path)
 
     ### PRIVATE PROPERTIES ###
-
-    @property
-    def _breadcrumb(self):
-        if self._breadcrumb_callback is not None:
-            return self._breadcrumb_callback(self._metadata_py_path)
-        base_name = os.path.basename(self._path)
-        result = base_name.replace('_', ' ')
-        return result
 
     @property
     def _definition_py_path(self):
