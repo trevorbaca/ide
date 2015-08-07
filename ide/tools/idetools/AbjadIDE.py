@@ -4,10 +4,11 @@ import shutil
 import sys
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+from ide.tools.idetools.Controller import Controller
 configuration = AbjadIDEConfiguration()
 
 
-class AbjadIDE(object):
+class AbjadIDE(Controller):
     r'''Abjad IDE.
 
     ..  container:: example
@@ -22,7 +23,6 @@ class AbjadIDE(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_session',
         )
 
     ### INITIALIZER ###
@@ -32,8 +32,9 @@ class AbjadIDE(object):
         if session is None:
             session = idetools.Session()
             session._is_test = is_test
-        self._session = session
-        self._session._abjad_ide = self
+        session._abjad_ide = self
+        superclass = super(AbjadIDE, self)
+        superclass.__init__(session=session)
         for wrangler in self._wranglers:
             wrangler._supply_global_views_file(
                 wrangler._io_manager,
