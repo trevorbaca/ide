@@ -62,7 +62,7 @@ class PackageManager(Controller):
 
     @property
     def _inner_path(self):
-        return os.path.join(self._outer_path, self._package_name)
+        return os.path.join(self._outer_path, os.path.basename(self._path))
 
     @property
     def _metadata_py_path(self):
@@ -73,17 +73,13 @@ class PackageManager(Controller):
         if self._path.startswith(configuration.composer_scores_directory):
             return os.path.join(
                 configuration.composer_scores_directory,
-                self._package_name
+                os.path.basename(self._path),
                 )
         else:
             return os.path.join(
                 configuration.abjad_ide_example_scores_directory,
-                self._package_name
+                os.path.basename(self._path),
                 )
-
-    @property
-    def _package_name(self):
-        return os.path.basename(self._path)
 
     ### PRIVATE METHODS ###
 
@@ -586,12 +582,12 @@ class PackageManager(Controller):
         lines = []
         lines.append(self._abjad_import_statement)
         line = 'from output import {}'
-        line = line.format(self._package_name)
+        line = line.format(os.path.basename(self._path))
         lines.append(line)
         lines.append('')
         lines.append('')
         line = 'triple = scoretools.make_piano_score_from_leaves({})'
-        line = line.format(self._package_name)
+        line = line.format(os.path.basename(self._path))
         lines.append(line)
         line = 'score, treble_staff, bass_staff = triple'
         lines.append(line)
