@@ -79,21 +79,6 @@ class Wrangler(Controller):
     def _basic_breadcrumb(self):
         return self._directory_name
 
-    @property
-    def _metadata_py_path(self):
-        if self._session.is_in_score:
-            directory_token = self._get_current_directory_token(
-                self._session,
-                self._directory_name,
-                )
-            manager = self._get_current_package_manager(
-                self._io_manager,
-                directory_token,
-                )
-        else:
-            manager = self._get_views_package_manager(self._io_manager)
-        return os.path.join(manager._path, '__metadata__.py')
-
     ### PRIVATE METHODS ###
 
     def _configure_as_build_file_wrangler(self):
