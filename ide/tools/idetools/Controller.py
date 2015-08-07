@@ -572,6 +572,19 @@ class Controller(object):
         return paths
 
     @staticmethod
+    def _get_outer_score_package_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            return os.path.join(
+                configuration.composer_scores_directory,
+                os.path.basename(path),
+                )
+        else:
+            return os.path.join(
+                configuration.abjad_ide_example_scores_directory,
+                os.path.basename(path),
+                )
+
+    @staticmethod
     def _get_previous_segment_manager(session, path):
         wrangler = session._abjad_ide._segment_package_wrangler
         managers = wrangler._list_visible_asset_managers()
@@ -968,13 +981,13 @@ class Controller(object):
         return True
 
     def _is_in_score_directory(self):
-        if hasattr(self, '_directory_name'):
+        if hasattr(self, '_path'):
+            current_directory = self._path
+        else:
             current_directory = self._get_current_directory(
                 self._session,
                 self._directory_name,
                 )
-        else:
-            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         current_directory = os.path.normpath(current_directory)
@@ -1176,13 +1189,13 @@ class Controller(object):
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
-        if hasattr(self, '_directory_name'):
+        if hasattr(self, '_path'):
+            current_directory = self._path
+        else:
             current_directory = self._get_current_directory(
                 self._session,
                 self._directory_name
                 )
-        else:
-            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         required_files = getattr(self, '_required_files', ())

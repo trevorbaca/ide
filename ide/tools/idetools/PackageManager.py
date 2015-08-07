@@ -113,22 +113,6 @@ class PackageManager(Controller):
             'definition.py',
             )
 
-    def _get_current_directory(self):
-        return self._path
-
-    @staticmethod
-    def _get_outer_score_package_path(path):
-        if path.startswith(configuration.composer_scores_directory):
-            return os.path.join(
-                configuration.composer_scores_directory,
-                os.path.basename(path),
-                )
-        else:
-            return os.path.join(
-                configuration.abjad_ide_example_scores_directory,
-                os.path.basename(path),
-                )
-
     def _make_asset_menu_section(self, menu):
         directory_entries = self._list_directory(self._path, smart_sort=True)
         menu_entries = []
