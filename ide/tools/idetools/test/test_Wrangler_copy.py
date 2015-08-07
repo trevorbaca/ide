@@ -27,7 +27,6 @@ def test_Wrangler_copy_01():
             )
         title = 'Pretty Example Score'
         manager._add_metadatum(
-            manager._io_manager,
             manager._metadata_py_path,
             'title',
             title,

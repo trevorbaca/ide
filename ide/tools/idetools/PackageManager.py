@@ -64,10 +64,7 @@ class PackageManager(Controller):
     @property
     def _breadcrumb(self):
         if self._breadcrumb_callback is not None:
-            return self._breadcrumb_callback(
-                self._io_manager,
-                self._metadata_py_path,
-                )
+            return self._breadcrumb_callback(self._metadata_py_path)
         base_name = os.path.basename(self._path)
         result = base_name.replace('_', ' ')
         return result
@@ -196,7 +193,6 @@ class PackageManager(Controller):
                 )
         if self._package_creation_callback is not None:
             new_path = self._package_creation_callback(
-                self._io_manager,
                 self._inner_path,
                 self._outer_path,
                 )
@@ -415,7 +411,6 @@ class PackageManager(Controller):
         tab = self._session._io_manager._tab
         messages = [tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(
-            self._session,
             self._path,
             self._basic_breadcrumb,
             )
@@ -458,7 +453,6 @@ class PackageManager(Controller):
                             wrangler._directory_name,
                             )
                         result = wrangler._check_every_file(
-                            wrangler._io_manager,
                             directory_token,
                             wrangler._directory_entry_predicate,
                             wrangler._hide_breadcrumb_while_in_score,
@@ -749,7 +743,6 @@ class PackageManager(Controller):
                 illustration_pdf_path,
                 )
                 messages = self._make_candidate_messages(
-                    self._io_manager,
                     result,
                     candidate_pdf_path,
                     illustration_pdf_path,
@@ -761,7 +754,8 @@ class PackageManager(Controller):
                     return
                 else:
                     message = 'overwrite existing PDF with candidate PDF?'
-                    result = self._session._io_manager._confirm(message=message)
+                    result = self._session._io_manager._confirm(
+                        message=message)
                     if self._session.is_backtracking or not result:
                         return
                     try:

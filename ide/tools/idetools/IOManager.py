@@ -54,6 +54,10 @@ class IOManager(IOManager):
     ### PRIVATE PROPERTIES ###
 
     @property
+    def _is_backtracking(self):
+        return self._session.is_backtracking
+
+    @property
     def _tab(self):
         return 4 * ' '
 
