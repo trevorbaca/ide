@@ -118,21 +118,6 @@ class AbjadIDE(Controller):
         wrangler._configure_as_test_file_wrangler()
         return wrangler
 
-    # TODO: derive introspectively
-    @property
-    def _wranglers(self):
-        return (
-            self._build_file_wrangler,
-            self._distribution_file_wrangler,
-            self._etc_file_wrangler,
-            self._maker_file_wrangler,
-            self._material_package_wrangler,
-            self._score_package_wrangler,
-            self._segment_package_wrangler,
-            self._stylesheet_wrangler,
-            self._test_file_wrangler,
-            )
-
     ### PRIVATE METHODS ###
 
     def _run(self, input_=None):
