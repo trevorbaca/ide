@@ -125,17 +125,17 @@ class PackageManager(Controller):
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
 
-    def _make_package(self):
-        assert not os.path.exists(self._path)
-        os.mkdir(self._path)
+    def _make_package(self, path):
+        assert not os.path.exists(path)
+        os.mkdir(path)
         with self._session._io_manager._silent():
             self.check_package(
                 return_supply_messages=True,
                 supply_missing=True,
                 )
         if self._package_creation_callback is not None:
-            outer_path = self._get_outer_score_package_path(self._path)
-            inner_path = os.path.join(outer_path, os.path.basename(self._path))
+            outer_path = self._get_outer_score_package_path(path)
+            inner_path = os.path.join(outer_path, os.path.basename(path))
             new_path = self._package_creation_callback(
                 inner_path,
                 outer_path,
@@ -226,7 +226,7 @@ class PackageManager(Controller):
         if problems_only is None:
             prompt = 'show problem assets only?'
             result = self._session._io_manager._confirm(prompt)
-            if self._session.is_backtracking or result is None:
+            if self._io_manager._is_backtracking or result is None:
                 return
             problems_only = bool(result)
         tab = self._session._io_manager._tab
