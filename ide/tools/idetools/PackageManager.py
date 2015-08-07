@@ -61,25 +61,8 @@ class PackageManager(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _inner_path(self):
-        return os.path.join(self._outer_path, os.path.basename(self._path))
-
-    @property
     def _metadata_py_path(self):
         return os.path.join(self._path, '__metadata__.py')
-
-    @property
-    def _outer_path(self):
-        if self._path.startswith(configuration.composer_scores_directory):
-            return os.path.join(
-                configuration.composer_scores_directory,
-                os.path.basename(self._path),
-                )
-        else:
-            return os.path.join(
-                configuration.abjad_ide_example_scores_directory,
-                os.path.basename(self._path),
-                )
 
     ### PRIVATE METHODS ###
 
@@ -139,6 +122,19 @@ class PackageManager(Controller):
     def _get_current_directory(self):
         return self._path
 
+    @staticmethod
+    def _get_outer_score_package_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            return os.path.join(
+                configuration.composer_scores_directory,
+                os.path.basename(path),
+                )
+        else:
+            return os.path.join(
+                configuration.abjad_ide_example_scores_directory,
+                os.path.basename(path),
+                )
+
     def _make_asset_menu_section(self, menu):
         directory_entries = self._list_directory(self._path, smart_sort=True)
         menu_entries = []
@@ -160,9 +156,11 @@ class PackageManager(Controller):
                 supply_missing=True,
                 )
         if self._package_creation_callback is not None:
+            outer_path = self._get_outer_score_package_path(self._path)
+            inner_path = os.path.join(outer_path, os.path.basename(self._path))
             new_path = self._package_creation_callback(
-                self._inner_path,
-                self._outer_path,
+                inner_path,
+                outer_path,
                 )
             if new_path is not None:
                 self._path = new_path
