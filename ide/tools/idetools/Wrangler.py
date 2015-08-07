@@ -92,7 +92,7 @@ class Wrangler(Controller):
                 )
         else:
             manager = self._get_views_package_manager(self._io_manager)
-        return manager._metadata_py_path
+        return os.path.join(manager._path, '__metadata__.py')
 
     ### PRIVATE METHODS ###
 
@@ -740,13 +740,13 @@ class Wrangler(Controller):
         manager = self._get_manager(package_path)
         manager._make_package()
         manager._add_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'title',
             title,
             )
         year = datetime.date.today().year
         manager._add_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'year',
             year,
             )
@@ -773,7 +773,7 @@ class Wrangler(Controller):
         for path in paths:
             manager = wrangler._get_manager(path)
             title = manager._get_title_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 year=False,
                 )
             display_strings.append(title)
@@ -809,7 +809,7 @@ class Wrangler(Controller):
                 if part.startswith('md:'):
                     metadatum_name = part[3:]
                     metadatum = manager._get_metadatum(
-                        manager._metadata_py_path,
+                        manager._path,
                         metadatum_name,
                         include_score=True,
                         )
@@ -1043,12 +1043,12 @@ class Wrangler(Controller):
         for segment_index, manager in enumerate(managers):
             segment_number = segment_index + 1
             manager._add_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 'segment_number',
                 segment_number,
                 )
             manager._add_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 'segment_count', 
                 segment_count,
                 )
@@ -1056,12 +1056,12 @@ class Wrangler(Controller):
         manager = managers[0]
         first_bar_number = 1
         manager._add_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'first_bar_number',
             first_bar_number,
             )
         measure_count = manager._get_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'measure_count',
             )
         if not measure_count:
@@ -1070,12 +1070,12 @@ class Wrangler(Controller):
         for manager in managers[1:]:
             first_bar_number = next_bar_number
             manager._add_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 'first_bar_number',
                 next_bar_number,
                 )
             measure_count = manager._get_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 'measure_count',
                 )
             if not measure_count:
@@ -1351,7 +1351,7 @@ class Wrangler(Controller):
         replacements = {}
         manager = self._session.current_score_package_manager
         catalog_number = manager._get_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'catalog_number',
             )
         if catalog_number:
@@ -1366,7 +1366,7 @@ class Wrangler(Controller):
             new = str(composer_website)
             replacements[old] = new
         price = manager._get_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'price',
             )
         if price:
@@ -1400,7 +1400,7 @@ class Wrangler(Controller):
         replacements = {}
         manager = self._session.current_score_package_manager
         score_title = manager._get_title_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             year=False,
             )
         if score_title:
@@ -1408,7 +1408,7 @@ class Wrangler(Controller):
             new = str(score_title.upper())
             replacements[old] = new
         forces_tagline = manager._get_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'forces_tagline',
             )
         if forces_tagline:
@@ -1416,7 +1416,7 @@ class Wrangler(Controller):
             new = str(forces_tagline)
             replacements[old] = new
         year = manager._get_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             'year',
             )
         if year:
@@ -1511,7 +1511,7 @@ class Wrangler(Controller):
             new = lilypond_version_directive
             self._replace_in_file(candidate_path, old, new)
             score_title = manager._get_title_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 year=False,
                 )
             if score_title:
@@ -1519,7 +1519,7 @@ class Wrangler(Controller):
                 new = score_title
                 self._replace_in_file(candidate_path, old, new)
             annotated_title = manager._get_title_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 year=True,
                 )
             if annotated_title:
@@ -1527,7 +1527,7 @@ class Wrangler(Controller):
                 new = annotated_title
                 self._replace_in_file(candidate_path, old, new)
             forces_tagline = manager._get_metadatum(
-                manager._metadata_py_path,
+                manager._path,
                 'forces_tagline',
                 )
             if forces_tagline:
@@ -2043,7 +2043,7 @@ class Wrangler(Controller):
             manager = self._get_views_package_manager(self._io_manager)
             metadatum_name = '{}_view_name'.format(type(self).__name__)
         manager._add_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             metadatum_name,
             view_name,
             )

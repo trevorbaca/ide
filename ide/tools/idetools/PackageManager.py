@@ -58,12 +58,6 @@ class PackageManager(Controller):
         '''
         return '{}({!r})'.format(type(self).__name__, self._path)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _metadata_py_path(self):
-        return os.path.join(self._path, '__metadata__.py')
-
     ### PRIVATE METHODS ###
 
     def _configure_as_material_package_manager(self):

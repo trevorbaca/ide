@@ -74,7 +74,8 @@ class Controller(object):
     @property
     def _breadcrumb(self):
         if self._breadcrumb_callback is not None:
-            return self._breadcrumb_callback(self._metadata_py_path)
+            metadata_py_path = os.path.join(self._path, '__metadata__.py')
+            return self._breadcrumb_callback(metadata_py_path)
         if hasattr(self, '_path'):
             base_name = os.path.basename(self._path)
             result = base_name.replace('_', ' ')
@@ -105,6 +106,11 @@ class Controller(object):
         metadatum_name, 
         metadatum_value,
         ):
+        if not metadata_py_path.endswith('__metadata__.py'):
+            metadata_py_path = os.path.join(
+                metadata_py_path,
+                '__metadata__.py',
+                )
         assert ' ' not in metadatum_name, repr(metadatum_name)
         metadata = self._get_metadata(metadata_py_path)
         metadata[metadatum_name] = metadatum_value
@@ -184,7 +190,7 @@ class Controller(object):
             manager = class_._get_views_package_manager(io_manager)
             metadatum_name = '{}_view_name'.format(class_.__name__)
         manager._add_metadatum(
-            manager._metadata_py_path,
+            manager._path,
             metadatum_name,
             None,
             )
@@ -522,6 +528,11 @@ class Controller(object):
         return stdout_lines
 
     def _get_metadata(self, metadata_py_path):
+        if not metadata_py_path.endswith('__metadata__.py'):
+            metadata_py_path = os.path.join(
+                metadata_py_path,
+                '__metadata__.py',
+                )
         metadata = None
         if os.path.isfile(metadata_py_path):
             with open(metadata_py_path, 'r') as file_pointer:
@@ -673,7 +684,7 @@ class Controller(object):
     def _get_views_metadata_py_path(session):
         path = configuration.abjad_ide_views_directory
         manager = session._io_manager._make_package_manager(path)
-        return manager._metadata_py_path
+        return os.path.join(manager._path, '__metadata__.py')
 
     @staticmethod
     def _get_views_package_manager(io_manager):
@@ -1273,7 +1284,7 @@ class Controller(object):
         if manager is None:
             return
         string = self._get_metadatum(
-            manager._metadata_py_path, 
+            manager._path, 
             'paper_dimensions',
             )
         string = string or '8.5 x 11 in'
