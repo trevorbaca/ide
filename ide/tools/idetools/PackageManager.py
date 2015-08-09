@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import os
-import shutil
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
@@ -459,91 +458,3 @@ class PackageManager(Controller):
         else:
             self._session._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
-
-    @Command(
-        'ii', 
-        file_='illustration.ly',
-        outside_score=False,
-        section='package', 
-        )
-    def interpret_illustration_ly(self, dry_run=False):
-        r'''Interprets ``illustration.ly``.
-
-        Makes ``illustration.pdf``.
-
-        Returns pair. List of STDERR messages from LilyPond together
-        with list of candidate messages.
-        '''
-        illustration_ly_path = os.path.join(self._path, 'illustration.ly')
-        illustration_pdf_path = os.path.join(self._path, 'illustration.pdf')
-        inputs, outputs = [], []
-        if os.path.isfile(illustration_ly_path):
-            inputs.append(illustration_ly_path)
-            outputs.append((illustration_pdf_path,))
-        if dry_run:
-            return inputs, outputs
-        if not os.path.isfile(illustration_ly_path):
-            message = 'The file {} does not exist.'
-            message = message.format(illustration_ly_path)
-            self._session._io_manager._display(message)
-            return [], []
-        messages = self._format_messaging(inputs, outputs)
-        self._session._io_manager._display(messages)
-        result = self._session._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return [], []
-        result = self._session._io_manager.run_lilypond(illustration_ly_path)
-        subprocess_messages, candidate_messages = result
-        return subprocess_messages, candidate_messages
-
-    @Command(
-        'io', 
-        file_='illustration.pdf',
-        outside_score=False,
-        section='package', 
-        )
-    def open_illustration_pdf(self):
-        r'''Opens ``illustration.pdf``.
-
-        Returns none.
-        '''
-        illustration_pdf_path = os.path.join(self._path, 'illustration.pdf')
-        self._session._io_manager.open_file(illustration_pdf_path)
-
-    @Command(
-        'so', 
-        in_score_directory_only=True,
-        outside_score=False,
-        section='package', 
-        )
-    def open_score_pdf(self, dry_run=False):
-        r'''Opens ``score.pdf``.
-
-        Returns none.
-        '''
-        with self._session._io_manager._make_interaction(
-            self._session,
-            dry_run=dry_run,
-            ):
-            file_name = 'score.pdf'
-            directory = os.path.join(self._path, 'distribution')
-            manager = self._session._io_manager._make_package_manager(directory)
-            path = manager._get_file_path_ending_with(manager._path, file_name)
-            if not path:
-                directory = os.path.join(self._path, 'build')
-                manager = self._session._io_manager._make_package_manager(directory)
-                path = manager._get_file_path_ending_with(
-                    manager._path, 
-                    file_name,
-                    )
-            if dry_run:
-                inputs, outputs = [], []
-                if path:
-                    inputs = [path]
-                return inputs, outputs
-            if path:
-                self._session._io_manager.open_file(path)
-            else:
-                message = "no score.pdf file found"
-                message += ' in either distribution/ or build/ directories.'
-                self._session._io_manager._display(message)

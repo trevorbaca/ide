@@ -1779,7 +1779,11 @@ class Wrangler(Controller):
         method_name = 'interpret_illustration_ly'
         for manager in managers:
             method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
+            arguments = []
+            for argument_name in method.argument_names:
+                argument = getattr(manager, argument_name)
+                arguments.append(argument)
+            inputs_, outputs_ = method(*arguments, dry_run=True)
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs)
@@ -1790,7 +1794,11 @@ class Wrangler(Controller):
         for manager in managers:
             with self._session._io_manager._silent():
                 method = getattr(manager, method_name)
-                subprocess_messages, candidate_messages = method()
+                arguments = []
+                for argument_name in method.argument_names:
+                    argument = getattr(manager, argument_name)
+                    arguments.append(argument)
+                subprocess_messages, candidate_messages = method(*arguments)
             if subprocess_messages:
                 self._session._io_manager._display(subprocess_messages)
                 self._session._io_manager._display(candidate_messages)
@@ -1886,7 +1894,11 @@ class Wrangler(Controller):
         managers = self._list_visible_asset_managers()
         paths = []
         for manager in managers:
-            inputs, outputs = manager.open_score_pdf(dry_run=True)
+            arguments = []
+            for argument_name in manager.open_score_pdf.argument_names:
+                argument = getattr(manager, argument_name)
+                arguments.append(argument)
+            inputs, outputs = manager.open_score_pdf(*arguments, dry_run=True)
             paths.extend(inputs)
         messages = ['will open ...']
         tab = self._session._io_manager._tab

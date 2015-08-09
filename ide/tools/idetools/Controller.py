@@ -2255,6 +2255,43 @@ class Controller(object):
                     except IOError:
                         pass
 
+    @Command(
+        'ii', 
+        argument_names=('_path',),
+        file_='illustration.ly',
+        outside_score=False,
+        section='package', 
+        )
+    def interpret_illustration_ly(self, directory, dry_run=False):
+        r'''Interprets ``illustration.ly``.
+
+        Makes ``illustration.pdf``.
+
+        Returns pair. List of STDERR messages from LilyPond together
+        with list of candidate messages.
+        '''
+        illustration_ly_path = os.path.join(directory, 'illustration.ly')
+        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
+        inputs, outputs = [], []
+        if os.path.isfile(illustration_ly_path):
+            inputs.append(illustration_ly_path)
+            outputs.append((illustration_pdf_path,))
+        if dry_run:
+            return inputs, outputs
+        if not os.path.isfile(illustration_ly_path):
+            message = 'the file {} does not exist.'
+            message = message.format(illustration_ly_path)
+            self._io_manager._display(message)
+            return [], []
+        messages = self._format_messaging(inputs, outputs)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return [], []
+        result = self._io_manager.run_lilypond(illustration_ly_path)
+        subprocess_messages, candidate_messages = result
+        return subprocess_messages, candidate_messages
+
     @Command('!', section='system')
     def invoke_shell(self):
         r'''Invokes shell.
@@ -2269,6 +2306,21 @@ class Controller(object):
         statement = statement.strip()
         self._session._io_manager._invoke_shell(statement)
 
+    @Command(
+        'io', 
+        argument_names=('_path',),
+        file_='illustration.pdf',
+        outside_score=False,
+        section='package', 
+        )
+    def open_illustration_pdf(self, directory):
+        r'''Opens ``illustration.pdf``.
+
+        Returns none.
+        '''
+        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
+        self._session._io_manager.open_file(illustration_pdf_path)
+
     @Command('log', section='global files')
     def open_lilypond_log(self):
         r'''Opens LilyPond log.
@@ -2280,6 +2332,48 @@ class Controller(object):
         if self._session.is_test:
             return
         systemtools.IOManager.open_last_log()
+
+    @Command(
+        'so', 
+        argument_names=('_path',),
+        in_score_directory_only=True,
+        outside_score=False,
+        section='package', 
+        )
+    def open_score_pdf(self, directory, dry_run=False):
+        r'''Opens ``score.pdf``.
+
+        Returns none.
+        '''
+        # TODO: remove session from _make_interaction() signature
+        with self._io_manager._make_interaction(
+            self._session,
+            dry_run=dry_run,
+            ):
+            file_name = 'score.pdf'
+            directory = os.path.join(directory, 'distribution')
+            # TODO: remove call to _make_package_manager()
+            manager = self._io_manager._make_package_manager(directory)
+            path = manager._get_file_path_ending_with(manager._path, file_name)
+            if not path:
+                directory = os.path.join(self._path, 'build')
+                # TODO: remove call to _make_package_manager()
+                manager = self._io_manager._make_package_manager(directory)
+                path = manager._get_file_path_ending_with(
+                    manager._path, 
+                    file_name,
+                    )
+            if dry_run:
+                inputs, outputs = [], []
+                if path:
+                    inputs = [path]
+                return inputs, outputs
+            if path:
+                self._io_manager.open_file(path)
+            else:
+                message = "no score.pdf file found"
+                message += ' in either distribution/ or build/ directories.'
+                self._io_manager._display(message)
 
     @Command('q', description='quit', section='back-home-quit')
     def quit_abjad_ide(self):
