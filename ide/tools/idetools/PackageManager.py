@@ -182,6 +182,7 @@ class PackageManager(Controller):
         'ck', 
         argument_names=(
             '_path',
+            '_basic_breadcrumb',
             '_optional_directories',
             '_optional_files',
             '_required_directories',
@@ -193,6 +194,7 @@ class PackageManager(Controller):
     def check_package(
         self,
         directory,
+        basic_breadcrumb,
         OPTIONAL_DIRECTORIES, 
         OPTIONAL_FILES,
         REQUIRED_DIRECTORIES,
@@ -212,7 +214,6 @@ class PackageManager(Controller):
             if self._io_manager._is_backtracking or result is None:
                 return
             problems_only = bool(result)
-        tab = self._io_manager._tab
         optional_directories, optional_files = [], []
         missing_directories, missing_files = [], []
         required_directories, required_files = [], []
@@ -272,7 +273,6 @@ class PackageManager(Controller):
                 REQUIRED_DIRECTORIES,
                 'required directory',
                 participal='found',
-                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_directories:
@@ -281,7 +281,6 @@ class PackageManager(Controller):
                 REQUIRED_DIRECTORIES,
                 'required directory',
                 'missing',
-                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -290,7 +289,6 @@ class PackageManager(Controller):
                 REQUIRED_FILES,
                 'required file',
                 'found',
-                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_files:
@@ -299,7 +297,6 @@ class PackageManager(Controller):
                 REQUIRED_FILES,
                 'required file',
                 'missing',
-                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -307,35 +304,30 @@ class PackageManager(Controller):
                 optional_directories,
                 'optional directory',
                 participal='found',
-                tab=self._io_manager._tab
                 )
             messages.extend(messages_)
             messages_ = self._format_counted_check_messages(
                 optional_files,
                 'optional file',
                 participal='found',
-                tab=self._io_manager._tab
                 )
             messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_directories,
             'unrecognized directory',
             participal='found',
-            tab=self._io_manager._tab
             )
         messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_files,
             'unrecognized file',
             participal='found',
-            tab=self._io_manager._tab
             )
         messages.extend(messages_)
-        tab = self._io_manager._tab
-        messages = [tab + _ for _ in messages]
+        messages = [self._tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(
             directory,
-            self._basic_breadcrumb,
+            basic_breadcrumb,
             )
         found_problems = (
             missing_directories or
@@ -354,7 +346,7 @@ class PackageManager(Controller):
                 message = '{} OK'.format(message)
             messages.insert(0, message)
             messages = [stringtools.capitalize_start(_) for _ in messages]
-            messages = [tab + _ for _ in messages]
+            messages = [self._tab + _ for _ in messages]
         message = '{}:'.format(name)
         if not wranglers and not found_problems and return_messages:
             message = '{} OK'.format(message)
@@ -366,7 +358,6 @@ class PackageManager(Controller):
                 )
             silence = self._io_manager._silent()
             with controller, silence:
-                tab = self._io_manager._tab
                 for wrangler in wranglers:
                     self._io_manager._display(repr(wrangler))
                     if wrangler._asset_identifier == 'file':
@@ -391,7 +382,7 @@ class PackageManager(Controller):
                     missing_files.extend(missing_files_)
                     messages_ = [
                         stringtools.capitalize_start(_) for _ in messages_]
-                    messages_ = [tab + _ for _ in messages_]
+                    messages_ = [self._tab + _ for _ in messages_]
                     messages.extend(messages_)
         if return_messages:
             return messages, missing_directories, missing_files
@@ -419,18 +410,18 @@ class PackageManager(Controller):
         if not supply_missing:
             return messages, missing_directories, missing_files
         messages = []
-        messages.append('Made:')
+        messages.append('made:')
         for missing_directory in missing_directories:
             os.makedirs(missing_directory)
             gitignore_path = os.path.join(missing_directory, '.gitignore')
             with open(gitignore_path, 'w') as file_pointer:
                 file_pointer.write('')
-            message = tab + missing_directory
+            message = self._tab + missing_directory
             messages.append(message)
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                if self._basic_breadcrumb == 'scores':
+                if basic_breadcrumb == 'SCORES':
                     lines = self._get_score_initializer_file_lines(
                         missing_file)
                 else:
@@ -441,8 +432,8 @@ class PackageManager(Controller):
                 lines.append('from abjad import *')
                 lines.append('')
                 lines.append('')
-                lines.append(
-                    'metadata = datastructuretools.TypedOrderedDict()')
+                line = 'metadata = datastructuretools.TypedOrderedDict()'
+                lines.append(line)
             elif missing_file.endswith('__views__.py'):
                 lines = []
                 lines.append(self._unicode_directive)
@@ -467,7 +458,7 @@ class PackageManager(Controller):
             contents = '\n'.join(lines)
             with open(missing_file, 'w') as file_pointer:
                 file_pointer.write(contents)
-            message = tab + missing_file
+            message = self._tab + missing_file
             messages.append(message)
             supplied_files.append(missing_file)
         if return_supply_messages:

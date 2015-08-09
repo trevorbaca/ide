@@ -51,6 +51,8 @@ class Controller(object):
         _navigation_command_name_to_directory_name.values()
     _known_directory_names.sort()
 
+    _tab = 4 * ' '
+
     _unicode_directive = '# -*- encoding: utf-8 -*-'
 
     ### INITIALIZER ###
@@ -169,11 +171,10 @@ class Controller(object):
             identifier = stringtools.pluralize(identifier, count)
             message = '{} unrecognized {} found:'
             message = message.format(count, identifier)
-            tab = self._io_manager._tab
-            message = tab + message
+            message = self._tab + message
             messages.append(message)
             for invalid_path in invalid_paths:
-                message = tab + tab + invalid_path
+                message = self._tab + self._tab + invalid_path
                 messages.append(message)
         self._io_manager._display(messages)
         missing_files, missing_directories = [], []
@@ -374,12 +375,11 @@ class Controller(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return directory_entry
 
-    @staticmethod
     def _format_counted_check_messages(
+        self,
         paths,
         identifier,
         participal,
-        tab,
         ):
         messages = []
         if paths:
@@ -389,7 +389,7 @@ class Controller(object):
             message = message.format(count, identifier, participal)
             messages.append(message)
             for path in paths:
-                message = tab + path
+                message = self._tab + path
                 messages.append(message)
         return messages
 
@@ -432,13 +432,12 @@ class Controller(object):
                 messages.append('')
         return messages
 
-    @staticmethod
     def _format_ratio_check_messages(
+        self,
         found_paths,
         total_paths,
         identifier,
         participal='found',
-        tab=None,
         ):
         messages = []
         denominator = len(total_paths)
@@ -452,7 +451,7 @@ class Controller(object):
             numerator, denominator, identifier, participal)
         messages.append(message)
         for path in sorted(found_paths):
-            message = tab + path
+            message = self._tab + path
             messages.append(message)
         return messages
 
@@ -732,7 +731,7 @@ class Controller(object):
             messages = []
             messages.append('will add ...')
             for path in inputs:
-                messages.append(self._io_manager._tab + path)
+                messages.append(self._tab + path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
             if io_manager._is_backtracking or not result:
@@ -780,7 +779,7 @@ class Controller(object):
             messages = []
             messages.append('will revert ...')
             for path in paths:
-                messages.append(self._io_manager._tab + path)
+                messages.append(self._tab + path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
             if self._io_manager._is_backtracking or not result:
@@ -858,7 +857,6 @@ class Controller(object):
             candidate_path,
             destination_path,
             ):
-            tab = self._io_manager._tab
             messages_ = self._make_candidate_messages(
                 True,
                 candidate_path,
@@ -1183,8 +1181,8 @@ class Controller(object):
         ):
         messages = []
         messages.append('the files ...')
-        messages.append(self._io_manager._tab + candidate_path)
-        messages.append(self._io_manager._tab + incumbent_path)
+        messages.append(self._tab + candidate_path)
+        messages.append(self._tab + incumbent_path)
         if result:
             messages.append('... compare the same.')
         else:
@@ -2218,13 +2216,12 @@ class Controller(object):
             if not os.path.exists(illustration_pdf_path):
                 messages = []
                 messages.append('Wrote ...')
-                tab = self._io_manager._tab
                 if os.path.exists(candidate_ly_path):
                     shutil.move(candidate_ly_path, illustration_ly_path)
-                    messages.append(tab + illustration_ly_path)
+                    messages.append(self._tab + illustration_ly_path)
                 if os.path.exists(candidate_pdf_path):
                     shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    messages.append(tab + illustration_pdf_path)
+                    messages.append(self._tab + illustration_pdf_path)
                 self._io_manager._display(messages)
             else:
                 result = systemtools.TestManager.compare_files(
