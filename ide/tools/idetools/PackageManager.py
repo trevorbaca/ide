@@ -325,10 +325,7 @@ class PackageManager(Controller):
             )
         messages.extend(messages_)
         messages = [self._tab + _ for _ in messages]
-        name = self._path_to_asset_menu_display_string(
-            directory,
-            basic_breadcrumb,
-            )
+        name = self._path_to_asset_menu_display_string(directory)
         found_problems = (
             missing_directories or
             missing_files or

@@ -550,7 +550,6 @@ class Wrangler(Controller):
         for path in paths:
             string = self._path_to_asset_menu_display_string(
                 path,
-                self._basic_breadcrumb,
                 self._allow_asset_name_underscores,
                 )
             strings.append(string)
@@ -1710,7 +1709,6 @@ class Wrangler(Controller):
             messages = []
             message = self._path_to_asset_menu_display_string(
                 manager._path,
-                self._basic_breadcrumb,
                 self._allow_asset_name_underscores,
                 )
             message = self._strip_annotation(message)

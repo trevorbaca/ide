@@ -1369,12 +1369,12 @@ class Controller(object):
     def _path_to_asset_menu_display_string(
         self, 
         path,
-        basic_breadcrumb,
         allow_asset_name_underscores=False,
         ):
         asset_name = os.path.basename(path)
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
+        # TODO: replace with self._is_segment_package_path()
         if 'segments' in path:
             metadata_py_path = os.path.join(path, '__metadata__.py')
             segment_name = self._get_metadatum(
@@ -1386,8 +1386,7 @@ class Controller(object):
             string = asset_name
         else:
             annotation = self._path_to_annotation(path)
-            prototype = ('SCORES', 'scores')
-            if basic_breadcrumb in prototype:
+            if self._is_score_package_inner_path(path):
                 string = annotation
             else:
                 string = '{} ({})'.format(asset_name, annotation)
