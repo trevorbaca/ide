@@ -1341,7 +1341,7 @@ class Controller(object):
         height = eval(height)
         return width, height, units
 
-    def _path_to_annotation(self, path, basic_breadcrumb):
+    def _path_to_annotation(self, path):
         score_storehouses = (
             configuration.abjad_ide_example_scores_directory,
             configuration.composer_scores_directory,
@@ -1353,8 +1353,7 @@ class Controller(object):
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
-                prototype = ('SCORES', 'scores')
-                if basic_breadcrumb in prototype and year:
+                if self._is_score_package_inner_path(path) and year:
                     annotation = '{} ({})'.format(title, year)
                 else:
                     annotation = str(title)
@@ -1386,10 +1385,7 @@ class Controller(object):
         if self._session.is_in_score:
             string = asset_name
         else:
-            annotation = self._path_to_annotation(
-                path,
-                basic_breadcrumb,
-                )
+            annotation = self._path_to_annotation(path)
             prototype = ('SCORES', 'scores')
             if basic_breadcrumb in prototype:
                 string = annotation
