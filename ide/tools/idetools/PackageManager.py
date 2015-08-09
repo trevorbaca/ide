@@ -177,6 +177,7 @@ class PackageManager(Controller):
 
     @Command(
         'dc', 
+        argument_names=('_path',),
         file_='definition.py',
         outside_score=False,
         section='package', 

@@ -40,6 +40,7 @@ class Command(object):
     def __init__(
         self, 
         command_name, 
+        argument_names=None,
         description=None, 
         directories=None,
         file_=None,
@@ -50,6 +51,8 @@ class Command(object):
         parent_directories=None,
         section=None,
         ):
+        argument_names = argument_names or ()
+        self.argument_names = argument_names
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
@@ -80,8 +83,9 @@ class Command(object):
     def __call__(self, method):
         r'''Calls command decorator on `method`.
 
-        Returns `method` with command name metadatum attached.
+        Returns `method` with metadata attached.
         '''
+        method.argument_names = self.argument_names
         method.command_name = self.command_name
         if self.description is not None:
             method.description = self.description
