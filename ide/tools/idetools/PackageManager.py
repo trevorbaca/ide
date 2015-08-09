@@ -180,13 +180,23 @@ class PackageManager(Controller):
 
     @Command(
         'ck', 
-        argument_names=('_path',),
+        argument_names=(
+            '_path',
+            '_optional_directories',
+            '_optional_files',
+            '_required_directories',
+            '_required_files',
+            ),
         outside_score=False,
         section='package', 
         )
     def check_package(
         self,
         directory,
+        OPTIONAL_DIRECTORIES, 
+        OPTIONAL_FILES,
+        REQUIRED_DIRECTORIES,
+        REQUIRED_FILES,
         problems_only=None,
         return_messages=False,
         return_supply_messages=False,
@@ -211,35 +221,35 @@ class PackageManager(Controller):
         names = self._list_directory(directory)
         if 'makers' in names:
             makers_initializer = os.path.join('makers', '__init__.py')
-            if makers_initializer in self._required_files:
+            if makers_initializer in REQUIRED_FILES:
                 path = os.path.join(directory, makers_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         if 'materials' in names:
             materials_initializer = os.path.join('materials', '__init__.py')
-            if materials_initializer in self._required_files:
+            if materials_initializer in REQUIRED_FILES:
                 path = os.path.join(directory, materials_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         if 'segments' in names:
             segments_initializer = os.path.join('segments', '__init__.py')
-            if segments_initializer in self._required_files:
+            if segments_initializer in REQUIRED_FILES:
                 path = os.path.join(directory, segments_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         for name in names:
             path = os.path.join(directory, name)
             if os.path.isdir(path):
-                if name in self._required_directories:
+                if name in REQUIRED_DIRECTORIES:
                     required_directories.append(path)
-                elif name in self._optional_directories:
+                elif name in OPTIONAL_DIRECTORIES:
                     optional_directories.append(path)
                 else:
                     unrecognized_directories.append(path)
             elif os.path.isfile(path):
-                if name in self._required_files:
+                if name in REQUIRED_FILES:
                     required_files.append(path)
-                elif name in self._optional_files:
+                elif name in OPTIONAL_FILES:
                     optional_files.append(path)
                 else:
                     unrecognized_files.append(path)
@@ -247,11 +257,11 @@ class PackageManager(Controller):
                 raise TypeError(path)
         recognized_directories = required_directories + optional_directories
         recognized_files = required_files + optional_files
-        for required_directory in self._required_directories:
+        for required_directory in REQUIRED_DIRECTORIES:
             path = os.path.join(directory, required_directory)
             if path not in recognized_directories:
                 missing_directories.append(path)
-        for required_file in self._required_files:
+        for required_file in REQUIRED_FILES:
             path = os.path.join(directory, required_file)
             if path not in recognized_files:
                 missing_files.append(path)
@@ -259,7 +269,7 @@ class PackageManager(Controller):
         if not problems_only:
             messages_ = self._format_ratio_check_messages(
                 required_directories,
-                self._required_directories,
+                REQUIRED_DIRECTORIES,
                 'required directory',
                 participal='found',
                 tab=self._io_manager._tab,
@@ -268,7 +278,7 @@ class PackageManager(Controller):
         if missing_directories:
             messages_ = self._format_ratio_check_messages(
                 missing_directories,
-                self._required_directories,
+                REQUIRED_DIRECTORIES,
                 'required directory',
                 'missing',
                 tab=self._io_manager._tab,
@@ -277,7 +287,7 @@ class PackageManager(Controller):
         if not problems_only:
             messages_ = self._format_ratio_check_messages(
                 required_files,
-                self._required_files,
+                REQUIRED_FILES,
                 'required file',
                 'found',
                 tab=self._io_manager._tab,
@@ -286,7 +296,7 @@ class PackageManager(Controller):
         if missing_files:
             messages_ = self._format_ratio_check_messages(
                 missing_files,
-                self._required_files,
+                REQUIRED_FILES,
                 'required file',
                 'missing',
                 tab=self._io_manager._tab,
