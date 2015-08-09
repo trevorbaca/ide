@@ -14,7 +14,6 @@ class PackageManager(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_basic_breadcrumb',
         '_optional_directories',
         '_optional_files',
         '_package_creation_callback',
@@ -30,7 +29,6 @@ class PackageManager(Controller):
         assert path is not None and os.path.sep in path
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
-        self._basic_breadcrumb = None
         self._breadcrumb_callback = None
         self._optional_directories = (
             '__pycache__',
@@ -57,7 +55,6 @@ class PackageManager(Controller):
     ### PRIVATE METHODS ###
 
     def _configure_as_material_package_manager(self):
-        self._basic_breadcrumb = 'MATERIALS'
         self._optional_files = (
             '__illustrate__.py',
             'illustration.ly',
@@ -71,7 +68,6 @@ class PackageManager(Controller):
             )
 
     def _configure_as_score_package_manager(self):
-        self._basic_breadcrumb = 'SCORES'
         self._breadcrumb_callback = self._get_title_metadatum
         self._optional_directories = (
             '__pycache__',
@@ -97,7 +93,6 @@ class PackageManager(Controller):
             )
 
     def _configure_as_segment_package_manager(self):
-        self._basic_breadcrumb = 'SEGMENTS'
         self._breadcrumb_callback = self._get_name_metadatum
         self._optional_files = (
             'illustration.ly',

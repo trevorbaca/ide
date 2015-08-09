@@ -37,7 +37,7 @@ def test_Wrangler__find_up_to_date_manager_02():
         )
 
     assert isinstance(manager, ide.tools.idetools.PackageManager)
-    assert manager._basic_breadcrumb == 'MATERIALS'
+    assert manager._is_material_package_path(manager._path)
     assert manager._is_git_versioned(manager._path)
     assert manager._is_up_to_date(manager._path)
     assert os.path.basename(os.path.dirname(manager._path)) == 'materials'
@@ -54,7 +54,7 @@ def test_Wrangler__find_up_to_date_manager_03():
         )
 
     assert isinstance(manager, ide.tools.idetools.PackageManager)
-    assert manager._basic_breadcrumb == 'SEGMENTS'
+    assert manager._is_segment_package_path(manager._path)
     assert manager._is_git_versioned(manager._path)
     assert manager._is_up_to_date(manager._path)
     assert os.path.basename(os.path.dirname(manager._path)) == 'segments'
