@@ -1204,6 +1204,18 @@ class Controller(object):
             paths = [_[-1] for _ in entries]
             return paths
 
+    def _make_asset_menu_section(self, directory, menu):
+        directory_entries = self._list_directory(directory, smart_sort=True)
+        menu_entries = []
+        for directory_entry in directory_entries:
+            clean_directory_entry = directory_entry
+            if directory_entry.endswith('/'):
+                clean_directory_entry = directory_entry[:-1]
+            path = os.path.join(self._path, clean_directory_entry)
+            menu_entry = (directory_entry, None, None, path)
+            menu_entries.append(menu_entry)
+        menu.make_asset_section(menu_entries=menu_entries)
+
     def _make_candidate_messages(
         self, 
         result, 
@@ -1283,7 +1295,10 @@ class Controller(object):
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._session._io_manager._make_menu(name=name)
-        self._make_asset_menu_section(menu)
+        if hasattr(self, '_path'):
+            self._make_asset_menu_section(self._path, menu)
+        else: 
+            self._make_asset_menu_section(menu)
         self._make_command_menu_sections(menu)
         return menu
 

@@ -111,18 +111,6 @@ class PackageManager(Controller):
             'definition.py',
             )
 
-    def _make_asset_menu_section(self, menu):
-        directory_entries = self._list_directory(self._path, smart_sort=True)
-        menu_entries = []
-        for directory_entry in directory_entries:
-            clean_directory_entry = directory_entry
-            if directory_entry.endswith('/'):
-                clean_directory_entry = directory_entry[:-1]
-            path = os.path.join(self._path, clean_directory_entry)
-            menu_entry = (directory_entry, None, None, path)
-            menu_entries.append(menu_entry)
-        menu.make_asset_section(menu_entries=menu_entries)
-
     def _run_package_manager(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
