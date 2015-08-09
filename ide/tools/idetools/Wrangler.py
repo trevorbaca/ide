@@ -693,7 +693,7 @@ class Wrangler(Controller):
         if path not in paths:
             with self._session._io_manager._silent():
                 self._clear_view(self._io_manager, self._directory_name)
-        manager._run_package_manager()
+        manager._run_package_manager_menu(manager._path)
 
     def _make_score_package(self):
         message = 'enter title'
@@ -748,7 +748,7 @@ class Wrangler(Controller):
         if package_path not in package_paths:
             with self._session._io_manager._silent():
                 self._clear_view(self._io_manager, self._directory_name)
-        manager._run_package_manager()
+        manager._run_package_manager_menu(manager._path)
 
     def _make_storehouse_menu_entries(
         self,

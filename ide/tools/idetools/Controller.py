@@ -922,7 +922,7 @@ class Controller(object):
                 self.go_to_score_test_files()
             else:
                 manager = self._get_manager(result)
-                manager._run_package_manager()
+                manager._run_package_manager_menu(manager._path)
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
@@ -1655,6 +1655,36 @@ class Controller(object):
         else:
             with open(file_path, 'w') as file_pointer:
                 file_pointer.write(new_file_contents)
+
+    def _run_package_manager_menu(self, directory):
+        controller = self._io_manager._controller(
+            consume_local_backtrack=True,
+            controller=self,
+            )
+        directory_change = systemtools.TemporaryDirectoryChange(directory)
+        with controller, directory_change:
+                self._enter_run()
+                self._session._pending_redraw = True
+                while True:
+                    result = self._session.navigation_command_name
+                    if not result:
+                        menu = self._make_main_menu()
+                        result = menu._run()
+                        self._handle_pending_redraw_directive(
+                            self._session,
+                            result,
+                            )
+                        self._handle_wrangler_navigation_directive(
+                            self._session,
+                            result,
+                            )
+                    if self._exit_run():
+                        break
+                    elif not result:
+                        continue
+                    self._handle_input(result)
+                    if self._exit_run():
+                        break
 
     @staticmethod
     def _sort_ordered_dictionary(dictionary):

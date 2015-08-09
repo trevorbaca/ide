@@ -1,8 +1,6 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import os
-from abjad.tools import stringtools
-from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Controller import Controller
 from ide.tools.idetools.Command import Command
@@ -110,33 +108,3 @@ class PackageManager(Controller):
             '__metadata__.py',
             'definition.py',
             )
-
-    def _run_package_manager(self):
-        controller = self._session._io_manager._controller(
-            consume_local_backtrack=True,
-            controller=self,
-            )
-        directory = systemtools.TemporaryDirectoryChange(self._path)
-        with controller, directory:
-                self._enter_run()
-                self._session._pending_redraw = True
-                while True:
-                    result = self._session.navigation_command_name
-                    if not result:
-                        menu = self._make_main_menu()
-                        result = menu._run()
-                        self._handle_pending_redraw_directive(
-                            self._session,
-                            result,
-                            )
-                        self._handle_wrangler_navigation_directive(
-                            self._session,
-                            result,
-                            )
-                    if self._exit_run():
-                        break
-                    elif not result:
-                        continue
-                    self._handle_input(result)
-                    if self._exit_run():
-                        break
