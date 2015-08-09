@@ -315,7 +315,8 @@ class Controller(object):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
             self._session._last_asset_path = self._path
-        elif self._basic_breadcrumb == 'SCORES':
+        elif (hasattr(self, '_path') and
+            self._is_score_package_inner_path(self._path)):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
             self._session._last_asset_path = self._path
@@ -324,7 +325,8 @@ class Controller(object):
     def _exit_run(self):
         if self._basic_breadcrumb in ('MATERIALS', 'SEGMENTS'):
             return self._session.is_backtracking
-        elif self._basic_breadcrumb == 'SCORES':
+        elif (hasattr(self, '_path') and
+            self._is_score_package_inner_path(self._path)):
             result = self._session.is_backtracking
             if self._session.is_backtracking_to_score:
                 self._session._is_backtracking_to_score = False
