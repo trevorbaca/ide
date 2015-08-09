@@ -91,7 +91,7 @@ class Controller(object):
                 )
 
     @property
-    def _command_name_to_method(self):
+    def _command_name_to_command(self):
         result = {}
         methods = self._get_commands()
         for method in methods:
@@ -880,16 +880,21 @@ class Controller(object):
             if result.startswith('!'):
                 statement = result[1:]
                 self._session._io_manager._invoke_shell(statement)
-            elif result in self._command_name_to_method:
-                self._command_name_to_method[result]()
+            elif result in self._command_name_to_command:
+                command = self._command_name_to_command[result]
+                arguments = []
+                for argument_name in command.argument_names:
+                    argument = getattr(self, argument_name)
+                    arguments.append(argument)
+                command(*arguments)
             elif (result.endswith('!') and 
-                result[:-1] in self._command_name_to_method):
+                result[:-1] in self._command_name_to_command):
                 result = result[:-1]
                 with self._session._io_manager._make_interaction(
                     self._session,
                     confirm=False,
                     ):
-                    self._command_name_to_method[result]()
+                    self._command_name_to_command[result]()
             else:
                 self._handle_numeric_user_input(result)
 
@@ -1730,6 +1735,41 @@ class Controller(object):
         self._io_manager.write(views_py_path, contents)
 
     ### PUBLIC METHODS ###
+
+    @Command(
+        'dc', 
+        argument_names=('_path',),
+        file_='definition.py',
+        outside_score=False,
+        section='package', 
+        )
+    def check_definition_py(self, directory, dry_run=False):
+        r'''Checks ``definition.py``.
+
+        Displays interpreter errors.
+
+        Returns none.
+        '''
+        definition_py_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_py_path):
+            message = 'file not found: {}.'
+            message = message.format(definition_py_path)
+            self._io_manager._display(message)
+            return
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_py_path)
+            return inputs, outputs
+        with self._io_manager._silent():
+            stdout_lines, stderr_lines = self._io_manager.interpret_file(
+                definition_py_path)
+        if stderr_lines:
+            messages = [definition_py_path + ' FAILED:']
+            messages.extend('    ' + _ for _ in stderr_lines)
+            self._io_manager._display(messages)
+        else:
+            message = '{} OK.'.format(definition_py_path)
+            self._io_manager._display(message)
 
     @Command('?', section='system')
     def display_action_command_help(self):

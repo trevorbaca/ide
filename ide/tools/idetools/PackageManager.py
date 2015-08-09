@@ -176,39 +176,6 @@ class PackageManager(Controller):
     ### PUBLIC METHODS ###
 
     @Command(
-        'dc', 
-        argument_names=('_path',),
-        file_='definition.py',
-        outside_score=False,
-        section='package', 
-        )
-    def check_definition_py(self, dry_run=False):
-        r'''Checks ``definition.py``.
-
-        Display errors generated during interpretation.
-        '''
-        definition_py_path = os.path.join(self._path, 'definition.py')
-        if not os.path.isfile(definition_py_path):
-            message = 'File not found: {}.'
-            message = message.format(definition_py_path)
-            self._session._io_manager._display(message)
-            return
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_py_path)
-            return inputs, outputs
-        with self._session._io_manager._silent():
-            stdout_lines, stderr_lines = self._io_manager.interpret_file(
-                definition_py_path)
-        if stderr_lines:
-            messages = [definition_py_path + ' FAILED:']
-            messages.extend('    ' + _ for _ in stderr_lines)
-            self._session._io_manager._display(messages)
-        else:
-            message = '{} OK.'.format(definition_py_path)
-            self._session._io_manager._display(message)
-
-    @Command(
         'ck', 
         outside_score=False,
         section='package', 

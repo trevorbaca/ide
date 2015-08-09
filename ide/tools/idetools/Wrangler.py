@@ -1085,7 +1085,11 @@ class Wrangler(Controller):
         method_name = 'check_definition_py'
         for manager in managers:
             method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
+            arguments = []
+            for argument_name in method.argument_names:
+                argument = getattr(manager, argument_name)
+                arguments.append(argument)
+            inputs_, outputs_ = method(*arguments, dry_run=True)
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='check')
@@ -1096,7 +1100,11 @@ class Wrangler(Controller):
         start_time = time.time()
         for manager in managers:
             method = getattr(manager, method_name)
-            method()
+            arguments = []
+            for argument_name in method.argument_names:
+                argument = getattr(manager, argument_name)
+                arguments.append(argument)
+            method(*arguments)
         stop_time = time.time()
         total_time = stop_time - start_time
         total_time = int(total_time)
