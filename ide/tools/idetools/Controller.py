@@ -311,7 +311,9 @@ class Controller(object):
         if (self._session.navigation_target is not None and
             self._session.navigation_target == self._basic_breadcrumb):
             self._session._navigation_target = None
-        elif self._basic_breadcrumb in ('MATERIALS', 'SEGMENTS'):
+        elif (hasattr(self, '_path') and
+            (self._is_material_package_path(self._path) or
+            self._is_segment_package_path(self._path))):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
             self._session._last_asset_path = self._path
@@ -323,7 +325,9 @@ class Controller(object):
             self._session._last_score_path = self._path
 
     def _exit_run(self):
-        if self._basic_breadcrumb in ('MATERIALS', 'SEGMENTS'):
+        if (hasattr(self, '_path') and
+            (self._is_material_package_path(self._path) or
+            self._is_segment_package_path(self._path))):
             return self._session.is_backtracking
         elif (hasattr(self, '_path') and
             self._is_score_package_inner_path(self._path)):
@@ -1010,6 +1014,21 @@ class Controller(object):
         return False
 
     @staticmethod
+    def _is_material_package_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            storehouse = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            storehouse = configuration.abjad_ide_example_scores_directory
+        else:
+            return False
+        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        if len(parts) == storehouse_parts_count + 4:
+            if parts[-2] == 'materials':
+                return True
+        return False
+
+    @staticmethod
     def _is_score_package_inner_path(path):
         if path.startswith(configuration.composer_scores_directory):
             storehouse = configuration.composer_scores_directory
@@ -1036,6 +1055,21 @@ class Controller(object):
         parts = path.split(os.path.sep)
         if len(parts) == storehouse_parts_count + 1:
             return True
+        return False
+
+    @staticmethod
+    def _is_segment_package_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            storehouse = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            storehouse = configuration.abjad_ide_example_scores_directory
+        else:
+            return False
+        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        if len(parts) == storehouse_parts_count + 4:
+            if parts[-2] == 'segments':
+                return True
         return False
 
     def _is_up_to_date(self, path):
