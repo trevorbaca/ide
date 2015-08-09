@@ -127,9 +127,14 @@ class PackageManager(Controller):
         assert not os.path.exists(path)
         os.mkdir(path)
         with self._session._io_manager._silent():
+            arguments = []
+            for argument_name in self.check_package.argument_names:
+                argument = getattr(self, argument_name)
+                arguments.append(argument)
             self.check_package(
+                *arguments,
                 return_supply_messages=True,
-                supply_missing=True,
+                supply_missing=True
                 )
         if self._package_creation_callback is not None:
             outer_path = self._get_outer_score_package_path(path)
@@ -175,11 +180,13 @@ class PackageManager(Controller):
 
     @Command(
         'ck', 
+        argument_names=('_path',),
         outside_score=False,
         section='package', 
         )
     def check_package(
         self,
+        directory,
         problems_only=None,
         return_messages=False,
         return_supply_messages=False,
@@ -191,37 +198,37 @@ class PackageManager(Controller):
         '''
         if problems_only is None:
             prompt = 'show problem assets only?'
-            result = self._session._io_manager._confirm(prompt)
+            result = self._io_manager._confirm(prompt)
             if self._io_manager._is_backtracking or result is None:
                 return
             problems_only = bool(result)
-        tab = self._session._io_manager._tab
+        tab = self._io_manager._tab
         optional_directories, optional_files = [], []
         missing_directories, missing_files = [], []
         required_directories, required_files = [], []
         supplied_directories, supplied_files = [], []
         unrecognized_directories, unrecognized_files = [], []
-        names = self._list_directory(self._path)
+        names = self._list_directory(directory)
         if 'makers' in names:
             makers_initializer = os.path.join('makers', '__init__.py')
             if makers_initializer in self._required_files:
-                path = os.path.join(self._path, makers_initializer)
+                path = os.path.join(directory, makers_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         if 'materials' in names:
             materials_initializer = os.path.join('materials', '__init__.py')
             if materials_initializer in self._required_files:
-                path = os.path.join(self._path, materials_initializer)
+                path = os.path.join(directory, materials_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         if 'segments' in names:
             segments_initializer = os.path.join('segments', '__init__.py')
             if segments_initializer in self._required_files:
-                path = os.path.join(self._path, segments_initializer)
+                path = os.path.join(directory, segments_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
         for name in names:
-            path = os.path.join(self._path, name)
+            path = os.path.join(directory, name)
             if os.path.isdir(path):
                 if name in self._required_directories:
                     required_directories.append(path)
@@ -241,11 +248,11 @@ class PackageManager(Controller):
         recognized_directories = required_directories + optional_directories
         recognized_files = required_files + optional_files
         for required_directory in self._required_directories:
-            path = os.path.join(self._path, required_directory)
+            path = os.path.join(directory, required_directory)
             if path not in recognized_directories:
                 missing_directories.append(path)
         for required_file in self._required_files:
-            path = os.path.join(self._path, required_file)
+            path = os.path.join(directory, required_file)
             if path not in recognized_files:
                 missing_files.append(path)
         messages = []
@@ -255,7 +262,7 @@ class PackageManager(Controller):
                 self._required_directories,
                 'required directory',
                 participal='found',
-                tab=self._session._io_manager._tab,
+                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_directories:
@@ -264,7 +271,7 @@ class PackageManager(Controller):
                 self._required_directories,
                 'required directory',
                 'missing',
-                tab=self._session._io_manager._tab,
+                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -273,7 +280,7 @@ class PackageManager(Controller):
                 self._required_files,
                 'required file',
                 'found',
-                tab=self._session._io_manager._tab,
+                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if missing_files:
@@ -282,7 +289,7 @@ class PackageManager(Controller):
                 self._required_files,
                 'required file',
                 'missing',
-                tab=self._session._io_manager._tab,
+                tab=self._io_manager._tab,
                 )
             messages.extend(messages_)
         if not problems_only:
@@ -290,34 +297,34 @@ class PackageManager(Controller):
                 optional_directories,
                 'optional directory',
                 participal='found',
-                tab=self._session._io_manager._tab
+                tab=self._io_manager._tab
                 )
             messages.extend(messages_)
             messages_ = self._format_counted_check_messages(
                 optional_files,
                 'optional file',
                 participal='found',
-                tab=self._session._io_manager._tab
+                tab=self._io_manager._tab
                 )
             messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_directories,
             'unrecognized directory',
             participal='found',
-            tab=self._session._io_manager._tab
+            tab=self._io_manager._tab
             )
         messages.extend(messages_)
         messages_ = self._format_counted_check_messages(
             unrecognized_files,
             'unrecognized file',
             participal='found',
-            tab=self._session._io_manager._tab
+            tab=self._io_manager._tab
             )
         messages.extend(messages_)
-        tab = self._session._io_manager._tab
+        tab = self._io_manager._tab
         messages = [tab + _ for _ in messages]
         name = self._path_to_asset_menu_display_string(
-            self._path,
+            directory,
             self._basic_breadcrumb,
             )
         found_problems = (
@@ -329,7 +336,7 @@ class PackageManager(Controller):
         count = len(names)
         wranglers = self._get_directory_wranglers(
             self._session,
-            self._path,
+            directory,
             )
         if wranglers or not return_messages:
             message = 'top level ({} assets):'.format(count)
@@ -343,15 +350,15 @@ class PackageManager(Controller):
             message = '{} OK'.format(message)
         messages.insert(0, message)
         if wranglers:
-            controller = self._session._io_manager._controller(
+            controller = self._io_manager._controller(
                 controller=self,
-                current_score_directory=self._path,
+                current_score_directory=directory,
                 )
-            silence = self._session._io_manager._silent()
+            silence = self._io_manager._silent()
             with controller, silence:
-                tab = self._session._io_manager._tab
+                tab = self._io_manager._tab
                 for wrangler in wranglers:
-                    self._session._io_manager._display(repr(wrangler))
+                    self._io_manager._display(repr(wrangler))
                     if wrangler._asset_identifier == 'file':
                         directory_token = \
                             wrangler._get_current_directory_token(
@@ -379,7 +386,7 @@ class PackageManager(Controller):
         if return_messages:
             return messages, missing_directories, missing_files
         else:
-            self._session._io_manager._display(messages)
+            self._io_manager._display(messages)
         if not missing_directories + missing_files:
             return messages, missing_directories, missing_files
         if supply_missing is None:
@@ -395,8 +402,8 @@ class PackageManager(Controller):
                 prompt = 'supply missing {}?'.format(files)
             else:
                 raise ValueError
-            result = self._session._io_manager._confirm(prompt)
-            if self._session.is_backtracking or result is None:
+            result = self._io_manager._confirm(prompt)
+            if self._io_manager._is_backtracking or result is None:
                 return
             supply_missing = bool(result)
         if not supply_missing:
@@ -456,5 +463,5 @@ class PackageManager(Controller):
         if return_supply_messages:
             return messages, supplied_directories, supplied_files
         else:
-            self._session._io_manager._display(messages)
+            self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files

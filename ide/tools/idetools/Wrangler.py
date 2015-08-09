@@ -1126,20 +1126,25 @@ class Wrangler(Controller):
         messages = []
         missing_directories, missing_files = [], []
         supplied_directories, supplied_files = [], []
-        tab = indent * self._session._io_manager._tab
+        tab = indent * self._io_manager._tab
         if problems_only is None:
             prompt = 'show problem assets only?'
-            result = self._session._io_manager._confirm(prompt)
-            if self._session.is_backtracking or result is None:
+            result = self._io_manager._confirm(prompt)
+            if self._io_manager._is_backtracking or result is None:
                 return messages, missing_directories, missing_files
             problems_only = bool(result)
         managers = self._list_visible_asset_managers()
         found_problem = False
         for manager in managers:
-            with self._session._io_manager._silent():
+            with self._io_manager._silent():
+                arguments = []
+                for argument_name in manager.check_package.argument_names:
+                    argument = getattr(manager, argument_name)
+                    arguments.append(argument)
                 result = manager.check_package(
-                    return_messages=True,
+                    *arguments,
                     problems_only=problems_only,
+                    return_messages=True
                     )
             messages_, missing_directories_, missing_files_ = result
             missing_directories.extend(missing_directories_)
@@ -1165,23 +1170,28 @@ class Wrangler(Controller):
             if not found_problems:
                 message = '{} OK'.format(message)
             messages.insert(0, message)
-        self._session._io_manager._display(messages)
+        self._io_manager._display(messages)
         if not found_problem:
             return messages, missing_directories, missing_files
         if supply_missing is None:
             prompt = 'supply missing directories and files?'
-            result = self._session._io_manager._confirm(prompt)
-            if self._session.is_backtracking or result is None:
+            result = self._io_manager._confirm(prompt)
+            if self._io_manager._is_backtracking or result is None:
                 return messages, missing_directories, missing_files
             supply_missing = bool(result)
         if not supply_missing:
             return messages, missing_directories, missing_files
         messages = []
         for manager in managers:
-            with self._session._io_manager._silent():
+            with self._io_manager._silent():
+                arguments = []
+                for argument_name in manager.check_package.argument_names:
+                    argument = getattr(manager, argument_name)
+                    arguments.append(argument)
                 result = manager.check_package(
+                    *arguments,
                     return_supply_messages=True,
-                    supply_missing=True,
+                    supply_missing=True
                     )
             messages_, supplied_directories_, supplied_files_ = result
             supplied_directories.extend(supplied_directories_)
@@ -1189,7 +1199,7 @@ class Wrangler(Controller):
             if messages_:
                 messages_ = [tab + tab + _ for _ in messages_]
                 messages.extend(messages_)
-        self._session._io_manager._display(messages)
+        self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
 
     @Command(
