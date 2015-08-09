@@ -5,6 +5,7 @@ import inspect
 import os
 import shutil
 import sys
+import time
 from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import stringtools
@@ -1801,6 +1802,52 @@ class Controller(object):
                 file_pointer.write('')
         self._session._io_manager.edit(path)
 
+    @Command(
+        'de', 
+        argument_names=('_path',),
+        file_='definition.py', 
+        outside_score=False,
+        section='package', 
+        )
+    def edit_definition_py(self, directory):
+        r'''Edits ``definition.py``.
+
+        Returns none.
+        '''
+        definition_py_path = os.path.join(directory, 'definition.py')
+        self._session._io_manager.edit(definition_py_path)
+
+    @Command(
+        'le', 
+        argument_names=('_path',),
+        description='edit __illustrate__.py', 
+        file_='__illustrate__.py',
+        outside_score=False,
+        section='package',
+        )
+    def edit_illustrate_py(self, directory):
+        r'''Edits ``__illustrate.py__``.
+
+        Returns none.
+        '''
+        illustrate_py_path = os.path.join(directory, '__illustrate__.py')
+        self._session._io_manager.edit(illustrate_py_path)
+
+    @Command(
+        'ie', 
+        argument_names=('_path',),
+        file_='illustration.ly', 
+        outside_score=False, 
+        section='package',
+        )
+    def edit_illustration_ly(self, directory):
+        r'''Opens ``illustration.ly``.
+
+        Returns none.
+        '''
+        illustration_ly_path = os.path.join(directory, 'illustration.ly')
+        self._session._io_manager.open_file(illustration_ly_path)
+
     @Command('sty', section='global files', outside_score=False)
     def edit_score_stylesheet(self):
         r'''Edits score stylesheet.
@@ -1812,6 +1859,48 @@ class Controller(object):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
         self._session._io_manager.edit(path)
+
+    @Command(
+        'gl', 
+        argument_names=('_path',),
+        description='generate __illustrate__.py', 
+        file_='__illustrate__.py',
+        outside_score=False,
+        section='package',
+        )
+    def generate_illustrate_py(self, directory):
+        r'''Generates ``__illustrate.py__``.
+
+        Returns none.
+        '''
+        illustrate_py_path = os.path.join(directory, '__illustrate__.py')
+        message = 'will generate {}.'
+        message = message.format(illustrate_py_path)
+        self._io_manager._display(message)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return
+        lines = []
+        lines.append(self._abjad_import_statement)
+        line = 'from output import {}'
+        line = line.format(os.path.basename(directory))
+        lines.append(line)
+        lines.append('')
+        lines.append('')
+        line = 'triple = scoretools.make_piano_score_from_leaves({})'
+        line = line.format(os.path.basename(directory))
+        lines.append(line)
+        line = 'score, treble_staff, bass_staff = triple'
+        lines.append(line)
+        line = 'illustration = lilypondfiletools.'
+        line += 'make_basic_lilypond_file(score)'
+        lines.append(line)
+        contents = '\n'.join(lines)
+        with open(illustrate_py_path, 'w') as file_pointer:
+            file_pointer.write(contents)
+        message = 'generated {}.'
+        message = message.format(illustrate_py_path)
+        self._io_manager._display(message)
 
     @Command('b', description='back', section='back-home-quit')
     def go_back(self):
@@ -2027,6 +2116,144 @@ class Controller(object):
         Returns none.
         '''
         self._session._abjad_ide._test_file_wrangler._run_wrangler()
+
+    @Command(
+        'i', 
+        argument_names=('_path',),
+        file_='definition.py',
+        outside_score=False,
+        parent_directories=('segments',),
+        section='package', 
+        )
+    def illustrate_definition_py(self, directory, dry_run=False):
+        r'''Illustrates ``definition.py``.
+
+        Makes ``illustration.ly`` and ``illustration.pdf``.
+
+        Returns none.
+        '''
+        definition_py_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_py_path):
+            message = 'File not found: {}.'
+            message = message.format(definition_py_path)
+            self._io_manager._display(message)
+            return
+        # TODO: remove session reference
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler._update_order_dependent_segment_metadata()
+        boilerplate_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__illustrate_segment__.py',
+            )
+        illustrate_path = os.path.join(
+            directory,
+            '__illustrate_segment__.py',
+            )
+        candidate_ly_path = os.path.join(
+            directory,
+            'illustration.candidate.ly'
+            )
+        candidate_pdf_path = os.path.join(
+            directory,
+            'illustration.candidate.pdf'
+            )
+        temporary_files = (
+            illustrate_path,
+            candidate_ly_path,
+            candidate_pdf_path,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        illustration_ly_path = os.path.join(
+            directory,
+            'illustration.ly',
+            )
+        illustration_pdf_path = os.path.join(
+            directory,
+            'illustration.pdf',
+            )
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_py_path)
+            outputs.append((illustration_ly_path, illustration_pdf_path))
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(boilerplate_path, illustrate_path)
+            previous_segment_manager = self._get_previous_segment_manager(
+                self._session,
+                directory,
+                )
+            if previous_segment_manager is None:
+                statement = 'previous_segment_metadata = None'
+            else:
+                # TODO: remove session reference
+                score_name = self._session.current_score_directory
+                score_name = os.path.basename(score_name)
+                previous_segment_name = previous_segment_manager._path
+                previous_segment_name = os.path.basename(previous_segment_name)
+                statement = 'from {}.segments.{}.__metadata__'
+                statement += ' import metadata as previous_segment_metadata'
+                statement = statement.format(score_name, previous_segment_name)
+            self._replace_in_file(
+                illustrate_path,
+                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
+                statement,
+                )
+            with self._io_manager._silent():
+                start_time = time.time()
+                result = self._io_manager.interpret_file(
+                    illustrate_path,
+                    strip=False,
+                    )
+                stop_time = time.time()
+                total_time = stop_time - start_time
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            message = 'total time: {} seconds.'
+            message = message.format(int(total_time))
+            self._io_manager._display(message)
+            if not os.path.exists(illustration_pdf_path):
+                messages = []
+                messages.append('Wrote ...')
+                tab = self._io_manager._tab
+                if os.path.exists(candidate_ly_path):
+                    shutil.move(candidate_ly_path, illustration_ly_path)
+                    messages.append(tab + illustration_ly_path)
+                if os.path.exists(candidate_pdf_path):
+                    shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    messages.append(tab + illustration_pdf_path)
+                self._io_manager._display(messages)
+            else:
+                result = systemtools.TestManager.compare_files(
+                candidate_pdf_path,
+                illustration_pdf_path,
+                )
+                messages = self._make_candidate_messages(
+                    result,
+                    candidate_pdf_path,
+                    illustration_pdf_path,
+                    )
+                self._io_manager._display(messages)
+                if result:
+                    message = 'preserved {}.'.format(illustration_pdf_path)
+                    self._io_manager._display(message)
+                    return
+                else:
+                    message = 'overwrite existing PDF with candidate PDF?'
+                    result = self._io_manager._confirm(message=message)
+                    if self._io_manager._is_backtracking or not result:
+                        return
+                    try:
+                        shutil.move(candidate_ly_path, illustration_ly_path)
+                    except IOError:
+                        pass
+                    try:
+                        shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    except IOError:
+                        pass
 
     @Command('!', section='system')
     def invoke_shell(self):
