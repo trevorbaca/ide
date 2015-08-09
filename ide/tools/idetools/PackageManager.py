@@ -182,7 +182,6 @@ class PackageManager(Controller):
         'ck', 
         argument_names=(
             '_path',
-            '_basic_breadcrumb',
             '_optional_directories',
             '_optional_files',
             '_required_directories',
@@ -194,7 +193,6 @@ class PackageManager(Controller):
     def check_package(
         self,
         directory,
-        basic_breadcrumb,
         OPTIONAL_DIRECTORIES, 
         OPTIONAL_FILES,
         REQUIRED_DIRECTORIES,
