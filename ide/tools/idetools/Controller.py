@@ -1007,6 +1007,35 @@ class Controller(object):
             return True
         return False
 
+    @staticmethod
+    def _is_score_package_inner_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            storehouse = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            storehouse = configuration.abjad_ide_example_scores_directory
+        else:
+            return False
+        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        if len(parts) == storehouse_parts_count + 2:
+            if parts[-1] == parts[-2]:
+                return True
+        return False
+
+    @staticmethod
+    def _is_score_package_outer_path(path):
+        if path.startswith(configuration.composer_scores_directory):
+            storehouse = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            storehouse = configuration.abjad_ide_example_scores_directory
+        else:
+            return False
+        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        if len(parts) == storehouse_parts_count + 1:
+            return True
+        return False
+
     def _is_up_to_date(self, path):
         git_status_lines = self._get_git_status_lines(path)
         git_status_lines = git_status_lines or ['']

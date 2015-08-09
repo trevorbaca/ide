@@ -421,7 +421,7 @@ class PackageManager(Controller):
             supplied_directories.append(missing_directory)
         for missing_file in missing_files:
             if missing_file.endswith('__init__.py'):
-                if basic_breadcrumb == 'SCORES':
+                if self._is_score_package_outer_path(directory):
                     lines = self._get_score_initializer_file_lines(
                         missing_file)
                 else:
