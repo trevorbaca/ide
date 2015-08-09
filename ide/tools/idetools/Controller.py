@@ -1285,6 +1285,29 @@ class Controller(object):
         self._make_command_menu_sections(menu)
         return menu
 
+    def _make_package(self, path, package_creation_callback=None):
+        assert not os.path.exists(path)
+        os.mkdir(path)
+        with self._io_manager._silent():
+            arguments = []
+            for argument_name in self.check_package.argument_names:
+                argument = getattr(self, argument_name)
+                arguments.append(argument)
+            self.check_package(
+                *arguments,
+                return_supply_messages=True,
+                supply_missing=True
+                )
+        if package_creation_callback is not None:
+            outer_path = self._get_outer_score_package_path(path)
+            inner_path = os.path.join(outer_path, os.path.basename(path))
+            new_path = package_creation_callback(
+                inner_path,
+                outer_path,
+                )
+            if new_path is not None:
+                return new_path
+
     def _make_score_into_installable_package(
         self,
         inner_path,

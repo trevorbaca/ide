@@ -123,29 +123,6 @@ class PackageManager(Controller):
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
 
-    def _make_package(self, path, package_creation_callback=None):
-        assert not os.path.exists(path)
-        os.mkdir(path)
-        with self._io_manager._silent():
-            arguments = []
-            for argument_name in self.check_package.argument_names:
-                argument = getattr(self, argument_name)
-                arguments.append(argument)
-            self.check_package(
-                *arguments,
-                return_supply_messages=True,
-                supply_missing=True
-                )
-        if package_creation_callback is not None:
-            outer_path = self._get_outer_score_package_path(path)
-            inner_path = os.path.join(outer_path, os.path.basename(path))
-            new_path = package_creation_callback(
-                inner_path,
-                outer_path,
-                )
-            if new_path is not None:
-                return new_path
-
     def _run_package_manager(self):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
