@@ -1794,6 +1794,291 @@ class Controller(object):
             message = '{} OK.'.format(definition_py_path)
             self._io_manager._display(message)
 
+    @Command(
+        'ck', 
+        argument_names=(
+            '_path',
+            '_optional_directories',
+            '_optional_files',
+            '_required_directories',
+            '_required_files',
+            ),
+        outside_score=False,
+        file_='__init__.py',
+        section='package', 
+        )
+    def check_package(
+        self,
+        directory,
+        OPTIONAL_DIRECTORIES, 
+        OPTIONAL_FILES,
+        REQUIRED_DIRECTORIES,
+        REQUIRED_FILES,
+        problems_only=None,
+        return_messages=False,
+        return_supply_messages=False,
+        supply_missing=None,
+        ):
+        r'''Checks package.
+
+        Returns none.
+        '''
+        if problems_only is None:
+            prompt = 'show problem assets only?'
+            result = self._io_manager._confirm(prompt)
+            if self._io_manager._is_backtracking or result is None:
+                return
+            problems_only = bool(result)
+        optional_directories, optional_files = [], []
+        missing_directories, missing_files = [], []
+        required_directories, required_files = [], []
+        supplied_directories, supplied_files = [], []
+        unrecognized_directories, unrecognized_files = [], []
+        names = self._list_directory(directory)
+        if 'makers' in names:
+            makers_initializer = os.path.join('makers', '__init__.py')
+            if makers_initializer in REQUIRED_FILES:
+                path = os.path.join(directory, makers_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
+        if 'materials' in names:
+            materials_initializer = os.path.join('materials', '__init__.py')
+            if materials_initializer in REQUIRED_FILES:
+                path = os.path.join(directory, materials_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
+        if 'segments' in names:
+            segments_initializer = os.path.join('segments', '__init__.py')
+            if segments_initializer in REQUIRED_FILES:
+                path = os.path.join(directory, segments_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
+        for name in names:
+            path = os.path.join(directory, name)
+            if os.path.isdir(path):
+                if name in REQUIRED_DIRECTORIES:
+                    required_directories.append(path)
+                elif name in OPTIONAL_DIRECTORIES:
+                    optional_directories.append(path)
+                else:
+                    unrecognized_directories.append(path)
+            elif os.path.isfile(path):
+                if name in REQUIRED_FILES:
+                    required_files.append(path)
+                elif name in OPTIONAL_FILES:
+                    optional_files.append(path)
+                else:
+                    unrecognized_files.append(path)
+            else:
+                raise TypeError(path)
+        recognized_directories = required_directories + optional_directories
+        recognized_files = required_files + optional_files
+        for required_directory in REQUIRED_DIRECTORIES:
+            path = os.path.join(directory, required_directory)
+            if path not in recognized_directories:
+                missing_directories.append(path)
+        for required_file in REQUIRED_FILES:
+            path = os.path.join(directory, required_file)
+            if path not in recognized_files:
+                missing_files.append(path)
+        messages = []
+        if not problems_only:
+            messages_ = self._format_ratio_check_messages(
+                required_directories,
+                REQUIRED_DIRECTORIES,
+                'required directory',
+                participal='found',
+                )
+            messages.extend(messages_)
+        if missing_directories:
+            messages_ = self._format_ratio_check_messages(
+                missing_directories,
+                REQUIRED_DIRECTORIES,
+                'required directory',
+                'missing',
+                )
+            messages.extend(messages_)
+        if not problems_only:
+            messages_ = self._format_ratio_check_messages(
+                required_files,
+                REQUIRED_FILES,
+                'required file',
+                'found',
+                )
+            messages.extend(messages_)
+        if missing_files:
+            messages_ = self._format_ratio_check_messages(
+                missing_files,
+                REQUIRED_FILES,
+                'required file',
+                'missing',
+                )
+            messages.extend(messages_)
+        if not problems_only:
+            messages_ = self._format_counted_check_messages(
+                optional_directories,
+                'optional directory',
+                participal='found',
+                )
+            messages.extend(messages_)
+            messages_ = self._format_counted_check_messages(
+                optional_files,
+                'optional file',
+                participal='found',
+                )
+            messages.extend(messages_)
+        messages_ = self._format_counted_check_messages(
+            unrecognized_directories,
+            'unrecognized directory',
+            participal='found',
+            )
+        messages.extend(messages_)
+        messages_ = self._format_counted_check_messages(
+            unrecognized_files,
+            'unrecognized file',
+            participal='found',
+            )
+        messages.extend(messages_)
+        messages = [self._tab + _ for _ in messages]
+        name = self._path_to_asset_menu_display_string(directory)
+        found_problems = (
+            missing_directories or
+            missing_files or
+            unrecognized_directories or
+            unrecognized_files
+            )
+        count = len(names)
+        wranglers = self._get_directory_wranglers(
+            self._session,
+            directory,
+            )
+        if wranglers or not return_messages:
+            message = 'top level ({} assets):'.format(count)
+            if not found_problems:
+                message = '{} OK'.format(message)
+            messages.insert(0, message)
+            messages = [stringtools.capitalize_start(_) for _ in messages]
+            messages = [self._tab + _ for _ in messages]
+        message = '{}:'.format(name)
+        if not wranglers and not found_problems and return_messages:
+            message = '{} OK'.format(message)
+        messages.insert(0, message)
+        if wranglers:
+            controller = self._io_manager._controller(
+                controller=self,
+                current_score_directory=directory,
+                )
+            silence = self._io_manager._silent()
+            with controller, silence:
+                for wrangler in wranglers:
+                    self._io_manager._display(repr(wrangler))
+                    if wrangler._asset_identifier == 'file':
+                        directory_token = \
+                            wrangler._get_current_directory_token(
+                            wrangler._session,
+                            wrangler._directory_name,
+                            )
+                        result = wrangler._check_every_file(
+                            directory_token,
+                            wrangler._directory_entry_predicate,
+                            wrangler._hide_breadcrumb_while_in_score,
+                            )
+                    else:
+                        result = wrangler.check_every_package(
+                            indent=1,
+                            problems_only=problems_only,
+                            supply_missing=False,
+                            )
+                    messages_, missing_directories_, missing_files_ = result
+                    missing_directories.extend(missing_directories_)
+                    missing_files.extend(missing_files_)
+                    messages_ = [
+                        stringtools.capitalize_start(_) for _ in messages_]
+                    messages_ = [self._tab + _ for _ in messages_]
+                    messages.extend(messages_)
+        if return_messages:
+            return messages, missing_directories, missing_files
+        else:
+            self._io_manager._display(messages)
+        if not missing_directories + missing_files:
+            return messages, missing_directories, missing_files
+        if supply_missing is None:
+            directory_count = len(missing_directories)
+            file_count = len(missing_files)
+            directories = stringtools.pluralize('directory', directory_count)
+            files = stringtools.pluralize('file', file_count)
+            if missing_directories and missing_files:
+                prompt = 'supply missing {} and {}?'.format(directories, files)
+            elif missing_directories:
+                prompt = 'supply missing {}?'.format(directories)
+            elif missing_files:
+                prompt = 'supply missing {}?'.format(files)
+            else:
+                raise ValueError
+            result = self._io_manager._confirm(prompt)
+            if self._io_manager._is_backtracking or result is None:
+                return
+            supply_missing = bool(result)
+        if not supply_missing:
+            return messages, missing_directories, missing_files
+        messages = []
+        messages.append('made:')
+        for missing_directory in missing_directories:
+            os.makedirs(missing_directory)
+            gitignore_path = os.path.join(missing_directory, '.gitignore')
+            with open(gitignore_path, 'w') as file_pointer:
+                file_pointer.write('')
+            message = self._tab + missing_directory
+            messages.append(message)
+            supplied_directories.append(missing_directory)
+        for missing_file in missing_files:
+            if missing_file.endswith('__init__.py'):
+                if self._is_score_package_outer_path(directory):
+                    lines = self._get_score_initializer_file_lines(
+                        missing_file)
+                else:
+                    lines = [self._unicode_directive]
+            elif missing_file.endswith('__metadata__.py'):
+                lines = []
+                lines.append(self._unicode_directive)
+                lines.append('from abjad import *')
+                lines.append('')
+                lines.append('')
+                line = 'metadata = datastructuretools.TypedOrderedDict()'
+                lines.append(line)
+            elif missing_file.endswith('__views__.py'):
+                lines = []
+                lines.append(self._unicode_directive)
+                lines.append(self._abjad_import_statement)
+                lines.append('from ide.tools import idetools')
+                lines.append('')
+                lines.append('')
+                line = 'view_inventory = idetools.ViewInventory([])'
+                lines.append(line)
+            elif missing_file.endswith('definition.py'):
+                source_path = os.path.join(
+                    configuration.abjad_ide_boilerplate_directory,
+                    'definition.py',
+                    )
+                with open(source_path, 'r') as file_pointer:
+                    lines = file_pointer.readlines()
+                lines = [_.strip() for _ in lines]
+            else:
+                message = 'do not know how to make stub for {}.'
+                message = message.format(missing_file)
+                raise ValueError(message)
+            contents = '\n'.join(lines)
+            with open(missing_file, 'w') as file_pointer:
+                file_pointer.write(contents)
+            message = self._tab + missing_file
+            messages.append(message)
+            supplied_files.append(missing_file)
+        if return_supply_messages:
+            return messages, supplied_directories, supplied_files
+        else:
+            self._io_manager._display(messages)
+        return messages, supplied_directories, supplied_files
+
     @Command('?', section='system')
     def display_action_command_help(self):
         r'''Displays action commands.
