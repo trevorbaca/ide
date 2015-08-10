@@ -937,7 +937,7 @@ class Controller(object):
             messages.append(message)
         self._io_manager._display(messages)
 
-    def _handle_input(self, result):
+    def _handle_input(self, result, _path=None):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
@@ -947,11 +947,10 @@ class Controller(object):
                 self._session._io_manager._invoke_shell(statement)
             elif result in self._command_name_to_command:
                 command = self._command_name_to_command[result]
-                arguments = []
-                for argument_name in command.argument_names:
-                    argument = getattr(self, argument_name)
-                    arguments.append(argument)
-                command(*arguments)
+                if '_path' in command.argument_names:
+                    command(_path)
+                else:
+                    command()
             elif (result.endswith('!') and 
                 result[:-1] in self._command_name_to_command):
                 result = result[:-1]
@@ -1793,7 +1792,7 @@ class Controller(object):
                         break
                     elif not result:
                         continue
-                    self._handle_input(result)
+                    self._handle_input(result, _path=directory)
                     if self._exit_run():
                         break
 
