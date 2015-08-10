@@ -2573,13 +2573,22 @@ class Controller(object):
         if not self._session.is_in_confirmation_environment:
             self._session._display_command_help = 'navigation'
 
-    @Command('abb', section='global files', outside_score=False)
-    def edit_abbreviations_file(self):
+    @Command(
+        'abb',
+        argument_names=('current_score_directory',),
+        outside_score=False,
+        section='global files',
+        )
+    def edit_abbreviations_file(self, score_directory):
         r'''Edits abbreviations file.
 
         Returns none.
         '''
-        path = self._session.current_abbreviations_file_path
+        path = os.path.join(
+            score_directory, 
+            'materials',
+            '__abbreviations__.py',
+            )
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')

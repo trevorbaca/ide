@@ -1084,7 +1084,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate(
             'back-cover.tex',
-            self._session.current_build_directory,
+            os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
 
@@ -1142,7 +1142,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate(
             file_name,
-            self._session.current_build_directory,
+            os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
 
@@ -1269,7 +1269,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate(
             'preface.tex',
-            self._session.current_build_directory,
+            os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
 
@@ -1295,7 +1295,7 @@ class Wrangler(Controller):
             replacements[old] = new
         self._copy_boilerplate(
             'score.tex',
-            self._session.current_build_directory,
+            os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
 
@@ -1532,17 +1532,18 @@ class Wrangler(Controller):
 
     @Command(
         'mi',
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def interpret_music(self):
+    def interpret_music(self, score_directory):
         r'''Interprets ``music.ly``.
 
         Returns none.
         '''
         self._call_lilypond_on_file_ending_with(
-            self._session.current_build_directory,
+            os.path.join(score_directory, 'build'),
             'music.ly',
             )
 

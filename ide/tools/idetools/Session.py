@@ -319,53 +319,6 @@ class Session(abctools.AbjadObject):
         return self._controller_stack
 
     @property
-    def current_abbreviations_file_path(self):
-        r'''Gets current abbreviations file path.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.current_abbreviations_file_path is None
-                True
-
-        Returns string or none.
-        '''
-        if self.is_in_score:
-            return os.path.join(
-                self.current_score_directory,
-                'materials',
-                '__abbreviations__.py',
-                )
-
-    @property
-    def current_build_directory(self):
-        r'''Gets session current build directory.
-
-        ..  container:: example
-
-            Build directory of session outside score:
-
-            ::
-
-                >>> session.current_build_directory is None
-                True
-
-        ..  container:: example
-
-            Build directory of session in score:
-
-            ::
-
-                >>> session_in_score.current_build_directory is None
-                True
-
-        Returns string.
-        '''
-        if self.current_score_directory:
-            return os.path.join(self.current_score_directory, 'build')
-
-    @property
     def current_score_directory(self):
         r'''Gets session current score directory.
 
