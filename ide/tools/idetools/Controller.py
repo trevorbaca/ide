@@ -194,10 +194,8 @@ class Controller(object):
             if not self._is_valid_directory_entry(file_name):
                 invalid_paths.append(path)
         messages = []
-        breadcrumb = self._get_breadcrumb(
-            directory_token,
-            hide_breadcrumb_while_in_score,
-            )
+        base_name = os.path.basename(directory_token)
+        breadcrumb = '{} directory'.format(base_name)
         if not invalid_paths:
             count = len(paths)
             message = '{} ({} files): OK'.format(breadcrumb, count)

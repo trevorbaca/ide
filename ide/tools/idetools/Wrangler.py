@@ -306,28 +306,6 @@ class Wrangler(Controller):
             else:
                 return path
 
-    def _get_breadcrumb(
-        self,
-        directory_token,
-        hide_breadcrumb_while_in_score,
-        ):
-        breadcrumb = os.path.basename(directory_token)
-        if breadcrumb == 'scores':
-            breadcrumb = 'score'
-        if os.path.sep in directory_token:
-            if hide_breadcrumb_while_in_score:
-                return
-            breadcrumb = '{} directory'.format(breadcrumb)
-        else:
-            breadcrumb = 'all {} directories'.format(breadcrumb)
-        view_name = self._read_view_name(directory_token)
-        if not view_name:
-            return breadcrumb
-        view_inventory = self._read_view_inventory(directory_token)
-        if view_inventory is not None and view_name in view_inventory:
-            breadcrumb = '{} [{}]'.format(breadcrumb, view_name)
-        return breadcrumb
-
     @staticmethod
     def _get_current_directory(session, directory_name):
         score_directory = session.current_score_directory
