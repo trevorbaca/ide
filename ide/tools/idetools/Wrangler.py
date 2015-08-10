@@ -683,10 +683,7 @@ class Wrangler(Controller):
         if self._session.is_backtracking or not result:
             return
         manager = self._get_manager(path)
-        new_path = manager._make_package(
-            manager._path,
-            package_creation_callback=manager._package_creation_callback,
-            )
+        new_path = manager._make_package(manager._path)
         if new_path is not None:
             manager._new_path = new_path
         paths = self._list_visible_asset_paths()
@@ -727,10 +724,7 @@ class Wrangler(Controller):
             package_name = stringtools.strip_diacritics(package_name)
             package_name = stringtools.to_snake_case(package_name)
         manager = self._get_manager(package_path)
-        new_path = manager._make_package(
-            manager._path,
-            package_creation_callback=manager._package_creation_callback,
-            )
+        new_path = manager._make_package(manager._path)
         if new_path is not None:
             manager._path = new_path
         manager._add_metadatum(

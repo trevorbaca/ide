@@ -16,7 +16,6 @@ class PackageManager(Controller):
     __slots__ = (
         '_optional_directories',
         '_optional_files',
-        '_package_creation_callback',
         '_path',
         '_required_directories',
         '_required_files',
@@ -35,7 +34,6 @@ class PackageManager(Controller):
             'test',
             )
         self._optional_files = ()
-        self._package_creation_callback = None
         self._path = path
         self._required_directories = ()
         self._required_files = (
@@ -65,8 +63,6 @@ class PackageManager(Controller):
             'etc',
             'test',
             )
-        self._package_creation_callback = \
-            self._make_score_into_installable_package
         self._required_directories = (
             'build',
             'distribution',
