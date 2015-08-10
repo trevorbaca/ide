@@ -450,7 +450,7 @@ class Menu(object):
             lines, 
             break_only_at_blank_lines=True,
             )
-        title = self._session.menu_header
+        title = self.explicit_header
         if command_type == 'action':
             title = title + ' - action commands'
         elif command_type == 'navigation':

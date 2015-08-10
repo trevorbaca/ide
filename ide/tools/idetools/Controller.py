@@ -134,23 +134,13 @@ class Controller(object):
 
     @property
     def _breadcrumb(self):
-        if hasattr(self, '_path'):
-            if self._is_score_package_inner_path(self._path):
-                return self._get_title_metadatum(self._path)
-            if self._is_segment_package_path(self._path):
-                return self._get_name_metadatum(self._path)
-            base_name = os.path.basename(self._path)
-            result = base_name.replace('_', ' ')
-            return result
-        else:
-            directory_token = self._get_current_directory_token(
-                self._session,
-                self._directory_name,
-                )
-            return self._get_breadcrumb(
-                directory_token,
-                self._hide_breadcrumb_while_in_score,
-                )
+        if self._is_score_package_inner_path(self._path):
+            return self._get_title_metadatum(self._path)
+        if self._is_segment_package_path(self._path):
+            return self._get_name_metadatum(self._path)
+        base_name = os.path.basename(self._path)
+        result = base_name.replace('_', ' ')
+        return result
 
     @property
     def _command_name_to_command(self):
