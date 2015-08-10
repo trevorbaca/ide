@@ -581,8 +581,8 @@ class Wrangler(Controller):
                 )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-        elif not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        elif not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
@@ -863,7 +863,22 @@ class Wrangler(Controller):
             while True:
                 result = self._get_sibling_asset_path()
                 if not result:
-                    menu = self._make_main_menu(_path=directory)
+                    current_directory = self._get_current_directory(
+                        self._session,
+                        self._directory_name,
+                        )
+                    if current_directory is not None:
+                        menu_header = self._path_to_menu_header(
+                            current_directory)
+                    elif self._directory_name == 'scores':
+                        menu_header = 'Abjad IDE - all score directories'
+                    else:
+                        menu_header = 'Abjad IDE - all {} directories'
+                        menu_header = menu_header.format(self._directory_name)
+                    menu = self._make_main_menu(
+                        _path=directory,
+                        explicit_header=menu_header,
+                        )
                     result = menu._run()
                     self._handle_pending_redraw_directive(
                         self._session,
