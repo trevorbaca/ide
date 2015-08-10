@@ -36,7 +36,6 @@ class Wrangler(Controller):
         '_force_dash_case_file_name',
         '_force_lowercase_file_name',
         '_group_asset_section_by_annotation',
-        '_hide_breadcrumb_while_in_score',
         '_new_file_contents',
         '_only_example_scores_during_test',
         '_sort_by_annotation',
@@ -59,7 +58,6 @@ class Wrangler(Controller):
         self._force_dash_case_file_name = False
         self._force_lowercase_file_name = True
         self._group_asset_section_by_annotation = True
-        self._hide_breadcrumb_while_in_score = False
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
         self._sort_by_annotation = True
@@ -124,7 +122,6 @@ class Wrangler(Controller):
             self._is_valid_package_directory_entry
         self._directory_name = 'scores'
         self._group_asset_section_by_annotation = False
-        self._hide_breadcrumb_while_in_score = True
         self._only_example_scores_during_test = True
         self._sort_by_annotation = False
 

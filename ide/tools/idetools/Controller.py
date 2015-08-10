@@ -176,7 +176,6 @@ class Controller(object):
         self,
         directory_token,
         directory_entry_predicate=None,
-        hide_breadcrumb_while_in_score=None,
         ):
         directory_name = os.path.basename(directory_token)
         paths = self._list_asset_paths(
@@ -2221,7 +2220,6 @@ class Controller(object):
                         result = wrangler._check_every_file(
                             directory_token,
                             wrangler._directory_entry_predicate,
-                            wrangler._hide_breadcrumb_while_in_score,
                             )
                     else:
                         result = wrangler.check_every_package(
