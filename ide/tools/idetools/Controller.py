@@ -1085,6 +1085,22 @@ class Controller(object):
         return False
 
     @staticmethod
+    def _is_path_in_score(path):
+        if not isinstance(path, str):
+            return False
+        if path.startswith(configuration.composer_scores_directory):
+            storehouse = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            storehouse = configuration.abjad_ide_example_scores_directory
+        else:
+            return False
+        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        if storehouse_parts_count < len(parts):
+            return True
+        return False
+
+    @staticmethod
     def _is_score_package_inner_path(path):
         if not isinstance(path, str):
             return False
@@ -1328,10 +1344,17 @@ class Controller(object):
             messages.append('... compare differently.')
         return messages
 
-    def _make_command_menu_sections(self, menu, menu_section_names=None):
+    def _make_command_menu_sections(
+        self, 
+        menu, 
+        menu_section_names=None,
+        _path=None,
+        ):
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
+        if _path is not None and self._is_path_in_score(_path):
+            is_in_score = True
         required_files = ()
         optional_files = ()
         if hasattr(self, '_path'):
@@ -1403,7 +1426,7 @@ class Controller(object):
             self._make_package_asset_menu_section(_path, menu)
         else: 
             self._make_asset_menu_section(menu)
-        self._make_command_menu_sections(menu)
+        self._make_command_menu_sections(menu, _path=_path)
         return menu
 
     def _make_package(self, path):
