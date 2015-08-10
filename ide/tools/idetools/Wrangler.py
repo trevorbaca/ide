@@ -946,9 +946,16 @@ class Wrangler(Controller):
 
     ### PUBLIC METHODS ###
 
-    @Command('ck*', section='star', in_score=False, outside_score='home')
+    @Command(
+        'ck*', 
+        argument_names=('visible_asset_paths',),
+        in_score=False, 
+        outside_score='home',
+        section='star', 
+        )
     def check_every_package(
         self, 
+        paths,
         indent=0,
         problems_only=None, 
         supply_missing=None,
@@ -967,7 +974,6 @@ class Wrangler(Controller):
             if self._io_manager._is_backtracking or result is None:
                 return messages, missing_directories, missing_files
             problems_only = bool(result)
-        paths = self._list_visible_asset_paths()
         found_problem = False
         for path in paths:
             with self._io_manager._silent():

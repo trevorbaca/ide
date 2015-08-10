@@ -2335,7 +2335,9 @@ class Controller(object):
                             wrangler._directory_entry_predicate,
                             )
                     else:
+                        paths = wrangler._list_visible_asset_paths()
                         result = wrangler.check_every_package(
+                            paths,
                             indent=1,
                             problems_only=problems_only,
                             supply_missing=False,
