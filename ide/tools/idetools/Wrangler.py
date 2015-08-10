@@ -981,47 +981,47 @@ class Wrangler(Controller):
             file_pointer.write(lines)
 
     def _update_order_dependent_segment_metadata(self):
-        managers = self._list_visible_asset_managers()
-        if not managers:
+        paths = self._list_visible_asset_paths()
+        if not paths:
             return
-        segment_count = len(managers)
+        segment_count = len(paths)
         # update segment numbers and segment count
-        for segment_index, manager in enumerate(managers):
+        for segment_index, path in enumerate(paths):
             segment_number = segment_index + 1
-            manager._add_metadatum(
-                manager._path,
+            self._add_metadatum(
+                path,
                 'segment_number',
                 segment_number,
                 )
-            manager._add_metadatum(
-                manager._path,
+            self._add_metadatum(
+                path,
                 'segment_count', 
                 segment_count,
                 )
         # update first bar numbers and measure counts
-        manager = managers[0]
+        path = paths[0]
         first_bar_number = 1
-        manager._add_metadatum(
-            manager._path,
+        self._add_metadatum(
+            path,
             'first_bar_number',
             first_bar_number,
             )
-        measure_count = manager._get_metadatum(
-            manager._path,
+        measure_count = self._get_metadatum(
+            path,
             'measure_count',
             )
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
-        for manager in managers[1:]:
+        for path in paths[1:]:
             first_bar_number = next_bar_number
-            manager._add_metadatum(
-                manager._path,
+            self._add_metadatum(
+                path,
                 'first_bar_number',
                 next_bar_number,
                 )
-            measure_count = manager._get_metadatum(
-                manager._path,
+            measure_count = self._get_metadatum(
+                path,
                 'measure_count',
                 )
             if not measure_count:
