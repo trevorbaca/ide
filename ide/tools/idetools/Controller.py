@@ -136,7 +136,7 @@ class Controller(object):
     def _breadcrumb(self):
         if hasattr(self, '_path'):
             if self._is_score_package_inner_path(self._path):
-                return self._get_title_metadatum(self._path, '__metadata__.py')
+                return self._get_title_metadatum(self._path)
             if self._is_segment_package_path(self._path):
                 metadata_py_path = os.path.join(self._path, '__metadata__.py')
                 return self._get_name_metadatum(metadata_py_path)
@@ -725,15 +725,12 @@ class Controller(object):
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(next_=False)
 
-    def _get_title_metadatum(
-        self,
-        metadata_py_path, 
-        year=True,
-        ):
+    def _get_title_metadatum(self, score_directory, year=True):
+        metadata_py_path = os.path.join(score_directory, '__metadata__.py')
         if year and self._get_metadatum(metadata_py_path, 'year'):
             result = '{} ({})'
             result = result.format(
-                self._get_title_metadatum(metadata_py_path, year=False),
+                self._get_title_metadatum(score_directory, year=False),
                 self._get_metadatum(metadata_py_path, 'year')
                 )
             return result
@@ -1546,6 +1543,12 @@ class Controller(object):
             return 'segments'
         else:
             raise ValueError(path)
+
+    def _path_to_menu_header(self, path):
+        header_parts = []
+        path_parts = path.split(os.path.sep)
+        score_directory = self._path_to_score_directory(path)
+        score_part = self._get_title_metadatum(score_directory)
 
     @staticmethod
     def _path_to_package(path):
