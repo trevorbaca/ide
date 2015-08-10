@@ -1148,11 +1148,12 @@ class Wrangler(Controller):
 
     @Command(
         'mg',
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def generate_music_source(self):
+    def generate_music_source(self, score_directory):
         r'''Generates ``music.ly``.
 
         Returns none.
@@ -1168,12 +1169,12 @@ class Wrangler(Controller):
             )
         manager = self._session.current_score_package_manager
         destination_path = os.path.join(
-            manager._path,
+            score_directory,
             'build',
             'music.ly',
             )
         candidate_path = os.path.join(
-            manager._path,
+            score_directory,
             'build',
             'music.candidate.ly',
             )
@@ -1188,8 +1189,7 @@ class Wrangler(Controller):
             lines = []
             for lilypond_name in lilypond_names:
                 file_name = lilypond_name + '.ly'
-                tab = 4 * ' '
-                line = tab + r'\include "{}"'
+                line = self._tab + r'\include "{}"'
                 line = line.format(file_name)
                 lines.append(line)
             if lines:
@@ -1199,7 +1199,11 @@ class Wrangler(Controller):
             else:
                 line_to_remove = '%%% SEGMENTS %%%\n'
                 self._remove_file_line(candidate_path, line_to_remove)
-            stylesheet_path = self._session.current_stylesheet_path
+            stylesheet_path = os.path.join(
+                score_directory,
+                'stylesheets',
+                'stylesheet.ily',
+                )
             if stylesheet_path:
                 old = '% STYLESHEET_INCLUDE_STATEMENT'
                 new = r'\include "../stylesheets/stylesheet.ily"'
@@ -1214,24 +1218,24 @@ class Wrangler(Controller):
             old = '% LILYPOND_VERSION_DIRECTIVE'
             new = lilypond_version_directive
             self._replace_in_file(candidate_path, old, new)
-            score_title = manager._get_title_metadatum(
-                manager._path,
+            score_title = self._get_title_metadatum(
+                score_directory,
                 year=False,
                 )
             if score_title:
                 old = 'SCORE_NAME'
                 new = score_title
                 self._replace_in_file(candidate_path, old, new)
-            annotated_title = manager._get_title_metadatum(
-                manager._path,
+            annotated_title = self._get_title_metadatum(
+                score_directory,
                 year=True,
                 )
             if annotated_title:
                 old = 'SCORE_TITLE'
                 new = annotated_title
                 self._replace_in_file(candidate_path, old, new)
-            forces_tagline = manager._get_metadatum(
-                manager._path,
+            forces_tagline = self._get_metadatum(
+                score_directory,
                 'forces_tagline',
                 )
             if forces_tagline:

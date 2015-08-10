@@ -2634,13 +2634,22 @@ class Controller(object):
         illustration_ly_path = os.path.join(directory, 'illustration.ly')
         self._session._io_manager.open_file(illustration_ly_path)
 
-    @Command('sty', section='global files', outside_score=False)
-    def edit_score_stylesheet(self):
+    @Command(
+        'sty',
+        argument_names=('current_score_directory',),
+        outside_score=False,
+        section='global files', 
+        )
+    def edit_score_stylesheet(self, score_directory):
         r'''Edits score stylesheet.
 
         Returns none.
         '''
-        path = self._session.current_stylesheet_path
+        path = os.path.join(
+            score_directory,
+            'stylesheets',
+            'stylesheet.ily',
+            )
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
