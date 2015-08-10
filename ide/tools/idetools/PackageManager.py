@@ -1,10 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import os
-from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Controller import Controller
-from ide.tools.idetools.Command import Command
-configuration = AbjadIDEConfiguration()
 
 
 class PackageManager(Controller):
@@ -14,11 +11,7 @@ class PackageManager(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_optional_directories',
-        '_optional_files',
         '_path',
-        '_required_directories',
-        '_required_files',
         )
 
     ### INITIALIZER ###
@@ -29,64 +22,15 @@ class PackageManager(Controller):
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
         self._breadcrumb_callback = None
-        self._optional_directories = (
-            '__pycache__',
-            'test',
-            )
-        self._optional_files = ()
         self._path = path
-        self._required_directories = ()
-        self._required_files = (
-            '__init__.py',
-            '__metadata__.py',
-            )
 
     ### PRIVATE METHODS ###
 
     def _configure_as_material_package_manager(self):
-        self._optional_files = (
-            '__illustrate__.py',
-            'illustration.ly',
-            'illustration.pdf',
-            'maker.py',
-            )
-        self._required_files = (
-            '__init__.py',
-            '__metadata__.py',
-            'definition.py',
-            )
+        pass
 
     def _configure_as_score_package_manager(self):
         self._breadcrumb_callback = self._get_title_metadatum
-        self._optional_directories = (
-            '__pycache__',
-            'etc',
-            'test',
-            )
-        self._required_directories = (
-            'build',
-            'distribution',
-            'makers',
-            'materials',
-            'segments',
-            'stylesheets',
-            )
-        self._required_files = (
-            '__init__.py',
-            '__metadata__.py',
-            os.path.join('makers', '__init__.py'),
-            os.path.join('materials', '__init__.py'),
-            os.path.join('segments', '__init__.py'),
-            )
 
     def _configure_as_segment_package_manager(self):
         self._breadcrumb_callback = self._get_name_metadatum
-        self._optional_files = (
-            'illustration.ly',
-            'illustration.pdf',
-            )
-        self._required_files = (
-            '__init__.py',
-            '__metadata__.py',
-            'definition.py',
-            )

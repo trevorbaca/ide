@@ -1330,8 +1330,15 @@ class Controller(object):
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
+        required_files = ()
+        optional_files = ()
         if hasattr(self, '_path'):
             current_directory = self._path
+            directory_name = self._path_to_directory_name(self._path)
+            package_contents = self._directory_name_to_package_contents[
+                directory_name]
+            required_files = package_contents['required_files']
+            optional_files = package_contents['optional_files']
         else:
             current_directory = self._get_current_directory(
                 self._session,
@@ -1339,8 +1346,6 @@ class Controller(object):
                 )
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
-        required_files = getattr(self, '_required_files', ())
-        optional_files = getattr(self, '_optional_files', ())
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
         directory_name = os.path.basename(current_directory)
