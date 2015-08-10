@@ -33,13 +33,14 @@ def test_Menu__run_01():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    #assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    #assert result is None
+    assert result == '1'
 
-    menu._session._pending_input = '1'
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
     assert result is None
@@ -80,11 +81,11 @@ def test_Menu__run_02():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -130,7 +131,7 @@ def test_Menu__run_03():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -176,11 +177,11 @@ def test_Menu__run_04():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -222,11 +223,11 @@ def test_Menu__run_05():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -278,11 +279,11 @@ def test_Menu__run_06():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -337,11 +338,11 @@ def test_Menu__run_07():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -395,11 +396,11 @@ def test_Menu__run_08():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -458,7 +459,7 @@ def test_Menu__run_09():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -525,11 +526,11 @@ def test_Menu__run_10():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
@@ -583,40 +584,12 @@ def test_Menu__run_11():
     menu._session._allow_unknown_command_during_test = True
     menu._session._pending_input = 'foo'
     result = menu._run()
-    assert result is None
+    assert result == 'foo'
 
     menu._session._pending_input = '1'
     result = menu._run()
-    assert result is None
+    assert result == '1'
 
     menu._session._pending_input = '1, 3-2'
     result = menu._run()
     assert result is None
-
-
-def test_Menu__run_12():
-    r'''Displays unknown command message.
-    '''
-
-    session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
-    commands = []
-    commands.append(('first command', 'add'))
-    commands.append(('second command', 'rm'))
-    commands.append(('third command', 'mod'))
-    section = menu._make_section(
-        is_ranged=True,
-        menu_entries=commands,
-        name='test',
-        title='section',
-        )
-
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'asdf'
-    menu._run()
-    contents = menu._session._transcript.contents
-
-    assert "Unknown command: 'asdf'." in contents

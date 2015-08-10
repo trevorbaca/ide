@@ -953,8 +953,26 @@ class Controller(object):
                     confirm=False,
                     ):
                     self._command_name_to_command[result]()
-            else:
+            elif os.path.sep in result:
                 self._handle_numeric_user_input(result)
+            else:
+                current_score_directory = self._session.current_score_directory
+                aliased_path = self._session.aliases.get(result, None)
+                if current_score_directory and aliased_path:
+                    aliased_path = os.path.join(
+                        current_score_directory, 
+                        aliased_path,
+                        )
+                    if os.path.isfile(aliased_path):
+                        self._session._io_manager.open_file(aliased_path)
+                    else:
+                        message = 'file does not exist: {}.'
+                        message = message.format(aliased_path)
+                        self._session._io_manager._display(message)
+                else:
+                    message = 'unknown command: {!r}.'
+                    message = message.format(result)
+                    self._session._io_manager._display([message, ''])
 
     def _handle_numeric_user_input(self, result):
         if os.path.isfile(result):

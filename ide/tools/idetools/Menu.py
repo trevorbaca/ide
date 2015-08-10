@@ -66,6 +66,8 @@ class Menu(object):
         'view',
         )
 
+    _tab = 4 * ' '
+
     ### INITIALIZER ###
 
     def __init__(
@@ -128,7 +130,6 @@ class Menu(object):
         
             1. all command sections
             2. assets section, if it exists
-            3. aliases, if any are defined
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
@@ -186,17 +187,7 @@ class Menu(object):
                     return self._enclose_in_list(return_value)
         if self._user_enters_argument_range(input_):
             return self._handle_argument_range_input(input_)
-        current_score_directory = self._session.current_score_directory
-        aliased_path = self._session.aliases.get(input_, None)
-        if current_score_directory and aliased_path:
-            aliased_path = os.path.join(current_score_directory, aliased_path)
-            if os.path.isfile(aliased_path):
-                self._session._io_manager.open_file(aliased_path)
-            else:
-                message = 'file does not exist: {}.'
-                message = message.format(aliased_path)
-                self._session._io_manager._display(message)
-            return 'user entered alias'
+        return input_
 
     def _enclose_in_list(self, expr):
         if self._has_ranged_section():
@@ -215,7 +206,6 @@ class Menu(object):
         new_lines = []
         current_annotation = ''
         pattern = re.compile('(.*)(\s+)\((.+)\)')
-        tab = self._session._io_manager._tab
         for line in lines:
             line = line.replace('', '')
             match = pattern.match(line)
@@ -223,9 +213,9 @@ class Menu(object):
                 display_string, _, annotation = match.groups()
                 if not annotation == current_annotation:
                     current_annotation = annotation
-                    new_line = '{}{}:'.format(tab, current_annotation)
+                    new_line = '{}{}:'.format(self._tab, current_annotation)
                     new_lines.append(new_line)
-                new_line = tab + display_string
+                new_line = self._tab + display_string
                 new_lines.append(new_line)
             else:
                 new_lines.append(line)
@@ -263,8 +253,6 @@ class Menu(object):
             count = length - i
             candidate = ' '.join(parts[:count])
             directive = self._change_input_to_directive(candidate)
-            if directive == 'user entered alias':
-                continue
             if directive is not None:
                 if count < length:
                     remaining_count = length - count
@@ -279,8 +267,6 @@ class Menu(object):
                     self._session._pending_input = pending_input
                     self._session._pending_redraw = True
                 break
-        if directive == 'user entered alias':
-            return
         directive = self._strip_default_notice_from_strings(directive)
         if directive is None and user_entered_lone_return:
             result = '<return>'
@@ -453,7 +439,7 @@ class Menu(object):
                 found_one = True
                 key = menu_entry.key
                 display_string = menu_entry.display_string
-                menu_line = self._session._io_manager._tab
+                menu_line = self._tab
                 menu_line += '{} ({})'.format(display_string, key)
                 lines.append(menu_line)
             if found_one:
@@ -556,7 +542,11 @@ class Menu(object):
             self._session._display_command_help = None
         else:
             lines = self._make_lines()
-        self._session._io_manager._display(lines, capitalize=False, is_menu=True)
+        self._session._io_manager._display(
+            lines, 
+            capitalize=False, 
+            is_menu=True,
+            )
 
     def _return_value_to_location_pair(self, return_value):
         for i, section in enumerate(self.menu_sections):
