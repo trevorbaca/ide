@@ -367,30 +367,26 @@ class Controller(object):
             self._io_manager._display(messages)
             return True
 
-    def _enter_run(self):
+    def _enter_run(self, directory=None):
         if (self._session.navigation_target is not None and
             self._session.navigation_target == self._basic_breadcrumb):
             self._session._navigation_target = None
-        elif (hasattr(self, '_path') and
-            (self._is_material_package_path(self._path) or
-            self._is_segment_package_path(self._path))):
+        elif (self._is_material_package_path(directory) or
+            self._is_segment_package_path(directory)):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
-            self._session._last_asset_path = self._path
-        elif (hasattr(self, '_path') and
-            self._is_score_package_inner_path(self._path)):
+            self._session._last_asset_path = directory
+        elif (self._is_score_package_inner_path(directory)):
             self._session._is_navigating_to_next_asset = False
             self._session._is_navigating_to_previous_asset = False
-            self._session._last_asset_path = self._path
-            self._session._last_score_path = self._path
+            self._session._last_asset_path = directory
+            self._session._last_score_path = directory
 
-    def _exit_run(self):
-        if (hasattr(self, '_path') and
-            (self._is_material_package_path(self._path) or
-            self._is_segment_package_path(self._path))):
+    def _exit_run(self, directory=None):
+        if (self._is_material_package_path(directory) or
+            self._is_segment_package_path(directory)):
             return self._session.is_backtracking
-        elif (hasattr(self, '_path') and
-            self._is_score_package_inner_path(self._path)):
+        elif self._is_score_package_inner_path(directory):
             result = self._session.is_backtracking
             if self._session.is_backtracking_to_score:
                 self._session._is_backtracking_to_score = False
@@ -985,7 +981,7 @@ class Controller(object):
                 self.go_to_score_test_files()
             else:
                 manager = self._get_manager(result)
-                manager._run_package_manager_menu(manager._path)
+                manager._run_package_manager_menu(result)
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
@@ -1074,6 +1070,8 @@ class Controller(object):
 
     @staticmethod
     def _is_material_package_path(path):
+        if not isinstance(path, str):
+            return False
         if path.startswith(configuration.composer_scores_directory):
             storehouse = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1089,6 +1087,8 @@ class Controller(object):
 
     @staticmethod
     def _is_score_package_inner_path(path):
+        if not isinstance(path, str):
+            return False
         if path.startswith(configuration.composer_scores_directory):
             storehouse = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1104,6 +1104,8 @@ class Controller(object):
 
     @staticmethod
     def _is_score_package_outer_path(path):
+        if not isinstance(path, str):
+            return False
         if path.startswith(configuration.composer_scores_directory):
             storehouse = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1118,6 +1120,8 @@ class Controller(object):
 
     @staticmethod
     def _is_segment_package_path(path):
+        if not isinstance(path, str):
+            return False
         if path.startswith(configuration.composer_scores_directory):
             storehouse = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1773,7 +1777,7 @@ class Controller(object):
             )
         directory_change = systemtools.TemporaryDirectoryChange(directory)
         with controller, directory_change:
-                self._enter_run()
+                self._enter_run(directory=directory)
                 self._session._pending_redraw = True
                 while True:
                     result = self._session.navigation_command_name
@@ -1788,12 +1792,12 @@ class Controller(object):
                             self._session,
                             result,
                             )
-                    if self._exit_run():
+                    if self._exit_run(directory):
                         break
                     elif not result:
                         continue
                     self._handle_input(result, _path=directory)
-                    if self._exit_run():
+                    if self._exit_run(directory):
                         break
 
     @staticmethod
