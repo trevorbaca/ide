@@ -1621,26 +1621,27 @@ class Wrangler(Controller):
 
     @Command(
         'sp', 
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def push_score_pdf_to_distribution_directory(self):
+    def push_score_pdf_to_distribution_directory(self, score_directory):
         r'''Pushes ``score.pdf`` to distribution directory.
 
         Returns none.
         '''
-        path = self._session.current_build_directory
+        path = os.path.join(score_directory, 'build')
         build_score_path = os.path.join(path, 'score.pdf')
         if not os.path.exists(build_score_path):
             message = 'does not exist: {!r}.'
             message = message.format(build_score_path)
             self._io_manager._display(message)
             return
-        score_package_name = self._session.current_score_package_name
+        score_package_name = os.path.basename(score_directory)
         score_package_name = score_package_name.replace('_', '-')
         distribution_file_name = '{}-score.pdf'.format(score_package_name)
-        distribution_directory = self._session.current_distribution_directory
+        distribution_directory = os.path.join(score_directory, 'distribution')
         distribution_score_path = os.path.join(
             distribution_directory,
             distribution_file_name,
