@@ -551,7 +551,6 @@ class Controller(object):
     def _get_name_metadatum(self, directory):
         metadata_py_path = os.path.join(directory, '__metadata__.py')
         name = self._get_metadatum(metadata_py_path, 'name')
-        #raise Exception((metadata_py_path, repr(name)))
         if not name:
             parts = metadata_py_path.split(os.path.sep)
             directory_name = parts[-2]
@@ -2943,13 +2942,11 @@ class Controller(object):
             directory = os.path.join(directory, 'distribution')
             # TODO: remove call to _make_package_manager()
             manager = self._io_manager._make_package_manager(directory)
-            path = manager._get_file_path_ending_with(manager._path, file_name)
+            path = manager._get_file_path_ending_with(directory, file_name)
             if not path:
-                directory = os.path.join(self._path, 'build')
-                # TODO: remove call to _make_package_manager()
-                manager = self._io_manager._make_package_manager(directory)
-                path = manager._get_file_path_ending_with(
-                    manager._path, 
+                directory = os.path.join(directory, 'build')
+                path = self._get_file_path_ending_with(
+                    directory, 
                     file_name,
                     )
             if dry_run:

@@ -325,11 +325,6 @@ class Wrangler(Controller):
             path=path,
             session=self._session,
             )
-        if self._asset_identifier == 'file':
-            raise Exception('FOO')
-            return manager
-        else:
-            assert self._asset_identifier == 'package'
         return manager
 
     def _get_next_asset_path(self):
@@ -1857,25 +1852,20 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        managers = self._list_visible_asset_managers()
+        visible_paths = self._list_visible_asset_paths()
         paths = []
-        for manager in managers:
-            arguments = []
-            for argument_name in manager.open_score_pdf.argument_names:
-                argument = getattr(manager, argument_name)
-                arguments.append(argument)
-            inputs, outputs = manager.open_score_pdf(*arguments, dry_run=True)
+        for visible_path in visible_paths:
+            inputs, outputs = self.open_score_pdf(visible_path, dry_run=True)
             paths.extend(inputs)
         messages = ['will open ...']
-        tab = self._session._io_manager._tab
-        paths = [tab + _ for _ in paths]
+        paths = [self._tab + _ for _ in paths]
         messages.extend(paths)
-        self._session._io_manager._display(messages)
-        result = self._session._io_manager._confirm()
-        if self._session.is_backtracking or not result:
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
             return
         if paths:
-            self._session._io_manager.open_file(paths)
+            self._io_manager.open_file(paths)
 
     @Command(
         'sp', 
