@@ -1972,13 +1972,7 @@ class Controller(object):
 
     @Command(
         'ck', 
-        argument_names=(
-            '_path',
-            '_optional_directories',
-            '_optional_files',
-            '_required_directories',
-            '_required_files',
-            ),
+        argument_names=('_path',),
         outside_score=False,
         file_='__init__.py',
         section='package', 
@@ -1986,10 +1980,6 @@ class Controller(object):
     def check_package(
         self,
         directory,
-        OPTIONAL_DIRECTORIES, 
-        OPTIONAL_FILES,
-        REQUIRED_DIRECTORIES,
-        REQUIRED_FILES,
         problems_only=None,
         return_messages=False,
         return_supply_messages=False,
