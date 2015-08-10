@@ -361,6 +361,7 @@ class Wrangler(Controller):
             session=self._session,
             )
         if self._asset_identifier == 'file':
+            raise Exception('FOO')
             return manager
         else:
             assert self._asset_identifier == 'package'
@@ -2013,15 +2014,12 @@ class Wrangler(Controller):
         message = 'existing file name> {}'
         message = message.format(file_name)
         self._session._io_manager._display(message)
-        manager = self._get_manager(path)
-        new_path = manager._rename(
-            manager._path,
+        new_path = self._rename(
+            path,
             file_extension=file_extension,
             file_name_callback=file_name_callback,
             force_lowercase=self._force_lowercase_file_name,
             )
-        if new_path is not None:
-            manager._path = new_path
         self._session._is_backtracking_locally = False
 
     @Command('ws', section='view', outside_score='home')
