@@ -179,34 +179,6 @@ class Session(abctools.AbjadObject):
             self.io_manager._display(messages)
         self.transcript._write()
 
-    def _format_asset_controller_breadcrumbs(self):
-        from ide.tools import idetools
-        controller_stack = []
-        prototype = (idetools.Controller, idetools.AbjadIDE)
-        for controller in self.controller_stack:
-            if isinstance(controller, prototype):
-                controller_stack.append(controller)
-        if not controller_stack:
-            return ['']
-        result_lines = []
-        first_controller = controller_stack[0]
-        breadcrumb = first_controller._breadcrumb
-        if breadcrumb:
-            result_lines.append(breadcrumb)
-        for controller in controller_stack[1:]:
-            breadcrumb = controller._breadcrumb
-            if not breadcrumb:
-                continue
-            if result_lines:
-                candidate_line = result_lines[-1] + ' - ' + breadcrumb
-            else:
-                candidate_line = breadcrumb
-            if result_lines:
-                result_lines[-1] = candidate_line
-            else:
-                result_lines.append(candidate_line)
-        return result_lines
-
     def _get_wrangler(self, directory_name):
         directory_name_to_wrangler = {
             'build': self._abjad_ide._build_file_wrangler,
@@ -220,11 +192,6 @@ class Session(abctools.AbjadObject):
             }
         wrangler = directory_name_to_wrangler.get(directory_name)
         return wrangler
-
-    def _make_menu_header(self):
-        breadcrumbs = self._format_asset_controller_breadcrumbs()
-        header = '\n'.join(breadcrumbs)
-        return header
 
     def _print_transcript(self):
         for entry in self.transcript:
@@ -1102,21 +1069,6 @@ class Session(abctools.AbjadObject):
         for command in reversed(self.command_history):
             if not command.startswith('.'):
                 return command
-
-    @property
-    def menu_header(self):
-        r'''Gets session menu header.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.menu_header
-                ''
-
-        Returns string.
-        '''
-        return self._make_menu_header()
 
     @property
     def navigation_command_name(self):
