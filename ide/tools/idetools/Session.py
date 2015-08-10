@@ -554,49 +554,6 @@ class Session(abctools.AbjadObject):
             return os.path.basename(self.current_score_directory)
 
     @property
-    def current_segments_directory(self):
-        r'''Gets session current segments directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.current_segments_directory is None
-                True
-
-        ..  container:: example
-
-            ::
-
-                >>> session_in_score.current_segments_directory is None
-                True
-
-        Returns string.
-        '''
-        if self.current_score_directory:
-            return os.path.join(self.current_score_directory, 'segments')
-
-    @property
-    def current_stylesheet_path(self):
-        r'''Gets session current stylesheet path.
-
-        ..  container::
-
-            ::
-
-                >>> session.current_stylesheet_path is None
-                True
-
-        Returns string or none.
-        '''
-        if self.is_in_score:
-            return os.path.join(
-                self.current_score_directory,
-                'stylesheets',
-                'stylesheet.ily',
-                )
-
-    @property
     def display(self):
         r'''Is true when messaging should be displayed.
         Otherwise false.

@@ -142,14 +142,12 @@ class Wrangler(Controller):
         self._file_name_predicate = stringtools.is_snake_case
         return self
 
-    @classmethod
-    def _confirm_segment_names(
-        class_,
-        session,
-        ):
-        segment_package_wrangler = session._abjad_ide._segment_package_wrangler
+    def _confirm_segment_names(self, score_directory):
+        segment_package_wrangler = \
+            self._session._abjad_ide._segment_package_wrangler
+        segments_directory = os.path.join(score_directory, 'segments')
         view_name = segment_package_wrangler._read_view_name(
-            session.current_segments_directory,
+            segments_directory,
             )
         view_inventory = segment_package_wrangler._read_view_inventory(
             'segments',
@@ -177,9 +175,9 @@ class Wrangler(Controller):
             message = 'no segments found:'
             message += ' will generate source without segments.'
             messages.append(message)
-        session._io_manager._display(messages)
-        result = session._io_manager._confirm()
-        if session.is_backtracking or not result:
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
             return False
         return segment_names
 
@@ -1043,11 +1041,12 @@ class Wrangler(Controller):
 
     @Command(
         'bcg', 
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def generate_back_cover_source(self):
+    def generate_back_cover_source(self, score_directory):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
@@ -1077,7 +1076,7 @@ class Wrangler(Controller):
             old = 'PRICE'
             new = str(price)
             replacements[old] = new
-        width, height, unit = manager._parse_paper_dimensions(manager._session)
+        width, height, unit = manager._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1091,11 +1090,12 @@ class Wrangler(Controller):
 
     @Command(
         'fcg',
+        argument_names=('current_score_directory',),
         directories=('build'),
-        section='build',
         outside_score=False,
+        section='build',
         )
-    def generate_front_cover_source(self):
+    def generate_front_cover_source(self, score_directory):
         r'''Generates ``front-cover.tex``.
 
         Returns none.
@@ -1134,7 +1134,7 @@ class Wrangler(Controller):
             old = 'COMPOSER'
             new = str(composer)
             replacements[old] = new
-        width, height, unit = manager._parse_paper_dimensions(manager._session)
+        width, height, unit = manager._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1158,8 +1158,8 @@ class Wrangler(Controller):
 
         Returns none.
         '''
-        result = self._confirm_segment_names(self._session)
-        if self._session.is_backtracking or not isinstance(result, list):
+        result = self._confirm_segment_names(score_directory)
+        if self._io_manager._is_backtracking or not isinstance(result, list):
             return
         segment_names = result
         lilypond_names = [_.replace('_', '-') for _ in segment_names]
@@ -1180,8 +1180,8 @@ class Wrangler(Controller):
             )
         with systemtools.FilesystemState(remove=[candidate_path]):
             shutil.copyfile(source_path, candidate_path)
-            width, height, unit = manager._parse_paper_dimensions(
-                manager._session)
+            result = manager._parse_paper_dimensions(score_directory)
+            width, height, unit = result
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
             new = new.format(width, unit, height, unit)
@@ -1249,18 +1249,19 @@ class Wrangler(Controller):
 
     @Command(
         'pg',
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def generate_preface_source(self):
+    def generate_preface_source(self, score_directory):
         r'''Generates ``preface.tex``.
 
         Returns none.
         '''
         replacements = {}
         manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions(manager._session)
+        width, height, unit = manager._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -1274,18 +1275,19 @@ class Wrangler(Controller):
 
     @Command(
         'sg',
+        argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def generate_score_source(self):
+    def generate_score_source(self, score_directory):
         r'''Generates ``score.tex``.
 
         Returns none.
         '''
         replacements = {}
         manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions(manager._session)
+        width, height, unit = manager._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'

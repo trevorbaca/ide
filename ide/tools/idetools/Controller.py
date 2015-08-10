@@ -1485,12 +1485,9 @@ class Controller(object):
             return False
         return result
 
-    def _parse_paper_dimensions(self, session):
-        manager = session.current_score_package_manager
-        if manager is None:
-            return
+    def _parse_paper_dimensions(self, score_directory):
         string = self._get_metadatum(
-            manager._path, 
+            score_directory,
             'paper_dimensions',
             )
         string = string or '8.5 x 11 in'
