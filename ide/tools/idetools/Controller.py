@@ -1570,7 +1570,8 @@ class Controller(object):
         package_name = interesting_path_parts[1]
         if directory_name in ('materials', 'segments'):
             package_path = path_parts[:score_part_count+2]
-            package_path = os.path.join(*package_path)
+            package_path = os.path.join('/', *package_path)
+            package_path = os.path.normpath(package_path)
             package_part = self._get_name_metadatum(package_path)
             header_parts.append(package_part)
         else:
@@ -1816,8 +1817,7 @@ class Controller(object):
                 while True:
                     result = self._session.navigation_command_name
                     if not result:
-                        #menu_header = self._path_to_menu_header(directory)
-                        menu_header = None
+                        menu_header = self._path_to_menu_header(directory)
                         menu = self._make_main_menu(
                             _path=directory,
                             explicit_header=menu_header,
