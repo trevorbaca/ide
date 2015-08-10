@@ -1526,6 +1526,18 @@ class Controller(object):
                 string = '{} ({})'.format(asset_name, annotation)
         return string
 
+    def _path_to_directory_name(self, path):
+        if self._is_material_package_path(path):
+            return 'materials'
+        elif self._is_score_package_inner_path(path):
+            return 'score'
+        elif self._is_score_package_outer_path(path):
+            return 'score'
+        elif self._is_segment_package_path(path):
+            return 'segments'
+        else:
+            raise ValueError(path)
+
     @staticmethod
     def _path_to_package(path):
         if path is None:
@@ -1987,6 +1999,13 @@ class Controller(object):
 
         Returns none.
         '''
+        directory_name = self._path_to_directory_name(directory)
+        package_contents = self._directory_name_to_package_contents.get(
+            directory_name)
+        OPTIONAL_DIRECTORIES = package_contents['optional_directories']
+        OPTIONAL_FILES = package_contents['optional_files']
+        REQUIRED_DIRECTORIES = package_contents['required_directories']
+        REQUIRED_FILES = package_contents['required_files']
         if problems_only is None:
             prompt = 'show problem assets only?'
             result = self._io_manager._confirm(prompt)
