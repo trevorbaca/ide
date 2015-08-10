@@ -274,11 +274,13 @@ class IOManager(IOManager):
 
     def _make_menu(
         self,
+        explicit_header=None,
         name=None,
         subtitle=None,
         ):
         from ide.tools import idetools
         return idetools.Menu(
+            explicit_header=explicit_header,
             name=name,
             session=self._session,
             subtitle=subtitle,

@@ -138,8 +138,7 @@ class Controller(object):
             if self._is_score_package_inner_path(self._path):
                 return self._get_title_metadatum(self._path)
             if self._is_segment_package_path(self._path):
-                metadata_py_path = os.path.join(self._path, '__metadata__.py')
-                return self._get_name_metadatum(metadata_py_path)
+                return self._get_name_metadatum(self._path)
             base_name = os.path.basename(self._path)
             result = base_name.replace('_', ' ')
             return result
@@ -572,8 +571,10 @@ class Controller(object):
                 file_path = os.path.join(directory, file_name)
                 return file_path
 
-    def _get_name_metadatum(self, metadata_py_path):
+    def _get_name_metadatum(self, directory):
+        metadata_py_path = os.path.join(directory, '__metadata__.py')
         name = self._get_metadatum(metadata_py_path, 'name')
+        #raise Exception((metadata_py_path, repr(name)))
         if not name:
             parts = metadata_py_path.split(os.path.sep)
             directory_name = parts[-2]
@@ -965,13 +966,13 @@ class Controller(object):
             elif basename == 'distribution':
                 self.go_to_score_distribution_directory()
             elif basename == 'etc':
-                self.to_to_score_etc_directory()
+                self.go_to_score_etc_directory()
             elif basename == 'makers':
                 self.go_to_score_makers_directory()
             elif basename == 'materials':
                 self.go_to_score_materials_directory()
             elif basename == 'segments':
-                self.to_to_score_segments_directory()
+                self.go_to_score_segments_directory()
             elif basename == 'stylesheets':
                 self.go_to_score_stylesheets()
             elif basename == 'test':
@@ -1392,9 +1393,12 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_main_menu(self, _path=None):
+    def _make_main_menu(self, _path=None, explicit_header=None):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
-        menu = self._session._io_manager._make_menu(name=name)
+        menu = self._session._io_manager._make_menu(
+            explicit_header=explicit_header,
+            name=name,
+            )
         if _path is not None:
             self._make_package_asset_menu_section(_path, menu)
         else: 
@@ -1546,9 +1550,35 @@ class Controller(object):
 
     def _path_to_menu_header(self, path):
         header_parts = []
-        path_parts = path.split(os.path.sep)
+        if path == configuration.composer_scores_directory:
+            return 'Abjad IDE - all score directories'
         score_directory = self._path_to_score_directory(path)
         score_part = self._get_title_metadatum(score_directory)
+        score_part_count = len(score_directory.split(os.path.sep))
+        path_parts = path.split(os.path.sep)
+        if score_part_count == len(path_parts):
+            return score_part
+        header_parts.append(score_part)
+        interesting_path_parts = path_parts[score_part_count:]
+        directory_name = interesting_path_parts[0]
+        directory_part = '{} directory'
+        directory_part = directory_part.format(directory_name)
+        header_parts.append(directory_part)
+        if len(interesting_path_parts) == 1:
+            header = ' - '.join(header_parts)
+            return header
+        package_name = interesting_path_parts[1]
+        if directory_name in ('materials', 'segments'):
+            package_path = path_parts[:score_part_count+2]
+            package_path = os.path.join(*package_path)
+            package_part = self._get_name_metadatum(package_path)
+            header_parts.append(package_part)
+        else:
+            raise ValueError(directory_name)
+        if len(interesting_path_parts) == 2:
+            header = ' - '.join(header_parts)
+            return header
+        raise NotImplementedError
 
     @staticmethod
     def _path_to_package(path):
@@ -1786,7 +1816,12 @@ class Controller(object):
                 while True:
                     result = self._session.navigation_command_name
                     if not result:
-                        menu = self._make_main_menu(_path=directory)
+                        #menu_header = self._path_to_menu_header(directory)
+                        menu_header = None
+                        menu = self._make_main_menu(
+                            _path=directory,
+                            explicit_header=menu_header,
+                            )
                         result = menu._run()
                         self._handle_pending_redraw_directive(
                             self._session,
