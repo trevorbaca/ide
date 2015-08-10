@@ -1686,7 +1686,7 @@ class Controller(object):
         if result == 'corrupt':
             messages = []
             message = '{} __views.py__ is corrupt:'
-            message = message.format(class_.__name__)
+            message = message.format(directory_token)
             messages.append(message)
             messages.append('')
             message = '    {}'.format(views_py_path)
@@ -2180,7 +2180,6 @@ class Controller(object):
         found_problem = False
         for path in paths:
             with self._io_manager._silent():
-                arguments = []
                 result = self.check_package(
                     path,
                     problems_only=problems_only,
