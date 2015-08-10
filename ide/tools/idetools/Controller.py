@@ -1425,7 +1425,7 @@ class Controller(object):
         if _path is not None:
             self._make_package_asset_menu_section(_path, menu)
         else: 
-            self._make_asset_menu_section(menu)
+            self._make_wrangler_asset_menu_section(menu, directory=_path)
         self._make_command_menu_sections(menu, _path=_path)
         return menu
 
@@ -2621,12 +2621,21 @@ class Controller(object):
         '''
         self._session._abjad_ide._distribution_file_wrangler._run_wrangler()
 
-    @Command('e', section='navigation', outside_score=False)
-    def go_to_score_etc_directory(self):
+    @Command(
+        'e',
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_etc_directory(self, score_directory):
         r'''Goes to etc files.
 
         Returns none.
         '''
+        #directory = os.path.join(score_directory, 'etc')
+        #self._session._abjad_ide._etc_file_wrangler._run_wrangler(
+        #    directory=directory,
+        #    )
         self._session._abjad_ide._etc_file_wrangler._run_wrangler()
 
     @Command('k', section='navigation', outside_score=False)

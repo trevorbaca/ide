@@ -585,12 +585,15 @@ class Wrangler(Controller):
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
-    def _make_asset_menu_section(self, menu):
+    def _make_wrangler_asset_menu_section(self, menu, directory=None):
         menu_entries = []
-        current_directory = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        if directory is not None:
+            current_directory = directory
+        else:
+            current_directory = self._get_current_directory(
+                self._session,
+                self._directory_name,
+                )
         if current_directory:
             menu_entries_ = self._make_secondary_asset_menu_entries(
                 current_directory)
@@ -839,26 +842,28 @@ class Wrangler(Controller):
             return
         self._session._io_manager.open_file(paths)
 
-    def _run_wrangler(self):
+    def _run_wrangler(self, directory=None):
         controller = self._session._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             on_enter_callbacks=(self._enter_run,),
             )
-        directory = systemtools.NullContextManager()
-        if self._session.is_in_score:
+        directory_change = systemtools.NullContextManager()
+        if directory is not None:
+            directory_change = systemtools.TemporaryDirectoryChange(directory)
+        elif self._session.is_in_score:
             path = self._get_current_directory(
                 self._session,
                 self._directory_name,
                 )
-            directory = systemtools.TemporaryDirectoryChange(path)
-        with controller, directory:
+            directory_change = systemtools.TemporaryDirectoryChange(path)
+        with controller, directory_change:
             result = None
             self._session._pending_redraw = True
             while True:
                 result = self._get_sibling_asset_path()
                 if not result:
-                    menu = self._make_main_menu()
+                    menu = self._make_main_menu(_path=directory)
                     result = menu._run()
                     self._handle_pending_redraw_directive(
                         self._session,
@@ -939,9 +944,9 @@ class Wrangler(Controller):
         message = 'enter {}'.format(self._asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
-        if hasattr(self, '_make_asset_menu_section'):
+        if hasattr(self, '_make_wrangler_asset_menu_section'):
             dummy_menu = self._session._io_manager._make_menu()
-            self._make_asset_menu_section(dummy_menu)
+            self._make_wrangler_asset_menu_section(dummy_menu)
             asset_section = dummy_menu._asset_section
         else:
             menu = self._make_asset_selection_menu()
