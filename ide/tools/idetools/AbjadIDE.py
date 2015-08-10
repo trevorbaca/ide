@@ -137,10 +137,7 @@ class AbjadIDE(Controller):
             paths_to_keep = []
             paths_to_keep.append(views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
-        interaction = self._session._io_manager._make_interaction(
-            self._session,
-            task=False,
-            )
+        interaction = self._session._io_manager._make_interaction(task=False)
         with controller, directory_change, state, interaction:
             self._session._pending_redraw = True
             if self._session.is_test:

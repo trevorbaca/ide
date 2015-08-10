@@ -256,19 +256,17 @@ class IOManager(IOManager):
 
     def _make_interaction(
         self,
-        session,
         confirm=True,
         display=True,
         dry_run=False,
         task=True,
         ):
         from ide.tools import idetools
-        assert session is not None
         return idetools.Interaction(
             confirm=confirm,
             display=display,
             dry_run=dry_run,
-            session=session,
+            session=self._session,
             task=task,
             )
 

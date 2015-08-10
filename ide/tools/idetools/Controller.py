@@ -911,7 +911,7 @@ class Controller(object):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._session._io_manager._make_interaction(self._session):
+        with self._session._io_manager._make_interaction():
             if result.startswith('!'):
                 statement = result[1:]
                 self._session._io_manager._invoke_shell(statement)
@@ -925,7 +925,6 @@ class Controller(object):
                 result[:-1] in self._command_name_to_command):
                 result = result[:-1]
                 with self._session._io_manager._make_interaction(
-                    self._session,
                     confirm=False,
                     ):
                     self._command_name_to_command[result]()
@@ -2933,16 +2932,10 @@ class Controller(object):
 
         Returns none.
         '''
-        # TODO: remove session from _make_interaction() signature
-        with self._io_manager._make_interaction(
-            self._session,
-            dry_run=dry_run,
-            ):
+        with self._io_manager._make_interaction(dry_run=dry_run):
             file_name = 'score.pdf'
             directory = os.path.join(directory, 'distribution')
-            # TODO: remove call to _make_package_manager()
-            manager = self._io_manager._make_package_manager(directory)
-            path = manager._get_file_path_ending_with(directory, file_name)
+            path = self._get_file_path_ending_with(directory, file_name)
             if not path:
                 directory = os.path.join(directory, 'build')
                 path = self._get_file_path_ending_with(
