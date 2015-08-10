@@ -747,29 +747,6 @@ class Wrangler(Controller):
             message = message.format(string)
             self._io_manager._display(message)
 
-    def _open_in_every_package(self, file_name, verb='open'):
-        paths = []
-        for path in self._list_visible_asset_paths():
-            path = os.path.join(path, file_name)
-            if os.path.isfile(path):
-                paths.append(path)
-        if not paths:
-            message = 'no {} files found.'
-            message = message.format(file_name)
-            self._io_manager._display(message)
-            return
-        messages = []
-        message = 'will {} ...'.format(verb)
-        messages.append(message)
-        for path in paths:
-            message = '   ' + path
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        self._io_manager.open_file(paths)
-
     def _run_wrangler(self, directory=None):
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
@@ -1030,14 +1007,6 @@ class Wrangler(Controller):
                     old_name,
                     new_name,
                     )
-
-    @Command('de*', directories=('materials', 'segments'), section='star')
-    def edit_every_definition_py(self):
-        r'''Opens ``definition.py`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('definition.py')
 
     @Command(
         'bcg', 
@@ -1585,19 +1554,6 @@ class Wrangler(Controller):
             self._make_score_package()
         else:
             self._make_package()
-
-    @Command(
-        'io*',
-        directories=('materials', 'segments'),
-        outside_score=False,
-        section='star',
-        )
-    def open_every_illustration_pdf(self):
-        r'''Opens ``illustration.pdf`` in every package.
-
-        Returns none.
-        '''
-        self._open_in_every_package('illustration.pdf')
 
     @Command('so*', section='star', in_score=False, outside_score='home')
     def open_every_score_pdf(self):

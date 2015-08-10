@@ -1485,6 +1485,29 @@ class Controller(object):
             return False
         return result
 
+    def _open_in_every_package(self, directories, file_name, verb='open'):
+        paths = []
+        for path in directories:
+            path = os.path.join(path, file_name)
+            if os.path.isfile(path):
+                paths.append(path)
+        if not paths:
+            message = 'no {} files found.'
+            message = message.format(file_name)
+            self._io_manager._display(message)
+            return
+        messages = []
+        message = 'will {} ...'.format(verb)
+        messages.append(message)
+        for path in paths:
+            message = '   ' + path
+            messages.append(message)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return
+        self._io_manager.open_file(paths)
+
     def _parse_paper_dimensions(self, score_directory):
         string = self._get_metadatum(
             score_directory,
@@ -2610,6 +2633,19 @@ class Controller(object):
         self._session._io_manager.edit(definition_py_path)
 
     @Command(
+        'de*', 
+        argument_names=('visible_asset_paths',),
+        directories=('materials', 'segments'),
+        section='star',
+        )
+    def edit_every_definition_py(self, directories):
+        r'''Opens ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package(directories, 'definition.py')
+
+    @Command(
         'le', 
         argument_names=('_path',),
         description='edit __illustrate__.py', 
@@ -3156,6 +3192,20 @@ class Controller(object):
             )
         statement = statement.strip()
         self._session._io_manager._invoke_shell(statement)
+
+    @Command(
+        'io*',
+        argument_names=('visible_asset_paths',),
+        directories=('materials', 'segments'),
+        outside_score=False,
+        section='star',
+        )
+    def open_every_illustration_pdf(self, directories):
+        r'''Opens ``illustration.pdf`` in every package.
+
+        Returns none.
+        '''
+        self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
         'io', 
