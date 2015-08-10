@@ -184,10 +184,7 @@ class Wrangler(Controller):
         return segment_names
 
     def _edit_file_ending_with(self, string):
-        directory_path = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        directory_path = self._get_current_directory()
         file_path = self._get_file_path_ending_with(directory_path, string)
         if file_path:
             self._session._io_manager.edit(file_path)
@@ -297,13 +294,12 @@ class Wrangler(Controller):
             else:
                 return path
 
-    @staticmethod
-    def _get_current_directory(session, directory_name):
-        score_directory = session.current_score_directory
+    def _get_current_directory(self):
+        score_directory = self._session.current_score_directory
         if score_directory is not None:
             directory = os.path.join(
                 score_directory,
-                directory_name,
+                self._directory_name,
                 )
             directory = os.path.abspath(directory)
             return directory
@@ -390,10 +386,7 @@ class Wrangler(Controller):
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
-        directory_path = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        directory_path = self._get_current_directory()
         file_path = self._get_file_path_ending_with(directory_path, string)
         if not file_path:
             message = 'file ending in {!r} not found.'
@@ -502,10 +495,7 @@ class Wrangler(Controller):
             self._directory_name,
             self._directory_entry_predicate,
             )
-        current_directory = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        current_directory = self._get_current_directory()
         if (apply_current_directory or set_view) and current_directory:
             paths = [_ for _ in paths if _.startswith(current_directory)]
         strings = []
@@ -559,10 +549,7 @@ class Wrangler(Controller):
         if directory is not None:
             current_directory = directory
         else:
-            current_directory = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            current_directory = self._get_current_directory()
         if current_directory:
             menu_entries_ = self._make_secondary_asset_menu_entries(
                 current_directory)
@@ -586,10 +573,7 @@ class Wrangler(Controller):
         if file_extension == '.py':
             contents == self._unicode_directive
         if self._session.is_in_score:
-            path = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            path = self._get_current_directory()
         else:
             path = self._select_storehouse()
             if self._session.is_backtracking or path is None:
@@ -761,10 +745,7 @@ class Wrangler(Controller):
         return result
 
     def _open_file_ending_with(self, string):
-        directory_path = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        directory_path = self._get_current_directory()
         path = self._get_file_path_ending_with(directory_path, string)
         if path:
             self._session._io_manager.open_file(path)
@@ -806,10 +787,7 @@ class Wrangler(Controller):
         if directory is not None:
             directory_change = systemtools.TemporaryDirectoryChange(directory)
         elif self._session.is_in_score:
-            path = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            path = self._get_current_directory()
             directory_change = systemtools.TemporaryDirectoryChange(path)
         with controller, directory_change:
             result = None
@@ -817,10 +795,7 @@ class Wrangler(Controller):
             while True:
                 result = self._get_sibling_asset_path()
                 if not result:
-                    current_directory = self._get_current_directory(
-                        self._session,
-                        self._directory_name,
-                        )
+                    current_directory = self._get_current_directory()
                     if current_directory is not None:
                         menu_header = self._path_to_menu_header(
                             current_directory)
@@ -869,10 +844,7 @@ class Wrangler(Controller):
             composer_score_packages=False,
             )
         # HERE
-        current_directory = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
         elif self._directory_name == 'scores':
@@ -912,10 +884,7 @@ class Wrangler(Controller):
         if infinitive_phrase:
             target_name = '{} {}'.format(target_name, infinitive_phrase)
 
-        current_directory = self._get_current_directory(
-            self._session,
-            self._directory_name,
-            )
+        current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
         elif self._directory_name == 'scores':
@@ -1157,10 +1126,7 @@ class Wrangler(Controller):
                 messages.append(message)
         found_problems = bool(messages)
         if self._session.is_in_score:
-            path = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            path = self._get_current_directory()
             name = os.path.basename(path)
             count = len(managers)
             message = '{} directory ({} packages):'.format(name, count)
@@ -1264,10 +1230,7 @@ class Wrangler(Controller):
         if new_storehouse:
             pass
         elif self._session.is_in_score:
-            new_storehouse = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            new_storehouse = self._get_current_directory()
         else:
             new_storehouse = self._select_storehouse()
             if self._session.is_backtracking or new_storehouse is None:
@@ -1688,10 +1651,7 @@ class Wrangler(Controller):
             manager._git_status(manager._path)
         if not paths:
             message = 'Repository status for {} ... OK'
-            directory = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            directory = self._get_current_directory()
             message = message.format(directory)
             self._session._io_manager._display(message)
 
@@ -2038,10 +1998,7 @@ class Wrangler(Controller):
         if view_name == 'none':
             view_name = None
         if self._session.is_in_score:
-            directory_token = self._get_current_directory_token(
-                self._session,
-                self._directory_name,
-                )
+            directory_token = self._get_current_directory_token()
             manager = self._get_current_package_manager(
                 self._io_manager,
                 directory_token,

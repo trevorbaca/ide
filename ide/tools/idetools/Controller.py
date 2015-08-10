@@ -1043,10 +1043,7 @@ class Controller(object):
         if hasattr(self, '_path'):
             current_directory = self._path
         else:
-            current_directory = self._get_current_directory(
-                self._session,
-                self._directory_name,
-                )
+            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         current_directory = os.path.normpath(current_directory)
@@ -1360,10 +1357,7 @@ class Controller(object):
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
         else:
-            current_directory = self._get_current_directory(
-                self._session,
-                self._directory_name
-                )
+            current_directory = self._get_current_directory()
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         files = required_files + optional_files
