@@ -51,11 +51,6 @@ class AbjadIDE(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _breadcrumb(self):
-        if not self._session.is_in_score:
-            return 'Abjad IDE'
-
-    @property
     def _build_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)

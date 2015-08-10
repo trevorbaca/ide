@@ -133,16 +133,6 @@ class Controller(object):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _breadcrumb(self):
-        if self._is_score_package_inner_path(self._path):
-            return self._get_title_metadatum(self._path)
-        if self._is_segment_package_path(self._path):
-            return self._get_name_metadatum(self._path)
-        base_name = os.path.basename(self._path)
-        result = base_name.replace('_', ' ')
-        return result
-
-    @property
     def _command_name_to_command(self):
         result = {}
         methods = self._get_commands()
