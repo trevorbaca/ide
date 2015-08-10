@@ -194,13 +194,13 @@ class Controller(object):
                 invalid_paths.append(path)
         messages = []
         base_name = os.path.basename(directory_token)
-        breadcrumb = '{} directory'.format(base_name)
+        directory_label = '{} directory'.format(base_name)
         if not invalid_paths:
             count = len(paths)
-            message = '{} ({} files): OK'.format(breadcrumb, count)
+            message = '{} ({} files): OK'.format(directory_label, count)
             messages.append(message)
         else:
-            message = '{}:'.format(breadcrumb)
+            message = '{}:'.format(directory_label)
             messages.append(message)
             identifier = 'file'
             count = len(invalid_paths)

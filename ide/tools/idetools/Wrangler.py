@@ -556,8 +556,8 @@ class Wrangler(Controller):
                 )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-#        elif not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        elif not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
@@ -579,21 +579,6 @@ class Wrangler(Controller):
             assert section is not None
             section._group_by_annotation = \
                 self._group_asset_section_by_annotation
-
-    def _make_asset_selection_breadcrumb(
-        self,
-        infinitival_phrase=None,
-        is_storehouse=False,
-        ):
-        if infinitival_phrase:
-            return 'select {} {}:'.format(
-                self._asset_identifier,
-                infinitival_phrase,
-                )
-        elif is_storehouse:
-            return 'select storehouse'
-        else:
-            return 'select {}:'.format(self._asset_identifier)
 
     def _make_asset_selection_menu(self):
         menu = self._session._io_manager._make_menu(name='asset selection')
