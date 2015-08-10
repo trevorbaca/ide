@@ -21,7 +21,6 @@ class PackageManager(Controller):
         assert path is not None and os.path.sep in path
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
-        self._breadcrumb_callback = None
         self._path = path
 
     ### PRIVATE METHODS ###
@@ -30,7 +29,7 @@ class PackageManager(Controller):
         pass
 
     def _configure_as_score_package_manager(self):
-        self._breadcrumb_callback = self._get_title_metadatum
+        pass
 
     def _configure_as_segment_package_manager(self):
-        self._breadcrumb_callback = self._get_name_metadatum
+        pass

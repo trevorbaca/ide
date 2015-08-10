@@ -22,7 +22,6 @@ class Controller(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_breadcrumb_callback',
         '_io_manager',
         '_session',
         )
@@ -119,7 +118,6 @@ class Controller(object):
 
     def __init__(self, session=None):
         assert session is not None
-        self._breadcrumb_callback = None
         self._io_manager = session._io_manager
         self._session = session
 
@@ -136,10 +134,12 @@ class Controller(object):
 
     @property
     def _breadcrumb(self):
-        if self._breadcrumb_callback is not None:
-            metadata_py_path = os.path.join(self._path, '__metadata__.py')
-            return self._breadcrumb_callback(metadata_py_path)
         if hasattr(self, '_path'):
+            if self._is_score_package_inner_path(self._path):
+                return self._get_title_metadatum(self._path, '__metadata__.py')
+            if self._is_segment_package_path(self._path):
+                metadata_py_path = os.path.join(self._path, '__metadata__.py')
+                return self._get_name_metadatum(metadata_py_path)
             base_name = os.path.basename(self._path)
             result = base_name.replace('_', ' ')
             return result
