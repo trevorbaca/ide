@@ -13,6 +13,7 @@ class Selector(object):
         '_is_ranged',
         '_items',
         '_menu_entries',
+        '_menu_header',
         '_return_value_attribute',
         '_session',
         '_target_name',
@@ -26,6 +27,7 @@ class Selector(object):
         is_ranged=False,
         items=None,
         menu_entries=None,
+        menu_header=None,
         return_value_attribute='explicit',
         session=None,
         target_name=None,
@@ -37,6 +39,7 @@ class Selector(object):
         self._is_ranged = is_ranged
         self._items = items or []
         self._menu_entries = menu_entries or []
+        self._menu_header = menu_header
         self._return_value_attribute = return_value_attribute
         self._target_name = target_name
 
@@ -69,7 +72,11 @@ class Selector(object):
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         subtitle = stringtools.capitalize_start(self.target_name)
-        menu = self._session._io_manager._make_menu(name=name, subtitle=subtitle)
+        menu = self._session._io_manager._make_menu(
+            explicit_header=self.menu_header,
+            name=name, 
+            subtitle=subtitle,
+            )
         self._make_asset_menu_section(menu)
         return menu
 
@@ -134,6 +141,14 @@ class Selector(object):
         Returns list.
         '''
         return self._menu_entries
+
+    @property
+    def menu_header(self):
+        r'''Gets menu header of selector.
+
+        Returns list.
+        '''
+        return self._menu_header
 
     @property
     def return_value_attribute(self):

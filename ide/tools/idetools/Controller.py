@@ -1416,7 +1416,8 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_main_menu(self, _path=None, explicit_header=None):
+    def _make_main_menu(self, explicit_header, _path=None):
+        assert isinstance(explicit_header, str), repr(explicit_header)
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._session._io_manager._make_menu(
             explicit_header=explicit_header,
@@ -1842,8 +1843,8 @@ class Controller(object):
                     if not result:
                         menu_header = self._path_to_menu_header(directory)
                         menu = self._make_main_menu(
-                            _path=directory,
                             explicit_header=menu_header,
+                            _path=directory,
                             )
                         result = menu._run()
                         self._handle_pending_redraw_directive(

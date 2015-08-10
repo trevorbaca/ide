@@ -876,8 +876,8 @@ class Wrangler(Controller):
                         menu_header = 'Abjad IDE - all {} directories'
                         menu_header = menu_header.format(self._directory_name)
                     menu = self._make_main_menu(
-                        _path=directory,
                         explicit_header=menu_header,
+                        _path=directory,
                         )
                     result = menu._run()
                     self._handle_pending_redraw_directive(
@@ -914,8 +914,21 @@ class Wrangler(Controller):
             example_score_packages=example_score_packages,
             composer_score_packages=False,
             )
+        # HERE
+        current_directory = self._get_current_directory(
+            self._session,
+            self._directory_name,
+            )
+        if current_directory is not None:
+            menu_header = self._path_to_menu_header(current_directory)
+        elif self._directory_name == 'scores':
+            menu_header = 'Abjad IDE - all score directories'
+        else:
+            menu_header = 'Abjad IDE - all {} directories'
+            menu_header = menu_header.format(self._directory_name)
         selector = self._session._io_manager._make_selector(
             menu_entries=menu_entries,
+            menu_header=menu_header,
             target_name='storehouse',
             )
         result = selector._run()
@@ -944,10 +957,24 @@ class Wrangler(Controller):
             target_name = 'view'
         if infinitive_phrase:
             target_name = '{} {}'.format(target_name, infinitive_phrase)
+
+        current_directory = self._get_current_directory(
+            self._session,
+            self._directory_name,
+            )
+        if current_directory is not None:
+            menu_header = self._path_to_menu_header(current_directory)
+        elif self._directory_name == 'scores':
+            menu_header = 'Abjad IDE - all score directories'
+        else:
+            menu_header = 'Abjad IDE - all {} directories'
+            menu_header = menu_header.format(self._directory_name)
+
         selector = self._session._io_manager._make_selector(
-            target_name=target_name,
             is_ranged=is_ranged,
             items=view_names,
+            menu_header=menu_header,
+            target_name=target_name,
             )
         result = selector._run()
         if self._session.is_backtracking or result is None:

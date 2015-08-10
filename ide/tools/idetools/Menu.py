@@ -478,11 +478,7 @@ class Menu(object):
 
     def _make_lines(self):
         lines = []
-        if self.explicit_header:
-            lines.append(self.explicit_header)
-            lines.append('')
-        else:
-            lines.extend(self._make_title_lines())
+        lines.extend(self._make_title_lines())
         lines.extend(self._make_asset_lines())
         if lines and not all(_ == ' ' for _ in lines[-1]):
             lines.append('')
@@ -537,10 +533,12 @@ class Menu(object):
 
     def _make_title_lines(self):
         result = []
-        if self.title is not None:
+        if self.explicit_header is not None:
+            title = self.explicit_header
+        elif self.title is not None:
             title = self.title
         else:
-            title = self._session.menu_header
+            title = ''
         result.append(stringtools.capitalize_start(title))
         if self.subtitle is not None:
             line = '  ' + self.subtitle

@@ -298,6 +298,7 @@ class IOManager(IOManager):
         is_ranged=False,
         items=None,
         menu_entries=None,
+        menu_header=None,
         target_name=None,
         ):
         from ide.tools import idetools
@@ -305,6 +306,7 @@ class IOManager(IOManager):
             is_ranged=is_ranged,
             items=items,
             menu_entries=menu_entries,
+            menu_header=menu_header,
             session=self._session,
             target_name=target_name,
             )
