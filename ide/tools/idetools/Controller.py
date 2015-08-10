@@ -233,10 +233,9 @@ class Controller(object):
             None,
             )
 
-    @classmethod
-    def _collect_segment_files(class_, session, io_manager, file_name):
-        segments_directory = session.current_segments_directory
-        build_directory = session.current_build_directory
+    def _collect_segment_files(self, score_directory, file_name):
+        segments_directory = os.path.join(score_directory, 'segments')
+        build_directory = os.path.join(score_directory, 'build')
         directory_entries = sorted(os.listdir(segments_directory))
         source_file_paths, target_file_paths = [], []
         _, file_extension = os.path.splitext(file_name)
@@ -253,8 +252,7 @@ class Controller(object):
                 )
             if not os.path.isfile(source_file_path):
                 continue
-            score_path = session.current_score_directory
-            score_package = class_._path_to_package(score_path)
+            score_package = self._path_to_package(score_directory)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
             target_file_name = directory_entry + file_extension
@@ -273,10 +271,10 @@ class Controller(object):
                 messages.append(message)
                 message = '   TO: {}'.format(target_file_path)
                 messages.append(message)
-            io_manager._display(messages)
-            if not io_manager._confirm():
+            self._io_manager._display(messages)
+            if not self._io_manager._confirm():
                 return
-            if session.is_backtracking:
+            if self._io_manager._is_backtracking:
                 return
         if not os.path.exists(build_directory):
             os.mkdir(build_directory)
@@ -919,6 +917,10 @@ class Controller(object):
                 command = self._command_name_to_command[result]
                 if '_path' in command.argument_names:
                     command(_path)
+                elif 'current_score_directory' in command.argument_names:
+                    current_score_directory = \
+                        self._session.current_score_directory
+                    command(current_score_directory)
                 else:
                     command()
             elif (result.endswith('!') and 

@@ -1145,11 +1145,12 @@ class Wrangler(Controller):
 
     @Command(
         'mc',
+        argument_names=('current_score_directory'),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def collect_segment_lilypond_files(self):
+    def collect_segment_lilypond_files(self, current_score_directory):
         r'''Copies ``illustration.ly`` files from segment packages to build 
         directory.
 
@@ -1163,8 +1164,7 @@ class Wrangler(Controller):
         Returns none.
         '''
         pairs = self._collect_segment_files(
-            self._session,
-            self._io_manager,
+            current_score_directory,
             'illustration.ly',
             )
         if not pairs:
