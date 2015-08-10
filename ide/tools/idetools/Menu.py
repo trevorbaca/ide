@@ -38,6 +38,7 @@ class Menu(object):
 
     __slots__ = (
         '_asset_section',
+        '_explicit_title',
         '_menu_sections',
         '_name',
         '_session',
@@ -69,6 +70,7 @@ class Menu(object):
 
     def __init__(
         self,
+        explicit_title=None,
         name=None,
         session=None,
         subtitle=None,
@@ -76,6 +78,7 @@ class Menu(object):
         ):
         assert session is not None
         self._session = session
+        self._explicit_title = explicit_title
         self._menu_sections = []
         self._name = name
         self._subtitle = subtitle
@@ -475,7 +478,10 @@ class Menu(object):
 
     def _make_lines(self):
         lines = []
-        lines.extend(self._make_title_lines())
+        if self.explicit_title:
+            lines.append(self.expliti_title)
+        else:
+            lines.extend(self._make_title_lines())
         lines.extend(self._make_asset_lines())
         if lines and not all(_ == ' ' for _ in lines[-1]):
             lines.append('')
@@ -629,6 +635,14 @@ class Menu(object):
         return False
 
     ### PUBLIC PROPERTIES ###
+
+    @property
+    def explicit_title(self):
+        r'''Gets explicit title.
+
+        Returns string or none.
+        '''
+        return self._explicit_title
 
     @property
     def menu_sections(self):
