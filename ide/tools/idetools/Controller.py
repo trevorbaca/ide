@@ -2595,16 +2595,26 @@ class Controller(object):
         self._session._is_navigating_to_scores = True
         self._session._display_command_help = None
 
-    @Command('u', section='navigation', outside_score=False)
-    def go_to_score_build_directory(self):
+    @Command(
+        'u', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_build_directory(self, score_directory):
         r'''Goes to build files.
 
         Returns none.
         '''
         self._session._abjad_ide._build_file_wrangler._run_wrangler()
 
-    @Command('s', section='navigation', outside_score=False)
-    def go_to_score_directory(self):
+    @Command(
+        's',
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation',
+        )
+    def go_to_score_directory(self, score_directory):
         r'''Goes to current score.
 
         Returns none.
@@ -2613,8 +2623,13 @@ class Controller(object):
             self._session._is_backtracking_to_score = True
             self._session._display_command_help = None
             
-    @Command('d', section='navigation', outside_score=False)
-    def go_to_score_distribution_directory(self):
+    @Command(
+        'd', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_distribution_directory(self, score_directory):
         r'''Goes to distribution files.
 
         Returns none.
@@ -2638,40 +2653,65 @@ class Controller(object):
         #    )
         self._session._abjad_ide._etc_file_wrangler._run_wrangler()
 
-    @Command('k', section='navigation', outside_score=False)
-    def go_to_score_makers_directory(self):
+    @Command(
+        'k', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_makers_directory(self, score_directory):
         r'''Goes to maker files.
 
         Returns none.
         '''
         self._session._abjad_ide._maker_file_wrangler._run_wrangler()
 
-    @Command('m', section='navigation', outside_score=False)
-    def go_to_score_materials_directory(self):
+    @Command(
+        'm', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_materials_directory(self, score_directory):
         r'''Goes to material packages.
 
         Returns none.
         '''
         self._session._abjad_ide._material_package_wrangler._run_wrangler()
 
-    @Command('g', section='navigation', outside_score=False)
-    def go_to_score_segments_directory(self):
+    @Command(
+        'g', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_segments_directory(self, score_directory):
         r'''Goes to segment packages.
 
         Returns none.
         '''
         self._session._abjad_ide._segment_package_wrangler._run_wrangler()
 
-    @Command('y', section='navigation', outside_score=False)
-    def go_to_score_stylesheets_directory(self):
+    @Command(
+        'y', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_stylesheets_directory(self, score_directory):
         r'''Goes to stylesheets.
 
         Returns none.
         '''
         self._session._abjad_ide._stylesheet_wrangler._run_wrangler()
 
-    @Command('t', section='navigation', outside_score=False)
-    def go_to_score_test_directory(self):
+    @Command(
+        't', 
+        argument_names=('_path',),
+        outside_score=False,
+        section='navigation', 
+        )
+    def go_to_score_test_directory(self, score_directory):
         r'''Goes to score test files.
 
         Returns none.
