@@ -364,14 +364,6 @@ class Wrangler(Controller):
             return manager
         else:
             assert self._asset_identifier == 'package'
-        if self._basic_breadcrumb == 'materials':
-            manager._configure_as_material_package_manager()
-        elif self._basic_breadcrumb == 'scores':
-            manager._configure_as_score_package_manager()
-        elif self._basic_breadcrumb == 'segments':
-            manager._configure_as_segment_package_manager()
-        else:
-            raise ValueError(self._basic_breadcrumb)
         return manager
 
     def _get_next_asset_path(self):

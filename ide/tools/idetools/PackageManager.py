@@ -22,14 +22,3 @@ class PackageManager(Controller):
         superclass = super(PackageManager, self)
         superclass.__init__(session=session)
         self._path = path
-
-    ### PRIVATE METHODS ###
-
-    def _configure_as_material_package_manager(self):
-        pass
-
-    def _configure_as_score_package_manager(self):
-        pass
-
-    def _configure_as_segment_package_manager(self):
-        pass
