@@ -345,7 +345,7 @@ class Controller(object):
 
     def _enter_run(self, directory=None):
         if (self._session.navigation_target is not None and
-            self._session.navigation_target == self._basic_breadcrumb):
+            self._session.navigation_target == self._directory_name):
             self._session._navigation_target = None
         elif (self._is_material_package_path(directory) or
             self._is_segment_package_path(directory)):
@@ -1372,7 +1372,7 @@ class Controller(object):
         parent_directory_name = current_directory.split(os.path.sep)[-2]
         is_home = False
         if current_directory == configuration.composer_scores_directory:
-            if self._basic_breadcrumb == 'scores':
+            if self._directory_name == 'scores':
                 is_home = True
         for method_ in methods_:
             if is_in_score and not method_.in_score:

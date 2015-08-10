@@ -71,12 +71,6 @@ class Wrangler(Controller):
         '''
         return '{}({!r})'.format(type(self).__name__, self._directory_name)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _basic_breadcrumb(self):
-        return self._directory_name
-
     ### PRIVATE METHODS ###
 
     def _configure_as_build_file_wrangler(self):
@@ -218,7 +212,7 @@ class Wrangler(Controller):
         return parent_directories
 
     def _find_git_manager(self, inside_score=True, must_have_file=False):
-        if self._basic_breadcrumb == 'scores':
+        if self._directory_name == 'scores':
             inside_score = False
         manager = self._find_up_to_date_manager(
             inside_score=inside_score,
@@ -248,7 +242,7 @@ class Wrangler(Controller):
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
-        if self._basic_breadcrumb == 'scores':
+        if self._directory_name == 'scores':
             if system:
                 scores_directory = \
                     configuration.abjad_ide_example_scores_directory
@@ -1879,7 +1873,7 @@ class Wrangler(Controller):
         '''
         if self._asset_identifier == 'file':
             self._make_file()
-        elif self._basic_breadcrumb == 'scores':
+        elif self._directory_name == 'scores':
             self._make_score_package()
         else:
             self._make_package()
