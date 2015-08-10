@@ -982,6 +982,7 @@ class Controller(object):
             else:
                 manager = self._get_manager(result)
                 manager._run_package_manager_menu(result)
+                #self._run_package_manager_menu(result)
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
@@ -1301,14 +1302,14 @@ class Controller(object):
             paths = [_[-1] for _ in entries]
             return paths
 
-    def _make_asset_menu_section(self, directory, menu):
+    def _make_package_asset_menu_section(self, directory, menu):
         directory_entries = self._list_directory(directory, smart_sort=True)
         menu_entries = []
         for directory_entry in directory_entries:
             clean_directory_entry = directory_entry
             if directory_entry.endswith('/'):
                 clean_directory_entry = directory_entry[:-1]
-            path = os.path.join(self._path, clean_directory_entry)
+            path = os.path.join(directory, clean_directory_entry)
             menu_entry = (directory_entry, None, None, path)
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
@@ -1394,11 +1395,11 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_main_menu(self):
+    def _make_main_menu(self, _path=None):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._session._io_manager._make_menu(name=name)
-        if hasattr(self, '_path'):
-            self._make_asset_menu_section(self._path, menu)
+        if _path is not None:
+            self._make_package_asset_menu_section(_path, menu)
         else: 
             self._make_asset_menu_section(menu)
         self._make_command_menu_sections(menu)
@@ -1782,7 +1783,7 @@ class Controller(object):
                 while True:
                     result = self._session.navigation_command_name
                     if not result:
-                        menu = self._make_main_menu()
+                        menu = self._make_main_menu(_path=directory)
                         result = menu._run()
                         self._handle_pending_redraw_directive(
                             self._session,
