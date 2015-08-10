@@ -921,6 +921,9 @@ class Controller(object):
                     current_score_directory = \
                         self._session.current_score_directory
                     command(current_score_directory)
+                elif 'visible_asset_paths' in command.argument_names:
+                    paths = self._list_visible_asset_paths()
+                    command(paths)
                 else:
                     command()
             elif (result.endswith('!') and 
@@ -1859,6 +1862,15 @@ class Controller(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
         
+    @staticmethod
+    def _strip_annotation(display_string):
+        if not display_string.endswith(')'):
+            return display_string
+        index = display_string.find('(')
+        result = display_string[:index]
+        result = result.strip()
+        return result
+
     def _supply_global_metadata_py(self):
         metadata_py_path = configuration.abjad_ide_views_metadata_py_path
         if not os.path.exists(metadata_py_path):
@@ -1920,6 +1932,33 @@ class Controller(object):
         assert self._is_up_to_date(path)
         return True
 
+    @staticmethod
+    def _to_dash_case(file_name):
+        file_name = file_name.replace(' ', '-')
+        file_name = file_name.replace('_', '-')
+        return file_name
+
+    @staticmethod
+    def _trim_lilypond_file(file_path):
+        lines = []
+        with open(file_path, 'r') as file_pointer:
+            found_score_block = False
+            for line in file_pointer.readlines():
+                if line.startswith(r'\score'):
+                    found_score_block = True
+                    continue
+                if line.startswith('}'):
+                    found_score_block = False
+                    lines.append('\n')
+                    continue
+                if found_score_block:
+                    lines.append(line)
+        if lines and lines[-1] == '\n':
+            lines.pop()
+        lines = ''.join(lines)
+        with open(file_path, 'w') as file_pointer:
+            file_pointer.write(lines)
+
     def _unadd_added_assets(self, path):
         paths = []
         paths.extend(self._get_added_asset_paths(path))
@@ -1932,6 +1971,54 @@ class Controller(object):
         with systemtools.TemporaryDirectoryChange(directory=path):
             self._io_manager.spawn_subprocess(command)
 
+    def _update_order_dependent_segment_metadata(self):
+        paths = self._list_visible_asset_paths()
+        if not paths:
+            return
+        segment_count = len(paths)
+        # update segment numbers and segment count
+        for segment_index, path in enumerate(paths):
+            segment_number = segment_index + 1
+            self._add_metadatum(
+                path,
+                'segment_number',
+                segment_number,
+                )
+            self._add_metadatum(
+                path,
+                'segment_count', 
+                segment_count,
+                )
+        # update first bar numbers and measure counts
+        path = paths[0]
+        first_bar_number = 1
+        self._add_metadatum(
+            path,
+            'first_bar_number',
+            first_bar_number,
+            )
+        measure_count = self._get_metadatum(
+            path,
+            'measure_count',
+            )
+        if not measure_count:
+            return
+        next_bar_number = first_bar_number + measure_count
+        for path in paths[1:]:
+            first_bar_number = next_bar_number
+            self._add_metadatum(
+                path,
+                'first_bar_number',
+                next_bar_number,
+                )
+            measure_count = self._get_metadatum(
+                path,
+                'measure_count',
+                )
+            if not measure_count:
+                return
+            next_bar_number = first_bar_number + measure_count
+            
     def _write_enclosing_artifacts(self, inner_path, outer_path):
         self._copy_boilerplate(
             'README.md',
@@ -2029,6 +2116,38 @@ class Controller(object):
         else:
             message = '{} OK.'.format(definition_py_path)
             self._io_manager._display(message)
+
+    @Command(
+        'dc*',
+        argument_names=('visible_asset_paths',),
+        directories=('materials', 'segments'),
+        outside_score=False,
+        section='star',
+        )
+    def check_every_definition_py(self, paths):
+        r'''Checks ``definition.py`` in every package.
+
+        Returns none.
+        '''
+        inputs, outputs = [], []
+        for path in paths:
+            inputs_, outputs_ = self.check_definition_py(path, dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='check')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return
+        start_time = time.time()
+        for path in paths:
+            self.check_definition_py(path)
+        stop_time = time.time()
+        total_time = stop_time - start_time
+        total_time = int(total_time)
+        message = 'total time: {} seconds.'
+        message = message.format(total_time)
+        self._io_manager._display(message)
 
     @Command(
         'ck', 
@@ -2310,6 +2429,46 @@ class Controller(object):
         else:
             self._io_manager._display(messages)
         return messages, supplied_directories, supplied_files
+
+    @Command(
+        'mc',
+        argument_names=('current_score_directory'),
+        directories=('build'),
+        outside_score=False,
+        section='build',
+        )
+    def collect_segment_lilypond_files(self, current_score_directory):
+        r'''Copies ``illustration.ly`` files from segment packages to build 
+        directory.
+
+        Trims top-level comments, includes and directives from each
+        ``illustration.ly`` file.
+
+        Trims header and paper block from each ``illustration.ly`` file.
+
+        Leaves score block in each ``illustration.ly`` file.
+
+        Returns none.
+        '''
+        pairs = self._collect_segment_files(
+            current_score_directory,
+            'illustration.ly',
+            )
+        if not pairs:
+            return
+        for source_file_path, target_file_path in pairs:
+            candidate_file_path = target_file_path.replace(
+                '.ly',
+                '.candidate.ly',
+                )
+            with systemtools.FilesystemState(remove=[candidate_file_path]):
+                shutil.copyfile(source_file_path, candidate_file_path)
+                self._trim_lilypond_file(candidate_file_path)
+                self._handle_candidate(
+                    candidate_file_path,
+                    target_file_path,
+                    )
+                self._io_manager._display('')
 
     @Command('?', section='system')
     def display_action_command_help(self):
