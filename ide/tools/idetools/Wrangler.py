@@ -22,7 +22,6 @@ class Wrangler(Controller):
         '_directory_name',
         '_group_asset_section_by_annotation',
         '_new_file_contents',
-        '_only_example_scores_during_test',
         '_sort_by_annotation',
         )
 
@@ -37,7 +36,6 @@ class Wrangler(Controller):
         self._directory_name = None
         self._group_asset_section_by_annotation = True
         self._new_file_contents = ''
-        self._only_example_scores_during_test = False
         self._sort_by_annotation = True
 
     ### SPECIAL METHODS ###
@@ -76,7 +74,6 @@ class Wrangler(Controller):
         self._asset_identifier = 'package'
         self._directory_name = 'scores'
         self._group_asset_section_by_annotation = False
-        self._only_example_scores_during_test = True
         self._sort_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
@@ -192,7 +189,7 @@ class Wrangler(Controller):
                 directory_token,
                 entries,
                 )
-        if self._session.is_test and self._only_example_scores_during_test:
+        if self._session.is_test and self._directory_name == 'scores':
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         elif not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
