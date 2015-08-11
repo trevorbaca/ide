@@ -11,7 +11,7 @@ def test_Wrangler__find_up_to_date_manager_01():
     r'''Finds up-to-date score package manger.
     '''
 
-    wrangler = abjad_ide._score_package_wrangler
+    wrangler = abjad_ide._initialize_wrangler('scores')
     manager = wrangler._find_up_to_date_manager(
         inside_score=False,
         system=True,
@@ -48,7 +48,7 @@ def test_Wrangler__find_up_to_date_manager_03():
     r'''Finds up-to-date segment package manager.
     '''
 
-    wrangler = abjad_ide._segment_package_wrangler
+    wrangler = abjad_ide._initialize_wrangler('segments')
     manager = wrangler._find_up_to_date_manager(
         system=True,
         )

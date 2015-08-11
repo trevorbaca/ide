@@ -306,8 +306,7 @@ class Controller(object):
         return pairs
 
     def _confirm_segment_names(self, score_directory):
-        segment_package_wrangler = \
-            self._session._abjad_ide._segment_package_wrangler
+        segment_package_wrangler = self._initialize_wrangler('segments')
         segments_directory = os.path.join(score_directory, 'segments')
         view_name = self._read_view_name(
             segments_directory,
@@ -797,7 +796,7 @@ class Controller(object):
                 )
 
     def _get_previous_segment_manager(self, directory):
-        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler = self._initialize_wrangler('segments')
         paths = wrangler._list_visible_asset_paths()
         for i, path in enumerate(paths):
             if path == directory:
@@ -3939,8 +3938,7 @@ class Controller(object):
             message = message.format(definition_py_path)
             self._io_manager._display(message)
             return
-        # TODO: remove session reference
-        wrangler = self._session._abjad_ide._segment_package_wrangler
+        wrangler = self._initialize_wrangler('segments')
         wrangler._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,

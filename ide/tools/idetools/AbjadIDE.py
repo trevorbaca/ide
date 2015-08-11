@@ -48,22 +48,6 @@ class AbjadIDE(Controller):
         '''
         return '{}()'.format(type(self).__name__)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _score_package_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'scores'
-        return wrangler
-
-    @property
-    def _segment_package_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'segments'
-        return wrangler
-
     ### PRIVATE METHODS ###
 
     def _run(self, input_=None):
@@ -97,16 +81,17 @@ class AbjadIDE(Controller):
                     '__views_metadata__.py',
                     )
                 shutil.copyfile(empty_views, views)
+            score_package_wrangler = self._initialize_wrangler('scores')
             while True:
-                result = self._score_package_wrangler._get_sibling_score_path()
+                result = score_package_wrangler._get_sibling_score_path()
                 if result is None:
                     result = \
                         self._directory_name_to_navigation_command_name.get(
                         self._session.navigation_target)
                 if result:
-                    self._score_package_wrangler._handle_input(result)
+                    score_package_wrangler._handle_input(result)
                 else:
-                    self._score_package_wrangler._run_wrangler()
+                    score_package_wrangler._run_wrangler()
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:
