@@ -39,7 +39,7 @@ class ControllerContext(ContextManager):
         self._is_in_confirmation_environment = is_in_confirmation_environment
         self._on_enter_callbacks = on_enter_callbacks or ()
         self._on_exit_callbacks = on_exit_callbacks or ()
-        self._session = self._controller._session
+        self._session = self._controller._io_manager._session
 
     ### SPECIAL METHODS ###
 

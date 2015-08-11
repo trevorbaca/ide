@@ -20,7 +20,7 @@ class IOManager(IOManager):
         ::
 
             >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-            >>> io_manager = abjad_ide._session.io_manager
+            >>> io_manager = abjad_ide._io_manager
 
     '''
 
@@ -33,6 +33,7 @@ class IOManager(IOManager):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
+        assert session is not None
         self._session = session
 
     ### SPECIAL METHODS ###
@@ -75,7 +76,7 @@ class IOManager(IOManager):
             message,
             include_chevron=include_chevron,
             )
-        result = getter._run()
+        result = getter._run(io_manager=self)
         if isinstance(result, str):
             if 'yes'.startswith(result.lower()):
                 return True
@@ -247,7 +248,6 @@ class IOManager(IOManager):
         ):
         from ide.tools import idetools
         getter = idetools.Getter(
-            session=self._session,
             allow_none=allow_none,
             include_chevron=include_chevron,
             include_newlines=include_newlines,
@@ -266,6 +266,7 @@ class IOManager(IOManager):
             confirm=confirm,
             display=display,
             dry_run=dry_run,
+            io_manager=self,
             session=self._session,
             task=task,
             )
@@ -280,7 +281,6 @@ class IOManager(IOManager):
         return idetools.Menu(
             explicit_header=explicit_header,
             name=name,
-            session=self._session,
             subtitle=subtitle,
             )
 
@@ -305,7 +305,6 @@ class IOManager(IOManager):
             items=items,
             menu_entries=menu_entries,
             menu_header=menu_header,
-            session=self._session,
             target_name=target_name,
             )
 
@@ -369,6 +368,7 @@ class IOManager(IOManager):
             confirm=False,
             display=False,
             dry_run=False,
+            io_manager=self,
             session=self._session,
             task=False,
             )

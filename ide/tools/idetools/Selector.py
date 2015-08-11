@@ -9,13 +9,13 @@ class Selector(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_io_manager',
         '_is_numbered',
         '_is_ranged',
         '_items',
         '_menu_entries',
         '_menu_header',
         '_return_value_attribute',
-        '_session',
         '_target_name',
         )
 
@@ -29,12 +29,10 @@ class Selector(object):
         menu_entries=None,
         menu_header=None,
         return_value_attribute='explicit',
-        session=None,
         target_name=None,
         ):
-        assert session is not None
         assert not (menu_entries and items)
-        self._session = session
+        self._io_manager = None
         self._is_numbered = is_numbered
         self._is_ranged = is_ranged
         self._items = items or []
@@ -72,7 +70,7 @@ class Selector(object):
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         subtitle = stringtools.capitalize_start(self.target_name)
-        menu = self._session._io_manager._make_menu(
+        menu = self._io_manager._make_menu(
             explicit_header=self.menu_header,
             name=name, 
             subtitle=subtitle,
@@ -84,7 +82,7 @@ class Selector(object):
         entries = []
         for item in self.items:
             entry = (
-                self._session._io_manager._get_one_line_menu_summary(item),
+                self._io_manager._get_one_line_menu_summary(item),
                 None,
                 None,
                 item,
@@ -92,21 +90,27 @@ class Selector(object):
             entries.append(entry)
         return entries
 
-    def _run(self):
-        with self._session._io_manager._controller(
+    def _run(self, io_manager):
+        assert io_manager is not None
+        self._io_manager = io_manager
+        with self._io_manager._controller(
             clear_terminal=True,
             consume_local_backtrack=True,
             controller=self,
             ):
             while True:
                 menu = self._make_main_menu()
-                result = menu._run()
-                if self._session.is_backtracking:
+                result = menu._run(io_manager=self._io_manager)
+                if self._io_manager._session.is_backtracking:
+                    self._io_manager = None
                     return
                 elif result is None:
+                    self._io_manager = None
                     return
                 elif result:
+                    self._io_manager = None
                     return result
+        self._io_manager = None
 
     ### PUBLIC PROPERTIES ###
 

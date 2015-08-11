@@ -32,8 +32,9 @@ class AbjadIDE(Controller):
         if session is None:
             session = idetools.Session()
             session._is_test = is_test
+        io_manager = idetools.IOManager(session=session)
         superclass = super(AbjadIDE, self)
-        superclass.__init__(session=session)
+        superclass.__init__(session=session, io_manager=io_manager)
         for directory_name in self._known_directory_names:
             self._supply_global_views_file(directory_name)
         self._supply_global_metadata_py()

@@ -19,26 +19,23 @@ class Getter(object):
         '_evaluated_input',
         '_include_newlines',
         '_include_chevron',
+        '_io_manager',
         '_number_prompts',
         '_prompt_index',
         '_messages',
         '_prompts',
-        '_session',
         )
 
     ### INITIALIZER ###
 
     def __init__(
         self,
-        session=None,
         allow_none=False,
         capitalize_prompts=True,
         include_chevron=True,
         include_newlines=False,
         number_prompts=False,
         ):
-        assert session is not None
-        self._session = session
         self._prompts = []
         self._allow_none = allow_none
         self._capitalize_prompts = capitalize_prompts
@@ -175,7 +172,7 @@ class Getter(object):
             message = self._messages[-1]
             message = self._indent_and_number_message(message)
             include_chevron = self._current_prompt.include_chevron
-            input_ = self._session._io_manager._handle_input(
+            input_ = self._io_manager._handle_input(
                 message,
                 include_chevron=include_chevron,
                 include_newline=self.include_newlines,
@@ -190,16 +187,16 @@ class Getter(object):
                 continue
             assert isinstance(input_, str), repr(input_)
             directive = input_
-            if self._session.is_backtracking:
+            if self._io_manager._is_backtracking:
                 self._current_prompt_is_done = True
                 self._all_prompts_are_done = True
-                self._session._pending_redraw = True
+                self._io_manager._session._pending_redraw = True
             elif directive is None:
                 continue
             elif directive == '<return>':
                 self._current_prompt_is_done = True
                 self._all_prompts_are_done = True
-                self._session._pending_redraw = True
+                self._io_manager._session._pending_redraw = True
             elif directive is None:
                 break
             elif directive == 'help':
@@ -212,7 +209,7 @@ class Getter(object):
             elif isinstance(directive, str):
                 self._evaluate_input(directive, namespace)
             else:
-                self._session._io_manager._display_not_yet_implemented()
+                self._io_manager._display_not_yet_implemented()
 
     def _present_prompts(self, include_chevron=True):
         self._prompt_index = 0
@@ -223,8 +220,10 @@ class Getter(object):
             not self._all_prompts_are_done):
             self._present_prompt(include_chevron=include_chevron)
 
-    def _run(self, clear_terminal=False, title=False):
-        with self._session._io_manager._controller(
+    def _run(self, io_manager, clear_terminal=False, title=False):
+        assert io_manager is not None
+        self._io_manager = io_manager
+        with self._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             is_in_confirmation_environment=True,
@@ -236,6 +235,7 @@ class Getter(object):
                 result = self._evaluated_input[:]
             if result == []:
                 result = None
+            self._io_manager = None
             return result
 
     def _validate_evaluated_input(self, evaluated_input):
@@ -480,7 +480,7 @@ class Getter(object):
         lines = []
         lines.append(self._current_prompt.help_string)
         lines.append('')
-        self._session._io_manager._display(lines)
+        self._io_manager._display(lines)
 
     @staticmethod
     def is_boolean(expr):

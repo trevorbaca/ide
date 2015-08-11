@@ -49,7 +49,6 @@ class Session(object):
         '_display',
         '_display_command_help',
         '_initial_input',
-        '_io_manager',
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
         '_is_backtracking_to_score',
@@ -95,7 +94,6 @@ class Session(object):
         self._display = True
         self._display_command_help = None
         self._initial_input = input_
-        self._io_manager = idetools.IOManager(session=self)
         self._is_backtracking_locally = False
         self._is_backtracking_to_all_build_files = False
         self._is_backtracking_to_score = False

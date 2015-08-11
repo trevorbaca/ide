@@ -10,8 +10,7 @@ class MenuEntry(AbjadObject):
 
         ::
 
-            >>> session = ide.tools.idetools.Session()
-            >>> menu = ide.tools.idetools.Menu(session=session)
+            >>> menu = ide.tools.idetools.Menu()
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))

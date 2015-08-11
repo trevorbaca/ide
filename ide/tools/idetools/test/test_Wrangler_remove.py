@@ -27,6 +27,7 @@ def test_Wrangler_remove_01():
         manager = ide.tools.idetools.PackageManager(
             path=inner_path, 
             session=abjad_ide._session,
+            io_manager=abjad_ide._io_manager,
             )
         title = 'Example Score 100'
         manager._add_metadatum(
@@ -75,6 +76,7 @@ def test_Wrangler_remove_02():
         manager = ide.tools.idetools.PackageManager(
             path=path_100_inner,
             session=abjad_ide._session,
+            io_manager=abjad_ide._io_manager,
             )
         title = 'Example Score 100'
         manager._add_metadatum(
@@ -85,6 +87,7 @@ def test_Wrangler_remove_02():
         manager = ide.tools.idetools.PackageManager(
             path=path_101_inner,
             session=abjad_ide._session,
+            io_manager=abjad_ide._io_manager,
             )
         title = 'Example Score 101'
         manager._add_metadatum(

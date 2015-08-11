@@ -149,9 +149,10 @@ class Controller(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, session=None):
+    def __init__(self, session=None, io_manager=None):
         assert session is not None
-        self._io_manager = session._io_manager
+        assert io_manager is not None
+        self._io_manager = io_manager
         self._session = session
 
     ### SPECIAL METHODS ###
@@ -546,6 +547,7 @@ class Controller(object):
                 manager = idetools.PackageManager(
                     path=path,
                     session=self._session,
+                    io_manager=self._io_manager,
                     )
                 return manager
 
@@ -651,7 +653,7 @@ class Controller(object):
             default_prompt = default_prompt.format(asset_identifier)
             getter = self._io_manager._make_getter()
             getter.append_string(default_prompt)
-            name = getter._run()
+            name = getter._run(io_manager=self._io_manager)
             if self._io_manager._is_backtracking or not name:
                 return
             name = stringtools.strip_diacritics(name)
@@ -951,7 +953,7 @@ class Controller(object):
             if commit_message is None:
                 getter = self._io_manager._make_getter()
                 getter.append_string('commit message')
-                commit_message = getter._run()
+                commit_message = getter._run(io_manager=self._io_manager)
                 if self._io_manager._session.is_backtracking:
                     return
                 if commit_message is None:
@@ -1147,6 +1149,7 @@ class Controller(object):
                 manager = idetools.PackageManager(
                     path=result,
                     session=self._session,
+                    io_manager=self._io_manager,
                     )
                 manager._run_package_manager_menu(result)
                 #self._run_package_manager_menu(result)
@@ -1173,7 +1176,10 @@ class Controller(object):
 
     def _initialize_wrangler(self, directory_name):
         from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
+        wrangler = idetools.Wrangler(
+            session=self._session,
+            io_manager=self._io_manager,
+            )
         wrangler._directory_name = directory_name
         return wrangler
 
@@ -1663,7 +1669,7 @@ class Controller(object):
             contents == self._unicode_directive
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
-        name = getter._run()
+        name = getter._run(io_manager=self._io_manager)
         if self._io_manager._is_backtracking or name is None:
             return
         name = stringtools.strip_diacritics(name)
@@ -1761,7 +1767,7 @@ class Controller(object):
         message = 'enter title'
         getter = self._io_manager._make_getter()
         getter.append_string(message)
-        title = getter._run()
+        title = getter._run(io_manager=self._io_manager)
         if self._io_manager._is_backtracking or not title:
             return
         package_name = stringtools.strip_diacritics(title)
@@ -1783,7 +1789,7 @@ class Controller(object):
             message = 'enter package name'
             getter = self._io_manager._make_getter()
             getter.append_string(message)
-            package_name = getter._run()
+            package_name = getter._run(io_manager=self._io_manager)
             if self._io_manager._is_backtracking or not package_name:
                 return
             package_name = stringtools.strip_diacritics(package_name)
@@ -2152,7 +2158,7 @@ class Controller(object):
         getter = self._io_manager._make_getter()
         getter.append_string("type 'remove' to proceed")
         if self._io_manager._session.confirm:
-            result = getter._run()
+            result = getter._run(io_manager=self._io_manager)
             if io_manager._is_backtracking or result is None:
                 return
             if not result == 'remove':
@@ -2194,7 +2200,7 @@ class Controller(object):
         self._io_manager._display(line)
         getter = self._io_manager._make_getter()
         getter.append_string('new name')
-        new_package_name = getter._run()
+        new_package_name = getter._run(io_manager=self._io_manager)
         if self._io_manager._is_backtracking or new_package_name is None:
             return
         new_package_name = stringtools.strip_diacritics(new_package_name)
@@ -2264,7 +2270,7 @@ class Controller(object):
                             explicit_header=menu_header,
                             _path=directory,
                             )
-                        result = menu._run()
+                        result = menu._run(io_manager=self._io_manager)
                         self._handle_pending_redraw_directive(
                             self._session,
                             result,
@@ -3035,7 +3041,7 @@ class Controller(object):
         string = 'Press <return> to preserve existing name.'
         help_template = help_template + ' ' + string
         getter.prompts[0]._help_template = help_template
-        new_name = getter._run()
+        new_name = getter._run(io_manager=self._io_manager)
         new_name = new_name or old_name
         if self._io_manager._is_backtracking or new_name is None:
             return
@@ -3559,7 +3565,7 @@ class Controller(object):
             return
         getter = self._io_manager._make_getter()
         getter.append_string('commit message')
-        commit_message = getter._run()
+        commit_message = getter._run(io_manager=self._io_manager)
         if self._io_manager._is_backtracking or commit_message is None:
             return
         line = 'commit message will be: "{}"'.format(commit_message)
@@ -4469,7 +4475,7 @@ class Controller(object):
         getter = self._io_manager._make_getter()
         getter.append_string(message)
         if self._session.confirm:
-            result = getter._run()
+            result = getter._run(io_manager=self._io_manager)
             if self._io_manager._is_backtracking or result is None:
                 return
             if not result == confirmation_string:

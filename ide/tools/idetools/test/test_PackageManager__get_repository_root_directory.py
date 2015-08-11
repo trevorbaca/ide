@@ -16,6 +16,7 @@ def test_PackageManager__get_repository_root_directory_01():
     manager = ide.tools.idetools.PackageManager(
         path=score_path,
         session=abjad_ide._session,
+        io_manager=abjad_ide._io_manager,
         )
 
     repository_root_directory = manager._get_repository_root_directory(

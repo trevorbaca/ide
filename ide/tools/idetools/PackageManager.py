@@ -16,9 +16,10 @@ class PackageManager(Controller):
 
     ### INITIALIZER ###
 
-    def __init__(self, path=None, session=None):
-        assert session is not None
+    def __init__(self, path=None, session=None, io_manager=None):
         assert path is not None and os.path.sep in path
+        assert session is not None
+        assert io_manager is not None
         superclass = super(PackageManager, self)
-        superclass.__init__(session=session)
+        superclass.__init__(session=session, io_manager=io_manager)
         self._path = path

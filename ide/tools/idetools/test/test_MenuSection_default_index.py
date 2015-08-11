@@ -2,12 +2,11 @@
 import pytest
 from abjad import *
 import ide
-session = ide.tools.idetools.Session()
 
 
 def test_MenuSection_default_index_01():
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -23,7 +22,7 @@ def test_MenuSection_default_index_01():
 
 def test_MenuSection_default_index_02():
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')

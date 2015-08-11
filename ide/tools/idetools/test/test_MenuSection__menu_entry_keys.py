@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-session = ide.tools.idetools.Session()
 
 
 def test_MenuSection__menu_entry_keys_01():
@@ -9,7 +8,7 @@ def test_MenuSection__menu_entry_keys_01():
     True whether section is numbered or not.
     '''
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -22,7 +21,7 @@ def test_MenuSection__menu_entry_keys_01():
     assert not section.is_numbered
     assert section._menu_entry_keys == [None, None, None]
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -43,7 +42,7 @@ def test_MenuSection__menu_entry_keys_02():
     True whether section is numbered or not.
     '''
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))
@@ -57,7 +56,7 @@ def test_MenuSection__menu_entry_keys_02():
     assert section._menu_entry_keys == ['add', 'rm', 'mod']
     assert section._menu_entry_keys == [_.key for _ in section.menu_entries]
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
     commands = []
     commands.append(('something - add', 'add'))
     commands.append(('something - delete', 'rm'))

@@ -1,14 +1,13 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-session = ide.tools.idetools.Session()
 
 
 def test_MenuEntry___format___01():
     r'''Formats menu section without raising exception.
     '''
 
-    menu = ide.tools.idetools.Menu(session=session)
+    menu = ide.tools.idetools.Menu()
 
     commands = []
     commands.append(('foo - add', 'add'))

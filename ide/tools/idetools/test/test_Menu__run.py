@@ -8,10 +8,8 @@ def test_Menu__run_01():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -22,31 +20,29 @@ def test_Menu__run_01():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app'
-    result = menu._run()
+    io_manager._session._pending_input = 'app'
+    result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
-    #assert result is None
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
-    #assert result is None
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app, che-ban'
-    result = menu._run()
+    io_manager._session._pending_input = 'app, che-ban'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -55,10 +51,8 @@ def test_Menu__run_02():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -70,29 +64,29 @@ def test_Menu__run_02():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app'
-    result = menu._run()
+    io_manager._session._pending_input = 'app'
+    result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app, che-ban'
-    result = menu._run()
+    io_manager._session._pending_input = 'app, che-ban'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -101,10 +95,8 @@ def test_Menu__run_03():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -116,29 +108,29 @@ def test_Menu__run_03():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    menu._session._pending_input = 'app'
-    result = menu._run()
+    io_manager._session._pending_input = 'app'
+    result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app, che-ban'
-    result = menu._run()
+    io_manager._session._pending_input = 'app, che-ban'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -147,10 +139,8 @@ def test_Menu__run_04():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -162,29 +152,29 @@ def test_Menu__run_04():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'app'
-    result = menu._run()
+    io_manager._session._pending_input = 'app'
+    result = menu._run(io_manager=io_manager)
     assert result == ['apple']
 
-    menu._session._pending_input = 'app, che-ban'
-    result = menu._run()
+    io_manager._session._pending_input = 'app, che-ban'
+    result = menu._run(io_manager=io_manager)
     assert result == ['apple', 'cherry', 'banana']
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -193,10 +183,8 @@ def test_Menu__run_05():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -208,41 +196,41 @@ def test_Menu__run_05():
         return_value_attribute='key',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -251,10 +239,8 @@ def test_Menu__run_06():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -264,41 +250,41 @@ def test_Menu__run_06():
         name='test',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -307,10 +293,8 @@ def test_Menu__run_07():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -323,41 +307,41 @@ def test_Menu__run_07():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -366,10 +350,8 @@ def test_Menu__run_08():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -381,41 +363,41 @@ def test_Menu__run_08():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -424,10 +406,8 @@ def test_Menu__run_09():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -440,41 +420,41 @@ def test_Menu__run_09():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -483,10 +463,8 @@ def test_Menu__run_10():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -499,41 +477,41 @@ def test_Menu__run_10():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == ['add']
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == ['add']
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result == ['add', 'mod', 'rm']
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result == ['add', 'mod', 'rm']
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result == ['add', 'mod', 'rm']
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
 
@@ -542,10 +520,8 @@ def test_Menu__run_11():
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
-    menu = ide.tools.idetools.Menu(
-        name='test',
-        session=session,
-        )
+    io_manager = ide.tools.idetools.IOManager(session=session)
+    menu = ide.tools.idetools.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -557,39 +533,39 @@ def test_Menu__run_11():
         title='section',
         )
 
-    menu._session._pending_input = '<return>'
-    result = menu._run()
+    io_manager._session._pending_input = '<return>'
+    result = menu._run(io_manager=io_manager)
     assert result is None
 
-    menu._session._pending_input = 'add'
-    result = menu._run()
+    io_manager._session._pending_input = 'add'
+    result = menu._run(io_manager=io_manager)
     assert result == ['first command']
 
-    menu._session._pending_input = 'fir'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir'
+    result = menu._run(io_manager=io_manager)
     assert result == ['first command']
 
-    menu._session._pending_input = 'add, mod-rm'
-    result = menu._run()
+    io_manager._session._pending_input = 'add, mod-rm'
+    result = menu._run(io_manager=io_manager)
     assert result == ['first command', 'third command', 'second command']
 
-    menu._session._pending_input = 'fir, thi-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, thi-sec'
+    result = menu._run(io_manager=io_manager)
     assert result == ['first command', 'third command', 'second command']
 
-    menu._session._pending_input = 'fir, mod-sec'
-    result = menu._run()
+    io_manager._session._pending_input = 'fir, mod-sec'
+    result = menu._run(io_manager=io_manager)
     assert result == ['first command', 'third command', 'second command']
 
-    menu._session._allow_unknown_command_during_test = True
-    menu._session._pending_input = 'foo'
-    result = menu._run()
+    io_manager._session._allow_unknown_command_during_test = True
+    io_manager._session._pending_input = 'foo'
+    result = menu._run(io_manager=io_manager)
     assert result == 'foo'
 
-    menu._session._pending_input = '1'
-    result = menu._run()
+    io_manager._session._pending_input = '1'
+    result = menu._run(io_manager=io_manager)
     assert result == '1'
 
-    menu._session._pending_input = '1, 3-2'
-    result = menu._run()
+    io_manager._session._pending_input = '1, 3-2'
+    result = menu._run(io_manager=io_manager)
     assert result is None

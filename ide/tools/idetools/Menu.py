@@ -13,8 +13,7 @@ class Menu(object):
 
         ::
 
-            >>> session = ide.tools.idetools.Session()
-            >>> menu = ide.tools.idetools.Menu(session=session)
+            >>> menu = ide.tools.idetools.Menu()
 
         ::
 
@@ -39,9 +38,9 @@ class Menu(object):
     __slots__ = (
         '_asset_section',
         '_explicit_header',
+        '_io_manager',
         '_menu_sections',
         '_name',
-        '_session',
         '_subtitle',
         '_title',
         )
@@ -74,13 +73,11 @@ class Menu(object):
         self,
         explicit_header=None,
         name=None,
-        session=None,
         subtitle=None,
         title=None,
         ):
-        assert session is not None
-        self._session = session
         self._explicit_header = explicit_header
+        self._io_manager = None
         self._menu_sections = []
         self._name = name
         self._subtitle = subtitle
@@ -138,7 +135,7 @@ class Menu(object):
             return input_
         ends_with_bang = input_.endswith('!')
         if ends_with_bang and input_[:-1] == 'q':
-            self._session._clear_terminal_after_quit = True
+            self._io_manager._clear_terminal_after_quit = True
         input_ = input_.strip('!')
         if self._user_enters_nothing(input_):
             default_value = None
@@ -239,7 +236,7 @@ class Menu(object):
         return result
 
     def _handle_user_input(self):
-        input_ = self._session._io_manager._handle_input(
+        input_ = self._io_manager._handle_input(
             '', 
             prompt_character=self.prompt_character,
             )
@@ -262,10 +259,10 @@ class Menu(object):
                         remaining_part = remaining_part.replace(' ', '~')
                         glued_remaining_parts.append(remaining_part)
                     remaining_input = ' '.join(glued_remaining_parts)
-                    pending_input = self._session._pending_input or ''
+                    pending_input = self._io_manager._session._pending_input or ''
                     pending_input = pending_input + remaining_input
-                    self._session._pending_input = pending_input
-                    self._session._pending_redraw = True
+                    self._io_manager._session._pending_input = pending_input
+                    self._io_manager._session._pending_redraw = True
                 break
         directive = self._strip_default_notice_from_strings(directive)
         if directive is None and user_entered_lone_return:
@@ -273,10 +270,10 @@ class Menu(object):
         elif directive is None and not user_entered_lone_return:
             message = 'unknown command: {!r}.'
             message = message.format(input_)
-            self._session._io_manager._display([message, ''])
+            self._io_manager._display([message, ''])
             result = None
-            if (self._session.is_test and 
-                not self._session._allow_unknown_command_during_test):
+            if (self._io_manager._session.is_test and 
+                not self._io_manager._session._allow_unknown_command_during_test):
                 message = 'tests should contain no unknown commands.'
                 raise Exception(message)
         else:
@@ -414,7 +411,8 @@ class Menu(object):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            if not self._session.display_command_help and section.is_hidden:
+            if (not self._io_manager._session.display_command_help and 
+                section.is_hidden):
                 continue
             if section.is_asset_section:
                 continue
@@ -534,15 +532,15 @@ class Menu(object):
         return result
 
     def _redraw(self):
-        self._session._pending_redraw = False
-        self._session._io_manager.clear_terminal()
-        if self._session.display_command_help:
-            command_type = self._session.display_command_help
+        self._io_manager._session._pending_redraw = False
+        self._io_manager.clear_terminal()
+        if self._io_manager._session.display_command_help:
+            command_type = self._io_manager._session.display_command_help
             lines = self._make_help_lines(command_type=command_type)
-            self._session._display_command_help = None
+            self._io_manager._session._display_command_help = None
         else:
             lines = self._make_lines()
-        self._session._io_manager._display(
+        self._io_manager._display(
             lines, 
             capitalize=False, 
             is_menu=True,
@@ -554,25 +552,29 @@ class Menu(object):
                 j = section._menu_entry_return_values.index(return_value)
                 return i, j
 
-    def _run(self):
-        with self._session._io_manager._controller(controller=self):
+    def _run(self, io_manager):
+        self._io_manager = io_manager
+        with self._io_manager._controller(controller=self):
             while True:
-                if self._session.pending_redraw:
+                if self._io_manager._session.pending_redraw:
                     self._redraw()
-                    message = self._session._after_redraw_message
+                    message = self._io_manager._session._after_redraw_message
                     if message:
-                        self._session._io_manager._display(message)
-                        self._session._after_redraw_message = None
+                        self._io_manager._session._io_manager._display(message)
+                        self._io_manager._session._after_redraw_message = None
                 result = None
                 if not result:
                     result = self._handle_user_input()
-                if self._session.is_quitting:
+                if self._io_manager._session.is_quitting:
                     return result
                 elif result == '<return>':
-                    self._session._pending_redraw = True
+                    self._io_manager._session._pending_redraw = True
+                    self._io_manager = None
                     return
                 else:
+                    self._io_manager = None
                     return result
+        self._io_manager = None
 
     def _sort_menu_sections(self, command_type):
         ordered_menu_sections = []

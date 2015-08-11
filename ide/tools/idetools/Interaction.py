@@ -12,6 +12,7 @@ class Interaction(ContextManager):
         '_confirm',
         '_display',
         '_dry_run',
+        '_io_manager',
         '_original_confirm',
         '_original_display',
         '_session',
@@ -25,12 +26,15 @@ class Interaction(ContextManager):
         confirm=True,
         display=True, 
         dry_run=False,
+        io_manager=None,
         session=None,
         task=True,
         ):
         self._confirm = confirm
         self._display = display
         self._dry_run = dry_run
+        assert io_manager is not None
+        self._io_manager = io_manager
         self._original_confirm = None
         self._original_display = None
         self._session = session
@@ -57,7 +61,7 @@ class Interaction(ContextManager):
             if self.task:
                 if 0 < len(self.session._transcript.entries):
                     if not self.session._transcript[-1][-1] == '':
-                        self.session._io_manager._display('')
+                        self._io_manager._display('')
         self.session._confirm = self._original_confirm
         self.session._display = self._original_display
 
@@ -92,6 +96,14 @@ class Interaction(ContextManager):
         Returns boolean.
         '''
         return self._dry_run
+
+    @property
+    def io_manager(self):
+        r'''Gets IO manager.
+
+        Returns IO manager.
+        '''
+        return self._io_manager
 
     @property
     def session(self):

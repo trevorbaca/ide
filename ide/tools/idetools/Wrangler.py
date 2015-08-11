@@ -20,11 +20,11 @@ class Wrangler(Controller):
 
     ### INITIALIZER ###
 
-    def __init__(self, session=None):
-        from ide.tools import idetools
+    def __init__(self, session=None, io_manager=None):
         assert session is not None
+        assert io_manager is not None
         superclass = super(Wrangler, self)
-        superclass.__init__(session=session)
+        superclass.__init__(session=session, io_manager=io_manager)
         self._directory_name = None
 
     ### SPECIAL METHODS ###
@@ -198,7 +198,7 @@ class Wrangler(Controller):
                         explicit_header=menu_header,
                         _path=directory,
                         )
-                    result = menu._run()
+                    result = menu._run(io_manager=self._io_manager)
                     self._handle_pending_redraw_directive(
                         self._session,
                         result,
@@ -233,7 +233,7 @@ class Wrangler(Controller):
             menu_header=menu_header,
             target_name='storehouse',
             )
-        result = selector._run()
+        result = selector._run(io_manager=self._io_manager)
         if self._session.is_backtracking or result is None:
             return
         return result
@@ -270,7 +270,7 @@ class Wrangler(Controller):
             menu_header=menu_header,
             target_name=target_name,
             )
-        result = selector._run()
+        result = selector._run(io_manager=self._io_manager)
         if self._session.is_backtracking or result is None:
             return
         return result
@@ -293,7 +293,7 @@ class Wrangler(Controller):
             message, 
             asset_section,
             )
-        numbers = getter._run()
+        numbers = getter._run(io_manager=self._io_manager)
         if self._session.is_backtracking or numbers is None:
             return
         if not len(numbers) == 1:
@@ -316,7 +316,7 @@ class Wrangler(Controller):
             message, 
             asset_section,
             )
-        numbers = getter._run()
+        numbers = getter._run(io_manager=self._io_manager)
         if self._io_manager._is_backtracking or numbers is None:
             return
         indices = [_ - 1 for _ in numbers]
