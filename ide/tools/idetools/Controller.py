@@ -3749,6 +3749,35 @@ class Controller(object):
         self._session._io_manager._invoke_shell(statement)
 
     @Command(
+        'new', 
+        directories=(
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'materials',
+            'scores',
+            'segments',
+            'stylesheets',
+            'test',
+            ),
+        description='new', 
+        is_hidden=False,
+        section='basic', 
+        )
+    def make(self):
+        r'''Makes asset.
+
+        Returns none.
+        '''
+        if self._asset_identifier == 'file':
+            self._make_file()
+        elif self._directory_name == 'scores':
+            self._make_score_package()
+        else:
+            self._make_package()
+
+    @Command(
         'io*',
         argument_names=('visible_asset_paths',),
         directories=('materials', 'segments'),

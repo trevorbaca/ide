@@ -1002,19 +1002,6 @@ class Wrangler(Controller):
                     new_name,
                     )
 
-    @Command('new', description='new', section='basic', is_hidden=False)
-    def make(self):
-        r'''Makes asset.
-
-        Returns none.
-        '''
-        if self._asset_identifier == 'file':
-            self._make_file()
-        elif self._directory_name == 'scores':
-            self._make_score_package()
-        else:
-            self._make_package()
-
     @Command('ws', section='view', outside_score='home')
     def set_view(self):
         r'''Sets view.
