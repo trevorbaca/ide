@@ -23,6 +23,6 @@ def test_PackageManager_generate_illustrate_py_01():
         abjad_ide._run(input_=input_)
         assert os.path.isfile(path)
         assert not filecmp.cmp(path, path + '.backup')
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
         assert 'Will generate' in contents
         assert 'Generated' in contents

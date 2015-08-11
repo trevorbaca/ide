@@ -59,7 +59,7 @@ def test_Wrangler_interpret_music_02():
         input_ = 'red~example~score u mi q'
         abjad_ide._run(input_=input_)
 
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents

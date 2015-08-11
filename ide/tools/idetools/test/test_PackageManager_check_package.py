@@ -13,7 +13,7 @@ def test_PackageManager_check_package_01():
 
     input_ = 'red~example~score m tempo~inventory ck y q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Top level (5 assets): OK' in contents
     assert 'found' not in contents
@@ -26,7 +26,7 @@ def test_PackageManager_check_package_02():
 
     input_ = 'red~example~score m tempo~inventory ck n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
         '3 of 3 required files found:',
@@ -74,7 +74,7 @@ def test_PackageManager_check_package_04():
         os.remove(initializer)
         input_ = 'red~example~score g B ck y n q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
         '1 of 3 required files missing:',
@@ -102,7 +102,7 @@ def test_PackageManager_check_package_05():
         os.remove(initializer)
         input_ = 'red~example~score g B ck n n q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
         '1 of 3 required files missing:',
@@ -138,7 +138,7 @@ def test_PackageManager_check_package_07():
 
     input_ = 'red~example~score ck y q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
         'Build directory (18 files): OK',
@@ -159,7 +159,7 @@ def test_PackageManager_check_package_08():
 
     input_ = 'red~example~score ck n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
         '6 of 6 required directories found:',
@@ -186,7 +186,7 @@ def test_PackageManager_check_package_09():
             file_pointer.write('')
         input_ = 'red~example~score ck y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
 
     line = '1 unrecognized file found:'
     assert line in contents

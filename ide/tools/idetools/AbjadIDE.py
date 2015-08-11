@@ -59,7 +59,7 @@ class AbjadIDE(Controller):
         controller = self._io_manager._controller(
             controller=self,
             consume_local_backtrack=True,
-            on_exit_callbacks=(self._session._clean_up,)
+            on_exit_callbacks=(self._io_manager._clean_up,)
             )
         path = configuration.abjad_ide_directory
         directory_change = systemtools.TemporaryDirectoryChange(path)
@@ -95,7 +95,7 @@ class AbjadIDE(Controller):
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:
-                    if not self._session._transcript[-1][-1] == '':
+                    if not self._io_manager._transcript[-1][-1] == '':
                         self._io_manager._display('')
                     if self._session._clear_terminal_after_quit:
                         self._io_manager.clear_terminal()

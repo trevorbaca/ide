@@ -26,7 +26,7 @@ def test_Wrangler_generate_front_cover_source_01():
         abjad_ide._run(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents
@@ -53,5 +53,5 @@ def test_Wrangler_generate_front_cover_source_02():
         abjad_ide._run(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert 'Wrote' in contents

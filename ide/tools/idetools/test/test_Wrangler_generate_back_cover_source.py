@@ -40,7 +40,7 @@ def test_Wrangler_generate_back_cover_source_01():
         assert 'PAPER_SIZE' not in destination_contents
         assert '{8.5in, 11in}' in destination_contents
 
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert 'Wrote' in contents
 
 
@@ -75,7 +75,7 @@ def test_Wrangler_generate_back_cover_source_02():
         destination_contents = ''.join(file_pointer.readlines())
     assert 'PAPER_SIZE' not in destination_contents
     assert '{8.5in, 11in}' in destination_contents
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
     assert '... compare the same.' in contents
     assert 'Preserved' in contents

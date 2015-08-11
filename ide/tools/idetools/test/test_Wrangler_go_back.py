@@ -13,7 +13,7 @@ def test_Wrangler_go_back_01():
         'Abjad IDE - all score directories',
         'Abjad IDE - all score directories',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_Wrangler_go_back_02():
@@ -27,7 +27,7 @@ def test_Wrangler_go_back_02():
         'Red Example Score (2013) - build directory',
         'Red Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_Wrangler_go_back_03():
@@ -40,4 +40,4 @@ def test_Wrangler_go_back_03():
         'Abjad IDE - all build directories',
         'Abjad IDE - all score directories',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles

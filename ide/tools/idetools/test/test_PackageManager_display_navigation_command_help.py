@@ -35,7 +35,7 @@ def test_PackageManager_display_navigation_command_help_01():
 
     input_ = 'red~example~score ; q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -76,7 +76,7 @@ def test_PackageManager_display_navigation_command_help_02():
 
     input_ = 'red~example~score m magic~numbers ; q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -117,7 +117,7 @@ def test_PackageManager_display_navigation_command_help_03():
 
     input_ = 'red~example~score g A ; q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
     for line, actual_line in zip(lines, transcript_entry.lines):

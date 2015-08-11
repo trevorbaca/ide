@@ -59,8 +59,8 @@ class Interaction(ContextManager):
         '''
         if self.display and not self.dry_run:
             if self.task:
-                if 0 < len(self.session._transcript.entries):
-                    if not self.session._transcript[-1][-1] == '':
+                if 0 < len(self._io_manager._transcript.entries):
+                    if not self._io_manager._transcript[-1][-1] == '':
                         self._io_manager._display('')
         self.session._confirm = self._original_confirm
         self.session._display = self._original_display

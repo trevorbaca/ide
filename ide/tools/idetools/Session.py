@@ -1,7 +1,4 @@
 # -*- encoding: utf-8 -*-
-import os
-from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
-configuration = AbjadIDEConfiguration()
 
 
 class Session(object):
@@ -69,7 +66,6 @@ class Session(object):
         '_pending_done',
         '_pending_input',
         '_pending_redraw',
-        '_transcript',
         )
 
     ### INITIALIZER ###
@@ -112,7 +108,6 @@ class Session(object):
         self._pending_done = False
         self._pending_input = input_
         self._pending_redraw = True
-        self._transcript = idetools.Transcript()
 
     ### SPECIAL METHODS ###
 
@@ -141,31 +136,6 @@ class Session(object):
         return '{}({})'.format(type(self).__name__, summary)
 
     ### PRIVATE METHODS ###
-
-    def _clean_up(self):
-        if self.is_test:
-            return
-        transcripts_directory = configuration.abjad_ide_transcripts_directory
-        transcripts = sorted(os.listdir(transcripts_directory))
-        count = len(transcripts)
-        if 9000 <= count:
-            messages = []
-            message = 'transcripts directory contains {} transcripts.'
-            message = message.format(count)
-            messages.append(message)
-            message = 'prune {} soon.'.format(transcripts_directory)
-            messages.append(message)
-            for message in messages:
-                print(mesage)
-        self.transcript._write()
-
-    def _print_transcript(self):
-        for entry in self.transcript:
-            print(entry)
-
-    def _print_transcript_titles(self):
-        for title in self.transcript.titles:
-            print(repr(title))
 
     def _reinitialize(self):
         is_test = self._is_test
@@ -742,18 +712,3 @@ class Session(object):
         Returns true or false..
         '''
         return self._pending_redraw
-
-    @property
-    def transcript(self):
-        r'''Gets session IO transcript.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.transcript
-                Transcript()
-
-        Returns IO transcript.
-        '''
-        return self._transcript

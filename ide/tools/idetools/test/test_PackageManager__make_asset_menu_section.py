@@ -16,4 +16,4 @@ def test_PackageManager__make_asset_menu_section_01():
         'Blue Example Score (2013) - segments directory',
         'Blue Example Score (2013) - segments directory - segment 01',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles

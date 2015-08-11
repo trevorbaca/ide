@@ -42,7 +42,7 @@ def test_Wrangler_check_every_package_01():
 
     input_ = 'ck* y n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     for line in lines:
         assert line in contents
 

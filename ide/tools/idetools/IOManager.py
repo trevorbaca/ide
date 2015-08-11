@@ -10,6 +10,8 @@ from abjad.tools import datastructuretools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from abjad.tools.systemtools.IOManager import IOManager
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+configuration = AbjadIDEConfiguration()
 
 
 class IOManager(IOManager):
@@ -28,13 +30,16 @@ class IOManager(IOManager):
 
     __slots__ = (
         '_session',
+        '_transcript',
         )
 
     ### INITIALIZER ###
 
     def __init__(self, session=None):
+        from ide.tools import idetools
         assert session is not None
         self._session = session
+        self._transcript = idetools.Transcript()
 
     ### SPECIAL METHODS ###
 
@@ -83,6 +88,22 @@ class IOManager(IOManager):
             if 'no'.startswith(result.lower()):
                 return False
 
+    def _clean_up(self):
+        if self._session.is_test:
+            return
+        transcripts_directory = configuration.abjad_ide_transcripts_directory
+        transcripts = sorted(os.listdir(transcripts_directory))
+        count = len(transcripts)
+        if 9000 <= count:
+            messages = []
+            message = 'transcripts directory contains {} transcripts.'
+            message = message.format(count)
+            messages.append(message)
+            message = 'prune {} soon.'.format(transcripts_directory)
+            messages.append(message)
+            self._display(message)
+        self._transcript._write()
+
     def _controller(
         self,
         clear_terminal=False,
@@ -113,7 +134,7 @@ class IOManager(IOManager):
         if capitalize:
             lines = [stringtools.capitalize_start(_) for _ in lines]
         if lines:
-            self._session.transcript._append_entry(lines, is_menu=is_menu)
+            self._transcript._append_entry(lines, is_menu=is_menu)
         for line in lines:
             print(line)
 
@@ -193,7 +214,7 @@ class IOManager(IOManager):
                 if include_newline:
                     if not input_ == 'help':
                         menu_chunk.append('')
-                self._session.transcript._append_entry(menu_chunk)
+                self._transcript._append_entry(menu_chunk)
                 if was_pending_input:
                     for string in menu_chunk:
                         print(string)
@@ -201,7 +222,7 @@ class IOManager(IOManager):
                 if include_newline:
                     if not input_ == 'help':
                         menu_chunk.append('')
-                self._session.transcript._append_entry(menu_chunk)
+                self._transcript._append_entry(menu_chunk)
                 if was_pending_input:
                     for string in menu_chunk:
                         print(string)
@@ -211,7 +232,7 @@ class IOManager(IOManager):
                 if include_newline:
                     if not input_ == 'help':
                         menu_chunk.append('')
-                self._session.transcript._append_entry(menu_chunk)
+                self._transcript._append_entry(menu_chunk)
                 if was_pending_input:
                     for string in menu_chunk:
                         print(string)
@@ -329,6 +350,14 @@ class IOManager(IOManager):
         input_ = input_.replace('~', ' ')
         self._session._pending_input = pending_input
         return input_
+
+    def _print_transcript(self):
+        for entry in self.transcript:
+            print(entry)
+
+    def _print_transcript_titles(self):
+        for title in self.transcript.titles:
+            print(repr(title))
 
     def _read_from_pipe(self, pipe, strip=True):
         lines = []

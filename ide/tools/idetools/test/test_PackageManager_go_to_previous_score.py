@@ -17,7 +17,7 @@ def test_PackageManager_go_to_previous_score_01():
         'Red Example Score (2013) - materials directory - tempo inventory',
         'Étude Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_PackageManager_go_to_previous_score_02():
@@ -33,7 +33,7 @@ def test_PackageManager_go_to_previous_score_02():
         'Red Example Score (2013) - segments directory - A',
         'Étude Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_PackageManager_go_to_previous_score_03():
@@ -47,4 +47,4 @@ def test_PackageManager_go_to_previous_score_03():
         'Red Example Score (2013)',
         'Étude Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles

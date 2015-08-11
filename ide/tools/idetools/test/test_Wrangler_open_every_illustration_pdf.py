@@ -25,7 +25,7 @@ def test_Wrangler_open_every_illustration_pdf_01():
 
     input_ = 'red~example~score m io* y q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
     assert abjad_ide._session._attempted_to_open_file
     assert 'Will open ...' in contents
     for path in paths:

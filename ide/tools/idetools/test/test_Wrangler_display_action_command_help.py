@@ -10,7 +10,7 @@ def test_Wrangler_display_action_command_help_01():
     
     input_ = '? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Abjad IDE - all score directories - action commands' in contents
 
@@ -21,7 +21,7 @@ def test_Wrangler_display_action_command_help_02():
     
     input_ = 'red~example~score u ? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'build directory - action commands' in contents
 
@@ -32,7 +32,7 @@ def test_Wrangler_display_action_command_help_03():
     
     input_ = 'uu ? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Abjad IDE - all build directories - action commands' in contents
 
@@ -43,7 +43,7 @@ def test_Wrangler_display_action_command_help_04():
     
     input_ = '? q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     title = 'Abjad IDE - all score directories - action commands'
     first_blank_line = ''
@@ -83,7 +83,7 @@ def test_Wrangler_display_action_command_help_05():
 
     input_ = '? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -111,7 +111,7 @@ def test_Wrangler_display_action_command_help_06():
 
     input_ = 'mm ? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -140,7 +140,7 @@ def test_Wrangler_display_action_command_help_07():
 
     input_ = 'yy ? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -175,7 +175,7 @@ def test_Wrangler_display_action_command_help_08():
 
     input_ = 'red~example~score m ? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -211,7 +211,7 @@ def test_Wrangler_display_action_command_help_09():
 
     input_ = 'red~example~score g ? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -241,7 +241,7 @@ def test_Wrangler_display_action_command_help_10():
 
     input_ = 'red~example~score y ? q'
     abjad_ide._run(input_=input_)
-    transcript_entry = abjad_ide._session._transcript.entries[-3]
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line

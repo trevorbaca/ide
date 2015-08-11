@@ -16,7 +16,7 @@ def test_Wrangler_go_to_previous_score_01():
         'Red Example Score (2013)',
         'Étude Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_Wrangler_go_to_previous_score_02():
@@ -32,4 +32,4 @@ def test_Wrangler_go_to_previous_score_02():
         'Red Example Score (2013) - build directory',
         'Étude Example Score (2013)',
         ]
-    assert abjad_ide._session._transcript.titles == titles
+    assert abjad_ide._io_manager._transcript.titles == titles

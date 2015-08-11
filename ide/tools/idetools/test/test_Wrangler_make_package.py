@@ -36,7 +36,7 @@ def test_Wrangler_make_package_01():
     with systemtools.FilesystemState(remove=[outer_path]):
         input_ = 'new Example~Score y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
@@ -136,7 +136,7 @@ def test_Wrangler_make_package_04():
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'red~example~score g new segment~04 y q'
         abjad_ide._run(input_=input_)
-        contents = abjad_ide._session._transcript.contents
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)

@@ -10,7 +10,7 @@ def test_PackageManager_quit_01():
     
     input_ = 'red~example~score m tempo~inventory q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert contents
 
@@ -21,7 +21,7 @@ def test_PackageManager_quit_02():
     
     input_ = 'red~example~score g A q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert contents
 
@@ -31,6 +31,6 @@ def test_PackageManager_quit_03():
 
     input_ = 'red~example~score q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert contents

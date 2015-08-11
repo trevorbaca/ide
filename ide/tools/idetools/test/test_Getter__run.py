@@ -10,7 +10,7 @@ def test_Getter__run_01():
 
     input_ = 'red~example~score u mc foo n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     string = "Value for 'ok?' must be 'y' or 'n'."
     assert string in contents
@@ -22,7 +22,7 @@ def test_Getter__run_02():
 
     input_ = 'red~example~score u mc n q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Value for' not in contents
 
@@ -33,6 +33,6 @@ def test_Getter__run_03():
 
     input_ = 'red~example~score u mc N q'
     abjad_ide._run(input_=input_)
-    contents = abjad_ide._session._transcript.contents
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Value for' not in contents
