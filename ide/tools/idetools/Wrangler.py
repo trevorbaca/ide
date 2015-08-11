@@ -168,6 +168,7 @@ class Wrangler(Controller):
         return menu
 
     def _run_wrangler(self, directory=None):
+        from ide.tools import idetools
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
@@ -179,6 +180,17 @@ class Wrangler(Controller):
         elif self._session.is_in_score:
             path = self._get_current_directory()
             directory_change = systemtools.TemporaryDirectoryChange(path)
+#        manifest_current_directory = self._session.manifest_current_directory
+#        score_directory = self._path_to_score_directory(
+#            manifest_current_directory)
+#        if score_directory is None:
+#            current_directory = configuration.composer_scores_directory
+#        else:
+#            current_directory = os.path.join(score_directory, directory)
+#        current_directory = idetools.CurrentDirectory(
+#            current_directory=current_directory,
+#            session=self._session,
+#            )
         with controller, directory_change:
             result = None
             self._session._pending_redraw = True

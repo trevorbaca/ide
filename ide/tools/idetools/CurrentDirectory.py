@@ -10,6 +10,7 @@ class CurrentDirectory(ContextManager):
 
     __slots__ = (
         '_current_directory',
+        '_session',
         )
 
     ### INITIALIZER ###

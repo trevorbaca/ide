@@ -73,7 +73,12 @@ class AbjadIDE(Controller):
             paths_to_keep.append(views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
         interaction = self._io_manager._make_interaction(task=False)
-        with controller, directory_change, state, interaction:
+        current_directory = idetools.CurrentDirectory(
+            current_directory=configuration.composer_scores_directory,
+            session=self._session,
+            )
+        with controller, directory_change, state, interaction, \
+            current_directory:
             self._session._pending_redraw = True
             if self._session.is_test:
                 empty_views = os.path.join(

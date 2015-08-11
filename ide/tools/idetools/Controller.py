@@ -2252,12 +2252,18 @@ class Controller(object):
                 file_pointer.write(new_file_contents)
 
     def _run_package_manager_menu(self, directory):
+        from ide.tools import idetools
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
             )
         directory_change = systemtools.TemporaryDirectoryChange(directory)
-        with controller, directory_change:
+        assert os.path.sep in directory
+        current_directory = idetools.CurrentDirectory(
+            current_directory=directory,
+            session=self._session,
+            )
+        with controller, directory_change, current_directory:
                 self._enter_run(directory=directory)
                 self._session._pending_redraw = True
                 while True:
