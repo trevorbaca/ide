@@ -184,21 +184,6 @@ class Wrangler(Controller):
             message = message.format(string)
             self._io_manager._display(message)
 
-    def _extract_common_parent_directories(self, paths):
-        parent_directories = []
-        abjad_ide_example_scores_directory = \
-            configuration.abjad_ide_example_scores_directory
-        scores_directory = configuration.composer_scores_directory
-        for path in paths:
-            parent_directory = os.path.dirname(path)
-            if parent_directory == scores_directory:
-                parent_directories.append(path)
-            elif parent_directory == abjad_ide_example_scores_directory:
-                parent_directories.append(path)
-            elif parent_directory not in parent_directories:
-                parent_directories.append(parent_directory)
-        return parent_directories
-
     def _get_available_path(
         self,
         message=None,

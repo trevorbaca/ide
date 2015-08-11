@@ -3293,21 +3293,14 @@ class Controller(object):
         section='git', 
         )
     def git_status_every_package(self, directories):
-        r'''Displays repository status of every asset.
+        r'''Displays Git status of every package.
 
         Returns none.
         '''
         self._session._attempted_display_status = True
-        directories = self._extract_common_parent_directories(directories)
         directories.sort()
         for directory in directories:
             self._git_status(directory)
-        if not directories:
-            raise Exception('how did we get here?')
-            #message = 'repository status for {} ... OK'
-            #directory = self._get_current_directory()
-            #message = message.format(directory)
-            #self._io_manager._display(message)
 
     @Command(
         'up*', 
