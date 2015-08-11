@@ -21,7 +21,6 @@ class Wrangler(Controller):
         '_asset_identifier',
         '_directory_name',
         '_file_extension',
-        '_force_lowercase_file_name',
         '_group_asset_section_by_annotation',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -38,7 +37,6 @@ class Wrangler(Controller):
         self._asset_identifier = None
         self._directory_name = None
         self._file_extension = ''
-        self._force_lowercase_file_name = True
         self._group_asset_section_by_annotation = True
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
@@ -72,7 +70,6 @@ class Wrangler(Controller):
         self._asset_identifier = 'file'
         self._directory_name = 'makers'
         self._file_extension = '.py'
-        self._force_lowercase_file_name = False
 
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'package'

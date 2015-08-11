@@ -1633,11 +1633,7 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_file(
-        self, 
-        file_extension, 
-        force_lowercase_file_name,
-        ):
+    def _make_file(self, file_extension):
         contents = ''
         if file_extension == '.py':
             contents == self._unicode_directive
@@ -1660,7 +1656,7 @@ class Controller(object):
         if file_name_predicate == stringtools.is_dash_case:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
-        if force_lowercase_file_name:
+        if not directory_name == 'makers':
             name = name.lower()
         if not name.endswith(file_extension):
             name = name + file_extension
@@ -2178,7 +2174,6 @@ class Controller(object):
         path,
         file_extension=None,
         file_name_callback=None,
-        force_lowercase=True,
         ):
         base_name = os.path.basename(path)
         line = 'current name: {}'.format(base_name)
@@ -2192,7 +2187,7 @@ class Controller(object):
         if file_name_callback:
             new_package_name = file_name_callback(new_package_name)
         new_package_name = new_package_name.replace(' ', '_')
-        if force_lowercase:
+        if not 'makers' in path.split(os.path.sep):
             new_package_name = new_package_name.lower()
         if file_extension and not new_package_name.endswith(file_extension):
             new_package_name = new_package_name + file_extension
@@ -3032,7 +3027,7 @@ class Controller(object):
         if file_name_predicate == stringtools.is_dash_case:
             new_name = self._to_dash_case(new_name)
         new_name = new_name.replace(' ', '_')
-        if self._force_lowercase_file_name:
+        if not directory_name == 'makers':
             new_name = new_name.lower()
         if file_extension and not new_name.endswith(file_extension):
             new_name = new_name + file_extension
@@ -4248,10 +4243,7 @@ class Controller(object):
         Returns none.
         '''
         if self._asset_identifier == 'file':
-            self._make_file(
-                file_extension=self._file_extension,
-                force_lowercase_file_name=self._force_lowercase_file_name,
-                )
+            self._make_file(file_extension=self._file_extension)
         elif self._directory_name == 'scores':
             self._make_score_package()
         else:
@@ -4498,7 +4490,6 @@ class Controller(object):
             path,
             file_extension=file_extension,
             file_name_callback=file_name_callback,
-            force_lowercase=self._force_lowercase_file_name,
             )
         self._session._is_backtracking_locally = False
 
