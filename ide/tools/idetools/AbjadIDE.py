@@ -51,41 +51,6 @@ class AbjadIDE(Controller):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _build_file_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'build'
-        return wrangler
-
-    @property
-    def _distribution_file_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'distribution'
-        return wrangler
-
-    @property
-    def _etc_file_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'etc'
-        return wrangler
-
-    @property
-    def _maker_file_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'makers'
-        return wrangler
-
-    @property
-    def _material_package_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'materials'
-        return wrangler
-
-    @property
     def _score_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
@@ -97,20 +62,6 @@ class AbjadIDE(Controller):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
         wrangler._directory_name = 'segments'
-        return wrangler
-
-    @property
-    def _stylesheet_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'stylesheets'
-        return wrangler
-
-    @property
-    def _test_file_wrangler(self):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(session=self._session)
-        wrangler._directory_name = 'test'
         return wrangler
 
     ### PRIVATE METHODS ###

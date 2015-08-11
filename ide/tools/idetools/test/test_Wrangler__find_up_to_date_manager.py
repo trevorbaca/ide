@@ -31,7 +31,7 @@ def test_Wrangler__find_up_to_date_manager_02():
     r'''Finds up-to-date material package manager.
     '''
 
-    wrangler = abjad_ide._material_package_wrangler
+    wrangler = abjad_ide._initialize_wrangler('materials')
     manager = wrangler._find_up_to_date_manager(
         system=True,
         )
