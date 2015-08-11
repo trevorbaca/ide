@@ -191,24 +191,6 @@ class Wrangler(Controller):
         storehouses = list(sorted(storehouses))
         return storehouses
 
-    def _is_valid_file_directory_entry(self, expr):
-        superclass = super(Wrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            name, file_extension = os.path.splitext(expr)
-            if self._file_name_predicate(name):
-                if self._file_extension == '':
-                    return True
-                elif self._file_extension == file_extension:
-                    return True
-        return False
-
-    def _is_valid_package_directory_entry(self, expr):
-        superclass = super(Wrangler, self)
-        if superclass._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
-        return False
-
     def _make_asset_menu_entries(
         self,
         apply_current_directory=True,
