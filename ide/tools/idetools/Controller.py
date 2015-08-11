@@ -901,12 +901,6 @@ class Controller(object):
         return paths
 
     @staticmethod
-    def _get_views_metadata_py_path(session):
-        path = configuration.abjad_ide_views_directory
-        manager = session._io_manager._make_package_manager(path)
-        return os.path.join(manager._path, '__metadata__.py')
-
-    @staticmethod
     def _get_views_package_manager(io_manager):
         path = configuration.abjad_ide_views_directory
         return io_manager._make_package_manager(path)
@@ -1082,10 +1076,10 @@ class Controller(object):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._session._io_manager._make_interaction():
+        with self._io_manager._make_interaction():
             if result.startswith('!'):
                 statement = result[1:]
-                self._session._io_manager._invoke_shell(statement)
+                self._io_manager._invoke_shell(statement)
             elif result in self._command_name_to_command:
                 command = self._command_name_to_command[result]
                 if '_path' in command.argument_names:
@@ -1102,7 +1096,7 @@ class Controller(object):
             elif (result.endswith('!') and 
                 result[:-1] in self._command_name_to_command):
                 result = result[:-1]
-                with self._session._io_manager._make_interaction(
+                with self._io_manager._make_interaction(
                     confirm=False,
                     ):
                     self._command_name_to_command[result]()
@@ -1117,20 +1111,20 @@ class Controller(object):
                         aliased_path,
                         )
                     if os.path.isfile(aliased_path):
-                        self._session._io_manager.open_file(aliased_path)
+                        self._io_manager.open_file(aliased_path)
                     else:
                         message = 'file does not exist: {}.'
                         message = message.format(aliased_path)
-                        self._session._io_manager._display(message)
+                        self._io_manager._display(message)
                 else:
                     message = 'unknown command: {!r}.'
                     message = message.format(result)
-                    self._session._io_manager._display([message, ''])
+                    self._io_manager._display([message, ''])
 
     def _handle_numeric_user_input(self, result):
         from ide.tools import idetools
         if os.path.isfile(result):
-            self._session._io_manager.open_file(result)
+            self._io_manager.open_file(result)
         elif os.path.isdir(result):
             basename = os.path.basename(result)
             if basename == 'build':
@@ -1690,7 +1684,7 @@ class Controller(object):
     def _make_main_menu(self, explicit_header, _path=None):
         assert isinstance(explicit_header, str), repr(explicit_header)
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
-        menu = self._session._io_manager._make_menu(
+        menu = self._io_manager._make_menu(
             explicit_header=explicit_header,
             name=name,
             )
@@ -3126,7 +3120,7 @@ class Controller(object):
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
-        self._session._io_manager.edit(path)
+        self._io_manager.edit(path)
 
     @Command(
         'de', 
@@ -3141,7 +3135,7 @@ class Controller(object):
         Returns none.
         '''
         definition_py_path = os.path.join(directory, 'definition.py')
-        self._session._io_manager.edit(definition_py_path)
+        self._io_manager.edit(definition_py_path)
 
     @Command(
         'de*', 
@@ -3170,7 +3164,7 @@ class Controller(object):
         Returns none.
         '''
         illustrate_py_path = os.path.join(directory, '__illustrate__.py')
-        self._session._io_manager.edit(illustrate_py_path)
+        self._io_manager.edit(illustrate_py_path)
 
     @Command(
         'ie', 
@@ -3185,7 +3179,7 @@ class Controller(object):
         Returns none.
         '''
         illustration_ly_path = os.path.join(directory, 'illustration.ly')
-        self._session._io_manager.open_file(illustration_ly_path)
+        self._io_manager.open_file(illustration_ly_path)
 
     @Command(
         'sty',
@@ -3206,7 +3200,7 @@ class Controller(object):
         if not path or not os.path.isfile(path):
             with open(path, 'w') as file_pointer:
                 file_pointer.write('')
-        self._session._io_manager.edit(path)
+        self._io_manager.edit(path)
 
     @Command(
         'bcg', 
@@ -4242,13 +4236,13 @@ class Controller(object):
 
         Returns none.
         '''
-        statement = self._session._io_manager._handle_input(
+        statement = self._io_manager._handle_input(
             '$',
             include_chevron=False,
             include_newline=False,
             )
         statement = statement.strip()
-        self._session._io_manager._invoke_shell(statement)
+        self._io_manager._invoke_shell(statement)
 
     @Command(
         'new', 
@@ -4334,7 +4328,7 @@ class Controller(object):
         Returns none.
         '''
         illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
-        self._session._io_manager.open_file(illustration_pdf_path)
+        self._io_manager.open_file(illustration_pdf_path)
 
     @Command('log', section='global files')
     def open_lilypond_log(self):

@@ -159,7 +159,8 @@ class Session(object):
             messages.append(message)
             message = 'prune {} soon.'.format(transcripts_directory)
             messages.append(message)
-            self.io_manager._display(messages)
+            for message in messages:
+                print(mesage)
         self.transcript._write()
 
     def _print_transcript(self):
@@ -361,21 +362,6 @@ class Session(object):
         Returns string or none.
         '''
         return self._initial_input
-
-    @property
-    def io_manager(self):
-        r'''Gets session IO manager.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.io_manager
-                IOManager()
-
-        Returns IO manager.
-        '''
-        return self._io_manager
 
     @property
     def is_at_top_level(self):
