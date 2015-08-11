@@ -733,12 +733,11 @@ class Controller(object):
                 os.path.basename(path),
                 )
 
-    @staticmethod
-    def _get_previous_segment_manager(session, path):
-        wrangler = session._abjad_ide._segment_package_wrangler
-        managers = wrangler._list_visible_asset_managers()
-        for i, manager in enumerate(managers):
-            if manager._path == path:
+    def _get_previous_segment_manager(self, directory):
+        wrangler = self._session._abjad_ide._segment_package_wrangler
+        paths = wrangler._list_visible_asset_paths()
+        for i, path in enumerate(paths):
+            if path == directory:
                 break
         else:
             message = 'can not find segment package manager.'
@@ -3827,7 +3826,6 @@ class Controller(object):
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
             previous_segment_manager = self._get_previous_segment_manager(
-                self._session,
                 directory,
                 )
             if previous_segment_manager is None:

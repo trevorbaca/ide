@@ -223,22 +223,6 @@ class Wrangler(Controller):
                 return True
         return False
 
-    def _list_all_directories_with_metadata_pys(self):
-        directories = []
-        paths = self._list_visible_asset_paths()
-        for path in paths:
-            result = self._list_directories_with_metadata_pys(path)
-            directories.extend(result)
-        return directories
-
-    def _list_visible_asset_managers(self):
-        paths = self._list_visible_asset_paths()
-        managers = []
-        for path in paths:
-            manager = self._get_manager(path)
-            managers.append(manager)
-        return managers
-
     def _make_asset(self, asset_name):
         if os.path.sep in asset_name:
             asset_name = os.path.basename(asset_name)
