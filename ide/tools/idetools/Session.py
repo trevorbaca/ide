@@ -50,7 +50,6 @@ class Session(object):
         '_is_backtracking_to_score',
         '_is_navigating_home',
         '_is_in_confirmation_environment',
-        '_is_in_user_input_getter',
         '_is_navigating_to_next_asset',
         '_is_navigating_to_next_score',
         '_is_navigating_to_previous_asset',
@@ -414,25 +413,6 @@ class Session(object):
         '''
         if self.current_score_package_manager is not None:
             return True
-        return False
-
-    @property
-    def is_in_user_input_getter(self):
-        r'''Is true when session is in user input getter. Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_user_input_getter
-                False
-
-        Returns true or false..
-        '''
-        from ide.tools import idetools
-        for controller in reversed(self.controller_stack):
-            if isinstance(controller, idetools.Getter):
-                return True
         return False
 
     @property
