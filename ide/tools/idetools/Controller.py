@@ -1067,6 +1067,7 @@ class Controller(object):
                     self._session._io_manager._display([message, ''])
 
     def _handle_numeric_user_input(self, result):
+        from ide.tools import idetools
         if os.path.isfile(result):
             self._session._io_manager.open_file(result)
         elif os.path.isdir(result):
@@ -1088,7 +1089,10 @@ class Controller(object):
             elif basename == 'test':
                 self.go_to_score_test_files()
             else:
-                manager = self._get_manager(result)
+                manager = idetools.PackageManager(
+                    path=result,
+                    session=self._session,
+                    )
                 manager._run_package_manager_menu(result)
                 #self._run_package_manager_menu(result)
         else:

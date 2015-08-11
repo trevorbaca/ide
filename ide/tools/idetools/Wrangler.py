@@ -142,15 +142,6 @@ class Wrangler(Controller):
                 )
         return configuration.composer_scores_directory
 
-    def _get_manager(self, path):
-        from ide.tools import idetools
-        assert os.path.sep in path, repr(path)
-        manager = idetools.PackageManager(
-            path=path,
-            session=self._session,
-            )
-        return manager
-
     def _get_next_asset_path(self):
         last_path = self._session.last_asset_path
         menu_entries = self._make_asset_menu_entries()
