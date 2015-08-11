@@ -373,12 +373,12 @@ class Wrangler(Controller):
         storehouses = list(sorted(storehouses))
         return storehouses
 
-    def _interpret_file_ending_with(self, string):
+    def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
-        directory_path = self._get_current_directory()
+        directory_path = directory
         file_path = self._get_file_path_ending_with(directory_path, string)
         if not file_path:
             message = 'file ending in {!r} not found.'
@@ -1138,149 +1138,6 @@ class Wrangler(Controller):
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
 
-    @Command(
-        'di*',
-        directories=('segments'),
-        outside_score=False,
-        section='star',
-        )
-    def illustrate_every_definition_py(self):
-        r'''Illustrates ``definition.py`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'illustrate_definition_py'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            inputs_, outputs_ = method(dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='illustrate')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        for manager in managers:
-            method = getattr(manager, method_name)
-            method()
-
-    @Command(
-        'bci',
-        directories=('build'),
-        section='build',
-        outside_score=False,
-        )
-    def interpret_back_cover(self):
-        r'''Interprets ``back-cover.tex``.
-
-        Returns none.
-        '''
-        self._interpret_file_ending_with('back-cover.tex')
-
-    @Command(
-        'ii*',
-        directories=('materials', 'segments'),
-        outside_score=False,
-        section='star',
-        )
-    def interpret_every_illustration_ly(
-        self, 
-        open_every_illustration_pdf=True,
-        ):
-        r'''Interprets ``illustration.ly`` in every package.
-
-        Makes ``illustration.pdf`` in every package.
-
-        Returns none.
-        '''
-        managers = self._list_visible_asset_managers()
-        inputs, outputs = [], []
-        method_name = 'interpret_illustration_ly'
-        for manager in managers:
-            method = getattr(manager, method_name)
-            arguments = []
-            for argument_name in method.argument_names:
-                argument = getattr(manager, argument_name)
-                arguments.append(argument)
-            inputs_, outputs_ = method(*arguments, dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        for manager in managers:
-            with self._io_manager._silent():
-                method = getattr(manager, method_name)
-                arguments = []
-                for argument_name in method.argument_names:
-                    argument = getattr(manager, argument_name)
-                    arguments.append(argument)
-                subprocess_messages, candidate_messages = method(*arguments)
-            if subprocess_messages:
-                self._io_manager._display(subprocess_messages)
-                self._io_manager._display(candidate_messages)
-                self._io_manager._display('')
-                
-    @Command(
-        'fci',
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_front_cover(self):
-        r'''Interprets ``front-cover.tex``.
-
-        Returns none.
-        '''
-        self._interpret_file_ending_with('front-cover.tex')
-
-    @Command(
-        'mi',
-        argument_names=('current_score_directory',),
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_music(self, score_directory):
-        r'''Interprets ``music.ly``.
-
-        Returns none.
-        '''
-        self._call_lilypond_on_file_ending_with(
-            os.path.join(score_directory, 'build'),
-            'music.ly',
-            )
-
-    @Command(
-        'pi',
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_preface(self):
-        r'''Interprets ``preface.tex``.
-
-        Returns none.
-        '''
-        self._interpret_file_ending_with('preface.tex')
-
-    @Command(
-        'si',
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_score(self):
-        r'''Interprets ``score.tex``.
-
-        Returns none.
-        '''
-        self._interpret_file_ending_with('score.tex')
-
     @Command('new', description='new', section='basic', is_hidden=False)
     def make(self):
         r'''Makes asset.
@@ -1293,63 +1150,6 @@ class Wrangler(Controller):
             self._make_score_package()
         else:
             self._make_package()
-
-    @Command('so*', section='star', in_score=False, outside_score='home')
-    def open_every_score_pdf(self):
-        r'''Opens ``score.pdf`` in every package.
-
-        Returns none.
-        '''
-        visible_paths = self._list_visible_asset_paths()
-        paths = []
-        for visible_path in visible_paths:
-            inputs, outputs = self.open_score_pdf(visible_path, dry_run=True)
-            paths.extend(inputs)
-        messages = ['will open ...']
-        paths = [self._tab + _ for _ in paths]
-        messages.extend(paths)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
-            return
-        if paths:
-            self._io_manager.open_file(paths)
-
-    @Command(
-        'sp', 
-        argument_names=('current_score_directory',),
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def push_score_pdf_to_distribution_directory(self, score_directory):
-        r'''Pushes ``score.pdf`` to distribution directory.
-
-        Returns none.
-        '''
-        path = os.path.join(score_directory, 'build')
-        build_score_path = os.path.join(path, 'score.pdf')
-        if not os.path.exists(build_score_path):
-            message = 'does not exist: {!r}.'
-            message = message.format(build_score_path)
-            self._io_manager._display(message)
-            return
-        score_package_name = os.path.basename(score_directory)
-        score_package_name = score_package_name.replace('_', '-')
-        distribution_file_name = '{}-score.pdf'.format(score_package_name)
-        distribution_directory = os.path.join(score_directory, 'distribution')
-        distribution_score_path = os.path.join(
-            distribution_directory,
-            distribution_file_name,
-            )
-        shutil.copyfile(build_score_path, distribution_score_path)
-        messages = []
-        messages.append('Copied')
-        message = ' FROM: {}'.format(build_score_path)
-        messages.append(message)
-        message = '   TO: {}'.format(distribution_score_path)
-        messages.append(message)
-        self._io_manager._display(messages)
 
     @Command('rm', section='basic', is_hidden=False)
     def remove(self):
