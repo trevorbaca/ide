@@ -135,62 +135,13 @@ class Wrangler(Controller):
         self._file_name_predicate = stringtools.is_snake_case
         return self
 
-    def _confirm_segment_names(self, score_directory):
-        segment_package_wrangler = \
-            self._session._abjad_ide._segment_package_wrangler
-        segments_directory = os.path.join(score_directory, 'segments')
-        view_name = segment_package_wrangler._read_view_name(
-            segments_directory,
-            )
-        view_inventory = segment_package_wrangler._read_view_inventory(
-            'segments',
-            )
-        if not view_inventory or view_name not in view_inventory:
-            view_name = None
-        segment_paths = segment_package_wrangler._list_visible_asset_paths()
-        segment_paths = segment_paths or []
-        segment_names = []
-        for segment_path in segment_paths:
-            segment_name = os.path.basename(segment_path)
-            segment_names.append(segment_name)
-        messages = []
-        if view_name:
-            message = 'the {!r} segment view is currently selected.'
-            message = message.format(view_name)
-            messages.append(message)
-        if segment_names:
-            message = 'will assemble segments in this order:'
-            messages.append(message)
-            for segment_name in segment_names:
-                message = '    ' + segment_name
-                messages.append(message)
-        else:
-            message = 'no segments found:'
-            message += ' will generate source without segments.'
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
-            return False
-        return segment_names
-
-    def _get_available_path(
-        self,
-        message=None,
-        storehouse=None,
-        ):
-        if storehouse is None:
-            storehouse = self._get_current_storehouse(
-                self._session,
-                self._directory_name,
-                )
+    def _get_available_path(self, storehouse):
         while True:
             default_prompt = 'enter {} name'.format(self._asset_identifier)
-            message = message or default_prompt
             getter = self._io_manager._make_getter()
-            getter.append_string(message)
+            getter.append_string(default_prompt)
             name = getter._run()
-            if self._session.is_backtracking or not name:
+            if self._io_manager._is_backtracking or not name:
                 return
             name = stringtools.strip_diacritics(name)
             words = stringtools.delimit_words(name)
@@ -211,12 +162,11 @@ class Wrangler(Controller):
         if os.path.sep in directory_token:
             return io_manager._make_package_manager(directory_token)
 
-    @staticmethod
-    def _get_current_storehouse(session, directory_name):
-        if session.is_in_score:
+    def _get_current_storehouse(self):
+        if self._session.is_in_score:
             return os.path.join(
-                session.current_score_directory,
-                directory_name,
+                self._session.current_score_directory,
+                self._directory_name,
                 )
         return configuration.composer_scores_directory
 
@@ -316,10 +266,7 @@ class Wrangler(Controller):
         if os.path.sep in asset_name:
             asset_name = os.path.basename(asset_name)
         assert stringtools.is_snake_case(asset_name)
-        current_storehouse = self._get_current_storehouse(
-            self._session,
-            self._directory_name,
-            )
+        current_storehouse = self._get_current_storehouse()
         path = os.path.join(
             current_storehouse,
             asset_name,
@@ -444,14 +391,10 @@ class Wrangler(Controller):
 
     def _make_package(self):
         if self._session.is_in_score:
-            storehouse = self._get_current_storehouse(
-                self._session,
-                self._directory_name,
-                )
+            storehouse = self._get_current_storehouse()
         else:
-            example_score_packages = self._session.is_test
             storehouse = self._select_storehouse(
-                example_score_packages=example_score_packages,
+                example_score_packages=self._session.is_test,
                 )
             if self._session.is_backtracking or storehouse is None:
                 return

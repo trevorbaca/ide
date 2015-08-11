@@ -279,6 +279,43 @@ class Controller(object):
         pairs = zip(source_file_paths, target_file_paths)
         return pairs
 
+    def _confirm_segment_names(self, score_directory):
+        segment_package_wrangler = \
+            self._session._abjad_ide._segment_package_wrangler
+        segments_directory = os.path.join(score_directory, 'segments')
+        view_name = self._read_view_name(
+            segments_directory,
+            )
+        view_inventory = self._read_view_inventory(segments_directory)
+        if not view_inventory or view_name not in view_inventory:
+            view_name = None
+        segment_paths = segment_package_wrangler._list_visible_asset_paths()
+        segment_paths = segment_paths or []
+        segment_names = []
+        for segment_path in segment_paths:
+            segment_name = os.path.basename(segment_path)
+            segment_names.append(segment_name)
+        messages = []
+        if view_name:
+            message = 'the {!r} segment view is currently selected.'
+            message = message.format(view_name)
+            messages.append(message)
+        if segment_names:
+            message = 'will assemble segments in this order:'
+            messages.append(message)
+            for segment_name in segment_names:
+                message = '    ' + segment_name
+                messages.append(message)
+        else:
+            message = 'no segments found:'
+            message += ' will generate source without segments.'
+            messages.append(message)
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return False
+        return segment_names
+
     def _copy_boilerplate(
         self, 
         source_file_name, 
