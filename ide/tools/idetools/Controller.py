@@ -32,6 +32,17 @@ class Controller(object):
 
     _abjad_import_statement = 'from abjad import *'
 
+    _directory_name_to_navigation_command_name = {
+        'build': 'u',
+        'distribution': 'd',
+        'etc': 'e',
+        'makers': 'k',
+        'materials': 'm',
+        'segments': 'g',
+        'stylesheets': 'y',
+        'test': 't',
+        }
+
     _directory_name_to_package_contents = {
         'materials': {
             'optional_directories': (
@@ -2184,7 +2195,9 @@ class Controller(object):
                 self._enter_run(directory=directory)
                 self._session._pending_redraw = True
                 while True:
-                    result = self._session.navigation_command_name
+                    result = \
+                        self._directory_name_to_navigation_command_name.get(
+                        self._session.navigation_target)
                     if not result:
                         menu_header = self._path_to_menu_header(directory)
                         menu = self._make_main_menu(

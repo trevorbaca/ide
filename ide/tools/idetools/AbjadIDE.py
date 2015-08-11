@@ -148,7 +148,10 @@ class AbjadIDE(Controller):
                 shutil.copyfile(empty_views, views)
             while True:
                 result = self._score_package_wrangler._get_sibling_score_path()
-                result = result or self._session.navigation_command_name
+                if result is None:
+                    result = \
+                        self._directory_name_to_navigation_command_name.get(
+                        self._session.navigation_target)
                 if result:
                     self._score_package_wrangler._handle_input(result)
                 else:

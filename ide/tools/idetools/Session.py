@@ -1,14 +1,12 @@
 # -*- encoding: utf-8 -*-
 import collections
 import os
-from abjad.tools import abctools
-from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 configuration = AbjadIDEConfiguration()
 
 
-class Session(abctools.AbjadObject):
+class Session(object):
     r'''Abjad IDE session.
 
     ..  container:: example
@@ -28,6 +26,8 @@ class Session(abctools.AbjadObject):
         ::
 
             >>> session_in_score = ide.tools.idetools.Session()
+            >>> session_in_score
+            Session()
 
     '''
 
@@ -77,17 +77,6 @@ class Session(abctools.AbjadObject):
         '_pending_redraw',
         '_transcript',
         )
-
-    _directory_name_to_navigation_command_name = {
-        'build': 'u',
-        'distribution': 'd',
-        'etc': 'e',
-        'makers': 'k',
-        'materials': 'm',
-        'segments': 'g',
-        'stylesheets': 'y',
-        'test': 't',
-        }
 
     ### INITIALIZER ###
 
@@ -844,23 +833,6 @@ class Session(abctools.AbjadObject):
         for command in reversed(self.command_history):
             if not command.startswith('.'):
                 return command
-
-    @property
-    def navigation_command_name(self):
-        r'''Gets navigation command name.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.navigation_command_name is None
-                True
-
-        Returns 'd', 'e', 'g, 'k', 'm', 't', 'u', 'y' or none.
-        '''
-        directory_name = self.navigation_target
-        return self._directory_name_to_navigation_command_name.get(
-            directory_name)
 
     @property
     def navigation_target(self):
