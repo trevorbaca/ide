@@ -32,7 +32,6 @@ class AbjadIDE(Controller):
         if session is None:
             session = idetools.Session()
             session._is_test = is_test
-        session._abjad_ide = self
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session)
         for directory_name in self._known_directory_names:

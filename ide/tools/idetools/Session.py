@@ -1,7 +1,5 @@
 # -*- encoding: utf-8 -*-
-import collections
 import os
-from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 configuration = AbjadIDEConfiguration()
 
@@ -34,7 +32,6 @@ class Session(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_abjad_ide',
         '_allow_unknown_command_during_test',
         '_after_redraw_message',
         '_attempted_display_status',
@@ -81,7 +78,6 @@ class Session(object):
 
     def __init__(self, input_=None, is_test=False):
         from ide.tools import idetools
-        self._abjad_ide = None
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
         self._attempted_display_status = False
@@ -183,20 +179,6 @@ class Session(object):
         self._allow_unknown_command_during_test = allow_unknown
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def abjad_ide(self):
-        r'''Gets session IDE.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.abjad_ide
-
-        Returns Abjad IDE or none.
-        '''
-        return self._abjad_ide
 
     @property
     def command_history(self):
