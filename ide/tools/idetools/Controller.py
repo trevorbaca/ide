@@ -2831,12 +2831,7 @@ class Controller(object):
             message = '{} OK'.format(message)
         messages.insert(0, message)
         if wranglers:
-            controller = self._io_manager._controller(
-                controller=self,
-                current_score_directory=directory,
-                )
-            silence = self._io_manager._silent()
-            with controller, silence:
+            with self._io_manager._silent():
                 for wrangler in wranglers:
                     self._io_manager._display(repr(wrangler))
                     asset_identifier = \

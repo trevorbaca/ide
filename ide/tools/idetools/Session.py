@@ -195,9 +195,7 @@ class Session(object):
 
         Returns string or none.
         '''
-        if self._current_score_directory:
-            return self._current_score_directory
-        elif self.current_score_package_manager:
+        if self.current_score_package_manager:
             return self.current_score_package_manager._path
 
     @property
