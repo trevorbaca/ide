@@ -2976,7 +2976,9 @@ class Controller(object):
         if not old_path:
             return
         old_name = os.path.basename(old_path)
-        new_storehouse = self._copy_target_directory
+        new_storehouse = None
+        if self._directory_name == 'scores':
+            new_storehouse = configuration.composer_scores_directory
         if new_storehouse:
             pass
         elif self._session.is_in_score:

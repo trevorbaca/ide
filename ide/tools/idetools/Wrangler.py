@@ -19,7 +19,6 @@ class Wrangler(Controller):
 
     __slots__ = (
         '_asset_identifier',
-        '_copy_target_directory',
         '_directory_name',
         '_file_extension',
         '_file_name_predicate',
@@ -39,7 +38,6 @@ class Wrangler(Controller):
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
         self._asset_identifier = None
-        self._copy_target_directory = None
         self._directory_name = None
         self._file_extension = ''
         self._file_name_predicate = None
@@ -100,7 +98,6 @@ class Wrangler(Controller):
 
     def _configure_as_score_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._copy_target_directory = configuration.composer_scores_directory
         self._directory_name = 'scores'
         self._group_asset_section_by_annotation = False
         self._only_example_scores_during_test = True
