@@ -188,11 +188,6 @@ class IOManager(IOManager):
                 input_ = self._pop_from_pending_input()
                 if input_ == '<return>':
                     found_default_token = True
-            if not found_default_token:
-                self._session.command_history.append(input_)
-            if input_ == '.':
-                last_semantic_command = self._session.last_semantic_command
-                input_ = last_semantic_command
             if found_default_token:
                 menu_chunk = [message.strip()]
                 if include_newline:

@@ -42,7 +42,6 @@ class Session(object):
         '_attempted_to_revert',
         '_attempted_to_update',
         '_clear_terminal_after_quit',
-        '_command_history',
         '_confirm',
         '_controller_stack',
         '_current_score_directory',
@@ -87,7 +86,6 @@ class Session(object):
         self._attempted_to_revert = False
         self._attempted_to_update = False
         self._clear_terminal_after_quit = False
-        self._command_history = []
         self._confirm = True
         self._controller_stack = []
         self._current_score_directory = None
@@ -178,36 +176,6 @@ class Session(object):
         self._allow_unknown_command_during_test = allow_unknown
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def command_history(self):
-        r'''Gets session command history.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.command_history
-                []
-
-        Returns list.
-        '''
-        return self._command_history
-
-    @property
-    def command_history_string(self):
-        r'''Gets session command history string.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.command_history_string
-                ''
-
-        Returns string.
-        '''
-        return ' '.join(self.explicit_command_history)
 
     @property
     def confirm(self):
@@ -324,27 +292,6 @@ class Session(object):
         Returns 'action', 'navigation' or none.
         '''
         return self._display_command_help
-
-    @property
-    def explicit_command_history(self):
-        r'''Gets session explicit command history.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.explicit_command_history
-                []
-
-        Returns list.
-        '''
-        result = []
-        for command in self.command_history:
-            if command == '':
-                result.append('<return>')
-            else:
-                result.append(command)
-        return result
 
     @property
     def initial_input(self):
@@ -736,23 +683,6 @@ class Session(object):
         return self._last_score_path
 
     @property
-    def last_semantic_command(self):
-        r'''Gets session last semantic command.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.last_semantic_command is None
-                True
-
-        Returns string or none.
-        '''
-        for command in reversed(self.command_history):
-            if not command.startswith('.'):
-                return command
-
-    @property
     def navigation_target(self):
         r'''Gets navigation target.
 
@@ -812,26 +742,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._pending_redraw
-
-    @property
-    def testable_command_history_string(self):
-        r'''Gets session testable command history string.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.testable_command_history_string
-                ''
-
-        Returns string.
-        '''
-        result = []
-        for part in self.explicit_command_history:
-            if ' ' in part and ',' not in part:
-                part = part.replace(' ', '~')
-            result.append(part)
-        return ' '.join(result)
 
     @property
     def transcript(self):
