@@ -61,12 +61,12 @@ class Wrangler(Controller):
         '''
         return '{}({!r})'.format(type(self).__name__, self._directory_name)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _directory_entry_predicate(self):
-        return self._directory_name_to_directory_entry_predicate(
-            self._directory_name)
+#    ### PRIVATE PROPERTIES ###
+#
+#    @property
+#    def _directory_entry_predicate(self):
+#        return self._directory_name_to_directory_entry_predicate(
+#            self._directory_name)
 
     ### PRIVATE METHODS ###
 
@@ -189,10 +189,7 @@ class Wrangler(Controller):
         apply_current_directory=True,
         set_view=True,
         ):
-        paths = self._list_asset_paths(
-            self._directory_name,
-            self._directory_entry_predicate,
-            )
+        paths = self._list_asset_paths(self._directory_name)
         current_directory = self._get_current_directory()
         if (apply_current_directory or set_view) and current_directory:
             paths = [_ for _ in paths if _.startswith(current_directory)]
@@ -312,7 +309,6 @@ class Wrangler(Controller):
     def _select_storehouse(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
             self._directory_name,
-            self._directory_entry_predicate,
             composer_score_packages=False,
             example_score_packages=example_score_packages,
             )

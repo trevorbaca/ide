@@ -187,15 +187,10 @@ class Controller(object):
             message = message.format(string)
             self._io_manager._display(message)
             
-    def _check_every_file(
-        self,
-        directory_token,
-        directory_entry_predicate=None,
-        ):
+    def _check_every_file(self, directory_token):
         directory_name = os.path.basename(directory_token)
         paths = self._list_asset_paths(
             directory_name,
-            directory_entry_predicate,
             valid_only=False,
             )
         paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
@@ -497,7 +492,6 @@ class Controller(object):
             Exception
         paths = self._list_asset_paths(
             self._directory_name,
-            self._directory_entry_predicate,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -1376,12 +1370,14 @@ class Controller(object):
     def _list_asset_paths(
         self,
         directory_name,
-        directory_entry_predicate,
         example_score_packages=True,
         composer_score_packages=True,
         valid_only=True,
         ):
         result = []
+        directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            directory_name)
         directories = self._list_storehouses(
             directory_name,
             example_score_packages=example_score_packages,
@@ -1793,14 +1789,12 @@ class Controller(object):
     def _make_storehouse_menu_entries(
         self,
         directory_name,
-        directory_entry_predicate,
         composer_score_packages=True,
         example_score_packages=True,
         ):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             directory_name,
-            directory_entry_predicate,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -2814,10 +2808,7 @@ class Controller(object):
                     if wrangler._asset_identifier == 'file':
                         directory_token = \
                             wrangler._get_current_directory_token()
-                        result = wrangler._check_every_file(
-                            directory_token,
-                            wrangler._directory_entry_predicate,
-                            )
+                        result = wrangler._check_every_file(directory_token)
                     else:
                         paths = wrangler._list_visible_asset_paths()
                         result = wrangler.check_every_package(
