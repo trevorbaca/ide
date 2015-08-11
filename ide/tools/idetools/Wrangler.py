@@ -38,35 +38,6 @@ class Wrangler(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _configure_as_build_file_wrangler(self):
-        self._directory_name = 'build'
-        return self
-
-    def _configure_as_distribution_file_wrangler(self):
-        self._directory_name = 'distribution'
-
-    def _configure_as_etc_file_wrangler(self):
-        self._directory_name = 'etc'
-
-    def _configure_as_maker_file_wrangler(self):
-        self._directory_name = 'makers'
-
-    def _configure_as_material_package_wrangler(self):
-        self._directory_name = 'materials'
-
-    def _configure_as_score_package_wrangler(self):
-        self._directory_name = 'scores'
-
-    def _configure_as_segment_package_wrangler(self):
-        self._directory_name = 'segments'
-
-    def _configure_as_stylesheet_wrangler(self):
-        self._directory_name = 'stylesheets'
-
-    def _configure_as_test_file_wrangler(self):
-        self._directory_name = 'test'
-        return self
-
     def _get_current_storehouse(self):
         if self._session.is_in_score:
             return os.path.join(

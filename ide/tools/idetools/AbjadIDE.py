@@ -54,63 +54,63 @@ class AbjadIDE(Controller):
     def _build_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_build_file_wrangler()
+        wrangler._directory_name = 'build'
         return wrangler
 
     @property
     def _distribution_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_distribution_file_wrangler()
+        wrangler._directory_name = 'distribution'
         return wrangler
 
     @property
     def _etc_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_etc_file_wrangler()
+        wrangler._directory_name = 'etc'
         return wrangler
 
     @property
     def _maker_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_maker_file_wrangler()
+        wrangler._directory_name = 'makers'
         return wrangler
 
     @property
     def _material_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_material_package_wrangler()
+        wrangler._directory_name = 'materials'
         return wrangler
 
     @property
     def _score_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_score_package_wrangler()
+        wrangler._directory_name = 'scores'
         return wrangler
 
     @property
     def _segment_package_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_segment_package_wrangler()
+        wrangler._directory_name = 'segments'
         return wrangler
 
     @property
     def _stylesheet_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_stylesheet_wrangler()
+        wrangler._directory_name = 'stylesheets'
         return wrangler
 
     @property
     def _test_file_wrangler(self):
         from ide.tools import idetools
         wrangler = idetools.Wrangler(session=self._session)
-        wrangler._configure_as_test_file_wrangler()
+        wrangler._directory_name = 'test'
         return wrangler
 
     ### PRIVATE METHODS ###
