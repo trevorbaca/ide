@@ -3803,7 +3803,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('build')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('build')
 
     @Command(
         's',
@@ -3832,7 +3832,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('distribution')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('distribution')
 
     @Command(
         'e',
@@ -3846,7 +3846,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('etc')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('etc')
 
     @Command(
         'k', 
@@ -3860,7 +3860,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('makers')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('makers')
 
     @Command(
         'm', 
@@ -3874,7 +3874,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('materials')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('materials')
 
     @Command(
         'g', 
@@ -3888,7 +3888,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('segments')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('segments')
 
     @Command(
         'y', 
@@ -3902,7 +3902,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('stylesheets')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('stylesheets')
 
     @Command(
         't', 
@@ -3916,7 +3916,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('test')
-        wrangler._run_wrangler()
+        wrangler._run_wrangler('test')
 
     @Command(
         'i', 

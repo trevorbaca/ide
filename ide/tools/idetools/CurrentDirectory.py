@@ -10,6 +10,7 @@ class CurrentDirectory(ContextManager):
 
     __slots__ = (
         '_current_directory',
+        '_old_directory',
         '_session',
         )
 
@@ -32,6 +33,7 @@ class CurrentDirectory(ContextManager):
 
         Returns none.
         '''
+        self._old_directory = self.session.manifest_current_directory
         self.session._manifest_current_directory = self.current_directory
 
     def __exit__(self, exg_type, exc_value, trackeback):
@@ -39,7 +41,7 @@ class CurrentDirectory(ContextManager):
 
         Returns none.
         '''
-        self.session._manifest_current_directory = None
+        self.session._manifest_current_directory = self._old_directory
 
     ### PUBLIC PROPERTIES ###
 
