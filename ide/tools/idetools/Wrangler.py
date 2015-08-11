@@ -43,7 +43,7 @@ class Wrangler(Controller):
         self._allow_asset_name_underscores = False
         self._asset_identifier = None
         self._copy_target_directory = None
-        self._directory_entry_predicate = self._is_valid_directory_entry
+        self._directory_entry_predicate = None
         self._directory_name = None
         self._file_extension = ''
         self._file_name_predicate = None

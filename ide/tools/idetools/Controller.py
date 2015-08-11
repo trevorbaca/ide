@@ -205,7 +205,7 @@ class Controller(object):
         invalid_paths = []
         for path in paths:
             file_name = os.path.basename(path)
-            if not self._is_valid_directory_entry(file_name):
+            if not file_name[0].isalpha():
                 invalid_paths.append(path)
         messages = []
         base_name = os.path.basename(directory_token)
@@ -1334,27 +1334,22 @@ class Controller(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    @staticmethod
-    def _is_valid_directory_entry(directory_entry):
-        if directory_entry[0].isalpha():
-            if not directory_entry.endswith('.pyc'):
-                return True
-        return False
-
     def _is_valid_file_directory_entry(self, expr):
-        if self._is_valid_directory_entry(expr):
-            name, file_extension = os.path.splitext(expr)
-            if self._file_name_predicate(name):
-                if self._file_extension == '':
-                    return True
-                elif self._file_extension == file_extension:
-                    return True
+        if expr[0].isalpha():
+            if not expr.endswith('.pyc'):
+                name, file_extension = os.path.splitext(expr)
+                if self._file_name_predicate(name):
+                    if self._file_extension == '':
+                        return True
+                    elif self._file_extension == file_extension:
+                        return True
         return False
 
     def _is_valid_package_directory_entry(self, expr):
-        if self._is_valid_directory_entry(expr):
-            if '.' not in expr:
-                return True
+        if expr[0].isalpha():
+            if not expr.endswith('.pyc'):
+                if '.' not in expr:
+                    return True
         return False
 
     def _list_asset_paths(
