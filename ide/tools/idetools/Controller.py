@@ -32,6 +32,12 @@ class Controller(object):
 
     _abjad_import_statement = 'from abjad import *'
 
+    _directory_name_to_file_extension = {
+        'makers': '.py',
+        'stylesheets': '.ily',
+        'test': '.py',
+        }
+
     _directory_name_to_navigation_command_name = {
         'build': 'u',
         'distribution': 'd',
@@ -1370,10 +1376,13 @@ class Controller(object):
                 file_name_predicate = \
                     self._directory_name_to_file_name_predicate(
                     self._directory_name)
+                required_file_extension = \
+                    self._directory_name_to_file_extension.get(
+                    self._directory_name, '')
                 if file_name_predicate(name):
-                    if self._file_extension == '':
+                    if required_file_extension == '':
                         return True
-                    elif self._file_extension == file_extension:
+                    elif required_file_extension == file_extension:
                         return True
         return False
 
@@ -1633,17 +1642,19 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_file(self, file_extension):
-        contents = ''
-        if file_extension == '.py':
-            contents == self._unicode_directive
+    def _make_file(self):
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
             path = self._select_storehouse()
             if self._io_manager._is_backtracking or path is None:
                 return
-
+        directory_name = os.path.basename(path)
+        file_extension = self._directory_name_to_file_extension.get(
+            directory_name, '')
+        contents = ''
+        if file_extension == '.py':
+            contents == self._unicode_directive
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
         name = getter._run()
@@ -2986,7 +2997,7 @@ class Controller(object):
 
         Returns none.
         '''
-        file_extension = self._file_extension
+        #file_extension = self._file_extension
         old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
         if not old_path:
             return
@@ -3029,6 +3040,8 @@ class Controller(object):
         new_name = new_name.replace(' ', '_')
         if not directory_name == 'makers':
             new_name = new_name.lower()
+        file_extension = self._directory_name_to_file_extension.get(
+            directory_name)
         if file_extension and not new_name.endswith(file_extension):
             new_name = new_name + file_extension
         new_path = os.path.join(new_storehouse, new_name)
@@ -4243,7 +4256,7 @@ class Controller(object):
         Returns none.
         '''
         if self._asset_identifier == 'file':
-            self._make_file(file_extension=self._file_extension)
+            self._make_file()
         elif self._directory_name == 'scores':
             self._make_score_package()
         else:
@@ -4471,14 +4484,12 @@ class Controller(object):
         )
     def rename(
         self,
-        file_extension=None,
         file_name_callback=None, 
         ):
         r'''Renames asset.
 
         Returns none.
         '''
-        file_extension = self._file_extension
         path = self._select_visible_asset_path(infinitive_phrase='to rename')
         if not path:
             return
@@ -4488,7 +4499,6 @@ class Controller(object):
         self._io_manager._display(message)
         new_path = self._rename(
             path,
-            file_extension=file_extension,
             file_name_callback=file_name_callback,
             )
         self._session._is_backtracking_locally = False

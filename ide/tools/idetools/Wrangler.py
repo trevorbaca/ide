@@ -20,7 +20,6 @@ class Wrangler(Controller):
     __slots__ = (
         '_asset_identifier',
         '_directory_name',
-        '_file_extension',
         '_group_asset_section_by_annotation',
         '_new_file_contents',
         '_only_example_scores_during_test',
@@ -36,7 +35,6 @@ class Wrangler(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._directory_name = None
-        self._file_extension = ''
         self._group_asset_section_by_annotation = True
         self._new_file_contents = ''
         self._only_example_scores_during_test = False
@@ -69,7 +67,6 @@ class Wrangler(Controller):
     def _configure_as_maker_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'makers'
-        self._file_extension = '.py'
 
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'package'
@@ -89,12 +86,10 @@ class Wrangler(Controller):
     def _configure_as_stylesheet_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'stylesheets'
-        self._file_extension = '.ily'
 
     def _configure_as_test_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'test'
-        self._file_extension = '.py'
         return self
 
     def _get_current_storehouse(self):
