@@ -4117,3 +4117,42 @@ class Controller(object):
             force_lowercase=self._force_lowercase_file_name,
             )
         self._session._is_backtracking_locally = False
+
+    @Command(
+        'ws',
+        directories=(
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'materials',
+            'scores',
+            'segments',
+            'stylesheets',
+            'test',
+            ),
+        outside_score='home',
+        section='view', 
+        )
+    def set_view(self):
+        r'''Sets view.
+
+        Returns none.
+        '''
+        infinitive_phrase = 'to apply'
+        view_name = self._select_view(infinitive_phrase=infinitive_phrase)
+        if self._io_manager._is_backtracking or view_name is None:
+            return
+        if view_name == 'none':
+            view_name = None
+        if self._session.is_in_score:
+            view_directory = self._get_current_directory()
+            metadatum_name = 'view_name'
+        else:
+            view_directory = configuration.abjad_ide_views_directory
+            metadatum_name = '{}_view_name'.format(self._directory_name)
+        self._add_metadatum(
+            view_directory,
+            metadatum_name,
+            view_name,
+            )

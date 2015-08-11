@@ -527,8 +527,8 @@ class Wrangler(Controller):
                 )
         if self._session.is_test and self._only_example_scores_during_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-#        elif not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        elif not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
@@ -807,7 +807,6 @@ class Wrangler(Controller):
             example_score_packages=example_score_packages,
             composer_score_packages=False,
             )
-        # HERE
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
@@ -847,7 +846,6 @@ class Wrangler(Controller):
             target_name = 'view'
         if infinitive_phrase:
             target_name = '{} {}'.format(target_name, infinitive_phrase)
-
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
@@ -856,7 +854,6 @@ class Wrangler(Controller):
         else:
             menu_header = 'Abjad IDE - all {} directories'
             menu_header = menu_header.format(self._directory_name)
-
         selector = self._io_manager._make_selector(
             is_ranged=is_ranged,
             items=view_names,
@@ -912,35 +909,3 @@ class Wrangler(Controller):
         paths = [_.return_value for _ in asset_section.menu_entries]
         paths = sequencetools.retain_elements(paths, indices)
         return paths
-
-    ### PUBLIC METHODS ###
-
-    @Command('ws', section='view', outside_score='home')
-    def set_view(self):
-        r'''Sets view.
-
-        Writes view name to ``__metadata.py__``.
-
-        Returns none.
-        '''
-        infinitive_phrase = 'to apply'
-        view_name = self._select_view(infinitive_phrase=infinitive_phrase)
-        if self._session.is_backtracking or view_name is None:
-            return
-        if view_name == 'none':
-            view_name = None
-        if self._session.is_in_score:
-            directory_token = self._get_current_directory_token()
-            manager = self._get_current_package_manager(
-                self._io_manager,
-                directory_token,
-                )
-            metadatum_name = 'view_name'
-        else:
-            manager = self._get_views_package_manager(self._io_manager)
-            metadatum_name = '{}_view_name'.format(type(self).__name__)
-        manager._add_metadatum(
-            manager._path,
-            metadatum_name,
-            view_name,
-            )
