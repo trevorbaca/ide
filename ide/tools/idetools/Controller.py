@@ -654,12 +654,21 @@ class Controller(object):
         else:
             return self._directory_name
 
-    @classmethod
-    def _get_directory_wranglers(class_, session, path):
+    def _get_directory_wranglers(self, directory):
         wranglers = []
-        directory_names = class_._list_directory_names(path)
+        directory_name_to_wrangler = {
+            'build': self._session._abjad_ide._build_file_wrangler,
+            'distribution': self._session._abjad_ide._distribution_file_wrangler,
+            'etc': self._session._abjad_ide._etc_file_wrangler,
+            'makers': self._session._abjad_ide._maker_file_wrangler,
+            'materials': self._session._abjad_ide._material_package_wrangler,
+            'segments': self._session._abjad_ide._segment_package_wrangler,
+            'stylesheets': self._session._abjad_ide._stylesheet_wrangler,
+            'test': self._session._abjad_ide._test_file_wrangler,
+            }
+        directory_names = self._list_directory_names(directory)
         for directory_name in directory_names:
-            wrangler = session._get_wrangler(directory_name)
+            wrangler = directory_name_to_wrangler.get(directory_name)
             if wrangler is not None:
                 wranglers.append(wrangler)
         return wranglers
@@ -2752,10 +2761,7 @@ class Controller(object):
             unrecognized_files
             )
         count = len(names)
-        wranglers = self._get_directory_wranglers(
-            self._session,
-            directory,
-            )
+        wranglers = self._get_directory_wranglers(directory)
         if wranglers or not return_messages:
             message = 'top level ({} assets):'.format(count)
             if not found_problems:

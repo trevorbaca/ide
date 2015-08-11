@@ -168,20 +168,6 @@ class Session(object):
             self.io_manager._display(messages)
         self.transcript._write()
 
-    def _get_wrangler(self, directory_name):
-        directory_name_to_wrangler = {
-            'build': self._abjad_ide._build_file_wrangler,
-            'distribution': self._abjad_ide._distribution_file_wrangler,
-            'etc': self._abjad_ide._etc_file_wrangler,
-            'makers': self._abjad_ide._maker_file_wrangler,
-            'materials': self._abjad_ide._material_package_wrangler,
-            'segments': self._abjad_ide._segment_package_wrangler,
-            'stylesheets': self._abjad_ide._stylesheet_wrangler,
-            'test': self._abjad_ide._test_file_wrangler,
-            }
-        wrangler = directory_name_to_wrangler.get(directory_name)
-        return wrangler
-
     def _print_transcript(self):
         for entry in self.transcript:
             print(entry)
