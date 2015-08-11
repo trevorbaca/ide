@@ -167,62 +167,6 @@ class Wrangler(Controller):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
-    def _run_wrangler(self, directory_name):
-        from ide.tools import idetools
-        assert (directory_name in self._known_directory_names or
-            directory_name == 'scores'), repr(directory_name)
-        controller = self._io_manager._controller(
-            consume_local_backtrack=True,
-            controller=self,
-            on_enter_callbacks=(self._enter_run,),
-            )
-        current_directory = configuration.composer_scores_directory
-        if not self._session.manifest_current_directory == current_directory:
-            current_directory = os.path.join(
-                self._session.manifest_current_directory,
-                directory_name,
-                )
-        directory_change = systemtools.TemporaryDirectoryChange(
-            current_directory)
-        current_directory = idetools.CurrentDirectory(
-            current_directory=current_directory,
-            session=self._session,
-            )
-        with controller, directory_change, current_directory:
-            result = None
-            self._session._pending_redraw = True
-            while True:
-                result = self._get_sibling_asset_path()
-                if not result:
-                    current_directory = self._get_current_directory()
-                    if current_directory is not None:
-                        menu_header = self._path_to_menu_header(
-                            current_directory)
-                    elif self._directory_name == 'scores':
-                        menu_header = 'Abjad IDE - all score directories'
-                    else:
-                        menu_header = 'Abjad IDE - all {} directories'
-                        menu_header = menu_header.format(self._directory_name)
-                    menu = self._make_main_menu(
-                        explicit_header=menu_header,
-                        _path=None,
-                        )
-                    result = menu._run(io_manager=self._io_manager)
-                    self._handle_pending_redraw_directive(
-                        self._session,
-                        result,
-                        )
-                    self._handle_wrangler_navigation_directive(
-                        self._session,
-                        result,
-                        )
-                if self._session.is_backtracking:
-                    return
-                if result:
-                    self._handle_input(result)
-                    if self._session.is_backtracking:
-                        return
-
     def _select_storehouse(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
             self._directory_name,
