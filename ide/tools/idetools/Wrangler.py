@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import datetime
 import os
 import shutil
 import traceback
@@ -338,34 +337,6 @@ class Wrangler(Controller):
         menu_entries = self._make_asset_menu_entries()
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
-
-    def _make_file(self, message='file name'):
-        file_extension = self._file_extension
-        contents = ''
-        if file_extension == '.py':
-            contents == self._unicode_directive
-        if self._session.is_in_score:
-            path = self._get_current_directory()
-        else:
-            path = self._select_storehouse()
-            if self._session.is_backtracking or path is None:
-                return
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        name = getter._run()
-        if self._session.is_backtracking or name is None:
-            return
-        name = stringtools.strip_diacritics(name)
-        if self._force_dash_case_file_name:
-            name = self._to_dash_case(name)
-        name = name.replace(' ', '_')
-        if self._force_lowercase_file_name:
-            name = name.lower()
-        if not name.endswith(file_extension):
-            name = name + file_extension
-        path = os.path.join(path, name)
-        self._io_manager.write(path, contents)
-        self._io_manager.edit(path)
 
     def _make_storehouse_menu_entries(
         self,

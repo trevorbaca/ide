@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
 import codecs
+import datetime
 import glob
 import inspect
 import os
@@ -1565,6 +1566,38 @@ class Controller(object):
                 commands=method_group,
                 name=menu_section_name,
                 )
+
+    def _make_file(
+        self, 
+        file_extension, 
+        force_dash_case_file_name,
+        force_lowercase_file_name,
+        ):
+        contents = ''
+        if file_extension == '.py':
+            contents == self._unicode_directive
+        if self._session.is_in_score:
+            path = self._get_current_directory()
+        else:
+            path = self._select_storehouse()
+            if self._io_manager._is_backtracking or path is None:
+                return
+        getter = self._io_manager._make_getter()
+        getter.append_string('file name')
+        name = getter._run()
+        if self._io_manager._is_backtracking or name is None:
+            return
+        name = stringtools.strip_diacritics(name)
+        if force_dash_case_file_name:
+            name = self._to_dash_case(name)
+        name = name.replace(' ', '_')
+        if force_lowercase_file_name:
+            name = name.lower()
+        if not name.endswith(file_extension):
+            name = name + file_extension
+        path = os.path.join(path, name)
+        self._io_manager.write(path, contents)
+        self._io_manager.edit(path)
 
     def _make_main_menu(self, explicit_header, _path=None):
         assert isinstance(explicit_header, str), repr(explicit_header)
@@ -4088,7 +4121,11 @@ class Controller(object):
         Returns none.
         '''
         if self._asset_identifier == 'file':
-            self._make_file()
+            self._make_file(
+                file_extension=self._file_extension,
+                force_dash_case_file_name=self._force_dash_case_file_name,
+                force_lowercase_file_name=self._force_lowercase_file_name,
+                )
         elif self._directory_name == 'scores':
             self._make_score_package()
         else:
