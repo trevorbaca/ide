@@ -21,7 +21,6 @@ class Wrangler(Controller):
         '_asset_identifier',
         '_directory_name',
         '_group_asset_section_by_annotation',
-        '_sort_by_annotation',
         )
 
     ### INITIALIZER ###
@@ -34,7 +33,6 @@ class Wrangler(Controller):
         self._asset_identifier = None
         self._directory_name = None
         self._group_asset_section_by_annotation = True
-        self._sort_by_annotation = True
 
     ### SPECIAL METHODS ###
 
@@ -72,7 +70,6 @@ class Wrangler(Controller):
         self._asset_identifier = 'package'
         self._directory_name = 'scores'
         self._group_asset_section_by_annotation = False
-        self._sort_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'package'
@@ -158,7 +155,8 @@ class Wrangler(Controller):
             string = self._path_to_asset_menu_display_string(path)
             strings.append(string)
         pairs = list(zip(strings, paths))
-        if not self._session.is_in_score and self._sort_by_annotation:
+        if (not self._session.is_in_score and
+            not self._directory_name == 'scores'):
             def sort_function(pair):
                 string = pair[0]
                 if '(' not in string:
