@@ -35,7 +35,6 @@ class Session(object):
 
     __slots__ = (
         '_abjad_ide',
-        '_aliases',
         '_allow_unknown_command_during_test',
         '_after_redraw_message',
         '_attempted_display_status',
@@ -83,7 +82,6 @@ class Session(object):
     def __init__(self, input_=None, is_test=False):
         from ide.tools import idetools
         self._abjad_ide = None
-        self._aliases = {}
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
         self._attempted_display_status = False
@@ -199,38 +197,6 @@ class Session(object):
         Returns Abjad IDE or none.
         '''
         return self._abjad_ide
-
-    @property
-    @systemtools.Memoize
-    def aliases(self):
-        r'''Gets session aliases.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.aliases
-                OrderedDict(...)
-
-        Returns ordered dictionary.
-        '''
-        aliases = None
-        file_path = configuration.abjad_ide_aliases_file_path
-        if os.path.isfile(file_path):
-            with open(file_path, 'r') as file_pointer:
-                file_contents_string = file_pointer.read()
-            try:
-                result = self._io_manager.execute_string(
-                    file_contents_string,
-                    attribute_names=('aliases',),
-                    )
-                aliases = result[0]
-            except SyntaxError:
-                message = 'syntax error in file: {!r}.'
-                message = message.format(file_path)
-                self._io_manager._display(message)
-        aliases = aliases or collections.OrderedDict()
-        return aliases
 
     @property
     def command_history(self):

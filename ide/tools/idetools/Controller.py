@@ -1069,7 +1069,7 @@ class Controller(object):
                 self._handle_numeric_user_input(result)
             else:
                 current_score_directory = self._session.current_score_directory
-                aliased_path = self._session.aliases.get(result, None)
+                aliased_path = configuration.aliases.get(result, None)
                 if current_score_directory and aliased_path:
                     aliased_path = os.path.join(
                         current_score_directory, 

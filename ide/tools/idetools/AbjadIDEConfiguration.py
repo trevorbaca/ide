@@ -24,6 +24,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_aliases',
         )
 
     ### INITIALIZER ###
@@ -31,6 +32,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     def __init__(self):
         AbjadConfiguration.__init__(self)
         self._make_missing_directories()
+        self._read_aliases_file()
 
     ### PRIVATE PROPERTIES ###
 
@@ -126,7 +128,32 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
+    def _read_aliases_file(self):
+        aliases = None
+        file_path = self.abjad_ide_aliases_file_path
+        if os.path.isfile(file_path):
+            with open(file_path, 'r') as file_pointer:
+                file_contents_string = file_pointer.read()
+            exec(file_contents_string)
+        aliases = aliases or collections.OrderedDict()
+        self._aliases = aliases
+
     ### PUBLIC PROPERTIES ###
+
+    @property
+    def aliases(self):
+        r'''Gets aliases.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.aliases
+                OrderedDict(...)
+
+        Returns ordered dictionary.
+        '''
+        return self._aliases
 
     @property
     def abjad_ide_aliases_file_path(self):
