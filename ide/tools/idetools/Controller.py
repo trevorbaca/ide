@@ -1487,12 +1487,9 @@ class Controller(object):
         return result
 
     def _list_visible_asset_paths(self):
-        if hasattr(self, '_path'):
-            return [self._path]
-        else:
-            entries = self._make_asset_menu_entries()
-            paths = [_[-1] for _ in entries]
-            return paths
+        entries = self._make_asset_menu_entries()
+        paths = [_[-1] for _ in entries]
+        return paths
 
     def _make_package_asset_menu_section(self, directory, menu):
         directory_entries = self._list_directory(directory, smart_sort=True)
