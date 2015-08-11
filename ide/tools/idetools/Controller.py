@@ -218,19 +218,15 @@ class Controller(object):
         missing_files, missing_directories = [], []
         return messages, missing_files, missing_directories
 
-    @classmethod
-    def _clear_view(class_, io_manager, directory_token):
+    def _clear_view(self, directory_token):
         if os.path.sep in directory_token:
-            manager = self._get_current_package_manager(
-                io_manager,
-                directory_token,
-                )
+            view_directory = directory_token
             metadatum_name = 'view_name'
         else:
-            manager = class_._get_views_package_manager(io_manager)
-            metadatum_name = '{}_view_name'.format(class_.__name__)
-        manager._add_metadatum(
-            manager._path,
+            view_directory = configuration.abjad_ide_views_directory
+            metadatum_name = '{}_view_name'.format(directory_token)
+        self._add_metadatum(
+            view_directory,
             metadatum_name,
             None,
             )

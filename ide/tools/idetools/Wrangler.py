@@ -174,16 +174,6 @@ class Wrangler(Controller):
             return False
         return segment_names
 
-    def _edit_file_ending_with(self, string):
-        directory_path = self._get_current_directory()
-        file_path = self._get_file_path_ending_with(directory_path, string)
-        if file_path:
-            self._io_manager.edit(file_path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
     def _get_available_path(
         self,
         message=None,
@@ -343,7 +333,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._io_manager._silent():
-                self._clear_view(self._io_manager, self._directory_name)
+                self._clear_view(self._directory_name)
         self._session._pending_redraw = True
 
     def _make_asset_menu_entries(
@@ -480,7 +470,7 @@ class Wrangler(Controller):
         paths = self._list_visible_asset_paths()
         if path not in paths:
             with self._io_manager._silent():
-                self._clear_view(self._io_manager, self._directory_name)
+                self._clear_view(self._directory_name)
         manager._run_package_manager_menu(manager._path)
 
     def _make_score_package(self):
@@ -532,7 +522,7 @@ class Wrangler(Controller):
         package_paths = self._list_visible_asset_paths()
         if package_path not in package_paths:
             with self._io_manager._silent():
-                self._clear_view(self._io_manager, self._directory_name)
+                self._clear_view(self._directory_name)
         manager._run_package_manager_menu(manager._path)
 
     def _make_storehouse_menu_entries(
