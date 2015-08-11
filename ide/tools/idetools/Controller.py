@@ -413,6 +413,50 @@ class Controller(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return directory_entry
 
+    def _find_up_to_date_manager(
+        self,
+        inside_score=True,
+        must_have_file=False,
+        system=True,
+        ):
+        from ide.tools import idetools
+        example_score_packages = False
+        composer_score_packages = False
+        if system and inside_score:
+            example_score_packages = True
+        elif not system and inside_score:
+            composer_score_packages = True
+        else:
+            Exception
+        paths = self._list_asset_paths(
+            self._directory_name,
+            self._directory_entry_predicate,
+            example_score_packages=example_score_packages,
+            composer_score_packages=composer_score_packages,
+            )
+        if self._directory_name == 'scores':
+            if system:
+                scores_directory = \
+                    configuration.abjad_ide_example_scores_directory
+            else:
+                scores_directory = configuration.composer_scores_directory
+            paths = []
+            for directory_entry in sorted(os.listdir(scores_directory)):
+                if not directory_entry[0].isalpha():
+                    continue
+                path = os.path.join(scores_directory, directory_entry)
+                if os.path.isdir(path):
+                    paths.append(path)
+        for path in paths:
+            if (self._is_git_versioned(path) and self._is_up_to_date(path)
+                and
+                (not must_have_file or self._find_first_file_name(path))):
+                manager = idetools.PackageManager(
+                    path=path,
+                    session=self._session,
+                    )
+                return manager
+
     def _format_counted_check_messages(
         self,
         paths,
@@ -517,20 +561,29 @@ class Controller(object):
             result.append(command)
         return result
 
-    @staticmethod
-    def _get_current_directory_token(session, directory_name):
-        assert isinstance(directory_name, str), repr(directory_name)
-        assert os.path.sep not in directory_name, repr(directory_name)
-        score_directory = session.current_score_directory
+    def _get_current_directory(self):
+        score_directory = self._session.current_score_directory
         if score_directory is not None:
             directory = os.path.join(
                 score_directory,
-                directory_name,
+                self._directory_name,
+                )
+            directory = os.path.abspath(directory)
+            return directory
+
+    def _get_current_directory_token(self):
+        assert isinstance(self._directory_name, str)
+        assert os.path.sep not in self._directory_name
+        score_directory = self._session.current_score_directory
+        if score_directory is not None:
+            directory = os.path.join(
+                score_directory,
+                self._directory_name,
                 )
             directory = os.path.abspath(directory)
             return directory
         else:
-            return directory_name
+            return self._directory_name
 
     @classmethod
     def _get_directory_wranglers(class_, session, path):
@@ -2481,10 +2534,7 @@ class Controller(object):
                     self._io_manager._display(repr(wrangler))
                     if wrangler._asset_identifier == 'file':
                         directory_token = \
-                            wrangler._get_current_directory_token(
-                            wrangler._session,
-                            wrangler._directory_name,
-                            )
+                            wrangler._get_current_directory_token()
                         result = wrangler._check_every_file(
                             directory_token,
                             wrangler._directory_entry_predicate,

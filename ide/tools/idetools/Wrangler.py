@@ -199,60 +199,6 @@ class Wrangler(Controller):
                 parent_directories.append(parent_directory)
         return parent_directories
 
-    def _find_git_manager(self, inside_score=True, must_have_file=False):
-        if self._directory_name == 'scores':
-            inside_score = False
-        manager = self._find_up_to_date_manager(
-            inside_score=inside_score,
-            must_have_file=must_have_file,
-            system=True,
-            )
-        return manager
-
-    def _find_up_to_date_manager(
-        self,
-        inside_score=True,
-        must_have_file=False,
-        system=True,
-        ):
-        from ide.tools import idetools
-        example_score_packages = False
-        composer_score_packages = False
-        if system and inside_score:
-            example_score_packages = True
-        elif not system and inside_score:
-            composer_score_packages = True
-        else:
-            Exception
-        asset_paths = self._list_asset_paths(
-            self._directory_name,
-            self._directory_entry_predicate,
-            example_score_packages=example_score_packages,
-            composer_score_packages=composer_score_packages,
-            )
-        if self._directory_name == 'scores':
-            if system:
-                scores_directory = \
-                    configuration.abjad_ide_example_scores_directory
-            else:
-                scores_directory = configuration.composer_scores_directory
-            asset_paths = []
-            for directory_entry in sorted(os.listdir(scores_directory)):
-                if not directory_entry[0].isalpha():
-                    continue
-                path = os.path.join(scores_directory, directory_entry)
-                if os.path.isdir(path):
-                    asset_paths.append(path)
-        session = idetools.Session()
-        for asset_path in asset_paths:
-            manager = self._get_manager(asset_path)
-            if (manager._is_git_versioned(manager._path)
-                and manager._is_up_to_date(manager._path)
-                and
-                (not must_have_file or 
-                manager._find_first_file_name(manager._path))):
-                return manager
-
     def _get_available_path(
         self,
         message=None,
@@ -284,16 +230,6 @@ class Wrangler(Controller):
                 self._io_manager._display(line)
             else:
                 return path
-
-    def _get_current_directory(self):
-        score_directory = self._session.current_score_directory
-        if score_directory is not None:
-            directory = os.path.join(
-                score_directory,
-                self._directory_name,
-                )
-            directory = os.path.abspath(directory)
-            return directory
 
     @classmethod
     def _get_current_package_manager(class_, io_manager, directory_token):
@@ -469,10 +405,7 @@ class Wrangler(Controller):
             entry = (string, None, None, path)
             entries.append(entry)
         if set_view:
-            directory_token = self._get_current_directory_token(
-                self._session,
-                self._directory_name,
-                )
+            directory_token = self._get_current_directory_token()
             entries = self._filter_asset_menu_entries_by_view(
                 directory_token,
                 entries,
@@ -779,10 +712,7 @@ class Wrangler(Controller):
 
     def _select_view(self, infinitive_phrase=None, is_ranged=False):
         from ide.tools import idetools
-        directory_token = self._get_current_directory_token(
-            self._session,
-            self._directory_name,
-            )
+        directory_token = self._get_current_directory_token()
         view_inventory = self._read_view_inventory(
             directory_token,
             )
