@@ -18,7 +18,6 @@ class Wrangler(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_allow_asset_name_underscores',
         '_asset_identifier',
         '_copy_target_directory',
         '_directory_name',
@@ -39,7 +38,6 @@ class Wrangler(Controller):
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
-        self._allow_asset_name_underscores = False
         self._asset_identifier = None
         self._copy_target_directory = None
         self._directory_name = None
@@ -122,7 +120,6 @@ class Wrangler(Controller):
     def _configure_as_test_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'test'
-        self._allow_asset_name_underscores = True
         self._file_extension = '.py'
         self._file_name_predicate = stringtools.is_snake_case
         return self
@@ -195,10 +192,7 @@ class Wrangler(Controller):
             paths = [_ for _ in paths if _.startswith(current_directory)]
         strings = []
         for path in paths:
-            string = self._path_to_asset_menu_display_string(
-                path,
-                self._allow_asset_name_underscores,
-                )
+            string = self._path_to_asset_menu_display_string(path)
             strings.append(string)
         pairs = list(zip(strings, paths))
         if not self._session.is_in_score and self._sort_by_annotation:

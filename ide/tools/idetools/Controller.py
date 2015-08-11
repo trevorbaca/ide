@@ -1922,12 +1922,11 @@ class Controller(object):
             annotation = None
         return annotation
 
-    def _path_to_asset_menu_display_string(
-        self, 
-        path,
-        allow_asset_name_underscores=False,
-        ):
+    def _path_to_asset_menu_display_string(self, path):
         asset_name = os.path.basename(path)
+        allow_asset_name_underscores = False
+        if 'test' in path.split(os.path.sep):
+            allow_asset_name_underscores = True
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         # TODO: replace with self._is_segment_package_path()
@@ -3586,10 +3585,7 @@ class Controller(object):
         '''
         for directory in directories:
             messages = []
-            message = self._path_to_asset_menu_display_string(
-                directory,
-                self._allow_asset_name_underscores,
-                )
+            message = self._path_to_asset_menu_display_string(directory)
             message = self._strip_annotation(message)
             message = message + ':'
             messages_ = self._git_update(
