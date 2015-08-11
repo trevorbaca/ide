@@ -325,7 +325,6 @@ class IOManager(IOManager):
             )
 
     def _pop_from_pending_input(self):
-        self._session._last_command_was_composite = False
         if self._session.pending_input is None:
             return None
         elif self._session._pending_input == '':
@@ -336,7 +335,6 @@ class IOManager(IOManager):
             input_ = self._session.pending_input[2:index]
             pending_input = self._session.pending_input[index+2:]
             pending_input = pending_input.strip()
-            self._session._last_command_was_composite = True
         else:
             input_parts = self._session.pending_input.split(' ')
             first_parts, rest_parts = [], []

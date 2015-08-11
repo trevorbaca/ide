@@ -60,7 +60,6 @@ class Session(object):
         '_is_repository_test',
         '_is_test',
         '_last_asset_path',
-        '_last_command_was_composite',
         '_last_score_path',
         '_navigation_target',
         '_pending_done',
@@ -102,7 +101,6 @@ class Session(object):
         self._is_repository_test = False
         self._is_test = is_test
         self._last_asset_path = None
-        self._last_command_was_composite = False
         self._last_score_path = None
         self._navigation_target = None
         self._pending_done = False
@@ -605,8 +603,7 @@ class Session(object):
     def last_asset_path(self):
         r'''Gets last material package path.
 
-        Set on package manager entry and persists
-        after package manager exit.
+        Set on package manager entry and persists after package manager exit.
 
         ..  container:: example
 
@@ -620,26 +617,11 @@ class Session(object):
         return self._last_asset_path
 
     @property
-    def last_command_was_composite(self):
-        r'''Is true when last command was composite. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.last_command_was_composite
-                False
-
-        Returns true or false..
-        '''
-        return self._last_command_was_composite
-
-    @property
     def last_score_path(self):
         r'''Gets last score package path.
 
-        Set on score package manager entry and persists
-        after score package manager exit.
+        Set on score package manager entry and persists after score package
+        manager exit.
 
         ..  container:: example
 
