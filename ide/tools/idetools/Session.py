@@ -44,7 +44,6 @@ class Session(object):
         '_current_score_directory',
         '_display',
         '_display_command_help',
-        '_initial_input',
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
         '_is_backtracking_to_score',
@@ -85,7 +84,6 @@ class Session(object):
         self._current_score_directory = None
         self._display = True
         self._display_command_help = None
-        self._initial_input = input_
         self._is_backtracking_locally = False
         self._is_backtracking_to_all_build_files = False
         self._is_backtracking_to_score = False
@@ -121,10 +119,6 @@ class Session(object):
         Returns string.
         '''
         summary = []
-        if self.initial_input is not None:
-            string = 'initial_input_={!r}'
-            string = string.format(self.initial_input)
-            summary.append(string)
         if self.pending_input not in (None, ''):
             string = 'input_={!r}'
             string = string.format(self.pending_input)
@@ -257,21 +251,6 @@ class Session(object):
         Returns 'action', 'navigation' or none.
         '''
         return self._display_command_help
-
-    @property
-    def initial_input(self):
-        r'''Gets session initial user input.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.initial_input is None
-                True
-
-        Returns string or none.
-        '''
-        return self._initial_input
 
     @property
     def is_at_top_level(self):
