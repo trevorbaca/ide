@@ -418,8 +418,6 @@ class Controller(object):
             return stringtools.is_upper_camel_case
         elif directory_name == 'test':
             return stringtools.is_snake_case
-        else:
-            raise ValueError(directory_name)
 
     def _enter_run(self, directory=None):
         if (self._session.navigation_target is not None and
@@ -1638,7 +1636,6 @@ class Controller(object):
     def _make_file(
         self, 
         file_extension, 
-        force_dash_case_file_name,
         force_lowercase_file_name,
         ):
         contents = ''
@@ -1650,13 +1647,17 @@ class Controller(object):
             path = self._select_storehouse()
             if self._io_manager._is_backtracking or path is None:
                 return
+
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
         name = getter._run()
         if self._io_manager._is_backtracking or name is None:
             return
         name = stringtools.strip_diacritics(name)
-        if force_dash_case_file_name:
+        directory_name = os.path.basename(path)
+        file_name_predicate = self._directory_name_to_file_name_predicate(
+            directory_name)
+        if file_name_predicate == stringtools.is_dash_case:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
         if force_lowercase_file_name:
@@ -3025,7 +3026,10 @@ class Controller(object):
         if self._io_manager._is_backtracking or new_name is None:
             return
         new_name = stringtools.strip_diacritics(new_name)
-        if self._force_dash_case_file_name:
+        directory_name = os.path.basename(new_storehouse)
+        file_name_predicate = self._directory_name_to_file_name_predicate(
+            directory_name)
+        if file_name_predicate == stringtools.is_dash_case:
             new_name = self._to_dash_case(new_name)
         new_name = new_name.replace(' ', '_')
         if self._force_lowercase_file_name:
@@ -4246,7 +4250,6 @@ class Controller(object):
         if self._asset_identifier == 'file':
             self._make_file(
                 file_extension=self._file_extension,
-                force_dash_case_file_name=self._force_dash_case_file_name,
                 force_lowercase_file_name=self._force_lowercase_file_name,
                 )
         elif self._directory_name == 'scores':

@@ -21,7 +21,6 @@ class Wrangler(Controller):
         '_asset_identifier',
         '_directory_name',
         '_file_extension',
-        '_force_dash_case_file_name',
         '_force_lowercase_file_name',
         '_group_asset_section_by_annotation',
         '_new_file_contents',
@@ -39,7 +38,6 @@ class Wrangler(Controller):
         self._asset_identifier = None
         self._directory_name = None
         self._file_extension = ''
-        self._force_dash_case_file_name = False
         self._force_lowercase_file_name = True
         self._group_asset_section_by_annotation = True
         self._new_file_contents = ''
@@ -60,18 +58,15 @@ class Wrangler(Controller):
     def _configure_as_build_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'build'
-        self._force_dash_case_file_name = True
         return self
 
     def _configure_as_distribution_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'distribution'
-        self._force_dash_case_file_name = True
 
     def _configure_as_etc_file_wrangler(self):
         self._asset_identifier = 'file'
         self._directory_name = 'etc'
-        self._force_dash_case_file_name = True
 
     def _configure_as_maker_file_wrangler(self):
         self._asset_identifier = 'file'
@@ -98,7 +93,6 @@ class Wrangler(Controller):
         self._asset_identifier = 'file'
         self._directory_name = 'stylesheets'
         self._file_extension = '.ily'
-        self._force_dash_case_file_name = True
 
     def _configure_as_test_file_wrangler(self):
         self._asset_identifier = 'file'
