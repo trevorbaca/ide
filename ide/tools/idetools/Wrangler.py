@@ -135,28 +135,6 @@ class Wrangler(Controller):
         self._file_name_predicate = stringtools.is_snake_case
         return self
 
-    def _get_available_path(self, storehouse):
-        while True:
-            default_prompt = 'enter {} name'.format(self._asset_identifier)
-            getter = self._io_manager._make_getter()
-            getter.append_string(default_prompt)
-            name = getter._run()
-            if self._io_manager._is_backtracking or not name:
-                return
-            name = stringtools.strip_diacritics(name)
-            words = stringtools.delimit_words(name)
-            words = [_.lower() for _ in words]
-            name = '_'.join(words)
-            if not stringtools.is_snake_case_package_name(name):
-                continue
-            path = os.path.join(storehouse, name)
-            if os.path.exists(path):
-                line = 'path already exists: {!r}.'
-                line = line.format(path)
-                self._io_manager._display(line)
-            else:
-                return path
-
     @classmethod
     def _get_current_package_manager(class_, io_manager, directory_token):
         if os.path.sep in directory_token:
@@ -389,33 +367,6 @@ class Wrangler(Controller):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def _make_package(self):
-        if self._session.is_in_score:
-            storehouse = self._get_current_storehouse()
-        else:
-            storehouse = self._select_storehouse(
-                example_score_packages=self._session.is_test,
-                )
-            if self._session.is_backtracking or storehouse is None:
-                return
-        path = self._get_available_path(storehouse=storehouse)
-        if self._session.is_backtracking or not path:
-            return
-        message = 'path will be {}.'.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if self._session.is_backtracking or not result:
-            return
-        manager = self._get_manager(path)
-        new_path = manager._make_package(manager._path)
-        if new_path is not None:
-            manager._new_path = new_path
-        paths = self._list_visible_asset_paths()
-        if path not in paths:
-            with self._io_manager._silent():
-                self._clear_view(self._directory_name)
-        manager._run_package_manager_menu(manager._path)
-
     def _make_score_package(self):
         message = 'enter title'
         getter = self._io_manager._make_getter()
@@ -448,7 +399,7 @@ class Wrangler(Controller):
             package_name = stringtools.strip_diacritics(package_name)
             package_name = stringtools.to_snake_case(package_name)
         manager = self._get_manager(package_path)
-        new_path = manager._make_package(manager._path)
+        new_path = manager._populate_package(manager._path)
         if new_path is not None:
             manager._path = new_path
         manager._add_metadatum(

@@ -583,6 +583,29 @@ class Controller(object):
                 paths.append(path)
         return paths
 
+    def _get_available_path(self, directory, asset_identifier):
+        while True:
+            default_prompt = 'enter {} name'
+            default_prompt = default_prompt.format(asset_identifier)
+            getter = self._io_manager._make_getter()
+            getter.append_string(default_prompt)
+            name = getter._run()
+            if self._io_manager._is_backtracking or not name:
+                return
+            name = stringtools.strip_diacritics(name)
+            words = stringtools.delimit_words(name)
+            words = [_.lower() for _ in words]
+            name = '_'.join(words)
+            if not stringtools.is_snake_case_package_name(name):
+                continue
+            path = os.path.join(directory, name)
+            if os.path.exists(path):
+                line = 'path already exists: {!r}.'
+                line = line.format(path)
+                self._io_manager._display(line)
+            else:
+                return path
+
     def _get_commands(self):
         result = []
         for name in dir(self):
@@ -1557,28 +1580,52 @@ class Controller(object):
         self._make_command_menu_sections(menu, _path=_path)
         return menu
 
-    def _make_package(self, path):
+    def _make_package(self):
+        if self._session.is_in_score:
+            storehouse = self._get_current_storehouse()
+        else:
+            storehouse = self._select_storehouse(
+                example_score_packages=self._session.is_test,
+                )
+            if self._session.is_backtracking or storehouse is None:
+                return
+        path = self._get_available_path(
+            storehouse,
+            asset_identifier=self._asset_identifier,
+            )
+        if self._io_manager._is_backtracking or not path:
+            return
+        message = 'path will be {}.'.format(path)
+        self._io_manager._display(message)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return
+        new_path = self._populate_package(path)
+        new_path = new_path or path
+        paths = self._list_visible_asset_paths()
+        if path not in paths:
+            with self._io_manager._silent():
+                self._clear_view(self._directory_name)
+        self._run_package_manager_menu(new_path)
+
+    def _populate_package(self, path):
         assert not os.path.exists(path)
         os.mkdir(path)
         with self._io_manager._silent():
-            arguments = []
-            for argument_name in self.check_package.argument_names:
-                argument = getattr(self, argument_name)
-                arguments.append(argument)
             self.check_package(
-                *arguments,
+                path,
                 return_supply_messages=True,
                 supply_missing=True
                 )
         if self._is_score_package_outer_path(path):
-                outer_path = self._get_outer_score_package_path(path)
-                inner_path = os.path.join(outer_path, os.path.basename(path))
-                new_path = self._make_score_into_installable_package(
-                    inner_path,
-                    outer_path,
-                    )
-                if new_path is not None:
-                    return new_path
+            outer_path = self._get_outer_score_package_path(path)
+            inner_path = os.path.join(outer_path, os.path.basename(path))
+            new_path = self._make_score_into_installable_package(
+                inner_path,
+                outer_path,
+                )
+            if new_path is not None:
+                return new_path
 
     def _make_score_into_installable_package(
         self,
