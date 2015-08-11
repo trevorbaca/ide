@@ -906,7 +906,7 @@ class Wrangler(Controller):
             asset_section,
             )
         numbers = getter._run()
-        if self._session.is_backtracking or numbers is None:
+        if self._io_manager._is_backtracking or numbers is None:
             return
         indices = [_ - 1 for _ in numbers]
         paths = [_.return_value for _ in asset_section.menu_entries]
@@ -1014,51 +1014,6 @@ class Wrangler(Controller):
             self._make_score_package()
         else:
             self._make_package()
-
-    @Command('rm', section='basic', is_hidden=False)
-    def remove(self):
-        r'''Removes asset.
-
-        Returns none.
-        '''
-        from ide.tools import idetools
-        self._session._attempted_to_remove = True
-        if self._session.is_repository_test:
-            return
-        paths = self._select_visible_asset_paths()
-        if not paths:
-            return
-        count = len(paths)
-        messages = []
-        if count == 1:
-            message = 'will remove {}'.format(paths[0])
-            messages.append(message)
-        else:
-            messages.append('will remove ...')
-            for path in paths:
-                message = '    {}'.format(path)
-                messages.append(message)
-        self._io_manager._display(messages)
-        if count == 1:
-            confirmation_string = 'remove'
-        else:
-            confirmation_string = 'remove {}'
-            confirmation_string = confirmation_string.format(count)
-        message = "type {!r} to proceed"
-        message = message.format(confirmation_string)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        if self._session.confirm:
-            result = getter._run()
-            if self._session.is_backtracking or result is None:
-                return
-            if not result == confirmation_string:
-                return
-        for path in paths:
-            manager = self._get_manager(path)
-            with self._io_manager._silent():
-                manager._remove(manager._path)
-        self._session._pending_redraw = True
 
     @Command('ren', section='basic', is_hidden=False)
     def rename(
