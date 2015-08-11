@@ -20,7 +20,6 @@ class Wrangler(Controller):
     __slots__ = (
         '_asset_identifier',
         '_directory_name',
-        '_group_asset_section_by_annotation',
         )
 
     ### INITIALIZER ###
@@ -32,7 +31,6 @@ class Wrangler(Controller):
         superclass.__init__(session=session)
         self._asset_identifier = None
         self._directory_name = None
-        self._group_asset_section_by_annotation = True
 
     ### SPECIAL METHODS ###
 
@@ -69,7 +67,6 @@ class Wrangler(Controller):
     def _configure_as_score_package_wrangler(self):
         self._asset_identifier = 'package'
         self._directory_name = 'scores'
-        self._group_asset_section_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'package'
@@ -205,8 +202,7 @@ class Wrangler(Controller):
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
-            section._group_by_annotation = \
-                self._group_asset_section_by_annotation
+            section._group_by_annotation = not self._directory_name == 'scores'
 
     def _make_asset_selection_menu(self):
         menu = self._io_manager._make_menu(name='asset selection')
