@@ -1015,32 +1015,6 @@ class Wrangler(Controller):
         else:
             self._make_package()
 
-    @Command('ren', section='basic', is_hidden=False)
-    def rename(
-        self,
-        file_extension=None,
-        file_name_callback=None, 
-        ):
-        r'''Renames asset.
-
-        Returns none.
-        '''
-        file_extension = self._file_extension
-        path = self._select_visible_asset_path(infinitive_phrase='to rename')
-        if not path:
-            return
-        file_name = os.path.basename(path)
-        message = 'existing file name> {}'
-        message = message.format(file_name)
-        self._io_manager._display(message)
-        new_path = self._rename(
-            path,
-            file_extension=file_extension,
-            file_name_callback=file_name_callback,
-            force_lowercase=self._force_lowercase_file_name,
-            )
-        self._session._is_backtracking_locally = False
-
     @Command('ws', section='view', outside_score='home')
     def set_view(self):
         r'''Sets view.

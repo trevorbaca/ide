@@ -3951,3 +3951,44 @@ class Controller(object):
             with self._io_manager._silent():
                 self._remove(path)
         self._session._pending_redraw = True
+
+    @Command(
+        'ren',
+        directories=(
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'materials',
+            'scores',
+            'segments',
+            'stylesheets',
+            'test',
+            ),
+        is_hidden=False,
+        section='basic',
+        )
+    def rename(
+        self,
+        file_extension=None,
+        file_name_callback=None, 
+        ):
+        r'''Renames asset.
+
+        Returns none.
+        '''
+        file_extension = self._file_extension
+        path = self._select_visible_asset_path(infinitive_phrase='to rename')
+        if not path:
+            return
+        file_name = os.path.basename(path)
+        message = 'existing file name> {}'
+        message = message.format(file_name)
+        self._io_manager._display(message)
+        new_path = self._rename(
+            path,
+            file_extension=file_extension,
+            file_name_callback=file_name_callback,
+            force_lowercase=self._force_lowercase_file_name,
+            )
+        self._session._is_backtracking_locally = False
