@@ -367,58 +367,6 @@ class Wrangler(Controller):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def _make_score_package(self):
-        message = 'enter title'
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        title = getter._run()
-        if self._session.is_backtracking or not title:
-            return
-        package_name = stringtools.strip_diacritics(title)
-        package_name = stringtools.to_snake_case(package_name)
-        confirmed = False 
-        while not confirmed:
-            package_path = os.path.join(
-                configuration.composer_scores_directory,
-                package_name,
-                )
-            message = 'path will be {}.'.format(package_path)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
-            if self._session.is_backtracking:
-                return
-            confirmed = result
-            if confirmed:
-                break
-            message = 'enter package name'
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            package_name = getter._run()
-            if self._session.is_backtracking or not package_name:
-                return
-            package_name = stringtools.strip_diacritics(package_name)
-            package_name = stringtools.to_snake_case(package_name)
-        manager = self._get_manager(package_path)
-        new_path = manager._populate_package(manager._path)
-        if new_path is not None:
-            manager._path = new_path
-        manager._add_metadatum(
-            manager._path,
-            'title',
-            title,
-            )
-        year = datetime.date.today().year
-        manager._add_metadatum(
-            manager._path,
-            'year',
-            year,
-            )
-        package_paths = self._list_visible_asset_paths()
-        if package_path not in package_paths:
-            with self._io_manager._silent():
-                self._clear_view(self._directory_name)
-        manager._run_package_manager_menu(manager._path)
-
     def _make_storehouse_menu_entries(
         self,
         example_score_packages=True,

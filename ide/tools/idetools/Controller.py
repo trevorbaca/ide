@@ -1645,6 +1645,56 @@ class Controller(object):
             )
         return inner_path
 
+    def _make_score_package(self):
+        message = 'enter title'
+        getter = self._io_manager._make_getter()
+        getter.append_string(message)
+        title = getter._run()
+        if self._io_manager._is_backtracking or not title:
+            return
+        package_name = stringtools.strip_diacritics(title)
+        package_name = stringtools.to_snake_case(package_name)
+        confirmed = False 
+        while not confirmed:
+            score_directory = os.path.join(
+                configuration.composer_scores_directory,
+                package_name,
+                )
+            message = 'path will be {}.'.format(score_directory)
+            self._io_manager._display(message)
+            result = self._io_manager._confirm()
+            if self._io_manager._is_backtracking:
+                return
+            confirmed = result
+            if confirmed:
+                break
+            message = 'enter package name'
+            getter = self._io_manager._make_getter()
+            getter.append_string(message)
+            package_name = getter._run()
+            if self._io_manager._is_backtracking or not package_name:
+                return
+            package_name = stringtools.strip_diacritics(package_name)
+            package_name = stringtools.to_snake_case(package_name)
+        new_path = self._populate_package(score_directory)
+        score_directory = new_path or score_directory
+        self._add_metadatum(
+            score_directory,
+            'title',
+            title,
+            )
+        year = datetime.date.today().year
+        self._add_metadatum(
+            score_directory,
+            'year',
+            year,
+            )
+        directories = self._list_visible_asset_paths()
+        if score_directory not in directories:
+            with self._io_manager._silent():
+                self._clear_view(self._directory_name)
+        self._run_package_manager_menu(score_directory)
+
     def _make_secondary_asset_menu_entries(self, directory_path):
         menu_entries = []
         for entry in os.listdir(directory_path):
