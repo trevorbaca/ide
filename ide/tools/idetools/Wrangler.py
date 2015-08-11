@@ -1,13 +1,10 @@
 # -*- encoding: utf-8 -*-
 import os
-import shutil
-import traceback
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 from ide.tools.idetools.Controller import Controller
-from ide.tools.idetools.Command import Command
 configuration = AbjadIDEConfiguration()
 
 
@@ -18,7 +15,6 @@ class Wrangler(Controller):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_asset_identifier',
         '_directory_name',
         )
 
@@ -29,7 +25,6 @@ class Wrangler(Controller):
         assert session is not None
         superclass = super(Wrangler, self)
         superclass.__init__(session=session)
-        self._asset_identifier = None
         self._directory_name = None
 
     ### SPECIAL METHODS ###
@@ -44,40 +39,31 @@ class Wrangler(Controller):
     ### PRIVATE METHODS ###
 
     def _configure_as_build_file_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'build'
         return self
 
     def _configure_as_distribution_file_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'distribution'
 
     def _configure_as_etc_file_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'etc'
 
     def _configure_as_maker_file_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'makers'
 
     def _configure_as_material_package_wrangler(self):
-        self._asset_identifier = 'package'
         self._directory_name = 'materials'
 
     def _configure_as_score_package_wrangler(self):
-        self._asset_identifier = 'package'
         self._directory_name = 'scores'
 
     def _configure_as_segment_package_wrangler(self):
-        self._asset_identifier = 'package'
         self._directory_name = 'segments'
 
     def _configure_as_stylesheet_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'stylesheets'
 
     def _configure_as_test_file_wrangler(self):
-        self._asset_identifier = 'file'
         self._directory_name = 'test'
         return self
 
@@ -320,7 +306,9 @@ class Wrangler(Controller):
 
     def _select_visible_asset_path(self, infinitive_phrase=None):
         getter = self._io_manager._make_getter()
-        message = 'enter {}'.format(self._asset_identifier)
+        asset_identifier = self._directory_name_to_asset_identifier[
+            self._directory_name]
+        message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
         if hasattr(self, '_make_wrangler_asset_menu_section'):
@@ -347,8 +335,10 @@ class Wrangler(Controller):
 
     def _select_visible_asset_paths(self):
         getter = self._io_manager._make_getter()
+        asset_identifier = self._directory_name_to_asset_identifier[
+            self._directory_name]
         message = 'enter {}(s) to remove'
-        message = message.format(self._asset_identifier)
+        message = message.format(asset_identifier)
         menu = self._make_asset_selection_menu()
         asset_section = menu['assets']
         getter.append_menu_section_range(

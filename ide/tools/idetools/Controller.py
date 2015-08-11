@@ -32,6 +32,18 @@ class Controller(object):
 
     _abjad_import_statement = 'from abjad import *'
 
+    _directory_name_to_asset_identifier = {
+        'build': 'file',
+        'distribution': 'file',
+        'etc': 'file',
+        'makers': 'file',
+        'materials': 'package',
+        'segments': 'package',
+        'scores': 'package',
+        'stylesheets': 'file',
+        'test': 'file',
+        }
+
     _directory_name_to_file_extension = {
         'makers': '.py',
         'stylesheets': '.ily',
@@ -631,7 +643,10 @@ class Controller(object):
                 paths.append(path)
         return paths
 
-    def _get_available_path(self, directory, asset_identifier):
+    def _get_available_path(self, directory):
+        directory_name = os.path.basename(directory)
+        asset_identifier = self._directory_name_to_asset_identifier[
+            directory_name]
         while True:
             default_prompt = 'enter {} name'
             default_prompt = default_prompt.format(asset_identifier)
@@ -1698,10 +1713,7 @@ class Controller(object):
                 )
             if self._session.is_backtracking or storehouse is None:
                 return
-        path = self._get_available_path(
-            storehouse,
-            asset_identifier=self._asset_identifier,
-            )
+        path = self._get_available_path(storehouse)
         if self._io_manager._is_backtracking or not path:
             return
         message = 'path will be {}.'.format(path)
@@ -2830,7 +2842,10 @@ class Controller(object):
             with controller, silence:
                 for wrangler in wranglers:
                     self._io_manager._display(repr(wrangler))
-                    if wrangler._asset_identifier == 'file':
+                    asset_identifier = \
+                        self._directory_name_to_asset_identifier[
+                        wrangler._directory_name]
+                    if asset_identifier == 'file':
                         directory_token = \
                             wrangler._get_current_directory_token()
                         result = wrangler._check_every_file(directory_token)
@@ -2997,7 +3012,6 @@ class Controller(object):
 
         Returns none.
         '''
-        #file_extension = self._file_extension
         old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
         if not old_path:
             return
@@ -3013,14 +3027,17 @@ class Controller(object):
             new_storehouse = self._select_storehouse()
             if self._io_manager._is_backtracking or new_storehouse is None:
                 return
+        directory_name = os.path.basename(new_storehouse)
+        asset_identifier = self._directory_name_to_asset_identifier[
+            directory_name]
         message = 'existing {} name> {}'
         message = message.format(
-            self._asset_identifier,
+            asset_identifier,
             old_name,
             )
         self._io_manager._display(message)
         message = 'new {} name'
-        message = message.format(self._asset_identifier)
+        message = message.format(asset_identifier)
         getter = self._io_manager._make_getter()
         getter.append_string(message)
         help_template = getter.prompts[0].help_template
@@ -4255,7 +4272,9 @@ class Controller(object):
 
         Returns none.
         '''
-        if self._asset_identifier == 'file':
+        asset_identifier = self._directory_name_to_asset_identifier[
+            self._directory_name]
+        if asset_identifier == 'file':
             self._make_file()
         elif self._directory_name == 'scores':
             self._make_score_package()
