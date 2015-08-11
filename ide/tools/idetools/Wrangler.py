@@ -218,27 +218,6 @@ class Wrangler(Controller):
                 return True
         return False
 
-    def _make_asset(self, asset_name):
-        if os.path.sep in asset_name:
-            asset_name = os.path.basename(asset_name)
-        assert stringtools.is_snake_case(asset_name)
-        current_storehouse = self._get_current_storehouse()
-        path = os.path.join(
-            current_storehouse,
-            asset_name,
-            )
-        manager = self._get_manager(path)
-        with self._io_manager._silent():
-            manager.check_package(
-                return_supply_messages=True,
-                supply_missing=True,
-                )
-        paths = self._list_visible_asset_paths()
-        if path not in paths:
-            with self._io_manager._silent():
-                self._clear_view(self._directory_name)
-        self._session._pending_redraw = True
-
     def _make_asset_menu_entries(
         self,
         apply_current_directory=True,
