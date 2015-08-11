@@ -11,6 +11,7 @@ import time
 from abjad.tools import datastructuretools
 from abjad.tools import developerscripttools
 from abjad.tools import lilypondfiletools
+from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
@@ -1736,12 +1737,76 @@ class Controller(object):
                 menu_entries.append(menu_entry)
         return menu_entries
 
+    def _make_storehouse_menu_entries(
+        self,
+        directory_name,
+        directory_entry_predicate,
+        composer_score_packages=True,
+        example_score_packages=True,
+        ):
+        display_strings, keys = [], []
+        paths = self._list_asset_paths(
+            directory_name,
+            directory_entry_predicate,
+            example_score_packages=example_score_packages,
+            composer_score_packages=composer_score_packages,
+            )
+        for path in paths:
+            title = self._get_title_metadatum(
+                path,
+                year=False,
+                )
+            display_strings.append(title)
+            key = os.path.join(
+                path,
+                self._directory_name,
+                )
+            keys.append(key)
+        assert len(display_strings) == len(keys), repr((display_strings, keys))
+        sequences = [display_strings, [None], [None], keys]
+        return sequencetools.zip_sequences(sequences, cyclic=True)
+
+    @staticmethod
+    def _match_display_string_view_pattern(pattern, entry):
+        display_string, _, _, path = entry
+        token = ':ds:'
+        assert token in pattern, repr(pattern)
+        pattern = pattern.replace(token, repr(display_string))
+        try:
+            result = eval(pattern)
+        except:
+            traceback.print_exc()
+            return False
+        return result
+
     @staticmethod
     def _match_path_view_pattern(pattern, entry):
         display_string, _, _, path = entry
         token = ':path:'
         assert token in pattern, repr(pattern)
         pattern = pattern.replace(token, repr(path))
+        try:
+            result = eval(pattern)
+        except:
+            traceback.print_exc()
+            return False
+        return result
+
+    def _match_metadata_view_pattern(self, pattern, entry):
+        display_string, _, _, path = entry
+        count = pattern.count('md:')
+        for _ in range(count+1):
+            parts = pattern.split()
+            for part in parts:
+                if part.startswith('md:'):
+                    metadatum_name = part[3:]
+                    metadatum = self._get_metadatum(
+                        path,
+                        metadatum_name,
+                        include_score=True,
+                        )
+                    metadatum = repr(metadatum)
+                    pattern = pattern.replace(part, metadatum)
         try:
             result = eval(pattern)
         except:

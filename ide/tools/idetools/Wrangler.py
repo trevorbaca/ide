@@ -134,11 +134,6 @@ class Wrangler(Controller):
         self._file_name_predicate = stringtools.is_snake_case
         return self
 
-    @classmethod
-    def _get_current_package_manager(class_, io_manager, directory_token):
-        if os.path.sep in directory_token:
-            return io_manager._make_package_manager(directory_token)
-
     def _get_current_storehouse(self):
         if self._session.is_in_score:
             return os.path.join(
@@ -322,82 +317,6 @@ class Wrangler(Controller):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
-    def _make_storehouse_menu_entries(
-        self,
-        example_score_packages=True,
-        composer_score_packages=True,
-        ):
-        from ide.tools import idetools
-        display_strings, keys = [], []
-        wrangler = self._session._abjad_ide._score_package_wrangler
-        paths = wrangler._list_asset_paths(
-            self._directory_name,
-            self._directory_entry_predicate,
-            example_score_packages=example_score_packages,
-            composer_score_packages=composer_score_packages,
-            )
-        for path in paths:
-            manager = wrangler._get_manager(path)
-            title = manager._get_title_metadatum(
-                manager._path,
-                year=False,
-                )
-            display_strings.append(title)
-            key = os.path.join(
-                manager._path,
-                self._directory_name,
-                )
-            keys.append(key)
-        assert len(display_strings) == len(keys), repr((display_strings, keys))
-        sequences = [display_strings, [None], [None], keys]
-        return sequencetools.zip_sequences(sequences, cyclic=True)
-
-    @staticmethod
-    def _match_display_string_view_pattern(pattern, entry):
-        display_string, _, _, path = entry
-        token = ':ds:'
-        assert token in pattern, repr(pattern)
-        pattern = pattern.replace(token, repr(display_string))
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    def _match_metadata_view_pattern(self, pattern, entry):
-        display_string, _, _, path = entry
-        manager = self._io_manager._make_package_manager(path)
-        count = pattern.count('md:')
-        for _ in range(count+1):
-            parts = pattern.split()
-            for part in parts:
-                if part.startswith('md:'):
-                    metadatum_name = part[3:]
-                    metadatum = manager._get_metadatum(
-                        manager._path,
-                        metadatum_name,
-                        include_score=True,
-                        )
-                    metadatum = repr(metadatum)
-                    pattern = pattern.replace(part, metadatum)
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    def _open_file_ending_with(self, string):
-        directory_path = self._get_current_directory()
-        path = self._get_file_path_ending_with(directory_path, string)
-        if path:
-            self._io_manager.open_file(path)
-        else:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-
     def _run_wrangler(self, directory=None):
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
@@ -445,24 +364,12 @@ class Wrangler(Controller):
                     if self._session.is_backtracking:
                         return
 
-    def _select_asset_path(self):
-        menu = self._make_asset_selection_menu()
-        while True:
-            result = menu._run()
-            if self._session.is_backtracking:
-                return
-            elif not result:
-                continue
-            elif result == '<return>':
-                return
-            else:
-                break
-        return result
-
     def _select_storehouse(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
-            example_score_packages=example_score_packages,
+            self._directory_name,
+            self._directory_entry_predicate,
             composer_score_packages=False,
+            example_score_packages=example_score_packages,
             )
         current_directory = self._get_current_directory()
         if current_directory is not None:
