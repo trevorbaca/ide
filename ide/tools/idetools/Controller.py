@@ -405,6 +405,22 @@ class Controller(object):
         else:
             raise ValueError(directory_name)
 
+    def _directory_name_to_file_name_predicate(self, directory_name):
+        dash_case_prototype = (
+            'build',
+            'distribution',
+            'etc',
+            'stylesheets',
+            )
+        if directory_name in dash_case_prototype:
+            return stringtools.is_dash_case
+        elif directory_name == 'makers':
+            return stringtools.is_upper_camel_case
+        elif directory_name == 'test':
+            return stringtools.is_snake_case
+        else:
+            raise ValueError(directory_name)
+
     def _enter_run(self, directory=None):
         if (self._session.navigation_target is not None and
             self._session.navigation_target == self._directory_name):
@@ -1353,7 +1369,10 @@ class Controller(object):
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 name, file_extension = os.path.splitext(expr)
-                if self._file_name_predicate(name):
+                file_name_predicate = \
+                    self._directory_name_to_file_name_predicate(
+                    self._directory_name)
+                if file_name_predicate(name):
                     if self._file_extension == '':
                         return True
                     elif self._file_extension == file_extension:
