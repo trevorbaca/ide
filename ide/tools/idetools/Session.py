@@ -59,6 +59,7 @@ class Session(object):
         '_is_test',
         '_last_asset_path',
         '_last_score_path',
+        '_manifest_current_directory',
         '_navigation_target',
         '_pending_done',
         '_pending_input',
@@ -99,6 +100,7 @@ class Session(object):
         self._is_test = is_test
         self._last_asset_path = None
         self._last_score_path = None
+        self._manifest_current_directory = None
         self._navigation_target = None
         self._pending_done = False
         self._pending_input = input_
@@ -590,6 +592,16 @@ class Session(object):
         Returns string or none.
         '''
         return self._last_score_path
+
+    @property
+    def manifest_current_directory(self):
+        r'''Gest manifest current directory.
+
+        Set only by CurrentDirectory context manager.
+
+        Do not set by hand.
+        '''
+        return self._manifest_current_directory
 
     @property
     def navigation_target(self):
