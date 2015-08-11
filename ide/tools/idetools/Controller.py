@@ -389,6 +389,27 @@ class Controller(object):
             self._io_manager._display(messages)
             return True
 
+    def _directory_name_to_directory_entry_predicate(self, directory_name):
+        file_prototype = (
+            'build', 
+            'distribution', 
+            'etc', 
+            'makers',
+            'stylesheets',
+            'test',
+            )
+        package_prototype = (
+            'materials',
+            'segments',
+            'scores',
+            )
+        if directory_name in file_prototype:
+            return self._is_valid_file_directory_entry
+        elif directory_name in package_prototype:
+            return self._is_valid_package_directory_entry
+        else:
+            raise ValueError(directory_name)
+
     def _enter_run(self, directory=None):
         if (self._session.navigation_target is not None and
             self._session.navigation_target == self._directory_name):

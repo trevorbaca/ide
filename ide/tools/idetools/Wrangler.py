@@ -67,68 +67,83 @@ class Wrangler(Controller):
 
     def _configure_as_build_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'build'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
         return self
 
     def _configure_as_distribution_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'distribution'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
 
     def _configure_as_etc_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'etc'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
 
     def _configure_as_maker_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'makers'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._file_extension = '.py'
         self._file_name_predicate = stringtools.is_upper_camel_case
         self._force_lowercase_file_name = False
 
     def _configure_as_material_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._directory_entry_predicate = \
-            self._is_valid_package_directory_entry
         self._directory_name = 'materials'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
 
     def _configure_as_score_package_wrangler(self):
         self._asset_identifier = 'package'
         self._copy_target_directory = configuration.composer_scores_directory
-        self._directory_entry_predicate = \
-            self._is_valid_package_directory_entry
         self._directory_name = 'scores'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._group_asset_section_by_annotation = False
         self._only_example_scores_during_test = True
         self._sort_by_annotation = False
 
     def _configure_as_segment_package_wrangler(self):
         self._asset_identifier = 'package'
-        self._directory_entry_predicate = \
-            self._is_valid_package_directory_entry
         self._directory_name = 'segments'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
 
     def _configure_as_stylesheet_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'stylesheets'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._file_extension = '.ily'
         self._file_name_predicate = stringtools.is_dash_case
         self._force_dash_case_file_name = True
 
     def _configure_as_test_file_wrangler(self):
         self._asset_identifier = 'file'
-        self._directory_entry_predicate = self._is_valid_file_directory_entry
         self._directory_name = 'test'
+        self._directory_entry_predicate = \
+            self._directory_name_to_directory_entry_predicate(
+            self._directory_name)
         self._allow_asset_name_underscores = True
         self._file_extension = '.py'
         self._file_name_predicate = stringtools.is_snake_case
