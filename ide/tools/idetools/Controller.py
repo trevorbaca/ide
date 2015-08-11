@@ -2998,6 +2998,155 @@ class Controller(object):
             replacements=replacements,
             )
 
+    @Command(
+        'add*', 
+        argument_names=('visible_asset_paths',),
+        in_score=False, 
+        outside_score='home',
+        section='git', 
+        )
+    def git_add_every_package(self, directories):
+        r'''Adds every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_add = True
+        if self._session.is_repository_test:
+            return
+        inputs, outputs = [], []
+        method_name = '_git_add'
+        for directory in directories:
+            inputs_, outputs_ = self._git_add(
+                directory,
+                dry_run=True,
+                )
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='add')
+        self._io_manager._display(messages)
+        if not inputs:
+            return
+        result = self._io_manager._confirm()
+        if self._io_manger._is_backtracking or not result:
+            return
+        with self._io_manager._silent():
+            for directory in directories:
+                self._git_add(directory)
+        count = len(inputs)
+        identifier = stringtools.pluralize('file', count)
+        message = 'added {} {} to repository.'
+        message = message.format(count, identifier)
+        self._io_manager._display(message)
+        
+    @Command(
+        'ci*',
+        argument_names=('visible_asset_paths',),
+        in_score=False,
+        outside_score='home',
+        section='git',
+        )
+    def git_commit_every_package(self, directories):
+        r'''Commits every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_commit = True
+        if self._session.is_repository_test:
+            return
+        getter = self._io_manager._make_getter()
+        getter.append_string('commit message')
+        commit_message = getter._run()
+        if self._io_manager._is_backtracking or commit_message is None:
+            return
+        line = 'commit message will be: "{}"'.format(commit_message)
+        self._io_manager._display(line)
+        result = self._io_manager._confirm()
+        if self._io_manager._is_backtracking or not result:
+            return
+        for directory in directories:
+            with self._io_manager._silent():
+                self._git_commit(
+                    directory,
+                    commit_message=commit_message,
+                    )
+
+    @Command(
+        'revert*', 
+        argument_names=('visible_asset_paths',),
+        in_score=False, 
+        outside_score='home',
+        section='git', 
+        )
+    def git_revert_every_package(self, directories):
+        r'''Reverts every asset to repository.
+
+        Returns none.
+        '''
+        self._session._attempted_to_revert = True
+        if self._session.is_repository_test:
+            return
+        for directory in directories:
+            manager._git_revert(
+                directory,
+                manager._path,
+                )
+
+    @Command(
+        'st*', 
+        argument_names=('visible_asset_paths',),
+        in_score=False, 
+        outside_score='home',
+        section='git', 
+        )
+    def git_status_every_package(self, directories):
+        r'''Displays repository status of every asset.
+
+        Returns none.
+        '''
+        self._session._attempted_display_status = True
+        directories = self._extract_common_parent_directories(directories)
+        directories.sort()
+        for directory in directories:
+            self._git_status(directory)
+        if not directories:
+            raise Exception('how did we get here?')
+            #message = 'repository status for {} ... OK'
+            #directory = self._get_current_directory()
+            #message = message.format(directory)
+            #self._io_manager._display(message)
+
+    @Command(
+        'up*', 
+        argument_names=('visible_asset_paths',),
+        in_score=False, 
+        outside_score='home',
+        section='git', 
+        )
+    def git_update_every_package(self, directories):
+        r'''Updates every asset from repository.
+
+        Returns none.
+        '''
+        for directory in directories:
+            messages = []
+            message = self._path_to_asset_menu_display_string(
+                directory,
+                self._allow_asset_name_underscores,
+                )
+            message = self._strip_annotation(message)
+            message = message + ':'
+            messages_ = self._git_update(
+                directory,
+                messages_only=True,
+                )
+            if len(messages_) == 1:
+                message = message + ' ' + messages_[0]
+                messages.append(message)
+            else:
+                messages_ = [self._tab + _ for _ in messages_]
+                messages.extend(messages_)
+            self._io_manager._display(messages, capitalize=False)
+
     @Command('b', description='back', section='back-home-quit')
     def go_back(self):
         r'''Goes back.
