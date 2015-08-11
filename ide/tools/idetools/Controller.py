@@ -706,19 +706,11 @@ class Controller(object):
 
     def _get_directory_wranglers(self, directory):
         wranglers = []
-        directory_name_to_wrangler = {
-            'build': self._session._abjad_ide._build_file_wrangler,
-            'distribution': self._session._abjad_ide._distribution_file_wrangler,
-            'etc': self._session._abjad_ide._etc_file_wrangler,
-            'makers': self._session._abjad_ide._maker_file_wrangler,
-            'materials': self._session._abjad_ide._material_package_wrangler,
-            'segments': self._session._abjad_ide._segment_package_wrangler,
-            'stylesheets': self._session._abjad_ide._stylesheet_wrangler,
-            'test': self._session._abjad_ide._test_file_wrangler,
-            }
         directory_names = self._list_directory_names(directory)
         for directory_name in directory_names:
-            wrangler = directory_name_to_wrangler.get(directory_name)
+            if not directory_name in self._known_directory_names:
+                continue
+            wrangler = self._initialize_wrangler(directory_name)
             if wrangler is not None:
                 wranglers.append(wrangler)
         return wranglers
@@ -1185,6 +1177,12 @@ class Controller(object):
         directory_name = dictionary.get(expr)
         if directory_name is not None:
             session._navigation_target = directory_name
+
+    def _initialize_wrangler(self, directory_name):
+        from ide.tools import idetools
+        wrangler = idetools.Wrangler(session=self._session)
+        wrangler._directory_name = directory_name
+        return wrangler
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
@@ -3804,7 +3802,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._build_file_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('build')
+        wrangler._run_wrangler()
 
     @Command(
         's',
@@ -3832,7 +3831,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._distribution_file_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('distribution')
+        wrangler._run_wrangler()
 
     @Command(
         'e',
@@ -3845,11 +3845,8 @@ class Controller(object):
 
         Returns none.
         '''
-        #directory = os.path.join(score_directory, 'etc')
-        #self._session._abjad_ide._etc_file_wrangler._run_wrangler(
-        #    directory=directory,
-        #    )
-        self._session._abjad_ide._etc_file_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('etc')
+        wrangler._run_wrangler()
 
     @Command(
         'k', 
@@ -3862,7 +3859,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._maker_file_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('makers')
+        wrangler._run_wrangler()
 
     @Command(
         'm', 
@@ -3875,7 +3873,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._material_package_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('materials')
+        wrangler._run_wrangler()
 
     @Command(
         'g', 
@@ -3888,7 +3887,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._segment_package_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('segments')
+        wrangler._run_wrangler()
 
     @Command(
         'y', 
@@ -3901,7 +3901,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._stylesheet_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('stylesheets')
+        wrangler._run_wrangler()
 
     @Command(
         't', 
@@ -3914,7 +3915,8 @@ class Controller(object):
 
         Returns none.
         '''
-        self._session._abjad_ide._test_file_wrangler._run_wrangler()
+        wrangler = self._initialize_wrangler('test')
+        wrangler._run_wrangler()
 
     @Command(
         'i', 
