@@ -21,7 +21,6 @@ class Wrangler(Controller):
         '_asset_identifier',
         '_directory_name',
         '_group_asset_section_by_annotation',
-        '_new_file_contents',
         '_sort_by_annotation',
         )
 
@@ -35,7 +34,6 @@ class Wrangler(Controller):
         self._asset_identifier = None
         self._directory_name = None
         self._group_asset_section_by_annotation = True
-        self._new_file_contents = ''
         self._sort_by_annotation = True
 
     ### SPECIAL METHODS ###
