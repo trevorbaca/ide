@@ -777,6 +777,22 @@ class Controller(object):
                 paths.append(path)
         return paths
 
+    def _get_next_asset_path(self, directory_name):
+        last_path = self._session.last_asset_path
+        menu_entries = self._make_asset_menu_entries(directory_name)
+        paths = [x[-1] for x in menu_entries]
+        if self._session.is_in_score:
+            score_directory = self._session.current_score_directory
+            paths = [x for x in paths if x.startswith(score_directory)]
+        if last_path is None:
+            return paths[0]
+        if last_path not in paths:
+            return paths[0]
+        index = paths.index(last_path)
+        next_index = (index + 1) % len(paths)
+        next_path = paths[next_index]
+        return next_path
+
     @staticmethod
     def _get_outer_score_package_path(path):
         if path.startswith(configuration.composer_scores_directory):
@@ -789,6 +805,22 @@ class Controller(object):
                 configuration.abjad_ide_example_scores_directory,
                 os.path.basename(path),
                 )
+
+    def _get_previous_asset_path(self, directory_name):
+        last_path = self._session.last_asset_path
+        menu_entries = self._make_asset_menu_entries(directory_name)
+        paths = [x[-1] for x in menu_entries]
+        if self._session.is_in_score:
+            score_directory = self._session.current_score_directory
+            paths = [x for x in paths if x.startswith(score_directory)]
+        if last_path is None:
+            return paths[-1]
+        if last_path not in paths:
+            return paths[-1]
+        index = paths.index(last_path)
+        previous_index = (index - 1) % len(paths)
+        previous_path = paths[previous_index]
+        return previous_path
 
     def _get_previous_segment_path(self, directory):
         wrangler = self._initialize_wrangler('segments')
@@ -841,6 +873,12 @@ class Controller(object):
         line = line.replace(path, '')
         line = line.lstrip(os.path.sep)
         return line
+
+    def _get_sibling_asset_path(self, directory_name):
+        if self._session.is_navigating_to_next_asset:
+            return self._get_next_asset_path(directory_name)
+        if self._session.is_navigating_to_previous_asset:
+            return self._get_previous_asset_path(directory_name)
 
     def _get_sibling_score_directory(self, next_=True):
         paths = self._list_visible_asset_paths(self._directory_name)
@@ -1966,16 +2004,12 @@ class Controller(object):
         return string
 
     def _path_to_directory_name(self, path):
-        if self._is_material_package_path(path):
-            return 'materials'
-        elif self._is_score_package_inner_path(path):
-            return 'score'
-        elif self._is_score_package_outer_path(path):
-            return 'score'
-        elif self._is_segment_package_path(path):
-            return 'segments'
-        else:
-            raise ValueError(path)
+        for part in reversed(path.split(os.path.sep)):
+            if part in self._known_directory_names:
+                return part
+            if part == 'scores':
+                return 'score'
+        raise ValueError(path)
 
     def _path_to_menu_header(self, path):
         header_parts = []
@@ -2310,7 +2344,7 @@ class Controller(object):
             result = None
             self._session._pending_redraw = True
             while True:
-                result = self._get_sibling_asset_path()
+                result = self._get_sibling_asset_path(directory_name)
                 if not result:
                     current_directory = self._get_current_directory()
                     if current_directory is not None:

@@ -38,44 +38,6 @@ class Wrangler(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _get_next_asset_path(self):
-        last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries(self._directory_name)
-        paths = [x[-1] for x in menu_entries]
-        if self._session.is_in_score:
-            score_directory = self._session.current_score_directory
-            paths = [x for x in paths if x.startswith(score_directory)]
-        if last_path is None:
-            return paths[0]
-        if last_path not in paths:
-            return paths[0]
-        index = paths.index(last_path)
-        next_index = (index + 1) % len(paths)
-        next_path = paths[next_index]
-        return next_path
-
-    def _get_previous_asset_path(self):
-        last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries(self._directory_name)
-        paths = [x[-1] for x in menu_entries]
-        if self._session.is_in_score:
-            score_directory = self._session.current_score_directory
-            paths = [x for x in paths if x.startswith(score_directory)]
-        if last_path is None:
-            return paths[-1]
-        if last_path not in paths:
-            return paths[-1]
-        index = paths.index(last_path)
-        previous_index = (index - 1) % len(paths)
-        previous_path = paths[previous_index]
-        return previous_path
-
-    def _get_sibling_asset_path(self):
-        if self._session.is_navigating_to_next_asset:
-            return self._get_next_asset_path()
-        if self._session.is_navigating_to_previous_asset:
-            return self._get_previous_asset_path()
-
     def _get_visible_storehouses(self):
         menu = self._make_asset_selection_menu()
         asset_section = menu['assets']
