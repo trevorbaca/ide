@@ -169,6 +169,11 @@ class Session(object):
 
         Returns list of objects all of which are either wranglers or idetools.
         '''
+        from ide.tools import idetools
+        if 1 <= len(self._controller_stack):
+            first_controller = self._controller_stack[0]
+            assert isinstance(first_controller, idetools.AbjadIDE), repr(
+                first_controller)
         return self._controller_stack
 
     @property
