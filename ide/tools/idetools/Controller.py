@@ -688,20 +688,6 @@ class Controller(object):
             return
         return self._session.manifest_current_directory
 
-    def _get_current_directory_token(self):
-        assert isinstance(self._directory_name, str)
-        assert os.path.sep not in self._directory_name
-        score_directory = self._session.current_score_directory
-        if score_directory is not None:
-            directory = os.path.join(
-                score_directory,
-                self._directory_name,
-                )
-            directory = os.path.abspath(directory)
-            return directory
-        else:
-            return self._directory_name
-
     def _get_directory_wranglers(self, directory):
         wranglers = []
         directory_names = self._list_directory_names(directory)
