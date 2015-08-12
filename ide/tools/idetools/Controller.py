@@ -3798,8 +3798,9 @@ class Controller(object):
         '''
         self._session._is_navigating_to_next_asset = True
         self._session._display_command_help = None
-        parts = self._path.split(os.path.sep)
-        self._session._navigation_target = parts[-2]
+        directory_name = self._path_to_directory_name(
+            self._session.manifest_current_directory)
+        self._session._navigation_target = directory_name
 
     @Command('>>', section='sibling score', outside_score='home')
     def go_to_next_score(self):
@@ -3824,8 +3825,9 @@ class Controller(object):
         '''
         self._session._is_navigating_to_previous_asset = True
         self._session._display_command_help = None
-        parts = self._path.split(os.path.sep)
-        self._session._navigation_target = parts[-2]
+        directory_name = self._path_to_directory_name(
+            self._session.manifest_current_directory)
+        self._session._navigation_target = directory_name
 
     @Command('<<', section='sibling score', outside_score='home')
     def go_to_previous_score(self):
