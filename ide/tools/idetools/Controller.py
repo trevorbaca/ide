@@ -792,21 +792,21 @@ class Controller(object):
                 os.path.basename(path),
                 )
 
-    def _get_previous_segment_manager(self, directory):
+    def _get_previous_segment_path(self, directory):
         wrangler = self._initialize_wrangler('segments')
         paths = wrangler._list_visible_asset_paths()
         for i, path in enumerate(paths):
             if path == directory:
                 break
         else:
-            message = 'can not find segment package manager.'
+            message = 'can not find segment package path.'
             raise Exception(message)
-        current_manager_index = i
-        if current_manager_index == 0:
+        current_path_index = i
+        if current_path_index == 0:
             return
-        previous_manager_index = current_manager_index - 1
-        previous_manager = managers[previous_manager_index]
-        return previous_manager
+        previous_path_index = current_path_index - 1
+        previous_path = paths[previous_path_index]
+        return previous_path
 
     def _get_repository_root_directory(self, path):
         command = 'git rev-parse --show-toplevel'
@@ -3640,10 +3640,7 @@ class Controller(object):
         if self._session.is_repository_test:
             return
         for directory in directories:
-            manager._git_revert(
-                directory,
-                manager._path,
-                )
+            self._git_revert(directory)
 
     @Command(
         'st*', 
@@ -4023,17 +4020,15 @@ class Controller(object):
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
-            previous_segment_manager = self._get_previous_segment_manager(
-                directory,
-                )
-            if previous_segment_manager is None:
+            previous_segment_path = self._get_previous_segment_path(directory)
+            if previous_segment_path is None:
                 statement = 'previous_segment_metadata = None'
             else:
                 # TODO: remove session reference
                 score_name = self._session.current_score_directory
                 score_name = os.path.basename(score_name)
-                previous_segment_name = previous_segment_manager._path
-                previous_segment_name = os.path.basename(previous_segment_name)
+                previous_segment_name = previous_segment_path
+                previous_segment_name = os.path.basename(previous_segment_path)
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_segment_metadata'
                 statement = statement.format(score_name, previous_segment_name)

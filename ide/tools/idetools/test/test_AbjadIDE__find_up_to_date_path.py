@@ -8,7 +8,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE__find_up_to_date_path_01():
-    r'''Finds up-to-date score package manger.
+    r'''Finds up-to-date score package path.
     '''
 
     wrangler = abjad_ide._initialize_wrangler('scores')
@@ -27,7 +27,7 @@ def test_AbjadIDE__find_up_to_date_path_01():
 
 
 def test_AbjadIDE__find_up_to_date_path_02():
-    r'''Finds up-to-date material package manager.
+    r'''Finds up-to-date material package path.
     '''
 
     wrangler = abjad_ide._initialize_wrangler('materials')
@@ -41,7 +41,7 @@ def test_AbjadIDE__find_up_to_date_path_02():
 
 
 def test_AbjadIDE__find_up_to_date_path_03():
-    r'''Finds up-to-date segment package manager.
+    r'''Finds up-to-date segment package path.
     '''
 
     wrangler = abjad_ide._initialize_wrangler('segments')
