@@ -148,11 +148,14 @@ class Controller(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, session=None, io_manager=None):
-        assert session is not None
-        assert io_manager is not None
-        self._io_manager = io_manager
+    def __init__(self, session=None, is_test=False):
+        from ide.tools import idetools
+        if session is None:
+            session = idetools.Session()
+            session._is_test = is_test
         self._session = session
+        io_manager = idetools.IOManager(session=session)
+        self._io_manager = io_manager
         for directory_name in self._known_directory_names:
             self._supply_global_views_file(directory_name)
         self._supply_global_metadata_py()
@@ -4906,6 +4909,6 @@ class Controller(object):
         Returns none.
         '''
         import ide
-        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=False)
+        abjad_ide = ide.tools.idetools.Controller(is_test=False)
         input_ = ' '.join(sys.argv[1:])
         abjad_ide._run_main_menu(input_=input_)

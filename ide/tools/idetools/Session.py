@@ -170,7 +170,7 @@ class Session(object):
         from ide.tools import idetools
         if 1 <= len(self._controller_stack):
             first_controller = self._controller_stack[0]
-            assert isinstance(first_controller, idetools.AbjadIDE), repr(
+            assert isinstance(first_controller, idetools.Controller), repr(
                 first_controller)
         return self._controller_stack
 

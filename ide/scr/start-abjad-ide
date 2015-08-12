@@ -2,4 +2,4 @@
 import ide
 
 
-ide.tools.idetools.AbjadIDE.start_abjad_ide()
+ide.tools.idetools.Controller.start_abjad_ide()

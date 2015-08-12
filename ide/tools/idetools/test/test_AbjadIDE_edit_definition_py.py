@@ -7,7 +7,7 @@ def test_AbjadIDE_edit_definition_py_01():
     r'''In material package.
     '''
 
-    abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.tools.idetools.Controller(is_test=True)
     input_ = 'red~example~score m magic~numbers de q'
     abjad_ide._run_main_menu(input_=input_)
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_edit_definition_py_02():
     r'''In segment package.
     '''
 
-    abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.tools.idetools.Controller(is_test=True)
     input_ = 'red~example~score g A de q'
     abjad_ide._run_main_menu(input_=input_)
 

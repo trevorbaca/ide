@@ -7,7 +7,7 @@ def test_Wrangler_git_add_every_package_01():
     r'''Flow control reaches add.
     '''
 
-    abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+    abjad_ide = ide.tools.idetools.Controller(is_test=True)
     abjad_ide._session._is_repository_test = True
     input_ = 'add* q'
     abjad_ide._run_main_menu(input_=input_)

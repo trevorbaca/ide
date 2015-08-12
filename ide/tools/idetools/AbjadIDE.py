@@ -4,14 +4,6 @@ from ide.tools.idetools.Controller import Controller
 
 class AbjadIDE(Controller):
     r'''Abjad IDE.
-
-    ..  container:: example
-
-        ::
-
-            >>> ide.tools.idetools.AbjadIDE(is_test=True)
-            AbjadIDE()
-
     '''
 
     ### CLASS VARIABLES ###
@@ -27,5 +19,5 @@ class AbjadIDE(Controller):
             session = idetools.Session()
             session._is_test = is_test
         io_manager = idetools.IOManager(session=session)
-        superclass = super(AbjadIDE, self)
+        superclass = super(Controller, self)
         superclass.__init__(session=session, io_manager=io_manager)

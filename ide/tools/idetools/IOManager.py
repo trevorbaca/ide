@@ -21,7 +21,7 @@ class IOManager(IOManager):
 
         ::
 
-            >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide = ide.tools.idetools.Controller(is_test=True)
             >>> io_manager = abjad_ide._io_manager
 
     '''
