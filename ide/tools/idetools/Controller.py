@@ -811,8 +811,7 @@ class Controller(object):
         return previous_path
 
     def _get_previous_segment_path(self, directory):
-        wrangler = self._initialize_wrangler('segments')
-        paths = wrangler._list_visible_asset_paths('segments')
+        paths = self._list_visible_asset_paths('segments')
         for i, path in enumerate(paths):
             if path == directory:
                 break
@@ -1188,15 +1187,6 @@ class Controller(object):
         directory_name = dictionary.get(expr)
         if directory_name is not None:
             session._navigation_target = directory_name
-
-    def _initialize_wrangler(self, directory_name):
-        from ide.tools import idetools
-        wrangler = idetools.Wrangler(
-            session=self._session,
-            io_manager=self._io_manager,
-            )
-        wrangler._directory_name = directory_name
-        return wrangler
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
@@ -4093,8 +4083,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('build')
-        wrangler._run_wrangler_menu('build')
+        self._run_wrangler_menu('build')
 
     @Command(
         's',
@@ -4122,8 +4111,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('distribution')
-        wrangler._run_wrangler_menu('distribution')
+        self._run_wrangler_menu('distribution')
 
     @Command(
         'e',
@@ -4136,8 +4124,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('etc')
-        wrangler._run_wrangler_menu('etc')
+        self._run_wrangler_menu('etc')
 
     @Command(
         'k', 
@@ -4150,8 +4137,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('makers')
-        wrangler._run_wrangler_menu('makers')
+        self._run_wrangler_menu('makers')
 
     @Command(
         'm', 
@@ -4164,8 +4150,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('materials')
-        wrangler._run_wrangler_menu('materials')
+        self._run_wrangler_menu('materials')
 
     @Command(
         'g', 
@@ -4178,8 +4163,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('segments')
-        wrangler._run_wrangler_menu('segments')
+        self._run_wrangler_menu('segments')
 
     @Command(
         'y', 
@@ -4192,8 +4176,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('stylesheets')
-        wrangler._run_wrangler_menu('stylesheets')
+        self._run_wrangler_menu('stylesheets')
 
     @Command(
         't', 
@@ -4206,8 +4189,7 @@ class Controller(object):
 
         Returns none.
         '''
-        wrangler = self._initialize_wrangler('test')
-        wrangler._run_wrangler_menu('test')
+        self._run_wrangler_menu('test')
 
     @Command(
         'i', 
@@ -4230,8 +4212,7 @@ class Controller(object):
             message = message.format(definition_py_path)
             self._io_manager._display(message)
             return
-        wrangler = self._initialize_wrangler('segments')
-        wrangler._update_order_dependent_segment_metadata()
+        self._update_order_dependent_segment_metadata()
         boilerplate_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
             '__illustrate_segment__.py',

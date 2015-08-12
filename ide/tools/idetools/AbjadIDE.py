@@ -61,7 +61,6 @@ class AbjadIDE(Controller):
             consume_local_backtrack=True,
             on_exit_callbacks=(self._io_manager._clean_up,)
             )
-#        path = configuration.abjad_ide_directory
         path = configuration.composer_scores_directory
         directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
