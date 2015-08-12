@@ -230,11 +230,7 @@ class Session(object):
 
         Returns true or false..
         '''
-        from ide.tools import idetools
-        for controller in self.controller_stack:
-            if isinstance(controller, idetools.Wrangler):
-                return False
-        return True
+        return len(self.controller_stack) <= 1
 
     @property
     def is_autonavigating_within_score(self):
