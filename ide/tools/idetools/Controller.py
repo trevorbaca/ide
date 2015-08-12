@@ -306,6 +306,7 @@ class Controller(object):
         pairs = zip(source_file_paths, target_file_paths)
         return pairs
 
+    # HERE
     def _confirm_segment_names(self, score_directory):
         segment_package_wrangler = self._initialize_wrangler('segments')
         segments_directory = os.path.join(score_directory, 'segments')
@@ -315,7 +316,9 @@ class Controller(object):
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
-        segment_paths = segment_package_wrangler._list_visible_asset_paths()
+        segment_paths = segment_package_wrangler._list_visible_asset_paths(
+            'segments',
+            )
         segment_paths = segment_paths or []
         segment_names = []
         for segment_path in segment_paths:
@@ -676,7 +679,9 @@ class Controller(object):
             result.append(command)
         return result
 
+    # THERE
     def _get_current_directory(self):
+
         score_directory = self._session.current_score_directory
         if score_directory is not None:
             directory = os.path.join(
@@ -685,6 +690,14 @@ class Controller(object):
                 )
             directory = os.path.abspath(directory)
             return directory
+
+#        if os.path.normpath(self._session.manifest_current_directory) == \
+#            os.path.normpath(configuration.composer_scores_directory):
+#            return
+#        if os.path.normpath(self._session.manifest_current_directory) == \
+#            os.path.normpath(configuration.abjad_ide_example_scores_directory):
+#            return
+#        return self._session.manifest_current_directory
 
     def _get_current_directory_token(self):
         assert isinstance(self._directory_name, str)
@@ -794,7 +807,7 @@ class Controller(object):
 
     def _get_previous_segment_path(self, directory):
         wrangler = self._initialize_wrangler('segments')
-        paths = wrangler._list_visible_asset_paths()
+        paths = wrangler._list_visible_asset_paths('segments')
         for i, path in enumerate(paths):
             if path == directory:
                 break
@@ -845,7 +858,7 @@ class Controller(object):
         return line
 
     def _get_sibling_score_directory(self, next_=True):
-        paths = self._list_visible_asset_paths()
+        paths = self._list_visible_asset_paths(self._directory_name)
         if self._session.last_asset_path is None:
             if next_:
                 return paths[0]
@@ -1081,7 +1094,8 @@ class Controller(object):
                         self._session.current_score_directory
                     command(current_score_directory)
                 elif 'visible_asset_paths' in command.argument_names:
-                    paths = self._list_visible_asset_paths()
+                    paths = self._list_visible_asset_paths(
+                        self._directory_name)
                     command(paths)
                 else:
                     command()
@@ -1542,8 +1556,8 @@ class Controller(object):
                 result.append(path)
         return result
 
-    def _list_visible_asset_paths(self):
-        entries = self._make_asset_menu_entries()
+    def _list_visible_asset_paths(self, directory_name):
+        entries = self._make_asset_menu_entries(directory_name)
         paths = [_[-1] for _ in entries]
         return paths
 
@@ -1596,7 +1610,8 @@ class Controller(object):
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
         else:
-            current_directory = self._get_current_directory()
+            #current_directory = self._get_current_directory()
+            current_directory = self._session.manifest_current_directory
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         files = required_files + optional_files
@@ -1710,7 +1725,7 @@ class Controller(object):
             return
         new_path = self._populate_package(path)
         new_path = new_path or path
-        paths = self._list_visible_asset_paths()
+        paths = self._list_visible_asset_paths(self._directory_name)
         if path not in paths:
             with self._io_manager._silent():
                 self._clear_view(self._directory_name)
@@ -1797,7 +1812,7 @@ class Controller(object):
             'year',
             year,
             )
-        directories = self._list_visible_asset_paths()
+        directories = self._list_visible_asset_paths('scores')
         if score_directory not in directories:
             with self._io_manager._silent():
                 self._clear_view(self._directory_name)
@@ -2466,7 +2481,7 @@ class Controller(object):
             self._io_manager.spawn_subprocess(command)
 
     def _update_order_dependent_segment_metadata(self):
-        paths = self._list_visible_asset_paths()
+        paths = self._list_visible_asset_paths('segments')
         if not paths:
             return
         segment_count = len(paths)
@@ -2904,7 +2919,9 @@ class Controller(object):
                             wrangler._get_current_directory_token()
                         result = wrangler._check_every_file(directory_token)
                     else:
-                        paths = wrangler._list_visible_asset_paths()
+                        paths = wrangler._list_visible_asset_paths(
+                            wrangler._directory_name,
+                            )
                         result = wrangler.check_every_package(
                             paths,
                             indent=1,

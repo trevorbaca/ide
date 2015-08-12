@@ -48,7 +48,7 @@ class Wrangler(Controller):
 
     def _get_next_asset_path(self):
         last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries()
+        menu_entries = self._make_asset_menu_entries(self._directory_name)
         paths = [x[-1] for x in menu_entries]
         if self._session.is_in_score:
             score_directory = self._session.current_score_directory
@@ -64,7 +64,7 @@ class Wrangler(Controller):
 
     def _get_previous_asset_path(self):
         last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries()
+        menu_entries = self._make_asset_menu_entries(self._directory_name)
         paths = [x[-1] for x in menu_entries]
         if self._session.is_in_score:
             score_directory = self._session.current_score_directory
@@ -97,10 +97,11 @@ class Wrangler(Controller):
 
     def _make_asset_menu_entries(
         self,
+        directory_name,
         apply_current_directory=True,
         set_view=True,
         ):
-        paths = self._list_asset_paths(self._directory_name)
+        paths = self._list_asset_paths(directory_name)
         current_directory = self._get_current_directory()
         if (apply_current_directory or set_view) and current_directory:
             paths = [_ for _ in paths if _.startswith(current_directory)]
@@ -110,7 +111,7 @@ class Wrangler(Controller):
             strings.append(string)
         pairs = list(zip(strings, paths))
         if (not self._session.is_in_score and
-            not self._directory_name == 'scores'):
+            not directory_name == 'scores'):
             def sort_function(pair):
                 string = pair[0]
                 if '(' not in string:
@@ -139,10 +140,10 @@ class Wrangler(Controller):
                 directory_token,
                 entries,
                 )
-        if self._session.is_test and self._directory_name == 'scores':
+        if self._session.is_test and directory_name == 'scores':
             entries = [_ for _ in entries if 'Example Score' in _[0]]
-        elif not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        elif not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
@@ -155,7 +156,8 @@ class Wrangler(Controller):
             menu_entries_ = self._make_secondary_asset_menu_entries(
                 current_directory)
             menu_entries.extend(menu_entries_)
-        menu_entries.extend(self._make_asset_menu_entries())
+        menu_entries.extend(
+            self._make_asset_menu_entries(self._directory_name))
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
@@ -163,7 +165,7 @@ class Wrangler(Controller):
 
     def _make_asset_selection_menu(self):
         menu = self._io_manager._make_menu(name='asset selection')
-        menu_entries = self._make_asset_menu_entries()
+        menu_entries = self._make_asset_menu_entries(self._directory_name)
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
