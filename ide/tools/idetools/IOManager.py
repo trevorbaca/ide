@@ -300,13 +300,6 @@ class IOManager(IOManager):
             subtitle=subtitle,
             )
 
-    def _make_package_manager(self, path):
-        from ide.tools import idetools
-        return idetools.PackageManager(
-            path=path,
-            session=self._session,
-            )
-
     def _make_selector(
         self,
         is_ranged=False,

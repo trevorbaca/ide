@@ -21,13 +21,9 @@ def test_Wrangler_copy_01():
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(pretty_path)
-        manager = ide.tools.idetools.PackageManager(
-            path=pretty_path,
-            session=abjad_ide._session,
-            )
         title = 'Pretty Example Score'
-        manager._add_metadatum(
-            manager._path,
+        abjad_ide._add_metadatum(
+            pretty_path,
             'title',
             title,
             )
@@ -40,9 +36,9 @@ def test_Wrangler_copy_02():
     r'''Copies material package outside score.
     
     Partial test because we can't be sure any user score packages will be
-    present. And because Score PackageManager allows copying into user score
-    packages only (because copying into example score packages could pollute
-    the example score packages).
+    present. And because IDE allows copying into user score packages only
+    (because copying into example score packages could pollute the example
+    score packages).
     '''
 
     input_ = 'mm cp performer~inventory~(Red~Example~Score) <return> q'
@@ -106,9 +102,9 @@ def test_Wrangler_copy_05():
     r'''Copies segment package outside score.
     
     Partial test because we can't be sure any user score packages will be
-    present. And because Score PackageManager allows copying into user score 
-    packges only (because copying into example score packages could pollute the
-    example score packages).
+    present. And because IDE allows copying into user score packges only
+    (because copying into example score packages could pollute the example
+    score packages).
     '''
 
     input_ = 'gg cp A~(Red~Example~Score) <return> q'
@@ -158,9 +154,9 @@ def test_Wrangler_copy_07():
     r'''Copies build file outside score.
     
     Partial test because we can't be sure any user score packages will be
-    present. And because Score PackageManager allows copying into user score
-    packages only (because copying into example score packages could pollute
-    the example score packages).
+    present. And because IDE allows copying into user score packages only
+    (because copying into example score packages could pollute the example
+    score packages).
     '''
 
     input_ = 'uu cp score.pdf~(Red~Example~Score) <return> q'

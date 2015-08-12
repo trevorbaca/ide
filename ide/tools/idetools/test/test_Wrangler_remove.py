@@ -24,14 +24,9 @@ def test_Wrangler_remove_01():
         input_ = 'new example~score~100 y q'
         abjad_ide._run(input_=input_)
         assert os.path.exists(outer_path)
-        manager = ide.tools.idetools.PackageManager(
-            path=inner_path, 
-            session=abjad_ide._session,
-            io_manager=abjad_ide._io_manager,
-            )
         title = 'Example Score 100'
-        manager._add_metadatum(
-            manager._path,
+        abjad_ide._add_metadatum(
+            inner_path,
             'title',
             title,
             )

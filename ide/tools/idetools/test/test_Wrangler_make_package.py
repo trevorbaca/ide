@@ -40,12 +40,7 @@ def test_Wrangler_make_package_01():
         assert os.path.exists(outer_path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        manager = ide.tools.idetools.PackageManager(
-            path=inner_path,
-            session=session,
-            io_manager=io_manager,
-            )
-        assert manager._list_directory(manager._path) == inner_directory_entries
+        assert abjad_ide._list_directory(inner_path) == inner_directory_entries
         for file_name in outer_directory_entries:
             path = os.path.join(outer_path, file_name)
             assert os.path.exists(path)
@@ -108,12 +103,7 @@ def test_Wrangler_make_package_03():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        manager = ide.tools.idetools.PackageManager(
-            path=path, 
-            session=session,
-            io_manager=io_manager,
-            )
-        assert manager._list_directory(manager._path) == directory_entries
+        assert abjad_ide._list_directory(path) == directory_entries
 
 
 def test_Wrangler_make_package_04():
@@ -140,10 +130,4 @@ def test_Wrangler_make_package_04():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        manager = ide.tools.idetools.PackageManager
-        manager = manager(
-            path=path,
-            session=session,
-            io_manager=io_manager,
-            )
-        assert manager._list_directory(manager._path) == directory_entries
+        assert abjad_ide._list_directory(path) == directory_entries

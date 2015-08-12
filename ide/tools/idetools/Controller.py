@@ -903,11 +903,6 @@ class Controller(object):
         return paths
 
     @staticmethod
-    def _get_views_package_manager(io_manager):
-        path = configuration.abjad_ide_views_directory
-        return io_manager._make_package_manager(path)
-
-    @staticmethod
     def _get_views_py_path(directory_token):
         if os.path.sep in directory_token:
             return os.path.join(directory_token, '__views__.py')
