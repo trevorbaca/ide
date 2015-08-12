@@ -9,7 +9,7 @@ def test_Wrangler_go_to_all_stylesheets_directories_01():
     '''
 
     input_ = 'yy q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Abjad IDE - all stylesheets directories',

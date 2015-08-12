@@ -7,7 +7,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 def test_Wrangler_go_back_01():
 
     input_ = 'b q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -19,7 +19,7 @@ def test_Wrangler_go_back_01():
 def test_Wrangler_go_back_02():
 
     input_ = 'red~example~score u b q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -33,7 +33,7 @@ def test_Wrangler_go_back_02():
 def test_Wrangler_go_back_03():
 
     input_ = 'uu b q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',

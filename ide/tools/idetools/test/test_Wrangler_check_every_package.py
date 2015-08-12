@@ -41,7 +41,7 @@ def test_Wrangler_check_every_package_01():
         ]
 
     input_ = 'ck* y n q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     for line in lines:
         assert line in contents
@@ -61,7 +61,7 @@ def test_Wrangler_check_every_package_02():
     with systemtools.FilesystemState(keep=[build_directory]):
         shutil.rmtree(build_directory)
         input_ = 'ck* y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isdir(build_directory)
 
 
@@ -81,5 +81,5 @@ def test_Wrangler_check_every_package_03():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'ck* y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(initializer)

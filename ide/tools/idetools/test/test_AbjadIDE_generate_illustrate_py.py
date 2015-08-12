@@ -20,7 +20,7 @@ def test_AbjadIDE_generate_illustrate_py_01():
 
     with systemtools.FilesystemState(keep=[path]):
         input_ = 'red~example~score m magic~numbers gl y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(path)
         assert not filecmp.cmp(path, path + '.backup')
         contents = abjad_ide._io_manager._transcript.contents

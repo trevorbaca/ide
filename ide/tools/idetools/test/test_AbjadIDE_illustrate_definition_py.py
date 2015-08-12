@@ -24,7 +24,7 @@ def test_AbjadIDE_illustrate_definition_py_01():
         os.remove(ly_path)
         os.remove(pdf_path)
         input_ = 'red~example~score g A i q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
@@ -56,7 +56,7 @@ def test_AbjadIDE_illustrate_definition_py_02():
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         input_ = 'red~example~score g A i q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
@@ -89,7 +89,7 @@ def test_AbjadIDE_illustrate_definition_py_03():
         with open(pdf_path, 'w') as file_pointer:
             file_pointer.write('text')
         input_ = 'red~example~score g A i y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)

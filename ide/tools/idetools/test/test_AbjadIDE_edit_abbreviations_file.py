@@ -7,6 +7,6 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 def test_AbjadIDE_edit_abbreviations_file_01():
 
     input_ = 'red~example~score abb q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

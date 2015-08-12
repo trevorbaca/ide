@@ -19,7 +19,7 @@ def test_Wrangler_copy_01():
 
     with systemtools.FilesystemState(remove=[pretty_path]):
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(pretty_path)
         title = 'Pretty Example Score'
         abjad_ide._add_metadatum(
@@ -28,7 +28,7 @@ def test_Wrangler_copy_01():
             title,
             )
         input_ = 'rm Pretty~Example~Score remove q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(pretty_path)
 
 
@@ -42,7 +42,7 @@ def test_Wrangler_copy_02():
     '''
 
     input_ = 'mm cp performer~inventory~(Red~Example~Score) <return> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     titles = [
@@ -77,7 +77,7 @@ def test_Wrangler_copy_03():
     with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
         input_ = 'red~example~score m cp'
         input_ += ' performer~inventory copied~performer~inventory y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
@@ -89,7 +89,7 @@ def test_Wrangler_copy_04():
     '''
 
     input_ = 'red~example~score m cp tempo~inventory ? foo n q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
         
     string = 'Existing package name> tempo_inventory'
@@ -108,7 +108,7 @@ def test_Wrangler_copy_05():
     '''
 
     input_ = 'gg cp A~(Red~Example~Score) <return> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     titles = [
@@ -143,7 +143,7 @@ def test_Wrangler_copy_06():
     with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
         input_ = 'red~example~score g cp'
         input_ += ' A copied_segment_01 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)
@@ -160,7 +160,7 @@ def test_Wrangler_copy_07():
     '''
 
     input_ = 'uu cp score.pdf~(Red~Example~Score) <return> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     titles = [
@@ -195,7 +195,7 @@ def test_Wrangler_copy_08():
     with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
         input_ = 'red~example~score u cp'
         input_ += ' score.pdf copied-score.pdf y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(source_path)
         assert os.path.exists(target_path)

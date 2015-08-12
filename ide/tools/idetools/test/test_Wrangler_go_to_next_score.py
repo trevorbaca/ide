@@ -9,7 +9,7 @@ def test_Wrangler_go_to_next_score_01():
     '''
 
     input_ = '>> >> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Blue Example Score (2013)',
@@ -23,7 +23,7 @@ def test_Wrangler_go_to_next_score_02():
     '''
 
     input_ = 'red~example~score u >> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',

@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_score_test_directory_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory t q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -26,7 +26,7 @@ def test_AbjadIDE_go_to_score_test_directory_02():
     '''
 
     input_ = 'red~example~score g A t q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',

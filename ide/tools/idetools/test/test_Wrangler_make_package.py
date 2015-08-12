@@ -35,7 +35,7 @@ def test_Wrangler_make_package_01():
 
     with systemtools.FilesystemState(remove=[outer_path]):
         input_ = 'new Example~Score y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_path)
         session = ide.tools.idetools.Session(is_test=True)
@@ -59,22 +59,22 @@ def test_Wrangler_make_package_02():
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new ExampleScore1 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new exampleScore1 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new EXAMPLE_SCORE_1 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new example_score_1 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
 
@@ -99,7 +99,7 @@ def test_Wrangler_make_package_03():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'mm new Red~Example~Score testnotes y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
@@ -125,7 +125,7 @@ def test_Wrangler_make_package_04():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'red~example~score g new segment~04 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)

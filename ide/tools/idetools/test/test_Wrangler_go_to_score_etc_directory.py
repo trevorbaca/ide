@@ -9,7 +9,7 @@ def test_Wrangler_go_to_score_etc_directory_01():
     '''
 
     input_ = 'red~example~score u e q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',

@@ -9,7 +9,7 @@ def test_AbjadIDE_display_action_command_help_01():
     '''
     
     input_ = 'red~example~score m tempo~inventory ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'tempo inventory - action commands' in contents
@@ -20,7 +20,7 @@ def test_AbjadIDE_display_action_command_help_02():
     '''
     
     input_ = 'red~example~score g A ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'segments directory - A - action commands' in contents
@@ -31,7 +31,7 @@ def test_AbjadIDE_display_action_command_help_03():
     '''
     
     input_ = 'red~example~score ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Red Example Score (2013) - action commands' in contents
@@ -58,7 +58,7 @@ def test_AbjadIDE_display_action_command_help_04():
     ]
 
     input_ = 'red~example~score ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -93,7 +93,7 @@ def test_AbjadIDE_display_action_command_help_05():
     ]
 
     input_ = 'red~example~score m magic~numbers ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -127,7 +127,7 @@ def test_AbjadIDE_display_action_command_help_06():
     ]
 
     input_ = 'red~example~score g A ? q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 

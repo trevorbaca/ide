@@ -9,7 +9,7 @@ def test_Getter_display_help_01():
     '''
 
     input_ = 'red~example~score m new ? <return> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string  = 'Value must be string.'
@@ -21,7 +21,7 @@ def test_Getter_display_help_02():
     '''
 
     input_ = 'red~example~score m new help <return> q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Value must be string.'

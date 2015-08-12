@@ -11,7 +11,7 @@ def test_Wrangler_invoke_shell_01():
     '''
 
     input_ = '!pwd q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.composer_scores_directory,
@@ -25,7 +25,7 @@ def test_Wrangler_invoke_shell_02():
     '''
 
     input_ = 'uu !pwd q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.composer_scores_directory,
@@ -39,7 +39,7 @@ def test_Wrangler_invoke_shell_03():
     '''
 
     input_ = 'red~example~score u !pwd q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,

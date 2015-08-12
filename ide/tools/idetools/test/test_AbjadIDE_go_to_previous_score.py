@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_previous_score_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory << q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
@@ -25,7 +25,7 @@ def test_AbjadIDE_go_to_previous_score_02():
     '''
 
     input_ = 'red~example~score g A << q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
@@ -41,7 +41,7 @@ def test_AbjadIDE_go_to_previous_score_03():
     '''
 
     input_ = 'red~example~score << q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',

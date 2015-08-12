@@ -9,7 +9,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_Wrangler_check_every_definition_py_01():
 
     input_ = 'red~example~score m dc* y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     package_names = [
@@ -43,7 +43,7 @@ def test_Wrangler_check_every_definition_py_01():
 def test_Wrangler_check_every_definition_py_02():
 
     input_ = 'red~example~score g dc* y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     package_names = [

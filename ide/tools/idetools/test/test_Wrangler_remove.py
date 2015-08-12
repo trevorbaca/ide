@@ -22,7 +22,7 @@ def test_Wrangler_remove_01():
 
     with systemtools.FilesystemState(remove=[outer_path, inner_path]):
         input_ = 'new example~score~100 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(outer_path)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
@@ -31,7 +31,7 @@ def test_Wrangler_remove_01():
             title,
             )
         input_ = 'rm Example~Score~100 remove q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(outer_path)
 
 
@@ -63,10 +63,10 @@ def test_Wrangler_remove_02():
 
     with systemtools.FilesystemState(remove=paths):
         input_ = 'new example~score~100 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path_100_outer)
         input_ = 'new example~score~101 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path_101_outer)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
@@ -81,7 +81,7 @@ def test_Wrangler_remove_02():
             title,
             )
         input_ = 'rm Example~Score~100~-~Example~Score~101 remove~2 q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path_100_outer)
         assert not os.path.exists(path_101_outer)
 
@@ -92,7 +92,7 @@ def test_Wrangler_remove_03():
 
     abjad_ide._session._is_repository_test = True
     input_ = 'red~example~score m rm q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert abjad_ide._session._attempted_to_remove
 
 
@@ -102,5 +102,5 @@ def test_Wrangler_remove_04():
 
     abjad_ide._session._is_repository_test = True
     input_ = 'red~example~score g rm q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert abjad_ide._session._attempted_to_remove

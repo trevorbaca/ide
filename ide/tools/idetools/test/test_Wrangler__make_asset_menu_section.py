@@ -12,7 +12,7 @@ def test_Wrangler__make_asset_menu_section_01():
 
     abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score g q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Red Example Score (2013) - segments'
@@ -25,7 +25,7 @@ def test_Wrangler__make_asset_menu_section_02():
     '''
 
     input_ = 'blue~example~score m q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Blue Example Score (2013)',
@@ -39,7 +39,7 @@ def test_Wrangler__make_asset_menu_section_03():
     '''
 
     input_ = 'red~example~score m q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert '(Red Example Score)' not in abjad_ide._io_manager._transcript.contents
 
 
@@ -48,5 +48,5 @@ def test_Wrangler__make_asset_menu_section_04():
     '''
 
     input_ = 'mm q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert 'Red Example Score:' in abjad_ide._io_manager._transcript.contents

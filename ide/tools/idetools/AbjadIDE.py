@@ -36,18 +36,9 @@ class AbjadIDE(Controller):
         superclass = super(AbjadIDE, self)
         superclass.__init__(session=session, io_manager=io_manager)
 
-    ### SPECIAL METHODS ###
-
-    def __repr__(self):
-        r'''Gets interpreter representation of Abjad IDE.
-
-        Returns string.
-        '''
-        return '{}()'.format(type(self).__name__)
-
     ### PRIVATE METHODS ###
 
-    def _run(self, input_=None):
+    def _run_main_menu(self, input_=None):
         from ide.tools import idetools
         self._session._reinitialize()
         type(self).__init__(self, session=self._session)
@@ -103,16 +94,3 @@ class AbjadIDE(Controller):
                     if self._session._clear_terminal_after_quit:
                         self._io_manager.clear_terminal()
                     return
-
-    ### PUBLIC METHODS ###
-
-    @staticmethod
-    def start_abjad_ide():
-        r'''Starts Abjad IDE.
-
-        Returns none.
-        '''
-        import ide
-        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=False)
-        input_ = ' '.join(sys.argv[1:])
-        abjad_ide._run(input_=input_)

@@ -18,5 +18,5 @@ def test_Wrangler_make_file_01():
 
     with systemtools.FilesystemState(remove=[path]):
         input_ = 'red~example~score u new test-file.txt q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)

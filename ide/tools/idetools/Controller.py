@@ -4841,3 +4841,14 @@ class Controller(object):
             metadatum_name,
             view_name,
             )
+
+    @staticmethod
+    def start_abjad_ide():
+        r'''Starts Abjad IDE.
+
+        Returns none.
+        '''
+        import ide
+        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=False)
+        input_ = ' '.join(sys.argv[1:])
+        abjad_ide._run_main(input_=input_)

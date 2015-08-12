@@ -9,7 +9,7 @@ def test_Menu__change_input_to_directive_01():
     '''
 
     input_ = 'étude q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Étude Example Score (2013)'
@@ -21,7 +21,7 @@ def test_Menu__change_input_to_directive_02():
     '''
 
     input_ = 'etude q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Étude Example Score (2013)'
@@ -33,7 +33,7 @@ def test_Menu__change_input_to_directive_03():
     '''
 
     input_ = 'Red~example~score q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Red Example Score (2013)'
@@ -45,7 +45,7 @@ def test_Menu__change_input_to_directive_04():
     '''
 
     input_ = 'red~Example~score q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Red Example Score (2013)'
@@ -57,7 +57,7 @@ def test_Menu__change_input_to_directive_05():
     '''
 
     input_ = 'red~example~Score q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Red Example Score (2013)'
@@ -69,7 +69,7 @@ def test_Menu__change_input_to_directive_06():
     '''
 
     input_ = 'RED~EXAMPLE~SCORE q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     string = 'Red Example Score (2013)'
@@ -86,6 +86,6 @@ def test_Menu__change_input_to_directive_07():
     '''
 
     input_ = 'red~example~score m magic~numbers 1 q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

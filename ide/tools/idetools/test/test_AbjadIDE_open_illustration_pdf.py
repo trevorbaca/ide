@@ -9,7 +9,7 @@ def test_AbjadIDE_open_illustration_pdf_01():
     '''
 
     input_ = 'red~example~score m magic~numbers io q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
 
@@ -19,6 +19,6 @@ def test_AbjadIDE_open_illustration_pdf_02():
     '''
 
     input_ = 'red~example~score g A io q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

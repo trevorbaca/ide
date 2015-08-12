@@ -9,7 +9,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_invoke_shell_01():
 
     input_ = 'red~example~score m tempo~inventory !pwd q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,

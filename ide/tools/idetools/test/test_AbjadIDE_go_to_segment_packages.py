@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_segment_packages_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory g q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -26,7 +26,7 @@ def test_AbjadIDE_go_to_segment_packages_02():
     '''
 
     input_ = 'red~example~score g A g q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -43,7 +43,7 @@ def test_AbjadIDE_go_to_segment_packages_03():
     '''
 
     input_ = 'red~example~score g q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',

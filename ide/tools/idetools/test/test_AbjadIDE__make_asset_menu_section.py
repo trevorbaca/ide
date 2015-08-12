@@ -9,7 +9,7 @@ def test_AbjadIDE__make_asset_menu_section_01():
 
     abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
     input_ = 'blue~example~score g segment~01 q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Blue Example Score (2013)',

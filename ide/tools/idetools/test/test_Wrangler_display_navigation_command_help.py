@@ -35,7 +35,7 @@ def test_Wrangler_display_navigation_command_help_01():
         ]
 
     input_ = '; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -68,7 +68,7 @@ def test_Wrangler_display_navigation_command_help_02():
         ]
 
     input_ = 'mm ; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -101,7 +101,7 @@ def test_Wrangler_display_navigation_command_help_03():
         ]
 
     input_ = 'yy ; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -143,7 +143,7 @@ def test_Wrangler_display_navigation_command_help_04():
         ]
 
     input_ = 'red~example~score m ; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -185,7 +185,7 @@ def test_Wrangler_display_navigation_command_help_05():
         ]
 
     input_ = 'red~example~score g ; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -224,7 +224,7 @@ def test_Wrangler_display_navigation_command_help_06():
         ]
 
     input_ = 'red~example~score y ; q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):

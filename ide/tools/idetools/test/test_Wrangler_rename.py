@@ -23,7 +23,7 @@ def test_Wrangler_rename_01():
 
     with systemtools.FilesystemState(remove=[path_100, path_101]):
         input_ = 'new example~score~100 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path_100)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
@@ -32,7 +32,7 @@ def test_Wrangler_rename_01():
             title,
             )
         input_ = 'ren Example~Score~100 example_score_101 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path_100)
         assert os.path.exists(path_101)
 
@@ -58,10 +58,10 @@ def test_Wrangler_rename_02():
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         input_ = 'red~example~score m new test~material y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
         input_ = 'red~example~score m ren test~material new~test~material y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path)
         assert os.path.exists(new_path)
 
@@ -87,10 +87,10 @@ def test_Wrangler_rename_03():
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         input_ = 'red~example~score g new segment~04 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
         input_ = 'red~example~score g ren segment~04 renamed_segment_04 y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path)
         assert os.path.exists(new_path)
 
@@ -118,14 +118,14 @@ def test_Wrangler_rename_04():
 
     input_ = 'uu ren score.pdf~(Red~Example~Score)'
     input_ += ' foo-score.pdf y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'uu ren foo-score.pdf~(Red~Example~Score)'
     input_ += ' score.pdf y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)
 
@@ -153,13 +153,13 @@ def test_Wrangler_rename_05():
 
     input_ = 'red~example~score u ren score.pdf'
     input_ += ' foo-score.pdf y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert not os.path.exists(path)
     assert os.path.exists(new_path)
 
     # no shutil because need to rename file in repository
     input_ = 'red~example~score u ren foo-score.pdf'
     input_ += ' score.pdf y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     assert not os.path.exists(new_path)
     assert os.path.exists(path)

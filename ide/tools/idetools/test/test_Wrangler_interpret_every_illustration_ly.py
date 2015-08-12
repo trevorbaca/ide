@@ -34,7 +34,7 @@ def test_Wrangler_interpret_every_illustration_ly_01():
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score m ii* y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
@@ -75,7 +75,7 @@ def test_Wrangler_interpret_every_illustration_ly_02():
 
     with systemtools.FilesystemState(keep=paths):
         input_ = 'red~example~score m ii* y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
@@ -117,7 +117,7 @@ def test_Wrangler_interpret_every_illustration_ly_03():
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score g ii* y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
@@ -158,7 +158,7 @@ def test_Wrangler_interpret_every_illustration_ly_04():
 
     with systemtools.FilesystemState(keep=paths):
         input_ = 'red~example~score g ii* y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:

@@ -9,7 +9,7 @@ def test_AbjadIDE_edit_score_stylesheet_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory sty q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_edit_score_stylesheet_02():
     '''
 
     input_ = 'red~example~score g A sty q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
 
@@ -29,6 +29,6 @@ def test_AbjadIDE_edit_score_stylesheet_03():
     '''
 
     input_ = 'red~example~score sty q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

@@ -12,7 +12,7 @@ def test_AbjadIDE_check_package_01():
     '''
 
     input_ = 'red~example~score m tempo~inventory ck y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Top level (5 assets): OK' in contents
@@ -25,7 +25,7 @@ def test_AbjadIDE_check_package_02():
     '''
 
     input_ = 'red~example~score m tempo~inventory ck n q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
@@ -53,7 +53,7 @@ def test_AbjadIDE_check_package_03():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'red~example~score m tempo~inventory ck y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(initializer)
 
 
@@ -73,7 +73,7 @@ def test_AbjadIDE_check_package_04():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'red~example~score g B ck y n q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
@@ -101,7 +101,7 @@ def test_AbjadIDE_check_package_05():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'red~example~score g B ck n n q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
@@ -128,7 +128,7 @@ def test_AbjadIDE_check_package_06():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'red~example~score g A ck y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(initializer)
 
 
@@ -137,7 +137,7 @@ def test_AbjadIDE_check_package_07():
     '''
 
     input_ = 'red~example~score ck y q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
@@ -158,7 +158,7 @@ def test_AbjadIDE_check_package_08():
     '''
 
     input_ = 'red~example~score ck n q'
-    abjad_ide._run(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
@@ -185,7 +185,7 @@ def test_AbjadIDE_check_package_09():
         with open(extra_file, 'w') as file_pointer:
             file_pointer.write('')
         input_ = 'red~example~score ck y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
 
     line = '1 unrecognized file found:'
@@ -206,7 +206,7 @@ def test_AbjadIDE_check_package_10():
     with systemtools.FilesystemState(keep=[build_directory]):
         shutil.rmtree(build_directory)
         input_ = 'red~example~score ck y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isdir(build_directory)
 
 
@@ -226,5 +226,5 @@ def test_AbjadIDE_check_package_11():
     with systemtools.FilesystemState(keep=[initializer]):
         os.remove(initializer)
         input_ = 'red~example~score ck y y q'
-        abjad_ide._run(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(initializer)
