@@ -688,18 +688,7 @@ class Controller(object):
             return
         return self._session.manifest_current_directory
 
-    def _get_directory_wranglers(self, directory):
-        wranglers = []
-        directory_names = self._list_directory_names(directory)
-        for directory_name in directory_names:
-            if not directory_name in self._known_directory_names:
-                continue
-            wrangler = self._initialize_wrangler(directory_name)
-            if wrangler is not None:
-                wranglers.append(wrangler)
-        return wranglers
-
-    def _get_directory_ppp(self, directory):
+    def _get_directory_names(self, directory):
         result = []
         directory_names = self._list_directory_names(directory)
         for directory_name in directory_names:
@@ -3128,8 +3117,8 @@ class Controller(object):
             unrecognized_files
             )
         count = len(names)
-        ppp = self._get_directory_ppp(directory)
-        if ppp or not return_messages:
+        directory_names = self._get_directory_names(directory)
+        if directory_names or not return_messages:
             message = 'top level ({} assets):'.format(count)
             if not found_problems:
                 message = '{} OK'.format(message)
@@ -3137,18 +3126,19 @@ class Controller(object):
             messages = [stringtools.capitalize_start(_) for _ in messages]
             messages = [self._tab + _ for _ in messages]
         message = '{}:'.format(name)
-        if not ppp and not found_problems and return_messages:
+        if not directory_names and not found_problems and return_messages:
             message = '{} OK'.format(message)
         messages.insert(0, message)
-        if ppp:
+        if directory_names:
             with self._io_manager._silent():
-                for p in ppp:
+                for directory_name in directory_names:
                     asset_identifier = \
-                        self._directory_name_to_asset_identifier[p]
+                        self._directory_name_to_asset_identifier[
+                        directory_name]
                     if asset_identifier == 'file':
-                        result = self._check_every_file(p)
+                        result = self._check_every_file(directory_name)
                     else:
-                        paths = self._list_visible_asset_paths(p)
+                        paths = self._list_visible_asset_paths(directory_name)
                         result = self.check_every_package(
                             paths,
                             indent=1,
