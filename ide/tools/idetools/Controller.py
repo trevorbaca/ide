@@ -1614,7 +1614,14 @@ class Controller(object):
             entry = (string, None, None, path)
             entries.append(entry)
         if set_view:
-            directory_token = self._get_current_directory_token()
+            current_score_directory = self._session.current_score_directory
+            if current_score_directory is None:
+                directory_token = directory_name
+            else:
+                directory_token = os.path.join(
+                    current_score_directory,
+                    directory_name,
+                    )
             entries = self._filter_asset_menu_entries_by_view(
                 directory_token,
                 entries,
