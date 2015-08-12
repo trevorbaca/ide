@@ -89,18 +89,16 @@ class AbjadIDE(Controller):
                     '__views_metadata__.py',
                     )
                 shutil.copyfile(empty_views, views)
-            score_package_wrangler = self._initialize_wrangler('scores')
             while True:
-                result = score_package_wrangler._get_sibling_score_path(
-                    'scores')
+                result = self._get_sibling_score_path('scores')
                 if result is None:
                     result = \
                         self._directory_name_to_navigation_command_name.get(
                         self._session.navigation_target)
                 if result:
-                    score_package_wrangler._handle_input(result)
+                    self._handle_input(result, directory_name='scores')
                 else:
-                    score_package_wrangler._run_wrangler_menu('scores')
+                    self._run_wrangler_menu('scores')
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:

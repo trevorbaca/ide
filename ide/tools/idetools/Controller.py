@@ -1789,7 +1789,6 @@ class Controller(object):
                 directory_name,
                 directory=_path,
                 )
-        directory_name = getattr(self, '_directory_name', None)
         self._make_command_menu_sections(menu, directory_name, _path=_path)
         return menu
 
