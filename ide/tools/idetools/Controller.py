@@ -153,6 +153,9 @@ class Controller(object):
         assert io_manager is not None
         self._io_manager = io_manager
         self._session = session
+        for directory_name in self._known_directory_names:
+            self._supply_global_views_file(directory_name)
+        self._supply_global_metadata_py()
 
     ### SPECIAL METHODS ###
 
