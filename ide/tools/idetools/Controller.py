@@ -2525,10 +2525,14 @@ class Controller(object):
             return
         return result
 
-    def _select_visible_asset_path(self, infinitive_phrase=None):
+    def _select_visible_asset_path(
+        self, 
+        directory_name, 
+        infinitive_phrase=None,
+        ):
         getter = self._io_manager._make_getter()
         asset_identifier = self._directory_name_to_asset_identifier[
-            self._directory_name]
+            directory_name]
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
@@ -3266,6 +3270,7 @@ class Controller(object):
 
     @Command(
         'cp',
+        argument_names=('directory_name',),
         directories=(
             'build',
             'distribution',
@@ -3282,6 +3287,7 @@ class Controller(object):
         )
     def copy(
         self, 
+        directory_name,
         file_extension=None,
         new_storehouse=None
         ):
@@ -3289,7 +3295,10 @@ class Controller(object):
 
         Returns none.
         '''
-        old_path = self._select_visible_asset_path(infinitive_phrase='to copy')
+        old_path = self._select_visible_asset_path(
+            directory_name,
+            infinitive_phrase='to copy',
+            )
         if not old_path:
             return
         old_name = os.path.basename(old_path)
@@ -4761,6 +4770,7 @@ class Controller(object):
 
     @Command(
         'ren',
+        argument_names=('directory_name',),
         directories=(
             'build',
             'distribution',
@@ -4777,13 +4787,17 @@ class Controller(object):
         )
     def rename(
         self,
+        directory_name,
         file_name_callback=None, 
         ):
         r'''Renames asset.
 
         Returns none.
         '''
-        path = self._select_visible_asset_path(infinitive_phrase='to rename')
+        path = self._select_visible_asset_path(
+            directory_name,
+            infinitive_phrase='to rename',
+            )
         if not path:
             return
         file_name = os.path.basename(path)
