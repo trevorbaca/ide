@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
 from __future__ import print_function
+import collections
 import os
 import sys
 from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
@@ -365,7 +366,6 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return self._settings['composer_last_name']
-
 
     @property
     def composer_scores_directory(self):
