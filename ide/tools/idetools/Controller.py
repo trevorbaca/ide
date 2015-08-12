@@ -1262,10 +1262,7 @@ class Controller(object):
         return True
 
     def _is_in_score_directory(self):
-        if hasattr(self, '_path'):
-            current_directory = self._path
-        else:
-            current_directory = self._get_current_directory()
+        current_directory = self._session.manifest_current_directory
         if current_directory is None:
             current_directory = configuration.composer_scores_directory
         current_directory = os.path.normpath(current_directory)
