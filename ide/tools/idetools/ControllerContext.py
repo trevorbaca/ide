@@ -13,6 +13,7 @@ class ControllerContext(ContextManager):
         '_consume_local_backtrack',
         '_controller',
         '_current_score_directory',
+        '_directory_name',
         '_is_in_confirmation_environment',
         '_old_current_score_directory',
         '_on_enter_callbacks',
@@ -28,6 +29,7 @@ class ControllerContext(ContextManager):
         consume_local_backtrack=False,
         controller=None,
         current_score_directory=None,
+        directory_name=None,
         is_in_confirmation_environment=False,
         on_enter_callbacks=None,
         on_exit_callbacks=None,
@@ -36,6 +38,7 @@ class ControllerContext(ContextManager):
         self._consume_local_backtrack = consume_local_backtrack
         self._controller = controller
         self._current_score_directory = current_score_directory
+        self._directory_name = directory_name
         self._is_in_confirmation_environment = is_in_confirmation_environment
         self._on_enter_callbacks = on_enter_callbacks or ()
         self._on_exit_callbacks = on_exit_callbacks or ()
@@ -59,7 +62,7 @@ class ControllerContext(ContextManager):
             self._session._current_score_directory = \
                 self._current_score_directory
         for on_enter_callback in self._on_enter_callbacks:
-            on_enter_callback()
+            on_enter_callback(directory_name=self._directory_name)
 
     def __exit__(self, exg_type, exc_value, trackeback):
         r'''Exits controller stack context manager.

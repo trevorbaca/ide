@@ -435,9 +435,9 @@ class Controller(object):
         elif directory_name == 'test':
             return stringtools.is_snake_case
 
-    def _enter_run(self, directory=None):
+    def _enter_run(self, directory=None, directory_name=None):
         if (self._session.navigation_target is not None and
-            self._session.navigation_target == self._directory_name):
+            self._session.navigation_target == directory_name):
             self._session._navigation_target = None
         elif (self._is_material_package_path(directory) or
             self._is_segment_package_path(directory)):
@@ -2400,6 +2400,7 @@ class Controller(object):
         controller = self._io_manager._controller(
             consume_local_backtrack=True,
             controller=self,
+            directory_name=directory_name,
             on_enter_callbacks=(self._enter_run,),
             )
         current_directory = configuration.composer_scores_directory
