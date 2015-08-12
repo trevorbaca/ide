@@ -1769,7 +1769,12 @@ class Controller(object):
         self._io_manager.write(path, contents)
         self._io_manager.edit(path)
 
-    def _make_main_menu(self, explicit_header, _path=None):
+    def _make_main_menu(
+        self, 
+        explicit_header, 
+        _path=None, 
+        directory_name=None,
+        ):
         assert isinstance(explicit_header, str), repr(explicit_header)
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._io_manager._make_menu(
@@ -1779,7 +1784,11 @@ class Controller(object):
         if _path is not None:
             self._make_package_asset_menu_section(_path, menu)
         else: 
-            self._make_wrangler_asset_menu_section(menu, directory=_path)
+            self._make_wrangler_asset_menu_section(
+                menu, 
+                directory_name,
+                directory=_path,
+                )
         directory_name = getattr(self, '_directory_name', None)
         self._make_command_menu_sections(menu, directory_name, _path=_path)
         return menu
@@ -1812,7 +1821,12 @@ class Controller(object):
                 self._clear_view(directory_name)
         self._run_package_manager_menu(new_path)
 
-    def _make_wrangler_asset_menu_section(self, menu, directory=None):
+    def _make_wrangler_asset_menu_section(
+        self, 
+        menu, 
+        directory_name, 
+        directory=None,
+        ):
         menu_entries = []
         if directory is not None:
             current_directory = directory
@@ -1823,7 +1837,7 @@ class Controller(object):
                 current_directory)
             menu_entries.extend(menu_entries_)
         menu_entries.extend(
-            self._make_asset_menu_entries(self._directory_name))
+            self._make_asset_menu_entries(directory_name))
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
@@ -2441,7 +2455,7 @@ class Controller(object):
                         menu_header = menu_header.format(directory_name)
                     menu = self._make_main_menu(
                         explicit_header=menu_header,
-                        _path=None,
+                        directory_name=directory_name,
                         )
                     result = menu._run(io_manager=self._io_manager)
                     self._handle_pending_redraw_directive(
@@ -2538,7 +2552,7 @@ class Controller(object):
             message = message + ' ' + infinitive_phrase
         if hasattr(self, '_make_wrangler_asset_menu_section'):
             dummy_menu = self._io_manager._make_menu()
-            self._make_wrangler_asset_menu_section(dummy_menu)
+            self._make_wrangler_asset_menu_section(dummy_menu, directory_name)
             asset_section = dummy_menu._asset_section
         else:
             menu = self._make_asset_selection_menu(directory_name)
