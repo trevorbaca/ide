@@ -1395,16 +1395,15 @@ class Controller(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    def _is_valid_file_directory_entry(self, expr):
+    def _is_valid_file_directory_entry(self, expr, directory_name):
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 name, file_extension = os.path.splitext(expr)
                 file_name_predicate = \
-                    self._directory_name_to_file_name_predicate(
-                    self._directory_name)
+                    self._directory_name_to_file_name_predicate(directory_name)
                 required_file_extension = \
                     self._directory_name_to_file_extension.get(
-                    self._directory_name, '')
+                        directory_name, '')
                 if file_name_predicate(name):
                     if required_file_extension == '':
                         return True
@@ -1412,7 +1411,7 @@ class Controller(object):
                         return True
         return False
 
-    def _is_valid_package_directory_entry(self, expr):
+    def _is_valid_package_directory_entry(self, expr, directory_name=None):
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 if '.' not in expr:
@@ -1443,7 +1442,10 @@ class Controller(object):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    if not directory_entry_predicate(directory_entry):
+                    if not directory_entry_predicate(
+                        directory_entry,
+                        directory_name,
+                        ):
                         continue
                 path = os.path.join(directory, directory_entry)
                 if directory_name == 'scores':
