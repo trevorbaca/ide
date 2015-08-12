@@ -2249,11 +2249,11 @@ class Controller(object):
             )
         directory_change = systemtools.TemporaryDirectoryChange(directory)
         assert os.path.sep in directory
-        current_directory = idetools.CurrentDirectory(
-            current_directory=directory,
+        manifest_current_directory = idetools.ManifestCurrentDirectory(
+            manifest_current_directory=directory,
             session=self._session,
             )
-        with controller, directory_change, current_directory:
+        with controller, directory_change, manifest_current_directory:
                 self._enter_run(directory=directory)
                 self._session._pending_redraw = True
                 while True:
@@ -2283,7 +2283,7 @@ class Controller(object):
                     if self._exit_run(directory):
                         break
 
-    def _run_wrangler(self, directory_name):
+    def _run_wrangler_menu(self, directory_name):
         from ide.tools import idetools
         assert (directory_name in self._known_directory_names or
             directory_name == 'scores'), repr(directory_name)
@@ -2300,11 +2300,11 @@ class Controller(object):
                 )
         directory_change = systemtools.TemporaryDirectoryChange(
             current_directory)
-        current_directory = idetools.CurrentDirectory(
-            current_directory=current_directory,
+        manifest_current_directory = idetools.ManifestCurrentDirectory(
+            manifest_current_directory=current_directory,
             session=self._session,
             )
-        with controller, directory_change, current_directory:
+        with controller, directory_change, manifest_current_directory:
             result = None
             self._session._pending_redraw = True
             while True:
@@ -3843,7 +3843,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('build')
-        wrangler._run_wrangler('build')
+        wrangler._run_wrangler_menu('build')
 
     @Command(
         's',
@@ -3872,7 +3872,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('distribution')
-        wrangler._run_wrangler('distribution')
+        wrangler._run_wrangler_menu('distribution')
 
     @Command(
         'e',
@@ -3886,7 +3886,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('etc')
-        wrangler._run_wrangler('etc')
+        wrangler._run_wrangler_menu('etc')
 
     @Command(
         'k', 
@@ -3900,7 +3900,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('makers')
-        wrangler._run_wrangler('makers')
+        wrangler._run_wrangler_menu('makers')
 
     @Command(
         'm', 
@@ -3914,7 +3914,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('materials')
-        wrangler._run_wrangler('materials')
+        wrangler._run_wrangler_menu('materials')
 
     @Command(
         'g', 
@@ -3928,7 +3928,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('segments')
-        wrangler._run_wrangler('segments')
+        wrangler._run_wrangler_menu('segments')
 
     @Command(
         'y', 
@@ -3942,7 +3942,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('stylesheets')
-        wrangler._run_wrangler('stylesheets')
+        wrangler._run_wrangler_menu('stylesheets')
 
     @Command(
         't', 
@@ -3956,7 +3956,7 @@ class Controller(object):
         Returns none.
         '''
         wrangler = self._initialize_wrangler('test')
-        wrangler._run_wrangler('test')
+        wrangler._run_wrangler_menu('test')
 
     @Command(
         'i', 

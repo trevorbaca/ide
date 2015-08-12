@@ -1,15 +1,16 @@
 # -*- encoding: utf-8 -*-
+import os
 from abjad.tools.abctools.ContextManager import ContextManager
 
 
-class CurrentDirectory(ContextManager):
+class ManifestCurrentDirectory(ContextManager):
     r'''Current directory context manager.
     '''
 
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_current_directory',
+        '_manifest_current_directory',
         '_old_directory',
         '_session',
         )
@@ -18,26 +19,28 @@ class CurrentDirectory(ContextManager):
 
     def __init__(
         self, 
-        current_directory=None,
+        manifest_current_directory=None,
         session=None,
         ):
-        assert current_directory is not None
-        self._current_directory = current_directory
+        assert manifest_current_directory is not None
+        assert os.path.sep in manifest_current_directory
+        self._manifest_current_directory = manifest_current_directory
         assert session is not None
         self._session = session
 
     ### SPECIAL METHODS ###
 
     def __enter__(self):
-        r'''Enters current directory manager.
+        r'''Enters manifest current directory manager.
 
         Returns none.
         '''
         self._old_directory = self.session.manifest_current_directory
-        self.session._manifest_current_directory = self.current_directory
+        self.session._manifest_current_directory = \
+            self.manifest_current_directory
 
     def __exit__(self, exg_type, exc_value, trackeback):
-        r'''Exits current directory manager.
+        r'''Exits manifest current directory manager.
 
         Returns none.
         '''
@@ -46,12 +49,12 @@ class CurrentDirectory(ContextManager):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def current_directory(self):
-        r'''Gets current directory.
+    def manifest_current_directory(self):
+        r'''Gets manifest current directory.
 
         Returns string.
         '''
-        return self._current_directory
+        return self._manifest_current_directory
 
     @property
     def session(self):

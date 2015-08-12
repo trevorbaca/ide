@@ -73,12 +73,12 @@ class AbjadIDE(Controller):
             paths_to_keep.append(views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
         interaction = self._io_manager._make_interaction(task=False)
-        current_directory = idetools.CurrentDirectory(
-            current_directory=configuration.composer_scores_directory,
+        manifest_current_directory = idetools.ManifestCurrentDirectory(
+            manifest_current_directory=configuration.composer_scores_directory,
             session=self._session,
             )
         with controller, directory_change, state, interaction, \
-            current_directory:
+            manifest_current_directory:
             self._session._pending_redraw = True
             if self._session.is_test:
                 empty_views = os.path.join(
@@ -96,7 +96,7 @@ class AbjadIDE(Controller):
                 if result:
                     score_package_wrangler._handle_input(result)
                 else:
-                    score_package_wrangler._run_wrangler('scores')
+                    score_package_wrangler._run_wrangler_menu('scores')
                 self._session._is_backtracking_to_score = False
                 self._session._is_navigating_to_scores = False
                 if self._session.is_quitting:

@@ -566,7 +566,7 @@ class Session(object):
     def manifest_current_directory(self):
         r'''Gest manifest current directory.
 
-        Set only by CurrentDirectory context manager.
+        Set only by ManifestCurrentDirectory context manager.
 
         Do not set by hand.
         '''
