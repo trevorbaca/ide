@@ -7,8 +7,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 def test_AbjadIDE__is_up_to_date_01():
 
-    score_package_wrangler = abjad_ide._initialize_wrangler('scores')
-    path = score_package_wrangler._find_up_to_date_path(system=True)
+    path = abjad_ide._find_up_to_date_path('scores', system=True)
     temporary_file = os.path.join(path, 'test_temporary.txt')
 
     assert abjad_ide._is_up_to_date(path)

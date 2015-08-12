@@ -11,8 +11,8 @@ def test_AbjadIDE__find_up_to_date_path_01():
     r'''Finds up-to-date score package path.
     '''
 
-    wrangler = abjad_ide._initialize_wrangler('scores')
-    path = wrangler._find_up_to_date_path(
+    path = abjad_ide._find_up_to_date_path(
+        'scores',
         inside_score=False,
         system=True,
         )
@@ -30,8 +30,7 @@ def test_AbjadIDE__find_up_to_date_path_02():
     r'''Finds up-to-date material package path.
     '''
 
-    wrangler = abjad_ide._initialize_wrangler('materials')
-    path = wrangler._find_up_to_date_path(system=True)
+    path = abjad_ide._find_up_to_date_path('materials', system=True)
 
     assert abjad_ide._is_material_package_path(path)
     assert abjad_ide._is_git_versioned(path)
@@ -44,8 +43,7 @@ def test_AbjadIDE__find_up_to_date_path_03():
     r'''Finds up-to-date segment package path.
     '''
 
-    wrangler = abjad_ide._initialize_wrangler('segments')
-    path = wrangler._find_up_to_date_path(system=True)
+    path = abjad_ide._find_up_to_date_path('segments', system=True)
 
     assert abjad_ide._is_segment_package_path(path)
     assert abjad_ide._is_git_versioned(path)

@@ -508,11 +508,11 @@ class Controller(object):
 
     def _find_up_to_date_path(
         self,
+        directory_name,
         inside_score=True,
         must_have_file=False,
         system=True,
         ):
-        from ide.tools import idetools
         example_score_packages = False
         composer_score_packages = False
         if system and inside_score:
@@ -522,11 +522,11 @@ class Controller(object):
         else:
             Exception
         paths = self._list_asset_paths(
-            self._directory_name,
+            directory_name,
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
-        if self._directory_name == 'scores':
+        if directory_name == 'scores':
             if system:
                 scores_directory = \
                     configuration.abjad_ide_example_scores_directory
@@ -2474,7 +2474,6 @@ class Controller(object):
         return result
 
     def _select_view(self, infinitive_phrase=None, is_ranged=False):
-        from ide.tools import idetools
         directory_token = self._get_current_directory_token()
         view_inventory = self._read_view_inventory(
             directory_token,
