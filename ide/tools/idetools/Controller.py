@@ -676,16 +676,6 @@ class Controller(object):
         return result
 
     def _get_current_directory(self):
-
-#        score_directory = self._session.current_score_directory
-#        if score_directory is not None:
-#            directory = os.path.join(
-#                score_directory,
-#                self._directory_name,
-#                )
-#            directory = os.path.abspath(directory)
-#            return directory
-
         if os.path.normpath(self._session.manifest_current_directory) == \
             os.path.normpath(configuration.composer_scores_directory):
             return
