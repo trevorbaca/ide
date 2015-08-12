@@ -1632,9 +1632,9 @@ class Controller(object):
 #            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
-    def _make_asset_selection_menu(self):
+    def _make_asset_selection_menu(self, directory_name):
         menu = self._io_manager._make_menu(name='asset selection')
-        menu_entries = self._make_asset_menu_entries(self._directory_name)
+        menu_entries = self._make_asset_menu_entries(directory_name)
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
@@ -2541,7 +2541,7 @@ class Controller(object):
             self._make_wrangler_asset_menu_section(dummy_menu)
             asset_section = dummy_menu._asset_section
         else:
-            menu = self._make_asset_selection_menu()
+            menu = self._make_asset_selection_menu(directory_name)
             asset_section = menu['assets']
         getter.append_menu_section_item(
             message, 
@@ -2558,13 +2558,13 @@ class Controller(object):
         path = paths[index]
         return path
 
-    def _select_visible_asset_paths(self):
+    def _select_visible_asset_paths(self, directory_name):
         getter = self._io_manager._make_getter()
         asset_identifier = self._directory_name_to_asset_identifier[
-            self._directory_name]
+            directory_name]
         message = 'enter {}(s) to remove'
         message = message.format(asset_identifier)
-        menu = self._make_asset_selection_menu()
+        menu = self._make_asset_selection_menu(directory_name)
         asset_section = menu['assets']
         getter.append_menu_section_range(
             message, 
@@ -2577,6 +2577,7 @@ class Controller(object):
         paths = [_.return_value for _ in asset_section.menu_entries]
         paths = sequencetools.retain_elements(paths, indices)
         return paths
+
     @staticmethod
     def _sort_ordered_dictionary(dictionary):
         new_dictionary = type(dictionary)()
@@ -4712,6 +4713,7 @@ class Controller(object):
 
     @Command(
         'rm',
+        argument_names=('directory_name',),
         directories=(
             'build',
             'distribution',
@@ -4726,7 +4728,7 @@ class Controller(object):
         is_hidden=False,
         section='basic', 
         )
-    def remove(self):
+    def remove(self, directory_name):
         r'''Removes asset(s).
 
         Returns none.
@@ -4734,7 +4736,7 @@ class Controller(object):
         self._session._attempted_to_remove = True
         if self._session.is_repository_test:
             return
-        paths = self._select_visible_asset_paths()
+        paths = self._select_visible_asset_paths(directory_name)
         if not paths:
             return
         count = len(paths)
