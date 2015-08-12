@@ -699,6 +699,15 @@ class Controller(object):
                 wranglers.append(wrangler)
         return wranglers
 
+    def _get_directory_ppp(self, directory):
+        result = []
+        directory_names = self._list_directory_names(directory)
+        for directory_name in directory_names:
+            if not directory_name in self._known_directory_names:
+                continue
+            result.append(directory_name)
+        return result
+
     def _get_file_path_ending_with(self, directory, string):
         for file_name in self._list_directory(directory):
             if file_name.endswith(string):
@@ -3119,8 +3128,8 @@ class Controller(object):
             unrecognized_files
             )
         count = len(names)
-        wranglers = self._get_directory_wranglers(directory)
-        if wranglers or not return_messages:
+        ppp = self._get_directory_ppp(directory)
+        if ppp or not return_messages:
             message = 'top level ({} assets):'.format(count)
             if not found_problems:
                 message = '{} OK'.format(message)
@@ -3128,23 +3137,19 @@ class Controller(object):
             messages = [stringtools.capitalize_start(_) for _ in messages]
             messages = [self._tab + _ for _ in messages]
         message = '{}:'.format(name)
-        if not wranglers and not found_problems and return_messages:
+        if not ppp and not found_problems and return_messages:
             message = '{} OK'.format(message)
         messages.insert(0, message)
-        if wranglers:
+        if ppp:
             with self._io_manager._silent():
-                for wrangler in wranglers:
+                for p in ppp:
                     asset_identifier = \
-                        self._directory_name_to_asset_identifier[
-                        wrangler._directory_name]
+                        self._directory_name_to_asset_identifier[p]
                     if asset_identifier == 'file':
-                        result = wrangler._check_every_file(
-                            wrangler._directory_name)
+                        result = self._check_every_file(p)
                     else:
-                        paths = wrangler._list_visible_asset_paths(
-                            wrangler._directory_name,
-                            )
-                        result = wrangler.check_every_package(
+                        paths = self._list_visible_asset_paths(p)
+                        result = self.check_every_package(
                             paths,
                             indent=1,
                             problems_only=problems_only,
