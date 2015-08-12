@@ -2253,6 +2253,8 @@ class Controller(object):
             manifest_current_directory=directory,
             session=self._session,
             )
+        assert directory_change.directory == \
+            manifest_current_directory.manifest_current_directory
         with controller, directory_change, manifest_current_directory:
                 self._enter_run(directory=directory)
                 self._session._pending_redraw = True
@@ -2304,6 +2306,8 @@ class Controller(object):
             manifest_current_directory=current_directory,
             session=self._session,
             )
+        assert directory_change.directory == \
+            manifest_current_directory.manifest_current_directory
         with controller, directory_change, manifest_current_directory:
             result = None
             self._session._pending_redraw = True
