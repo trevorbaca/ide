@@ -2490,7 +2490,10 @@ class Controller(object):
         directory_name, 
         is_ranged=False,
         ):
-        directory_token = self._get_current_directory_token()
+        if self._session.is_in_score:
+            directory_token = self._session.manifest_current_directory
+        else:
+            directory_token = directory_name
         view_inventory = self._read_view_inventory(
             directory_token,
             )
