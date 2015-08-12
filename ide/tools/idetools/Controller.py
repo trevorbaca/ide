@@ -306,7 +306,6 @@ class Controller(object):
         pairs = zip(source_file_paths, target_file_paths)
         return pairs
 
-    # HERE
     def _confirm_segment_names(self, score_directory):
         segments_directory = os.path.join(score_directory, 'segments')
         view_name = self._read_view_name(
@@ -676,25 +675,24 @@ class Controller(object):
             result.append(command)
         return result
 
-    # THERE
     def _get_current_directory(self):
 
-        score_directory = self._session.current_score_directory
-        if score_directory is not None:
-            directory = os.path.join(
-                score_directory,
-                self._directory_name,
-                )
-            directory = os.path.abspath(directory)
-            return directory
+#        score_directory = self._session.current_score_directory
+#        if score_directory is not None:
+#            directory = os.path.join(
+#                score_directory,
+#                self._directory_name,
+#                )
+#            directory = os.path.abspath(directory)
+#            return directory
 
-#        if os.path.normpath(self._session.manifest_current_directory) == \
-#            os.path.normpath(configuration.composer_scores_directory):
-#            return
-#        if os.path.normpath(self._session.manifest_current_directory) == \
-#            os.path.normpath(configuration.abjad_ide_example_scores_directory):
-#            return
-#        return self._session.manifest_current_directory
+        if os.path.normpath(self._session.manifest_current_directory) == \
+            os.path.normpath(configuration.composer_scores_directory):
+            return
+        if os.path.normpath(self._session.manifest_current_directory) == \
+            os.path.normpath(configuration.abjad_ide_example_scores_directory):
+            return
+        return self._session.manifest_current_directory
 
     def _get_current_directory_token(self):
         assert isinstance(self._directory_name, str)
@@ -2673,6 +2671,7 @@ class Controller(object):
 
         Returns none.
         '''
+        package_type = paths[0].split(os.path.sep)[-2]
         messages = []
         missing_directories, missing_files = [], []
         supplied_directories, supplied_files = [], []
@@ -2705,10 +2704,8 @@ class Controller(object):
                 messages.append(message)
         found_problems = bool(messages)
         if self._session.is_in_score:
-            path = self._get_current_directory()
-            name = os.path.basename(path)
             count = len(paths)
-            message = '{} directory ({} packages):'.format(name, count)
+            message = '{} directory ({} packages):'.format(package_type, count)
             if not found_problems:
                 message = '{} OK'.format(message)
             messages.insert(0, message)
@@ -2907,7 +2904,6 @@ class Controller(object):
         if wranglers:
             with self._io_manager._silent():
                 for wrangler in wranglers:
-                    self._io_manager._display(repr(wrangler))
                     asset_identifier = \
                         self._directory_name_to_asset_identifier[
                         wrangler._directory_name]
