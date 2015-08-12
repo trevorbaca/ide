@@ -43,7 +43,7 @@ if __name__ == '__main__':
             '__metadata__.py',
             )
         dummy_session = idetools.Session()
-        controller = idetools.Controller(
+        controller = idetools.AbjadIDE(
             session=dummy_session, 
             )
         controller._write_metadata_py(

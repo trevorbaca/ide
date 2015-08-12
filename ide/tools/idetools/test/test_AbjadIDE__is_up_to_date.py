@@ -2,7 +2,7 @@
 import os
 from abjad import *
 import ide
-abjad_ide = ide.tools.idetools.Controller(is_test=True)
+abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE__is_up_to_date_01():

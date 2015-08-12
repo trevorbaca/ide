@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-abjad_ide = ide.tools.idetools.Controller(is_test=True)
+abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_Wrangler_go_to_previous_score_01():
     r'''Works at home.
     '''
 
-    abjad_ide = ide.tools.idetools.Controller(is_test=True)
+    abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
     input_ = '<< << q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [

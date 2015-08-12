@@ -5,7 +5,7 @@ import ide
 
 def test_AbjadIDE_edit_illustrate_py_01():
 
-    abjad_ide = ide.tools.idetools.Controller(is_test=True)
+    abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
     input_ = 'red~example~score m magic~numbers le q'
     abjad_ide._run_main_menu(input_=input_)
 

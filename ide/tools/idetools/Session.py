@@ -170,7 +170,7 @@ class Session(object):
         from ide.tools import idetools
         if 1 <= len(self._controller_stack):
             first_controller = self._controller_stack[0]
-            assert isinstance(first_controller, idetools.Controller), repr(
+            assert isinstance(first_controller, idetools.AbjadIDE), repr(
                 first_controller)
         return self._controller_stack
 
@@ -182,7 +182,7 @@ class Session(object):
         '''
         from ide.tools import idetools
         if self.manifest_current_directory is not None:
-            return idetools.Controller._path_to_score_directory(
+            return idetools.AbjadIDE._path_to_score_directory(
                 self.manifest_current_directory)
 
     @property

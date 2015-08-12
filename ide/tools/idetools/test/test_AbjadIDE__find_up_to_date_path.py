@@ -4,7 +4,7 @@ from abjad import *
 import ide
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 session = ide.tools.idetools.Session()
-abjad_ide = ide.tools.idetools.Controller(is_test=True)
+abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE__find_up_to_date_path_01():

@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from abjad import *
 import ide
-abjad_ide = ide.tools.idetools.Controller(is_test=True)
+abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_Wrangler_display_action_command_help_01():

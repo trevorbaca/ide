@@ -3,7 +3,7 @@ from abjad.tools.abctools.ContextManager import ContextManager
 
 
 class ControllerContext(ContextManager):
-    r'''Controller context manager.
+    r'''AbjadIDE context manager.
     '''
 
     ### CLASS VARIABLES ###
