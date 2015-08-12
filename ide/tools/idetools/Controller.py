@@ -206,6 +206,11 @@ class Controller(object):
             self._io_manager._display(message)
             
     def _check_every_file(self, directory_token):
+        if self._session.is_in_score:
+            directory_token = os.path.join(
+                self._session.current_score_directory,
+                directory_token,
+                )
         directory_name = os.path.basename(directory_token)
         paths = self._list_asset_paths(
             directory_name,
@@ -3124,9 +3129,8 @@ class Controller(object):
                         self._directory_name_to_asset_identifier[
                         wrangler._directory_name]
                     if asset_identifier == 'file':
-                        directory_token = \
-                            wrangler._get_current_directory_token()
-                        result = wrangler._check_every_file(directory_token)
+                        result = wrangler._check_every_file(
+                            wrangler._directory_name)
                     else:
                         paths = wrangler._list_visible_asset_paths(
                             wrangler._directory_name,
