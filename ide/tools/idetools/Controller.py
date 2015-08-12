@@ -1115,8 +1115,7 @@ class Controller(object):
                         self._session.current_score_directory
                     command(current_score_directory)
                 elif 'visible_asset_paths' in command.argument_names:
-                    paths = self._list_visible_asset_paths(
-                        self._directory_name)
+                    paths = self._list_visible_asset_paths(directory_name)
                     command(paths)
                 else:
                     command()
@@ -2433,11 +2432,11 @@ class Controller(object):
                     if current_directory is not None:
                         menu_header = self._path_to_menu_header(
                             current_directory)
-                    elif self._directory_name == 'scores':
+                    elif directory_name == 'scores':
                         menu_header = 'Abjad IDE - all score directories'
                     else:
                         menu_header = 'Abjad IDE - all {} directories'
-                        menu_header = menu_header.format(self._directory_name)
+                        menu_header = menu_header.format(directory_name)
                     menu = self._make_main_menu(
                         explicit_header=menu_header,
                         _path=None,
