@@ -1736,11 +1736,11 @@ class Controller(object):
                 name=menu_section_name,
                 )
 
-    def _make_file(self):
+    def _make_file(self, directory_name):
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
-            path = self._select_storehouse()
+            path = self._select_storehouse(directory_name)
             if self._io_manager._is_backtracking or path is None:
                 return
         directory_name = os.path.basename(path)
@@ -1801,6 +1801,7 @@ class Controller(object):
                 )
         else:
             storehouse = self._select_storehouse(
+                directory_name,
                 example_score_packages=self._session.is_test,
                 )
             if self._session.is_backtracking or storehouse is None:
@@ -1841,7 +1842,7 @@ class Controller(object):
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
-            section._group_by_annotation = not self._directory_name == 'scores'
+            section._group_by_annotation = not directory_name == 'scores'
 
     def _populate_package(self, path):
         assert not os.path.exists(path)
@@ -1927,7 +1928,7 @@ class Controller(object):
         directories = self._list_visible_asset_paths('scores')
         if score_directory not in directories:
             with self._io_manager._silent():
-                self._clear_view(self._directory_name)
+                self._clear_view('scores')
         self._run_package_manager_menu(score_directory)
 
     def _make_secondary_asset_menu_entries(self, directory_path):
@@ -1957,10 +1958,7 @@ class Controller(object):
                 year=False,
                 )
             display_strings.append(title)
-            key = os.path.join(
-                path,
-                self._directory_name,
-                )
+            key = os.path.join(path, directory_name)
             keys.append(key)
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
@@ -2473,20 +2471,20 @@ class Controller(object):
                     if self._session.is_backtracking:
                         return
 
-    def _select_storehouse(self, example_score_packages=False):
+    def _select_storehouse(self, directory_name, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
-            self._directory_name,
+            directory_name,
             composer_score_packages=False,
             example_score_packages=example_score_packages,
             )
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
-        elif self._directory_name == 'scores':
+        elif directory_name == 'scores':
             menu_header = 'Abjad IDE - all score directories'
         else:
             menu_header = 'Abjad IDE - all {} directories'
-            menu_header = menu_header.format(self._directory_name)
+            menu_header = menu_header.format(directory_name)
         selector = self._io_manager._make_selector(
             menu_entries=menu_entries,
             menu_header=menu_header,
@@ -2523,11 +2521,11 @@ class Controller(object):
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
-        elif self._directory_name == 'scores':
+        elif directory_name == 'scores':
             menu_header = 'Abjad IDE - all score directories'
         else:
             menu_header = 'Abjad IDE - all {} directories'
-            menu_header = menu_header.format(self._directory_name)
+            menu_header = menu_header.format(directory_name)
         selector = self._io_manager._make_selector(
             is_ranged=is_ranged,
             items=view_names,
@@ -3318,14 +3316,14 @@ class Controller(object):
             return
         old_name = os.path.basename(old_path)
         new_storehouse = None
-        if self._directory_name == 'scores':
+        if directory_name == 'scores':
             new_storehouse = configuration.composer_scores_directory
         if new_storehouse:
             pass
         elif self._session.is_in_score:
             new_storehouse = self._get_current_directory()
         else:
-            new_storehouse = self._select_storehouse()
+            new_storehouse = self._select_storehouse(directory_name)
             if self._io_manager._is_backtracking or new_storehouse is None:
                 return
         directory_name = os.path.basename(new_storehouse)
@@ -4574,8 +4572,8 @@ class Controller(object):
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
         if asset_identifier == 'file':
-            self._make_file()
-        elif self._directory_name == 'scores':
+            self._make_file(directory_name)
+        elif directory_name == 'scores':
             self._make_score_package()
         else:
             self._make_package(directory_name)
