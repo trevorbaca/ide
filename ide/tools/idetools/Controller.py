@@ -870,8 +870,8 @@ class Controller(object):
         if self._session.is_navigating_to_previous_asset:
             return self._get_previous_asset_path(directory_name)
 
-    def _get_sibling_score_directory(self, next_=True):
-        paths = self._list_visible_asset_paths(self._directory_name)
+    def _get_sibling_score_directory(self, directory_name, next_=True):
+        paths = self._list_visible_asset_paths(directory_name)
         if self._session.last_asset_path is None:
             if next_:
                 return paths[0]
@@ -886,15 +886,21 @@ class Controller(object):
         sibling_path = paths[sibling_index]
         return sibling_path
 
-    def _get_sibling_score_path(self):
+    def _get_sibling_score_path(self, directory_name):
         if self._session.is_navigating_to_next_score:
             self._session._is_navigating_to_next_score = False
             self._session._is_navigating_to_scores = False
-            return self._get_sibling_score_directory(next_=True)
+            return self._get_sibling_score_directory(
+                directory_name, 
+                next_=True,
+                )
         if self._session.is_navigating_to_previous_score:
             self._session._is_navigating_to_previous_score = False
             self._session._is_navigating_to_scores = False
-            return self._get_sibling_score_directory(next_=False)
+            return self._get_sibling_score_directory(
+                directory_name,
+                next_=False,
+                )
 
     def _get_title_metadatum(self, score_directory, year=True):
         metadata_py_path = os.path.join(score_directory, '__metadata__.py')

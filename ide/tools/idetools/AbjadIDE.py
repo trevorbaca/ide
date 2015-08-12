@@ -91,7 +91,8 @@ class AbjadIDE(Controller):
                 shutil.copyfile(empty_views, views)
             score_package_wrangler = self._initialize_wrangler('scores')
             while True:
-                result = score_package_wrangler._get_sibling_score_path()
+                result = score_package_wrangler._get_sibling_score_path(
+                    'scores')
                 if result is None:
                     result = \
                         self._directory_name_to_navigation_command_name.get(
