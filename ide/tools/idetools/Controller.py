@@ -1784,11 +1784,11 @@ class Controller(object):
         self._make_command_menu_sections(menu, directory_name, _path=_path)
         return menu
 
-    def _make_package(self):
+    def _make_package(self, directory_name):
         if self._session.is_in_score:
             storehouse = os.path.join(
                 self._session.current_score_directory,
-                self._directory_name,
+                directory_name,
                 )
         else:
             storehouse = self._select_storehouse(
@@ -1806,10 +1806,10 @@ class Controller(object):
             return
         new_path = self._populate_package(path)
         new_path = new_path or path
-        paths = self._list_visible_asset_paths(self._directory_name)
+        paths = self._list_visible_asset_paths(directory_name)
         if path not in paths:
             with self._io_manager._silent():
-                self._clear_view(self._directory_name)
+                self._clear_view(directory_name)
         self._run_package_manager_menu(new_path)
 
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
@@ -4536,6 +4536,7 @@ class Controller(object):
 
     @Command(
         'new', 
+        argument_names=('directory_name',),
         directories=(
             'build',
             'distribution',
@@ -4551,19 +4552,19 @@ class Controller(object):
         is_hidden=False,
         section='basic', 
         )
-    def make(self):
+    def make(self, directory_name):
         r'''Makes asset.
 
         Returns none.
         '''
         asset_identifier = self._directory_name_to_asset_identifier[
-            self._directory_name]
+            directory_name]
         if asset_identifier == 'file':
             self._make_file()
         elif self._directory_name == 'scores':
             self._make_score_package()
         else:
-            self._make_package()
+            self._make_package(directory_name)
 
     @Command(
         'io*',
