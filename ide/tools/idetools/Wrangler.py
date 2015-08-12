@@ -38,69 +38,6 @@ class Wrangler(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _get_visible_storehouses(self):
-        menu = self._make_asset_selection_menu()
-        asset_section = menu['assets']
-        storehouses = set()
-        for menu_entry in asset_section:
-            path = menu_entry.return_value
-            storehouse = self._path_to_storehouse(path)
-            storehouses.add(storehouse)
-        storehouses = list(sorted(storehouses))
-        return storehouses
-
-    def _make_asset_menu_entries(
-        self,
-        directory_name,
-        apply_current_directory=True,
-        set_view=True,
-        ):
-        paths = self._list_asset_paths(directory_name)
-        if (apply_current_directory or set_view) and self._session.is_in_score:
-            paths = [
-                _ for _ in paths
-                if _.startswith(self._session.current_score_directory)
-                ]
-        strings = []
-        for path in paths:
-            string = self._path_to_asset_menu_display_string(path)
-            strings.append(string)
-        pairs = list(zip(strings, paths))
-        if (not self._session.is_in_score and not directory_name == 'scores'):
-            def sort_function(pair):
-                string = pair[0]
-                if '(' not in string:
-                    return string
-                open_parenthesis_index = string.find('(')
-                assert string.endswith(')')
-                annotation = string[open_parenthesis_index:]
-                annotation = annotation.replace("'", '')
-                annotation = stringtools.strip_diacritics(annotation)
-                return annotation
-            pairs.sort(key=lambda _: sort_function(_))
-        else:
-            def sort_function(pair):
-                string = pair[0]
-                string = stringtools.strip_diacritics(string)
-                string = string.replace("'", '')
-                return string
-            pairs.sort(key=lambda _: sort_function(_))
-        entries = []
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        if set_view:
-            directory_token = self._get_current_directory_token()
-            entries = self._filter_asset_menu_entries_by_view(
-                directory_token,
-                entries,
-                )
-        if self._session.is_test and directory_name == 'scores':
-            entries = [_ for _ in entries if 'Example Score' in _[0]]
-#        elif not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        return entries
-
     def _make_wrangler_asset_menu_section(self, menu, directory=None):
         menu_entries = []
         if directory is not None:
@@ -117,12 +54,6 @@ class Wrangler(Controller):
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
             section._group_by_annotation = not self._directory_name == 'scores'
-
-    def _make_asset_selection_menu(self):
-        menu = self._io_manager._make_menu(name='asset selection')
-        menu_entries = self._make_asset_menu_entries(self._directory_name)
-        menu.make_asset_section(menu_entries=menu_entries)
-        return menu
 
     def _select_storehouse(self, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
