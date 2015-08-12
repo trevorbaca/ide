@@ -8,17 +8,14 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 def test_PackageManager__get_unadded_asset_paths_01():
 
     score_package_wrangler = abjad_ide._initialize_wrangler('scores')
-    manager = score_package_wrangler._find_up_to_date_manager(
-        system=True,
-        )
-    temporary_file = os.path.join(manager._path, 'test_temporary.txt')
+    path = score_package_wrangler._find_up_to_date_path(system=True)
+    temporary_file = os.path.join(path, 'test_temporary.txt')
 
-    assert manager._is_up_to_date(manager._path)
-    assert manager._get_unadded_asset_paths(manager._path) == []
+    assert abjad_ide._is_up_to_date(path)
+    assert abjad_ide._get_unadded_asset_paths(path) == []
     assert not os.path.exists(temporary_file)
     with systemtools.FilesystemState(remove=[temporary_file]):
         with open(temporary_file, 'w') as file_pointer:
             file_pointer.write('')
         assert os.path.isfile(temporary_file)
-        assert manager._get_unadded_asset_paths(
-            manager._path) == [temporary_file]
+        assert abjad_ide._get_unadded_asset_paths(path) == [temporary_file]

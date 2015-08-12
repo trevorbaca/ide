@@ -507,7 +507,7 @@ class Controller(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return directory_entry
 
-    def _find_up_to_date_manager(
+    def _find_up_to_date_path(
         self,
         inside_score=True,
         must_have_file=False,
@@ -544,12 +544,7 @@ class Controller(object):
             if (self._is_git_versioned(path) and self._is_up_to_date(path)
                 and
                 (not must_have_file or self._find_first_file_name(path))):
-                manager = idetools.PackageManager(
-                    path=path,
-                    session=self._session,
-                    io_manager=self._io_manager,
-                    )
-                return manager
+                return path
 
     def _format_counted_check_messages(
         self,
