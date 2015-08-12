@@ -165,7 +165,7 @@ class Session(object):
                 >>> session.controller_stack
                 []
 
-        Returns list of objects all of which are either wranglers or idetools.
+        Returns list.
         '''
         from ide.tools import idetools
         if 1 <= len(self._controller_stack):
@@ -181,26 +181,9 @@ class Session(object):
         Returns string or none.
         '''
         from ide.tools import idetools
-#        result = None
-#        if self.current_score_package_manager:
-#            result = self.current_score_package_manager._path
-        other = None
         if self.manifest_current_directory is not None:
-            other = idetools.Controller._path_to_score_directory(
+            return idetools.Controller._path_to_score_directory(
                 self.manifest_current_directory)
-#        assert result == other, repr((result, other))
-#        return result
-        return other
-
-    @property
-    def current_score_package_manager(self):
-        r'''Gets current score package manager.
-
-        Returns package manager or none.
-        '''
-        for controller in self.controller_stack:
-            if hasattr(controller, '_path'):
-                return controller
 
     @property
     def display(self):
