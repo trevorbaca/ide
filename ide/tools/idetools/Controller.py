@@ -9,7 +9,6 @@ import shutil
 import sys
 import time
 from abjad.tools import datastructuretools
-from abjad.tools import developerscripttools
 from abjad.tools import lilypondfiletools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
@@ -1663,6 +1662,7 @@ class Controller(object):
     def _make_command_menu_sections(
         self, 
         menu, 
+        directory_name,
         menu_section_names=None,
         _path=None,
         ):
@@ -1686,12 +1686,12 @@ class Controller(object):
             current_directory = configuration.composer_scores_directory
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
-        directory_name = os.path.basename(current_directory)
+        directory_name_ = os.path.basename(current_directory)
         parent_directory_name = current_directory.split(os.path.sep)[-2]
         is_home = False
-        if current_directory == configuration.composer_scores_directory:
-            if self._directory_name == 'scores':
-                is_home = True
+        if (current_directory == configuration.composer_scores_directory and
+            directory_name == 'scores'):
+            is_home = True
         for method_ in methods_:
             if is_in_score and not method_.in_score:
                 continue
@@ -1701,7 +1701,7 @@ class Controller(object):
                 (not is_home and not is_in_score)):
                 continue
             if ((method_.directories or method_.parent_directories) and
-                directory_name not in method_.directories and
+                directory_name_ not in method_.directories and
                 parent_directory_name not in method_.parent_directories):
                 continue
             if method_.file_ is not None and method_.file_ not in files:
@@ -1773,7 +1773,8 @@ class Controller(object):
             self._make_package_asset_menu_section(_path, menu)
         else: 
             self._make_wrangler_asset_menu_section(menu, directory=_path)
-        self._make_command_menu_sections(menu, _path=_path)
+        directory_name = getattr(self, '_directory_name', None)
+        self._make_command_menu_sections(menu, directory_name, _path=_path)
         return menu
 
     def _make_package(self):
@@ -1820,6 +1821,7 @@ class Controller(object):
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
             section._group_by_annotation = not self._directory_name == 'scores'
+
     def _populate_package(self, path):
         assert not os.path.exists(path)
         os.mkdir(path)
