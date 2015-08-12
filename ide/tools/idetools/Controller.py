@@ -2488,7 +2488,6 @@ class Controller(object):
     def _select_view(
         self, 
         directory_name, 
-        infinitive_phrase=None, 
         is_ranged=False,
         ):
         directory_token = self._get_current_directory_token()
@@ -2505,8 +2504,7 @@ class Controller(object):
             target_name = 'view(s)'
         else:
             target_name = 'view'
-        if infinitive_phrase:
-            target_name = '{} {}'.format(target_name, infinitive_phrase)
+        target_name = '{} to apply'.format(target_name)
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
@@ -4820,21 +4818,17 @@ class Controller(object):
 
         Returns none.
         '''
-        infinitive_phrase = 'to apply'
-        view_name = self._select_view(
-            directory_name,
-            infinitive_phrase=infinitive_phrase,
-            )
+        view_name = self._select_view(directory_name)
         if self._io_manager._is_backtracking or view_name is None:
             return
         if view_name == 'none':
             view_name = None
         if self._session.is_in_score:
-            view_directory = self._get_current_directory()
+            view_directory = self._session.manifest_current_directory
             metadatum_name = 'view_name'
         else:
             view_directory = configuration.abjad_ide_views_directory
-            metadatum_name = '{}_view_name'.format(self._directory_name)
+            metadatum_name = '{}_view_name'.format(directory_name)
         self._add_metadatum(
             view_directory,
             metadatum_name,
