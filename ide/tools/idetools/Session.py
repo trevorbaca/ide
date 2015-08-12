@@ -180,8 +180,17 @@ class Session(object):
 
         Returns string or none.
         '''
-        if self.current_score_package_manager:
-            return self.current_score_package_manager._path
+        from ide.tools import idetools
+#        result = None
+#        if self.current_score_package_manager:
+#            result = self.current_score_package_manager._path
+        other = None
+        if self.manifest_current_directory is not None:
+            other = idetools.Controller._path_to_score_directory(
+                self.manifest_current_directory)
+#        assert result == other, repr((result, other))
+#        return result
+        return other
 
     @property
     def current_score_package_manager(self):

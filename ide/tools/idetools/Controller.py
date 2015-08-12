@@ -2061,6 +2061,12 @@ class Controller(object):
         score_name = path_suffix.split(os.path.sep)[0]
         score_path = os.path.join(path_prefix, score_name)
         score_path = os.path.join(score_path, score_name)
+        if os.path.normpath(score_path) == os.path.normpath(
+            configuration.composer_scores_directory):
+            return
+        if os.path.normpath(score_path) == os.path.normpath(
+            configuration.abjad_ide_example_scores_directory):
+            return
         return score_path
 
     @staticmethod
