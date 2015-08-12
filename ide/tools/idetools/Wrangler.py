@@ -102,16 +102,17 @@ class Wrangler(Controller):
         set_view=True,
         ):
         paths = self._list_asset_paths(directory_name)
-        current_directory = self._get_current_directory()
-        if (apply_current_directory or set_view) and current_directory:
-            paths = [_ for _ in paths if _.startswith(current_directory)]
+        if (apply_current_directory or set_view) and self._session.is_in_score:
+            paths = [
+                _ for _ in paths
+                if _.startswith(self._session.current_score_directory)
+                ]
         strings = []
         for path in paths:
             string = self._path_to_asset_menu_display_string(path)
             strings.append(string)
         pairs = list(zip(strings, paths))
-        if (not self._session.is_in_score and
-            not directory_name == 'scores'):
+        if (not self._session.is_in_score and not directory_name == 'scores'):
             def sort_function(pair):
                 string = pair[0]
                 if '(' not in string:
