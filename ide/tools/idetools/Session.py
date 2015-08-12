@@ -158,7 +158,7 @@ class Session(object):
 
     @property
     def controller_stack(self):
-        r'''Gets session controller stack.
+        r'''Gets controller stack.
 
         ..  container:: example
 
@@ -178,7 +178,7 @@ class Session(object):
 
     @property
     def current_score_directory(self):
-        r'''Gets session current score directory.
+        r'''Gets current score directory.
 
         ..  container:: example
 
@@ -201,7 +201,7 @@ class Session(object):
 
     @property
     def current_score_package_manager(self):
-        r'''Gets session current score package manager.
+        r'''Gets current score package manager.
 
         ..  container:: example:
 
@@ -217,15 +217,11 @@ class Session(object):
                 >>> session_in_score.current_score_package_manager is None
                 True
 
-        (Ouput will vary according to configuration.)
-
-        Returns score package manager or none.
+        Returns package manager or none.
         '''
-        from ide.tools import idetools
-        for controller in reversed(self.controller_stack):
+        for controller in self.controller_stack:
             if hasattr(controller, '_path'):
-                if controller._is_score_package_inner_path(controller._path):
-                    return controller
+                return controller
 
     @property
     def display(self):
