@@ -203,20 +203,6 @@ class Session(object):
     def current_score_package_manager(self):
         r'''Gets current score package manager.
 
-        ..  container:: example:
-
-            ::
-
-                >>> session.current_score_package_manager is None
-                True
-
-        ..  container:: example
-
-            ::
-
-                >>> session_in_score.current_score_package_manager is None
-                True
-
         Returns package manager or none.
         '''
         for controller in self.controller_stack:
@@ -391,9 +377,7 @@ class Session(object):
 
         Returns true or false..
         '''
-        if self.current_score_package_manager is not None:
-            return True
-        return False
+        return self.current_score_directory is not None
 
     @property
     def is_navigating_home(self):

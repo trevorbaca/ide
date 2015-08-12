@@ -3423,7 +3423,6 @@ class Controller(object):
             configuration.abjad_ide_boilerplate_directory,
             'music.ly',
             )
-        manager = self._session.current_score_package_manager
         destination_path = os.path.join(
             score_directory,
             'build',
@@ -3436,7 +3435,7 @@ class Controller(object):
             )
         with systemtools.FilesystemState(remove=[candidate_path]):
             shutil.copyfile(source_path, candidate_path)
-            result = manager._parse_paper_dimensions(score_directory)
+            result = self._parse_paper_dimensions(score_directory)
             width, height, unit = result
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -3516,8 +3515,7 @@ class Controller(object):
         Returns none.
         '''
         replacements = {}
-        manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions(score_directory)
+        width, height, unit = self._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
@@ -3542,8 +3540,7 @@ class Controller(object):
         Returns none.
         '''
         replacements = {}
-        manager = self._session.current_score_package_manager
-        width, height, unit = manager._parse_paper_dimensions(score_directory)
+        width, height, unit = self._parse_paper_dimensions(score_directory)
         if width and height:
             old = '{PAPER_SIZE}'
             new = '{{{}{}, {}{}}}'
