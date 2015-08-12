@@ -308,7 +308,6 @@ class Controller(object):
 
     # HERE
     def _confirm_segment_names(self, score_directory):
-        segment_package_wrangler = self._initialize_wrangler('segments')
         segments_directory = os.path.join(score_directory, 'segments')
         view_name = self._read_view_name(
             segments_directory,
@@ -316,9 +315,7 @@ class Controller(object):
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
-        segment_paths = segment_package_wrangler._list_visible_asset_paths(
-            'segments',
-            )
+        segment_paths = self._list_visible_asset_paths('segments')
         segment_paths = segment_paths or []
         segment_names = []
         for segment_path in segment_paths:
