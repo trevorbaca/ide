@@ -1099,7 +1099,7 @@ class Controller(object):
             messages.append(message)
         self._io_manager._display(messages)
 
-    def _handle_input(self, result, _path=None):
+    def _handle_input(self, result, _path=None, directory_name=None):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
@@ -1111,6 +1111,8 @@ class Controller(object):
                 command = self._command_name_to_command[result]
                 if '_path' in command.argument_names:
                     command(_path)
+                elif 'directory_name' in command.argument_names:
+                    command(directory_name)
                 elif 'current_score_directory' in command.argument_names:
                     current_score_directory = \
                         self._session.current_score_directory
@@ -2455,7 +2457,7 @@ class Controller(object):
                 if self._session.is_backtracking:
                     return
                 if result:
-                    self._handle_input(result)
+                    self._handle_input(result, directory_name=directory_name)
                     if self._session.is_backtracking:
                         return
 
@@ -2483,7 +2485,12 @@ class Controller(object):
             return
         return result
 
-    def _select_view(self, infinitive_phrase=None, is_ranged=False):
+    def _select_view(
+        self, 
+        directory_name, 
+        infinitive_phrase=None, 
+        is_ranged=False,
+        ):
         directory_token = self._get_current_directory_token()
         view_inventory = self._read_view_inventory(
             directory_token,
@@ -4793,6 +4800,7 @@ class Controller(object):
 
     @Command(
         'ws',
+        argument_names=('directory_name',),
         directories=(
             'build',
             'distribution',
@@ -4807,13 +4815,16 @@ class Controller(object):
         outside_score='home',
         section='view', 
         )
-    def set_view(self):
+    def set_view(self, directory_name):
         r'''Sets view.
 
         Returns none.
         '''
         infinitive_phrase = 'to apply'
-        view_name = self._select_view(infinitive_phrase=infinitive_phrase)
+        view_name = self._select_view(
+            directory_name,
+            infinitive_phrase=infinitive_phrase,
+            )
         if self._io_manager._is_backtracking or view_name is None:
             return
         if view_name == 'none':
