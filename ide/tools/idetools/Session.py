@@ -41,7 +41,6 @@ class Session(object):
         '_clear_terminal_after_quit',
         '_confirm',
         '_controller_stack',
-        '_current_score_directory',
         '_display',
         '_display_command_help',
         '_is_backtracking_locally',
@@ -82,7 +81,6 @@ class Session(object):
         self._clear_terminal_after_quit = False
         self._confirm = True
         self._controller_stack = []
-        self._current_score_directory = None
         self._display = True
         self._display_command_help = None
         self._is_backtracking_locally = False
@@ -179,20 +177,6 @@ class Session(object):
     @property
     def current_score_directory(self):
         r'''Gets current score directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.current_score_directory is None
-                True
-
-        ..  container:: example
-
-            ::
-
-                >>> session_in_score.current_score_directory is None
-                True
 
         Returns string or none.
         '''
