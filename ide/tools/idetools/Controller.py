@@ -1682,7 +1682,10 @@ class Controller(object):
 
     def _make_package(self):
         if self._session.is_in_score:
-            storehouse = self._get_current_storehouse()
+            storehouse = os.path.join(
+                self._session.current_score_directory,
+                self._directory_name,
+                )
         else:
             storehouse = self._select_storehouse(
                 example_score_packages=self._session.is_test,

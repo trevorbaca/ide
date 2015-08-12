@@ -38,14 +38,6 @@ class Wrangler(Controller):
 
     ### PRIVATE METHODS ###
 
-    def _get_current_storehouse(self):
-        if self._session.is_in_score:
-            return os.path.join(
-                self._session.current_score_directory,
-                self._directory_name,
-                )
-        return configuration.composer_scores_directory
-
     def _get_next_asset_path(self):
         last_path = self._session.last_asset_path
         menu_entries = self._make_asset_menu_entries(self._directory_name)
