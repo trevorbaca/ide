@@ -1174,21 +1174,15 @@ class AbjadIDE(object):
             message = message.format(result)
             raise Exception(message)
 
-    # TODO: implement Command.redraw_immediately_after
-    #       so enumeration can be derived introspectively
-    @staticmethod
-    def _handle_pending_redraw_directive(session, directive):
+    def _handle_pending_redraw_directive(self, directive):
         if directive in ('b', 'h', 'q', 's', '?', ';'):
-            session._pending_redraw = True
+            self._session._pending_redraw = True
 
-    # TODO: implement something on Command
-    #       so enumeration can be derived introspectively
-    @classmethod
-    def _handle_wrangler_navigation_directive(class_, session, expr):
-        dictionary = class_._navigation_command_name_to_directory_name
+    def _handle_wrangler_navigation_directive(self, expr):
+        dictionary = self._navigation_command_name_to_directory_name
         directory_name = dictionary.get(expr)
         if directory_name is not None:
-            session._navigation_target = directory_name
+            self._session._navigation_target = directory_name
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
@@ -2426,14 +2420,8 @@ class AbjadIDE(object):
                         _path=directory,
                         )
                     result = menu._run(io_manager=self._io_manager)
-                    self._handle_pending_redraw_directive(
-                        self._session,
-                        result,
-                        )
-                    self._handle_wrangler_navigation_directive(
-                        self._session,
-                        result,
-                        )
+                    self._handle_pending_redraw_directive(result)
+                    self._handle_wrangler_navigation_directive(result)
                 if self._exit_run(directory):
                     break
                 elif not result:
@@ -2486,14 +2474,8 @@ class AbjadIDE(object):
                         directory_name=directory_name,
                         )
                     result = menu._run(io_manager=self._io_manager)
-                    self._handle_pending_redraw_directive(
-                        self._session,
-                        result,
-                        )
-                    self._handle_wrangler_navigation_directive(
-                        self._session,
-                        result,
-                        )
+                    self._handle_pending_redraw_directive(result)
+                    self._handle_wrangler_navigation_directive(result)
                 if self._session.is_backtracking:
                     return
                 if result:
