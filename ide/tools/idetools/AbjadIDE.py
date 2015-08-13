@@ -2365,17 +2365,18 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
+        self._session._manifest_current_directory = current_directory
+        if self._session.is_in_score:
+            menu_header = self._path_to_menu_header(
+                self._session.manifest_current_directory)
+        elif directory_name == 'scores':
+            menu_header = 'Abjad IDE - all score directories'
+        else:
+            menu_header = 'Abjad IDE - all {} directories'
+            menu_header = menu_header.format(directory_name)
         while True:
             self._session._manifest_current_directory = current_directory
             os.chdir(current_directory)
-            if self._session.is_in_score:
-                menu_header = self._path_to_menu_header(
-                    self._session.manifest_current_directory)
-            elif directory_name == 'scores':
-                menu_header = 'Abjad IDE - all score directories'
-            else:
-                menu_header = 'Abjad IDE - all {} directories'
-                menu_header = menu_header.format(directory_name)
             menu = self._make_main_menu(
                 explicit_header=menu_header,
                 directory_name=directory_name,
