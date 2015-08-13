@@ -93,7 +93,7 @@ def test_AbjadIDE_remove_03():
     abjad_ide._session._is_repository_test = True
     input_ = 'red~example~score m rm q'
     abjad_ide._run_main_menu(input_=input_)
-    assert abjad_ide._session._attempted_to_remove
+    assert abjad_ide._session._attempted_method == 'remove'
 
 
 def test_AbjadIDE_remove_04():
@@ -103,4 +103,4 @@ def test_AbjadIDE_remove_04():
     abjad_ide._session._is_repository_test = True
     input_ = 'red~example~score g rm q'
     abjad_ide._run_main_menu(input_=input_)
-    assert abjad_ide._session._attempted_to_remove
+    assert abjad_ide._session._attempted_method == 'remove'

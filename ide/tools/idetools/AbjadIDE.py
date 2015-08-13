@@ -939,7 +939,7 @@ class AbjadIDE(object):
     def _git_commit(self, path, commit_message=None):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._io_manager._session._attempted_to_commit = True
+            self._io_manager._session._attempted_method = '_git_commit'
             if self._io_manager._session.is_repository_test:
                 return
             if commit_message is None:
@@ -963,7 +963,7 @@ class AbjadIDE(object):
     def _git_revert(self, path):
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._io_manager._session._attempted_to_revert = True
+            self._io_manager._session._attempted_method = '_git_revert'
             if self._io_manager._session.is_repository_test:
                 return
             paths = []
@@ -990,7 +990,7 @@ class AbjadIDE(object):
         with change:
             command = 'git status {}'.format(path)
             messages = []
-            self._io_manager._session._attempted_display_status = True
+            self._io_manager._session._attempted_method = '_git_status'
             message = 'Repository status for {} ...'
             message = message.format(path)
             messages.append(message)
@@ -1022,7 +1022,6 @@ class AbjadIDE(object):
         messages = []
         change = systemtools.TemporaryDirectoryChange(directory=path)
         with change:
-            self._io_manager._session._attempted_to_update = True
             if self._io_manager._session.is_repository_test:
                 return messages
             root_directory = self._get_repository_root_directory(path)
@@ -3771,7 +3770,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_add = True
+        self._session._attempted_method = 'git_add_every_package'
         if self._session.is_repository_test:
             return
         inputs, outputs = [], []
@@ -3811,7 +3810,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_commit = True
+        self._session._attempted_method = 'git_commit_every_package'
         if self._session.is_repository_test:
             return
         getter = self._io_manager._make_getter()
@@ -3843,7 +3842,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_revert = True
+        self._session._attempted_method = 'git_revert_every_package'
         if self._session.is_repository_test:
             return
         for directory in directories:
@@ -3861,7 +3860,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_display_status = True
+        self._session._attempted_method = 'git_status_every_package'
         directories.sort()
         for directory in directories:
             self._git_status(directory)
@@ -3878,6 +3877,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
             message = self._path_to_asset_menu_display_string(directory)
@@ -4676,7 +4676,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_remove = True
+        self._session._attempted_method = 'remove'
         if self._session.is_repository_test:
             return
         paths = self._select_visible_asset_paths(directory_name)

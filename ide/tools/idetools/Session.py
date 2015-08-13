@@ -4,24 +4,10 @@
 class Session(object):
     r'''Abjad IDE session.
 
-    ..  container:: example
-
-        Session outside of score:
-
         ::
 
             >>> session = ide.tools.idetools.Session()
             >>> session
-            Session()
-
-    ..  container:: example
-
-        Session in score:
-
-        ::
-
-            >>> session_in_score = ide.tools.idetools.Session()
-            >>> session_in_score
             Session()
 
     '''
@@ -31,13 +17,8 @@ class Session(object):
     __slots__ = (
         '_allow_unknown_command_during_test',
         '_after_redraw_message',
-        '_attempted_display_status',
-        '_attempted_to_add',
-        '_attempted_to_commit',
+        '_attempted_method',
         '_attempted_to_open_file',
-        '_attempted_to_remove',
-        '_attempted_to_revert',
-        '_attempted_to_update',
         '_clear_terminal_after_quit',
         '_confirm',
         '_display',
@@ -60,13 +41,8 @@ class Session(object):
         from ide.tools import idetools
         self._after_redraw_message = None
         self._allow_unknown_command_during_test = False
-        self._attempted_display_status = False
-        self._attempted_to_add = False
-        self._attempted_to_commit = False
+        self._attempted_method = None
         self._attempted_to_open_file = False
-        self._attempted_to_remove = False
-        self._attempted_to_revert = False
-        self._attempted_to_update = False
         self._clear_terminal_after_quit = False
         self._confirm = True
         self._display = True
