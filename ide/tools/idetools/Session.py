@@ -45,20 +45,13 @@ class Session(object):
         '_is_backtracking_locally',
         '_is_backtracking_to_all_build_files',
         '_is_backtracking_to_score',
-        '_is_navigating_home',
         '_is_in_confirmation_environment',
-        '_is_navigating_to_next_asset',
-        '_is_navigating_to_next_score',
-        '_is_navigating_to_previous_asset',
-        '_is_navigating_to_previous_score',
-        '_is_navigating_to_scores',
         '_is_quitting',
         '_is_repository_test',
         '_is_test',
         '_last_asset_path',
         '_last_score_path',
         '_manifest_current_directory',
-        '_navigation_target',
         '_pending_done',
         '_pending_input',
         '_pending_redraw',
@@ -85,19 +78,12 @@ class Session(object):
         self._is_backtracking_to_all_build_files = False
         self._is_backtracking_to_score = False
         self._is_in_confirmation_environment = False
-        self._is_navigating_home = False
-        self._is_navigating_to_next_asset = False
-        self._is_navigating_to_next_score = False
-        self._is_navigating_to_previous_asset = False
-        self._is_navigating_to_previous_score = False
-        self._is_navigating_to_scores = False
         self._is_quitting = False
         self._is_repository_test = False
         self._is_test = is_test
         self._last_asset_path = None
         self._last_score_path = None
         self._manifest_current_directory = None
-        self._navigation_target = None
         self._pending_done = False
         self._pending_input = input_
         self._pending_redraw = True
@@ -196,21 +182,6 @@ class Session(object):
         return self._display_command_help
 
     @property
-    def is_autonavigating_within_score(self):
-        r'''Is true when session is autonavigating. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_autonavigating_within_score
-                False
-
-        Returns true or false..
-        '''
-        return self.navigation_target is not None
-
-    @property
     def is_backtracking(self):
         r'''Is true when any of the following are true:
 
@@ -224,9 +195,7 @@ class Session(object):
         Returns true or false..
         '''
         if (
-            self.is_autonavigating_within_score or
             self.is_backtracking_locally or 
-            self.is_backtracking_to_all_scores or
             self.is_backtracking_to_score or
             self.is_quitting
             ):
@@ -248,22 +217,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._is_backtracking_locally
-
-    @property
-    def is_backtracking_to_all_scores(self):
-        r'''Is true when session is backtracking to Abjad IDE.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_backtracking_to_all_scores
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_scores
 
     @property
     def is_backtracking_to_score(self):
@@ -311,125 +264,6 @@ class Session(object):
         Returns true or false..
         '''
         return self.current_score_directory is not None
-
-    @property
-    def is_navigating_home(self):
-        r'''Is true when session is navigating home.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_home
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_home
-
-    @property
-    def is_navigating_to_next_asset(self):
-        r'''Is true when session is navigating to next material.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_next_asset
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_next_asset
-
-    @property
-    def is_navigating_to_next_score(self):
-        r'''Is true when session is navigating to next score. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_next_score
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_next_score
-
-    @property
-    def is_navigating_to_previous_asset(self):
-        r'''Is true when session is navigating to previous material.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_previous_asset
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_previous_asset
-
-    @property
-    def is_navigating_to_previous_score(self):
-        r'''Is true when session is navigating to previous score.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_previous_score
-                False
-
-        Returns true or false..
-        '''
-        return self._is_navigating_to_previous_score
-
-    @property
-    def is_navigating_to_sibling_asset(self):
-        r'''Is true when session is navigating to sibling asset.
-        Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_sibling_asset
-                False
-
-        Returns true or false..
-        '''
-        if self.is_navigating_to_next_asset:
-            return True
-        if self.is_navigating_to_previous_asset:
-            return True
-        return False
-
-    @property
-    def is_navigating_to_sibling_score(self):
-        r'''Is true when session is navigating to sibling score.
-        Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_navigating_to_sibling_score
-                False
-
-        Returns true or false..
-        '''
-        if self.is_navigating_to_next_score:
-            return True
-        if self.is_navigating_to_previous_score:
-            return True
-        return False
 
     @property
     def is_quitting(self):
@@ -520,22 +354,6 @@ class Session(object):
         Do not set by hand.
         '''
         return self._manifest_current_directory
-
-    @property
-    def navigation_target(self):
-        r'''Gets navigation target.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.navigation_target is None
-                True
-
-        Returns 'build', 'distribution', 'etc', 'makers', 'stylesheets',
-        'segments', 'materials' or none.
-        '''
-        return self._navigation_target
 
     @property
     def pending_done(self):
