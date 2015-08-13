@@ -218,21 +218,6 @@ class Session(object):
         return self._display_command_help
 
     @property
-    def is_at_top_level(self):
-        r'''Is true when IDE is at top level. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_at_top_level
-                True
-
-        Returns true or false..
-        '''
-        return len(self.controller_stack) <= 1
-
-    @property
     def is_autonavigating_within_score(self):
         r'''Is true when session is autonavigating. Otherwise false.
 
@@ -267,8 +252,6 @@ class Session(object):
             self.is_backtracking_to_score or
             self.is_quitting
             ):
-            return True
-        if self.is_navigating_home and not self.is_at_top_level:
             return True
         return False
 
