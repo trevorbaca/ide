@@ -571,6 +571,13 @@ class Menu(object):
                     self._io_manager._session._pending_redraw = True
                     self._io_manager = None
                     return
+                elif result == '?':
+                    self._io_manager._session._display_command_help = 'action'
+                    self._io_manager._session._pending_redraw = True
+                elif result == ';':
+                    self._io_manager._session._display_command_help = \
+                        'navigation'
+                    self._io_manager._session._pending_redraw = True
                 else:
                     self._io_manager = None
                     return result

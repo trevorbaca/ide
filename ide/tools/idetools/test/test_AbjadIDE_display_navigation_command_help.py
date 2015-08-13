@@ -1,9 +1,7 @@
 # -*- encoding: utf-8 -*-
-import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-pytest.skip('reimplement nonstatally')
 
 
 def test_AbjadIDE_display_navigation_command_help_01():
@@ -15,7 +13,6 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '',
         '    display navigation command help (;)',
         '',
-        '    back (b)',
         '    home (h)',
         '    quit (q)',
         '',
@@ -53,7 +50,6 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '',
         '    display navigation command help (;)',
         '',
-        '    back (b)',
         '    home (h)',
         '    quit (q)',
         '',
@@ -94,7 +90,6 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '',
         '    display navigation command help (;)',
         '',
-        '    back (b)',
         '    home (h)',
         '    quit (q)',
         '',

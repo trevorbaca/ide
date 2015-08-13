@@ -1,9 +1,7 @@
 # -*- encoding: utf-8 -*-
-import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-pytest.skip('reimplement nonstatally')
 
 
 def test_Wrangler_display_action_command_help_01():

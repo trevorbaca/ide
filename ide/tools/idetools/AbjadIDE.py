@@ -2411,6 +2411,10 @@ class AbjadIDE(object):
                     directory_name=directory_name,
                     )
                 result = menu._run(io_manager=self._io_manager)
+                if self._session.is_quitting:
+                    return
+                if result is None:
+                    continue
                 self._handle_input(
                     result, 
                     directory_name=directory_name,
