@@ -50,3 +50,17 @@ def test_AbjadIDE_go_home_03():
         'Abjad IDE - all score directories',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_Wrangler_go_home_01():
+    r'''From home to home.
+    '''
+
+    input_ = 'h q'
+    abjad_ide._run_main_menu(input_=input_)
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Abjad IDE - all score directories',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles
