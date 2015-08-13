@@ -51,3 +51,18 @@ def test_AbjadIDE_go_to_score_stylesheets_directory_03():
         'Red Example Score (2013) - stylesheets directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_score_stylesheets_directory_04():
+    r'''Goes from build directory to stylesheets directory.
+    '''
+
+    input_ = 'red~example~score u y q'
+    abjad_ide._run_main_menu(input_=input_)
+    titles = [
+        'Abjad IDE - all score directories',
+        'Red Example Score (2013)',
+        'Red Example Score (2013) - build directory',
+        'Red Example Score (2013) - stylesheets directory',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles

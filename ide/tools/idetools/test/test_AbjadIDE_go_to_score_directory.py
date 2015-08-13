@@ -50,3 +50,17 @@ def test_AbjadIDE_go_to_score_directory_03():
         'Red Example Score (2013)',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_score_directory_04():
+
+    input_ = 'red~example~score u s q'
+    abjad_ide._run_main_menu(input_=input_)
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Red Example Score (2013)',
+        'Red Example Score (2013) - build directory',
+        'Red Example Score (2013)',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles

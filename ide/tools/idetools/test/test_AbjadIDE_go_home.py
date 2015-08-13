@@ -52,7 +52,7 @@ def test_AbjadIDE_go_home_03():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_Wrangler_go_home_01():
+def test_AbjadIDE_go_home_04():
     r'''From home to home.
     '''
 

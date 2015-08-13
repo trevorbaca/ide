@@ -32,3 +32,11 @@ def test_AbjadIDE_edit_score_stylesheet_03():
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
+
+
+def test_AbjadIDE_edit_score_stylesheet_04():
+
+    input_ = 'red~example~score g sty q'
+    abjad_ide._run_main_menu(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file

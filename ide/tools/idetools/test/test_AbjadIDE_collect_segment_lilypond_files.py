@@ -1,0 +1,73 @@
+# -*- encoding: utf-8 -*-
+import os
+from abjad import *
+import ide
+abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
+
+
+def test_AbjadIDE_collect_segment_lilypond_files_01():
+    r'''Copies LilyPond files from segment packages to build directory
+    when build directory contains no segment LilyPond files.
+    '''
+
+    build_directory = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        )
+
+    segment_names, segment_paths = [], []
+    for number in ('01', '02', '03'):
+        segment_name = 'segment-{}.ly'
+        segment_name = segment_name.format(number)
+        segment_names.append(segment_name)
+        segment_path = os.path.join(build_directory, segment_name)
+        segment_paths.append(segment_path)
+
+    with systemtools.FilesystemState(keep=segment_paths):
+        for segment_path in segment_paths:
+            os.remove(segment_path)
+        input_ = 'red~example~score u mc y q'
+        abjad_ide._run_main_menu(input_=input_)
+        for segment_path in segment_paths:
+            assert os.path.isfile(segment_path)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy ...' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+
+
+def test_AbjadIDE_collect_segment_lilypond_files_02():
+    r'''Preseves build directory segment LilyPond files when segment package
+    LilyPond files compare equal to build directory segment LilyPond files.
+    '''
+
+    build_directory = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        )
+
+    segment_names, segment_paths = [], []
+    for number in ('01', '02', '03'):
+        segment_name = 'segment-{}.ly'
+        segment_name = segment_name.format(number)
+        segment_names.append(segment_name)
+        segment_path = os.path.join(build_directory, segment_name)
+        segment_paths.append(segment_path)
+
+    with systemtools.FilesystemState(keep=segment_paths):
+        input_ = 'red~example~score u mc y q'
+        abjad_ide._run_main_menu(input_=input_)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy ...' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert 'The files ...' in contents
+    assert '... compare the same.' in contents
+    assert 'Preserved' in contents
