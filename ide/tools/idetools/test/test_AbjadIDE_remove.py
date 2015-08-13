@@ -84,23 +84,3 @@ def test_AbjadIDE_remove_02():
         abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path_100_outer)
         assert not os.path.exists(path_101_outer)
-
-
-def test_AbjadIDE_remove_03():
-    r'''Attempts material package removal.
-    '''
-
-    abjad_ide._session._is_repository_test = True
-    input_ = 'red~example~score m rm q'
-    abjad_ide._run_main_menu(input_=input_)
-    assert abjad_ide._session._attempted_method == 'remove'
-
-
-def test_AbjadIDE_remove_04():
-    r'''Attempts segment package removal.
-    '''
-
-    abjad_ide._session._is_repository_test = True
-    input_ = 'red~example~score g rm q'
-    abjad_ide._run_main_menu(input_=input_)
-    assert abjad_ide._session._attempted_method == 'remove'

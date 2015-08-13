@@ -24,7 +24,6 @@ class Session(object):
         '_display',
         '_is_in_confirmation_environment',
         '_is_quitting',
-        '_is_repository_test',
         '_is_test',
         '_last_asset_path',
         '_last_score_path',
@@ -46,7 +45,6 @@ class Session(object):
         self._display = True
         self._is_in_confirmation_environment = False
         self._is_quitting = False
-        self._is_repository_test = False
         self._is_test = is_test
         self._last_asset_path = None
         self._last_score_path = None
@@ -80,10 +78,8 @@ class Session(object):
 
     def _reinitialize(self):
         is_test = self._is_test
-        is_add_test = self._is_repository_test
         allow_unknown = self._allow_unknown_command_during_test
         type(self).__init__(self, is_test=self.is_test)
-        self._is_repository_test = is_add_test
         self._allow_unknown_command_during_test = allow_unknown
 
     ### PUBLIC PROPERTIES ###
@@ -176,21 +172,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._is_quitting
-
-    @property
-    def is_repository_test(self):
-        r'''Is true when session is repository test. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_repository_test
-                False
-
-        Returns true or false..
-        '''
-        return self._is_repository_test
 
     @property
     def is_test(self):
