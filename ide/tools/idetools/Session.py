@@ -40,7 +40,6 @@ class Session(object):
         '_attempted_to_update',
         '_clear_terminal_after_quit',
         '_confirm',
-        '_controller_stack',
         '_display',
         '_display_command_help',
         '_is_backtracking_locally',
@@ -80,7 +79,6 @@ class Session(object):
         self._attempted_to_update = False
         self._clear_terminal_after_quit = False
         self._confirm = True
-        self._controller_stack = []
         self._display = True
         self._display_command_help = None
         self._is_backtracking_locally = False
@@ -153,26 +151,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._confirm
-
-    @property
-    def controller_stack(self):
-        r'''Gets controller stack.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.controller_stack
-                []
-
-        Returns list.
-        '''
-        from ide.tools import idetools
-        if 1 <= len(self._controller_stack):
-            first_controller = self._controller_stack[0]
-            assert isinstance(first_controller, idetools.AbjadIDE), repr(
-                first_controller)
-        return self._controller_stack
 
     @property
     def current_score_directory(self):

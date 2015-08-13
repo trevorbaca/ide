@@ -51,7 +51,6 @@ class ControllerContext(ContextManager):
 
         Returns none.
         '''
-        self._session._controller_stack.append(self._controller)
         self._session._is_in_confirmation_environment = \
             self._is_in_confirmation_environment
         if self._clear_terminal:
@@ -69,7 +68,6 @@ class ControllerContext(ContextManager):
 
         Returns none.
         '''
-        self._session._controller_stack.pop()
         self._session._is_in_confirmation_environment = False
         if self._consume_local_backtrack:
             self._session._is_backtracking_locally = False
