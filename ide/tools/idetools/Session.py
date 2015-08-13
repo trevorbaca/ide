@@ -225,11 +225,9 @@ class Session(object):
 
     @property
     def manifest_current_directory(self):
-        r'''Gest manifest current directory.
+        r'''Gets manifest current directory.
 
-        Set only by ManifestCurrentDirectory context manager.
-
-        Do not set by hand.
+        Returns string.
         '''
         return self._manifest_current_directory
 

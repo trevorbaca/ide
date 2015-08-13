@@ -2298,35 +2298,31 @@ class AbjadIDE(object):
                 file_pointer.write(new_file_contents)
 
     def _run_main_menu(self, input_=None):
-        from ide.tools import idetools
         self._session._reinitialize()
         type(self).__init__(self, session=self._session)
         if input_:
             self._session._pending_input = input_
         state = systemtools.NullContextManager()
-        views = os.path.join(
-            configuration.abjad_ide_views_directory,
-            '__metadata__.py',
-            )
         if self._session.is_test:
+            views = os.path.join(
+                configuration.abjad_ide_views_directory,
+                '__metadata__.py',
+                )
+            empty_views = os.path.join(
+                configuration.abjad_ide_boilerplate_directory,
+                '__views_metadata__.py',
+                )
             paths_to_keep = []
             paths_to_keep.append(views)
             state = systemtools.FilesystemState(keep=paths_to_keep)
-        manifest_current_directory = idetools.ManifestCurrentDirectory(
-            manifest_current_directory=configuration.composer_scores_directory,
-            session=self._session,
-            )
-        with state, manifest_current_directory:
+        with state:
             self._session._pending_redraw = True
             if self._session.is_test:
-                empty_views = os.path.join(
-                    configuration.abjad_ide_boilerplate_directory,
-                    '__views_metadata__.py',
-                    )
                 shutil.copyfile(empty_views, views)
             while True:
                 self._run_wrangler_menu('scores')
                 if self._session.is_quitting:
+                    # TODO: encapsulate suite in method
                     if not self._io_manager._transcript[-1][-1] == '':
                         self._io_manager._display('')
                     if self._session._clear_terminal_after_quit:
@@ -2334,32 +2330,26 @@ class AbjadIDE(object):
                     return
 
     def _run_package_manager_menu(self, directory):
-        from ide.tools import idetools
-        assert os.path.sep in directory
-        manifest_current_directory = idetools.ManifestCurrentDirectory(
-            manifest_current_directory=directory,
-            session=self._session,
-            )
-        with manifest_current_directory:
-            self._session._pending_redraw = True
-            while True:
-                os.chdir(directory)
-                menu_header = self._path_to_menu_header(directory)
-                menu = self._make_main_menu(
-                    explicit_header=menu_header,
-                    _path=directory,
-                    )
-                result = menu._run(io_manager=self._io_manager)
-                if self._session.is_quitting:
-                    return
-                if result is None:
-                    continue
-                self._handle_input(result, _path=directory)
-                if self._session.is_quitting:
-                    return
+        assert os.path.sep in directory, repr(directory)
+        self._session._pending_redraw = True
+        while True:
+            self._session._manifest_current_directory = directory
+            os.chdir(directory)
+            menu_header = self._path_to_menu_header(directory)
+            menu = self._make_main_menu(
+                explicit_header=menu_header,
+                _path=directory,
+                )
+            result = menu._run(io_manager=self._io_manager)
+            if self._session.is_quitting:
+                return
+            if result is None:
+                continue
+            self._handle_input(result, _path=directory)
+            if self._session.is_quitting:
+                return
 
     def _run_wrangler_menu(self, directory_name):
-        from ide.tools import idetools
         assert (directory_name in self._known_directory_names or
             directory_name == 'scores'), repr(directory_name)
         if (directory_name == 'scores' or not self._session.is_in_score):
@@ -2369,43 +2359,35 @@ class AbjadIDE(object):
                 self._session.current_score_directory,
                 directory_name,
                 )
-        manifest_current_directory = idetools.ManifestCurrentDirectory(
-            manifest_current_directory=current_directory,
-            session=self._session,
-            )
         if not os.path.exists(current_directory):
             message = 'directory does not exist: {}.'
             message = message.format(current_directory)
             self._io_manager._display(message)
             return
-        with manifest_current_directory:
-            result = None
-            self._session._pending_redraw = True
-            while True:
-                os.chdir(current_directory)
-                if self._session.is_in_score:
-                    menu_header = self._path_to_menu_header(
-                        self._session.manifest_current_directory)
-                elif directory_name == 'scores':
-                    menu_header = 'Abjad IDE - all score directories'
-                else:
-                    menu_header = 'Abjad IDE - all {} directories'
-                    menu_header = menu_header.format(directory_name)
-                menu = self._make_main_menu(
-                    explicit_header=menu_header,
-                    directory_name=directory_name,
-                    )
-                result = menu._run(io_manager=self._io_manager)
-                if self._session.is_quitting:
-                    return
-                if result is None:
-                    continue
-                self._handle_input(
-                    result, 
-                    directory_name=directory_name,
-                    )
-                if self._session.is_quitting:
-                    return
+        self._session._pending_redraw = True
+        while True:
+            self._session._manifest_current_directory = current_directory
+            os.chdir(current_directory)
+            if self._session.is_in_score:
+                menu_header = self._path_to_menu_header(
+                    self._session.manifest_current_directory)
+            elif directory_name == 'scores':
+                menu_header = 'Abjad IDE - all score directories'
+            else:
+                menu_header = 'Abjad IDE - all {} directories'
+                menu_header = menu_header.format(directory_name)
+            menu = self._make_main_menu(
+                explicit_header=menu_header,
+                directory_name=directory_name,
+                )
+            result = menu._run(io_manager=self._io_manager)
+            if self._session.is_quitting:
+                return
+            if result is None:
+                continue
+            self._handle_input(result, directory_name=directory_name)
+            if self._session.is_quitting:
+                return
 
     def _select_storehouse(self, directory_name, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
