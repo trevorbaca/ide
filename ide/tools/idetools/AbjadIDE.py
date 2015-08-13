@@ -1103,52 +1103,48 @@ class AbjadIDE(object):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
-        with self._io_manager._make_interaction():
-            if result.startswith('!'):
-                statement = result[1:]
-                self._io_manager._invoke_shell(statement)
-            elif result in self._command_name_to_command:
-                command = self._command_name_to_command[result]
-                if '_path' in command.argument_names:
-                    command(_path)
-                elif 'directory_name' in command.argument_names:
-                    command(directory_name)
-                elif 'current_score_directory' in command.argument_names:
-                    current_score_directory = \
-                        self._session.current_score_directory
-                    command(current_score_directory)
-                elif 'visible_asset_paths' in command.argument_names:
-                    paths = self._list_visible_asset_paths(directory_name)
-                    command(paths)
-                else:
-                    command()
-            elif (result.endswith('!') and 
-                result[:-1] in self._command_name_to_command):
-                result = result[:-1]
-                with self._io_manager._make_interaction(
-                    confirm=False,
-                    ):
-                    self._command_name_to_command[result]()
-            elif os.path.sep in result:
-                self._handle_numeric_user_input(result)
+        if result.startswith('!'):
+            statement = result[1:]
+            self._io_manager._invoke_shell(statement)
+        elif result in self._command_name_to_command:
+            command = self._command_name_to_command[result]
+            if '_path' in command.argument_names:
+                command(_path)
+            elif 'directory_name' in command.argument_names:
+                command(directory_name)
+            elif 'current_score_directory' in command.argument_names:
+                current_score_directory = \
+                    self._session.current_score_directory
+                command(current_score_directory)
+            elif 'visible_asset_paths' in command.argument_names:
+                paths = self._list_visible_asset_paths(directory_name)
+                command(paths)
             else:
-                current_score_directory = self._session.current_score_directory
-                aliased_path = configuration.aliases.get(result, None)
-                if current_score_directory and aliased_path:
-                    aliased_path = os.path.join(
-                        current_score_directory, 
-                        aliased_path,
-                        )
-                    if os.path.isfile(aliased_path):
-                        self._io_manager.open_file(aliased_path)
-                    else:
-                        message = 'file does not exist: {}.'
-                        message = message.format(aliased_path)
-                        self._io_manager._display(message)
+                command()
+        elif (result.endswith('!') and 
+            result[:-1] in self._command_name_to_command):
+            result = result[:-1]
+            self._command_name_to_command[result]()
+        elif os.path.sep in result:
+            self._handle_numeric_user_input(result)
+        else:
+            current_score_directory = self._session.current_score_directory
+            aliased_path = configuration.aliases.get(result, None)
+            if current_score_directory and aliased_path:
+                aliased_path = os.path.join(
+                    current_score_directory, 
+                    aliased_path,
+                    )
+                if os.path.isfile(aliased_path):
+                    self._io_manager.open_file(aliased_path)
                 else:
-                    message = 'unknown command: {!r}.'
-                    message = message.format(result)
-                    self._io_manager._display([message, ''])
+                    message = 'file does not exist: {}.'
+                    message = message.format(aliased_path)
+                    self._io_manager._display(message)
+            else:
+                message = 'unknown command: {!r}.'
+                message = message.format(result)
+                self._io_manager._display([message, ''])
 
     def _handle_numeric_user_input(self, result):
         if os.path.isfile(result):
@@ -4684,27 +4680,26 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        with self._io_manager._make_interaction(dry_run=dry_run):
-            file_name = 'score.pdf'
-            directory = os.path.join(directory, 'distribution')
-            path = self._get_file_path_ending_with(directory, file_name)
-            if not path:
-                directory = os.path.join(directory, 'build')
-                path = self._get_file_path_ending_with(
-                    directory, 
-                    file_name,
-                    )
-            if dry_run:
-                inputs, outputs = [], []
-                if path:
-                    inputs = [path]
-                return inputs, outputs
+        file_name = 'score.pdf'
+        directory = os.path.join(directory, 'distribution')
+        path = self._get_file_path_ending_with(directory, file_name)
+        if not path:
+            directory = os.path.join(directory, 'build')
+            path = self._get_file_path_ending_with(
+                directory, 
+                file_name,
+                )
+        if dry_run:
+            inputs, outputs = [], []
             if path:
-                self._io_manager.open_file(path)
-            else:
-                message = "no score.pdf file found"
-                message += ' in either distribution/ or build/ directories.'
-                self._io_manager._display(message)
+                inputs = [path]
+            return inputs, outputs
+        if path:
+            self._io_manager.open_file(path)
+        else:
+            message = "no score.pdf file found"
+            message += ' in either distribution/ or build/ directories.'
+            self._io_manager._display(message)
 
     @Command(
         'sp', 
