@@ -30,7 +30,6 @@ class Session(object):
         '_last_asset_path',
         '_last_score_path',
         '_manifest_current_directory',
-        '_pending_done',
         '_pending_input',
         '_pending_redraw',
         )
@@ -54,7 +53,6 @@ class Session(object):
         self._last_asset_path = None
         self._last_score_path = None
         self._manifest_current_directory = None
-        self._pending_done = False
         self._pending_input = input_
         self._pending_redraw = True
 
@@ -271,21 +269,6 @@ class Session(object):
         Do not set by hand.
         '''
         return self._manifest_current_directory
-
-    @property
-    def pending_done(self):
-        r'''Is true when something is pending done. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.pending_done
-                False
-
-        Returns true or false..
-        '''
-        return self._pending_done
 
     @property
     def pending_input(self):
