@@ -2335,17 +2335,15 @@ class AbjadIDE(object):
 
     def _run_package_manager_menu(self, directory):
         from ide.tools import idetools
-        directory_change = systemtools.TemporaryDirectoryChange(directory)
         assert os.path.sep in directory
         manifest_current_directory = idetools.ManifestCurrentDirectory(
             manifest_current_directory=directory,
             session=self._session,
             )
-        assert directory_change.directory == \
-            manifest_current_directory.manifest_current_directory
-        with directory_change, manifest_current_directory:
+        with manifest_current_directory:
             self._session._pending_redraw = True
             while True:
+                os.chdir(directory)
                 menu_header = self._path_to_menu_header(directory)
                 menu = self._make_main_menu(
                     explicit_header=menu_header,
@@ -2371,23 +2369,20 @@ class AbjadIDE(object):
                 self._session.current_score_directory,
                 directory_name,
                 )
-        directory_change = systemtools.TemporaryDirectoryChange(
-            current_directory)
         manifest_current_directory = idetools.ManifestCurrentDirectory(
             manifest_current_directory=current_directory,
             session=self._session,
             )
-        assert directory_change.directory == \
-            manifest_current_directory.manifest_current_directory
         if not os.path.exists(current_directory):
             message = 'directory does not exist: {}.'
             message = message.format(current_directory)
             self._io_manager._display(message)
             return
-        with directory_change, manifest_current_directory:
+        with manifest_current_directory:
             result = None
             self._session._pending_redraw = True
             while True:
+                os.chdir(current_directory)
                 if self._session.is_in_score:
                     menu_header = self._path_to_menu_header(
                         self._session.manifest_current_directory)
