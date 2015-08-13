@@ -187,11 +187,7 @@ class Getter(object):
                 continue
             assert isinstance(input_, str), repr(input_)
             directive = input_
-            if self._io_manager._is_backtracking:
-                self._current_prompt_is_done = True
-                self._all_prompts_are_done = True
-                self._io_manager._session._pending_redraw = True
-            elif directive is None:
+            if directive is None:
                 continue
             elif directive == '<return>':
                 self._current_prompt_is_done = True
@@ -224,7 +220,6 @@ class Getter(object):
         assert io_manager is not None
         self._io_manager = io_manager
         with self._io_manager._controller(
-            consume_local_backtrack=True,
             controller=self,
             is_in_confirmation_environment=True,
             ):

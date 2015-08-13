@@ -60,10 +60,6 @@ class IOManager(IOManager):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _is_backtracking(self):
-        return self._session.is_backtracking
-
-    @property
     def _tab(self):
         return 4 * ' '
 
@@ -107,7 +103,6 @@ class IOManager(IOManager):
     def _controller(
         self,
         clear_terminal=False,
-        consume_local_backtrack=False,
         controller=None,
         directory_name=None,
         is_in_confirmation_environment=False,
@@ -115,7 +110,6 @@ class IOManager(IOManager):
         from ide.tools import idetools
         return idetools.ControllerContext(
             clear_terminal=clear_terminal,
-            consume_local_backtrack=consume_local_backtrack,
             controller=controller,
             directory_name=directory_name,
             is_in_confirmation_environment=is_in_confirmation_environment,
@@ -617,7 +611,7 @@ class IOManager(IOManager):
             self._display(candidate_messages)
             message = 'overwrite existing PDF with candidate PDF?'
             result = self._confirm(message=message)
-            if self._session.is_backtracking or not result:
+            if not result:
                 return stderr_messages, candidate_messages
             shutil.move(candidate_path, output_path)
             return stderr_messages, candidate_messages

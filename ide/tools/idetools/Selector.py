@@ -95,16 +95,12 @@ class Selector(object):
         self._io_manager = io_manager
         with self._io_manager._controller(
             clear_terminal=True,
-            consume_local_backtrack=True,
             controller=self,
             ):
             while True:
                 menu = self._make_main_menu()
                 result = menu._run(io_manager=self._io_manager)
-                if self._io_manager._session.is_backtracking:
-                    self._io_manager = None
-                    return
-                elif result is None:
+                if result is None:
                     self._io_manager = None
                     return
                 elif result:

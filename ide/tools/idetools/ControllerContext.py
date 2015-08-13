@@ -10,7 +10,6 @@ class ControllerContext(ContextManager):
 
     __slots__ = (
         '_clear_terminal',
-        '_consume_local_backtrack',
         '_controller',
         '_directory_name',
         '_is_in_confirmation_environment',
@@ -22,13 +21,11 @@ class ControllerContext(ContextManager):
     def __init__(
         self,
         clear_terminal=False,
-        consume_local_backtrack=False,
         controller=None,
         directory_name=None,
         is_in_confirmation_environment=False,
         ):
         self._clear_terminal = clear_terminal
-        self._consume_local_backtrack = consume_local_backtrack
         self._controller = controller
         self._directory_name = directory_name
         self._is_in_confirmation_environment = is_in_confirmation_environment
@@ -52,8 +49,6 @@ class ControllerContext(ContextManager):
         Returns none.
         '''
         self._session._is_in_confirmation_environment = False
-        if self._consume_local_backtrack:
-            self._session._is_backtracking_locally = False
         if self._clear_terminal:
             self._session._pending_redraw = True
 

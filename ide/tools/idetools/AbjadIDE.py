@@ -309,8 +309,6 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             if not self._io_manager._confirm():
                 return
-            if self._io_manager._is_backtracking:
-                return
         if not os.path.exists(build_directory):
             os.mkdir(build_directory)
         pairs = zip(source_file_paths, target_file_paths)
@@ -347,7 +345,7 @@ class AbjadIDE(object):
             messages.append(message)
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return False
         return segment_names
 
@@ -387,7 +385,7 @@ class AbjadIDE(object):
                 message = 'overwrite {}?'
                 message = message.format(destination_path)
                 result = self._io_manager._confirm(message)
-                if self._io_manager._is_backtracking or not result:
+                if not result:
                     return False
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'overwrote {}.'.format(destination_path)
@@ -627,7 +625,7 @@ class AbjadIDE(object):
             getter = self._io_manager._make_getter()
             getter.append_string(default_prompt)
             name = getter._run(io_manager=self._io_manager)
-            if self._io_manager._is_backtracking or not name:
+            if not name:
                 return
             name = stringtools.strip_diacritics(name)
             words = stringtools.delimit_words(name)
@@ -931,7 +929,7 @@ class AbjadIDE(object):
                 messages.append(self._tab + path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
-            if io_manager._is_backtracking or not result:
+            if not result:
                 return
             command = 'git add -A {}'
             command = command.format(path)
@@ -948,15 +946,13 @@ class AbjadIDE(object):
                 getter = self._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run(io_manager=self._io_manager)
-                if self._io_manager._session.is_backtracking:
-                    return
                 if commit_message is None:
                     return
                 message = 'commit message will be: "{}"'
                 message = message.format(commit_message)
                 self._io_manager._display(message)
                 result = self._io_manager._confirm()
-                if io_manager._is_backtracking or not result:
+                if not result:
                     return
             message = self._get_score_package_directory_name(path)
             message = message + ' ...'
@@ -979,7 +975,7 @@ class AbjadIDE(object):
                 messages.append(self._tab + path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
-            if self._io_manager._is_backtracking or not result:
+            if not result:
                 return
             commands = []
             for path in paths:
@@ -1698,7 +1694,7 @@ class AbjadIDE(object):
             path = self._get_current_directory()
         else:
             path = self._select_storehouse(directory_name)
-            if self._io_manager._is_backtracking or path is None:
+            if path is None:
                 return
         directory_name = os.path.basename(path)
         file_extension = self._directory_name_to_file_extension.get(
@@ -1709,7 +1705,7 @@ class AbjadIDE(object):
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
         name = getter._run(io_manager=self._io_manager)
-        if self._io_manager._is_backtracking or name is None:
+        if name is None:
             return
         name = stringtools.strip_diacritics(name)
         directory_name = os.path.basename(path)
@@ -1760,15 +1756,15 @@ class AbjadIDE(object):
                 directory_name,
                 example_score_packages=self._session.is_test,
                 )
-            if self._session.is_backtracking or storehouse is None:
+            if storehouse is None:
                 return
         path = self._get_available_path(storehouse)
-        if self._io_manager._is_backtracking or not path:
+        if not path:
             return
         message = 'path will be {}.'.format(path)
         self._io_manager._display(message)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         new_path = self._populate_package(path)
         new_path = new_path or path
@@ -1842,7 +1838,7 @@ class AbjadIDE(object):
         getter = self._io_manager._make_getter()
         getter.append_string(message)
         title = getter._run(io_manager=self._io_manager)
-        if self._io_manager._is_backtracking or not title:
+        if not title:
             return
         package_name = stringtools.strip_diacritics(title)
         package_name = stringtools.to_snake_case(package_name)
@@ -1855,8 +1851,6 @@ class AbjadIDE(object):
             message = 'path will be {}.'.format(score_directory)
             self._io_manager._display(message)
             result = self._io_manager._confirm()
-            if self._io_manager._is_backtracking:
-                return
             confirmed = result
             if confirmed:
                 break
@@ -1864,7 +1858,7 @@ class AbjadIDE(object):
             getter = self._io_manager._make_getter()
             getter.append_string(message)
             package_name = getter._run(io_manager=self._io_manager)
-            if self._io_manager._is_backtracking or not package_name:
+            if not package_name:
                 return
             package_name = stringtools.strip_diacritics(package_name)
             package_name = stringtools.to_snake_case(package_name)
@@ -1987,7 +1981,7 @@ class AbjadIDE(object):
             messages.append(message)
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         self._io_manager.open_file(paths)
 
@@ -2232,8 +2226,6 @@ class AbjadIDE(object):
         getter.append_string("type 'remove' to proceed")
         if self._io_manager._session.confirm:
             result = getter._run(io_manager=self._io_manager)
-            if io_manager._is_backtracking or result is None:
-                return
             if not result == 'remove':
                 return
         if self._is_in_git_repository(path):
@@ -2274,7 +2266,7 @@ class AbjadIDE(object):
         getter = self._io_manager._make_getter()
         getter.append_string('new name')
         new_package_name = getter._run(io_manager=self._io_manager)
-        if self._io_manager._is_backtracking or new_package_name is None:
+        if new_package_name is None:
             return
         new_package_name = stringtools.strip_diacritics(new_package_name)
         if file_name_callback:
@@ -2291,7 +2283,7 @@ class AbjadIDE(object):
         lines.append(line)
         self._io_manager._display(lines)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         new_path = os.path.join(
             os.path.dirname(path),
@@ -2303,7 +2295,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         shutil.move(path, new_path)
-        self._io_manager._session._is_backtracking_locally = True
+        #self._io_manager._session._is_backtracking_locally = True
         return new_path
 
     @staticmethod
@@ -2446,7 +2438,7 @@ class AbjadIDE(object):
             target_name='storehouse',
             )
         result = selector._run(io_manager=self._io_manager)
-        if self._session.is_backtracking or result is None:
+        if result is None:
             return
         return result
 
@@ -2488,7 +2480,7 @@ class AbjadIDE(object):
             target_name=target_name,
             )
         result = selector._run(io_manager=self._io_manager)
-        if self._session.is_backtracking or result is None:
+        if result is None:
             return
         return result
 
@@ -2515,7 +2507,7 @@ class AbjadIDE(object):
             asset_section,
             )
         numbers = getter._run(io_manager=self._io_manager)
-        if self._session.is_backtracking or numbers is None:
+        if numbers is None:
             return
         if not len(numbers) == 1:
             return
@@ -2538,7 +2530,7 @@ class AbjadIDE(object):
             asset_section,
             )
         numbers = getter._run(io_manager=self._io_manager)
-        if self._io_manager._is_backtracking or numbers is None:
+        if numbers is None:
             return
         indices = [_ - 1 for _ in numbers]
         paths = [_.return_value for _ in asset_section.menu_entries]
@@ -2827,7 +2819,7 @@ class AbjadIDE(object):
         messages = self._format_messaging(inputs, outputs, verb='check')
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         start_time = time.time()
         for path in paths:
@@ -2865,7 +2857,7 @@ class AbjadIDE(object):
         if problems_only is None:
             prompt = 'show problem assets only?'
             result = self._io_manager._confirm(prompt)
-            if self._io_manager._is_backtracking or result is None:
+            if result is None:
                 return messages, missing_directories, missing_files
             problems_only = bool(result)
         found_problem = False
@@ -2901,7 +2893,7 @@ class AbjadIDE(object):
         if supply_missing is None:
             prompt = 'supply missing directories and files?'
             result = self._io_manager._confirm(prompt)
-            if self._io_manager._is_backtracking or result is None:
+            if result is None:
                 return messages, missing_directories, missing_files
             supply_missing = bool(result)
         if not supply_missing:
@@ -2953,7 +2945,7 @@ class AbjadIDE(object):
         if problems_only is None:
             prompt = 'show problem assets only?'
             result = self._io_manager._confirm(prompt)
-            if self._io_manager._is_backtracking or result is None:
+            if result is None:
                 return
             problems_only = bool(result)
         optional_directories, optional_files = [], []
@@ -3130,7 +3122,7 @@ class AbjadIDE(object):
             else:
                 raise ValueError
             result = self._io_manager._confirm(prompt)
-            if self._io_manager._is_backtracking or result is None:
+            if result is None:
                 return
             supply_missing = bool(result)
         if not supply_missing:
@@ -3276,7 +3268,7 @@ class AbjadIDE(object):
             new_storehouse = self._get_current_directory()
         else:
             new_storehouse = self._select_storehouse(directory_name)
-            if self._io_manager._is_backtracking or new_storehouse is None:
+            if new_storehouse is None:
                 return
         directory_name = os.path.basename(new_storehouse)
         asset_identifier = self._directory_name_to_asset_identifier[
@@ -3297,7 +3289,7 @@ class AbjadIDE(object):
         getter.prompts[0]._help_template = help_template
         new_name = getter._run(io_manager=self._io_manager)
         new_name = new_name or old_name
-        if self._io_manager._is_backtracking or new_name is None:
+        if new_name is None:
             return
         new_name = stringtools.strip_diacritics(new_name)
         directory_name = os.path.basename(new_storehouse)
@@ -3324,7 +3316,7 @@ class AbjadIDE(object):
         messages.append('   TO: {}'.format(new_path))
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         if os.path.isfile(old_path):
             shutil.copyfile(old_path, new_path)
@@ -3589,7 +3581,7 @@ class AbjadIDE(object):
         message = message.format(illustrate_py_path)
         self._io_manager._display(message)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         lines = []
         lines.append(self._abjad_import_statement)
@@ -3626,7 +3618,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         result = self._confirm_segment_names(score_directory)
-        if self._io_manager._is_backtracking or not isinstance(result, list):
+        if not isinstance(result, list):
             return
         segment_names = result
         lilypond_names = [_.replace('_', '-') for _ in segment_names]
@@ -3792,7 +3784,7 @@ class AbjadIDE(object):
         if not inputs:
             return
         result = self._io_manager._confirm()
-        if self._io_manger._is_backtracking or not result:
+        if not result:
             return
         with self._io_manager._silent():
             for directory in directories:
@@ -3821,12 +3813,12 @@ class AbjadIDE(object):
         getter = self._io_manager._make_getter()
         getter.append_string('commit message')
         commit_message = getter._run(io_manager=self._io_manager)
-        if self._io_manager._is_backtracking or commit_message is None:
+        if commit_message is None:
             return
         line = 'commit message will be: "{}"'.format(commit_message)
         self._io_manager._display(line)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         for directory in directories:
             with self._io_manager._silent():
@@ -3899,14 +3891,14 @@ class AbjadIDE(object):
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
 
-    @Command('b', description='back', section='back-home-quit')
-    def go_back(self):
-        r'''Goes back.
-
-        Returns none.
-        '''
-        self._session._is_backtracking_locally = True
-        self._session._display_command_help = None
+#    @Command('b', description='back', section='back-home-quit')
+#    def go_back(self):
+#        r'''Goes back.
+#
+#        Returns none.
+#        '''
+#        self._session._is_backtracking_locally = True
+#        self._session._display_command_help = None
 
     @Command('h', description='home', section='back-home-quit')
     def go_home(self):
@@ -3914,9 +3906,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self._session._is_navigating_home = False
-#        self._session._is_navigating_to_scores = True
-#        self._session._display_command_help = None
         self._run_wrangler_menu('scores')
 
     @Command('uu', section='comparison', in_score=False)
@@ -3925,8 +3914,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'build'
         self._run_wrangler_menu('build')
 
     @Command('dd', section='comparison', in_score=False)
@@ -3935,8 +3922,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'distribution'
         self._run_wrangler_menu('distribution')
 
     @Command('ee', section='comparison', in_score=False)
@@ -3945,8 +3930,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'etc'
         self._run_wrangler_menu('etc')
 
     @Command('kk', section='comparison', in_score=False)
@@ -3955,8 +3938,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'makers'
         self._run_wrangler_menu('makers')
 
     @Command('mm', section='comparison', in_score=False)
@@ -3965,8 +3946,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'materials'
         self._run_wrangler_menu('materials')
 
     @Command('gg', section='comparison', in_score=False)
@@ -3975,8 +3954,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'segments'
         self._run_wrangler_menu('segments')
 
     @Command('yy', section='comparison', in_score=False)
@@ -3985,8 +3962,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'stylesheets'
         self._run_wrangler_menu('stylesheets')
 
     @Command('tt', section='comparison', in_score=False)
@@ -3995,8 +3970,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        self.go_home()
-#        self._session._navigation_target = 'test'
         self._run_wrangler_menu('test')
 
     @Command(
@@ -4292,7 +4265,7 @@ class AbjadIDE(object):
                 else:
                     message = 'overwrite existing PDF with candidate PDF?'
                     result = self._io_manager._confirm(message=message)
-                    if self._io_manager._is_backtracking or not result:
+                    if not result:
                         return
                     try:
                         shutil.move(candidate_ly_path, illustration_ly_path)
@@ -4327,7 +4300,7 @@ class AbjadIDE(object):
         messages = self._format_messaging(inputs, outputs, verb='illustrate')
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         for directory in directories:
             self.illustrate_definition_py(directory)
@@ -4377,7 +4350,7 @@ class AbjadIDE(object):
         messages = self._format_messaging(inputs, outputs)
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         for directory in directories:
             with self._io_manager._silent():
@@ -4434,7 +4407,7 @@ class AbjadIDE(object):
         messages = self._format_messaging(inputs, outputs)
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return [], []
         result = self._io_manager.run_lilypond(illustration_ly_path)
         subprocess_messages, candidate_messages = result
@@ -4568,7 +4541,7 @@ class AbjadIDE(object):
         messages.extend(paths)
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
-        if self._io_manager._is_backtracking or not result:
+        if not result:
             return
         if paths:
             self._io_manager.open_file(paths)
@@ -4676,7 +4649,6 @@ class AbjadIDE(object):
         Returns none.
         '''
         self._session._is_quitting = True
-#        self._session._display_command_help = None
 
     @Command(
         'rm',
@@ -4728,7 +4700,7 @@ class AbjadIDE(object):
         getter.append_string(message)
         if self._session.confirm:
             result = getter._run(io_manager=self._io_manager)
-            if self._io_manager._is_backtracking or result is None:
+            if result is None:
                 return
             if not result == confirmation_string:
                 return
@@ -4777,7 +4749,7 @@ class AbjadIDE(object):
             path,
             file_name_callback=file_name_callback,
             )
-        self._session._is_backtracking_locally = False
+        #self._session._is_backtracking_locally = False
 
     @Command(
         'ws',
@@ -4802,7 +4774,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         view_name = self._select_view(directory_name)
-        if self._io_manager._is_backtracking or view_name is None:
+        if view_name is None:
             return
         if view_name == 'none':
             view_name = None

@@ -42,9 +42,6 @@ class Session(object):
         '_confirm',
         '_display',
         '_display_command_help',
-        '_is_backtracking_locally',
-        '_is_backtracking_to_all_build_files',
-        '_is_backtracking_to_score',
         '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_repository_test',
@@ -74,9 +71,6 @@ class Session(object):
         self._confirm = True
         self._display = True
         self._display_command_help = None
-        self._is_backtracking_locally = False
-        self._is_backtracking_to_all_build_files = False
-        self._is_backtracking_to_score = False
         self._is_in_confirmation_environment = False
         self._is_quitting = False
         self._is_repository_test = False
@@ -180,59 +174,6 @@ class Session(object):
         Returns 'action', 'navigation' or none.
         '''
         return self._display_command_help
-
-    @property
-    def is_backtracking(self):
-        r'''Is true when any of the following are true:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_backtracking
-                False
-
-        Returns true or false..
-        '''
-        if (
-            self.is_backtracking_locally or 
-            self.is_backtracking_to_score or
-            self.is_quitting
-            ):
-            return True
-        return False
-
-    @property
-    def is_backtracking_locally(self):
-        r'''Is true when session is backtracking locally.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_backtracking_locally
-                False
-
-        Returns true or false..
-        '''
-        return self._is_backtracking_locally
-
-    @property
-    def is_backtracking_to_score(self):
-        r'''Is true when session is backtracking to score.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_backtracking_to_score
-                False
-
-        Returns true or false..
-        '''
-        return self._is_backtracking_to_score
 
     @property
     def is_in_confirmation_environment(self):
