@@ -2372,8 +2372,8 @@ class AbjadIDE(object):
 #            consume_local_backtrack=True,
 #            on_exit_callbacks=(self._io_manager._clean_up,)
 #            )
-        path = configuration.composer_scores_directory
-        directory_change = systemtools.TemporaryDirectoryChange(path)
+#        path = configuration.composer_scores_directory
+#        directory_change = systemtools.TemporaryDirectoryChange(path)
         state = systemtools.NullContextManager()
         views = os.path.join(
             configuration.abjad_ide_views_directory,
@@ -2388,11 +2388,12 @@ class AbjadIDE(object):
             manifest_current_directory=configuration.composer_scores_directory,
             session=self._session,
             )
-        assert directory_change.directory == \
-            manifest_current_directory.manifest_current_directory
+#        assert directory_change.directory == \
+#            manifest_current_directory.manifest_current_directory
 #        with controller, directory_change, state, interaction, \
 #            manifest_current_directory:
-        with directory_change, state, interaction, manifest_current_directory:
+#        with directory_change, state, interaction, manifest_current_directory:
+        with state, interaction, manifest_current_directory:
             self._session._pending_redraw = True
             if self._session.is_test:
                 empty_views = os.path.join(
