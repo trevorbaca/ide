@@ -3344,9 +3344,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        if not self._session.is_in_confirmation_environment:
-#            self._session._display_command_help = 'action'
-        # reimplement nonstatally
         pass
 
     @Command(';', section='display navigation')
@@ -3355,9 +3352,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        if not self._session.is_in_confirmation_environment:
-#            self._session._display_command_help = 'navigation'
-        # reimplement nonstatally
         pass
 
     @Command(
@@ -3895,15 +3889,6 @@ class AbjadIDE(object):
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
 
-#    @Command('b', description='back', section='back-home-quit')
-#    def go_back(self):
-#        r'''Goes back.
-#
-#        Returns none.
-#        '''
-#        self._session._is_backtracking_locally = True
-#        self._session._display_command_help = None
-
     @Command('h', description='home', section='back-home-quit')
     def go_home(self):
         r'''Goes home.
@@ -3987,11 +3972,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._is_navigating_to_next_asset = True
-        self._session._display_command_help = None
-        directory_name = self._path_to_directory_name(
-            self._session.manifest_current_directory)
-        self._session._navigation_target = directory_name
+        # reimplement nonstatally
+        pass
 
     @Command('>>', section='sibling score', outside_score='home')
     def go_to_next_score(self):
@@ -3999,9 +3981,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._is_navigating_to_next_score = True
-        self._session._is_navigating_to_scores = True
-        self._session._display_command_help = None
+        # reimplement nonstatally
+        pass
 
     @Command(
         '<', 
@@ -4014,11 +3995,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._is_navigating_to_previous_asset = True
-        self._session._display_command_help = None
-        directory_name = self._path_to_directory_name(
-            self._session.manifest_current_directory)
-        self._session._navigation_target = directory_name
+        # reimplement nonstatally
+        pass
 
     @Command('<<', section='sibling score', outside_score='home')
     def go_to_previous_score(self):
@@ -4026,9 +4004,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._is_navigating_to_previous_score = True
-        self._session._is_navigating_to_scores = True
-        self._session._display_command_help = None
+        # reimplement nonstatally
+        pass
 
     @Command(
         'u', 

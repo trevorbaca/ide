@@ -411,8 +411,7 @@ class Menu(object):
                 raise Exception(message)
             else:
                 section_names.append(section.name)
-            if (not self._io_manager._session.display_command_help and 
-                section.is_hidden):
+            if section.is_hidden:
                 continue
             if section.is_asset_section:
                 continue
@@ -531,13 +530,11 @@ class Menu(object):
         result.append('')
         return result
 
-    def _redraw(self):
+    def _redraw(self, command_type=None):
         self._io_manager._session._pending_redraw = False
         self._io_manager.clear_terminal()
-        if self._io_manager._session.display_command_help:
-            command_type = self._io_manager._session.display_command_help
+        if command_type is not None:
             lines = self._make_help_lines(command_type=command_type)
-            self._io_manager._session._display_command_help = None
         else:
             lines = self._make_lines()
         self._io_manager._display(
@@ -572,12 +569,9 @@ class Menu(object):
                     self._io_manager = None
                     return
                 elif result == '?':
-                    self._io_manager._session._display_command_help = 'action'
-                    self._io_manager._session._pending_redraw = True
+                    self._redraw(command_type='action')
                 elif result == ';':
-                    self._io_manager._session._display_command_help = \
-                        'navigation'
-                    self._io_manager._session._pending_redraw = True
+                    self._redraw(command_type='navigation')
                 else:
                     self._io_manager = None
                     return result
