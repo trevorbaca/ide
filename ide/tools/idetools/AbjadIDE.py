@@ -1114,24 +1114,9 @@ class AbjadIDE(object):
         if os.path.isfile(result):
             self._io_manager.open_file(result)
         elif os.path.isdir(result):
-            basename = os.path.basename(result)
-            score_directory = self._session.current_score_directory
-            if basename == 'build':
-                self.go_to_score_build_directory(score_directory)
-            elif basename == 'distribution':
-                self.go_to_score_distribution_directory(score_directory)
-            elif basename == 'etc':
-                self.go_to_score_etc_directory(score_directory)
-            elif basename == 'makers':
-                self.go_to_score_makers_directory(score_directory)
-            elif basename == 'materials':
-                self.go_to_score_materials_directory(score_directory)
-            elif basename == 'segments':
-                self.go_to_score_segments_directory(score_directory)
-            elif basename == 'stylesheets':
-                self.go_to_score_stylesheets_directory(score_directory)
-            elif basename == 'test':
-                self.go_to_score_test_files(score_directory)
+            base_name = os.path.basename(result)
+            if base_name in self._known_directory_names:
+                self._run_wrangler_menu(base_name)
             else:
                 self._run_package_manager_menu(result)
         else:
