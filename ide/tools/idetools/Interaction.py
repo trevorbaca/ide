@@ -16,7 +16,6 @@ class Interaction(ContextManager):
         '_original_confirm',
         '_original_display',
         '_session',
-        '_task',
         )
 
     ### INITIALIZER ###
@@ -28,7 +27,6 @@ class Interaction(ContextManager):
         dry_run=False,
         io_manager=None,
         session=None,
-        task=True,
         ):
         self._confirm = confirm
         self._display = display
@@ -38,7 +36,6 @@ class Interaction(ContextManager):
         self._original_confirm = None
         self._original_display = None
         self._session = session
-        self._task = task
 
     ### SPECIAL METHODS ###
 
@@ -58,10 +55,9 @@ class Interaction(ContextManager):
         Returns none.
         '''
         if self.display and not self.dry_run:
-            if self.task:
-                if 0 < len(self._io_manager._transcript.entries):
-                    if not self._io_manager._transcript[-1][-1] == '':
-                        self._io_manager._display('')
+            if 0 < len(self._io_manager._transcript.entries):
+                if not self._io_manager._transcript[-1][-1] == '':
+                    self._io_manager._display('')
         self.session._confirm = self._original_confirm
         self.session._display = self._original_display
 
@@ -112,16 +108,3 @@ class Interaction(ContextManager):
         Returns session.
         '''
         return self._session
-
-    @property
-    def task(self):
-        r'''Is true when interaction is a task. Otherwise false.
-
-        Main menus are not tasks; public methods are tasks.
-
-        Tasks are not implemented around a while-true loop; main menus are
-        implemented around a while-true loop.
-
-        Returns boolean.
-        '''
-        return self._task

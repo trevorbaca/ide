@@ -277,7 +277,6 @@ class IOManager(IOManager):
         confirm=True,
         display=True,
         dry_run=False,
-        task=True,
         ):
         from ide.tools import idetools
         return idetools.Interaction(
@@ -286,7 +285,6 @@ class IOManager(IOManager):
             dry_run=dry_run,
             io_manager=self,
             session=self._session,
-            task=task,
             )
 
     def _make_menu(
@@ -387,7 +385,6 @@ class IOManager(IOManager):
             dry_run=False,
             io_manager=self,
             session=self._session,
-            task=False,
             )
 
     ### PUBLIC METHODS ###
