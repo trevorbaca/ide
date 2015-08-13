@@ -2405,10 +2405,6 @@ class AbjadIDE(object):
 
     def _run_package_manager_menu(self, directory):
         from ide.tools import idetools
-        controller = self._io_manager._controller(
-            consume_local_backtrack=True,
-            controller=self,
-            )
         directory_change = systemtools.TemporaryDirectoryChange(directory)
         assert os.path.sep in directory
         manifest_current_directory = idetools.ManifestCurrentDirectory(
@@ -2417,35 +2413,34 @@ class AbjadIDE(object):
             )
         assert directory_change.directory == \
             manifest_current_directory.manifest_current_directory
-        with controller, directory_change, manifest_current_directory:
-                self._enter_run(directory=directory)
-                self._session._pending_redraw = True
-                while True:
-                    result = \
-                        self._directory_name_to_navigation_command_name.get(
-                        self._session.navigation_target)
-                    if not result:
-                        menu_header = self._path_to_menu_header(directory)
-                        menu = self._make_main_menu(
-                            explicit_header=menu_header,
-                            _path=directory,
-                            )
-                        result = menu._run(io_manager=self._io_manager)
-                        self._handle_pending_redraw_directive(
-                            self._session,
-                            result,
-                            )
-                        self._handle_wrangler_navigation_directive(
-                            self._session,
-                            result,
-                            )
-                    if self._exit_run(directory):
-                        break
-                    elif not result:
-                        continue
-                    self._handle_input(result, _path=directory)
-                    if self._exit_run(directory):
-                        break
+        with directory_change, manifest_current_directory:
+            self._enter_run(directory=directory)
+            self._session._pending_redraw = True
+            while True:
+                result = self._directory_name_to_navigation_command_name.get(
+                    self._session.navigation_target)
+                if not result:
+                    menu_header = self._path_to_menu_header(directory)
+                    menu = self._make_main_menu(
+                        explicit_header=menu_header,
+                        _path=directory,
+                        )
+                    result = menu._run(io_manager=self._io_manager)
+                    self._handle_pending_redraw_directive(
+                        self._session,
+                        result,
+                        )
+                    self._handle_wrangler_navigation_directive(
+                        self._session,
+                        result,
+                        )
+                if self._exit_run(directory):
+                    break
+                elif not result:
+                    continue
+                self._handle_input(result, _path=directory)
+                if self._exit_run(directory):
+                    break
 
     def _run_wrangler_menu(self, directory_name):
         from ide.tools import idetools
