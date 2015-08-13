@@ -446,37 +446,6 @@ class AbjadIDE(object):
         elif directory_name == 'test':
             return stringtools.is_snake_case
 
-    def _enter_run(self, directory=None, directory_name=None):
-        if (self._session.navigation_target is not None and
-            self._session.navigation_target == directory_name):
-            self._session._navigation_target = None
-        elif (self._is_material_package_path(directory) or
-            self._is_segment_package_path(directory)):
-            self._session._is_navigating_to_next_asset = False
-            self._session._is_navigating_to_previous_asset = False
-            self._session._last_asset_path = directory
-        elif (self._is_score_package_inner_path(directory)):
-            self._session._is_navigating_to_next_asset = False
-            self._session._is_navigating_to_previous_asset = False
-            self._session._last_asset_path = directory
-            self._session._last_score_path = directory
-
-    def _exit_run(self, directory=None):
-        if (self._is_material_package_path(directory) or
-            self._is_segment_package_path(directory)):
-            return self._session.is_backtracking
-        elif self._is_score_package_inner_path(directory):
-            result = self._session.is_backtracking
-            if self._session.is_backtracking_to_score:
-                self._session._is_backtracking_to_score = False
-                result = False
-            elif self._session.is_autonavigating_within_score:
-                if self._session.is_backtracking_to_all_scores:
-                    result = True
-                else:
-                    result = False
-            return result
-
     def _filter_asset_menu_entries_by_view(
         self,
         directory_token,
@@ -1101,32 +1070,33 @@ class AbjadIDE(object):
 
     def _handle_input(self, result, _path=None, directory_name=None):
         assert isinstance(result, str), repr(result)
+        return_value = None
         if result == '<return>':
             return
         if result.startswith('!'):
             statement = result[1:]
-            self._io_manager._invoke_shell(statement)
+            return_value = self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if '_path' in command.argument_names:
-                command(_path)
+                return_value = command(_path)
             elif 'directory_name' in command.argument_names:
-                command(directory_name)
+                return_value = command(directory_name)
             elif 'current_score_directory' in command.argument_names:
                 current_score_directory = \
                     self._session.current_score_directory
-                command(current_score_directory)
+                return_value = command(current_score_directory)
             elif 'visible_asset_paths' in command.argument_names:
                 paths = self._list_visible_asset_paths(directory_name)
-                command(paths)
+                return_value = command(paths)
             else:
-                command()
+                return_value = command()
         elif (result.endswith('!') and 
             result[:-1] in self._command_name_to_command):
             result = result[:-1]
-            self._command_name_to_command[result]()
+            return_value = self._command_name_to_command[result]()
         elif os.path.sep in result:
-            self._handle_numeric_user_input(result)
+            return_value = self._handle_numeric_user_input(result)
         else:
             current_score_directory = self._session.current_score_directory
             aliased_path = configuration.aliases.get(result, None)
@@ -1136,7 +1106,7 @@ class AbjadIDE(object):
                     aliased_path,
                     )
                 if os.path.isfile(aliased_path):
-                    self._io_manager.open_file(aliased_path)
+                    return_value = self._io_manager.open_file(aliased_path)
                 else:
                     message = 'file does not exist: {}.'
                     message = message.format(aliased_path)
@@ -1145,34 +1115,37 @@ class AbjadIDE(object):
                 message = 'unknown command: {!r}.'
                 message = message.format(result)
                 self._io_manager._display([message, ''])
+        return return_value
 
     def _handle_numeric_user_input(self, result):
+        return_value = None
         if os.path.isfile(result):
-            self._io_manager.open_file(result)
+            return_value = self._io_manager.open_file(result)
         elif os.path.isdir(result):
             basename = os.path.basename(result)
             if basename == 'build':
-                self.go_to_score_build_directory()
+                return_value = self.go_to_score_build_directory()
             elif basename == 'distribution':
-                self.go_to_score_distribution_directory()
+                return_value = self.go_to_score_distribution_directory()
             elif basename == 'etc':
-                self.go_to_score_etc_directory()
+                return_value = self.go_to_score_etc_directory()
             elif basename == 'makers':
-                self.go_to_score_makers_directory()
+                return_value = self.go_to_score_makers_directory()
             elif basename == 'materials':
-                self.go_to_score_materials_directory()
+                return_value = self.go_to_score_materials_directory()
             elif basename == 'segments':
-                self.go_to_score_segments_directory()
+                return_value = self.go_to_score_segments_directory()
             elif basename == 'stylesheets':
-                self.go_to_score_stylesheets()
+                return_value = self.go_to_score_stylesheets()
             elif basename == 'test':
-                self.go_to_score_test_files()
+                return_value = self.go_to_score_test_files()
             else:
-                self._run_package_manager_menu(result)
+                return_value = self._run_package_manager_menu(result)
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
             raise Exception(message)
+        return return_value
 
     def _handle_pending_redraw_directive(self, directive):
         if directive in ('b', 'h', 'q', 's', '?', ';'):
@@ -2379,17 +2352,7 @@ class AbjadIDE(object):
                     )
                 shutil.copyfile(empty_views, views)
             while True:
-                result = self._get_sibling_score_path('scores')
-                if result is None:
-                    result = \
-                        self._directory_name_to_navigation_command_name.get(
-                        self._session.navigation_target)
-                if result:
-                    self._handle_input(result, directory_name='scores')
-                else:
-                    self._run_wrangler_menu('scores')
-                self._session._is_backtracking_to_score = False
-                self._session._is_navigating_to_scores = False
+                self._run_wrangler_menu('scores')
                 if self._session.is_quitting:
                     if not self._io_manager._transcript[-1][-1] == '':
                         self._io_manager._display('')
@@ -2408,42 +2371,27 @@ class AbjadIDE(object):
         assert directory_change.directory == \
             manifest_current_directory.manifest_current_directory
         with directory_change, manifest_current_directory:
-            self._enter_run(directory=directory)
             self._session._pending_redraw = True
             while True:
-                result = self._directory_name_to_navigation_command_name.get(
-                    self._session.navigation_target)
-                if not result:
-                    menu_header = self._path_to_menu_header(directory)
-                    menu = self._make_main_menu(
-                        explicit_header=menu_header,
-                        _path=directory,
-                        )
-                    result = menu._run(io_manager=self._io_manager)
-                    self._handle_pending_redraw_directive(result)
-                    self._handle_wrangler_navigation_directive(result)
-                if self._exit_run(directory):
-                    break
-                elif not result:
-                    continue
+                menu_header = self._path_to_menu_header(directory)
+                menu = self._make_main_menu(
+                    explicit_header=menu_header,
+                    _path=directory,
+                    )
+                result = menu._run(io_manager=self._io_manager)
                 self._handle_input(result, _path=directory)
-                if self._exit_run(directory):
-                    break
+                if self._session.is_quitting:
+                    return
 
     def _run_wrangler_menu(self, directory_name):
         from ide.tools import idetools
         assert (directory_name in self._known_directory_names or
             directory_name == 'scores'), repr(directory_name)
-        controller = self._io_manager._controller(
-            consume_local_backtrack=True,
-            controller=self,
-            directory_name=directory_name,
-            on_enter_callbacks=(self._enter_run,),
-            )
-        current_directory = configuration.composer_scores_directory
-        if not self._session.manifest_current_directory == current_directory:
+        if (directory_name == 'scores' or not self._session.is_in_score):
+            current_directory = configuration.composer_scores_directory
+        else:
             current_directory = os.path.join(
-                self._session.manifest_current_directory,
+                self._session.current_score_directory,
                 directory_name,
                 )
         directory_change = systemtools.TemporaryDirectoryChange(
@@ -2454,34 +2402,29 @@ class AbjadIDE(object):
             )
         assert directory_change.directory == \
             manifest_current_directory.manifest_current_directory
-        with controller, directory_change, manifest_current_directory:
+        with directory_change, manifest_current_directory:
             result = None
             self._session._pending_redraw = True
             while True:
-                result = self._get_sibling_asset_path(directory_name)
-                if not result:
-                    current_directory = self._get_current_directory()
-                    if current_directory is not None:
-                        menu_header = self._path_to_menu_header(
-                            current_directory)
-                    elif directory_name == 'scores':
-                        menu_header = 'Abjad IDE - all score directories'
-                    else:
-                        menu_header = 'Abjad IDE - all {} directories'
-                        menu_header = menu_header.format(directory_name)
-                    menu = self._make_main_menu(
-                        explicit_header=menu_header,
-                        directory_name=directory_name,
-                        )
-                    result = menu._run(io_manager=self._io_manager)
-                    self._handle_pending_redraw_directive(result)
-                    self._handle_wrangler_navigation_directive(result)
-                if self._session.is_backtracking:
+                if self._session.is_in_score:
+                    menu_header = self._path_to_menu_header(
+                        self._session.manifest_current_directory)
+                elif directory_name == 'scores':
+                    menu_header = 'Abjad IDE - all score directories'
+                else:
+                    menu_header = 'Abjad IDE - all {} directories'
+                    menu_header = menu_header.format(directory_name)
+                menu = self._make_main_menu(
+                    explicit_header=menu_header,
+                    directory_name=directory_name,
+                    )
+                result = menu._run(io_manager=self._io_manager)
+                self._handle_input(
+                    result, 
+                    directory_name=directory_name,
+                    )
+                if self._session.is_quitting:
                     return
-                if result:
-                    self._handle_input(result, directory_name=directory_name)
-                    if self._session.is_backtracking:
-                        return
 
     def _select_storehouse(self, directory_name, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
@@ -3406,8 +3349,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        if not self._session.is_in_confirmation_environment:
-            self._session._display_command_help = 'action'
+#        if not self._session.is_in_confirmation_environment:
+#            self._session._display_command_help = 'action'
+        # reimplement nonstatally
+        pass
 
     @Command(';', section='display navigation')
     def display_navigation_command_help(self):
@@ -3415,8 +3360,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        if not self._session.is_in_confirmation_environment:
-            self._session._display_command_help = 'navigation'
+#        if not self._session.is_in_confirmation_environment:
+#            self._session._display_command_help = 'navigation'
+        # reimplement nonstatally
+        pass
 
     @Command(
         'abb',
@@ -3967,9 +3914,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._is_navigating_home = False
-        self._session._is_navigating_to_scores = True
-        self._session._display_command_help = None
+#        self._session._is_navigating_home = False
+#        self._session._is_navigating_to_scores = True
+#        self._session._display_command_help = None
+        self._run_wrangler_menu('scores')
 
     @Command('uu', section='comparison', in_score=False)
     def go_to_all_build_directories(self):
@@ -3977,8 +3925,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'build'
+#        self.go_home()
+#        self._session._navigation_target = 'build'
+        self._run_wrangler_menu('build')
 
     @Command('dd', section='comparison', in_score=False)
     def go_to_all_distribution_directories(self):
@@ -3986,8 +3935,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'distribution'
+#        self.go_home()
+#        self._session._navigation_target = 'distribution'
+        self._run_wrangler_menu('distribution')
 
     @Command('ee', section='comparison', in_score=False)
     def go_to_all_etc_directories(self):
@@ -3995,8 +3945,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'etc'
+#        self.go_home()
+#        self._session._navigation_target = 'etc'
+        self._run_wrangler_menu('etc')
 
     @Command('kk', section='comparison', in_score=False)
     def go_to_all_makers_directories(self):
@@ -4004,8 +3955,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'makers'
+#        self.go_home()
+#        self._session._navigation_target = 'makers'
+        self._run_wrangler_menu('makers')
 
     @Command('mm', section='comparison', in_score=False)
     def go_to_all_materials_directories(self):
@@ -4013,8 +3965,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'materials'
+#        self.go_home()
+#        self._session._navigation_target = 'materials'
+        self._run_wrangler_menu('materials')
 
     @Command('gg', section='comparison', in_score=False)
     def go_to_all_segments_directories(self):
@@ -4022,8 +3975,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'segments'
+#        self.go_home()
+#        self._session._navigation_target = 'segments'
+        self._run_wrangler_menu('segments')
 
     @Command('yy', section='comparison', in_score=False)
     def go_to_all_stylesheets_directories(self):
@@ -4031,8 +3985,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'stylesheets'
+#        self.go_home()
+#        self._session._navigation_target = 'stylesheets'
+        self._run_wrangler_menu('stylesheets')
 
     @Command('tt', section='comparison', in_score=False)
     def go_to_all_test_directories(self):
@@ -4040,8 +3995,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self.go_home()
-        self._session._navigation_target = 'test'
+#        self.go_home()
+#        self._session._navigation_target = 'test'
+        self._run_wrangler_menu('test')
 
     @Command(
         '>',
@@ -4121,9 +4077,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        if self._session.is_in_score:
-            self._session._is_backtracking_to_score = True
-            self._session._display_command_help = None
+        current_score_directory = self._session.current_score_directory
+        self._run_package_manager_menu(current_score_directory)
             
     @Command(
         'd', 
@@ -4721,7 +4676,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         self._session._is_quitting = True
-        self._session._display_command_help = None
+#        self._session._display_command_help = None
 
     @Command(
         'rm',

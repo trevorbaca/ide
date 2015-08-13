@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
+import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+pytest.skip('reimplement nonstatally')
 
 
 def test_Wrangler_go_to_previous_score_01():
