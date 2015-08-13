@@ -1065,33 +1065,32 @@ class AbjadIDE(object):
 
     def _handle_input(self, result, _path=None, directory_name=None):
         assert isinstance(result, str), repr(result)
-        return_value = None
         if result == '<return>':
             return
         if result.startswith('!'):
             statement = result[1:]
-            return_value = self._io_manager._invoke_shell(statement)
+            self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if '_path' in command.argument_names:
-                return_value = command(_path)
+                command(_path)
             elif 'directory_name' in command.argument_names:
-                return_value = command(directory_name)
+                command(directory_name)
             elif 'current_score_directory' in command.argument_names:
                 current_score_directory = \
                     self._session.current_score_directory
-                return_value = command(current_score_directory)
+                command(current_score_directory)
             elif 'visible_asset_paths' in command.argument_names:
                 paths = self._list_visible_asset_paths(directory_name)
-                return_value = command(paths)
+                command(paths)
             else:
-                return_value = command()
+                command()
         elif (result.endswith('!') and 
             result[:-1] in self._command_name_to_command):
             result = result[:-1]
-            return_value = self._command_name_to_command[result]()
+            self._command_name_to_command[result]()
         elif os.path.sep in result:
-            return_value = self._handle_numeric_user_input(result)
+            self._handle_numeric_user_input(result)
         else:
             current_score_directory = self._session.current_score_directory
             aliased_path = configuration.aliases.get(result, None)
@@ -1101,7 +1100,7 @@ class AbjadIDE(object):
                     aliased_path,
                     )
                 if os.path.isfile(aliased_path):
-                    return_value = self._io_manager.open_file(aliased_path)
+                    self._io_manager.open_file(aliased_path)
                 else:
                     message = 'file does not exist: {}.'
                     message = message.format(aliased_path)
@@ -1110,37 +1109,34 @@ class AbjadIDE(object):
                 message = 'unknown command: {!r}.'
                 message = message.format(result)
                 self._io_manager._display([message, ''])
-        return return_value
 
     def _handle_numeric_user_input(self, result):
-        return_value = None
         if os.path.isfile(result):
-            return_value = self._io_manager.open_file(result)
+            self._io_manager.open_file(result)
         elif os.path.isdir(result):
             basename = os.path.basename(result)
             if basename == 'build':
-                return_value = self.go_to_score_build_directory()
+                self.go_to_score_build_directory()
             elif basename == 'distribution':
-                return_value = self.go_to_score_distribution_directory()
+                self.go_to_score_distribution_directory()
             elif basename == 'etc':
-                return_value = self.go_to_score_etc_directory()
+                self.go_to_score_etc_directory()
             elif basename == 'makers':
-                return_value = self.go_to_score_makers_directory()
+                self.go_to_score_makers_directory()
             elif basename == 'materials':
-                return_value = self.go_to_score_materials_directory()
+                self.go_to_score_materials_directory()
             elif basename == 'segments':
-                return_value = self.go_to_score_segments_directory()
+                self.go_to_score_segments_directory()
             elif basename == 'stylesheets':
-                return_value = self.go_to_score_stylesheets()
+                self.go_to_score_stylesheets_directory()
             elif basename == 'test':
-                return_value = self.go_to_score_test_files()
+                self.go_to_score_test_files()
             else:
-                return_value = self._run_package_manager_menu(result)
+                self._run_package_manager_menu(result)
         else:
             message = 'must be file or directory: {!r}.'
             message = message.format(result)
             raise Exception(message)
-        return return_value
 
     def _handle_pending_redraw_directive(self, directive):
         if directive in ('b', 'h', 'q', 's', '?', ';'):
@@ -2370,6 +2366,10 @@ class AbjadIDE(object):
                     _path=directory,
                     )
                 result = menu._run(io_manager=self._io_manager)
+                if self._session.is_quitting:
+                    return
+                if result is None:
+                    continue
                 self._handle_input(result, _path=directory)
                 if self._session.is_quitting:
                     return
