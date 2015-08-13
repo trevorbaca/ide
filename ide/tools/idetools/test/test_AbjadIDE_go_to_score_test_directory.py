@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
+import os
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_go_to_score_test_directory_01():
@@ -51,3 +53,26 @@ def test_AbjadIDE_go_to_score_test_directory_03():
         'Red Example Score (2013) - test directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_score_test_directory_04():
+    r'''No explosions if test directory is missing.
+    '''
+
+
+    test_directory = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'test',
+        )
+
+    with systemtools.FilesystemState(keep=[test_directory]):
+        command = 'rm -rf {}'
+        command = command.format(test_directory)
+        os.system(command)
+        input_ = 'red~example~score t q'
+        abjad_ide._run_main_menu(input_=input_)
+
+    string = 'Directory does not exist:'
+    assert string in abjad_ide._io_manager._transcript.contents

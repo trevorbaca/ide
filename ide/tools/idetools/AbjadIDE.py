@@ -2379,6 +2379,11 @@ class AbjadIDE(object):
             )
         assert directory_change.directory == \
             manifest_current_directory.manifest_current_directory
+        if not os.path.exists(current_directory):
+            message = 'directory does not exist: {}.'
+            message = message.format(current_directory)
+            self._io_manager._display(message)
+            return
         with directory_change, manifest_current_directory:
             result = None
             self._session._pending_redraw = True
