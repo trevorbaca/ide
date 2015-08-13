@@ -22,7 +22,6 @@ class Session(object):
         '_clear_terminal_after_quit',
         '_confirm',
         '_display',
-        '_display_command_help',
         '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_repository_test',
@@ -45,7 +44,6 @@ class Session(object):
         self._clear_terminal_after_quit = False
         self._confirm = True
         self._display = True
-        self._display_command_help = None
         self._is_in_confirmation_environment = False
         self._is_quitting = False
         self._is_repository_test = False
@@ -132,22 +130,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._display
-
-    @property
-    def display_command_help(self):
-        r'''Is true when either action commands or navigation commands will
-        display. Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.display_command_help is None
-                True
-
-        Returns 'action', 'navigation' or none.
-        '''
-        return self._display_command_help
 
     @property
     def is_in_confirmation_environment(self):
