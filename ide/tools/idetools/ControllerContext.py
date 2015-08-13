@@ -14,8 +14,6 @@ class ControllerContext(ContextManager):
         '_controller',
         '_directory_name',
         '_is_in_confirmation_environment',
-        '_on_enter_callbacks',
-        '_on_exit_callbacks',
         '_session',
         )
 
@@ -28,16 +26,12 @@ class ControllerContext(ContextManager):
         controller=None,
         directory_name=None,
         is_in_confirmation_environment=False,
-        on_enter_callbacks=None,
-        on_exit_callbacks=None,
         ):
         self._clear_terminal = clear_terminal
         self._consume_local_backtrack = consume_local_backtrack
         self._controller = controller
         self._directory_name = directory_name
         self._is_in_confirmation_environment = is_in_confirmation_environment
-        self._on_enter_callbacks = on_enter_callbacks or ()
-        self._on_exit_callbacks = on_exit_callbacks or ()
         self._session = self._controller._io_manager._session
 
     ### SPECIAL METHODS ###
@@ -51,8 +45,6 @@ class ControllerContext(ContextManager):
             self._is_in_confirmation_environment
         if self._clear_terminal:
             self._session._pending_redraw = True
-        for on_enter_callback in self._on_enter_callbacks:
-            on_enter_callback(directory_name=self._directory_name)
 
     def __exit__(self, exg_type, exc_value, trackeback):
         r'''Exits controller stack context manager.
@@ -62,8 +54,6 @@ class ControllerContext(ContextManager):
         self._session._is_in_confirmation_environment = False
         if self._consume_local_backtrack:
             self._session._is_backtracking_locally = False
-        for on_exit_callback in self._on_exit_callbacks:
-            on_exit_callback()
         if self._clear_terminal:
             self._session._pending_redraw = True
 

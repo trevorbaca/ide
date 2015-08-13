@@ -111,8 +111,6 @@ class IOManager(IOManager):
         controller=None,
         directory_name=None,
         is_in_confirmation_environment=False,
-        on_enter_callbacks=None,
-        on_exit_callbacks=None,
         ):
         from ide.tools import idetools
         return idetools.ControllerContext(
@@ -121,8 +119,6 @@ class IOManager(IOManager):
             controller=controller,
             directory_name=directory_name,
             is_in_confirmation_environment=is_in_confirmation_environment,
-            on_enter_callbacks=on_enter_callbacks,
-            on_exit_callbacks=on_exit_callbacks,
             )
 
     def _display(self, lines, capitalize=True, is_menu=False):
