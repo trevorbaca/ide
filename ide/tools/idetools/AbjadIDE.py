@@ -2560,7 +2560,7 @@ class AbjadIDE(object):
     def _supply_global_metadata_py(self):
         metadata_py_path = configuration.abjad_ide_views_metadata_py_path
         if not os.path.exists(metadata_py_path):
-            metadata = class_._get_metadata(metadata_py_path)
+            metadata = self._get_metadata(metadata_py_path)
             with self._io_manager._silent():
                 self._write_metadata_py(metadata_py_path, metadata)
 
