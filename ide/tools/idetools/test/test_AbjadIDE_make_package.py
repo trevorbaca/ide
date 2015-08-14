@@ -27,10 +27,12 @@ def test_AbjadIDE_make_package_01():
         '__metadata__.py',
         'build',
         'distribution',
+        'etc',
         'makers',
         'materials',
         'segments',
         'stylesheets',
+        'test',
         ]
 
     with systemtools.FilesystemState(remove=[outer_path]):

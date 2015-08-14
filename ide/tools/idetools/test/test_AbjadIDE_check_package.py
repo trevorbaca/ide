@@ -162,9 +162,16 @@ def test_AbjadIDE_check_package_08():
     contents = abjad_ide._io_manager._transcript.contents
 
     lines = [
-        '6 of 6 required directories found:',
-        '3 of 3 required files found:',
-        '2 optional directories found:',
+        'Top level (10 assets): OK',
+        '8 of 8 required directories found:',
+        '5 of 5 required files found:',
+        'Build directory (18 files): OK',
+        'Distribution directory (2 files): OK',
+        'Makers directory (2 files): OK',
+        'Materials directory (5 packages):',
+        'Segments directory (3 packages):',
+        'Stylesheets directory (4 files): OK',
+        'Test directory (1 files): OK',
         ]
     for line in lines:
         assert line in contents

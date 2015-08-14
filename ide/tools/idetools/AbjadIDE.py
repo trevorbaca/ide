@@ -82,17 +82,17 @@ class AbjadIDE(object):
         'score': {
             'optional_directories': (
                 '__pycache__',
-                'etc',
-                'test',
                 ),
             'optional_files': (),
             'required_directories': (
                 'build',
                 'distribution',
+                'etc',
                 'makers',
                 'materials',
                 'segments',
                 'stylesheets',
+                'test',
                 ),
             'required_files': (
                 '__init__.py',
