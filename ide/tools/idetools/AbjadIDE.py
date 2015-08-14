@@ -2011,8 +2011,7 @@ class AbjadIDE(object):
             allow_asset_name_underscores = True
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
-        # TODO: replace with self._is_segment_package_path()
-        if 'segments' in path:
+        if self._is_segment_package_path(path):
             metadata_py_path = os.path.join(path, '__metadata__.py')
             segment_name = self._get_metadatum(
                 metadata_py_path,
