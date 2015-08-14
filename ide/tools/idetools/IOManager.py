@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 import abc
 import os
-import readline
 import shutil
 import subprocess
 import sys
@@ -175,60 +174,55 @@ class IOManager(IOManager):
         Appends user input to IO transcript.
         Returns command selected by user.
         '''
-        readline.set_startup_hook()
         found_default_token = False
-        # TODO: replace try-finally with startup hook context manager
-        try:
-            if capitalize_prompt:
-                message = stringtools.capitalize_start(message)
-            if include_chevron:
-                message = message + prompt_character + ' '
+        if capitalize_prompt:
+            message = stringtools.capitalize_start(message)
+        if include_chevron:
+            message = message + prompt_character + ' '
+        else:
+            message = message + ' '
+        if not self._session.pending_input:
+            was_pending_input = False
+            if sys.version_info[0] == 2:
+                input_ = raw_input(message)
             else:
-                message = message + ' '
-            if not self._session.pending_input:
-                was_pending_input = False
-                if sys.version_info[0] == 2:
-                    input_ = raw_input(message)
-                else:
-                    input_ = input(message)
-                if include_newline:
-                    if not input_ == 'help':
-                        print('')
-            else:
-                was_pending_input = True
-                input_ = self._pop_from_pending_input()
-                if input_ == '<return>':
-                    found_default_token = True
-            if found_default_token:
-                menu_chunk = [message.strip()]
-                if include_newline:
-                    if not input_ == 'help':
-                        menu_chunk.append('')
-                self._transcript._append_entry(menu_chunk)
-                if was_pending_input:
-                    for string in menu_chunk:
-                        print(string)
-                menu_chunk = ['> ']
-                if include_newline:
-                    if not input_ == 'help':
-                        menu_chunk.append('')
-                self._transcript._append_entry(menu_chunk)
-                if was_pending_input:
-                    for string in menu_chunk:
-                        print(string)
-            else:
-                menu_chunk = []
-                menu_chunk.append('{}{}'.format(message, input_))
-                if include_newline:
-                    if not input_ == 'help':
-                        menu_chunk.append('')
-                self._transcript._append_entry(menu_chunk)
-                if was_pending_input:
-                    for string in menu_chunk:
-                        print(string)
-            return input_
-        finally:
-            readline.set_startup_hook()
+                input_ = input(message)
+            if include_newline:
+                if not input_ == 'help':
+                    print('')
+        else:
+            was_pending_input = True
+            input_ = self._pop_from_pending_input()
+            if input_ == '<return>':
+                found_default_token = True
+        if found_default_token:
+            menu_chunk = [message.strip()]
+            if include_newline:
+                if not input_ == 'help':
+                    menu_chunk.append('')
+            self._transcript._append_entry(menu_chunk)
+            if was_pending_input:
+                for string in menu_chunk:
+                    print(string)
+            menu_chunk = ['> ']
+            if include_newline:
+                if not input_ == 'help':
+                    menu_chunk.append('')
+            self._transcript._append_entry(menu_chunk)
+            if was_pending_input:
+                for string in menu_chunk:
+                    print(string)
+        else:
+            menu_chunk = []
+            menu_chunk.append('{}{}'.format(message, input_))
+            if include_newline:
+                if not input_ == 'help':
+                    menu_chunk.append('')
+            self._transcript._append_entry(menu_chunk)
+            if was_pending_input:
+                for string in menu_chunk:
+                    print(string)
+        return input_
 
     def _invoke_shell(self, statement):
         lines = []
