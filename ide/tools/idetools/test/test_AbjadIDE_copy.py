@@ -10,7 +10,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_copy_01():
     r'''Copies score package.
     '''
-    pytest.skip()
+    pytest.skip('make me work again.')
 
     pretty_path = os.path.join(
         configuration.composer_scores_directory,

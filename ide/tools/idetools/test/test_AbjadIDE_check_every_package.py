@@ -11,7 +11,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_check_every_package_01():
     r'''Checks every score package.
     '''
-    pytest.skip()
+    pytest.skip('make me work again.')
 
     lines = [
         'Étude Example Score (2013):',
