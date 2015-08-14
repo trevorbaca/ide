@@ -4154,9 +4154,8 @@ class AbjadIDE(object):
             if previous_segment_path is None:
                 statement = 'previous_segment_metadata = None'
             else:
-                # TODO: remove session reference
-                score_name = self._session.current_score_directory
-                score_name = os.path.basename(score_name)
+                score_directory = self._path_to_score_directory(directory)
+                score_name = os.path.basename(score_directory)
                 previous_segment_name = previous_segment_path
                 previous_segment_name = os.path.basename(previous_segment_path)
                 statement = 'from {}.segments.{}.__metadata__'
