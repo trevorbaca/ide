@@ -84,6 +84,10 @@ class IOManager(IOManager):
                 return False
 
     def _clean_up(self):
+        if not self._transcript[-1][-1] == '':
+            self._display('')
+        if self._session._clear_terminal_after_quit:
+            self.clear_terminal()
         if self._session.is_test:
             return
         transcripts_directory = configuration.abjad_ide_transcripts_directory

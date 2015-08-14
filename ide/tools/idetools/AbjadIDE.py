@@ -2321,12 +2321,8 @@ class AbjadIDE(object):
             while True:
                 self._run_wrangler_menu('scores')
                 if self._session.is_quitting:
-                    # TODO: encapsulate suite in method
-                    if not self._io_manager._transcript[-1][-1] == '':
-                        self._io_manager._display('')
-                    if self._session._clear_terminal_after_quit:
-                        self._io_manager.clear_terminal()
-                    return
+                    break
+        self._io_manager._clean_up()
 
     def _run_package_manager_menu(self, directory):
         assert os.path.sep in directory, repr(directory)
