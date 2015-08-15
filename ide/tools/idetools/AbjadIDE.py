@@ -138,9 +138,9 @@ class AbjadIDE(object):
         'y': 'stylesheets',
         }
 
-    _known_directory_names = \
+    _known_directory_names = sorted(
         _navigation_command_name_to_directory_name.values()
-    _known_directory_names.sort()
+        )
 
     _tab = 4 * ' '
 
@@ -184,7 +184,7 @@ class AbjadIDE(object):
     def _add_metadatum(
         self,
         metadata_py_path,
-        metadatum_name, 
+        metadatum_name,
         metadatum_value,
         ):
         if not metadata_py_path.endswith('__metadata__.py'):
@@ -210,7 +210,7 @@ class AbjadIDE(object):
             message = 'file ending in {!r} not found.'
             message = message.format(string)
             self._io_manager._display(message)
-            
+
     def _check_every_file(self, directory_token):
         if self._session.is_in_score:
             directory_token = os.path.join(
@@ -350,10 +350,10 @@ class AbjadIDE(object):
         return segment_names
 
     def _copy_boilerplate(
-        self, 
-        source_file_name, 
+        self,
+        source_file_name,
         destination_directory,
-        candidacy=True, 
+        candidacy=True,
         replacements=None,
         ):
         replacements = replacements or {}
@@ -391,12 +391,12 @@ class AbjadIDE(object):
                 message = 'overwrote {}.'.format(destination_path)
                 messages.append(message)
             elif systemtools.TestManager.compare_files(
-                candidate_path, 
+                candidate_path,
                 destination_path,
                 ):
                 messages_ = self._make_candidate_messages(
-                    True, 
-                    candidate_path, 
+                    True,
+                    candidate_path,
                     destination_path,
                     )
                 messages.extend(messages_)
@@ -411,9 +411,9 @@ class AbjadIDE(object):
 
     def _directory_name_to_directory_entry_predicate(self, directory_name):
         file_prototype = (
-            'build', 
-            'distribution', 
-            'etc', 
+            'build',
+            'distribution',
+            'etc',
             'makers',
             'stylesheets',
             'test',
@@ -861,7 +861,7 @@ class AbjadIDE(object):
             self._session._is_navigating_to_next_score = False
             self._session._is_navigating_to_scores = False
             return self._get_sibling_score_directory(
-                directory_name, 
+                directory_name,
                 next_=True,
                 )
         if self._session.is_navigating_to_previous_score:
@@ -1085,7 +1085,7 @@ class AbjadIDE(object):
                 command(paths)
             else:
                 command()
-        elif (result.endswith('!') and 
+        elif (result.endswith('!') and
             result[:-1] in self._command_name_to_command):
             result = result[:-1]
             self._command_name_to_command[result]()
@@ -1096,7 +1096,7 @@ class AbjadIDE(object):
             aliased_path = configuration.aliases.get(result, None)
             if current_score_directory and aliased_path:
                 aliased_path = os.path.join(
-                    current_score_directory, 
+                    current_score_directory,
                     aliased_path,
                     )
                 if os.path.isfile(aliased_path):
@@ -1585,9 +1585,9 @@ class AbjadIDE(object):
         menu.make_asset_section(menu_entries=menu_entries)
 
     def _make_candidate_messages(
-        self, 
-        result, 
-        candidate_path, 
+        self,
+        result,
+        candidate_path,
         incumbent_path,
         ):
         messages = []
@@ -1601,8 +1601,8 @@ class AbjadIDE(object):
         return messages
 
     def _make_command_menu_sections(
-        self, 
-        menu, 
+        self,
+        menu,
         directory_name,
         menu_section_names=None,
         _path=None,
@@ -1704,9 +1704,9 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     def _make_main_menu(
-        self, 
-        explicit_header, 
-        _path=None, 
+        self,
+        explicit_header,
+        _path=None,
         directory_name=None,
         ):
         assert isinstance(explicit_header, str), repr(explicit_header)
@@ -1717,9 +1717,9 @@ class AbjadIDE(object):
             )
         if _path is not None:
             self._make_package_asset_menu_section(_path, menu)
-        else: 
+        else:
             self._make_wrangler_asset_menu_section(
-                menu, 
+                menu,
                 directory_name,
                 directory=_path,
                 )
@@ -1756,9 +1756,9 @@ class AbjadIDE(object):
         self._run_package_manager_menu(new_path)
 
     def _make_wrangler_asset_menu_section(
-        self, 
-        menu, 
-        directory_name, 
+        self,
+        menu,
+        directory_name,
         directory=None,
         ):
         menu_entries = []
@@ -1823,7 +1823,7 @@ class AbjadIDE(object):
             return
         package_name = stringtools.strip_diacritics(title)
         package_name = stringtools.to_snake_case(package_name)
-        confirmed = False 
+        confirmed = False
         while not confirmed:
             score_directory = os.path.join(
                 configuration.composer_scores_directory,
@@ -2410,8 +2410,8 @@ class AbjadIDE(object):
         return result
 
     def _select_view(
-        self, 
-        directory_name, 
+        self,
+        directory_name,
         is_ranged=False,
         ):
         if self._session.is_in_score:
@@ -2452,8 +2452,8 @@ class AbjadIDE(object):
         return result
 
     def _select_visible_asset_path(
-        self, 
-        directory_name, 
+        self,
+        directory_name,
         infinitive_phrase=None,
         ):
         getter = self._io_manager._make_getter()
@@ -2470,7 +2470,7 @@ class AbjadIDE(object):
             menu = self._make_asset_selection_menu(directory_name)
             asset_section = menu['assets']
         getter.append_menu_section_item(
-            message, 
+            message,
             asset_section,
             )
         numbers = getter._run(io_manager=self._io_manager)
@@ -2493,7 +2493,7 @@ class AbjadIDE(object):
         menu = self._make_asset_selection_menu(directory_name)
         asset_section = menu['assets']
         getter.append_menu_section_range(
-            message, 
+            message,
             asset_section,
             )
         numbers = getter._run(io_manager=self._io_manager)
@@ -2510,7 +2510,7 @@ class AbjadIDE(object):
         for key in sorted(dictionary):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
-        
+
     @staticmethod
     def _strip_annotation(display_string):
         if not display_string.endswith(')'):
@@ -2532,7 +2532,6 @@ class AbjadIDE(object):
         views_py_path = self._get_views_py_path(directory_name)
         if not os.path.isfile(views_py_path):
             self._write_view_inventory(
-                self._io_manager,
                 directory_name,
                 idetools.ViewInventory(),
                 )
@@ -2635,7 +2634,7 @@ class AbjadIDE(object):
                 )
             self._add_metadatum(
                 path,
-                'segment_count', 
+                'segment_count',
                 segment_count,
                 )
         # update first bar numbers and measure counts
@@ -2667,7 +2666,7 @@ class AbjadIDE(object):
             if not measure_count:
                 return
             next_bar_number = first_bar_number + measure_count
-            
+
     def _write_enclosing_artifacts(self, inner_path, outer_path):
         self._copy_boilerplate(
             'README.md',
@@ -2712,7 +2711,7 @@ class AbjadIDE(object):
             file_pointer.write(contents)
 
     def _write_view_inventory(
-        self, 
+        self,
         directory_token,
         view_inventory,
         ):
@@ -2732,11 +2731,11 @@ class AbjadIDE(object):
     ### PUBLIC METHODS ###
 
     @Command(
-        'dc', 
+        'dc',
         argument_names=('_path',),
         file_='definition.py',
         outside_score=False,
-        section='package', 
+        section='package',
         )
     def check_definition_py(self, directory, dry_run=False):
         r'''Checks ``definition.py``.
@@ -2799,17 +2798,17 @@ class AbjadIDE(object):
         self._io_manager._display(message)
 
     @Command(
-        'ck*', 
+        'ck*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='star', 
+        section='star',
         )
     def check_every_package(
-        self, 
+        self,
         paths,
         indent=0,
-        problems_only=None, 
+        problems_only=None,
         supply_missing=None,
         ):
         r'''Checks every package.
@@ -2884,11 +2883,11 @@ class AbjadIDE(object):
         return messages, supplied_directories, supplied_files
 
     @Command(
-        'ck', 
+        'ck',
         argument_names=('_path',),
         outside_score=False,
         file_='__init__.py',
-        section='package', 
+        section='package',
         )
     def check_package(
         self,
@@ -3160,7 +3159,7 @@ class AbjadIDE(object):
         section='build',
         )
     def collect_segment_lilypond_files(self, current_score_directory):
-        r'''Copies ``illustration.ly`` files from segment packages to build 
+        r'''Copies ``illustration.ly`` files from segment packages to build
         directory.
 
         Trims top-level comments, includes and directives from each
@@ -3210,7 +3209,7 @@ class AbjadIDE(object):
         is_hidden=False,
         )
     def copy(
-        self, 
+        self,
         directory_name,
         file_extension=None,
         new_storehouse=None
@@ -3330,7 +3329,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         path = os.path.join(
-            score_directory, 
+            score_directory,
             'materials',
             '__abbreviations__.py',
             )
@@ -3340,11 +3339,11 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     @Command(
-        'de', 
+        'de',
         argument_names=('_path',),
-        file_='definition.py', 
+        file_='definition.py',
         outside_score=False,
-        section='package', 
+        section='package',
         )
     def edit_definition_py(self, directory):
         r'''Edits ``definition.py``.
@@ -3355,7 +3354,7 @@ class AbjadIDE(object):
         self._io_manager.edit(definition_py_path)
 
     @Command(
-        'de*', 
+        'de*',
         argument_names=('visible_asset_paths',),
         directories=('materials', 'segments'),
         section='star',
@@ -3368,9 +3367,9 @@ class AbjadIDE(object):
         self._open_in_every_package(directories, 'definition.py')
 
     @Command(
-        'le', 
+        'le',
         argument_names=('_path',),
-        description='edit __illustrate__.py', 
+        description='edit __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
@@ -3384,10 +3383,10 @@ class AbjadIDE(object):
         self._io_manager.edit(illustrate_py_path)
 
     @Command(
-        'ie', 
+        'ie',
         argument_names=('_path',),
-        file_='illustration.ly', 
-        outside_score=False, 
+        file_='illustration.ly',
+        outside_score=False,
         section='package',
         )
     def edit_illustration_ly(self, directory):
@@ -3402,7 +3401,7 @@ class AbjadIDE(object):
         'sty',
         argument_names=('current_score_directory',),
         outside_score=False,
-        section='global files', 
+        section='global files',
         )
     def edit_score_stylesheet(self, score_directory):
         r'''Edits score stylesheet.
@@ -3420,7 +3419,7 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     @Command(
-        'bcg', 
+        'bcg',
         argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
@@ -3448,7 +3447,7 @@ class AbjadIDE(object):
             new = str(composer_website)
             replacements[old] = new
         price = self._get_metadatum(
-            score_directory, 
+            score_directory,
             'price',
             )
         if price:
@@ -3525,9 +3524,9 @@ class AbjadIDE(object):
             )
 
     @Command(
-        'gl', 
+        'gl',
         argument_names=('_path',),
-        description='generate __illustrate__.py', 
+        description='generate __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
@@ -3662,7 +3661,7 @@ class AbjadIDE(object):
                 new = forces_tagline
                 self._replace_in_file(candidate_path, old, new)
             self._handle_candidate(
-                candidate_path, 
+                candidate_path,
                 destination_path,
                 )
 
@@ -3717,11 +3716,11 @@ class AbjadIDE(object):
             )
 
     @Command(
-        'add*', 
+        'add*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='git', 
+        section='git',
         )
     def git_add_every_package(self, directories):
         r'''Adds every asset to repository.
@@ -3755,7 +3754,7 @@ class AbjadIDE(object):
         message = 'added {} {} to repository.'
         message = message.format(count, identifier)
         self._io_manager._display(message)
-        
+
     @Command(
         'ci*',
         argument_names=('visible_asset_paths',),
@@ -3789,11 +3788,11 @@ class AbjadIDE(object):
                     )
 
     @Command(
-        'revert*', 
+        'revert*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='git', 
+        section='git',
         )
     def git_revert_every_package(self, directories):
         r'''Reverts every asset to repository.
@@ -3807,11 +3806,11 @@ class AbjadIDE(object):
             self._git_revert(directory)
 
     @Command(
-        'st*', 
+        'st*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='git', 
+        section='git',
         )
     def git_status_every_package(self, directories):
         r'''Displays Git status of every package.
@@ -3824,11 +3823,11 @@ class AbjadIDE(object):
             self._git_status(directory)
 
     @Command(
-        'up*', 
+        'up*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='git', 
+        section='git',
         )
     def git_update_every_package(self, directories):
         r'''Updates every asset from repository.
@@ -3949,7 +3948,7 @@ class AbjadIDE(object):
         pass
 
     @Command(
-        '<', 
+        '<',
         directories=('materials', 'segments'),
         parent_directories=('materials', 'segments'),
         section='sibling package',
@@ -3972,10 +3971,10 @@ class AbjadIDE(object):
         pass
 
     @Command(
-        'u', 
+        'u',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_build_directory(self, score_directory):
         r'''Goes to build files.
@@ -3997,12 +3996,12 @@ class AbjadIDE(object):
         '''
         current_score_directory = self._session.current_score_directory
         self._run_package_manager_menu(current_score_directory)
-            
+
     @Command(
-        'd', 
+        'd',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_distribution_directory(self, score_directory):
         r'''Goes to distribution files.
@@ -4015,7 +4014,7 @@ class AbjadIDE(object):
         'e',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_etc_directory(self, score_directory):
         r'''Goes to etc files.
@@ -4025,10 +4024,10 @@ class AbjadIDE(object):
         self._run_wrangler_menu('etc')
 
     @Command(
-        'k', 
+        'k',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_makers_directory(self, score_directory):
         r'''Goes to maker files.
@@ -4038,10 +4037,10 @@ class AbjadIDE(object):
         self._run_wrangler_menu('makers')
 
     @Command(
-        'm', 
+        'm',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_materials_directory(self, score_directory):
         r'''Goes to material packages.
@@ -4051,10 +4050,10 @@ class AbjadIDE(object):
         self._run_wrangler_menu('materials')
 
     @Command(
-        'g', 
+        'g',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_segments_directory(self, score_directory):
         r'''Goes to segment packages.
@@ -4064,10 +4063,10 @@ class AbjadIDE(object):
         self._run_wrangler_menu('segments')
 
     @Command(
-        'y', 
+        'y',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_stylesheets_directory(self, score_directory):
         r'''Goes to stylesheets.
@@ -4077,10 +4076,10 @@ class AbjadIDE(object):
         self._run_wrangler_menu('stylesheets')
 
     @Command(
-        't', 
+        't',
         argument_names=('_path',),
         outside_score=False,
-        section='navigation', 
+        section='navigation',
         )
     def go_to_score_test_directory(self, score_directory):
         r'''Goes to score test files.
@@ -4090,12 +4089,12 @@ class AbjadIDE(object):
         self._run_wrangler_menu('test')
 
     @Command(
-        'i', 
+        'i',
         argument_names=('_path',),
         file_='definition.py',
         outside_score=False,
         parent_directories=('segments',),
-        section='package', 
+        section='package',
         )
     def illustrate_definition_py(self, directory, dry_run=False):
         r'''Illustrates ``definition.py``.
@@ -4272,7 +4271,7 @@ class AbjadIDE(object):
         section='star',
         )
     def interpret_every_illustration_ly(
-        self, 
+        self,
         directories,
         open_every_illustration_pdf=True,
         ):
@@ -4304,7 +4303,7 @@ class AbjadIDE(object):
                 self._io_manager._display(subprocess_messages)
                 self._io_manager._display(candidate_messages)
                 self._io_manager._display('')
-                
+
     @Command(
         'fci',
         argument_names=('current_score_directory',),
@@ -4321,11 +4320,11 @@ class AbjadIDE(object):
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
 
     @Command(
-        'ii', 
+        'ii',
         argument_names=('_path',),
         file_='illustration.ly',
         outside_score=False,
-        section='package', 
+        section='package',
         )
     def interpret_illustration_ly(self, directory, dry_run=False):
         r'''Interprets ``illustration.ly``.
@@ -4419,7 +4418,7 @@ class AbjadIDE(object):
         self._io_manager._invoke_shell(statement)
 
     @Command(
-        'new', 
+        'new',
         argument_names=('directory_name',),
         directories=(
             'build',
@@ -4432,9 +4431,9 @@ class AbjadIDE(object):
             'stylesheets',
             'test',
             ),
-        description='new', 
+        description='new',
         is_hidden=False,
-        section='basic', 
+        section='basic',
         )
     def make(self, directory_name):
         r'''Makes asset.
@@ -4465,11 +4464,11 @@ class AbjadIDE(object):
         self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
-        'so*', 
+        'so*',
         argument_names=('visible_asset_paths',),
-        in_score=False, 
+        in_score=False,
         outside_score='home',
-        section='star', 
+        section='star',
         )
     def open_every_score_pdf(self, directories):
         r'''Opens ``score.pdf`` in every package.
@@ -4491,11 +4490,11 @@ class AbjadIDE(object):
             self._io_manager.open_file(paths)
 
     @Command(
-        'io', 
+        'io',
         argument_names=('_path',),
         file_='illustration.pdf',
         outside_score=False,
-        section='package', 
+        section='package',
         )
     def open_illustration_pdf(self, directory):
         r'''Opens ``illustration.pdf``.
@@ -4518,11 +4517,11 @@ class AbjadIDE(object):
         systemtools.IOManager.open_last_log()
 
     @Command(
-        'so', 
+        'so',
         argument_names=('_path',),
         in_score_directory_only=True,
         outside_score=False,
-        section='package', 
+        section='package',
         )
     def open_score_pdf(self, directory, dry_run=False):
         r'''Opens ``score.pdf``.
@@ -4535,7 +4534,7 @@ class AbjadIDE(object):
         if not path:
             directory = os.path.join(directory, 'build')
             path = self._get_file_path_ending_with(
-                directory, 
+                directory,
                 file_name,
                 )
         if dry_run:
@@ -4551,7 +4550,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
 
     @Command(
-        'sp', 
+        'sp',
         argument_names=('current_score_directory',),
         directories=('build'),
         outside_score=False,
@@ -4609,7 +4608,7 @@ class AbjadIDE(object):
             'test',
             ),
         is_hidden=False,
-        section='basic', 
+        section='basic',
         )
     def remove(self, directory_name):
         r'''Removes asset(s).
@@ -4670,7 +4669,7 @@ class AbjadIDE(object):
     def rename(
         self,
         directory_name,
-        file_name_callback=None, 
+        file_name_callback=None,
         ):
         r'''Renames asset.
 
@@ -4707,7 +4706,7 @@ class AbjadIDE(object):
             'test',
             ),
         outside_score='home',
-        section='view', 
+        section='view',
         )
     def set_view(self, directory_name):
         r'''Sets view.
