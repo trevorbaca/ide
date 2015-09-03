@@ -1492,7 +1492,6 @@ class AbjadIDE(object):
         composer_score_packages=False,
         example_score_packages=False,
         ):
-        assert composer_score_packages or example_score_packages
         result = []
         if example_score_packages:
             result.append(configuration.abjad_ide_example_scores_directory)
@@ -1508,10 +1507,10 @@ class AbjadIDE(object):
         ):
         result = []
         if directory_name == 'scores':
-            if example_score_packages:
-                result.append(configuration.abjad_ide_example_scores_directory)
-            if composer_score_packages:
-                result.append(configuration.composer_scores_directory)
+            return self._list_scores_directories(
+                composer_score_packages=composer_score_packages,
+                example_score_packages=example_score_packages,
+                )
         else:
             score_directories = self._list_score_directories(
                 composer_score_packages=composer_score_packages,
