@@ -1734,10 +1734,7 @@ class AbjadIDE(object):
                 directory_name,
                 )
         else:
-            storehouse = self._select_storehouse(
-                directory_name,
-                example_score_packages=self._session.is_test,
-                )
+            storehouse = self._select_storehouse(directory_name)
             if storehouse is None:
                 return
         path = self._get_available_path(storehouse)
@@ -1872,15 +1869,12 @@ class AbjadIDE(object):
                 menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_storehouse_menu_entries(
-        self,
-        example_score_packages=True,
-        ):
+    def _make_storehouse_menu_entries(self):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
             composer_score_packages=False,
-            example_score_packages=example_score_packages,
+            example_score_packages=False,
             )
         for path in paths:
             title = self._get_title_metadatum(
@@ -2384,10 +2378,8 @@ class AbjadIDE(object):
             if self._session.is_quitting:
                 return
 
-    def _select_storehouse(self, directory_name, example_score_packages=False):
-        menu_entries = self._make_storehouse_menu_entries(
-            example_score_packages=example_score_packages,
-            )
+    def _select_storehouse(self, directory_name):
+        menu_entries = self._make_storehouse_menu_entries()
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
