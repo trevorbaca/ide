@@ -2388,7 +2388,7 @@ class AbjadIDE(object):
         selector = self._io_manager._make_selector(
             menu_entries=menu_entries,
             menu_header=menu_header,
-            target_name='storehouse',
+            target_name='score package',
             )
         result = selector._run(io_manager=self._io_manager)
         if result is None:
