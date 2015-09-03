@@ -1874,14 +1874,13 @@ class AbjadIDE(object):
 
     def _make_storehouse_menu_entries(
         self,
-        composer_score_packages=True,
         example_score_packages=True,
         ):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
+            composer_score_packages=False,
             example_score_packages=example_score_packages,
-            composer_score_packages=composer_score_packages,
             )
         for path in paths:
             title = self._get_title_metadatum(
@@ -2387,7 +2386,6 @@ class AbjadIDE(object):
 
     def _select_storehouse(self, directory_name, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
-            composer_score_packages=False,
             example_score_packages=example_score_packages,
             )
         current_directory = self._get_current_directory()
