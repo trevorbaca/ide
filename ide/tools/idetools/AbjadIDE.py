@@ -1245,14 +1245,14 @@ class AbjadIDE(object):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
-            storehouse = configuration.composer_scores_directory
+            scores_directory = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            storehouse = configuration.abjad_ide_example_scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
         else:
             return False
-        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
-        if len(parts) == storehouse_parts_count + 4:
+        if len(parts) == scores_directory_parts_count + 4:
             if parts[-2] == 'materials':
                 return True
         return False
@@ -1262,14 +1262,14 @@ class AbjadIDE(object):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
-            storehouse = configuration.composer_scores_directory
+            scores_directory = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            storehouse = configuration.abjad_ide_example_scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
         else:
             return False
-        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
-        if storehouse_parts_count < len(parts):
+        if scores_directory_parts_count < len(parts):
             return True
         return False
 
@@ -1278,14 +1278,14 @@ class AbjadIDE(object):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
-            storehouse = configuration.composer_scores_directory
+            scores_directory = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            storehouse = configuration.abjad_ide_example_scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
         else:
             return False
-        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
-        if len(parts) == storehouse_parts_count + 2:
+        if len(parts) == scores_directory_parts_count + 2:
             if parts[-1] == parts[-2]:
                 return True
         return False
@@ -1295,14 +1295,14 @@ class AbjadIDE(object):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
-            storehouse = configuration.composer_scores_directory
+            scores_directory = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            storehouse = configuration.abjad_ide_example_scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
         else:
             return False
-        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
-        if len(parts) == storehouse_parts_count + 1:
+        if len(parts) == scores_directory_parts_count + 1:
             return True
         return False
 
@@ -1311,14 +1311,14 @@ class AbjadIDE(object):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
-            storehouse = configuration.composer_scores_directory
+            scores_directory = configuration.composer_scores_directory
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            storehouse = configuration.abjad_ide_example_scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
         else:
             return False
-        storehouse_parts_count = len(storehouse.split(os.path.sep))
+        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
-        if len(parts) == storehouse_parts_count + 4:
+        if len(parts) == scores_directory_parts_count + 4:
             if parts[-2] == 'segments':
                 return True
         return False
