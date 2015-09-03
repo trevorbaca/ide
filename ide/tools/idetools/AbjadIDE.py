@@ -500,8 +500,8 @@ class AbjadIDE(object):
             Exception
         paths = self._list_asset_paths(
             directory_name,
-            example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
+            example_score_packages=example_score_packages,
             )
         if directory_name == 'scores':
             if system:
@@ -1355,20 +1355,29 @@ class AbjadIDE(object):
     def _list_asset_paths(
         self,
         directory_name,
-        example_score_packages=True,
         composer_score_packages=True,
+        example_score_packages=True,
         valid_only=True,
         ):
         result = []
         directory_entry_predicate = \
             self._directory_name_to_directory_entry_predicate(
             directory_name)
-        #print((directory_name, directory_entry_predicate))
+
         directories = self._list_storehouses(
             directory_name,
-            example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
+            example_score_packages=example_score_packages,
             )
+
+#        directories = self._list_score_directories(
+#            composer_score_packages=composer_score_packages,
+#            example_score_packages=example_score_packages,
+#            )
+#        if directory_name != 'scores':
+#            directories = [
+#                os.path.join(_, directory_name) for _ in directories]
+
         for directory in directories:
             if not directory:
                 continue
@@ -1450,8 +1459,8 @@ class AbjadIDE(object):
 
     @staticmethod
     def _list_score_directories(
-        example_score_packages=False,
         composer_score_packages=False,
+        example_score_packages=False,
         ):
         result = []
         scores_directories = []
@@ -1478,11 +1487,24 @@ class AbjadIDE(object):
                 result.append(path)
         return result
 
+    @staticmethod
+    def _list_scores_directories(
+        composer_score_packages=False,
+        example_score_packages=False,
+        ):
+        assert composer_score_packages or example_score_packages
+        result = []
+        if example_score_packages:
+            result.append(configuration.abjad_ide_example_scores_directory)
+        if composer_score_packages:
+            result.append(configuration.composer_scores_directory)
+        return result
+
     def _list_storehouses(
         self,
         directory_name,
-        example_score_packages=True,
         composer_score_packages=True,
+        example_score_packages=True,
         ):
         result = []
         if directory_name == 'scores':
@@ -1492,8 +1514,8 @@ class AbjadIDE(object):
                 result.append(configuration.composer_scores_directory)
         else:
             score_directories = self._list_score_directories(
-                example_score_packages=example_score_packages,
                 composer_score_packages=composer_score_packages,
+                example_score_packages=example_score_packages,
                 )
             for score_directory in score_directories:
                 path = os.path.join(
