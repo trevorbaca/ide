@@ -1869,25 +1869,6 @@ class AbjadIDE(object):
                 menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_storehouse_menu_entries(self):
-        display_strings, keys = [], []
-        paths = self._list_asset_paths(
-            'scores',
-            composer_score_packages=False,
-            example_score_packages=False,
-            )
-        for path in paths:
-            title = self._get_title_metadatum(
-                path,
-                year=False,
-                )
-            display_strings.append(title)
-            key = os.path.join(path, 'scores')
-            keys.append(key)
-        assert len(display_strings) == len(keys), repr((display_strings, keys))
-        sequences = [display_strings, [None], [None], keys]
-        return sequencetools.zip_sequences(sequences, cyclic=True)
-
     @staticmethod
     def _match_display_string_view_pattern(pattern, entry):
         display_string, _, _, path = entry
@@ -2379,7 +2360,23 @@ class AbjadIDE(object):
                 return
 
     def _select_storehouse(self, directory_name):
-        menu_entries = self._make_storehouse_menu_entries()
+        display_strings, keys = [], []
+        paths = self._list_asset_paths(
+            'scores',
+            composer_score_packages=False,
+            example_score_packages=False,
+            )
+        for path in paths:
+            title = self._get_title_metadatum(
+                path,
+                year=False,
+                )
+            display_strings.append(title)
+            key = os.path.join(path, 'scores')
+            keys.append(key)
+        assert len(display_strings) == len(keys), repr((display_strings, keys))
+        sequences = [display_strings, [None], [None], keys]
+        menu_entries = sequencetools.zip_sequences(sequences, cyclic=True)
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)
