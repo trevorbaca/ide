@@ -68,21 +68,6 @@ class IOManager(IOManager):
         message = 'press any key to continue.'
         self._confirm(message=message)
 
-    def _confirm(self, message='ok?', include_chevron=False):
-        if not self._session.confirm:
-            return True
-        getter = self._make_getter(include_newlines=False)
-        getter.append_yes_no_string(
-            message,
-            include_chevron=include_chevron,
-            )
-        result = getter._run(io_manager=self)
-        if isinstance(result, str):
-            if 'yes'.startswith(result.lower()):
-                return True
-            if 'no'.startswith(result.lower()):
-                return False
-
     def _clean_up(self):
         if not self._transcript[-1][-1] == '':
             self._display('')
@@ -102,6 +87,21 @@ class IOManager(IOManager):
             messages.append(message)
             self._display(message)
         self._transcript._write()
+
+    def _confirm(self, message='ok?', include_chevron=False):
+        if not self._session.confirm:
+            return True
+        getter = self._make_getter(include_newlines=False)
+        getter.append_yes_no_string(
+            message,
+            include_chevron=include_chevron,
+            )
+        result = getter._run(io_manager=self)
+        if isinstance(result, str):
+            if 'yes'.startswith(result.lower()):
+                return True
+            if 'no'.startswith(result.lower()):
+                return False
 
     def _controller(
         self,

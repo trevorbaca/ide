@@ -676,15 +676,6 @@ class AbjadIDE(object):
                 file_path = os.path.join(directory, file_name)
                 return file_path
 
-    def _get_name_metadatum(self, directory):
-        metadata_py_path = os.path.join(directory, '__metadata__.py')
-        name = self._get_metadatum(metadata_py_path, 'name')
-        if not name:
-            parts = metadata_py_path.split(os.path.sep)
-            directory_name = parts[-2]
-            name = directory_name.replace('_', ' ')
-        return name
-
     def _get_git_status_lines(self, directory):
         command = 'git status --porcelain {}'
         command = command.format(directory)
@@ -737,6 +728,15 @@ class AbjadIDE(object):
                 path = os.path.join(root_directory, path)
                 paths.append(path)
         return paths
+
+    def _get_name_metadatum(self, directory):
+        metadata_py_path = os.path.join(directory, '__metadata__.py')
+        name = self._get_metadatum(metadata_py_path, 'name')
+        if not name:
+            parts = metadata_py_path.split(os.path.sep)
+            directory_name = parts[-2]
+            name = directory_name.replace('_', ' ')
+        return name
 
     def _get_next_asset_path(self, directory_name):
         last_path = self._session.last_asset_path
@@ -1573,18 +1573,6 @@ class AbjadIDE(object):
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
-    def _make_package_asset_menu_section(self, directory, menu):
-        directory_entries = self._list_directory(directory, smart_sort=True)
-        menu_entries = []
-        for directory_entry in directory_entries:
-            clean_directory_entry = directory_entry
-            if directory_entry.endswith('/'):
-                clean_directory_entry = directory_entry[:-1]
-            path = os.path.join(directory, clean_directory_entry)
-            menu_entry = (directory_entry, None, None, path)
-            menu_entries.append(menu_entry)
-        menu.make_asset_section(menu_entries=menu_entries)
-
     def _make_candidate_messages(
         self,
         result,
@@ -1753,46 +1741,17 @@ class AbjadIDE(object):
                 self._clear_view(directory_name)
         self._run_package_manager_menu(new_path)
 
-    def _make_wrangler_asset_menu_section(
-        self,
-        menu,
-        directory_name,
-        directory=None,
-        ):
+    def _make_package_asset_menu_section(self, directory, menu):
+        directory_entries = self._list_directory(directory, smart_sort=True)
         menu_entries = []
-        if directory is not None:
-            current_directory = directory
-        else:
-            current_directory = self._get_current_directory()
-        if current_directory:
-            menu_entries_ = self._make_secondary_asset_menu_entries(
-                current_directory)
-            menu_entries.extend(menu_entries_)
-        menu_entries.extend(
-            self._make_asset_menu_entries(directory_name))
-        if menu_entries:
-            section = menu.make_asset_section(menu_entries=menu_entries)
-            assert section is not None
-            section._group_by_annotation = not directory_name == 'scores'
-
-    def _populate_package(self, path):
-        assert not os.path.exists(path)
-        os.mkdir(path)
-        with self._io_manager._silent():
-            self.check_package(
-                path,
-                return_supply_messages=True,
-                supply_missing=True
-                )
-        if self._is_score_package_outer_path(path):
-            outer_path = self._get_outer_score_package_path(path)
-            inner_path = os.path.join(outer_path, os.path.basename(path))
-            new_path = self._make_score_into_installable_package(
-                inner_path,
-                outer_path,
-                )
-            if new_path is not None:
-                return new_path
+        for directory_entry in directory_entries:
+            clean_directory_entry = directory_entry
+            if directory_entry.endswith('/'):
+                clean_directory_entry = directory_entry[:-1]
+            path = os.path.join(directory, clean_directory_entry)
+            menu_entry = (directory_entry, None, None, path)
+            menu_entries.append(menu_entry)
+        menu.make_asset_section(menu_entries=menu_entries)
 
     def _make_score_into_installable_package(
         self,
@@ -1869,25 +1828,34 @@ class AbjadIDE(object):
                 menu_entries.append(menu_entry)
         return menu_entries
 
+    def _make_wrangler_asset_menu_section(
+        self,
+        menu,
+        directory_name,
+        directory=None,
+        ):
+        menu_entries = []
+        if directory is not None:
+            current_directory = directory
+        else:
+            current_directory = self._get_current_directory()
+        if current_directory:
+            menu_entries_ = self._make_secondary_asset_menu_entries(
+                current_directory)
+            menu_entries.extend(menu_entries_)
+        menu_entries.extend(
+            self._make_asset_menu_entries(directory_name))
+        if menu_entries:
+            section = menu.make_asset_section(menu_entries=menu_entries)
+            assert section is not None
+            section._group_by_annotation = not directory_name == 'scores'
+
     @staticmethod
     def _match_display_string_view_pattern(pattern, entry):
         display_string, _, _, path = entry
         token = ':ds:'
         assert token in pattern, repr(pattern)
         pattern = pattern.replace(token, repr(display_string))
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    @staticmethod
-    def _match_path_view_pattern(pattern, entry):
-        display_string, _, _, path = entry
-        token = ':path:'
-        assert token in pattern, repr(pattern)
-        pattern = pattern.replace(token, repr(path))
         try:
             result = eval(pattern)
         except:
@@ -1910,6 +1878,19 @@ class AbjadIDE(object):
                         )
                     metadatum = repr(metadatum)
                     pattern = pattern.replace(part, metadatum)
+        try:
+            result = eval(pattern)
+        except:
+            traceback.print_exc()
+            return False
+        return result
+
+    @staticmethod
+    def _match_path_view_pattern(pattern, entry):
+        display_string, _, _, path = entry
+        token = ':path:'
+        assert token in pattern, repr(pattern)
+        pattern = pattern.replace(token, repr(path))
         try:
             result = eval(pattern)
         except:
@@ -2118,6 +2099,25 @@ class AbjadIDE(object):
             path_parts = path_parts[:1]
         storehouse = os.path.join(path_prefix, *path_parts)
         return storehouse
+
+    def _populate_package(self, path):
+        assert not os.path.exists(path)
+        os.mkdir(path)
+        with self._io_manager._silent():
+            self.check_package(
+                path,
+                return_supply_messages=True,
+                supply_missing=True
+                )
+        if self._is_score_package_outer_path(path):
+            outer_path = self._get_outer_score_package_path(path)
+            inner_path = os.path.join(outer_path, os.path.basename(path))
+            new_path = self._make_score_into_installable_package(
+                inner_path,
+                outer_path,
+                )
+            if new_path is not None:
+                return new_path
 
     def _read_view(self, directory_token):
         view_name = self._read_view_name(directory_token)

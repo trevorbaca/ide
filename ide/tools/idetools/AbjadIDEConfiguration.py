@@ -142,21 +142,6 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def aliases(self):
-        r'''Gets aliases.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.aliases
-                OrderedDict(...)
-
-        Returns ordered dictionary.
-        '''
-        return self._aliases
-
-    @property
     def abjad_ide_aliases_file_path(self):
         r'''Gets Abjad IDE aliases file path.
 
@@ -296,6 +281,21 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             self.abjad_ide_views_directory,
             '__metadata__.py',
             )
+
+    @property
+    def aliases(self):
+        r'''Gets aliases.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.aliases
+                OrderedDict(...)
+
+        Returns ordered dictionary.
+        '''
+        return self._aliases
 
     @property
     def composer_email(self):
