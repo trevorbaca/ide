@@ -1675,7 +1675,7 @@ class AbjadIDE(object):
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
-            path = self._select_storehouse(directory_name)
+            path = self._select_score_directory(directory_name)
             if path is None:
                 return
         directory_name = os.path.basename(path)
@@ -1734,7 +1734,7 @@ class AbjadIDE(object):
                 directory_name,
                 )
         else:
-            storehouse = self._select_storehouse(directory_name)
+            storehouse = self._select_score_directory(directory_name)
             if storehouse is None:
                 return
         path = self._get_available_path(storehouse)
@@ -2359,7 +2359,7 @@ class AbjadIDE(object):
             if self._session.is_quitting:
                 return
 
-    def _select_storehouse(self, directory_name):
+    def _select_score_directory(self, directory_name):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
@@ -3219,7 +3219,7 @@ class AbjadIDE(object):
         elif self._session.is_in_score:
             new_storehouse = self._get_current_directory()
         else:
-            new_storehouse = self._select_storehouse(directory_name)
+            new_storehouse = self._select_score_directory(directory_name)
             if new_storehouse is None:
                 return
         directory_name = os.path.basename(new_storehouse)
