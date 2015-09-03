@@ -1363,6 +1363,7 @@ class AbjadIDE(object):
         directory_entry_predicate = \
             self._directory_name_to_directory_entry_predicate(
             directory_name)
+        #print((directory_name, directory_entry_predicate))
         directories = self._list_storehouses(
             directory_name,
             example_score_packages=example_score_packages,
@@ -1873,13 +1874,12 @@ class AbjadIDE(object):
 
     def _make_storehouse_menu_entries(
         self,
-        directory_name,
         composer_score_packages=True,
         example_score_packages=True,
         ):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
-            directory_name,
+            'scores',
             example_score_packages=example_score_packages,
             composer_score_packages=composer_score_packages,
             )
@@ -1889,7 +1889,7 @@ class AbjadIDE(object):
                 year=False,
                 )
             display_strings.append(title)
-            key = os.path.join(path, directory_name)
+            key = os.path.join(path, 'scores')
             keys.append(key)
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
@@ -2387,7 +2387,6 @@ class AbjadIDE(object):
 
     def _select_storehouse(self, directory_name, example_score_packages=False):
         menu_entries = self._make_storehouse_menu_entries(
-            directory_name,
             composer_score_packages=False,
             example_score_packages=example_score_packages,
             )
