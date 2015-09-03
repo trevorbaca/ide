@@ -17,13 +17,13 @@ def test_AbjadIDE__find_up_to_date_path_01():
         system=True,
         )
 
-    storehouse = configuration.abjad_ide_example_scores_directory
+    scores_directory = configuration.abjad_ide_example_scores_directory
 
     assert abjad_ide._is_score_package_outer_path(path)
     assert abjad_ide._is_git_versioned(path)
     assert abjad_ide._is_up_to_date(path)
-    assert path.startswith(storehouse)
-    assert not path == storehouse
+    assert path.startswith(scores_directory)
+    assert not path == scores_directory
 
 
 def test_AbjadIDE__find_up_to_date_path_02():
