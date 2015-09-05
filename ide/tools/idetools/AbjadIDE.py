@@ -1363,21 +1363,17 @@ class AbjadIDE(object):
         directory_entry_predicate = \
             self._directory_name_to_directory_entry_predicate(
             directory_name)
-
-        directories = self._list_storehouses(
-            directory_name,
-            composer_score_packages=composer_score_packages,
-            example_score_packages=example_score_packages,
-            )
-
-#        directories = self._list_score_directories(
-#            composer_score_packages=composer_score_packages,
-#            example_score_packages=example_score_packages,
-#            )
-#        if directory_name != 'scores':
-#            directories = [
-#                os.path.join(_, directory_name) for _ in directories]
-
+        if directory_name == 'scores':
+            directories = self._list_scores_directories(
+                composer_score_packages=composer_score_packages,
+                example_score_packages=example_score_packages,
+                )
+        else:
+            directories = self._list_storehouses(
+                directory_name,
+                composer_score_packages=composer_score_packages,
+                example_score_packages=example_score_packages,
+                )
         for directory in directories:
             if not directory:
                 continue
@@ -1505,23 +1501,18 @@ class AbjadIDE(object):
         composer_score_packages=True,
         example_score_packages=True,
         ):
+        assert not directory_name == 'scores'
         result = []
-        if directory_name == 'scores':
-            return self._list_scores_directories(
-                composer_score_packages=composer_score_packages,
-                example_score_packages=example_score_packages,
+        score_directories = self._list_score_directories(
+            composer_score_packages=composer_score_packages,
+            example_score_packages=example_score_packages,
+            )
+        for score_directory in score_directories:
+            path = os.path.join(
+                score_directory,
+                directory_name,
                 )
-        else:
-            score_directories = self._list_score_directories(
-                composer_score_packages=composer_score_packages,
-                example_score_packages=example_score_packages,
-                )
-            for score_directory in score_directories:
-                path = os.path.join(
-                    score_directory,
-                    directory_name,
-                    )
-                result.append(path)
+            result.append(path)
         return result
 
     def _list_visible_asset_paths(self, directory_name):
