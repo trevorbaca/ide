@@ -1363,11 +1363,13 @@ class AbjadIDE(object):
         directory_entry_predicate = \
             self._directory_name_to_directory_entry_predicate(
             directory_name)
+        directories = []
         if directory_name == 'scores':
-            directories = self._list_scores_directories(
-                composer_score_packages=composer_score_packages,
-                example_score_packages=example_score_packages,
-                )
+            if example_score_packages:
+                directories.append(
+                    configuration.abjad_ide_example_scores_directory)
+            if composer_score_packages:
+                directories.append(configuration.composer_scores_directory)
         else:
             directories = self._list_storehouses(
                 directory_name,
@@ -1481,18 +1483,6 @@ class AbjadIDE(object):
                     if not os.path.exists(init_path):
                         continue
                 result.append(path)
-        return result
-
-    @staticmethod
-    def _list_scores_directories(
-        composer_score_packages=False,
-        example_score_packages=False,
-        ):
-        result = []
-        if example_score_packages:
-            result.append(configuration.abjad_ide_example_scores_directory)
-        if composer_score_packages:
-            result.append(configuration.composer_scores_directory)
         return result
 
     def _list_storehouses(
