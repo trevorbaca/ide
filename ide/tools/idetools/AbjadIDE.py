@@ -3166,15 +3166,14 @@ class AbjadIDE(object):
         if not source_path:
             return
         source_name = os.path.basename(source_path)
-        target_directory = None
         if directory_name == 'scores':
             target_directory = configuration.composer_scores_directory
         elif self._session.is_in_score:
-            target_directory = self._get_current_directory()
+            target_directory = self._session.manifest_current_directory
         else:
             target_directory = self._select_score_directory(directory_name)
-            if target_directory is None:
-                return
+        if target_directory is None:
+            return
         directory_name = os.path.basename(target_directory)
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
