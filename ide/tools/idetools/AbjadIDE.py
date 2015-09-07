@@ -3171,7 +3171,10 @@ class AbjadIDE(object):
         elif self._session.is_in_score:
             target_directory = self._session.manifest_current_directory
         else:
-            target_directory = self._select_score_directory(directory_name)
+            score_directory = self._select_score_directory(directory_name)
+            if score_directory is None:
+                return
+            target_directory = os.path.join(score_directory, directory_name)
         if target_directory is None:
             return
         asset_identifier = self._directory_name_to_asset_identifier[
