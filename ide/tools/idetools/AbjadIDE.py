@@ -1371,7 +1371,7 @@ class AbjadIDE(object):
             if composer_score_packages:
                 directories.append(configuration.composer_scores_directory)
         else:
-            score_directories = self._list_storehouses(
+            score_directories = self._list_score_directories(
                 composer_score_packages=composer_score_packages,
                 example_score_packages=example_score_packages,
                 )
@@ -1487,17 +1487,6 @@ class AbjadIDE(object):
                         continue
                 result.append(path)
         return result
-
-    def _list_storehouses(
-        self,
-        composer_score_packages=True,
-        example_score_packages=True,
-        ):
-        score_directories = self._list_score_directories(
-            composer_score_packages=composer_score_packages,
-            example_score_packages=example_score_packages,
-            )
-        return score_directories
 
     def _list_visible_asset_paths(self, directory_name):
         entries = self._make_asset_menu_entries(directory_name)
