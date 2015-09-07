@@ -2308,6 +2308,8 @@ class AbjadIDE(object):
         while True:
             self._session._manifest_current_directory = current_directory
             os.chdir(current_directory)
+            # TODO: rebuild main menu only on an as-needed basis;
+            #       implement Session._is_pending_menu_rebuild to do this.
             menu = self._make_main_menu(
                 explicit_header=menu_header,
                 directory_name=directory_name,
@@ -3233,6 +3235,11 @@ class AbjadIDE(object):
             shutil.copytree(source_path, target_path)
         else:
             raise TypeError(source_path)
+        if self._is_score_package_outer_path(target_path):
+            false_inner_path = os.path.join(target_path, source_name)
+            assert os.path.exists(false_inner_path)
+            correct_inner_path = os.path.join(target_path, target_name)
+            shutil.move(false_inner_path, correct_inner_path)
         if os.path.isdir(target_path):
             for directory_entry in sorted(os.listdir(target_path)):
                 if not directory_entry.endswith('.py'):

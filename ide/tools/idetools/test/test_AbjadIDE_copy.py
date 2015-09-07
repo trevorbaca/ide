@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import os
-import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -10,7 +9,6 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_copy_01():
     r'''Copies score package.
     '''
-    pytest.skip('make me work again.')
 
     pretty_path = os.path.join(
         configuration.composer_scores_directory,
@@ -25,6 +23,7 @@ def test_AbjadIDE_copy_01():
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(pretty_path)
+        assert os.path.exists(inner_pretty_path)
         title = 'Pretty Example Score'
         abjad_ide._add_metadatum(
             inner_pretty_path,
