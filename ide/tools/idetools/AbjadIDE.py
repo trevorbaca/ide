@@ -3159,31 +3159,29 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        old_path = self._select_visible_asset_path(
+        source_path = self._select_visible_asset_path(
             directory_name,
             infinitive_phrase='to copy',
             )
-        if not old_path:
+        if not source_path:
             return
-        old_name = os.path.basename(old_path)
-        new_storehouse = None
+        source_name = os.path.basename(source_path)
+        target_directory = None
         if directory_name == 'scores':
-            new_storehouse = configuration.composer_scores_directory
-        if new_storehouse:
-            pass
+            target_directory = configuration.composer_scores_directory
         elif self._session.is_in_score:
-            new_storehouse = self._get_current_directory()
+            target_directory = self._get_current_directory()
         else:
-            new_storehouse = self._select_score_directory(directory_name)
-            if new_storehouse is None:
+            target_directory = self._select_score_directory(directory_name)
+            if target_directory is None:
                 return
-        directory_name = os.path.basename(new_storehouse)
+        directory_name = os.path.basename(target_directory)
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
         message = 'existing {} name> {}'
         message = message.format(
             asset_identifier,
-            old_name,
+            source_name,
             )
         self._io_manager._display(message)
         message = 'new {} name'
@@ -3194,52 +3192,52 @@ class AbjadIDE(object):
         string = 'Press <return> to preserve existing name.'
         help_template = help_template + ' ' + string
         getter.prompts[0]._help_template = help_template
-        new_name = getter._run(io_manager=self._io_manager)
-        new_name = new_name or old_name
-        if new_name is None:
+        target_name = getter._run(io_manager=self._io_manager)
+        target_name = target_name or source_name
+        if target_name is None:
             return
-        new_name = stringtools.strip_diacritics(new_name)
-        directory_name = os.path.basename(new_storehouse)
+        target_name = stringtools.strip_diacritics(target_name)
+        directory_name = os.path.basename(target_directory)
         file_name_predicate = self._directory_name_to_file_name_predicate(
             directory_name)
         if file_name_predicate == stringtools.is_dash_case:
-            new_name = self._to_dash_case(new_name)
-        new_name = new_name.replace(' ', '_')
+            target_name = self._to_dash_case(target_name)
+        target_name = target_name.replace(' ', '_')
         if not directory_name == 'makers':
-            new_name = new_name.lower()
+            target_name = target_name.lower()
         file_extension = self._directory_name_to_file_extension.get(
             directory_name)
-        if file_extension and not new_name.endswith(file_extension):
-            new_name = new_name + file_extension
-        new_path = os.path.join(new_storehouse, new_name)
-        if os.path.exists(new_path):
-            message = 'already exists: {}'.format(new_path)
+        if file_extension and not target_name.endswith(file_extension):
+            target_name = target_name + file_extension
+        target_path = os.path.join(target_directory, target_name)
+        if os.path.exists(target_path):
+            message = 'already exists: {}'.format(target_path)
             self._io_manager._display(message)
             self._io_manager._acknowledge()
             return
         messages = []
         messages.append('will copy ...')
-        messages.append(' FROM: {}'.format(old_path))
-        messages.append('   TO: {}'.format(new_path))
+        messages.append(' FROM: {}'.format(source_path))
+        messages.append('   TO: {}'.format(target_path))
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
         if not result:
             return
-        if os.path.isfile(old_path):
-            shutil.copyfile(old_path, new_path)
-        elif os.path.isdir(old_path):
-            shutil.copytree(old_path, new_path)
+        if os.path.isfile(source_path):
+            shutil.copyfile(source_path, target_path)
+        elif os.path.isdir(source_path):
+            shutil.copytree(source_path, target_path)
         else:
-            raise TypeError(old_path)
-        if os.path.isdir(new_path):
-            for directory_entry in sorted(os.listdir(new_path)):
+            raise TypeError(source_path)
+        if os.path.isdir(target_path):
+            for directory_entry in sorted(os.listdir(target_path)):
                 if not directory_entry.endswith('.py'):
                     continue
-                path = os.path.join(new_path, directory_entry)
+                path = os.path.join(target_path, directory_entry)
                 self._replace_in_file(
                     path,
-                    old_name,
-                    new_name,
+                    source_name,
+                    target_name,
                     )
 
     @Command('?', section='system')
