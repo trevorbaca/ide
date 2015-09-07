@@ -2350,7 +2350,7 @@ class AbjadIDE(object):
             target_name='score package',
             )
         result = selector._run(io_manager=self._io_manager)
-        if result is None:
+        if result in (None, 'q'):
             return
         return result
 
