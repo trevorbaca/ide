@@ -615,7 +615,7 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    def _get_available_path(self, directory):
+    def _get_available_path_in_directory(self, directory):
         directory_name = os.path.basename(directory)
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
@@ -1702,15 +1702,15 @@ class AbjadIDE(object):
 
     def _make_package(self, directory_name):
         if self._session.is_in_score:
-            storehouse = os.path.join(
+            new_directory = os.path.join(
                 self._session.current_score_directory,
                 directory_name,
                 )
         else:
-            storehouse = self._select_score_directory(directory_name)
-            if storehouse is None:
+            new_directory = self._select_score_directory(directory_name)
+            if new_directory is None:
                 return
-        path = self._get_available_path(storehouse)
+        path = self._get_available_path_in_directory(new_directory)
         if not path:
             return
         message = 'path will be {}.'.format(path)
@@ -1920,11 +1920,11 @@ class AbjadIDE(object):
         return width, height, units
 
     def _path_to_annotation(self, path):
-        score_storehouses = (
+        score_directories = (
             configuration.abjad_ide_example_scores_directory,
             configuration.composer_scores_directory,
             )
-        if path.startswith(score_storehouses):
+        if path.startswith(score_directories):
             score_directory = self._path_to_score_directory(path)
             metadata_py_path = os.path.join(score_directory, '__metadata__.py')
             metadata = self._get_metadata(metadata_py_path)
@@ -2059,31 +2059,6 @@ class AbjadIDE(object):
             configuration.abjad_ide_example_scores_directory):
             return
         return score_path
-
-    @staticmethod
-    def _path_to_storehouse(path):
-        is_in_score = False
-        if path.startswith(configuration.composer_scores_directory):
-            is_in_score = True
-            prefix = len(configuration.composer_scores_directory)
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            is_in_score = True
-            prefix = len(configuration.abjad_ide_example_scores_directory)
-        else:
-            message = 'unidentifiable path: {!r}.'
-            message = message.format(path)
-            raise Exception(message)
-        path_prefix = path[:prefix]
-        remainder = path[prefix+1:]
-        path_parts = remainder.split(os.path.sep)
-        assert 1 <= len(path_parts)
-        if is_in_score:
-            path_parts = path_parts[:3]
-        else:
-            assert 1 <= len(path_parts)
-            path_parts = path_parts[:1]
-        storehouse = os.path.join(path_prefix, *path_parts)
-        return storehouse
 
     def _populate_package(self, path):
         assert not os.path.exists(path)
