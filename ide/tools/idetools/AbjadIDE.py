@@ -2323,7 +2323,6 @@ class AbjadIDE(object):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
-            composer_score_packages=False,
             example_score_packages=False,
             )
         for path in paths:
