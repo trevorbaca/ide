@@ -3154,12 +3154,7 @@ class AbjadIDE(object):
         section='basic',
         is_hidden=False,
         )
-    def copy(
-        self,
-        directory_name,
-        file_extension=None,
-        new_storehouse=None
-        ):
+    def copy(self, directory_name):
         r'''Copies asset.
 
         Returns none.
