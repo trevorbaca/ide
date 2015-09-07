@@ -16,6 +16,10 @@ def test_AbjadIDE_copy_01():
         configuration.composer_scores_directory,
         'pretty_example_score',
         )
+    inner_pretty_path = os.path.join(
+        pretty_path,
+        'pretty_example_score',
+        )
 
     with systemtools.FilesystemState(remove=[pretty_path]):
         input_ = 'cp Red~Example~Score Pretty~Example~Score y q'
@@ -23,7 +27,7 @@ def test_AbjadIDE_copy_01():
         assert os.path.exists(pretty_path)
         title = 'Pretty Example Score'
         abjad_ide._add_metadatum(
-            pretty_path,
+            inner_pretty_path,
             'title',
             title,
             )

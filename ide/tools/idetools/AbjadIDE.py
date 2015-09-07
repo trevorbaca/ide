@@ -1546,10 +1546,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-        if self._session.is_test and directory_name == 'scores':
-            entries = [_ for _ in entries if 'Example Score' in _[0]]
-        elif not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        if not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -3169,6 +3167,8 @@ class AbjadIDE(object):
             )
         if not source_path:
             return
+        if self._is_score_package_inner_path(source_path):
+            source_path = os.path.dirname(source_path)
         source_name = os.path.basename(source_path)
         if directory_name == 'scores':
             target_directory = configuration.composer_scores_directory
@@ -3198,9 +3198,8 @@ class AbjadIDE(object):
         help_template = help_template + ' ' + string
         getter.prompts[0]._help_template = help_template
         target_name = getter._run(io_manager=self._io_manager)
-        target_name = target_name or source_name
         if target_name is None:
-            return
+            target_name = source_name
         target_name = stringtools.strip_diacritics(target_name)
         directory_name = os.path.basename(target_directory)
         file_name_predicate = self._directory_name_to_file_name_predicate(
