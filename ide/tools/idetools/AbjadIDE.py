@@ -2331,8 +2331,7 @@ class AbjadIDE(object):
                 year=False,
                 )
             display_strings.append(title)
-            key = os.path.join(path, 'scores')
-            keys.append(key)
+            keys.append(path)
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
         menu_entries = sequencetools.zip_sequences(sequences, cyclic=True)
@@ -2347,10 +2346,12 @@ class AbjadIDE(object):
         selector = self._io_manager._make_selector(
             menu_entries=menu_entries,
             menu_header=menu_header,
-            target_name='score package',
+            target_name='target score package',
             )
         result = selector._run(io_manager=self._io_manager)
-        if result in (None, 'q'):
+        if result is None:
+            return
+        if result not in paths:
             return
         return result
 
@@ -3173,7 +3174,6 @@ class AbjadIDE(object):
             target_directory = self._select_score_directory(directory_name)
         if target_directory is None:
             return
-        directory_name = os.path.basename(target_directory)
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
         message = 'existing {} name> {}'

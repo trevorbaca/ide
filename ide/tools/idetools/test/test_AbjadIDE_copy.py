@@ -52,7 +52,7 @@ def test_AbjadIDE_copy_02():
         'Abjad IDE - all materials directories',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select score package:' in contents
+    assert 'Select target score package:' in contents
 
 
 def test_AbjadIDE_copy_03():
@@ -118,7 +118,7 @@ def test_AbjadIDE_copy_05():
         'Abjad IDE - all segments directories',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select score package:' in contents
+    assert 'Select target score package:' in contents
 
 
 def test_AbjadIDE_copy_06():
@@ -170,7 +170,7 @@ def test_AbjadIDE_copy_07():
         'Abjad IDE - all build directories',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select score package:' in contents
+    assert 'Select target score package:' in contents
 
 
 def test_AbjadIDE_copy_08():
