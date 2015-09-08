@@ -4513,15 +4513,7 @@ class AbjadIDE(object):
         if not 'makers' in source_path.split(os.path.sep):
             target_name = target_name.lower()
         source_name = os.path.basename(source_path)
-        lines = []
-        line = 'current name: {}'.format(source_name)
-        lines.append(line)
-        line = 'new name:     {}'.format(target_name)
-        lines.append(line)
-        self._io_manager._display(lines)
-        result = self._io_manager._confirm()
-        if not result:
-            return
+
         target_path = os.path.join(
             os.path.dirname(source_path),
             target_name,
@@ -4530,6 +4522,15 @@ class AbjadIDE(object):
             message = 'path already exists: {!r}.'
             message = message.format(target_path)
             self._io_manager._display(message)
+            return
+        messages = []
+        messages.append('will move ...')
+        message = ' FROM: {}'.format(source_path)
+        messages.append(message)
+        message = '   TO: {}'.format(target_path)
+        messages.append(message)
+        self._io_manager._display(messages)
+        if not self._io_manager._confirm():
             return
         shutil.move(source_path, target_path)
         self._session._pending_menu_rebuild = True
