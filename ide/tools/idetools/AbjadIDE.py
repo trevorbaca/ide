@@ -227,10 +227,10 @@ class AbjadIDE(object):
             directory_name,
             valid_only=False,
             )
-        paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
-        paths = [_ for _ in paths if not _.endswith('.pyc')]
         if os.path.sep in directory_token:
             paths = [_ for _ in paths if _.startswith(directory_token)]
+        paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
+        paths = [_ for _ in paths if not _.endswith('.pyc')]
         invalid_paths = []
         for path in paths:
             file_name = os.path.basename(path)
@@ -1513,8 +1513,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-        if not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        if not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -1913,7 +1913,7 @@ class AbjadIDE(object):
             annotation = None
         return annotation
 
-    def _path_to_asset_menu_display_string(self, path):
+    def _path_to_asset_menu_display_string(self, path, score_directory=None):
         asset_name = os.path.basename(path)
         allow_asset_name_underscores = False
         if 'test' in path.split(os.path.sep):
@@ -1927,7 +1927,7 @@ class AbjadIDE(object):
                 'name',
                 )
             asset_name = segment_name or asset_name
-        if self._session.is_in_score:
+        if self._session.is_in_score or score_directory is not None:
             string = asset_name
         else:
             annotation = self._path_to_annotation(path)
@@ -2683,16 +2683,19 @@ class AbjadIDE(object):
         self,
         paths,
         indent=0,
+        package_type=None,
         problems_only=None,
+        score_directory=None,
         supply_missing=None,
         ):
         r'''Checks every package.
 
         Returns none.
         '''
-        if not paths:
-            return [], [], []
-        package_type = paths[0].split(os.path.sep)[-2]
+#        if not paths:
+#            package_type = None
+#        else:
+#            package_type = paths[0].split(os.path.sep)[-2]
         messages = []
         missing_directories, missing_files = [], []
         supplied_directories, supplied_files = [], []
@@ -2709,7 +2712,8 @@ class AbjadIDE(object):
                 result = self.check_package(
                     path,
                     problems_only=problems_only,
-                    return_messages=True
+                    return_messages=True,
+                    score_directory=score_directory,
                     )
             messages_, missing_directories_, missing_files_ = result
             missing_directories.extend(missing_directories_)
@@ -2724,7 +2728,7 @@ class AbjadIDE(object):
                 message = tab + tab + message
                 messages.append(message)
         found_problems = bool(messages)
-        if self._session.is_in_score:
+        if self._session.is_in_score or score_directory is not None:
             count = len(paths)
             message = '{} directory ({} packages):'.format(package_type, count)
             if not found_problems:
@@ -2748,6 +2752,7 @@ class AbjadIDE(object):
                 result = self.check_package(
                     path,
                     return_supply_messages=True,
+                    score_directory=score_directory,
                     supply_missing=True
                     )
             messages_, supplied_directories_, supplied_files_ = result
@@ -2772,13 +2777,13 @@ class AbjadIDE(object):
         problems_only=None,
         return_messages=False,
         return_supply_messages=False,
+        score_directory=None,
         supply_missing=None,
         ):
         r'''Checks package.
 
         Returns none.
         '''
-        score_directory = None
         if self._is_score_package_inner_path(directory):
             score_directory = directory
         directory_name = self._path_to_directory_name(directory)
@@ -2905,7 +2910,6 @@ class AbjadIDE(object):
             )
         messages.extend(messages_)
         messages = [self._tab + _ for _ in messages]
-        name = self._path_to_asset_menu_display_string(directory)
         found_problems = (
             missing_directories or
             missing_files or
@@ -2921,6 +2925,13 @@ class AbjadIDE(object):
             messages.insert(0, message)
             messages = [stringtools.capitalize_start(_) for _ in messages]
             messages = [self._tab + _ for _ in messages]
+        if self._is_score_package_inner_path(directory):
+            name = self._path_to_asset_menu_display_string(directory)
+        else:
+            name = self._path_to_asset_menu_display_string(
+                directory,
+                score_directory=score_directory,
+                )
         message = '{}:'.format(name)
         if not directory_names and not found_problems and return_messages:
             message = '{} OK'.format(message)
@@ -2938,15 +2949,22 @@ class AbjadIDE(object):
                             )
                     else:
                         paths = self._list_visible_asset_paths(directory_name)
+                        package_type = paths[0].split(os.path.sep)[-2]
                         if score_directory is not None:
+                            directory_prefix = os.path.join(
+                                score_directory,
+                                directory_name,
+                                )
                             paths = [
                                 _ for _ in paths
-                                if _.startswith(score_directory)
+                                if _.startswith(directory_prefix)
                                 ]
                         result = self.check_every_package(
                             paths,
                             indent=1,
+                            package_type=package_type,
                             problems_only=problems_only,
+                            score_directory=score_directory,
                             supply_missing=False,
                             )
                     messages_, missing_directories_, missing_files_ = result

@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import os
-import pytest
 import shutil
 from abjad import *
 import ide
@@ -11,21 +10,23 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_check_every_package_01():
     r'''Checks every score package.
     '''
-    pytest.skip('make me work again.')
 
     lines = [
         'Étude Example Score (2013):',
         '    Top level (10 assets): OK',
         '    Build directory (1 files): OK',
         '    Distribution directory (0 files): OK',
+        '    Etc directory (0 files): OK',
         '    Makers directory (0 files): OK',
         '    Materials directory (0 packages): OK',
         '    Segments directory (0 packages): OK',
         '    Stylesheets directory (0 files): OK',
+        '    Test directory (1 files): OK',
         'Red Example Score (2013):',
         '    Top level (10 assets): OK',
         '    Build directory (18 files): OK',
         '    Distribution directory (2 files): OK',
+        '    Etc directory (0 files): OK',
         '    Makers directory (2 files): OK',
         '    Materials directory (5 packages):',
         '        Magic numbers: OK',
@@ -38,6 +39,7 @@ def test_AbjadIDE_check_every_package_01():
         '        B: OK',
         '        C: OK',
         '    Stylesheets directory (4 files): OK',
+        '    Test directory (1 files): OK',
         ]
 
     input_ = 'ck* y n q'
