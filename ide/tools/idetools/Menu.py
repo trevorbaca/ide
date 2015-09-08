@@ -60,8 +60,6 @@ class Menu(object):
         'back-home-quit',
         'comparison',
         'navigation',
-        'sibling package',
-        'sibling score',
         'view',
         )
 

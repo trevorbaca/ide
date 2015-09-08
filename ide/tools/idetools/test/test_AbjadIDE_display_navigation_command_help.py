@@ -26,9 +26,6 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
         '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
-        '',
         '>',
         ]
 
@@ -62,12 +59,6 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    go to score segments directory (g)',
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
-        '',
-        '    go to next package (>)',
-        '    go to previous package (<)',
-        '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
         '',
         '>',
     ]
@@ -103,12 +94,6 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
         '',
-        '    go to next package (>)',
-        '    go to previous package (<)',
-        '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
-        '',
         '>',
     ]
 
@@ -141,9 +126,6 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '    go to all segments directories (gg)',
         '    go to all stylesheets directories (yy)',
         '    go to all test directories (tt)',
-        '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
         '',
         '    set view (ws)',
         '',
@@ -244,12 +226,6 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
         '',
-        '    go to next package (>)',
-        '    go to previous package (<)',
-        '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
-        '',
         '    set view (ws)',
         '',
         '>',
@@ -284,12 +260,6 @@ def test_AbjadIDE_display_navigation_command_help_08():
         '    go to score segments directory (g)',
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
-        '',
-        '    go to next package (>)',
-        '    go to previous package (<)',
-        '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
         '',
         '    set view (ws)',
         '',
@@ -326,9 +296,6 @@ def test_AbjadIDE_display_navigation_command_help_09():
         '    go to score stylesheets directory (y)',
         '    go to score test directory (t)',
         '',
-        '    go to next score (>>)',
-        '    go to previous score (<<)',
-        '',
         '    set view (ws)',
         '',
         '>',
@@ -340,4 +307,3 @@ def test_AbjadIDE_display_navigation_command_help_09():
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
-

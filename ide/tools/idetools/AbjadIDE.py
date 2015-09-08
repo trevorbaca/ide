@@ -834,44 +834,6 @@ class AbjadIDE(object):
         line = line.lstrip(os.path.sep)
         return line
 
-    def _get_sibling_asset_path(self, directory_name):
-        if self._session.is_navigating_to_next_asset:
-            return self._get_next_asset_path(directory_name)
-        if self._session.is_navigating_to_previous_asset:
-            return self._get_previous_asset_path(directory_name)
-
-    def _get_sibling_score_directory(self, directory_name, next_=True):
-        paths = self._list_visible_asset_paths(directory_name)
-        if self._session.last_asset_path is None:
-            if next_:
-                return paths[0]
-            else:
-                return paths[-1]
-        score_path = self._session.last_score_path
-        index = paths.index(score_path)
-        if next_:
-            sibling_index = (index + 1) % len(paths)
-        else:
-            sibling_index = (index - 1) % len(paths)
-        sibling_path = paths[sibling_index]
-        return sibling_path
-
-    def _get_sibling_score_path(self, directory_name):
-        if self._session.is_navigating_to_next_score:
-            self._session._is_navigating_to_next_score = False
-            self._session._is_navigating_to_scores = False
-            return self._get_sibling_score_directory(
-                directory_name,
-                next_=True,
-                )
-        if self._session.is_navigating_to_previous_score:
-            self._session._is_navigating_to_previous_score = False
-            self._session._is_navigating_to_scores = False
-            return self._get_sibling_score_directory(
-                directory_name,
-                next_=False,
-                )
-
     def _get_title_metadatum(self, score_directory, year=True):
         metadata_py_path = os.path.join(score_directory, '__metadata__.py')
         if year and self._get_metadatum(metadata_py_path, 'year'):
@@ -1546,8 +1508,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-#        if not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        if not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -3873,52 +3835,6 @@ class AbjadIDE(object):
         Returns none.
         '''
         self._run_wrangler_menu('test')
-
-    @Command(
-        '>',
-        directories=('materials', 'segments'),
-        parent_directories=('materials', 'segments'),
-        section='sibling package',
-        )
-    def go_to_next_package(self):
-        r'''Goes to next package.
-
-        Returns none.
-        '''
-        # reimplement nonstatally
-        pass
-
-    @Command('>>', section='sibling score', outside_score='home')
-    def go_to_next_score(self):
-        r'''Goes to next score.
-
-        Returns none.
-        '''
-        # reimplement nonstatally
-        pass
-
-    @Command(
-        '<',
-        directories=('materials', 'segments'),
-        parent_directories=('materials', 'segments'),
-        section='sibling package',
-        )
-    def go_to_previous_package(self):
-        r'''Goes to previous package.
-
-        Returns none.
-        '''
-        # reimplement nonstatally
-        pass
-
-    @Command('<<', section='sibling score', outside_score='home')
-    def go_to_previous_score(self):
-        r'''Goes to previous score.
-
-        Returns none.
-        '''
-        # reimplement nonstatally
-        pass
 
     @Command(
         'u',

@@ -18,8 +18,6 @@ class Command(object):
         'global files',
         'navigation',
         'package',
-        'sibling package',
-        'sibling score',
         'star',
         'system',
         'view',
@@ -30,8 +28,6 @@ class Command(object):
         'back-home-quit',
         'comparison',
         'navigation',
-        'sibling package',
-        'sibling score',
         'view',
         )
 
