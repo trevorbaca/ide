@@ -1,6 +1,5 @@
 # -*- encoding: utf-8 -*-
 import os
-import pytest
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -212,21 +211,96 @@ def test_AbjadIDE_new_07():
         assert os.path.exists(path)
 
 
-# TODO: make me work
-#def test_AbjadIDE_new_08():
-#    r'''Makes new build file outside score.
-#    '''
-#
-#    path = os.path.join(
-#        configuration.abjad_ide_example_scores_directory,
-#        'red_example_score',
-#        'red_example_score',
-#        'build',
-#        'test-file.txt',
-#        )
-#
-#    input_ = 'uu new red~example~score test-file.txt q'
-#
-#    with systemtools.FilesystemState(remove=[path]):
-#        abjad_ide._run_main_menu(input_=input_)
-#        assert os.path.exists(path)
+def test_AbjadIDE_new_08():
+    r'''Makes new build file outside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'test-file.txt',
+        )
+
+    input_ = 'uu new red~example~score test-file.txt q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_09():
+    r'''Makes new stylesheet inside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'stylesheets',
+        'new-stylesheet.ily',
+        )
+
+    input_ = 'red~example~score y new new-stylesheet.ily q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_10():
+    r'''Makes new stylesheet outside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'stylesheets',
+        'new-stylesheet.ily',
+        )
+
+    input_ = 'yy new red~example~score new-stylesheet.ily q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_11():
+    r'''Makes new maker file inside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'NewMaker.py',
+        )
+
+    input_ = 'red~example~score k new NewMaker.py q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_12():
+    r'''Makes new maker file outside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'NewMaker.py',
+        )
+
+    input_ = 'kk new red~example~score NewMaker.py q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)

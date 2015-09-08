@@ -1608,9 +1608,11 @@ class AbjadIDE(object):
         if self._session.is_in_score:
             path = self._get_current_directory()
         else:
-            path = self._select_score_directory(directory_name)
-            if path is None:
+            score_directory = self._select_score_directory(directory_name)
+            if score_directory is None:
                 return
+            if not directory_name == 'scores':
+                path = os.path.join(score_directory, directory_name)
         directory_name = os.path.basename(path)
         file_extension = self._directory_name_to_file_extension.get(
             directory_name, '')
@@ -4536,7 +4538,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         messages = []
-        messages.append('will move ...')
+        messages.append('will rename ...')
         message = ' FROM: {}'.format(source_path)
         messages.append(message)
         message = '   TO: {}'.format(target_path)
