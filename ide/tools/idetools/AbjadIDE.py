@@ -3083,10 +3083,10 @@ class AbjadIDE(object):
             directory_name,
             infinitive_phrase='to copy',
             )
-        if not source_path:
-            return
         if self._is_score_package_inner_path(source_path):
             source_path = os.path.dirname(source_path)
+        if not source_path:
+            return
         source_name = os.path.basename(source_path)
         if directory_name == 'scores':
             target_directory = configuration.composer_scores_directory
@@ -3156,6 +3156,15 @@ class AbjadIDE(object):
             assert os.path.exists(false_inner_path)
             correct_inner_path = os.path.join(target_path, target_name)
             shutil.move(false_inner_path, correct_inner_path)
+            for directory_entry in sorted(os.listdir(correct_inner_path)):
+                if not directory_entry.endswith('.py'):
+                    continue
+                path = os.path.join(correct_inner_path, directory_entry)
+                self._replace_in_file(
+                    path,
+                    source_name,
+                    target_name,
+                    )
         if os.path.isdir(target_path):
             for directory_entry in sorted(os.listdir(target_path)):
                 if not directory_entry.endswith('.py'):
@@ -4501,19 +4510,20 @@ class AbjadIDE(object):
             directory_name,
             infinitive_phrase='to rename',
             )
+        if self._is_score_package_inner_path(source_path):
+            source_path = os.path.dirname(source_path)
         if not source_path:
             return
         getter = self._io_manager._make_getter()
         getter.append_string('new name')
-        target_name = getter._run(io_manager=self._io_manager)
-        if target_name is None:
+        original_target_name = getter._run(io_manager=self._io_manager)
+        if original_target_name is None:
             return
-        target_name = stringtools.strip_diacritics(target_name)
+        target_name = stringtools.strip_diacritics(original_target_name)
         target_name = target_name.replace(' ', '_')
         if not 'makers' in source_path.split(os.path.sep):
             target_name = target_name.lower()
         source_name = os.path.basename(source_path)
-
         target_path = os.path.join(
             os.path.dirname(source_path),
             target_name,
@@ -4533,6 +4543,35 @@ class AbjadIDE(object):
         if not self._io_manager._confirm():
             return
         shutil.move(source_path, target_path)
+        if os.path.isdir(target_path):
+            for directory_entry in sorted(os.listdir(target_path)):
+                if not directory_entry.endswith('.py'):
+                    continue
+                path = os.path.join(target_path, directory_entry)
+                self._replace_in_file(
+                    path,
+                    source_name,
+                    target_name,
+                    )
+        if self._is_score_package_outer_path(target_path):
+            false_inner_path = os.path.join(target_path, source_name)
+            assert os.path.exists(false_inner_path)
+            correct_inner_path = os.path.join(target_path, target_name)
+            shutil.move(false_inner_path, correct_inner_path)
+            self._add_metadatum(
+                correct_inner_path, 
+                'title',
+                original_target_name,
+                )
+            for directory_entry in sorted(os.listdir(correct_inner_path)):
+                if not directory_entry.endswith('.py'):
+                    continue
+                path = os.path.join(correct_inner_path, directory_entry)
+                self._replace_in_file(
+                    path,
+                    source_name,
+                    target_name,
+                    )
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 

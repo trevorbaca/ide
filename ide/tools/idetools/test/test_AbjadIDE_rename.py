@@ -1,5 +1,4 @@
 # -*- encoding: utf-8 -*-
-import pytest
 import os
 from abjad import *
 import ide
@@ -10,7 +9,6 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_rename_01():
     r'''Renames score package.
     '''
-    pytest.skip('make me work again.')
 
     path_100_outer = os.path.join(
         configuration.composer_scores_directory,
