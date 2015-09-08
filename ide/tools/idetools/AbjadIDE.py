@@ -2128,50 +2128,6 @@ class AbjadIDE(object):
             contents = ''.join(lines_to_keep)
             file_pointer.write(contents)
 
-    def _rename(
-        self,
-        path,
-        file_extension=None,
-        file_name_callback=None,
-        ):
-        base_name = os.path.basename(path)
-        line = 'current name: {}'.format(base_name)
-        self._io_manager._display(line)
-        getter = self._io_manager._make_getter()
-        getter.append_string('new name')
-        new_package_name = getter._run(io_manager=self._io_manager)
-        if new_package_name is None:
-            return
-        new_package_name = stringtools.strip_diacritics(new_package_name)
-        if file_name_callback:
-            new_package_name = file_name_callback(new_package_name)
-        new_package_name = new_package_name.replace(' ', '_')
-        if not 'makers' in path.split(os.path.sep):
-            new_package_name = new_package_name.lower()
-        if file_extension and not new_package_name.endswith(file_extension):
-            new_package_name = new_package_name + file_extension
-        lines = []
-        line = 'current name: {}'.format(base_name)
-        lines.append(line)
-        line = 'new name:     {}'.format(new_package_name)
-        lines.append(line)
-        self._io_manager._display(lines)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        new_path = os.path.join(
-            os.path.dirname(path),
-            new_package_name,
-            )
-        if os.path.exists(new_path):
-            message = 'path already exists: {!r}.'
-            message = message.format(new_path)
-            self._io_manager._display(message)
-            return
-        shutil.move(path, new_path)
-        #self._io_manager._session._is_backtracking_locally = True
-        return new_path
-
     @staticmethod
     def _replace_in_file(file_path, old, new):
         assert isinstance(old, str), repr(old)
@@ -4548,14 +4504,41 @@ class AbjadIDE(object):
             )
         if not path:
             return
-        file_name = os.path.basename(path)
-        message = 'existing file name> {}'
-        message = message.format(file_name)
-        self._io_manager._display(message)
-        new_path = self._rename(
-            path,
-            file_name_callback=file_name_callback,
+        base_name = os.path.basename(path)
+        line = 'current name: {}'.format(base_name)
+        self._io_manager._display(line)
+        getter = self._io_manager._make_getter()
+        getter.append_string('new name')
+        new_package_name = getter._run(io_manager=self._io_manager)
+        if new_package_name is None:
+            return
+        new_package_name = stringtools.strip_diacritics(new_package_name)
+        if file_name_callback:
+            new_package_name = file_name_callback(new_package_name)
+        new_package_name = new_package_name.replace(' ', '_')
+        if not 'makers' in path.split(os.path.sep):
+            new_package_name = new_package_name.lower()
+        #if file_extension and not new_package_name.endswith(file_extension):
+        #    new_package_name = new_package_name + file_extension
+        lines = []
+        line = 'current name: {}'.format(base_name)
+        lines.append(line)
+        line = 'new name:     {}'.format(new_package_name)
+        lines.append(line)
+        self._io_manager._display(lines)
+        result = self._io_manager._confirm()
+        if not result:
+            return
+        new_path = os.path.join(
+            os.path.dirname(path),
+            new_package_name,
             )
+        if os.path.exists(new_path):
+            message = 'path already exists: {!r}.'
+            message = message.format(new_path)
+            self._io_manager._display(message)
+            return
+        shutil.move(path, new_path)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
