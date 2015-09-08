@@ -4492,53 +4492,46 @@ class AbjadIDE(object):
     def rename(
         self,
         directory_name,
-        file_name_callback=None,
         ):
         r'''Renames asset.
 
         Returns none.
         '''
-        path = self._select_visible_asset_path(
+        source_path = self._select_visible_asset_path(
             directory_name,
             infinitive_phrase='to rename',
             )
-        if not path:
+        if not source_path:
             return
-        base_name = os.path.basename(path)
-        line = 'current name: {}'.format(base_name)
-        self._io_manager._display(line)
         getter = self._io_manager._make_getter()
         getter.append_string('new name')
-        new_package_name = getter._run(io_manager=self._io_manager)
-        if new_package_name is None:
+        target_name = getter._run(io_manager=self._io_manager)
+        if target_name is None:
             return
-        new_package_name = stringtools.strip_diacritics(new_package_name)
-        if file_name_callback:
-            new_package_name = file_name_callback(new_package_name)
-        new_package_name = new_package_name.replace(' ', '_')
-        if not 'makers' in path.split(os.path.sep):
-            new_package_name = new_package_name.lower()
-        #if file_extension and not new_package_name.endswith(file_extension):
-        #    new_package_name = new_package_name + file_extension
+        target_name = stringtools.strip_diacritics(target_name)
+        target_name = target_name.replace(' ', '_')
+        if not 'makers' in source_path.split(os.path.sep):
+            target_name = target_name.lower()
+        source_name = os.path.basename(source_path)
         lines = []
-        line = 'current name: {}'.format(base_name)
+        line = 'current name: {}'.format(source_name)
         lines.append(line)
-        line = 'new name:     {}'.format(new_package_name)
+        line = 'new name:     {}'.format(target_name)
         lines.append(line)
         self._io_manager._display(lines)
         result = self._io_manager._confirm()
         if not result:
             return
-        new_path = os.path.join(
-            os.path.dirname(path),
-            new_package_name,
+        target_path = os.path.join(
+            os.path.dirname(source_path),
+            target_name,
             )
-        if os.path.exists(new_path):
+        if os.path.exists(target_path):
             message = 'path already exists: {!r}.'
-            message = message.format(new_path)
+            message = message.format(target_path)
             self._io_manager._display(message)
             return
-        shutil.move(path, new_path)
+        shutil.move(source_path, target_path)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 

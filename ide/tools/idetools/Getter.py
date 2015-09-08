@@ -205,7 +205,7 @@ class Getter(object):
             elif isinstance(directive, str):
                 self._evaluate_input(directive, namespace)
             else:
-                self._io_manager._display_not_yet_implemented()
+                raise ValueError
 
     def _present_prompts(self, include_chevron=True):
         self._prompt_index = 0

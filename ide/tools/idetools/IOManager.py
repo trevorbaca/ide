@@ -134,10 +134,6 @@ class IOManager(IOManager):
     def _display_errors(self, lines):
         self._display(lines, capitalize=False)
 
-    def _display_not_yet_implemented(self):
-        message = 'not yet implemented.'
-        self._display(message)
-
     @staticmethod
     def _get_greatest_version_number(version_directory):
         if not os.path.isdir(version_directory):
