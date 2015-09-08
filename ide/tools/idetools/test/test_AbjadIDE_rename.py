@@ -48,7 +48,7 @@ def test_AbjadIDE_rename_01():
 
 
 def test_AbjadIDE_rename_02():
-    r'''Renames material package.
+    r'''Renames material package in score.
     '''
 
     path = os.path.join(
@@ -76,7 +76,38 @@ def test_AbjadIDE_rename_02():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_03():
+# TODO: make this work
+#def test_AbjadIDE_rename_03():
+#    r'''Renames material package outside of score.
+#    '''
+#
+#    path = os.path.join(
+#        configuration.abjad_ide_example_scores_directory,
+#        'red_example_score',
+#        'red_example_score',
+#        'materials',
+#        'test_material',
+#        )
+#    new_path = os.path.join(
+#        configuration.abjad_ide_example_scores_directory,
+#        'red_example_score',
+#        'red_example_score',
+#        'materials',
+#        'new_test_material',
+#        )
+#
+#    input_ = 'new Red~Example~Score m new test~material y q'
+#
+#    with systemtools.FilesystemState(remove=[path, new_path]):
+#        abjad_ide._run_main_menu(input_=input_)
+#        assert os.path.exists(path)
+#        input_ = 'red~example~score m ren test~material new~test~material y q'
+#        abjad_ide._run_main_menu(input_=input_)
+#        assert not os.path.exists(path)
+#        assert os.path.exists(new_path)
+
+
+def test_AbjadIDE_rename_04():
     r'''Renames segment package.
     '''
 
@@ -105,7 +136,7 @@ def test_AbjadIDE_rename_03():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_04():
+def test_AbjadIDE_rename_05():
     r'''Works at home screen.
     '''
 
@@ -140,7 +171,7 @@ def test_AbjadIDE_rename_04():
     assert os.path.exists(path)
 
 
-def test_AbjadIDE_rename_05():
+def test_AbjadIDE_rename_06():
     r'''Works in score package.
     '''
 

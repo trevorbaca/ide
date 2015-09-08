@@ -1667,9 +1667,11 @@ class AbjadIDE(object):
                 directory_name,
                 )
         else:
-            new_directory = self._select_score_directory(directory_name)
-            if new_directory is None:
+            score_directory = self._select_score_directory(directory_name)
+            if score_directory is None:
                 return
+            if not directory_name == 'scores':
+                new_directory = os.path.join(score_directory, directory_name)
         path = self._get_available_path_in_directory(new_directory)
         if not path:
             return
@@ -2245,7 +2247,7 @@ class AbjadIDE(object):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
-            example_score_packages=self._session.is_test,
+            #example_score_packages=self._session.is_test,
             )
         for path in paths:
             title = self._get_title_metadatum(path)

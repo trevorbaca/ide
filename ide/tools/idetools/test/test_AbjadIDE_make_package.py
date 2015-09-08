@@ -81,9 +81,8 @@ def test_AbjadIDE_make_package_02():
 
 
 def test_AbjadIDE_make_package_03():
-    r'''Creates material package.
+    r'''Creates material package outside score.
     '''
-    pytest.skip('make me work again.')
 
     session = ide.tools.idetools.Session(is_test=True)
     path = os.path.join(
