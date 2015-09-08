@@ -2690,6 +2690,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        if not paths:
+            return [], [], []
         package_type = paths[0].split(os.path.sep)[-2]
         messages = []
         missing_directories, missing_files = [], []
@@ -2936,6 +2938,11 @@ class AbjadIDE(object):
                             )
                     else:
                         paths = self._list_visible_asset_paths(directory_name)
+                        if score_directory is not None:
+                            paths = [
+                                _ for _ in paths
+                                if _.startswith(score_directory)
+                                ]
                         result = self.check_every_package(
                             paths,
                             indent=1,
