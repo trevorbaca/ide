@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_new_01():
-    r'''Makes score package.
+    r'''Makes new score package.
     '''
 
     outer_path = os.path.join(
@@ -35,8 +35,9 @@ def test_AbjadIDE_new_01():
         'test',
         ]
 
+    input_ = 'new Example~Score y q'
+
     with systemtools.FilesystemState(remove=[outer_path]):
-        input_ = 'new Example~Score y q'
         abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_path)
@@ -81,7 +82,7 @@ def test_AbjadIDE_new_02():
 
 
 def test_AbjadIDE_new_03():
-    r'''Creates material package outside score.
+    r'''Makes new material package inside score.
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
@@ -98,8 +99,9 @@ def test_AbjadIDE_new_03():
         'definition.py',
         ]
 
+    input_ = 'Red~Example~Score m new testnotes y q'
+
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'mm new Red~Example~Score testnotes y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
@@ -108,7 +110,35 @@ def test_AbjadIDE_new_03():
 
 
 def test_AbjadIDE_new_04():
-    r'''Makes segment package.
+    r'''Makes new material package outside score.
+    '''
+
+    session = ide.tools.idetools.Session(is_test=True)
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        'testnotes',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    input_ = 'mm new Red~Example~Score testnotes y q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
+        session = ide.tools.idetools.Session(is_test=True)
+        io_manager = ide.tools.idetools.IOManager(session=session)
+        assert abjad_ide._list_directory(path) == directory_entries
+
+
+def test_AbjadIDE_new_05():
+    r'''Makes new segment package inside score.
     '''
 
     path = os.path.join(
@@ -124,8 +154,9 @@ def test_AbjadIDE_new_04():
         'definition.py',
         ]
 
+    input_ = 'red~example~score g new segment~04 y q'
+
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'red~example~score g new segment~04 y q'
         abjad_ide._run_main_menu(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
@@ -134,8 +165,36 @@ def test_AbjadIDE_new_04():
         assert abjad_ide._list_directory(path) == directory_entries
 
 
-def test_AbjadIDE_new_05():
-    r'''Makes new build file in score.
+def test_AbjadIDE_new_06():
+    r'''Makes new segment package outside score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_04',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    input_ = 'gg new Red~Example~Score segment~04 y q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._run_main_menu(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(path)
+        session = ide.tools.idetools.Session(is_test=True)
+        io_manager = ide.tools.idetools.IOManager(session=session)
+        assert abjad_ide._list_directory(path) == directory_entries
+
+
+def test_AbjadIDE_new_07():
+    r'''Makes new build file inside score.
     '''
 
     path = os.path.join(
@@ -146,7 +205,28 @@ def test_AbjadIDE_new_05():
         'test-file.txt',
         )
 
+    input_ = 'red~example~score u new test-file.txt q'
+
     with systemtools.FilesystemState(remove=[path]):
-        input_ = 'red~example~score u new test-file.txt q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
+
+
+# TODO: make me work
+#def test_AbjadIDE_new_08():
+#    r'''Makes new build file outside score.
+#    '''
+#
+#    path = os.path.join(
+#        configuration.abjad_ide_example_scores_directory,
+#        'red_example_score',
+#        'red_example_score',
+#        'build',
+#        'test-file.txt',
+#        )
+#
+#    input_ = 'uu new red~example~score test-file.txt q'
+#
+#    with systemtools.FilesystemState(remove=[path]):
+#        abjad_ide._run_main_menu(input_=input_)
+#        assert os.path.exists(path)

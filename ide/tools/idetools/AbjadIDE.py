@@ -4268,7 +4268,7 @@ class AbjadIDE(object):
         is_hidden=False,
         section='basic',
         )
-    def make(self, directory_name):
+    def new(self, directory_name):
         r'''Makes asset.
 
         Returns none.
