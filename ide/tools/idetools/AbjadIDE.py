@@ -1513,8 +1513,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-#        if not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        if not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
