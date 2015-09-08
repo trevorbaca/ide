@@ -7,7 +7,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_make_package_01():
+def test_AbjadIDE_new_01():
     r'''Makes score package.
     '''
 
@@ -50,7 +50,7 @@ def test_AbjadIDE_make_package_01():
     assert 'Enter title]> Example Score' in contents
 
 
-def test_AbjadIDE_make_package_02():
+def test_AbjadIDE_new_02():
     r'''Accepts flexible package name input for score packages.
     '''
 
@@ -80,7 +80,7 @@ def test_AbjadIDE_make_package_02():
         assert os.path.exists(score_package)
 
 
-def test_AbjadIDE_make_package_03():
+def test_AbjadIDE_new_03():
     r'''Creates material package outside score.
     '''
 
@@ -107,7 +107,7 @@ def test_AbjadIDE_make_package_03():
         assert abjad_ide._list_directory(path) == directory_entries
 
 
-def test_AbjadIDE_make_package_04():
+def test_AbjadIDE_new_04():
     r'''Makes segment package.
     '''
 
@@ -132,3 +132,21 @@ def test_AbjadIDE_make_package_04():
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
         assert abjad_ide._list_directory(path) == directory_entries
+
+
+def test_AbjadIDE_new_05():
+    r'''Makes new build file in score.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'test-file.txt',
+        )
+
+    with systemtools.FilesystemState(remove=[path]):
+        input_ = 'red~example~score u new test-file.txt q'
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(path)
