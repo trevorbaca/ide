@@ -4283,6 +4283,8 @@ class AbjadIDE(object):
             self._make_score_package()
         else:
             self._make_package(directory_name)
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
 
     @Command(
         'io*',
