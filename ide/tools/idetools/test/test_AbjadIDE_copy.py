@@ -8,6 +8,9 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_copy_01():
     r'''Copies example score package into composer scores directory.
+
+    (No test provided to copy into Abjad IDE example scores directory
+    because copying into Abjad IDE example scores directory not supported.)
     '''
 
     pretty_path = os.path.join(
@@ -36,26 +39,32 @@ def test_AbjadIDE_copy_01():
 
 
 def test_AbjadIDE_copy_02():
-    r'''Copies material package outside score.
-    
-    Partial test because we can't be sure any user score packages will be
-    present. And because IDE allows copying into user score packages only
-    (because copying into example score packages could pollute the example
-    score packages).
+    r'''Copies material package between scores.
     '''
 
-    input_ = 'mm cp performer~inventory~(Red~Example~Score) <return> q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
+    source_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        'performer_inventory',
+        )
+    target_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'blue_example_score',
+        'blue_example_score',
+        'materials',
+        'copied_performer_inventory',
+        )
 
-    titles = [
-        'Abjad IDE - all score directories',
-        'Abjad IDE - all materials directories',
-        'Abjad IDE - all materials directories',
-        'Abjad IDE - all materials directories',
-        ]
-    assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select target score package:' in contents
+    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
+        input_ = 'mm cp performer~inventory~(Red~Example~Score)'
+        input_ += ' Blue~Example~Score copied~performer~inventory y q'
+        abjad_ide._run_main_menu(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(source_path)
+        assert os.path.exists(target_path)
+        assert 'copied performer inventory' in contents
 
 
 def test_AbjadIDE_copy_03():
@@ -102,26 +111,32 @@ def test_AbjadIDE_copy_04():
 
 
 def test_AbjadIDE_copy_05():
-    r'''Copies segment package outside score.
-    
-    Partial test because we can't be sure any user score packages will be
-    present. And because IDE allows copying into user score packges only
-    (because copying into example score packages could pollute the example
-    score packages).
+    r'''Copies segment package between scores.
     '''
 
-    input_ = 'gg cp A~(Red~Example~Score) <return> q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
+    source_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_01',
+        )
+    target_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'blue_example_score',
+        'blue_example_score',
+        'segments',
+        'copied_segment_01',
+        )
 
-    titles = [
-        'Abjad IDE - all score directories',
-        'Abjad IDE - all segments directories',
-        'Abjad IDE - all segments directories',
-        'Abjad IDE - all segments directories',
-        ]
-    assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select target score package:' in contents
+    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
+        input_ = 'gg cp A~(Red~Example~Score)'
+        input_ += ' Blue~Example~Score copied_segment_01 y q'
+        abjad_ide._run_main_menu(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(source_path)
+        assert os.path.exists(target_path)
+        assert 'copied_segment_01' in contents
 
 
 def test_AbjadIDE_copy_06():
@@ -154,26 +169,32 @@ def test_AbjadIDE_copy_06():
 
 
 def test_AbjadIDE_copy_07():
-    r'''Copies build file outside score.
-    
-    Partial test because we can't be sure any user score packages will be
-    present. And because IDE allows copying into user score packages only
-    (because copying into example score packages could pollute the example
-    score packages).
+    r'''Copies build file between scores.
     '''
 
-    input_ = 'uu cp score.pdf~(Red~Example~Score) <return> q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
+    source_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'score.pdf',
+        )
+    target_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'blue_example_score',
+        'blue_example_score',
+        'build',
+        'copied-score.pdf',
+        )
 
-    titles = [
-        'Abjad IDE - all score directories',
-        'Abjad IDE - all build directories',
-        'Abjad IDE - all build directories',
-        'Abjad IDE - all build directories',
-        ]
-    assert abjad_ide._io_manager._transcript.titles == titles
-    assert 'Select target score package:' in contents
+    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
+        input_ = 'uu cp score.pdf~(Red~Example~Score)'
+        input_ += ' Blue~Example~Score copied-score.pdf y q'
+        abjad_ide._run_main_menu(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(source_path)
+        assert os.path.exists(target_path)
+        assert 'copied-score.pdf' in contents
 
 
 def test_AbjadIDE_copy_08():
