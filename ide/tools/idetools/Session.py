@@ -29,6 +29,7 @@ class Session(object):
         '_last_score_path',
         '_manifest_current_directory',
         '_pending_input',
+        '_pending_menu_rebuild',
         '_pending_redraw',
         )
 
@@ -50,6 +51,7 @@ class Session(object):
         self._last_score_path = None
         self._manifest_current_directory = None
         self._pending_input = input_
+        self._pending_menu_rebuild = False
         self._pending_redraw = True
 
     ### SPECIAL METHODS ###

@@ -2301,19 +2301,19 @@ class AbjadIDE(object):
         else:
             menu_header = 'Abjad IDE - all {} directories'
             menu_header = menu_header.format(directory_name)
-#        menu = self._make_main_menu(
-#            explicit_header=menu_header,
-#            directory_name=directory_name,
-#            )
+        menu = self._make_main_menu(
+            explicit_header=menu_header,
+            directory_name=directory_name,
+            )
         while True:
             self._session._manifest_current_directory = current_directory
             os.chdir(current_directory)
-            # TODO: rebuild main menu only on an as-needed basis;
-            #       implement Session._is_pending_menu_rebuild to do this.
-            menu = self._make_main_menu(
-                explicit_header=menu_header,
-                directory_name=directory_name,
-                )
+            if self._session._pending_menu_rebuild:
+                menu = self._make_main_menu(
+                    explicit_header=menu_header,
+                    directory_name=directory_name,
+                    )
+                self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
                 return
@@ -3250,6 +3250,7 @@ class AbjadIDE(object):
                     source_name,
                     target_name,
                     )
+        self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
     @Command('?', section='system')
