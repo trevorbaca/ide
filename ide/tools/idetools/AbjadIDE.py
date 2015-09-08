@@ -2327,18 +2327,16 @@ class AbjadIDE(object):
         display_strings, keys = [], []
         paths = self._list_asset_paths(
             'scores',
-            example_score_packages=False,
+            example_score_packages=self._session.is_test,
             )
         for path in paths:
-            title = self._get_title_metadatum(
-                path,
-                year=False,
-                )
+            title = self._get_title_metadatum(path)
             display_strings.append(title)
             keys.append(path)
         assert len(display_strings) == len(keys), repr((display_strings, keys))
         sequences = [display_strings, [None], [None], keys]
         menu_entries = sequencetools.zip_sequences(sequences, cyclic=True)
+        menu_entries.sort(key=lambda _: stringtools.strip_diacritics(_[0]))
         current_directory = self._get_current_directory()
         if current_directory is not None:
             menu_header = self._path_to_menu_header(current_directory)

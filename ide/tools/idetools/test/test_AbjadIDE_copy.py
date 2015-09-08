@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_copy_01():
-    r'''Copies score package.
+    r'''Copies example score package into composer scores directory.
     '''
 
     pretty_path = os.path.join(
