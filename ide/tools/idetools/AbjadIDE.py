@@ -211,10 +211,15 @@ class AbjadIDE(object):
             message = message.format(string)
             self._io_manager._display(message)
 
-    def _check_every_file(self, directory_token):
+    def _check_every_file(self, directory_token, score_directory):
         if self._session.is_in_score:
             directory_token = os.path.join(
                 self._session.current_score_directory,
+                directory_token,
+                )
+        elif score_directory is not None:
+            directory_token = os.path.join(
+                score_directory,
                 directory_token,
                 )
         directory_name = os.path.basename(directory_token)
@@ -2771,6 +2776,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        score_directory = None
+        if self._is_score_package_inner_path(directory):
+            score_directory = directory
         directory_name = self._path_to_directory_name(directory)
         package_contents = self._directory_name_to_package_contents.get(
             directory_name)
@@ -2922,7 +2930,10 @@ class AbjadIDE(object):
                         self._directory_name_to_asset_identifier[
                         directory_name]
                     if asset_identifier == 'file':
-                        result = self._check_every_file(directory_name)
+                        result = self._check_every_file(
+                            directory_name,
+                            score_directory,
+                            )
                     else:
                         paths = self._list_visible_asset_paths(directory_name)
                         result = self.check_every_package(
