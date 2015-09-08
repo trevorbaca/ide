@@ -4513,6 +4513,7 @@ class AbjadIDE(object):
         for path in paths:
             with self._io_manager._silent():
                 self._remove(path)
+        self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
     @Command(
@@ -4555,7 +4556,8 @@ class AbjadIDE(object):
             path,
             file_name_callback=file_name_callback,
             )
-        #self._session._is_backtracking_locally = False
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
 
     @Command(
         'ws',

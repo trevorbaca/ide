@@ -12,29 +12,41 @@ def test_AbjadIDE_rename_01():
     '''
     pytest.skip('make me work again.')
 
-    path_100 = os.path.join(
+    path_100_outer = os.path.join(
         configuration.composer_scores_directory,
         'example_score_100',
         )
-    path_101 = os.path.join(
+    path_100_inner = os.path.join(
+        configuration.composer_scores_directory,
+        'example_score_100',
+        'example_score_100',
+        )
+    path_101_outer = os.path.join(
         configuration.composer_scores_directory,
         'example_score_101',
         )
+    path_101_inner = os.path.join(
+        configuration.composer_scores_directory,
+        'example_score_101',
+        'example_score_101',
+        )
 
-    with systemtools.FilesystemState(remove=[path_100, path_101]):
+    with systemtools.FilesystemState(remove=[path_100_outer, path_101_outer]):
         input_ = 'new example~score~100 y q'
         abjad_ide._run_main_menu(input_=input_)
-        assert os.path.exists(path_100)
+        assert os.path.exists(path_100_outer)
+        assert os.path.exists(path_100_inner)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
-            path_100,
+            path_100_inner,
             'title',
             title,
             )
         input_ = 'ren Example~Score~100 example_score_101 y q'
         abjad_ide._run_main_menu(input_=input_)
-        assert not os.path.exists(path_100)
-        assert os.path.exists(path_101)
+        assert not os.path.exists(path_100_outer)
+        assert os.path.exists(path_101_outer)
+        assert os.path.exists(path_101_inner)
 
 
 def test_AbjadIDE_rename_02():
