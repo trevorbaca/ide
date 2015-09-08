@@ -3200,7 +3200,7 @@ class AbjadIDE(object):
         help_template = help_template + ' ' + string
         getter.prompts[0]._help_template = help_template
         target_name = getter._run(io_manager=self._io_manager)
-        if target_name is None:
+        if not target_name:
             target_name = source_name
         target_name = stringtools.strip_diacritics(target_name)
         directory_name = os.path.basename(target_directory)

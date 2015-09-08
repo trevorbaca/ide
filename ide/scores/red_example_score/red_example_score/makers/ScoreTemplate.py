@@ -1,8 +1,9 @@
+# -*- encoding: utf-8 -*-
 from abjad import *
 
 
-class RedExampleScoreTemplate(abctools.AbjadObject):
-    r'''Red Example Score score template.
+class ScoreTemplate(abctools.AbjadObject):
+    r'''Score template.
     '''
 
     ### INITIALIZER ###
@@ -14,7 +15,7 @@ class RedExampleScoreTemplate(abctools.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self):
-        r'''Calls template.
+        r'''Calls score template.
 
         Returns LilyPondFile object.
         '''

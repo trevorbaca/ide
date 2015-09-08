@@ -1,8 +1,9 @@
+# -*- encoding: utf-8 -*-
 from abjad import *
 
 
-class RedExampleScoreRhythmMaker(rhythmmakertools.RhythmMaker):
-    r'''Red Example Score rhythm-maker.
+class RhythmMaker(rhythmmakertools.RhythmMaker):
+    r'''Rhythm-maker.
 
     Dummy class used for testing.
     '''
