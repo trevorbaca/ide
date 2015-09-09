@@ -1734,26 +1734,10 @@ class AbjadIDE(object):
             return
         package_name = stringtools.strip_diacritics(title)
         package_name = stringtools.to_snake_case(package_name)
-        confirmed = False
-        while not confirmed:
-            score_directory = os.path.join(
-                configuration.composer_scores_directory,
-                package_name,
-                )
-            message = 'path will be {}.'.format(score_directory)
-            self._io_manager._display(message)
-            result = self._io_manager._confirm()
-            confirmed = result
-            if confirmed:
-                break
-            message = 'enter package name'
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            package_name = getter._run(io_manager=self._io_manager)
-            if not package_name:
-                return
-            package_name = stringtools.strip_diacritics(package_name)
-            package_name = stringtools.to_snake_case(package_name)
+        score_directory = os.path.join(
+            configuration.composer_scores_directory,
+            package_name,
+            )
         new_path = self._populate_package(score_directory)
         score_directory = new_path or score_directory
         self._add_metadatum(
