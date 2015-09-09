@@ -4058,6 +4058,15 @@ class AbjadIDE(object):
                 candidate_pdf_path,
                 illustration_pdf_path,
                 )
+
+                # DEBUG Travis-CI:
+                if not result:
+                    lines = systemtools.TestManager._get_first_differing_pdf_lines(
+                        candidate_pdf_path,
+                        illustration_pdf_path,
+                        )
+                    raise Exception(lines)
+
                 messages = self._make_candidate_messages(
                     result,
                     candidate_pdf_path,
