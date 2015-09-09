@@ -813,7 +813,15 @@ class AbjadIDE(object):
     def _get_score_initializer_file_lines(self, missing_file):
         lines = []
         lines.append(self._unicode_directive)
-        if 'materials' in missing_file or 'makers' in missing_file:
+        if 'makers' in missing_file:
+            lines.append('from abjad.tools import systemtools')
+            lines.append('')
+            line = 'systemtools.ImportManager.import_structured_package('
+            lines.append(line)
+            lines.append('    __path__[0],')
+            lines.append('    globals(),')
+            lines.append('    )')
+        elif 'materials' in missing_file:
             lines.append('from abjad.tools import systemtools')
             lines.append('')
             line = 'systemtools.ImportManager.import_material_packages('
