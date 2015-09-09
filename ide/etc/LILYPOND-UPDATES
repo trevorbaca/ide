@@ -8,6 +8,7 @@ Red Example Score is visible when you start the IDE. Comment out ...
 following three commands to rerender all test artifacts to accommodate a new
 version of LilyPond:
 
+    (red~example~score m ii* y q)
     (red~example~score g ii* y q)
     (red~example~score u mi y q)
     (red~example~score u si y q)
