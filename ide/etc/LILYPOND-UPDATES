@@ -5,12 +5,10 @@ Red Example Score is visible when you start the IDE. Comment out ...
         entries = [_ for _ in entries if 'Example Score' not in _[0]]
 
 ... to make Red Example Score visible when you start the IDE. Then run the
-following commands to rerender all test artifacts to accommodate a new version
-of LilyPond:
+following three commands to rerender all test artifacts to accommodate a new
+version of LilyPond:
 
     (red~example~score g ii* y q)
-    (red~example~score u dc y q)
-    (red~example~score u di q)
     (red~example~score u mi y q)
     (red~example~score u si y q)
 
