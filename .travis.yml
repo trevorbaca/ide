@@ -4,13 +4,13 @@ python:
     - 2.7
 
 before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get install -y graphviz
-    - sudo apt-get install -y imagemagick
-    - sudo apt-get install -y texlive 
-    - sudo apt-get install -y texlive-fonts-recommended
-    - sudo apt-get install -y texlive-latex-extra 
-    - sudo apt-get install -y texlive-latex-recommended 
+#    - sudo apt-get update -qq
+#    - sudo apt-get install -y graphviz
+#    - sudo apt-get install -y imagemagick
+#    - sudo apt-get install -y texlive 
+#    - sudo apt-get install -y texlive-fonts-recommended
+#    - sudo apt-get install -y texlive-latex-extra 
+#    - sudo apt-get install -y texlive-latex-recommended 
     - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.26-1.linux-64.sh
     - sudo sh lilypond-2.19.26-1.linux-64.sh --batch
     - pip install coveralls
@@ -24,6 +24,10 @@ before_script:
     - ide/scr/prime-parser-tables
 
 script:
+    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/blue_example_score:$PYTHONPATH
+    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/etude_example_score:$PYTHONPATH
+    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/red_example_score:$PYTHONPATH
+    - echo $PYTHONPATH
     - start-abjad-ide q
     - coverage run -a `which ajv` doctest ide
     - coverage run -a `which py.test` -rf ide
