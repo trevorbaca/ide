@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from abjad import *
 from red_example_score.materials.magic_numbers.definition import magic_numbers
 

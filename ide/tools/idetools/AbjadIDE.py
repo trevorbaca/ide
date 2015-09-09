@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 import codecs
 import datetime
@@ -144,7 +144,7 @@ class AbjadIDE(object):
 
     _tab = 4 * ' '
 
-    _unicode_directive = '# -*- encoding: utf-8 -*-'
+    _unicode_directive = '# -*- coding: utf-8 -*-'
 
     ### INITIALIZER ###
 

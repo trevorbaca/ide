@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import os
 from abjad import *
 systemtools.IOManager.spawn_subprocess('clear')
