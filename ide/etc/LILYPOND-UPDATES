@@ -1,11 +1,31 @@
-SUMMARY. Here're the commands necessary to rerender all test artifacts to
-accommodate a new version of LilyPond:
+SUMMARY. To run the following commands you will need to make sure that the
+Red Example Score is visible when you start the IDE. Comment out ...
+
+    if not self._session.is_test:
+        entries = [_ for _ in entries if 'Example Score' not in _[0]]
+
+... to make Red Example Score visible when you start the IDE. Then run the
+following commands to rerender all test artifacts to accommodate a new version
+of LilyPond:
 
     (red~example~score g ii* y q)
     (red~example~score u dc y q)
     (red~example~score u di q)
     (red~example~score u mi y q)
     (red~example~score u si y q)
+
+Then update the IDE Travis configuration file by changing the old LilyPond
+version number...
+
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.15-1.linux-64.sh
+    - sudo sh lilypond-2.19.15-1.linux-64.sh --batch
+
+... to the new LilyPond version number ...
+
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.26-1.linux-64.sh
+    - sudo sh lilypond-2.26.15-1.linux-64.sh --batch
+
+... instead.
 
 Some display-status tests will fail if you run the battery after executing
 these 5 commands. These tests will pass again after commit:
