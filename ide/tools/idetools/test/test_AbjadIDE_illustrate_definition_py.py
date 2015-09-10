@@ -55,6 +55,17 @@ def test_AbjadIDE_illustrate_definition_py_02():
         )
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+        # remove existing PDF
+        os.remove(ly_path)
+        os.remove(pdf_path)
+        assert not os.path.exists(ly_path)
+        assert not os.path.exists(pdf_path)
+        # generate PDF first time
+        input_ = 'red~example~score g A i q'
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.isfile(ly_path)
+        assert os.path.isfile(pdf_path)
+        # attempt to generate PDF second time (but blocked)
         input_ = 'red~example~score g A i q'
         abjad_ide._run_main_menu(input_=input_)
 
