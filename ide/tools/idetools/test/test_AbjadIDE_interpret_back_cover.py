@@ -55,6 +55,12 @@ def test_AbjadIDE_interpret_back_cover_02():
         )
 
     with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+        # remove PDF
+        os.remove(pdf_path)
+        # generate PDF first time
+        input_ = 'red~example~score u bci q'
+        abjad_ide._run_main_menu(input_=input_)
+        # attempt (but fail) to generate identical PDF
         input_ = 'red~example~score u bci q'
         abjad_ide._run_main_menu(input_=input_)
 

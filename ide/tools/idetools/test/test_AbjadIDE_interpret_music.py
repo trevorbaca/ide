@@ -56,6 +56,12 @@ def test_AbjadIDE_interpret_music_02():
         )
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+        # remove existing PDF
+        os.remove(pdf_path)
+        # generate PDF a first time
+        input_ = 'red~example~score u mi q'
+        abjad_ide._run_main_menu(input_=input_)
+        # attempt (but fail) to generate PDF a second time
         input_ = 'red~example~score u mi q'
         abjad_ide._run_main_menu(input_=input_)
 

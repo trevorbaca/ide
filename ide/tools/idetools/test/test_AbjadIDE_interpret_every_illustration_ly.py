@@ -74,6 +74,13 @@ def test_AbjadIDE_interpret_every_illustration_ly_02():
     paths = ly_paths + pdf_paths
 
     with systemtools.FilesystemState(keep=paths):
+        # remove existing PDFs
+        for pdf_path in pdf_paths:
+            os.remove(pdf_path)
+        # generate PDFs a first time
+        input_ = 'red~example~score m ii* y q'
+        abjad_ide._run_main_menu(input_=input_)
+        # attempt (but fail) to generate PDFs a second time
         input_ = 'red~example~score m ii* y q'
         abjad_ide._run_main_menu(input_=input_)
 
@@ -157,6 +164,13 @@ def test_AbjadIDE_interpret_every_illustration_ly_04():
     paths = ly_paths + pdf_paths
 
     with systemtools.FilesystemState(keep=paths):
+        # remove existing PDFs
+        for pdf_path in pdf_paths:
+            os.remove(pdf_path)
+        # generate PDFs a first time
+        input_ = 'red~example~score g ii* y q'
+        abjad_ide._run_main_menu(input_=input_)
+        # attempt (but fail) to generate PDFs a second time
         input_ = 'red~example~score g ii* y q'
         abjad_ide._run_main_menu(input_=input_)
 

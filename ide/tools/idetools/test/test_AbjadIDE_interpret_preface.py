@@ -55,6 +55,12 @@ def test_AbjadIDE_interpret_preface_02():
         )
 
     with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+        # remove existing PDF
+        os.remove(pdf_path)
+        # generate PDF a first time
+        input_ = 'red~example~score u pi q'
+        abjad_ide._run_main_menu(input_=input_)
+        # attempt (but fail) to generate PDF a second time
         input_ = 'red~example~score u pi q'
         abjad_ide._run_main_menu(input_=input_)
 
