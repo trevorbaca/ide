@@ -1,55 +1,70 @@
 # -*- coding: utf-8 -*-
-'''Installing the Abjad IDE.
+'''Abjad IDE installation.
 
 To install the Abjad IDE:
 
-    1. verify the Abjad IDE directories.
-    2. add abjad_ide/scr/ to your PATH.
-    3. create a scores/ directory.
-    4. start and stop the Abjad IDE.
-    5. run pytest.
-    6. build the Abjad IDE API.
+    1. clone the Abjad IDE from GitHub
+    2. verify the Abjad IDE directories.
+    3. add Abjad IDE scr/ directory to your PATH.
+    4. create a scores/ directory.
+    5. add the scores/ directory to your Abjad configuration file
+    6. start and stop the Abjad IDE.
     7. run doctest.
+    8. run pytest.
+    9. build the Abjad IDE API.
 
-1. Verify the Abjad IDE directories. The following 7 directories should appear
-on your filesystem after checkout:
+1. Clone the Abjad IDE from GitHub:
 
-    boilerplate/
-    docs/
-    etc/
-    idetools/
-    scores/
-    scr/
-    test/
+    git clone https://github.com/Abjad/ide.git
 
-2. Add the abjad_ide/scr/ directory to your PATH. This tells your shell
-where the start-abjad-idetools script is housed:
+2. Verify the Abjad IDE directories. The following directories should appear on
+your filesystem after checkout:
 
-    export PATH=$ABJAD/ide/scr:$PATH
+    ide/
+        ide/
+        boilerplate/
+        docs/
+        etc/
+        scores/
+        scr/
+        test/
+        tools/
+            idetools/
 
-3. Create a scores directory. You can do this anywhere on your filesystem you
-wish. Then create a SCORES environment variable in your profile. Set the scores
-environment variable to your scores directory:
+3. Add the Abjad IDE scr/ directory to your PATH. This tells your shell where
+the start-abjad-idetools script is housed:
 
-    export SCORES=$DOCUMENTS/scores
+    export PATH=~/Documents/ide/ide/scr:$PATH
 
-4. Start and stop the Abjad IDE. Type start-abjad-idetools at the commandline.
+4. Create a scores directory. You can do this anywhere on your filesystem.
+
+    mkdir ~/Scores
+
+5. Open your Abjad IDE configuration file:
+
+    vi ~/.abjad/ide/ide.cfg
+
+Then add the path to your scores directory to your Abjad configuration file:
+
+    composer_scores_directory = ~/Scores
+
+6. Start and stop the Abjad IDE. Type start-abjad-idetools at the commandline.
 The Abjad IDE should start. What you see here probably won't be very
 interesting because you won't yet have any scores created on your system. But
-you should see three Abjad example scores as well as three or four menu
-options. The menu options allow you to manage scores, segments, materials and
-other assets. If the shell can't find start-abjad-idetools then make sure you
-added the scroremanager/scr/ directory to your PATH. After the Abjad IDE starts
-correctly enter 'q' to quit the Abjad IDE.
+you should see score management menu options. If the shell can't find
+start-abjad-idetools then go back and make sure you added the Abjad IDE scr/
+directory to your PATH. After the Abjad IDE starts correctly enter 'q' to quit
+the Abjad IDE.
 
-5. Run pytest against the abjad_ide directory. Fix or report tests that
-break.
+7. Run doctest against the ide directory.
 
-6. Build the Abjad IDE API. Run 'avj api -S' to do this.
+8. Run pytest against the die directory.
 
-7. Run doctest on the abjad_ide/ directory.  Run 'ajv doctest' in
-abjad_ide/ directory to do this. You're ready to use the Abjad IDE when
-all tests pass.
+9. Build the Abjad IDE API:
+
+    ajv api -I
+
+You're ready to use the Abjad IDE when the docs build and all tests pass.
 '''
 
 from ide.tools import idetools
