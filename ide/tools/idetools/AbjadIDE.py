@@ -4028,21 +4028,14 @@ class AbjadIDE(object):
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
-            timer = systemtools.Timer(print_continuously_from_background=5)
-            with timer:
-                result = self._io_manager.interpret_file(
-                    illustrate_path,
-                    strip=False,
-                    )
+            result = self._io_manager.interpret_file(
+                illustrate_path,
+                strip=False,
+                )
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
-            total_time = int(timer.elapsed_time)
-            unit = stringtools.pluralize('second', total_time)
-            message = 'total time: {} {}.'
-            message = message.format(total_time, unit)
-            self._io_manager._display(message)
             if not os.path.exists(illustration_pdf_path):
                 messages = []
                 messages.append('Wrote ...')
