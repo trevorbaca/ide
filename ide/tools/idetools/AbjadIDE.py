@@ -4028,7 +4028,7 @@ class AbjadIDE(object):
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
-            timer = systemtools.Timer(print_continuously_from_background=True)
+            timer = systemtools.Timer(print_continuously_from_background=5)
             with timer:
                 result = self._io_manager.interpret_file(
                     illustrate_path,
