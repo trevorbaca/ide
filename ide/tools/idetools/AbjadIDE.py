@@ -387,8 +387,7 @@ class AbjadIDE(object):
 
     def _collect_material_definition_files(self, example_scores=False):
         material_definition_files = []
-        material_directories = self._collect_canonical_directories(
-            'materials',
+        material_directories = self._collect_material_directories(
             example_scores=example_scores,
             )
         for material_directory in material_directories:
@@ -400,6 +399,22 @@ class AbjadIDE(object):
                 continue
             material_definition_files.append(material_definition_file)
         return material_definition_files
+
+    def _collect_material_directories(self, example_scores=False):
+        material_directories = []
+        materials_directories = self._collect_canonical_directories(
+            'materials',
+            example_scores=example_scores,
+            )
+        for materials_directory in materials_directories:
+            for name in os.listdir(materials_directory):
+                if not name[0].isalpha():
+                    continue
+                material_directory = os.path.join(materials_directory, name)
+                if not os.path.isdir(material_directory):
+                    continue
+                material_directories.append(material_directory)
+        return material_directories
 
     def _collect_outer_score_directories(self, example_scores=False):
         outer_score_directories = []
@@ -1731,8 +1746,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-        if not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        if not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -3451,22 +3466,27 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        example_scores = self._session.is_test
         if 'build' == path_or_directory_name:
-            files_ = self._collect_build_files()
+            files_ = self._collect_build_files(
+                example_scores=example_scores)
         elif 'distribution' == path_or_directory_name:
-            files_ = self._collect_distribution_files()
+            files_ = self._collect_distribution_files(
+                example_scores=example_scores)
         elif 'etc' == path_or_directory_name:
-            files_ = self._collect_etc_files()
+            files_ = self._collect_etc_files(example_scores=example_scores)
         elif 'makers' == path_or_directory_name:
-            files_ = self._collect_maker_files()
+            files_ = self._collect_maker_files(example_scores=example_scores)
         elif 'materials' in path_or_directory_name:
-            files_ = self._collect_material_definition_files()
+            files_ = self._collect_material_definition_files(
+                example_scores=example_scores)
         elif 'segments' in path_or_directory_name:
-            files_ = self._collect_segment_definition_files()
+            files_ = self._collect_segment_definition_files(
+                example_scores=example_scores)
         elif 'stylesheets' == path_or_directory_name:
-            files_ = self._collect_stylesheets()
+            files_ = self._collect_stylesheets(example_scores=example_scores)
         elif 'test' == path_or_directory_name:
-            files_ = self._collect_test_files()
+            files_ = self._collect_test_files(example_scores=example_scores)
         else:
             raise ValueError(path_or_directory_name)
         selector = self._io_manager._make_selector(
