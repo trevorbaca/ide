@@ -164,7 +164,7 @@ def test_AbjadIDE_check_package_08():
     lines = [
         'Top level (10 assets): OK',
         '8 of 8 required directories found:',
-        '5 of 5 required files found:',
+        '8 of 8 required files found:',
         'Build directory (18 files): OK',
         'Distribution directory (2 files): OK',
         'Makers directory (2 files): OK',

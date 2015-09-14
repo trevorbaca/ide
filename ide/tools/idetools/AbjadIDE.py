@@ -2801,10 +2801,28 @@ class AbjadIDE(object):
                 path = os.path.join(directory, materials_initializer)
                 if os.path.isfile(path):
                     required_files.append(path)
+            abbreviations_file = os.path.join(
+                'materials',
+                '__abbreviations__.py',
+                )
+            if abbreviations_file in REQUIRED_FILES:
+                path = os.path.join(directory, abbreviations_file)
+                if os.path.isfile(path):
+                    required_files.append(path)
         if 'segments' in names:
             segments_initializer = os.path.join('segments', '__init__.py')
             if segments_initializer in REQUIRED_FILES:
                 path = os.path.join(directory, segments_initializer)
+                if os.path.isfile(path):
+                    required_files.append(path)
+            metadata_file = os.path.join('segments', '__metadata__.py')
+            if metadata_file in REQUIRED_FILES:
+                path = os.path.join(directory, metadata_file)
+                if os.path.isfile(path):
+                    required_files.append(path)
+            views_file = os.path.join('segments', '__views__.py')
+            if views_file in REQUIRED_FILES:
+                path = os.path.join(directory, views_file)
                 if os.path.isfile(path):
                     required_files.append(path)
         for name in names:
