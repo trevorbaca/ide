@@ -274,6 +274,110 @@ class AbjadIDE(object):
             None,
             )
 
+    def _collect_inner_score_directories(self):
+        inner_score_directories = []
+        outer_score_directories = self._collect_outer_score_directories()
+        for outer_score_directory in outer_score_directories:
+            base_name = os.path.basename(outer_score_directory)
+            inner_score_directory = os.path.join(
+                outer_score_directory,
+                base_name,
+                )
+            if not os.path.isdir(inner_score_directory):
+                continue
+            inner_score_directories.append(inner_score_directory)
+        return inner_score_directories
+
+    def _collect_material_directories(self):
+        material_directories = []
+        materials_directories = self._collect_materials_directories()
+        for materials_directory in materials_directories:
+            for name in os.listdir(materials_directory):
+                if not name[0].isalpha():
+                    continue
+                material_directory = os.path.join(materials_directory, name)
+                if not os.path.isdir(material_directory):
+                    continue
+                material_directories.append(material_directory)
+        return material_directories
+
+    def _collect_materials_directories(self):
+        materials_directories = []
+        inner_score_directories = self._collect_inner_score_directories()
+        for inner_score_directory in inner_score_directories:
+            materials_directory = os.path.join(
+                inner_score_directory, 
+                'materials',
+                )
+            if not os.path.isdir(materials_directory):
+                pass
+            materials_directories.append(materials_directory)
+        return materials_directories
+
+    def _collect_material_definition_files(self):
+        material_definition_files = []
+        material_directories = self._collect_material_directories()
+        for material_directory in material_directories:
+            material_definition_file = os.path.join(
+                material_directory,
+                'definition.py',
+                )
+            if not os.path.isfile(material_definition_file):
+                continue
+            material_definition_files.append(material_definition_file)
+        return material_definition_files
+
+    def _collect_outer_score_directories(self):
+        outer_score_directories = []
+        scores_directory = configuration.composer_scores_directory
+        for name in os.listdir(scores_directory):
+            if not name[0].isalpha():
+                continue
+            outer_score_directory = os.path.join(scores_directory, name)
+            if not os.path.isdir(outer_score_directory):
+                continue
+            outer_score_directories.append(outer_score_directory)
+        return outer_score_directories
+            
+    def _collect_segment_directories(self):
+        segment_directories = []
+        segments_directories = self._collect_segments_directories()
+        for segments_directory in segments_directories:
+            for name in os.listdir(segments_directory):
+                if not name[0].isalpha():
+                    continue
+                segment_directory = os.path.join(segments_directory, name)
+                if not os.path.isdir(segment_directory):
+                    continue
+                segment_directories.append(segment_directory)
+        return segment_directories
+
+    def _collect_segments_directories(self):
+        segments_directories = []
+        inner_score_directories = self._collect_inner_score_directories()
+        for inner_score_directory in inner_score_directories:
+            segments_directory = os.path.join(
+                inner_score_directory, 
+                'segments',
+                )
+            if not os.path.isdir(segments_directory):
+                pass
+            segments_directories.append(segments_directory)
+        return segments_directories
+
+    def _collect_segment_definition_files(self):
+        segment_definition_files = []
+        segment_directories = self._collect_segment_directories()
+        for segment_directory in segment_directories:
+            segment_definition_file = os.path.join(
+                segment_directory,
+                'definition.py',
+                )
+            if not os.path.isfile(segment_definition_file):
+                continue
+            segment_definition_files.append(segment_definition_file)
+        return segment_definition_files
+
     def _collect_segment_files(self, score_directory, file_name):
         segments_directory = os.path.join(score_directory, 'segments')
         build_directory = os.path.join(score_directory, 'build')
@@ -3226,6 +3330,44 @@ class AbjadIDE(object):
                     target_name,
                     )
         self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+
+    @Command(
+        'from',
+        argument_names=('_path',),
+        file_='definition.py',
+        outside_score=False,
+        section='package',
+        )
+    def copy_definition_file(self, directory):
+        r'''Copies definition file from other package.
+
+        Returns none.
+        '''
+        if 'segments' in directory:
+            definition_files = self._collect_segment_definition_files()
+        elif 'materials' in directory:
+            definition_files = self._collect_material_definition_files()
+        else:
+            raise ValueError(directory)
+        selector = self._io_manager._make_selector(
+            items=definition_files,
+            )
+        source_path = selector._run(io_manager=self._io_manager)
+        if not source_path:
+            return
+        if source_path not in definition_files:
+            return
+        target_path = os.path.join(directory, 'definition.py')
+        messages = []
+        messages.append('will copy ...')
+        messages.append(' FROM: {}'.format(source_path))
+        messages.append('   TO: {}'.format(target_path))
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if not result:
+            return
+        shutil.copyfile(source_path, target_path)
         self._session._pending_redraw = True
 
     @Command('?', section='system')
