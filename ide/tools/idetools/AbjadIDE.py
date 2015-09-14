@@ -385,7 +385,7 @@ class AbjadIDE(object):
                 maker_files.append(maker_file)
         return maker_files
 
-    def _collect_material_definition_files(self, example_scores=False):
+    def _collect_material_files(self, example_scores=False):
         material_definition_files = []
         material_directories = self._collect_material_directories(
             example_scores=example_scores,
@@ -448,7 +448,7 @@ class AbjadIDE(object):
                 segment_directories.append(segment_directory)
         return segment_directories
 
-    def _collect_segment_definition_files(self, example_scores=False):
+    def _collect_segment_files(self, example_scores=False):
         segment_definition_files = []
         segment_directories = self._collect_segment_directories(
             example_scores=example_scores,
@@ -462,52 +462,6 @@ class AbjadIDE(object):
                 continue
             segment_definition_files.append(segment_definition_file)
         return segment_definition_files
-
-    def _collect_segment_files(self, score_directory, file_name):
-        segments_directory = os.path.join(score_directory, 'segments')
-        build_directory = os.path.join(score_directory, 'build')
-        directory_entries = sorted(os.listdir(segments_directory))
-        source_file_paths, target_file_paths = [], []
-        _, file_extension = os.path.splitext(file_name)
-        for directory_entry in directory_entries:
-            segment_directory = os.path.join(
-                segments_directory,
-                directory_entry,
-                )
-            if not os.path.isdir(segment_directory):
-                continue
-            source_file_path = os.path.join(
-                segment_directory,
-                file_name,
-                )
-            if not os.path.isfile(source_file_path):
-                continue
-            score_package = self._path_to_package(score_directory)
-            score_name = score_package.replace('_', '-')
-            directory_entry = directory_entry.replace('_', '-')
-            target_file_name = directory_entry + file_extension
-            target_file_path = os.path.join(
-                build_directory,
-                target_file_name,
-                )
-            source_file_paths.append(source_file_path)
-            target_file_paths.append(target_file_path)
-        if source_file_paths:
-            messages = []
-            messages.append('will copy ...')
-            pairs = zip(source_file_paths, target_file_paths)
-            for source_file_path, target_file_path in pairs:
-                message = ' FROM: {}'.format(source_file_path)
-                messages.append(message)
-                message = '   TO: {}'.format(target_file_path)
-                messages.append(message)
-            self._io_manager._display(messages)
-            if not self._io_manager._confirm():
-                return
-        if not os.path.exists(build_directory):
-            os.mkdir(build_directory)
-        pairs = zip(source_file_paths, target_file_paths)
-        return pairs
 
     def _collect_stylesheets(self, example_scores=False):
         stylesheets = []
@@ -828,6 +782,53 @@ class AbjadIDE(object):
             message = self._tab + path
             messages.append(message)
         return messages
+
+    def _gather_segment_files(self, score_directory, file_name):
+        segments_directory = os.path.join(score_directory, 'segments')
+        build_directory = os.path.join(score_directory, 'build')
+        directory_entries = sorted(os.listdir(segments_directory))
+        source_file_paths, target_file_paths = [], []
+        _, file_extension = os.path.splitext(file_name)
+        for directory_entry in directory_entries:
+            segment_directory = os.path.join(
+                segments_directory,
+                directory_entry,
+                )
+            if not os.path.isdir(segment_directory):
+                continue
+            source_file_path = os.path.join(
+                segment_directory,
+                file_name,
+                )
+            if not os.path.isfile(source_file_path):
+                continue
+            score_package = self._path_to_package(score_directory)
+            score_name = score_package.replace('_', '-')
+            directory_entry = directory_entry.replace('_', '-')
+            target_file_name = directory_entry + file_extension
+            target_file_path = os.path.join(
+                build_directory,
+                target_file_name,
+                )
+            source_file_paths.append(source_file_path)
+            target_file_paths.append(target_file_path)
+        if source_file_paths:
+            messages = []
+            messages.append('will copy ...')
+            pairs = zip(source_file_paths, target_file_paths)
+            for source_file_path, target_file_path in pairs:
+                message = ' FROM: {}'.format(source_file_path)
+                messages.append(message)
+                message = '   TO: {}'.format(target_file_path)
+                messages.append(message)
+            self._io_manager._display(messages)
+            if not self._io_manager._confirm():
+                return
+        if not os.path.exists(build_directory):
+            os.mkdir(build_directory)
+        pairs = zip(source_file_paths, target_file_paths)
+        return pairs
+
 
     def _get_added_asset_paths(self, path):
         paths = []
@@ -3314,7 +3315,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        pairs = self._collect_segment_files(
+        pairs = self._gather_segment_files(
             current_score_directory,
             'illustration.ly',
             )
@@ -3461,56 +3462,62 @@ class AbjadIDE(object):
         outside_score=False,
         section='global files',
         )
-    def copy_file(self, path_or_directory_name):
-        r'''Copies file from elsewhere.
+    def copy_external_asset(self, path_or_directory_name):
+        r'''Copies external asset.
 
         Returns none.
         '''
         example_scores = self._session.is_test
         if 'build' == path_or_directory_name:
-            files_ = self._collect_build_files(
+            assets_ = self._collect_build_files(
                 example_scores=example_scores)
         elif 'distribution' == path_or_directory_name:
-            files_ = self._collect_distribution_files(
+            assets_ = self._collect_distribution_files(
                 example_scores=example_scores)
         elif 'etc' == path_or_directory_name:
-            files_ = self._collect_etc_files(example_scores=example_scores)
+            assets_ = self._collect_etc_files(example_scores=example_scores)
         elif 'makers' == path_or_directory_name:
-            files_ = self._collect_maker_files(example_scores=example_scores)
+            assets_ = self._collect_maker_files(example_scores=example_scores)
+        elif 'materials' == path_or_directory_name:
+            assets_ = self._collect_material_directories(
+                example_scores=example_scores)
         elif 'materials' in path_or_directory_name:
-            files_ = self._collect_material_definition_files(
+            assets_ = self._collect_material_files(
+                example_scores=example_scores)
+        elif 'segments' == path_or_directory_name:
+            assets_ = self._collect_segment_directories(
                 example_scores=example_scores)
         elif 'segments' in path_or_directory_name:
-            files_ = self._collect_segment_definition_files(
+            assets_ = self._collect_segment_files(
                 example_scores=example_scores)
         elif 'stylesheets' == path_or_directory_name:
-            files_ = self._collect_stylesheets(example_scores=example_scores)
+            assets_ = self._collect_stylesheets(example_scores=example_scores)
         elif 'test' == path_or_directory_name:
-            files_ = self._collect_test_files(example_scores=example_scores)
+            assets_ = self._collect_test_files(example_scores=example_scores)
         else:
             raise ValueError(path_or_directory_name)
         selector = self._io_manager._make_selector(
-            items=files_,
+            items=assets_,
             )
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
             return
-        if source_path not in files_:
+        if source_path not in assets_:
             return
-        file_name = os.path.basename(source_path)
+        asset_name = os.path.basename(source_path)
         if os.path.sep in path_or_directory_name:
             target_path = os.path.join(
                 path_or_directory_name,
-                file_name,
+                asset_name,
                 )
         else:
             current_score_directory = self._session.current_score_directory
             directory_name = os.path.basename(path_or_directory_name)
-            file_name = os.path.basename(source_path)
+            asset_name = os.path.basename(source_path)
             target_path = os.path.join(
                 current_score_directory,
                 directory_name,
-                file_name,
+                asset_name,
                 )
         messages = []
         messages.append('will copy ...')
