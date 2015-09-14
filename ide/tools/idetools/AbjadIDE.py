@@ -2030,11 +2030,12 @@ class AbjadIDE(object):
         return string
 
     def _path_to_directory_name(self, path):
+        if (self._is_score_package_outer_path(path) or
+            self._is_score_package_inner_path(path)):
+            return 'score'
         for part in reversed(path.split(os.path.sep)):
             if part in self._known_directory_names:
                 return part
-            if part == 'scores':
-                return 'score'
         raise ValueError(path)
 
     def _path_to_menu_header(self, path):
