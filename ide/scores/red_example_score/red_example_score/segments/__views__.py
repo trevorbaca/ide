@@ -3,13 +3,4 @@ from abjad import *
 from ide.tools import idetools
 
 
-view_inventory=idetools.ViewInventory(
-    [
-        (
-            'backward',
-            idetools.View(
-                ['C', 'B', 'A']
-                ),
-            ),
-        ]
-    )
+view_inventory = idetools.ViewInventory([])

@@ -64,7 +64,6 @@ class AbjadIDE(object):
         'materials': {
             'optional_directories': (
                 '__pycache__',
-                'test',
                 ),
             'optional_files': (
                 '__illustrate__.py',
@@ -98,14 +97,16 @@ class AbjadIDE(object):
                 '__init__.py',
                 '__metadata__.py',
                 os.path.join('makers', '__init__.py'),
+                os.path.join('materials', '__abbreviations__.py'),
                 os.path.join('materials', '__init__.py'),
                 os.path.join('segments', '__init__.py'),
+                os.path.join('segments', '__metadata__.py'),
+                os.path.join('segments', '__views__.py'),
                 ),
             },
         'segments': {
             'optional_directories': (
                 '__pycache__',
-                'test',
                 ),
             'optional_files': (
                 'illustration.ly',
@@ -2679,10 +2680,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-#        if not paths:
-#            package_type = None
-#        else:
-#            package_type = paths[0].split(os.path.sep)[-2]
         messages = []
         missing_directories, missing_files = [], []
         supplied_directories, supplied_files = [], []
@@ -3024,6 +3021,14 @@ class AbjadIDE(object):
                 source_path = os.path.join(
                     configuration.abjad_ide_boilerplate_directory,
                     'definition.py',
+                    )
+                with open(source_path, 'r') as file_pointer:
+                    lines = file_pointer.readlines()
+                lines = [_.strip() for _ in lines]
+            elif missing_file.endswith('__abbreviations__.py'):
+                source_path = os.path.join(
+                    configuration.abjad_ide_boilerplate_directory,
+                    '__abbreviations__.py',
                     )
                 with open(source_path, 'r') as file_pointer:
                     lines = file_pointer.readlines()
