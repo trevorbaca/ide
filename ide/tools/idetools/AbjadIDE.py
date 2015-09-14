@@ -3266,7 +3266,7 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     @Command(
-        'de',
+        'e',
         argument_names=('_path',),
         file_='definition.py',
         outside_score=False,
