@@ -301,6 +301,34 @@ class AbjadIDE(object):
             inner_score_directories.append(inner_score_directory)
         return inner_score_directories
 
+    def _collect_makers_directories(self, example_scores=False):
+        makers_directories = []
+        inner_score_directories = self._collect_inner_score_directories(
+            example_scores=example_scores,
+            )
+        for inner_score_directory in inner_score_directories:
+            makers_directory = os.path.join(inner_score_directory, 'makers')
+            if os.path.isdir(makers_directory):
+                makers_directories.append(makers_directory)
+        return makers_directories
+
+    def _collect_maker_files(self, example_scores=False):
+        maker_files = []
+        makers_directories = self._collect_makers_directories(
+            example_scores=example_scores,
+            )
+        for makers_directory in makers_directories:
+            for name in os.listdir(makers_directory):
+                if not name[0].isalpha():
+                    continue
+                if not name.endswith('.py'):
+                    continue
+                maker_file = os.path.join(makers_directory, name)
+                if not os.path.isfile(maker_file):
+                    continue
+                maker_files.append(maker_file)
+        return maker_files
+
     def _collect_material_directories(self, example_scores=False):
         material_directories = []
         materials_directories = self._collect_materials_directories(
@@ -1181,7 +1209,10 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
-            if '_path' in command.argument_names:
+            if 'path_or_directory_name' in command.argument_names:
+                argument = _path or directory_name
+                command(argument)
+            elif '_path' in command.argument_names:
                 command(_path)
             elif 'directory_name' in command.argument_names:
                 command(directory_name)
@@ -3366,31 +3397,39 @@ class AbjadIDE(object):
 
     @Command(
         'from',
-        argument_names=('_path',),
-        file_='definition.py',
+        argument_names=('path_or_directory_name',),
         outside_score=False,
-        section='package',
+        section='global files',
         )
-    def copy_definition_file(self, directory):
-        r'''Copies definition file from other package.
+    def copy_definition_file(self, path_or_directory_name):
+        r'''Copies file from other package.
 
         Returns none.
         '''
-        if 'segments' in directory:
-            definition_files = self._collect_segment_definition_files()
-        elif 'materials' in directory:
-            definition_files = self._collect_material_definition_files()
+        if 'makers' == path_or_directory_name:
+            files_ = self._collect_maker_files()
+        elif 'materials' in path_or_directory_name:
+            files_ = self._collect_material_definition_files()
+        elif 'segments' in path_or_directory_name:
+            files_ = self._collect_segment_definition_files()
         else:
-            raise ValueError(directory)
+            raise ValueError(path_or_directory_name)
         selector = self._io_manager._make_selector(
-            items=definition_files,
+            items=files_,
             )
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
             return
-        if source_path not in definition_files:
+        if source_path not in files_:
             return
-        target_path = os.path.join(directory, 'definition.py')
+        current_score_directory = self._session.current_score_directory
+        directory_name = os.path.basename(path_or_directory_name)
+        file_name = os.path.basename(source_path)
+        target_path = os.path.join(
+            current_score_directory,
+            directory_name,
+            file_name,
+            )
         messages = []
         messages.append('will copy ...')
         messages.append(' FROM: {}'.format(source_path))
