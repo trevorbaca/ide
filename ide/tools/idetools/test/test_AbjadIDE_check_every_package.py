@@ -12,16 +12,6 @@ def test_AbjadIDE_check_every_package_01():
     '''
 
     lines = [
-        'Étude Example Score (2013):',
-        '    Top level (10 assets): OK',
-        '    Build directory (1 files): OK',
-        '    Distribution directory (0 files): OK',
-        '    Etc directory (0 files): OK',
-        '    Makers directory (0 files): OK',
-        '    Materials directory (0 packages): OK',
-        '    Segments directory (0 packages): OK',
-        '    Stylesheets directory (0 files): OK',
-        '    Test directory (1 files): OK',
         'Red Example Score (2013):',
         '    Top level (10 assets): OK',
         '    Build directory (18 files): OK',
