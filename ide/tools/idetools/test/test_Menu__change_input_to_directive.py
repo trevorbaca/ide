@@ -5,30 +5,6 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_Menu__change_input_to_directive_01():
-    r'''Works with accented characters.
-    '''
-
-    input_ = 'étude q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    string = 'Étude Example Score (2013)'
-    assert string in contents
-
-
-def test_Menu__change_input_to_directive_02():
-    r'''Works without accented characters.
-    '''
-
-    input_ = 'etude q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    string = 'Étude Example Score (2013)'
-    assert string in contents
-
-
-def test_Menu__change_input_to_directive_03():
     r'''Works with mixed case.
     '''
 
@@ -40,7 +16,7 @@ def test_Menu__change_input_to_directive_03():
     assert string in contents
 
 
-def test_Menu__change_input_to_directive_04():
+def test_Menu__change_input_to_directive_02():
     r'''Works with mixed case.
     '''
 
@@ -52,7 +28,7 @@ def test_Menu__change_input_to_directive_04():
     assert string in contents
 
 
-def test_Menu__change_input_to_directive_05():
+def test_Menu__change_input_to_directive_03():
     r'''Works with mixed case.
     '''
 
@@ -64,7 +40,7 @@ def test_Menu__change_input_to_directive_05():
     assert string in contents
 
 
-def test_Menu__change_input_to_directive_06():
+def test_Menu__change_input_to_directive_04():
     r'''Works with mixed case.
     '''
 
@@ -76,7 +52,7 @@ def test_Menu__change_input_to_directive_06():
     assert string in contents
 
 
-def test_Menu__change_input_to_directive_07():
+def test_Menu__change_input_to_directive_05():
     r'''Material that is list of numbers does not aliases numeric assets entry.
 
     The '1' in the input below is correctly interpret as the __init__.py file,
