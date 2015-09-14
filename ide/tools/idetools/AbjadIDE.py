@@ -386,19 +386,19 @@ class AbjadIDE(object):
         return maker_files
 
     def _collect_material_files(self, example_scores=False):
-        material_definition_files = []
+        material_files = []
         material_directories = self._collect_material_directories(
             example_scores=example_scores,
             )
         for material_directory in material_directories:
-            material_definition_file = os.path.join(
-                material_directory,
-                'definition.py',
-                )
-            if not os.path.isfile(material_definition_file):
-                continue
-            material_definition_files.append(material_definition_file)
-        return material_definition_files
+            for name in os.listdir(material_directory):
+                if not name[0].isalpha():
+                    continue
+                if name.endswith('.pyc'):
+                    continue
+                material_file = os.path.join(material_directory, name)
+                material_files.append(material_file)
+        return material_files
 
     def _collect_material_directories(self, example_scores=False):
         material_directories = []
@@ -449,19 +449,19 @@ class AbjadIDE(object):
         return segment_directories
 
     def _collect_segment_files(self, example_scores=False):
-        segment_definition_files = []
+        segment_files = []
         segment_directories = self._collect_segment_directories(
             example_scores=example_scores,
             )
         for segment_directory in segment_directories:
-            segment_definition_file = os.path.join(
-                segment_directory,
-                'definition.py',
-                )
-            if not os.path.isfile(segment_definition_file):
-                continue
-            segment_definition_files.append(segment_definition_file)
-        return segment_definition_files
+            for name in os.listdir(segment_directory):
+                if not name[0].isalpha():
+                    continue
+                if name.endswith('.pyc'):
+                    continue
+                segment_file = os.path.join(segment_directory, name)
+                segment_files.append(segment_file)
+        return segment_files
 
     def _collect_stylesheets(self, example_scores=False):
         stylesheets = []
