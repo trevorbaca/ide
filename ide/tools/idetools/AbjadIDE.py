@@ -1690,11 +1690,6 @@ class AbjadIDE(object):
         path = self._get_available_path_in_directory(new_directory)
         if not path:
             return
-        message = 'path will be {}.'.format(path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if not result:
-            return
         new_path = self._populate_package(path)
         new_path = new_path or path
         paths = self._list_visible_asset_paths(directory_name)
