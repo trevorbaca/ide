@@ -151,6 +151,36 @@ def test_AbjadIDE_copy_external_asset_05():
 
 
 def test_AbjadIDE_copy_external_asset_06():
+    r'''Copies package between materials directories.
+    '''
+
+    source_package = os.path.join(
+        scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        'magic_numbers',
+        )
+    source_package = os.path.normpath(source_package)
+    target_package = os.path.join(
+        scores_directory,
+        'blue_example_score',
+        'blue_example_score',
+        'materials',
+        'magic_numbers',
+        )
+
+    with systemtools.FilesystemState(keep=[scores_directory]):
+        assert os.path.isdir(source_package)
+        assert not os.path.exists(target_package)
+        input_ = 'Blue~Example~Score m from'
+        input_ += ' {}'.format(source_package)
+        input_ += ' y q'
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(target_package)
+
+
+def test_AbjadIDE_copy_external_asset_07():
     r'''Copies file between segment directories.
     '''
 
@@ -181,7 +211,37 @@ def test_AbjadIDE_copy_external_asset_06():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_07():
+def test_AbjadIDE_copy_external_asset_08():
+    r'''Copies package between segments directories.
+    '''
+
+    source_package = os.path.join(
+        scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_03',
+        )
+    source_package = os.path.normpath(source_package)
+    target_package = os.path.join(
+        scores_directory,
+        'blue_example_score',
+        'blue_example_score',
+        'segments',
+        'segment_03',
+        )
+
+    with systemtools.FilesystemState(keep=[scores_directory]):
+        assert os.path.isdir(source_package)
+        assert not os.path.exists(target_package)
+        input_ = 'Blue~Example~Score g from'
+        input_ += ' {}'.format(source_package)
+        input_ += ' y q'
+        abjad_ide._run_main_menu(input_=input_)
+        assert os.path.exists(target_package)
+
+
+def test_AbjadIDE_copy_external_asset_09():
     r'''Copies file between stylesheets directories.
     '''
 
@@ -209,7 +269,7 @@ def test_AbjadIDE_copy_external_asset_07():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_08():
+def test_AbjadIDE_copy_external_asset_10():
     r'''Copies file between test directories.
     '''
 

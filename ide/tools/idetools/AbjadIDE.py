@@ -1747,8 +1747,8 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-        if not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+#        if not self._session.is_test:
+#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -3527,7 +3527,12 @@ class AbjadIDE(object):
         result = self._io_manager._confirm()
         if not result:
             return
-        shutil.copyfile(source_path, target_path)
+        if os.path.isfile(source_path):
+            shutil.copyfile(source_path, target_path)
+        elif os.path.isdir(source_path):
+            shutil.copytree(source_path, target_path)
+        else:
+            raise ValueError(source_path)
         self._session._pending_redraw = True
 
     @Command('?', section='system')
