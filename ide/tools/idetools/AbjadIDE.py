@@ -52,7 +52,7 @@ class AbjadIDE(object):
     _directory_name_to_navigation_command_name = {
         'build': 'u',
         'distribution': 'd',
-        'etc': 'e',
+        'etc': 'c',
         'makers': 'k',
         'materials': 'm',
         'segments': 'g',
@@ -130,7 +130,7 @@ class AbjadIDE(object):
 
     _navigation_command_name_to_directory_name = {
         'd': 'distribution',
-        'e': 'etc',
+        'c': 'etc',
         'g': 'segments',
         'k': 'makers',
         'm': 'materials',
@@ -3892,7 +3892,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('distribution')
 
     @Command(
-        'e',
+        'c',
         argument_names=('_path',),
         outside_score=False,
         section='navigation',
