@@ -274,6 +274,17 @@ class AbjadIDE(object):
             None,
             )
 
+    def _collect_files(self, example_scores=False):
+        outer_score_directories = self._collect_outer_score_directories()
+        files_ = []
+        for outer_score_directory in outer_score_directories:
+            triples = os.walk(outer_score_directory)
+            for root, directory_names, file_names in triples:
+                for file_name in file_names:
+                    file_ = os.path.join(root, file_name)
+                    files_.append(file_)
+        return files_
+
     def _collect_inner_score_directories(self, example_scores=False):
         inner_score_directories = []
         outer_score_directories = self._collect_outer_score_directories(
@@ -1864,24 +1875,66 @@ class AbjadIDE(object):
             configuration.composer_scores_directory,
             package_name,
             )
-        new_path = self._populate_package(score_directory)
-        score_directory = new_path or score_directory
-        self._add_metadatum(
-            score_directory,
-            'title',
-            title,
-            )
+        if os.path.exists(score_directory):
+            message = 'directory already exists: {}.'
+            message = message.format(score_directory)
+            self._io_manager._display(message)
+            return
         year = datetime.date.today().year
-        self._add_metadatum(
-            score_directory,
-            'year',
+        self._make_score_package_improved(
+            package_name,
+            title,
             year,
+            configuration.composer_full_name,
+            configuration.composer_email,
+            configuration.composer_github_username,
             )
-        directories = self._list_visible_asset_paths('scores')
-        if score_directory not in directories:
-            with self._io_manager._silent():
-                self._clear_view('scores')
+        self._clear_view('scores')
+        score_directory = os.path.join(score_directory, package_name)
         self._run_package_manager_menu(score_directory)
+
+    def _make_score_package_improved(
+        self,
+        score_package_name,
+        score_title,
+        year,
+        composer_full_name,
+        composer_email,
+        composer_github_username,
+        ):
+        source_path = os.path.join(
+            configuration.abjad_boilerplate_directory,
+            'example_score',
+            )
+        target_path = os.path.join(
+            configuration.composer_scores_directory, 
+            score_package_name,
+            )
+        shutil.copytree(source_path, target_path)
+        old_inner_score_directory = os.path.join(
+            target_path,
+            'example_score',
+            )
+        new_inner_score_directory = os.path.join(
+            target_path,
+            score_package_name,
+            )
+        shutil.move(old_inner_score_directory, new_inner_score_directory)
+        files_ = self._collect_files(target_path)
+        files_ = [_ for _ in files_ if _.startswith(target_path)]
+        for file_ in files_:
+            with open(file_, 'r') as file_pointer:
+                template = file_pointer.read()
+            completed_template = template.format(
+                score_package_name=score_package_name,
+                composer_email=composer_email,
+                composer_full_name=composer_full_name,
+                composer_github_username=composer_github_username,
+                score_title=score_title,
+                year=year,
+                )
+            with open(file_, 'w') as file_pointer:
+                file_pointer.write(completed_template)
 
     def _make_secondary_asset_menu_entries(self, directory_path):
         menu_entries = []
