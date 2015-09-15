@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_check_every_definition_file_01():
+def test_AbjadIDE_check_every_definition_01():
 
     input_ = 'red~example~score m dc* y q'
     abjad_ide._run_main_menu(input_=input_)
@@ -40,7 +40,7 @@ def test_AbjadIDE_check_every_definition_file_01():
         assert confirmation_message in contents
 
 
-def test_AbjadIDE_check_every_definition_file_02():
+def test_AbjadIDE_check_every_definition_02():
 
     input_ = 'red~example~score g dc* y q'
     abjad_ide._run_main_menu(input_=input_)
