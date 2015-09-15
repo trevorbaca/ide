@@ -2980,7 +2980,7 @@ class AbjadIDE(object):
         'ck',
         argument_names=('_path',),
         outside_score=False,
-        file_='__init__.py',
+        in_score_directory_only=True,
         section='package',
         )
     def check_package(
