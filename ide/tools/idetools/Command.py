@@ -43,6 +43,7 @@ class Command(object):
         in_score=True,
         in_score_directory_only=False,
         is_hidden=True,
+        never_in_score_directory=False,
         outside_score=True,
         parent_directories=None,
         section=None,
@@ -65,6 +66,8 @@ class Command(object):
         self.in_score_directory_only = in_score_directory_only
         assert isinstance(is_hidden, bool), repr(is_hidden)
         self.is_hidden = is_hidden
+        assert isinstance(never_in_score_directory, bool)
+        self.never_in_score_directory = never_in_score_directory
         assert isinstance(outside_score, bool) or outside_score == 'home'
         self.outside_score = outside_score
         parent_directories = parent_directories or ()
@@ -94,6 +97,7 @@ class Command(object):
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
         method.outside_score = self.outside_score
+        method.never_in_score_directory = self.never_in_score_directory
         method.parent_directories = self.parent_directories
         method.section = self.section
         return method

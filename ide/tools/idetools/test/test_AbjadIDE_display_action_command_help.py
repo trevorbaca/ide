@@ -90,6 +90,11 @@ def test_AbjadIDE_display_action_command_help_05():
         '    interpret illustration ly (ii)',
         '    open illustration pdf (io)',
         '',
+        '    copy (cp)',
+        '    new (new)',
+        '    remove (rm)',
+        '    rename (ren)',
+        '',
         '>',
     ]
 
@@ -123,6 +128,11 @@ def test_AbjadIDE_display_action_command_help_06():
         '    illustrate definition (i)',
         '    interpret illustration ly (ii)',
         '    open illustration pdf (io)',
+        '',
+        '    copy (cp)',
+        '    new (new)',
+        '    remove (rm)',
+        '    rename (ren)',
         '',
         '>',
     ]

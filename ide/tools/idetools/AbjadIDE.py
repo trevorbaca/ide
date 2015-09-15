@@ -1822,6 +1822,8 @@ class AbjadIDE(object):
                 continue
             if method_.in_score_directory_only and not is_in_score_directory:
                 continue
+            if method_.never_in_score_directory and is_in_score_directory:
+                continue
             methods.append(method_)
         method_groups = {}
         for method in methods:
@@ -1898,7 +1900,11 @@ class AbjadIDE(object):
                 directory_name,
                 directory=current_path,
                 )
-        self._make_command_menu_sections(menu, directory_name, current_path=current_path)
+        self._make_command_menu_sections(
+            menu, 
+            directory_name, 
+            current_path=current_path,
+            )
         return menu
 
     def _make_package(self, directory_name):
@@ -3337,19 +3343,9 @@ class AbjadIDE(object):
     @Command(
         'cp',
         argument_names=('directory_name',),
-        directories=(
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'scores',
-            'segments',
-            'stylesheets',
-            'test',
-            ),
-        section='basic',
         is_hidden=False,
+        never_in_score_directory=True,
+        section='basic',
         )
     def copy(self, directory_name):
         r'''Copies asset.
@@ -4600,19 +4596,8 @@ class AbjadIDE(object):
     @Command(
         'new',
         argument_names=('directory_name',),
-        directories=(
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'scores',
-            'segments',
-            'stylesheets',
-            'test',
-            ),
-        description='new',
         is_hidden=False,
+        never_in_score_directory=True,
         section='basic',
         )
     def new(self, directory_name):
@@ -4778,18 +4763,8 @@ class AbjadIDE(object):
     @Command(
         'rm',
         argument_names=('directory_name',),
-        directories=(
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'scores',
-            'segments',
-            'stylesheets',
-            'test',
-            ),
         is_hidden=False,
+        never_in_score_directory=True,
         section='basic',
         )
     def remove(self, directory_name):
@@ -4835,24 +4810,11 @@ class AbjadIDE(object):
     @Command(
         'ren',
         argument_names=('directory_name',),
-        directories=(
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'scores',
-            'segments',
-            'stylesheets',
-            'test',
-            ),
         is_hidden=False,
+        never_in_score_directory=True,
         section='basic',
         )
-    def rename(
-        self,
-        directory_name,
-        ):
+    def rename(self, directory_name):
         r'''Renames asset.
 
         Returns none.
