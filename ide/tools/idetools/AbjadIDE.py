@@ -3611,19 +3611,19 @@ class AbjadIDE(object):
         self._io_manager.edit(illustrate_py_path)
 
     @Command(
-        'ie',
+        'eis',
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='package',
         )
-    def edit_illustration_ly(self, directory):
+    def edit_illustration_source(self, directory):
         r'''Opens ``illustration.ly``.
 
         Returns none.
         '''
-        illustration_ly_path = os.path.join(directory, 'illustration.ly')
-        self._io_manager.open_file(illustration_ly_path)
+        illustration_source_path = os.path.join(directory, 'illustration.ly')
+        self._io_manager.open_file(illustration_source_path)
 
     @Command(
         'sty',
@@ -4308,7 +4308,7 @@ class AbjadIDE(object):
         for path in temporary_files:
             if os.path.exists(path):
                 os.remove(path)
-        illustration_ly_path = os.path.join(
+        illustration_source_path = os.path.join(
             directory,
             'illustration.ly',
             )
@@ -4319,7 +4319,7 @@ class AbjadIDE(object):
         inputs, outputs = [], []
         if dry_run:
             inputs.append(definition_path)
-            outputs.append((illustration_ly_path, illustration_pdf_path))
+            outputs.append((illustration_source_path, illustration_pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
@@ -4351,8 +4351,8 @@ class AbjadIDE(object):
                 messages = []
                 messages.append('Wrote ...')
                 if os.path.exists(candidate_ly_path):
-                    shutil.move(candidate_ly_path, illustration_ly_path)
-                    messages.append(self._tab + illustration_ly_path)
+                    shutil.move(candidate_ly_path, illustration_source_path)
+                    messages.append(self._tab + illustration_source_path)
                 if os.path.exists(candidate_pdf_path):
                     shutil.move(candidate_pdf_path, illustration_pdf_path)
                     messages.append(self._tab + illustration_pdf_path)
@@ -4378,7 +4378,7 @@ class AbjadIDE(object):
                     if not result:
                         return
                     try:
-                        shutil.move(candidate_ly_path, illustration_ly_path)
+                        shutil.move(candidate_ly_path, illustration_source_path)
                     except IOError:
                         pass
                     try:
@@ -4437,7 +4437,7 @@ class AbjadIDE(object):
         outside_score=False,
         section='star',
         )
-    def interpret_every_illustration_ly(
+    def interpret_every_illustration_source(
         self,
         directories,
         open_every_illustration_pdf=True,
@@ -4449,9 +4449,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         inputs, outputs = [], []
-        method_name = 'interpret_illustration_ly'
+        method_name = 'interpret_illustration_source'
         for directory in directories:
-            inputs_, outputs_ = self.interpret_illustration_ly(
+            inputs_, outputs_ = self.interpret_illustration_source(
                 directory,
                 dry_run=True,
                 )
@@ -4465,7 +4465,7 @@ class AbjadIDE(object):
         for directory in directories:
             with self._io_manager._silent():
                 subprocess_messages, candidate_messages = \
-                    self.interpret_illustration_ly(directory)
+                    self.interpret_illustration_source(directory)
             if subprocess_messages:
                 self._io_manager._display(subprocess_messages)
                 self._io_manager._display(candidate_messages)
@@ -4526,7 +4526,7 @@ class AbjadIDE(object):
         for path in temporary_files:
             if os.path.exists(path):
                 os.remove(path)
-        illustration_ly_path = os.path.join(
+        illustration_source_path = os.path.join(
             directory,
             'illustration.ly',
             )
@@ -4537,7 +4537,7 @@ class AbjadIDE(object):
         inputs, outputs = [], []
         if dry_run:
             inputs.append(definition_path)
-            outputs.append((illustration_ly_path, illustration_pdf_path))
+            outputs.append((illustration_source_path, illustration_pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             result = self._io_manager.interpret_file(
@@ -4552,8 +4552,8 @@ class AbjadIDE(object):
                 messages = []
                 messages.append('Wrote ...')
                 if os.path.exists(candidate_ly_path):
-                    shutil.move(candidate_ly_path, illustration_ly_path)
-                    messages.append(self._tab + illustration_ly_path)
+                    shutil.move(candidate_ly_path, illustration_source_path)
+                    messages.append(self._tab + illustration_source_path)
                 if os.path.exists(candidate_pdf_path):
                     shutil.move(candidate_pdf_path, illustration_pdf_path)
                     messages.append(self._tab + illustration_pdf_path)
@@ -4579,7 +4579,7 @@ class AbjadIDE(object):
                     if not result:
                         return
                     try:
-                        shutil.move(candidate_ly_path, illustration_ly_path)
+                        shutil.move(candidate_ly_path, illustration_source_path)
                     except IOError:
                         pass
                     try:
@@ -4588,13 +4588,13 @@ class AbjadIDE(object):
                         pass
 
     @Command(
-        'ii',
+        'iis',
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='package',
         )
-    def interpret_illustration_ly(self, directory, dry_run=False):
+    def interpret_illustration_source(self, directory, dry_run=False):
         r'''Interprets ``illustration.ly``.
 
         Makes ``illustration.pdf``.
@@ -4602,17 +4602,17 @@ class AbjadIDE(object):
         Returns pair. List of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
-        illustration_ly_path = os.path.join(directory, 'illustration.ly')
+        illustration_source_path = os.path.join(directory, 'illustration.ly')
         illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
         inputs, outputs = [], []
-        if os.path.isfile(illustration_ly_path):
-            inputs.append(illustration_ly_path)
+        if os.path.isfile(illustration_source_path):
+            inputs.append(illustration_source_path)
             outputs.append((illustration_pdf_path,))
         if dry_run:
             return inputs, outputs
-        if not os.path.isfile(illustration_ly_path):
+        if not os.path.isfile(illustration_source_path):
             message = 'the file {} does not exist.'
-            message = message.format(illustration_ly_path)
+            message = message.format(illustration_source_path)
             self._io_manager._display(message)
             return [], []
         messages = self._format_messaging(inputs, outputs)
@@ -4620,7 +4620,7 @@ class AbjadIDE(object):
         result = self._io_manager._confirm()
         if not result:
             return [], []
-        result = self._io_manager.run_lilypond(illustration_ly_path)
+        result = self._io_manager.run_lilypond(illustration_source_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
 

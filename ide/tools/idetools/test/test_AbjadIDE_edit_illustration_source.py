@@ -4,9 +4,9 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_open_illustration_ly_01():
+def test_AbjadIDE_edit_illustration_source_01():
 
-    input_ = 'red~example~score m magic~numbers ie q'
+    input_ = 'red~example~score g A eis q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

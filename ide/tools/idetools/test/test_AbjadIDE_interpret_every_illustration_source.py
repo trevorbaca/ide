@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_interpret_every_illustration_ly_01():
+def test_AbjadIDE_interpret_every_illustration_source_01():
     r'''Does not display candidate messages for materials.
     '''
 
@@ -50,7 +50,7 @@ def test_AbjadIDE_interpret_every_illustration_ly_01():
     assert not 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_ly_02():
+def test_AbjadIDE_interpret_every_illustration_source_02():
     r'''Does display candidate messages for materials.
     '''
 
@@ -96,7 +96,7 @@ def test_AbjadIDE_interpret_every_illustration_ly_02():
     assert 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_ly_03():
+def test_AbjadIDE_interpret_every_illustration_source_03():
     r'''Does not display candidate messages for segments.
     '''
 
@@ -140,7 +140,7 @@ def test_AbjadIDE_interpret_every_illustration_ly_03():
     assert not 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_ly_04():
+def test_AbjadIDE_interpret_every_illustration_source_04():
     r'''Does display candidate messages for segments.
     '''
 

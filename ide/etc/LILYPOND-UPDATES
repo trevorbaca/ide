@@ -44,7 +44,7 @@ fail:
 
     test_BuildFileWrangler_interpret_music.py
     test_SegmentPackageManager_illustrate_definition.py
-    test_SegmentPackageWrangler_interpret_every_illustration_ly.py
+    test_SegmentPackageWrangler_interpret_every_illustration_source.py
 
 ###############################################################################
 ###############################################################################
@@ -96,14 +96,14 @@ The download a new LilyPond binary from www.lilypond.org.
 The following four IDE tests will fail:
 
     1 FAIL test_BuildFileWrangler_interpret_music_02
-    2 FAIL test_MaterialPackageWrangler_interpret_every_illustration_ly_02
+    2 FAIL test_MaterialPackageWrangler_interpret_every_illustration_source_02
     3 FAIL test_SegmentPackageManager_illustrate_definition_02
-    4 FAIL test_SegmentPackageWrangler_interpret_every_illustration_ly_02
+    4 FAIL test_SegmentPackageWrangler_interpret_every_illustration_source_02
 
 ###############################################################################
 
 You can fix  ...
-    test_SegmentPackageWrangler_interpret_every_illustration_ly_02
+    test_SegmentPackageWrangler_interpret_every_illustration_source_02
 ... by running (red~example~score g ii*).
 This modifies ...
     scores/red_example_score/segments/segment_01/illustration.pdf
@@ -116,7 +116,7 @@ you will find that more tests fail than before:
 
     1 FAIL test_BuildFileWrangler_collect_segment_pdfs_01 [N]
     2 FAIL test_BuildFileWrangler_interpret_music_02 [P]
-    3 FAIL test_MaterialPackageWrangler_interpret_every_illustration_ly_02 [P]
+    3 FAIL test_MaterialPackageWrangler_interpret_every_illustration_source_02 [P]
     4 FAIL test_ScorePackageManager_display_status_01 [*]
     5 FAIL test_SegmentPackageManager_display_status_01 [*]
     6 FAIL test_SegmentPackageManager_version_package_01 [N]
@@ -143,7 +143,7 @@ Finally, note that the test ...
 
 We will proceed without checking in the three artifacts changed so far.
 For our second step we will attempt to fix ...
-    test_MaterialPackageWrangler_interpret_every_illustration_ly_02
+    test_MaterialPackageWrangler_interpret_every_illustration_source_02
 ... by running (red~example~score m ii* y q).
 This does indeed fix the test.
 This also causes the files ...
