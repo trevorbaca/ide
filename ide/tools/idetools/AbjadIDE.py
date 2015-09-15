@@ -3761,21 +3761,23 @@ class AbjadIDE(object):
         section='package',
         )
     def generate_illustrate_py(self, directory):
-        r'''Generates ``__illustrate.py__``.
+        r'''Generates custom illustrate file in material package.
 
         Returns none.
         '''
         illustrate_py_path = os.path.join(directory, '__illustrate__.py')
-        message = 'will generate {}.'
-        message = message.format(illustrate_py_path)
-        self._io_manager._display(message)
-        result = self._io_manager._confirm()
-        if not result:
-            return
+        score_directory = self._path_to_score_directory(directory)
+        score_package_name = os.path.basename(score_directory)
+        material_package_name = os.path.basename(directory)
         lines = []
+        lines.append(self._unicode_directive)
         lines.append(self._abjad_import_statement)
-        line = 'from output import {}'
-        line = line.format(os.path.basename(directory))
+        line = 'from {score_package_name}.materials.{material_package_name}.'
+        line += 'definition import {material_package_name}'
+        line = line.format(
+            score_package_name=score_package_name,
+            material_package_name=material_package_name,
+            )
         lines.append(line)
         lines.append('')
         lines.append('')
@@ -3790,9 +3792,7 @@ class AbjadIDE(object):
         contents = '\n'.join(lines)
         with open(illustrate_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
-        message = 'generated {}.'
-        message = message.format(illustrate_py_path)
-        self._io_manager._display(message)
+        self._session._pending_redraw = True
 
     @Command(
         'mg',

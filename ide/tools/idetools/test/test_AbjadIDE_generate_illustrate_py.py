@@ -19,10 +19,9 @@ def test_AbjadIDE_generate_illustrate_py_01():
         )
 
     with systemtools.FilesystemState(keep=[path]):
+        assert os.path.isfile(path)
+        os.remove(path)
+        assert not os.path.isfile(path)
         input_ = 'red~example~score m magic~numbers gl y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(path)
-        assert not filecmp.cmp(path, path + '.backup')
-        contents = abjad_ide._io_manager._transcript.contents
-        assert 'Will generate' in contents
-        assert 'Generated' in contents
