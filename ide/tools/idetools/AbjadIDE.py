@@ -3768,7 +3768,7 @@ class AbjadIDE(object):
         material_package_name = os.path.basename(directory)
         source_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
-            '__illustrate__.py',
+            '__illustrate_material__.py',
             )
         target_path = os.path.join(
             directory,
