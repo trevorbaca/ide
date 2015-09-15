@@ -8,131 +8,6 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_check_package_01():
-    r'''Displays problems only in material package.
-    '''
-
-    input_ = 'red~example~score m tempo~inventory ck y q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    assert 'Top level (5 assets): OK' in contents
-    assert 'found' not in contents
-    assert 'missing' not in contents
-
-
-def test_AbjadIDE_check_package_02():
-    r'''Displays everything in material package.
-    '''
-
-    input_ = 'red~example~score m tempo~inventory ck n q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    lines = [
-        '3 of 3 required files found:',
-        '2 optional files found:',
-        ]
-    for line in lines:
-        assert line in contents
-    assert 'No problem assets found.' not in contents
-
-
-def test_AbjadIDE_check_package_03():
-    r'''Supplies missing file in material package.
-    '''
-
-    material_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'materials',
-        'tempo_inventory',
-        )
-    initializer = os.path.join(material_directory, '__init__.py')
-        
-    with systemtools.FilesystemState(keep=[initializer]):
-        os.remove(initializer)
-        input_ = 'red~example~score m tempo~inventory ck y y q'
-        abjad_ide._run_main_menu(input_=input_)
-        assert os.path.isfile(initializer)
-
-
-def test_AbjadIDE_check_package_04():
-    r'''Reports problems only in segment package.
-    '''
-
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_02',
-        )
-    initializer = os.path.join(segment_directory, '__init__.py')
-
-    with systemtools.FilesystemState(keep=[initializer]):
-        os.remove(initializer)
-        input_ = 'red~example~score g B ck y n q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    lines = [
-        '1 of 3 required files missing:',
-        ]
-    for line in lines:
-        assert line in contents
-    assert 'optional directories' not in contents
-    assert 'optional files' not in contents
-
-
-def test_AbjadIDE_check_package_05():
-    r'''Reports everything in segment package.
-    '''
-
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_02',
-        )
-    initializer = os.path.join(segment_directory, '__init__.py')
-
-    with systemtools.FilesystemState(keep=[initializer]):
-        os.remove(initializer)
-        input_ = 'red~example~score g B ck n n q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    lines = [
-        '1 of 3 required files missing:',
-        '2 optional files found:',
-        ]
-    for line in lines:
-        assert line in contents
-
-
-def test_AbjadIDE_check_package_06():
-    r'''Supplies missing file in segment package.
-    '''
-
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_01',
-        )
-    initializer = os.path.join(segment_directory, '__init__.py')
-        
-    with systemtools.FilesystemState(keep=[initializer]):
-        os.remove(initializer)
-        input_ = 'red~example~score g A ck y y q'
-        abjad_ide._run_main_menu(input_=input_)
-        assert os.path.isfile(initializer)
-
-
-def test_AbjadIDE_check_package_07():
     r'''Reports problems only in score package.
     '''
 
@@ -153,7 +28,7 @@ def test_AbjadIDE_check_package_07():
     assert 'found' not in contents
 
 
-def test_AbjadIDE_check_package_08():
+def test_AbjadIDE_check_package_02():
     r'''Reports everything in score package.
     '''
 
@@ -177,7 +52,7 @@ def test_AbjadIDE_check_package_08():
         assert line in contents
 
 
-def test_AbjadIDE_check_package_09():
+def test_AbjadIDE_check_package_03():
     r'''Reports unrecognized file in score package.
     '''
 
@@ -199,7 +74,7 @@ def test_AbjadIDE_check_package_09():
     assert line in contents
 
 
-def test_AbjadIDE_check_package_10():
+def test_AbjadIDE_check_package_04():
     r'''Supplies missing directory in score package.
     '''
 
@@ -217,7 +92,7 @@ def test_AbjadIDE_check_package_10():
         assert os.path.isdir(build_directory)
 
 
-def test_AbjadIDE_check_package_11():
+def test_AbjadIDE_check_package_05():
     r'''Supplies missing file in subdirectory.
     '''
 
