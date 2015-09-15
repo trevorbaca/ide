@@ -2830,16 +2830,14 @@ class AbjadIDE(object):
     ### PUBLIC METHODS ###
 
     @Command(
-        'dc',
+        'ckd',
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         section='package',
         )
     def check_definition(self, directory, dry_run=False):
-        r'''Checks ``definition.py``.
-
-        Displays interpreter errors.
+        r'''Checks definition.
 
         Returns none.
         '''
