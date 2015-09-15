@@ -22,6 +22,6 @@ def test_AbjadIDE_generate_custom_illustrate_file_01():
         assert os.path.isfile(path)
         os.remove(path)
         assert not os.path.isfile(path)
-        input_ = 'red~example~score m magic~numbers gl y q'
+        input_ = 'red~example~score m magic~numbers gci y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(path)

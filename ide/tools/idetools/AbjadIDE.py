@@ -3596,15 +3596,14 @@ class AbjadIDE(object):
         self._open_in_every_package(directories, 'definition.py')
 
     @Command(
-        'le',
+        'eci',
         argument_names=('current_path',),
-        description='edit __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
         )
-    def edit_illustrate_py(self, directory):
-        r'''Edits ``__illustrate.py__``.
+    def edit_custom_illustrate_file(self, directory):
+        r'''Edits custom illustrate file.
 
         Returns none.
         '''
@@ -3753,7 +3752,7 @@ class AbjadIDE(object):
             )
 
     @Command(
-        'gl',
+        'gci',
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
