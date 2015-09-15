@@ -4657,14 +4657,14 @@ class AbjadIDE(object):
             self._io_manager.open_file(paths)
 
     @Command(
-        'io',
+        'o',
         argument_names=('current_path',),
         file_='illustration.pdf',
         outside_score=False,
         section='package',
         )
-    def open_illustration_pdf(self, directory):
-        r'''Opens ``illustration.pdf``.
+    def open_illustration(self, directory):
+        r'''Opens illustration.
 
         Returns none.
         '''

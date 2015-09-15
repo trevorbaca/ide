@@ -8,7 +8,7 @@ def test_AbjadIDE_open_illustration_pdf_01():
     r'''In material package.
     '''
 
-    input_ = 'red~example~score m magic~numbers io q'
+    input_ = 'red~example~score m magic~numbers o q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
@@ -18,7 +18,7 @@ def test_AbjadIDE_open_illustration_pdf_02():
     r'''In segment package.
     '''
 
-    input_ = 'red~example~score g A io q'
+    input_ = 'red~example~score g A o q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file
