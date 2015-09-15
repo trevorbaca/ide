@@ -3755,43 +3755,35 @@ class AbjadIDE(object):
     @Command(
         'gl',
         argument_names=('current_path',),
-        description='generate __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
         )
-    def generate_illustrate_py(self, directory):
-        r'''Generates custom illustrate file in material package.
+    def generate_custom_illustrate_file(self, directory):
+        r'''Generates custom illustrate file.
 
         Returns none.
         '''
-        illustrate_py_path = os.path.join(directory, '__illustrate__.py')
         score_directory = self._path_to_score_directory(directory)
         score_package_name = os.path.basename(score_directory)
         material_package_name = os.path.basename(directory)
-        lines = []
-        lines.append(self._unicode_directive)
-        lines.append(self._abjad_import_statement)
-        line = 'from {score_package_name}.materials.{material_package_name}.'
-        line += 'definition import {material_package_name}'
-        line = line.format(
+        source_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__illustrate__.py',
+            )
+        target_path = os.path.join(
+            directory,
+            '__illustrate__.py',
+            )
+        shutil.copyfile(source_path, target_path)
+        with open(target_path, 'r') as file_pointer:
+            template = file_pointer.read()
+        completed_template = template.format(
             score_package_name=score_package_name,
             material_package_name=material_package_name,
             )
-        lines.append(line)
-        lines.append('')
-        lines.append('')
-        line = 'triple = scoretools.make_piano_score_from_leaves({})'
-        line = line.format(os.path.basename(directory))
-        lines.append(line)
-        line = 'score, treble_staff, bass_staff = triple'
-        lines.append(line)
-        line = 'illustration = lilypondfiletools.'
-        line += 'make_basic_lilypond_file(score)'
-        lines.append(line)
-        contents = '\n'.join(lines)
-        with open(illustrate_py_path, 'w') as file_pointer:
-            file_pointer.write(contents)
+        with open(target_path, 'w') as file_pointer:
+            file_pointer.write(completed_template)
         self._session._pending_redraw = True
 
     @Command(

@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_open_illustration_pdf_01():
+def test_AbjadIDE_open_illustration_01():
     r'''In material package.
     '''
 
@@ -14,7 +14,7 @@ def test_AbjadIDE_open_illustration_pdf_01():
     assert abjad_ide._session._attempted_to_open_file
 
 
-def test_AbjadIDE_open_illustration_pdf_02():
+def test_AbjadIDE_open_illustration_02():
     r'''In segment package.
     '''
 

@@ -7,7 +7,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_generate_illustrate_py_01():
+def test_AbjadIDE_generate_custom_illustrate_file_01():
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
