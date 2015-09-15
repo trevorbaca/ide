@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_go_to_score_etc_directory_01():
+def test_AbjadIDE_go_to_etc_directory_01():
     r'''From material package.
     '''
 
@@ -21,7 +21,7 @@ def test_AbjadIDE_go_to_score_etc_directory_01():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_etc_directory_02():
+def test_AbjadIDE_go_to_etc_directory_02():
     r'''From segment package.
     '''
 
@@ -38,7 +38,7 @@ def test_AbjadIDE_go_to_score_etc_directory_02():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_etc_directory_03():
+def test_AbjadIDE_go_to_etc_directory_03():
     r'''From build directory to etc directory.
     '''
 

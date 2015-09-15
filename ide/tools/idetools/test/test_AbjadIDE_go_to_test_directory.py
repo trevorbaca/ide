@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_go_to_score_test_directory_01():
+def test_AbjadIDE_go_to_test_directory_01():
     r'''From material package.
     '''
 
@@ -23,7 +23,7 @@ def test_AbjadIDE_go_to_score_test_directory_01():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_test_directory_02():
+def test_AbjadIDE_go_to_test_directory_02():
     r'''From segment package.
     '''
 
@@ -40,7 +40,7 @@ def test_AbjadIDE_go_to_score_test_directory_02():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_test_directory_03():
+def test_AbjadIDE_go_to_test_directory_03():
     r'''From build directory to test directory.
     '''
 
@@ -55,7 +55,7 @@ def test_AbjadIDE_go_to_score_test_directory_03():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_test_directory_04():
+def test_AbjadIDE_go_to_test_directory_04():
     r'''No explosions if test directory is missing.
     '''
 

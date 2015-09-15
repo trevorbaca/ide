@@ -4,11 +4,11 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_go_to_score_makers_directory_01():
+def test_AbjadIDE_go_to_distribution_directory_01():
     r'''From material package.
     '''
 
-    input_ = 'red~example~score m tempo~inventory k q'
+    input_ = 'red~example~score m tempo~inventory d q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -16,15 +16,16 @@ def test_AbjadIDE_go_to_score_makers_directory_01():
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - distribution directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
-def test_AbjadIDE_go_to_score_makers_directory_02():
+
+def test_AbjadIDE_go_to_distribution_directory_02():
     r'''From segment package.
     '''
 
-    input_ = 'red~example~score g A k q'
+    input_ = 'red~example~score g A d q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -32,36 +33,36 @@ def test_AbjadIDE_go_to_score_makers_directory_02():
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
         'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - distribution directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_makers_directory_03():
+def test_AbjadIDE_go_to_distribution_directory_03():
     r'''From score package.
     '''
 
-    input_ = 'red~example~score k q'
+    input_ = 'red~example~score d q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - distribution directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_score_makers_directory_04():
-    r'''From build directory to makers directory.
+def test_AbjadIDE_go_to_distribution_directory_04():
+    r'''From build directory to distribution directory.
     '''
 
-    input_ = 'red~example~score u k q'
+    input_ = 'red~example~score u d q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - distribution directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles

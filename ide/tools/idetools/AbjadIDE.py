@@ -4150,26 +4150,12 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_build_directory(self, score_directory):
-        r'''Goes to build files.
+    def go_to_build_directory(self, score_directory):
+        r'''Goes to build directory.
 
         Returns none.
         '''
         self._run_wrangler_menu('build')
-
-    @Command(
-        's',
-        argument_names=('current_path',),
-        outside_score=False,
-        section='navigation',
-        )
-    def go_to_score_directory(self, score_directory):
-        r'''Goes to current score.
-
-        Returns none.
-        '''
-        current_score_directory = self._session.current_score_directory
-        self._run_package_manager_menu(current_score_directory)
 
     @Command(
         'd',
@@ -4177,8 +4163,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_distribution_directory(self, score_directory):
-        r'''Goes to distribution files.
+    def go_to_distribution_directory(self, score_directory):
+        r'''Goes to distribution directory.
 
         Returns none.
         '''
@@ -4190,8 +4176,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_etc_directory(self, score_directory):
-        r'''Goes to etc files.
+    def go_to_etc_directory(self, score_directory):
+        r'''Goes to etc directory.
 
         Returns none.
         '''
@@ -4203,8 +4189,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_makers_directory(self, score_directory):
-        r'''Goes to maker files.
+    def go_to_makers_directory(self, score_directory):
+        r'''Goes to makers directory.
 
         Returns none.
         '''
@@ -4216,12 +4202,26 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_materials_directory(self, score_directory):
-        r'''Goes to material packages.
+    def go_to_materials_directory(self, score_directory):
+        r'''Goes to materials directory.
 
         Returns none.
         '''
         self._run_wrangler_menu('materials')
+
+    @Command(
+        's',
+        argument_names=('current_path',),
+        outside_score=False,
+        section='navigation',
+        )
+    def go_to_score_directory(self, score_directory):
+        r'''Goes to score directory.
+
+        Returns none.
+        '''
+        current_score_directory = self._session.current_score_directory
+        self._run_package_manager_menu(current_score_directory)
 
     @Command(
         'g',
@@ -4229,8 +4229,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_segments_directory(self, score_directory):
-        r'''Goes to segment packages.
+    def go_to_segments_directory(self, score_directory):
+        r'''Goes to segments directory.
 
         Returns none.
         '''
@@ -4242,8 +4242,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_stylesheets_directory(self, score_directory):
-        r'''Goes to stylesheets.
+    def go_to_stylesheets_directory(self, score_directory):
+        r'''Goes to stylesheets directory.
 
         Returns none.
         '''
@@ -4255,8 +4255,8 @@ class AbjadIDE(object):
         outside_score=False,
         section='navigation',
         )
-    def go_to_score_test_directory(self, score_directory):
-        r'''Goes to score test files.
+    def go_to_test_directory(self, score_directory):
+        r'''Goes to test directory.
 
         Returns none.
         '''
@@ -4271,9 +4271,7 @@ class AbjadIDE(object):
         section='package',
         )
     def illustrate_definition(self, directory, dry_run=False):
-        r'''Illustrates ``definition.py``.
-
-        Makes ``illustration.ly`` and ``illustration.pdf``.
+        r'''Illustrates definition.
 
         Returns none.
         '''
@@ -4394,7 +4392,7 @@ class AbjadIDE(object):
         section='star',
         )
     def illustrate_every_definition(self, directories):
-        r'''Illustrates ``definition.py`` in every package.
+        r'''Illustrates every definition.
 
         Returns none.
         '''
