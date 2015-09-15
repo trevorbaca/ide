@@ -1261,7 +1261,7 @@ class AbjadIDE(object):
             messages.append(message)
         self._io_manager._display(messages)
 
-    def _handle_input(self, result, _path=None, directory_name=None):
+    def _handle_input(self, result, current_path=None, directory_name=None):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
@@ -1270,11 +1270,11 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
-            if 'path_or_directory_name' in command.argument_names:
-                argument = _path or directory_name
+            if 'current_path_or_directory_name' in command.argument_names:
+                argument = current_path or directory_name
                 command(argument)
-            elif '_path' in command.argument_names:
-                command(_path)
+            elif 'current_path' in command.argument_names:
+                command(current_path)
             elif 'directory_name' in command.argument_names:
                 command(directory_name)
             elif 'current_score_directory' in command.argument_names:
@@ -1778,18 +1778,18 @@ class AbjadIDE(object):
         menu,
         directory_name,
         menu_section_names=None,
-        _path=None,
+        current_path=None,
         ):
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
-        if _path is not None and self._is_path_in_score(_path):
+        if current_path is not None and self._is_path_in_score(current_path):
             is_in_score = True
         required_files = ()
         optional_files = ()
-        if _path is not None:
-            current_directory = _path
-            directory_name = self._path_to_directory_name(_path)
+        if current_path is not None:
+            current_directory = current_path
+            directory_name = self._path_to_directory_name(current_path)
             package_contents = self._directory_name_to_package_contents[
                 directory_name]
             required_files = package_contents['required_files']
@@ -1881,7 +1881,7 @@ class AbjadIDE(object):
     def _make_main_menu(
         self,
         explicit_header,
-        _path=None,
+        current_path=None,
         directory_name=None,
         ):
         assert isinstance(explicit_header, str), repr(explicit_header)
@@ -1890,15 +1890,15 @@ class AbjadIDE(object):
             explicit_header=explicit_header,
             name=name,
             )
-        if _path is not None:
-            self._make_package_asset_menu_section(_path, menu)
+        if current_path is not None:
+            self._make_package_asset_menu_section(current_path, menu)
         else:
             self._make_wrangler_asset_menu_section(
                 menu,
                 directory_name,
-                directory=_path,
+                directory=current_path,
                 )
-        self._make_command_menu_sections(menu, directory_name, _path=_path)
+        self._make_command_menu_sections(menu, directory_name, current_path=current_path)
         return menu
 
     def _make_package(self, directory_name):
@@ -2408,14 +2408,14 @@ class AbjadIDE(object):
             menu_header = self._path_to_menu_header(directory)
             menu = self._make_main_menu(
                 explicit_header=menu_header,
-                _path=directory,
+                current_path=directory,
                 )
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
                 return
             if result is None:
                 continue
-            self._handle_input(result, _path=directory)
+            self._handle_input(result, current_path=directory)
             if self._session.is_quitting:
                 return
 
@@ -2823,7 +2823,7 @@ class AbjadIDE(object):
 
     @Command(
         'dc',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         section='package',
@@ -2845,9 +2845,8 @@ class AbjadIDE(object):
         if dry_run:
             inputs.append(definition_path)
             return inputs, outputs
-        with self._io_manager._silent():
-            stdout_lines, stderr_lines = self._io_manager.interpret_file(
-                definition_path)
+        stdout_lines, stderr_lines = self._io_manager.interpret_file(
+            definition_path)
         if stderr_lines:
             messages = [definition_path + ' FAILED:']
             messages.extend('    ' + _ for _ in stderr_lines)
@@ -2978,7 +2977,7 @@ class AbjadIDE(object):
 
     @Command(
         'ck',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         in_score_directory_only=True,
         section='package',
@@ -3458,44 +3457,44 @@ class AbjadIDE(object):
 
     @Command(
         'from',
-        argument_names=('path_or_directory_name',),
+        argument_names=('current_path_or_directory_name',),
         outside_score=False,
         section='global files',
         )
-    def copy_external_asset(self, path_or_directory_name):
+    def copy_external_asset(self, current_path_or_directory_name):
         r'''Copies external asset.
 
         Returns none.
         '''
         example_scores = self._session.is_test
-        if 'build' == path_or_directory_name:
+        if 'build' == current_path_or_directory_name:
             assets_ = self._collect_build_files(
                 example_scores=example_scores)
-        elif 'distribution' == path_or_directory_name:
+        elif 'distribution' == current_path_or_directory_name:
             assets_ = self._collect_distribution_files(
                 example_scores=example_scores)
-        elif 'etc' == path_or_directory_name:
+        elif 'etc' == current_path_or_directory_name:
             assets_ = self._collect_etc_files(example_scores=example_scores)
-        elif 'makers' == path_or_directory_name:
+        elif 'makers' == current_path_or_directory_name:
             assets_ = self._collect_maker_files(example_scores=example_scores)
-        elif 'materials' == path_or_directory_name:
+        elif 'materials' == current_path_or_directory_name:
             assets_ = self._collect_material_directories(
                 example_scores=example_scores)
-        elif 'materials' in path_or_directory_name:
+        elif 'materials' in current_path_or_directory_name:
             assets_ = self._collect_material_files(
                 example_scores=example_scores)
-        elif 'segments' == path_or_directory_name:
+        elif 'segments' == current_path_or_directory_name:
             assets_ = self._collect_segment_directories(
                 example_scores=example_scores)
-        elif 'segments' in path_or_directory_name:
+        elif 'segments' in current_path_or_directory_name:
             assets_ = self._collect_segment_files(
                 example_scores=example_scores)
-        elif 'stylesheets' == path_or_directory_name:
+        elif 'stylesheets' == current_path_or_directory_name:
             assets_ = self._collect_stylesheets(example_scores=example_scores)
-        elif 'test' == path_or_directory_name:
+        elif 'test' == current_path_or_directory_name:
             assets_ = self._collect_test_files(example_scores=example_scores)
         else:
-            raise ValueError(path_or_directory_name)
+            raise ValueError(current_path_or_directory_name)
         selector = self._io_manager._make_selector(
             items=assets_,
             )
@@ -3505,14 +3504,14 @@ class AbjadIDE(object):
         if source_path not in assets_:
             return
         asset_name = os.path.basename(source_path)
-        if os.path.sep in path_or_directory_name:
+        if os.path.sep in current_path_or_directory_name:
             target_path = os.path.join(
-                path_or_directory_name,
+                current_path_or_directory_name,
                 asset_name,
                 )
         else:
             current_score_directory = self._session.current_score_directory
-            directory_name = os.path.basename(path_or_directory_name)
+            directory_name = os.path.basename(current_path_or_directory_name)
             asset_name = os.path.basename(source_path)
             target_path = os.path.join(
                 current_score_directory,
@@ -3574,7 +3573,7 @@ class AbjadIDE(object):
 
     @Command(
         'e',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         section='package',
@@ -3602,7 +3601,7 @@ class AbjadIDE(object):
 
     @Command(
         'le',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         description='edit __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
@@ -3618,7 +3617,7 @@ class AbjadIDE(object):
 
     @Command(
         'ie',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='package',
@@ -3759,7 +3758,7 @@ class AbjadIDE(object):
 
     @Command(
         'gl',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         description='generate __illustrate__.py',
         file_='__illustrate__.py',
         outside_score=False,
@@ -4160,7 +4159,7 @@ class AbjadIDE(object):
 
     @Command(
         'u',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4173,7 +4172,7 @@ class AbjadIDE(object):
 
     @Command(
         's',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4187,7 +4186,7 @@ class AbjadIDE(object):
 
     @Command(
         'd',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4200,7 +4199,7 @@ class AbjadIDE(object):
 
     @Command(
         'c',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4213,7 +4212,7 @@ class AbjadIDE(object):
 
     @Command(
         'k',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4226,7 +4225,7 @@ class AbjadIDE(object):
 
     @Command(
         'm',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4239,7 +4238,7 @@ class AbjadIDE(object):
 
     @Command(
         'g',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4252,7 +4251,7 @@ class AbjadIDE(object):
 
     @Command(
         'y',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4265,7 +4264,7 @@ class AbjadIDE(object):
 
     @Command(
         't',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         outside_score=False,
         section='navigation',
         )
@@ -4278,7 +4277,7 @@ class AbjadIDE(object):
 
     @Command(
         'i',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         parent_directories=('segments',),
@@ -4502,7 +4501,7 @@ class AbjadIDE(object):
 
     @Command(
         'ii',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='package',
@@ -4674,7 +4673,7 @@ class AbjadIDE(object):
 
     @Command(
         'io',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         file_='illustration.pdf',
         outside_score=False,
         section='package',
@@ -4701,7 +4700,7 @@ class AbjadIDE(object):
 
     @Command(
         'so',
-        argument_names=('_path',),
+        argument_names=('current_path',),
         in_score_directory_only=True,
         outside_score=False,
         section='package',
