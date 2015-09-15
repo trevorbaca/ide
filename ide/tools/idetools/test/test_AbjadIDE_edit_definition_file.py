@@ -3,7 +3,7 @@ from abjad import *
 import ide
 
 
-def test_AbjadIDE_edit_definition_py_01():
+def test_AbjadIDE_edit_definition_file_01():
     r'''In material package.
     '''
 
@@ -14,7 +14,7 @@ def test_AbjadIDE_edit_definition_py_01():
     assert abjad_ide._session._attempted_to_open_file
 
 
-def test_AbjadIDE_edit_definition_py_02():
+def test_AbjadIDE_edit_definition_file_02():
     r'''In segment package.
     '''
 

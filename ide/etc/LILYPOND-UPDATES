@@ -43,7 +43,7 @@ LilyPond and running the tests now causes only the three following tests to
 fail:
 
     test_BuildFileWrangler_interpret_music.py
-    test_SegmentPackageManager_illustrate_definition_py.py
+    test_SegmentPackageManager_illustrate_definition_file.py
     test_SegmentPackageWrangler_interpret_every_illustration_ly.py
 
 ###############################################################################
@@ -97,7 +97,7 @@ The following four IDE tests will fail:
 
     1 FAIL test_BuildFileWrangler_interpret_music_02
     2 FAIL test_MaterialPackageWrangler_interpret_every_illustration_ly_02
-    3 FAIL test_SegmentPackageManager_illustrate_definition_py_02
+    3 FAIL test_SegmentPackageManager_illustrate_definition_file_02
     4 FAIL test_SegmentPackageWrangler_interpret_every_illustration_ly_02
 
 ###############################################################################
@@ -136,7 +136,7 @@ they are new failures that result from running (red~example~score g ii*). These
 new failures must be remedied.
 
 Finally, note that the test ...
-    test_SegmentPackageManager_illustrate_definition_py_02
+    test_SegmentPackageManager_illustrate_definition_file_02
 ... has magically stopped failing and does not appear in the output above.
 
 ###############################################################################

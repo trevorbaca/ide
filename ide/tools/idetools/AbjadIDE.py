@@ -2828,32 +2828,32 @@ class AbjadIDE(object):
         outside_score=False,
         section='package',
         )
-    def check_definition_py(self, directory, dry_run=False):
+    def check_definition_file(self, directory, dry_run=False):
         r'''Checks ``definition.py``.
 
         Displays interpreter errors.
 
         Returns none.
         '''
-        definition_py_path = os.path.join(directory, 'definition.py')
-        if not os.path.isfile(definition_py_path):
+        definition_file_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_file_path):
             message = 'file not found: {}.'
-            message = message.format(definition_py_path)
+            message = message.format(definition_file_path)
             self._io_manager._display(message)
             return
         inputs, outputs = [], []
         if dry_run:
-            inputs.append(definition_py_path)
+            inputs.append(definition_file_path)
             return inputs, outputs
         with self._io_manager._silent():
             stdout_lines, stderr_lines = self._io_manager.interpret_file(
-                definition_py_path)
+                definition_file_path)
         if stderr_lines:
-            messages = [definition_py_path + ' FAILED:']
+            messages = [definition_file_path + ' FAILED:']
             messages.extend('    ' + _ for _ in stderr_lines)
             self._io_manager._display(messages)
         else:
-            message = '{} OK.'.format(definition_py_path)
+            message = '{} OK.'.format(definition_file_path)
             self._io_manager._display(message)
 
     @Command(
@@ -2863,14 +2863,14 @@ class AbjadIDE(object):
         outside_score=False,
         section='star',
         )
-    def check_every_definition_py(self, paths):
+    def check_every_definition_file(self, paths):
         r'''Checks ``definition.py`` in every package.
 
         Returns none.
         '''
         inputs, outputs = [], []
         for path in paths:
-            inputs_, outputs_ = self.check_definition_py(path, dry_run=True)
+            inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='check')
@@ -2880,7 +2880,7 @@ class AbjadIDE(object):
             return
         start_time = time.time()
         for path in paths:
-            self.check_definition_py(path)
+            self.check_definition_file(path)
         stop_time = time.time()
         total_time = stop_time - start_time
         total_time = int(total_time)
@@ -3579,13 +3579,13 @@ class AbjadIDE(object):
         outside_score=False,
         section='package',
         )
-    def edit_definition_py(self, directory):
+    def edit_definition_file(self, directory):
         r'''Edits ``definition.py``.
 
         Returns none.
         '''
-        definition_py_path = os.path.join(directory, 'definition.py')
-        self._io_manager.edit(definition_py_path)
+        definition_file_path = os.path.join(directory, 'definition.py')
+        self._io_manager.edit(definition_file_path)
 
     @Command(
         'de*',
@@ -3593,7 +3593,7 @@ class AbjadIDE(object):
         directories=('materials', 'segments'),
         section='star',
         )
-    def edit_every_definition_py(self, directories):
+    def edit_every_definition_file(self, directories):
         r'''Opens ``definition.py`` in every package.
 
         Returns none.
@@ -4284,17 +4284,17 @@ class AbjadIDE(object):
         parent_directories=('segments',),
         section='package',
         )
-    def illustrate_definition_py(self, directory, dry_run=False):
+    def illustrate_definition_file(self, directory, dry_run=False):
         r'''Illustrates ``definition.py``.
 
         Makes ``illustration.ly`` and ``illustration.pdf``.
 
         Returns none.
         '''
-        definition_py_path = os.path.join(directory, 'definition.py')
-        if not os.path.isfile(definition_py_path):
+        definition_file_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_file_path):
             message = 'File not found: {}.'
-            message = message.format(definition_py_path)
+            message = message.format(definition_file_path)
             self._io_manager._display(message)
             return
         self._update_order_dependent_segment_metadata()
@@ -4332,7 +4332,7 @@ class AbjadIDE(object):
             )
         inputs, outputs = [], []
         if dry_run:
-            inputs.append(definition_py_path)
+            inputs.append(definition_file_path)
             outputs.append((illustration_ly_path, illustration_pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
@@ -4407,15 +4407,15 @@ class AbjadIDE(object):
         outside_score=False,
         section='star',
         )
-    def illustrate_every_definition_py(self, directories):
+    def illustrate_every_definition_file(self, directories):
         r'''Illustrates ``definition.py`` in every package.
 
         Returns none.
         '''
         inputs, outputs = [], []
-        method_name = 'illustrate_definition_py'
+        method_name = 'illustrate_definition_file'
         for directory in directories:
-            inputs_, outputs_ = self.illustrate_definition_py(
+            inputs_, outputs_ = self.illustrate_definition_file(
                 directory,
                 dry_run=True,
                 )
@@ -4427,7 +4427,7 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            self.illustrate_definition_py(directory)
+            self.illustrate_definition_file(directory)
 
     @Command(
         'bci',

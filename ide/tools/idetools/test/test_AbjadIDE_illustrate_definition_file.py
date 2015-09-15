@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_illustrate_definition_py_01():
+def test_AbjadIDE_illustrate_definition_file_01():
     r'''Creates PDF and LilyPond files when none exists.
     '''
 
@@ -36,7 +36,7 @@ def test_AbjadIDE_illustrate_definition_py_01():
     assert pdf_path in contents
 
 
-def test_AbjadIDE_illustrate_definition_py_02():
+def test_AbjadIDE_illustrate_definition_file_02():
     r'''Preserves existing PDF when candidate compares the same.
     '''
 
@@ -77,7 +77,7 @@ def test_AbjadIDE_illustrate_definition_py_02():
     assert '... compare the same.' in contents
 
 
-def test_AbjadIDE_illustrate_definition_py_03():
+def test_AbjadIDE_illustrate_definition_file_03():
     r'''Prompts composer to overwrite existing PDF when candidate compares
     differently.
     '''

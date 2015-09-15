@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_edit_every_definition_py_01():
+def test_AbjadIDE_edit_every_definition_file_01():
     r'''Edits every material definition file.
     '''
 
@@ -39,7 +39,7 @@ def test_AbjadIDE_edit_every_definition_py_01():
     assert abjad_ide._session._attempted_to_open_file
 
 
-def test_AbjadIDE_edit_every_definition_py_02():
+def test_AbjadIDE_edit_every_definition_file_02():
     r'''Edits every segment definition file.
     '''
 
