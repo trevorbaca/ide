@@ -12,6 +12,7 @@ def make_lilypond_file(magic_numbers):
     markup = Markup(string)
     lilypond_file = lilypondfiletools.LilyPondFile()
     lilypond_file.items.append(markup)
+    return lilypond_file
 
 if __name__ == '__main__':
     lilypond_file = make_lilypond_file(magic_numbers)
