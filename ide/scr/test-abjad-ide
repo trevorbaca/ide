@@ -1,0 +1,5 @@
+#! /usr/bin/env python
+import ide
+
+
+ide.tools.idetools.AbjadIDE.start_abjad_ide(is_test=True)

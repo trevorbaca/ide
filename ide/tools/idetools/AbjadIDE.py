@@ -1747,8 +1747,10 @@ class AbjadIDE(object):
                 directory_token,
                 entries,
                 )
-#        if not self._session.is_test:
-#            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        if not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        if directory_name == 'scores' and self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' in _[0]]
         return entries
 
     def _make_asset_selection_menu(self, directory_name):
@@ -5020,12 +5022,12 @@ class AbjadIDE(object):
             )
 
     @staticmethod
-    def start_abjad_ide():
+    def start_abjad_ide(is_test=False):
         r'''Starts Abjad IDE.
 
         Returns none.
         '''
         import ide
-        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=False)
+        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=is_test)
         input_ = ' '.join(sys.argv[1:])
         abjad_ide._run_main_menu(input_=input_)
