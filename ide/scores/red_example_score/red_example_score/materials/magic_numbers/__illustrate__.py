@@ -1,6 +1,6 @@
-import os
+# -*- coding: utf-8 -*-
 from abjad import *
-from output import magic_numbers
+from red_example_score.materials.magic_numbers.definition import magic_numbers
 
 
 def __illustrate__(magic_numbers):
