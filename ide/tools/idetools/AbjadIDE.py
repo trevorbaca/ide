@@ -3596,14 +3596,14 @@ class AbjadIDE(object):
         self._open_in_every_package(directories, 'definition.py')
 
     @Command(
-        'eci',
+        'eif',
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
         )
-    def edit_custom_illustrate_file(self, directory):
-        r'''Edits custom illustrate file.
+    def edit_illustrate_file(self, directory):
+        r'''Edits illustrate file.
 
         Returns none.
         '''
@@ -3752,14 +3752,14 @@ class AbjadIDE(object):
             )
 
     @Command(
-        'gci',
+        'gif',
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
         section='package',
         )
-    def generate_custom_illustrate_file(self, directory):
-        r'''Generates custom illustrate file.
+    def generate_illustrate_file(self, directory):
+        r'''Generates illustrate file.
 
         Returns none.
         '''
@@ -4485,6 +4485,107 @@ class AbjadIDE(object):
         '''
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
+
+    @Command(
+        'iif',
+        argument_names=('current_path',),
+        file_='definition.py',
+        outside_score=False,
+        parent_directories=('materials',),
+        section='package',
+        )
+    def interpret_illustrate_file(self, directory, dry_run=False):
+        r'''Interprets illustrate file.
+
+        Returns none.
+        '''
+        definition_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_path):
+            message = 'File not found: {}.'
+            message = message.format(definition_path)
+            self._io_manager._display(message)
+            return
+        illustrate_file_path = os.path.join(directory, '__illustrate__.py')
+        if not os.path.isfile(illustrate_file_path):
+            message = 'File not found: {}.'
+            message = message.format(illustrate_file_path)
+            self._io_manager._display(message)
+            return
+        candidate_ly_path = os.path.join(
+            directory,
+            'illustration.candidate.ly'
+            )
+        candidate_pdf_path = os.path.join(
+            directory,
+            'illustration.candidate.pdf'
+            )
+        temporary_files = (
+            candidate_ly_path,
+            candidate_pdf_path,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        illustration_ly_path = os.path.join(
+            directory,
+            'illustration.ly',
+            )
+        illustration_pdf_path = os.path.join(
+            directory,
+            'illustration.pdf',
+            )
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_path)
+            outputs.append((illustration_ly_path, illustration_pdf_path))
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            result = self._io_manager.interpret_file(
+                illustrate_file_path,
+                strip=False,
+                )
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            if not os.path.exists(illustration_pdf_path):
+                messages = []
+                messages.append('Wrote ...')
+                if os.path.exists(candidate_ly_path):
+                    shutil.move(candidate_ly_path, illustration_ly_path)
+                    messages.append(self._tab + illustration_ly_path)
+                if os.path.exists(candidate_pdf_path):
+                    shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    messages.append(self._tab + illustration_pdf_path)
+                self._io_manager._display(messages)
+            else:
+                result = systemtools.TestManager.compare_files(
+                candidate_pdf_path,
+                illustration_pdf_path,
+                )
+                messages = self._make_candidate_messages(
+                    result,
+                    candidate_pdf_path,
+                    illustration_pdf_path,
+                    )
+                self._io_manager._display(messages)
+                if result:
+                    message = 'preserved {}.'.format(illustration_pdf_path)
+                    self._io_manager._display(message)
+                    return
+                else:
+                    message = 'overwrite existing PDF with candidate PDF?'
+                    result = self._io_manager._confirm(message=message)
+                    if not result:
+                        return
+                    try:
+                        shutil.move(candidate_ly_path, illustration_ly_path)
+                    except IOError:
+                        pass
+                    try:
+                        shutil.move(candidate_pdf_path, illustration_pdf_path)
+                    except IOError:
+                        pass
 
     @Command(
         'ii',
