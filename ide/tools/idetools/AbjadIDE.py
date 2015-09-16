@@ -1927,8 +1927,7 @@ class AbjadIDE(object):
         new_path = new_path or path
         paths = self._list_visible_asset_paths(directory_name)
         if path not in paths:
-            with self._io_manager._silent():
-                self._clear_view(directory_name)
+            self._clear_view(directory_name)
         self._run_package_manager_menu(new_path)
 
     def _make_package_asset_menu_section(self, directory, menu):
@@ -2647,12 +2646,10 @@ class AbjadIDE(object):
             assert not self._is_up_to_date(path)
             assert self._get_unadded_asset_paths(path) == [path_1, path_2]
             assert self._get_added_asset_paths(path) == []
-            with self._io_manager._silent():
-                self._git_add(path)
+            self._git_add(path)
             assert self._get_unadded_asset_paths(path) == []
             assert self._get_added_asset_paths(path) == [path_1, path_2]
-            with self._io_manager._silent():
-                self._unadd_added_assets(path)
+            self._unadd_added_assets(path)
             assert self._get_unadded_asset_paths(path) == [path_1, path_2]
             assert self._get_added_asset_paths(path) == []
         assert self._is_up_to_date(path)
@@ -2671,8 +2668,7 @@ class AbjadIDE(object):
                 file_pointer.write(string)
             assert not self._is_up_to_date(path)
             assert self._get_modified_asset_paths(path) == [file_path]
-            with self._io_manager._silent():
-                self._get_revert(path)
+            self._get_revert(path)
         assert self._get_modified_asset_paths(path) == []
         assert self._is_up_to_date(path)
         return True
@@ -3964,9 +3960,8 @@ class AbjadIDE(object):
         result = self._io_manager._confirm()
         if not result:
             return
-        with self._io_manager._silent():
-            for directory in directories:
-                self._git_add(directory)
+        for directory in directories:
+            self._git_add(directory)
         count = len(inputs)
         identifier = stringtools.pluralize('file', count)
         message = 'added {} {} to repository.'
