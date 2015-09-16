@@ -20,12 +20,3 @@ def test_AbjadIDE_quit_abjad_ide_02():
     contents = abjad_ide._io_manager._transcript.contents
 
     assert contents
-
-
-def test_AbjadIDE_quit_abjad_ide_03():
-    
-    input_ = 'uu q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    assert contents

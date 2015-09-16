@@ -57,12 +57,3 @@ def test_AbjadIDE__make_asset_menu_section_04():
     input_ = 'red~example~score m q'
     abjad_ide._run_main_menu(input_=input_)
     assert '(Red Example Score)' not in abjad_ide._io_manager._transcript.contents
-
-
-def test_AbjadIDE__make_asset_menu_section_05():
-    r'''Includes score annotation outside of score.
-    '''
-
-    input_ = 'mm q'
-    abjad_ide._run_main_menu(input_=input_)
-    assert 'Red Example Score:' in abjad_ide._io_manager._transcript.contents

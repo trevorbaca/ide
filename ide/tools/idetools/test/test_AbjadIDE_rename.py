@@ -77,37 +77,6 @@ def test_AbjadIDE_rename_02():
 
 
 def test_AbjadIDE_rename_03():
-    r'''Renames material package outside of score.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'materials',
-        'test_material',
-        )
-    new_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'materials',
-        'new_test_material',
-        )
-
-    new_input = 'mm new Red~Example~Score test~material y q'
-    rename_input = 'mm ren test~material~(Red~Example~Score)'
-    rename_input += ' new~test~material y q'
-
-    with systemtools.FilesystemState(remove=[path, new_path]):
-        abjad_ide._run_main_menu(input_=new_input)
-        assert os.path.exists(path)
-        abjad_ide._run_main_menu(input_=rename_input)
-        assert not os.path.exists(path)
-        assert os.path.exists(new_path)
-
-
-def test_AbjadIDE_rename_04():
     r'''Renames segment package inside score.
     '''
 
@@ -137,38 +106,7 @@ def test_AbjadIDE_rename_04():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_05():
-    r'''Renames segment package outside score.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_04',
-        )
-    new_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'renamed_segment_04',
-        )
-
-    new_input = 'gg new red~example~score segment~04 y q'
-    rename_input = 'gg ren segment~04~(Red~Example~Score)'
-    rename_input += ' renamed_segment_04 y q'
-
-    with systemtools.FilesystemState(remove=[path, new_path]):
-        abjad_ide._run_main_menu(input_=new_input)
-        assert os.path.exists(path)
-        abjad_ide._run_main_menu(input_=rename_input)
-        assert not os.path.exists(path)
-        assert os.path.exists(new_path)
-
-
-def test_AbjadIDE_rename_06():
+def test_AbjadIDE_rename_04():
     r'''Renames build file inside score.
     '''
 
@@ -198,38 +136,7 @@ def test_AbjadIDE_rename_06():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_07():
-    r'''Renames build file outside score.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'build',
-        'new-file.txt',
-        )
-    new_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'build',
-        'renamed-file.txt',
-        )
-
-    new_input = 'uu new red~example~score new-file.txt q'
-    rename_input = 'uu ren new-file.txt~(red~example~score)'
-    rename_input += ' renamed-file.txt y q'
-
-    with systemtools.FilesystemState(remove=[path, new_path]):
-        abjad_ide._run_main_menu(input_=new_input)
-        assert os.path.exists(path)
-        abjad_ide._run_main_menu(input_=rename_input)
-        assert not os.path.exists(path)
-        assert os.path.exists(new_path)
-
-
-def test_AbjadIDE_rename_08():
+def test_AbjadIDE_rename_05():
     r'''Renames maker file inside score.
     '''
 
@@ -259,38 +166,7 @@ def test_AbjadIDE_rename_08():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_09():
-    r'''Renames maker file outside score.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'makers',
-        'NewMaker.py',
-        )
-    new_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'makers',
-        'RenamedMaker.py',
-        )
-
-    new_input = 'kk new red~example~score NewMaker.py q'
-    rename_input = 'kk ren NewMaker.py~(red~example~score)'
-    rename_input += ' RenamedMaker.py y q'
-
-    with systemtools.FilesystemState(remove=[path, new_path]):
-        abjad_ide._run_main_menu(input_=new_input)
-        assert os.path.exists(path)
-        abjad_ide._run_main_menu(input_=rename_input)
-        assert not os.path.exists(path)
-        assert os.path.exists(new_path)
-
-
-def test_AbjadIDE_rename_10():
+def test_AbjadIDE_rename_06():
     r'''Renames stylesheet inside score.
     '''
 
@@ -311,37 +187,6 @@ def test_AbjadIDE_rename_10():
 
     new_input = 'red~example~score y new new-stylesheet.ily q'
     rename_input = 'red~example~score y ren new-stylesheet.ily'
-    rename_input += ' renamed-stylesheet.ily y q'
-
-    with systemtools.FilesystemState(remove=[path, new_path]):
-        abjad_ide._run_main_menu(input_=new_input)
-        assert os.path.exists(path)
-        abjad_ide._run_main_menu(input_=rename_input)
-        assert not os.path.exists(path)
-        assert os.path.exists(new_path)
-
-
-def test_AbjadIDE_rename_11():
-    r'''Renames stylesheet outside score.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'stylesheets',
-        'new-stylesheet.ily',
-        )
-    new_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'stylesheets',
-        'renamed-stylesheet.ily',
-        )
-
-    new_input = 'yy new red~example~score new-stylesheet.ily q'
-    rename_input = 'yy ren new-stylesheet.ily~(red~example~score)'
     rename_input += ' renamed-stylesheet.ily y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):

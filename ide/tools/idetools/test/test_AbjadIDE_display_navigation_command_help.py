@@ -118,15 +118,6 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to all build directories (uu)',
-        '    go to all distribution directories (dd)',
-        '    go to all etc directories (ee)',
-        '    go to all makers directories (kk)',
-        '    go to all materials directories (mm)',
-        '    go to all segments directories (gg)',
-        '    go to all stylesheets directories (yy)',
-        '    go to all test directories (tt)',
-        '',
         '    set view (ws)',
         '',
         '>',
@@ -141,70 +132,6 @@ def test_AbjadIDE_display_navigation_command_help_04():
 
 
 def test_AbjadIDE_display_navigation_command_help_05():
-    r'''Works at all materials directories.
-    '''
-
-    lines = [
-        'Abjad IDE - all materials directories - view & navigation commands',
-        '',
-        '    display navigation command help (;)',
-        '',
-        '    home (h)',
-        '    quit (q)',
-        '',
-        '    go to all build directories (uu)',
-        '    go to all distribution directories (dd)',
-        '    go to all etc directories (ee)',
-        '    go to all makers directories (kk)',
-        '    go to all materials directories (mm)',
-        '    go to all segments directories (gg)',
-        '    go to all stylesheets directories (yy)',
-        '    go to all test directories (tt)',
-        '',
-        '>',
-        ]
-
-    input_ = 'mm ; q'
-    abjad_ide._run_main_menu(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
-
-
-def test_AbjadIDE_display_navigation_command_help_06():
-    r'''Works at all stylesheets directories.
-    '''
-
-    lines = [
-        'Abjad IDE - all stylesheets directories - view & navigation commands',
-        '',
-        '    display navigation command help (;)',
-        '',
-        '    home (h)',
-        '    quit (q)',
-        '',
-        '    go to all build directories (uu)',
-        '    go to all distribution directories (dd)',
-        '    go to all etc directories (ee)',
-        '    go to all makers directories (kk)',
-        '    go to all materials directories (mm)',
-        '    go to all segments directories (gg)',
-        '    go to all stylesheets directories (yy)',
-        '    go to all test directories (tt)',
-        '',
-        '>',
-        ]
-
-    input_ = 'yy ; q'
-    abjad_ide._run_main_menu(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
-
-
-def test_AbjadIDE_display_navigation_command_help_07():
     r'''Works in materials directory.
     '''
 
@@ -239,7 +166,7 @@ def test_AbjadIDE_display_navigation_command_help_07():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_navigation_command_help_08():
+def test_AbjadIDE_display_navigation_command_help_06():
     r'''Works in segments directory.
     '''
 
@@ -274,7 +201,7 @@ def test_AbjadIDE_display_navigation_command_help_08():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_navigation_command_help_09():
+def test_AbjadIDE_display_navigation_command_help_07():
     r'''Works in stylesheets directory.
     '''
 

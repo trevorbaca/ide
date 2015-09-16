@@ -39,35 +39,6 @@ def test_AbjadIDE_copy_01():
 
 
 def test_AbjadIDE_copy_02():
-    r'''Copies material package between scores.
-    '''
-
-    source_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'materials',
-        'performer_inventory',
-        )
-    target_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'blue_example_score',
-        'blue_example_score',
-        'materials',
-        'copied_performer_inventory',
-        )
-
-    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
-        input_ = 'mm cp performer~inventory~(Red~Example~Score)'
-        input_ += ' Blue~Example~Score copied~performer~inventory y q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(source_path)
-        assert os.path.exists(target_path)
-        assert 'copied performer inventory' in contents
-
-
-def test_AbjadIDE_copy_03():
     r'''Copies material package in score.
     '''
 
@@ -96,7 +67,7 @@ def test_AbjadIDE_copy_03():
         assert 'copied_performer_inventory' in contents
 
 
-def test_AbjadIDE_copy_04():
+def test_AbjadIDE_copy_03():
     r'''Includes preservation message in getter help.
     '''
 
@@ -110,36 +81,7 @@ def test_AbjadIDE_copy_04():
     assert string in contents
 
 
-def test_AbjadIDE_copy_05():
-    r'''Copies segment package between scores.
-    '''
-
-    source_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_01',
-        )
-    target_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'blue_example_score',
-        'blue_example_score',
-        'segments',
-        'copied_segment_01',
-        )
-
-    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
-        input_ = 'gg cp A~(Red~Example~Score)'
-        input_ += ' Blue~Example~Score copied_segment_01 y q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(source_path)
-        assert os.path.exists(target_path)
-        assert 'copied_segment_01' in contents
-
-
-def test_AbjadIDE_copy_06():
+def test_AbjadIDE_copy_04():
     r'''Copies segment package in score.
     '''
 
@@ -168,36 +110,7 @@ def test_AbjadIDE_copy_06():
         assert 'copied_segment_01' in contents
 
 
-def test_AbjadIDE_copy_07():
-    r'''Copies build file between scores.
-    '''
-
-    source_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'build',
-        'score.pdf',
-        )
-    target_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'blue_example_score',
-        'blue_example_score',
-        'build',
-        'copied-score.pdf',
-        )
-
-    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
-        input_ = 'uu cp score.pdf~(Red~Example~Score)'
-        input_ += ' Blue~Example~Score copied-score.pdf y q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(source_path)
-        assert os.path.exists(target_path)
-        assert 'copied-score.pdf' in contents
-
-
-def test_AbjadIDE_copy_08():
+def test_AbjadIDE_copy_05():
     r'''Copies build file in score.
     '''
 
@@ -226,36 +139,7 @@ def test_AbjadIDE_copy_08():
         assert 'copied-score.pdf' in contents
 
 
-def test_AbjadIDE_copy_09():
-    r'''Copies maker file between scores.
-    '''
-
-    source_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'makers',
-        'ScoreTemplate.py',
-        )
-    target_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'blue_example_score',
-        'blue_example_score',
-        'makers',
-        'CopiedScoreTemplate.py',
-        )
-
-    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
-        input_ = 'kk cp ScoreTemplate.py~(Red~Example~Score)'
-        input_ += ' Blue~Example~Score CopiedScoreTemplate.py y q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(source_path)
-        assert os.path.exists(target_path)
-        assert 'CopiedScoreTemplate.py' in contents
-
-
-def test_AbjadIDE_copy_10():
+def test_AbjadIDE_copy_06():
     r'''Copies maker file in score.
     '''
 
@@ -284,36 +168,7 @@ def test_AbjadIDE_copy_10():
         assert 'CopiedScoreTemplate.py' in contents
 
 
-def test_AbjadIDE_copy_11():
-    r'''Copies stylesheet between scores.
-    '''
-
-    source_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'stylesheets',
-        'stylesheet.ily',
-        )
-    target_path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'blue_example_score',
-        'blue_example_score',
-        'stylesheets',
-        'copied-stylesheet.ily',
-        )
-
-    with systemtools.FilesystemState(keep=[source_path], remove=[target_path]):
-        input_ = 'yy cp stylesheet.ily~(Red~Example~Score)'
-        input_ += ' Blue~Example~Score copied-stylesheet.ily y q'
-        abjad_ide._run_main_menu(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(source_path)
-        assert os.path.exists(target_path)
-        assert 'copied-stylesheet.ily' in contents
-
-
-def test_AbjadIDE_copy_12():
+def test_AbjadIDE_copy_07():
     r'''Copies stylesheet in score.
     '''
 

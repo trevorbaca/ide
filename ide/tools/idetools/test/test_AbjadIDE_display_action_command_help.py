@@ -169,17 +169,6 @@ def test_AbjadIDE_display_action_command_help_08():
 
 
 def test_AbjadIDE_display_action_command_help_09():
-    r'''Displays correct title with all build files.
-    '''
-    
-    input_ = 'uu ? q'
-    abjad_ide._run_main_menu(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
-    assert 'Abjad IDE - all build directories - action commands' in contents
-
-
-def test_AbjadIDE_display_action_command_help_10():
     r'''Displays only one blank line after title.
     '''
     
@@ -194,7 +183,7 @@ def test_AbjadIDE_display_action_command_help_10():
     assert string in contents
 
 
-def test_AbjadIDE_display_action_command_help_11():
+def test_AbjadIDE_display_action_command_help_10():
     r'''Works at home screen.
     '''
 
@@ -229,64 +218,7 @@ def test_AbjadIDE_display_action_command_help_11():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_12():
-    r'''Works at all materials directories.
-    '''
-
-    lines = [
-        'Abjad IDE - all materials directories - action commands',
-        '',
-        '    display action command help (?)',
-        '    invoke shell (!)',
-        '',
-        '    open lilypond log (log)',
-        '',
-        '    copy (cp)',
-        '    new (new)',
-        '    remove (rm)',
-        '    rename (ren)',
-        '',
-        '>',
-        ]
-
-    input_ = 'mm ? q'
-    abjad_ide._run_main_menu(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
-
-
-
-def test_AbjadIDE_display_action_command_help_13():
-    r'''Works at all stylesheets directories.
-    '''
-
-    lines = [
-        'Abjad IDE - all stylesheets directories - action commands',
-        '',
-        '    display action command help (?)',
-        '    invoke shell (!)',
-        '',
-        '    open lilypond log (log)',
-        '',
-        '    copy (cp)',
-        '    new (new)',
-        '    remove (rm)',
-        '    rename (ren)',
-        '',
-        '>',
-        ]
-
-    input_ = 'yy ? q'
-    abjad_ide._run_main_menu(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
-
-
-def test_AbjadIDE_display_action_command_help_14():
+def test_AbjadIDE_display_action_command_help_11():
     r'''Works in materials directory.
     '''
 
@@ -322,7 +254,7 @@ def test_AbjadIDE_display_action_command_help_14():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_15():
+def test_AbjadIDE_display_action_command_help_12():
     r'''Works in segments directory.
     '''
 
@@ -359,7 +291,7 @@ def test_AbjadIDE_display_action_command_help_15():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_16():
+def test_AbjadIDE_display_action_command_help_13():
     r'''Works in stylesheets directory.
     '''
 

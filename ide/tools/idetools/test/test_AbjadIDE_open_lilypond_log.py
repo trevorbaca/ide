@@ -10,11 +10,3 @@ def test_AbjadIDE_open_lilypond_log_01():
     abjad_ide._run_main_menu(input_=input_)
     
     assert abjad_ide._session._attempted_to_open_file
-
-
-def test_AbjadIDE_open_lilypond_log_02():
-
-    input_ = 'uu log q'
-    abjad_ide._run_main_menu(input_=input_)
-    
-    assert abjad_ide._session._attempted_to_open_file
