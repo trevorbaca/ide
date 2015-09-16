@@ -2324,15 +2324,6 @@ class AbjadIDE(object):
         if parts[-2] == parts[-1]:
             parts = parts[:-1]
         path = os.path.sep.join(parts)
-        message = '{} will be removed.'
-        message = message.format(path)
-        self._io_manager._display(message)
-        getter = self._io_manager._make_getter()
-        getter.append_string("type 'remove' to proceed")
-        if self._io_manager._session.confirm:
-            result = getter._run(io_manager=self._io_manager)
-            if not result == 'remove':
-                return
         if self._is_in_git_repository(path):
             if self._is_git_unknown(path):
                 command = 'rm -rf {}'
@@ -3994,11 +3985,10 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            with self._io_manager._silent():
-                self._git_commit(
-                    directory,
-                    commit_message=commit_message,
-                    )
+            self._git_commit(
+                directory,
+                commit_message=commit_message,
+                )
 
     @Command(
         'revert*',
@@ -4895,8 +4885,7 @@ class AbjadIDE(object):
             if not result == confirmation_string:
                 return
         for path in paths:
-            with self._io_manager._silent():
-                self._remove(path)
+            self._remove(path)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 

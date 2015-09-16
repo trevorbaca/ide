@@ -21,7 +21,7 @@ def test_AbjadIDE_remove_01():
         )
 
     with systemtools.FilesystemState(remove=[outer_path, inner_path]):
-        input_ = 'new example~score~100 y q'
+        input_ = 'new example~score~100 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(outer_path)
         title = 'Example Score 100'
