@@ -4045,9 +4045,11 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            with self._io_manager._silent():
-                subprocess_messages, candidate_messages = \
-                    self.interpret_illustration_source(directory)
+            result = self.interpret_illustration_source(
+                directory,
+                confirm=False,
+                )
+            subprocess_messages, candidate_messages = result
             if subprocess_messages:
                 self._io_manager._display(subprocess_messages)
                 self._io_manager._display(candidate_messages)
@@ -4186,12 +4188,19 @@ class AbjadIDE(object):
         outside_score=False,
         section='package',
         )
-    def interpret_illustration_source(self, directory, dry_run=False):
-        r'''Interprets ``illustration.ly``.
+    def interpret_illustration_source(
+        self, 
+        directory, 
+        confirm=True, 
+        dry_run=False,
+        ):
+        r'''Interprets illustration source.
 
-        Makes ``illustration.pdf``.
+        Makes illustration PDF.
 
-        Returns pair. List of STDERR messages from LilyPond together
+        Returns a pair.
+        
+        Pairs equals list of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
         illustration_source_path = os.path.join(directory, 'illustration.ly')
@@ -4209,9 +4218,10 @@ class AbjadIDE(object):
             return [], []
         messages = self._format_messaging(inputs, outputs)
         self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return [], []
+        if confirm:
+            result = self._io_manager._confirm()
+            if not result:
+                return [], []
         result = self._io_manager.run_lilypond(illustration_source_path)
         subprocess_messages, candidate_messages = result
         return subprocess_messages, candidate_messages
