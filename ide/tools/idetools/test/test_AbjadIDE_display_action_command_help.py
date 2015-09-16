@@ -210,7 +210,6 @@ def test_AbjadIDE_display_action_command_help_11():
         '',
         '    git add every package (add*)',
         '    git commit every package (ci*)',
-        '    git revert every package (revert*)',
         '    git status every package (st*)',
         '    git update every package (up*)',
         '',

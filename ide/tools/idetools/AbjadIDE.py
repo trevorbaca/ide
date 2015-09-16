@@ -3592,24 +3592,6 @@ class AbjadIDE(object):
                 )
 
     @Command(
-        'revert*',
-        argument_names=('visible_asset_paths',),
-        in_score=False,
-        outside_score='home',
-        section='git',
-        )
-    def git_revert_every_package(self, directories):
-        r'''Reverts every asset to repository.
-
-        Returns none.
-        '''
-        self._session._attempted_method = 'git_revert_every_package'
-        if self._session.is_test:
-            return
-        for directory in directories:
-            self._git_revert(directory)
-
-    @Command(
         'st*',
         argument_names=('visible_asset_paths',),
         in_score=False,
