@@ -4558,9 +4558,9 @@ class AbjadIDE(object):
                 self._io_manager._display(messages)
             else:
                 result = systemtools.TestManager.compare_files(
-                candidate_pdf_path,
-                illustration_pdf_path,
-                )
+                    candidate_pdf_path,
+                    illustration_pdf_path,
+                    )
                 messages = self._make_candidate_messages(
                     result,
                     candidate_pdf_path,
@@ -4572,18 +4572,28 @@ class AbjadIDE(object):
                     self._io_manager._display(message)
                     return
                 else:
-                    message = 'overwrite existing PDF with candidate PDF?'
-                    result = self._io_manager._confirm(message=message)
-                    if not result:
-                        return
+                    message = 'overwriting {} ...'
+                    message = message.format(illustration_source_path)
+                    self._io_manager._display(message)
                     try:
-                        shutil.move(candidate_ly_path, illustration_source_path)
+                        shutil.move(
+                            candidate_ly_path,
+                            illustration_source_path,
+                            )
                     except IOError:
                         pass
+                    message = 'overwriting {} ...'
+                    message = message.format(illustration_pdf_path)
+                    self._io_manager._display(message)
                     try:
                         shutil.move(candidate_pdf_path, illustration_pdf_path)
                     except IOError:
                         pass
+                    if not self._session.is_test:
+                        message = 'opening {} ...'
+                        message = message.format(illustration_pdf_path)
+                        self._io_manager._display(message)
+                        self._io_manager.open_file(illustration_pdf_path)
 
     @Command(
         'iis',
