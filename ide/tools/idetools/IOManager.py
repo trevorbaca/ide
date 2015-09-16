@@ -359,16 +359,6 @@ class IOManager(IOManager):
             line = line.strip()
         return line
 
-    def _silent(self):
-        from ide.tools import idetools
-        return idetools.Interaction(
-            confirm=False,
-            display=False,
-            dry_run=False,
-            io_manager=self,
-            session=self._session,
-            )
-
     ### PUBLIC METHODS ###
 
     def edit(self, path, line_number=None):
