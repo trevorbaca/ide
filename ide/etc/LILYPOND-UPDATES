@@ -1,8 +1,6 @@
-SUMMARY. To run the following commands you will need to make sure that the
-Red Example Score is visible when you start the IDE. Comment out ...
+SUMMARY. Run ...
 
-    if not self._session.is_test:
-        entries = [_ for _ in entries if 'Example Score' not in _[0]]
+    test-abjad-ide
 
 ... to make Red Example Score visible when you start the IDE. Then run the
 following four commands to rerender all test artifacts to accommodate a new
