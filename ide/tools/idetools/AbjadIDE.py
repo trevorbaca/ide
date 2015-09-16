@@ -69,7 +69,6 @@ class AbjadIDE(object):
                 '__illustrate__.py',
                 'illustration.ly',
                 'illustration.pdf',
-                #'maker.py',
                 ),
             'required_directories': (),
             'required_files': (
@@ -384,21 +383,6 @@ class AbjadIDE(object):
                 maker_files.append(maker_file)
         return maker_files
 
-    def _collect_material_files(self, example_scores=False):
-        material_files = []
-        material_directories = self._collect_material_directories(
-            example_scores=example_scores,
-            )
-        for material_directory in material_directories:
-            for name in os.listdir(material_directory):
-                if not name[0].isalpha():
-                    continue
-                if name.endswith('.pyc'):
-                    continue
-                material_file = os.path.join(material_directory, name)
-                material_files.append(material_file)
-        return material_files
-
     def _collect_material_directories(self, example_scores=False):
         material_directories = []
         materials_directories = self._collect_canonical_directories(
@@ -414,6 +398,21 @@ class AbjadIDE(object):
                     continue
                 material_directories.append(material_directory)
         return material_directories
+
+    def _collect_material_files(self, example_scores=False):
+        material_files = []
+        material_directories = self._collect_material_directories(
+            example_scores=example_scores,
+            )
+        for material_directory in material_directories:
+            for name in os.listdir(material_directory):
+                if not name[0].isalpha():
+                    continue
+                if name.endswith('.pyc'):
+                    continue
+                material_file = os.path.join(material_directory, name)
+                material_files.append(material_file)
+        return material_files
 
     def _collect_outer_score_directories(self, example_scores=False):
         outer_score_directories = []
@@ -702,24 +701,6 @@ class AbjadIDE(object):
                 (not must_have_file or self._find_first_file_name(path))):
                 return path
 
-    def _format_counted_check_messages(
-        self,
-        paths,
-        identifier,
-        participal,
-        ):
-        messages = []
-        if paths:
-            count = len(paths)
-            identifier = stringtools.pluralize(identifier, count)
-            message = '{} {} {}:'
-            message = message.format(count, identifier, participal)
-            messages.append(message)
-            for path in paths:
-                message = self._tab + path
-                messages.append(message)
-        return messages
-
     @staticmethod
     def _format_messaging(inputs, outputs, verb='interpret'):
         messages = []
@@ -757,29 +738,6 @@ class AbjadIDE(object):
                     for path in path_list:
                         messages.append('{}{}'.format(output_label, path))
                 messages.append('')
-        return messages
-
-    def _format_ratio_check_messages(
-        self,
-        found_paths,
-        total_paths,
-        identifier,
-        participal='found',
-        ):
-        messages = []
-        denominator = len(total_paths)
-        numerator = len(found_paths)
-        identifier = stringtools.pluralize(identifier, denominator)
-        if denominator:
-            message = '{} of {} {} {}:'
-        else:
-            message = '{} of {} {} {}.'
-        message = message.format(
-            numerator, denominator, identifier, participal)
-        messages.append(message)
-        for path in sorted(found_paths):
-            message = self._tab + path
-            messages.append(message)
         return messages
 
     def _gather_segment_files(self, score_directory, file_name):
@@ -827,7 +785,6 @@ class AbjadIDE(object):
             os.mkdir(build_directory)
         pairs = zip(source_file_paths, target_file_paths)
         return pairs
-
 
     def _get_added_asset_paths(self, path):
         paths = []
@@ -965,22 +922,6 @@ class AbjadIDE(object):
             name = directory_name.replace('_', ' ')
         return name
 
-    def _get_next_asset_path(self, directory_name):
-        last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries(directory_name)
-        paths = [x[-1] for x in menu_entries]
-        if self._session.is_in_score:
-            score_directory = self._session.current_score_directory
-            paths = [x for x in paths if x.startswith(score_directory)]
-        if last_path is None:
-            return paths[0]
-        if last_path not in paths:
-            return paths[0]
-        index = paths.index(last_path)
-        next_index = (index + 1) % len(paths)
-        next_path = paths[next_index]
-        return next_path
-
     @staticmethod
     def _get_outer_score_package_path(path):
         if path.startswith(configuration.composer_scores_directory):
@@ -993,22 +934,6 @@ class AbjadIDE(object):
                 configuration.abjad_ide_example_scores_directory,
                 os.path.basename(path),
                 )
-
-    def _get_previous_asset_path(self, directory_name):
-        last_path = self._session.last_asset_path
-        menu_entries = self._make_asset_menu_entries(directory_name)
-        paths = [x[-1] for x in menu_entries]
-        if self._session.is_in_score:
-            score_directory = self._session.current_score_directory
-            paths = [x for x in paths if x.startswith(score_directory)]
-        if last_path is None:
-            return paths[-1]
-        if last_path not in paths:
-            return paths[-1]
-        index = paths.index(last_path)
-        previous_index = (index - 1) % len(paths)
-        previous_path = paths[previous_index]
-        return previous_path
 
     def _get_previous_segment_path(self, directory):
         paths = self._list_visible_asset_paths('segments')
@@ -1031,33 +956,6 @@ class AbjadIDE(object):
             process = self._io_manager.make_subprocess(command)
         line = self._io_manager._read_one_line_from_pipe(process.stdout)
         return line
-
-    def _get_score_initializer_file_lines(self, missing_file):
-        lines = []
-        lines.append(self._unicode_directive)
-        if 'makers' in missing_file:
-            lines.append('from abjad.tools import systemtools')
-            lines.append('')
-            line = 'systemtools.ImportManager.import_structured_package('
-            lines.append(line)
-            lines.append('    __path__[0],')
-            lines.append('    globals(),')
-            lines.append('    )')
-        elif 'materials' in missing_file:
-            lines.append('from abjad.tools import systemtools')
-            lines.append('')
-            line = 'systemtools.ImportManager.import_material_packages('
-            lines.append(line)
-            lines.append('    __path__[0],')
-            lines.append('    globals(),')
-            lines.append('    )')
-        elif 'segments' in missing_file:
-            pass
-        else:
-            lines.append('import makers')
-            lines.append('import materials')
-            lines.append('import segments')
-        return lines
 
     @staticmethod
     def _get_score_package_directory_name(path):
@@ -1324,16 +1222,6 @@ class AbjadIDE(object):
             message = message.format(result)
             raise Exception(message)
 
-    def _handle_pending_redraw_directive(self, directive):
-        if directive in ('b', 'h', 'q', 's', '?', ';'):
-            self._session._pending_redraw = True
-
-    def _handle_wrangler_navigation_directive(self, expr):
-        dictionary = self._navigation_command_name_to_directory_name
-        directory_name = dictionary.get(expr)
-        if directory_name is not None:
-            self._session._navigation_target = directory_name
-
     def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
         Calls ``pdflatex`` on file TWICE.
@@ -1380,14 +1268,6 @@ class AbjadIDE(object):
                 candidate_path,
                 destination_path,
                 )
-
-    @staticmethod
-    def _is_directory_with_metadata_py(path):
-        if os.path.isdir(path):
-            for directory_entry in sorted(os.listdir(path)):
-                if directory_entry == '__metadata__.py':
-                    return True
-        return False
 
     def _is_git_unknown(self, path):
         if path is None:
@@ -1597,20 +1477,6 @@ class AbjadIDE(object):
                     path = os.path.join(path, directory_entry)
                 result.append(path)
         return result
-
-    @staticmethod
-    def _list_directories_with_metadata_pys(path):
-        paths = []
-        for directory, subdirectory_names, file_names in os.walk(path):
-            if AbjadIDE._is_directory_with_metadata_py(directory):
-                if directory not in paths:
-                    paths.append(directory)
-            for subdirectory_name in subdirectory_names:
-                path = os.path.join(directory, subdirectory_name)
-                if AbjadIDE._is_directory_with_metadata_py(path):
-                    if path not in paths:
-                        paths.append(path)
-        return paths
 
     @staticmethod
     def _list_directory(
@@ -2473,10 +2339,7 @@ class AbjadIDE(object):
 
     def _select_score_directory(self, directory_name):
         display_strings, keys = [], []
-        paths = self._list_asset_paths(
-            'scores',
-            #example_score_packages=self._session.is_test,
-            )
+        paths = self._list_asset_paths('scores')
         for path in paths:
             title = self._get_title_metadatum(path)
             display_strings.append(title)
