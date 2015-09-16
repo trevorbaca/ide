@@ -196,8 +196,7 @@ class AbjadIDE(object):
         assert ' ' not in metadatum_name, repr(metadatum_name)
         metadata = self._get_metadata(metadata_py_path)
         metadata[metadatum_name] = metadatum_value
-        with self._io_manager._silent():
-            self._write_metadata_py(metadata_py_path, metadata)
+        self._write_metadata_py(metadata_py_path, metadata)
 
     def _call_lilypond_on_file_ending_with(
         self,
@@ -2623,8 +2622,7 @@ class AbjadIDE(object):
         metadata_py_path = configuration.abjad_ide_views_metadata_py_path
         if not os.path.exists(metadata_py_path):
             metadata = self._get_metadata(metadata_py_path)
-            with self._io_manager._silent():
-                self._write_metadata_py(metadata_py_path, metadata)
+            self._write_metadata_py(metadata_py_path, metadata)
 
     def _supply_global_views_file(self, directory_name):
         from ide.tools import idetools
