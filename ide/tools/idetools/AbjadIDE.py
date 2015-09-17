@@ -1167,14 +1167,9 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
-            current_directory = self._session.manifest_current_directory
             if 'current_directory' in command.argument_names:
+                current_directory = self._session.manifest_current_directory
                 command(current_directory)
-            elif 'visible_asset_paths' in command.argument_names:
-                directory_name = self._path_to_directory_name(
-                    current_directory)
-                paths = self._list_visible_asset_paths(directory_name)
-                command(paths)
             else:
                 command()
         elif (result.endswith('!') and
@@ -2732,19 +2727,21 @@ class AbjadIDE(object):
             message = '{} OK.'.format(definition_path)
             self._io_manager._display(message)
 
-    # TODO: pass in current_directory instead
     @Command(
         'dfk*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
         )
-    def check_every_definition_file(self, paths):
+    def check_every_definition_file(self, directory):
         r'''Checks definition file in every package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        paths = self._list_visible_asset_paths(directory_name)
         inputs, outputs = [], []
         for path in paths:
             inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
@@ -2894,7 +2891,10 @@ class AbjadIDE(object):
             raise ValueError(source_path)
         self._session._pending_redraw = True
 
-    @Command('?', section='system')
+    @Command(
+        '?', 
+        section='system',
+        )
     def display_action_command_help(self):
         r'''Displays action commands.
 
@@ -2902,7 +2902,10 @@ class AbjadIDE(object):
         '''
         pass
 
-    @Command(';', section='display navigation')
+    @Command(
+        ';', 
+        section='display navigation',
+        )
     def display_navigation_command_help(self):
         r'''Displays navigation commands.
 
@@ -2951,19 +2954,21 @@ class AbjadIDE(object):
         definition_path = os.path.join(directory, 'definition.py')
         self._io_manager.edit(definition_path)
 
-    # TODO: pass in current_directory instead
     @Command(
         'df*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         directories=('materials', 'segments'),
         section='star',
         )
-    def edit_every_definition_file(self, directories):
-        r'''Edits definition file in every package.
+    def edit_every_definition_file(self, directory):
+        r'''Edits definition file in every subdirectory of `directory`.
 
         Returns none.
         '''
-        self._open_in_every_package(directories, 'definition.py')
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        paths = self._list_visible_asset_paths(directory_name)
+        self._open_in_every_package(paths, 'definition.py')
 
     @Command(
         'ill',
@@ -3304,19 +3309,21 @@ class AbjadIDE(object):
             replacements=replacements,
             )
 
-    # TODO: pass in current_directory instead
     @Command(
         'add*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         in_score=False,
         outside_score='home',
         section='git',
         )
-    def git_add_every_package(self, directories):
+    def git_add_every_package(self, directory):
         r'''Adds every asset to repository.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         self._session._attempted_method = 'git_add_every_package'
         if self._session.is_test:
             return
@@ -3344,19 +3351,21 @@ class AbjadIDE(object):
         message = message.format(count, identifier)
         self._io_manager._display(message)
 
-    # TODO: pass in current_directory instead
     @Command(
         'ci*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         in_score=False,
         outside_score='home',
         section='git',
         )
-    def git_commit_every_package(self, directories):
+    def git_commit_every_package(self, directory):
         r'''Commits every asset to repository.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         self._session._attempted_method = 'git_commit_every_package'
         if self._session.is_test:
             return
@@ -3376,37 +3385,41 @@ class AbjadIDE(object):
                 commit_message=commit_message,
                 )
 
-    # TODO: pass in current_directory instead
     @Command(
         'st*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         in_score=False,
         outside_score='home',
         section='git',
         )
-    def git_status_every_package(self, directories):
+    def git_status_every_package(self, directory):
         r'''Displays Git status of every package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         self._session._attempted_method = 'git_status_every_package'
         directories.sort()
         for directory in directories:
             self._git_status(directory)
 
-    # TODO: pass in current_directory instead
     @Command(
         'up*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         in_score=False,
         outside_score='home',
         section='git',
         )
-    def git_update_every_package(self, directories):
+    def git_update_every_package(self, directory):
         r'''Updates every asset from repository.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
@@ -3683,10 +3696,9 @@ class AbjadIDE(object):
                     except IOError:
                         pass
 
-    # TODO: pass in current_directory instead
     @Command(
         'di*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         directories=('segments'),
         outside_score=False,
         section='star',
@@ -3696,6 +3708,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         inputs, outputs = [], []
         method_name = 'illustrate_definition'
         for directory in directories:
@@ -3732,22 +3747,21 @@ class AbjadIDE(object):
 
     @Command(
         'lyi*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
         )
-    def interpret_every_ly(
-        self,
-        directories,
-        open_every_illustration_pdf=True,
-        ):
+    def interpret_every_ly(self, directory, open_every_illustration_pdf=True):
         r'''Interprets illustration ly in every package.
 
         Makes illustration PDF in every package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         inputs, outputs = [], []
         method_name = 'interpret_illustration_source'
         for directory in directories:
@@ -4181,30 +4195,36 @@ class AbjadIDE(object):
 
     @Command(
         'io*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
         )
-    def open_every_illustration_pdf(self, directories):
+    def open_every_illustration_pdf(self, directory):
         r'''Opens ``illustration.pdf`` in every package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
         'so*',
-        argument_names=('visible_asset_paths',),
+        argument_names=('current_directory',),
         in_score=False,
         outside_score='home',
         section='star',
         )
-    def open_every_score_pdf(self, directories):
+    def open_every_score_pdf(self, directory):
         r'''Opens ``score.pdf`` in every package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        directories = self._list_visible_asset_paths(directory_name)
         paths = []
         for directory in directories:
             inputs, outputs = self.open_score_pdf(directory, dry_run=True)
