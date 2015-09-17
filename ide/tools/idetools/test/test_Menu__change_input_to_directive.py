@@ -61,7 +61,7 @@ def test_Menu__change_input_to_directive_05():
     1, 3, 4, 7, ....
     '''
 
-    input_ = 'red~example~score m magic~numbers 1 q'
+    input_ = 'red~example~score mm magic~numbers 1 q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

@@ -28,7 +28,7 @@ def test_AbjadIDE_interpret_score_01():
     with systemtools.FilesystemState(keep=[tex_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score u si q'
+        input_ = 'red~example~score bb si q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
@@ -58,10 +58,10 @@ def test_AbjadIDE_interpret_score_02():
         # remove existing pdf
         os.remove(pdf_path)
         # generate PDF a first time
-        input_ = 'red~example~score u si q'
+        input_ = 'red~example~score bb si q'
         abjad_ide._run_main_menu(input_=input_)
         # attempt (but fail) to generate PDF a second time
-        input_ = 'red~example~score u si q'
+        input_ = 'red~example~score bb si q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents

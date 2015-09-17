@@ -34,7 +34,7 @@ def test_AbjadIDE_new_01():
         'test',
         ]
 
-    input_ = 'new Example~Score y q'
+    input_ = 'new Example~Score q'
 
     with systemtools.FilesystemState(remove=[outer_path]):
         abjad_ide._run_main_menu(input_=input_)
@@ -60,22 +60,22 @@ def test_AbjadIDE_new_02():
         )
 
     with systemtools.FilesystemState(remove=[score_package]):
-        input_ = 'new ExampleScore1 y q'
+        input_ = 'new ExampleScore1 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
-        input_ = 'new exampleScore1 y q'
+        input_ = 'new exampleScore1 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
-        input_ = 'new EXAMPLE_SCORE_1 y q'
+        input_ = 'new EXAMPLE_SCORE_1 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
-        input_ = 'new example_score_1 y q'
+        input_ = 'new example_score_1 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(score_package)
 
@@ -98,7 +98,7 @@ def test_AbjadIDE_new_03():
         'definition.py',
         ]
 
-    input_ = 'Red~Example~Score m new testnotes y q'
+    input_ = 'Red~Example~Score mm new testnotes q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run_main_menu(input_=input_)
@@ -125,7 +125,7 @@ def test_AbjadIDE_new_04():
         'definition.py',
         ]
 
-    input_ = 'red~example~score g new segment~04 y q'
+    input_ = 'red~example~score gg new segment~04 q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run_main_menu(input_=input_)
@@ -148,7 +148,7 @@ def test_AbjadIDE_new_05():
         'test-file.txt',
         )
 
-    input_ = 'red~example~score u new test-file.txt q'
+    input_ = 'red~example~score bb new test-file.txt q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run_main_menu(input_=input_)
@@ -167,7 +167,7 @@ def test_AbjadIDE_new_06():
         'new-stylesheet.ily',
         )
 
-    input_ = 'red~example~score y new new-stylesheet.ily q'
+    input_ = 'red~example~score yy new new-stylesheet.ily q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run_main_menu(input_=input_)
@@ -186,7 +186,7 @@ def test_AbjadIDE_new_07():
         'NewMaker.py',
         )
 
-    input_ = 'red~example~score k new NewMaker.py q'
+    input_ = 'red~example~score kk new NewMaker.py q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._run_main_menu(input_=input_)

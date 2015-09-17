@@ -10,7 +10,7 @@ def test_AbjadIDE_go_to_test_directory_01():
     r'''From material package.
     '''
 
-    input_ = 'red~example~score m tempo~inventory t q'
+    input_ = 'red~example~score mm tempo~inventory tt q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -27,7 +27,7 @@ def test_AbjadIDE_go_to_test_directory_02():
     r'''From segment package.
     '''
 
-    input_ = 'red~example~score g A t q'
+    input_ = 'red~example~score gg A tt q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -44,7 +44,7 @@ def test_AbjadIDE_go_to_test_directory_03():
     r'''From build directory to test directory.
     '''
 
-    input_ = 'red~example~score u t q'
+    input_ = 'red~example~score bb tt q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
@@ -71,7 +71,7 @@ def test_AbjadIDE_go_to_test_directory_04():
         command = 'rm -rf {}'
         command = command.format(test_directory)
         os.system(command)
-        input_ = 'red~example~score t q'
+        input_ = 'red~example~score tt q'
         abjad_ide._run_main_menu(input_=input_)
 
     string = 'Directory does not exist:'

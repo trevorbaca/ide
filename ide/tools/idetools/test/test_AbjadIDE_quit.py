@@ -8,7 +8,7 @@ def test_AbjadIDE_quit_01():
     r'''In material package.
     '''
     
-    input_ = 'red~example~score m tempo~inventory q'
+    input_ = 'red~example~score mm tempo~inventory q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_quit_02():
     r'''In segment package.
     '''
     
-    input_ = 'red~example~score g A q'
+    input_ = 'red~example~score gg A q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 

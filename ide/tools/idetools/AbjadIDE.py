@@ -3379,7 +3379,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('scores')
 
     @Command(
-        'u',
+        'bb',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3392,7 +3392,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('build')
 
     @Command(
-        'd',
+        'dd',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3405,7 +3405,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('distribution')
 
     @Command(
-        'c',
+        'ee',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3418,7 +3418,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('etc')
 
     @Command(
-        'k',
+        'kk',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3431,7 +3431,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('makers')
 
     @Command(
-        'm',
+        'mm',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3444,7 +3444,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('materials')
 
     @Command(
-        's',
+        'ss',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3458,7 +3458,7 @@ class AbjadIDE(object):
         self._run_package_manager_menu(current_score_directory)
 
     @Command(
-        'g',
+        'gg',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3471,7 +3471,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('segments')
 
     @Command(
-        'y',
+        'yy',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',
@@ -3484,7 +3484,7 @@ class AbjadIDE(object):
         self._run_wrangler_menu('stylesheets')
 
     @Command(
-        't',
+        'tt',
         argument_names=('current_path',),
         outside_score=False,
         section='navigation',

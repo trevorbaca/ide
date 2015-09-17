@@ -20,7 +20,7 @@ def test_AbjadIDE_generate_score_source_01():
         )
 
     with systemtools.FilesystemState(keep=[path]):
-        input_ = 'red~example~score u sg y q'
+        input_ = 'red~example~score bb sg q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(path)
         assert filecmp.cmp(path, path + '.backup')

@@ -16,15 +16,15 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '>',
         ]
@@ -50,20 +50,20 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '>',
     ]
 
-    input_ = 'red~example~score m magic~numbers ; q'
+    input_ = 'red~example~score mm magic~numbers ; q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -84,20 +84,20 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '>',
     ]
 
-    input_ = 'red~example~score g A ; q'
+    input_ = 'red~example~score gg A ; q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -143,22 +143,22 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '    set view (ws)',
         '',
         '>',
         ]
 
-    input_ = 'red~example~score m ; q'
+    input_ = 'red~example~score mm ; q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -178,22 +178,22 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '    set view (ws)',
         '',
         '>',
         ]
 
-    input_ = 'red~example~score g ; q'
+    input_ = 'red~example~score gg ; q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -213,22 +213,22 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '    home (h)',
         '    quit (q)',
         '',
-        '    go to build directory (u)',
-        '    go to distribution directory (d)',
-        '    go to etc directory (c)',
-        '    go to makers directory (k)',
-        '    go to materials directory (m)',
-        '    go to score directory (s)',
-        '    go to segments directory (g)',
-        '    go to stylesheets directory (y)',
-        '    go to test directory (t)',
+        '    go to build directory (bb)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to makers directory (kk)',
+        '    go to materials directory (mm)',
+        '    go to score directory (ss)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
         '',
         '    set view (ws)',
         '',
         '>',
         ]
 
-    input_ = 'red~example~score y ; q'
+    input_ = 'red~example~score yy ; q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 

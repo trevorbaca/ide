@@ -22,7 +22,7 @@ def test_AbjadIDE_generate_front_cover_source_01():
         )
 
     with systemtools.FilesystemState(keep=[cover_path]):
-        input_ = 'red~example~score u fcg y q'
+        input_ = 'red~example~score bb fcg q'
         abjad_ide._run_main_menu(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
@@ -49,7 +49,7 @@ def test_AbjadIDE_generate_front_cover_source_02():
     with systemtools.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         assert not os.path.exists(cover_path)
-        input_ = 'red~example~score u fcg q'
+        input_ = 'red~example~score bb fcg q'
         abjad_ide._run_main_menu(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 

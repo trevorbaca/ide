@@ -10,7 +10,7 @@ def test_AbjadIDE_edit_every_definition_01():
     r'''Edits every material definition.
     '''
 
-    input_ = 'red~example~score m de* y q'
+    input_ = 'red~example~score mm de* y q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -43,7 +43,7 @@ def test_AbjadIDE_edit_every_definition_02():
     r'''Edits every segment definition.
     '''
 
-    input_ = 'red~example~score g de* y q'
+    input_ = 'red~example~score gg de* y q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

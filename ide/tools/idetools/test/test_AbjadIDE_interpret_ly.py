@@ -30,7 +30,7 @@ def test_AbjadIDE_interpret_ly_01():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score m tempo~inventory lyi y q'
+        input_ = 'red~example~score mm tempo~inventory lyi y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
@@ -60,7 +60,7 @@ def test_AbjadIDE_interpret_ly_02():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score g A lyi y q'
+        input_ = 'red~example~score gg A lyi y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)

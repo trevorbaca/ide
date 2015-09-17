@@ -29,7 +29,7 @@ def test_AbjadIDE_collect_segment_lilypond_files_01():
     with systemtools.FilesystemState(keep=segment_paths):
         for segment_path in segment_paths:
             os.remove(segment_path)
-        input_ = 'red~example~score u mc y q'
+        input_ = 'red~example~score bb mc y q'
         abjad_ide._run_main_menu(input_=input_)
         for segment_path in segment_paths:
             assert os.path.isfile(segment_path)
@@ -61,7 +61,7 @@ def test_AbjadIDE_collect_segment_lilypond_files_02():
         segment_paths.append(segment_path)
 
     with systemtools.FilesystemState(keep=segment_paths):
-        input_ = 'red~example~score u mc y q'
+        input_ = 'red~example~score bb mc y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents

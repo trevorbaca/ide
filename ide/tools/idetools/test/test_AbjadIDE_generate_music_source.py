@@ -24,7 +24,7 @@ def test_AbjadIDE_generate_music_source_01():
 
     with systemtools.FilesystemState(keep=[music_path]):
         os.remove(music_path)
-        input_ = 'red~example~score u mg y y q'
+        input_ = 'red~example~score bb mg y q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(music_path)
         with open(music_path, 'r') as file_pointer:
@@ -49,7 +49,7 @@ def test_AbjadIDE_generate_music_source_02():
         )
 
     with systemtools.FilesystemState(keep=[music_path]):
-        input_ = 'red~example~score u mg y y q'
+        input_ = 'red~example~score bb mg y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -71,7 +71,7 @@ def test_AbjadIDE_generate_music_source_03():
         )
 
     with systemtools.FilesystemState(keep=[music_path]):
-        input_ = 'red~example~score u mg y y q'
+        input_ = 'red~example~score bb mg y q'
         abjad_ide._run_main_menu(input_=input_)
 
     with open(music_path, 'r') as file_pointer:

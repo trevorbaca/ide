@@ -15,7 +15,7 @@ def test_AbjadIDE_quit_abjad_ide_01():
 
 def test_AbjadIDE_quit_abjad_ide_02():
     
-    input_ = 'red~example~score u q'
+    input_ = 'red~example~score bb q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 

@@ -33,7 +33,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         for path in pdf_paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
-        input_ = 'red~example~score m lyi* y q'
+        input_ = 'red~example~score mm lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
@@ -78,10 +78,10 @@ def test_AbjadIDE_interpret_every_ly_02():
         for pdf_path in pdf_paths:
             os.remove(pdf_path)
         # generate PDFs a first time
-        input_ = 'red~example~score m lyi* y q'
+        input_ = 'red~example~score mm lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         # attempt (but fail) to generate PDFs a second time
-        input_ = 'red~example~score m lyi* y q'
+        input_ = 'red~example~score mm lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -123,7 +123,7 @@ def test_AbjadIDE_interpret_every_ly_03():
         for path in pdf_paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
-        input_ = 'red~example~score g lyi* y q'
+        input_ = 'red~example~score gg lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
@@ -168,10 +168,10 @@ def test_AbjadIDE_interpret_every_ly_04():
         for pdf_path in pdf_paths:
             os.remove(pdf_path)
         # generate PDFs a first time
-        input_ = 'red~example~score g lyi* y q'
+        input_ = 'red~example~score gg lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         # attempt (but fail) to generate PDFs a second time
-        input_ = 'red~example~score g lyi* y q'
+        input_ = 'red~example~score gg lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents

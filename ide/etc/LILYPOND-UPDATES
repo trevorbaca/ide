@@ -6,10 +6,10 @@ SUMMARY. Run ...
 following four commands to rerender all test artifacts to accommodate a new
 version of LilyPond:
 
-    (red~example~score m lyi* y q)
-    (red~example~score g lyi* y q)
-    (red~example~score u mi y q)
-    (red~example~score u si y q)
+    (red~example~score mm lyi* y q)
+    (red~example~score gg lyi* y q)
+    (red~example~score bb mi y q)
+    (red~example~score bb si y q)
 
 Then update the IDE Travis configuration file by changing the old LilyPond
 version number...
@@ -53,16 +53,16 @@ Prior to July 2015:
 SUMMARY. Here're the commands necessary to rerender all test artifacts to
 accommodate a new version of LilyPond:
 
-    (red~example~score g lyi* y q)
-    (red~example~score m lyi* y q)
-    (red~example~score u dc y q)
-    (red~example~score u di q)
-    (red~example~score u mi y q)
-    (red~example~score u si y q)
+    (red~example~score gg lyi* y q)
+    (red~example~score mm lyi* y q)
+    (red~example~score bb dc y q)
+    (red~example~score bb di q)
+    (red~example~score bb mi y q)
+    (red~example~score bb si y q)
     trash scores/red_example_score/segments/segment_01/versions/*0002*
     trash scores/red_example_score/segments/segment_02/versions/*0002*
     trash scores/red_example_score/segments/segment_03/versions/*0002*
-    (red~example~score g vr* y q)
+    (red~example~score gg vr* y q)
 
 About a half dozen display-status tests will fail if you run the battery after
 executing these 10 commands. These tests will pass again after commit.
@@ -102,7 +102,7 @@ The following four IDE tests will fail:
 
 You can fix  ...
     test_SegmentPackageWrangler_interpret_every_illustration_source_02
-... by running (red~example~score g lyi*).
+... by running (red~example~score gg lyi*).
 This modifies ...
     scores/red_example_score/segments/segment_01/illustration.pdf
     scores/red_example_score/segments/segment_02/illustration.pdf
@@ -130,7 +130,7 @@ of changed artifacts that have not yet been checked in; these are marked with
 [*] above.
 
 The remaining three failed tests are marked with [N] above to indicate that
-they are new failures that result from running (red~example~score g lyi*).
+they are new failures that result from running (red~example~score gg lyi*).
 These new failures must be remedied.
 
 Finally, note that the test ...
@@ -142,7 +142,7 @@ Finally, note that the test ...
 We will proceed without checking in the three artifacts changed so far. For our
 second step we will attempt to fix ...
 test_MaterialPackageWrangler_interpret_every_illustration_source_02 ... by
-running (red~example~score m ii* y q). This does indeed fix the test. This also
+running (red~example~score mm ii* y q). This does indeed fix the test. This also
 causes the files ...
 scores/red_example_score/materials/magic_numbers/illustration.pdf
 scores/red_example_score/materials/pitch_range_inventory/illustration.pdf
@@ -164,7 +164,7 @@ What output do we get if we now rerun the battery?
 Our number of failed tests has increased from 8 to 9. But five of these are
 'fake' display-status failures. Only four of these are tests that need
 legitimately to be fixed. And this is down from five legitimate failures before
-we ran (red~example~score m lyi* y q). This means that running the command fixed
+we ran (red~example~score mm lyi* y q). This means that running the command fixed
 the test we had targetted.
 
 ###############################################################################
@@ -174,7 +174,7 @@ Now we'll try to fix ...
     test_BuildFileWrangler_interpret_music_02
 ... though it's not clear which should be fixed first and which second.
 Looks like we have to collect segment PDFs first. So we run
-(red~example~score u dc y q).
+(red~example~score bb dc y q).
 Doing this overwrites three PDFs.
 This means that the files ...
     scores/red_example_score/build/segment-01.pdf
@@ -204,7 +204,7 @@ Ten tests now fail:
 Six are 'fake' display-status failures. Only the test ...
     test_BuildFileWrangler_interpret_music_02
 ... is a new failure. And this is correct because of the call to
-(red~example~score u dc y q) we ran in this cycle.
+(red~example~score bb dc y q) we ran in this cycle.
 
 ###############################################################################
 
@@ -213,8 +213,8 @@ We'll now try to fix the two interpret tests ...
     test_BuildFileWrangler_interpret_music_02
 ... one after the other.
 
-We run (red~example~score u di q) to fix the interpret-draft test.
-And we run (red~example~score u mi y q) to fix the interpret-music test.
+We run (red~example~score bb di q) to fix the interpret-draft test.
+And we run (red~example~score bb mi y q) to fix the interpret-music test.
 
 These two commands cause ...
     scores/red_example_score/build/draft.pdf
@@ -238,7 +238,7 @@ The number of failing tests has decreased to nine:
     9 FAIL test_SegmentPackageWrangler_version_every_package_01
 
 Only the interpret-score test has popped up new. We fix that
-by running (red~example~score u si q). This causes the file ...
+by running (red~example~score bb si q). This causes the file ...
     scores/red_example_score/build/score.pdf
 ... to be modified.
 
@@ -262,7 +262,7 @@ test.
 
 Must first run ...
     trash scores/red_example_score/segments/segment_01/versions/*_0002*
-... and then run (red~example~score g A vr y q).
+... and then run (red~example~score gg A vr y q).
 This causes the first version-package test to pass and does not modify any
 artifacts.
 
@@ -273,7 +273,7 @@ In order for ...
 ... and ... 
     trash scores/red_example_score/segments/segment_03/versions/*_0002*
 ... to remove version 2.
-This then allows us to run (red~example~score g vr* y q).
+This then allows us to run (red~example~score gg vr* y q).
 This causes the second version-package test to pass and does not modify any
 artifacts.
 

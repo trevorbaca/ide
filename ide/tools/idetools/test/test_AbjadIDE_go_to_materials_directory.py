@@ -8,7 +8,7 @@ def test_AbjadIDE_go_to_materials_directory_01():
     r'''Goes from build directory to materials directory.
     '''
 
-    input_ = 'red~example~score u m q'
+    input_ = 'red~example~score bb mm q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',

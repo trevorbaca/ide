@@ -32,7 +32,7 @@ def test_AbjadIDE_generate_preface_source_01():
 
     with systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
-        input_ = 'blue~example~score u pg q'
+        input_ = 'blue~example~score bb pg q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
@@ -68,7 +68,7 @@ def test_AbjadIDE_generate_preface_source_02():
     assert '{8.5in, 11in}' not in source_contents
 
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
-        input_ = 'red~example~score u pg y q'
+        input_ = 'red~example~score bb pg q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:

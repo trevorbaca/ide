@@ -8,7 +8,7 @@ def test_AbjadIDE_go_to_stylesheets_directory_01():
     r'''From material package.
     '''
 
-    input_ = 'red~example~score m tempo~inventory y q'
+    input_ = 'red~example~score mm tempo~inventory yy q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -25,7 +25,7 @@ def test_AbjadIDE_go_to_stylesheets_directory_02():
     r'''From segment package.
     '''
 
-    input_ = 'red~example~score g A y q'
+    input_ = 'red~example~score gg A yy q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -42,7 +42,7 @@ def test_AbjadIDE_go_to_stylesheets_directory_03():
     r'''From score package.
     '''
 
-    input_ = 'red~example~score y q'
+    input_ = 'red~example~score yy q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -57,7 +57,7 @@ def test_AbjadIDE_go_to_stylesheets_directory_04():
     r'''Goes from build directory to stylesheets directory.
     '''
 
-    input_ = 'red~example~score u y q'
+    input_ = 'red~example~score bb yy q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',

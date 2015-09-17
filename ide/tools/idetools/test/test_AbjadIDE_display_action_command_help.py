@@ -8,7 +8,7 @@ def test_AbjadIDE_display_action_command_help_01():
     r'''In material package.
     '''
     
-    input_ = 'red~example~score m tempo~inventory ? q'
+    input_ = 'red~example~score mm tempo~inventory ? q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_display_action_command_help_02():
     r'''In segment package.
     '''
     
-    input_ = 'red~example~score g A ? q'
+    input_ = 'red~example~score gg A ? q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -99,7 +99,7 @@ def test_AbjadIDE_display_action_command_help_05():
         '>',
     ]
 
-    input_ = 'red~example~score m magic~numbers ? q'
+    input_ = 'red~example~score mm magic~numbers ? q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -139,7 +139,7 @@ def test_AbjadIDE_display_action_command_help_06():
         '>',
     ]
 
-    input_ = 'red~example~score g A ? q'
+    input_ = 'red~example~score gg A ? q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -163,7 +163,7 @@ def test_AbjadIDE_display_action_command_help_08():
     r'''Displays correct title in build directory.
     '''
     
-    input_ = 'red~example~score u ? q'
+    input_ = 'red~example~score bb ? q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -247,7 +247,7 @@ def test_AbjadIDE_display_action_command_help_11():
         '>',
         ]
 
-    input_ = 'red~example~score m ? q'
+    input_ = 'red~example~score mm ? q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -283,7 +283,7 @@ def test_AbjadIDE_display_action_command_help_12():
         '>',
         ]
 
-    input_ = 'red~example~score g ? q'
+    input_ = 'red~example~score gg ? q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
@@ -313,7 +313,7 @@ def test_AbjadIDE_display_action_command_help_13():
         '>',
         ]
 
-    input_ = 'red~example~score y ? q'
+    input_ = 'red~example~score yy ? q'
     abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 

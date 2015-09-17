@@ -30,7 +30,7 @@ def test_AbjadIDE_rename_01():
         )
 
     with systemtools.FilesystemState(remove=[path_100_outer, path_101_outer]):
-        input_ = 'new example~score~100 y q'
+        input_ = 'new example~score~100 q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path_100_outer)
         assert os.path.exists(path_100_inner)
@@ -67,10 +67,10 @@ def test_AbjadIDE_rename_02():
         )
 
     with systemtools.FilesystemState(remove=[path, new_path]):
-        input_ = 'red~example~score m new test~material y q'
+        input_ = 'red~example~score mm new test~material q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(path)
-        input_ = 'red~example~score m ren test~material new~test~material y q'
+        input_ = 'red~example~score mm ren test~material new~test~material y q'
         abjad_ide._run_main_menu(input_=input_)
         assert not os.path.exists(path)
         assert os.path.exists(new_path)
@@ -95,8 +95,8 @@ def test_AbjadIDE_rename_03():
         'renamed_segment_04',
         )
 
-    new_input = 'red~example~score g new segment~04 y q'
-    rename_input = 'red~example~score g ren segment~04 renamed_segment_04 y q'
+    new_input = 'red~example~score gg new segment~04 q'
+    rename_input = 'red~example~score gg ren segment~04 renamed_segment_04 y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         abjad_ide._run_main_menu(input_=new_input)
@@ -125,8 +125,8 @@ def test_AbjadIDE_rename_04():
         'renamed-file.txt',
         )
 
-    new_input = 'red~example~score u new new-file.txt q'
-    rename_input = 'red~example~score u ren new-file.txt renamed-file.txt y q'
+    new_input = 'red~example~score bb new new-file.txt q'
+    rename_input = 'red~example~score bb ren new-file.txt renamed-file.txt y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         abjad_ide._run_main_menu(input_=new_input)
@@ -155,8 +155,8 @@ def test_AbjadIDE_rename_05():
         'RenamedMaker.py',
         )
 
-    new_input = 'red~example~score k new NewMaker.py q'
-    rename_input = 'red~example~score k ren NewMaker.py RenamedMaker.py y q'
+    new_input = 'red~example~score kk new NewMaker.py q'
+    rename_input = 'red~example~score kk ren NewMaker.py RenamedMaker.py y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         abjad_ide._run_main_menu(input_=new_input)
@@ -185,8 +185,8 @@ def test_AbjadIDE_rename_06():
         'renamed-stylesheet.ily',
         )
 
-    new_input = 'red~example~score y new new-stylesheet.ily q'
-    rename_input = 'red~example~score y ren new-stylesheet.ily'
+    new_input = 'red~example~score yy new new-stylesheet.ily q'
+    rename_input = 'red~example~score yy ren new-stylesheet.ily'
     rename_input += ' renamed-stylesheet.ily y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):

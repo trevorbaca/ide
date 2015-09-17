@@ -23,7 +23,7 @@ def test_AbjadIDE_make_pdf_01():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(ly_path)
         os.remove(pdf_path)
-        input_ = 'red~example~score m magic~numbers pdfm y q'
+        input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
@@ -61,12 +61,12 @@ def test_AbjadIDE_make_pdf_02():
         assert not os.path.exists(ly_path)
         assert not os.path.exists(pdf_path)
         # generate PDF first time
-        input_ = 'red~example~score m magic~numbers pdfm y q'
+        input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         # attempt to generate PDF second time (but blocked)
-        input_ = 'red~example~score m magic~numbers pdfm q'
+        input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -99,7 +99,7 @@ def test_AbjadIDE_make_pdf_03():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         with open(pdf_path, 'w') as file_pointer:
             file_pointer.write('text')
-        input_ = 'red~example~score m magic~numbers pdfm y q'
+        input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)

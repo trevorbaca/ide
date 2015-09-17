@@ -8,7 +8,7 @@ def test_AbjadIDE_go_home_01():
     r'''From material package.
     '''
 
-    input_ = 'red~example~score m tempo~inventory h q'
+    input_ = 'red~example~score mm tempo~inventory h q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -25,7 +25,7 @@ def test_AbjadIDE_go_home_02():
     r'''From segment package.
     '''
 
-    input_ = 'red~example~score g A h q'
+    input_ = 'red~example~score gg A h q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',

@@ -52,7 +52,6 @@ class Menu(object):
         'illustrate_file',
         'ly',
         'pdf',
-        #'package',
         'star',
         'git',
         'build',

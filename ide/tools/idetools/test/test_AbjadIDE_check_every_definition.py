@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_check_every_definition_01():
 
-    input_ = 'red~example~score m dc* y q'
+    input_ = 'red~example~score mm dc* y q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -42,7 +42,7 @@ def test_AbjadIDE_check_every_definition_01():
 
 def test_AbjadIDE_check_every_definition_02():
 
-    input_ = 'red~example~score g dc* y q'
+    input_ = 'red~example~score gg dc* y q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 

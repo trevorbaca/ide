@@ -32,7 +32,7 @@ def test_AbjadIDE_generate_back_cover_source_01():
 
     with systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
-        input_ = 'blue~example~score u bcg q'
+        input_ = 'blue~example~score bb bcg q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
@@ -67,7 +67,7 @@ def test_AbjadIDE_generate_back_cover_source_02():
     assert '{8.5in, 11in}' not in source_contents
 
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
-        input_ = 'red~example~score u bcg y q'
+        input_ = 'red~example~score bb bcg q'
         abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
 

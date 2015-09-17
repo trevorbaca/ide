@@ -8,7 +8,7 @@ def test_AbjadIDE_go_to_makers_directory_01():
     r'''From material package.
     '''
 
-    input_ = 'red~example~score m tempo~inventory k q'
+    input_ = 'red~example~score mm tempo~inventory kk q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -24,7 +24,7 @@ def test_AbjadIDE_go_to_makers_directory_02():
     r'''From segment package.
     '''
 
-    input_ = 'red~example~score g A k q'
+    input_ = 'red~example~score gg A kk q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -41,7 +41,7 @@ def test_AbjadIDE_go_to_makers_directory_03():
     r'''From score package.
     '''
 
-    input_ = 'red~example~score k q'
+    input_ = 'red~example~score kk q'
     abjad_ide._run_main_menu(input_=input_)
 
     titles = [
@@ -56,7 +56,7 @@ def test_AbjadIDE_go_to_makers_directory_04():
     r'''From build directory to makers directory.
     '''
 
-    input_ = 'red~example~score u k q'
+    input_ = 'red~example~score bb kk q'
     abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',

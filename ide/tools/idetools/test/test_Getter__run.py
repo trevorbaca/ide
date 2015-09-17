@@ -8,7 +8,7 @@ def test_Getter__run_01():
     r'''Entering junk during confirmation displays value reminder message.
     '''
 
-    input_ = 'red~example~score u mc foo n q'
+    input_ = 'red~example~score bb mc foo n q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -20,7 +20,7 @@ def test_Getter__run_02():
     r'''Entering 'n' during confirmation cancels getter.
     '''
 
-    input_ = 'red~example~score u mc n q'
+    input_ = 'red~example~score bb mc n q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -31,7 +31,7 @@ def test_Getter__run_03():
     r'''Entering 'N' during confirmation cancels getter.
     '''
 
-    input_ = 'red~example~score u mc N q'
+    input_ = 'red~example~score bb mc N q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
