@@ -476,8 +476,6 @@ class IOManager(IOManager):
             process.stderr, strip=strip).splitlines()
         self._display(stdout_lines, capitalize=False)
         self._display(stderr_lines, capitalize=False)
-        message = 'interpreted {}.'.format(path)
-        self._display(message)
         return stdout_lines, stderr_lines
 
     def open_file(self, path):

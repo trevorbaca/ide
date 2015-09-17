@@ -3882,6 +3882,9 @@ class AbjadIDE(object):
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
+            message = 'interpreting {} ...'
+            message = message.format(target_make_pdf_file)
+            self._io_manager._display(message)
             result = self._io_manager.interpret_file(
                 target_make_pdf_file,
                 strip=False,
