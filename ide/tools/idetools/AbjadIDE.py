@@ -2688,6 +2688,7 @@ class AbjadIDE(object):
     @Command(
         'dfk',
         argument_names=('current_path',),
+        description='definition file - check',
         file_='definition.py',
         outside_score=False,
         section='definition_file',
@@ -2888,6 +2889,7 @@ class AbjadIDE(object):
     @Command(
         'abb',
         argument_names=('current_score_directory',),
+        description='abbreviations - edit',
         outside_score=False,
         section='global files',
         )
@@ -2909,6 +2911,7 @@ class AbjadIDE(object):
     @Command(
         'df',
         argument_names=('current_path',),
+        description='definition file - edit',
         file_='definition.py',
         outside_score=False,
         section='definition_file',
@@ -2937,6 +2940,7 @@ class AbjadIDE(object):
     @Command(
         'ill',
         argument_names=('current_path',),
+        description='illustrate file - edit',
         file_='__illustrate__.py',
         outside_score=False,
         section='illustrate_file',
@@ -2949,7 +2953,11 @@ class AbjadIDE(object):
         illustrate_py_path = os.path.join(directory, '__illustrate__.py')
         self._io_manager.edit(illustrate_py_path)
 
-    @Command('log', section='global files')
+    @Command(
+        'log', 
+        description='log - edit',
+        section='global files',
+        )
     def edit_lilypond_log(self):
         r'''Edits LilyPond log.
 
@@ -2964,6 +2972,7 @@ class AbjadIDE(object):
     @Command(
         'ly',
         argument_names=('current_path',),
+        description='ly - edit',
         file_='illustration.ly',
         outside_score=False,
         section='ly',
@@ -2980,6 +2989,7 @@ class AbjadIDE(object):
     @Command(
         'sty',
         argument_names=('current_score_directory',),
+        description='stylesheet - edit',
         outside_score=False,
         section='global files',
         )
@@ -3723,6 +3733,7 @@ class AbjadIDE(object):
     @Command(
         'pdfm',
         argument_names=('current_path',),
+        description='pdf - make',
         file_='definition.py',
         outside_score=False,
         parent_directories=('materials',),
@@ -3835,6 +3846,7 @@ class AbjadIDE(object):
     @Command(
         'lyi',
         argument_names=('current_path',),
+        description='ly - interpret',
         file_='illustration.ly',
         outside_score=False,
         section='ly',
@@ -3937,6 +3949,7 @@ class AbjadIDE(object):
     @Command(
         'illm',
         argument_names=('current_path',),
+        description='illustrate file - make',
         file_='__illustrate__.py',
         outside_score=False,
         section='illustrate_file',
@@ -4034,6 +4047,7 @@ class AbjadIDE(object):
     @Command(
         'pdf',
         argument_names=('current_path',),
+        description='pdf - open',
         file_='illustration.pdf',
         outside_score=False,
         section='pdf',
