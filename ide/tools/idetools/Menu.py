@@ -48,6 +48,9 @@ class Menu(object):
     _action_command_section_order = (
         'system',
         'global files',
+        'definition_file',
+        'illustrate_file',
+        'ly',
         'package',
         'star',
         'git',

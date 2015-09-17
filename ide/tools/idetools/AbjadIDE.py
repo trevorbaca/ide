@@ -2690,7 +2690,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
-        section='package',
+        section='definition_file',
         )
     def check_definition(self, directory, dry_run=False):
         r'''Checks definition.
@@ -3021,7 +3021,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
-        section='package',
+        section='definition_file',
         )
     def edit_definition(self, directory):
         r'''Edits ``definition.py``.
@@ -3049,7 +3049,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
-        section='package',
+        section='illustrate_file',
         )
     def edit_illustrate_file(self, directory):
         r'''Edits illustrate file.
@@ -3064,7 +3064,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
-        section='package',
+        section='ly',
         )
     def edit_illustration_source(self, directory):
         r'''Opens ``illustration.ly``.
@@ -3205,7 +3205,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
-        section='package',
+        section='illustrate_file',
         )
     def generate_illustrate_file(self, directory):
         r'''Generates illustrate file.
@@ -3967,7 +3967,7 @@ class AbjadIDE(object):
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
-        section='package',
+        section='ly',
         )
     def interpret_illustration_source(
         self, 
