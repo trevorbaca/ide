@@ -87,6 +87,7 @@ def test_AbjadIDE_display_action_command_help_05():
         '',
         '    ly - edit (ly)',
         '    ly - interpret (lyi)',
+        '    ly - make (lym)',
         '',
         '    pdf - make (pdfm)',
         '    pdf - open (pdf)',
