@@ -6,11 +6,11 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_edit_every_definition_01():
+def test_AbjadIDE_edit_every_definition_file_01():
     r'''Edits every material definition.
     '''
 
-    input_ = 'red~example~score mm de* y q'
+    input_ = 'red~example~score mm df* y q'
     abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -39,11 +39,11 @@ def test_AbjadIDE_edit_every_definition_01():
     assert abjad_ide._session._attempted_to_open_file
 
 
-def test_AbjadIDE_edit_every_definition_02():
+def test_AbjadIDE_edit_every_definition_file_02():
     r'''Edits every segment definition.
     '''
 
-    input_ = 'red~example~score gg de* y q'
+    input_ = 'red~example~score gg df* y q'
     abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

@@ -2686,14 +2686,14 @@ class AbjadIDE(object):
     ### PUBLIC METHODS ###
 
     @Command(
-        'ckd',
+        'dfk',
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         section='definition_file',
         )
-    def check_definition(self, directory, dry_run=False):
-        r'''Checks definition.
+    def check_definition_file(self, directory, dry_run=False):
+        r'''Checks definition file.
 
         Returns none.
         '''
@@ -2718,20 +2718,20 @@ class AbjadIDE(object):
             self._io_manager._display(message)
 
     @Command(
-        'dc*',
+        'dfk*',
         argument_names=('visible_asset_paths',),
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
         )
-    def check_every_definition(self, paths):
-        r'''Checks ``definition.py`` in every package.
+    def check_every_definition_file(self, paths):
+        r'''Checks definition file in every package.
 
         Returns none.
         '''
         inputs, outputs = [], []
         for path in paths:
-            inputs_, outputs_ = self.check_definition(path, dry_run=True)
+            inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='check')
@@ -2741,7 +2741,7 @@ class AbjadIDE(object):
             return
         start_time = time.time()
         for path in paths:
-            self.check_definition(path)
+            self.check_definition_file(path)
         stop_time = time.time()
         total_time = stop_time - start_time
         total_time = int(total_time)
@@ -2907,14 +2907,14 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     @Command(
-        'e',
+        'df',
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         section='definition_file',
         )
-    def edit_definition(self, directory):
-        r'''Edits ``definition.py``.
+    def edit_definition_file(self, directory):
+        r'''Edits definition file.
 
         Returns none.
         '''
@@ -2922,13 +2922,13 @@ class AbjadIDE(object):
         self._io_manager.edit(definition_path)
 
     @Command(
-        'de*',
+        'df*',
         argument_names=('visible_asset_paths',),
         directories=('materials', 'segments'),
         section='star',
         )
-    def edit_every_definition(self, directories):
-        r'''Opens ``definition.py`` in every package.
+    def edit_every_definition_file(self, directories):
+        r'''Edits definition file in every package.
 
         Returns none.
         '''
