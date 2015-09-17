@@ -3941,7 +3941,7 @@ class AbjadIDE(object):
                     self._io_manager._display(message)
             if not self._session.is_test:
                 message = 'opening {} ...'
-                message = message.format(pdf)
+                message = message.format(pdf_path)
                 self._io_manager._display(message)
                 self._io_manager.open_file(pdf_path)
 
