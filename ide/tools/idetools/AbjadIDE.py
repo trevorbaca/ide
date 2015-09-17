@@ -1158,7 +1158,7 @@ class AbjadIDE(object):
             messages.append(message)
         self._io_manager._display(messages)
 
-    def _handle_input(self, result, directory_name=None):
+    def _handle_input(self, result):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
@@ -1167,12 +1167,12 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
+            current_directory = self._session.manifest_current_directory
             if 'current_directory' in command.argument_names:
-                current_directory = self._session.manifest_current_directory
                 command(current_directory)
-            elif 'directory_name' in command.argument_names:
-                command(directory_name)
             elif 'visible_asset_paths' in command.argument_names:
+                directory_name = self._path_to_directory_name(
+                    current_directory)
                 paths = self._list_visible_asset_paths(directory_name)
                 command(paths)
             else:
@@ -1385,6 +1385,14 @@ class AbjadIDE(object):
         scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
         if scores_directory_parts_count < len(parts):
+            return True
+        return False
+
+    @staticmethod
+    def _is_scores_directory(path):
+        if path == configuration.composer_scores_directory:
+            return True
+        if path == configuration.abjad_ide_example_scores_directory:
             return True
         return False
 
@@ -2054,8 +2062,11 @@ class AbjadIDE(object):
         return string
 
     def _path_to_directory_name(self, path):
-        if (self._is_outer_score_directory(path) or
-            self._is_inner_score_directory(path)):
+        if self._is_scores_directory(path):
+            return 'scores'
+        if self._is_outer_score_directory(path):
+            return 'score'
+        if self._is_inner_score_directory(path):
             return 'score'
         for part in reversed(path.split(os.path.sep)):
             if part in self._known_directory_names:
@@ -2335,7 +2346,7 @@ class AbjadIDE(object):
                 return
             if result is None:
                 continue
-            self._handle_input(result, directory_name=directory_name)
+            self._handle_input(result)
             if self._session.is_quitting:
                 return
 
@@ -4145,16 +4156,18 @@ class AbjadIDE(object):
 
     @Command(
         'new',
-        argument_names=('directory_name',),
+        argument_names=('current_directory',),
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
         )
-    def new(self, directory_name):
-        r'''Makes asset.
+    def new(self, directory):
+        r'''Makes new asset.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
         asset_identifier = self._directory_name_to_asset_identifier[
             directory_name]
         if asset_identifier == 'file':
@@ -4304,16 +4317,18 @@ class AbjadIDE(object):
 
     @Command(
         'rm',
-        argument_names=('directory_name',),
+        argument_names=('current_directory',),
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
         )
-    def remove(self, directory_name):
+    def remove(self, directory):
         r'''Removes asset(s).
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
         paths = self._select_visible_asset_paths(directory_name)
         if not paths:
             return
@@ -4350,16 +4365,18 @@ class AbjadIDE(object):
 
     @Command(
         'ren',
-        argument_names=('directory_name',),
+        argument_names=('current_directory',),
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
         )
-    def rename(self, directory_name):
+    def rename(self, directory):
         r'''Renames asset.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
         source_path = self._select_visible_asset_path(
             directory_name,
             infinitive_phrase='to rename',
@@ -4431,7 +4448,7 @@ class AbjadIDE(object):
 
     @Command(
         'ws',
-        argument_names=('directory_name',),
+        argument_names=('current_directory',),
         directories=(
             'build',
             'distribution',
@@ -4446,11 +4463,13 @@ class AbjadIDE(object):
         outside_score='home',
         section='view',
         )
-    def set_view(self, directory_name):
+    def set_view(self, directory):
         r'''Sets view.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = os.path.basename(directory)
         view_name = self._select_view(directory_name)
         if view_name is None:
             return
