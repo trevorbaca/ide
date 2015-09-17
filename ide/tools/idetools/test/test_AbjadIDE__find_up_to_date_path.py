@@ -19,7 +19,7 @@ def test_AbjadIDE__find_up_to_date_path_01():
 
     scores_directory = configuration.abjad_ide_example_scores_directory
 
-    assert abjad_ide._is_score_package_outer_path(path)
+    assert abjad_ide._is_outer_score_directory(path)
     assert abjad_ide._is_git_versioned(path)
     assert abjad_ide._is_up_to_date(path)
     assert path.startswith(scores_directory)
