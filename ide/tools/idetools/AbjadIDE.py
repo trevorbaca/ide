@@ -1172,10 +1172,6 @@ class AbjadIDE(object):
                 command(current_directory)
             elif 'directory_name' in command.argument_names:
                 command(directory_name)
-            elif 'current_score_directory' in command.argument_names:
-                current_score_directory = \
-                    self._session.current_score_directory
-                command(current_score_directory)
             elif 'visible_asset_paths' in command.argument_names:
                 paths = self._list_visible_asset_paths(directory_name)
                 command(paths)
@@ -3708,16 +3704,18 @@ class AbjadIDE(object):
 
     @Command(
         'bci',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         section='build',
         outside_score=False,
         )
-    def interpret_back_cover(self, score_directory):
+    def interpret_back_cover(self, directory):
         r'''Interprets ``back-cover.tex``.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'back-cover.tex')
 
@@ -3766,16 +3764,18 @@ class AbjadIDE(object):
 
     @Command(
         'fci',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def interpret_front_cover(self, score_directory):
+    def interpret_front_cover(self, directory):
         r'''Interprets ``front-cover.tex``.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
 
@@ -3823,48 +3823,55 @@ class AbjadIDE(object):
 
     @Command(
         'mi',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def interpret_music(self, score_directory):
+    def interpret_music(self, directory):
         r'''Interprets ``music.ly``.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
+        build_directory = os.path.join(score_directory, 'build')
         self._call_lilypond_on_file_ending_with(
-            os.path.join(score_directory, 'build'),
+            build_directory,
             'music.ly',
             )
 
     @Command(
         'pi',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def interpret_preface(self, score_directory):
+    def interpret_preface(self, directory):
         r'''Interprets ``preface.tex``.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'preface.tex')
 
     @Command(
         'si',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def interpret_score(self, score_directory):
+    def interpret_score(self, directory):
         r'''Interprets ``score.tex``.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'score.tex')
 
@@ -4251,16 +4258,18 @@ class AbjadIDE(object):
 
     @Command(
         'sp',
-        argument_names=('current_score_directory',),
+        argument_names=('current_directory',),
         directories=('build'),
         outside_score=False,
         section='build',
         )
-    def push_score_pdf_to_distribution_directory(self, score_directory):
+    def push_score_pdf_to_distribution_directory(self, directory):
         r'''Pushes ``score.pdf`` to distribution directory.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
+        score_directory = self._path_to_score_directory(directory)
         path = os.path.join(score_directory, 'build')
         build_score_path = os.path.join(path, 'score.pdf')
         if not os.path.exists(build_score_path):
