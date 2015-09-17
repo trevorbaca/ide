@@ -31,7 +31,7 @@ def test_AbjadIDE_make_pdf_01():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Wrote ...' in contents
+    assert 'Overwriting' in contents
     assert ly_path in contents
     assert pdf_path in contents
 
@@ -70,44 +70,6 @@ def test_AbjadIDE_make_pdf_02():
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
+    assert 'Preserving' in contents
+    assert ly_path in contents
     assert pdf_path in contents
-    assert candidate_pdf_path in contents
-    assert ly_path not in contents
-    assert '... compare the same.' in contents
-
-
-def test_AbjadIDE_make_pdf_03():
-    r'''Prompts composer to overwrite existing PDF when candidate compares
-    differently.
-    '''
-
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'materials',
-        'magic_numbers',
-        )
-    ly_path = os.path.join(segment_directory, 'illustration.ly')
-    pdf_path = os.path.join(segment_directory, 'illustration.pdf')
-    candidate_pdf_path = os.path.join(
-        segment_directory,
-        'illustration.candidate.pdf',
-        )
-
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
-        with open(pdf_path, 'w') as file_pointer:
-            file_pointer.write('text')
-        input_ = 'red~example~score mm magic~numbers pdfm q'
-        abjad_ide._run_main_menu(input_=input_)
-        assert os.path.isfile(ly_path)
-        assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
-
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
-    assert pdf_path in contents
-    assert candidate_pdf_path in contents
-    assert '... compare differently.' in contents

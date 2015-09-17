@@ -3856,87 +3856,94 @@ class AbjadIDE(object):
             directory,
             'illustration.candidate.ly'
             )
+        ly_path = os.path.join(directory, 'illustration.ly')
         candidate_pdf_path = os.path.join(
             directory,
             'illustration.candidate.pdf'
             )
+        pdf_path = os.path.join(directory, 'illustration.pdf')
+        source_make_pdf_file = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__make_pdf__.py',
+            )
+        target_make_pdf_file = os.path.join(directory, '__make_pdf__.py')
         temporary_files = (
             candidate_ly_path,
             candidate_pdf_path,
+            target_make_pdf_file,
             )
         for path in temporary_files:
             if os.path.exists(path):
                 os.remove(path)
-        illustration_source_path = os.path.join(
-            directory,
-            'illustration.ly',
-            )
-        illustration_pdf_path = os.path.join(
-            directory,
-            'illustration.pdf',
-            )
         inputs, outputs = [], []
         if dry_run:
             inputs.append(definition_path)
-            outputs.append((illustration_source_path, illustration_pdf_path))
+            outputs.append((ly_path, pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
             result = self._io_manager.interpret_file(
-                illustrate_file_path,
+                target_make_pdf_file,
                 strip=False,
                 )
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
-            if not os.path.exists(illustration_pdf_path):
+                
+            if not os.path.isfile(candidate_ly_path):
+                message = 'could not make {}.'
+                message = message.format(candidate_ly_path)
+                self._io_manager._display(message)
+                return
+            result = systemtools.TestManager.compare_files(
+                candidate_ly_path,
+                ly_path,
+                )
+            if result:
                 messages = []
-                messages.append('Wrote ...')
-                if os.path.exists(candidate_ly_path):
-                    shutil.move(candidate_ly_path, illustration_source_path)
-                    messages.append(self._tab + illustration_source_path)
-                if os.path.exists(candidate_pdf_path):
-                    shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    messages.append(self._tab + illustration_pdf_path)
+                messages.append('preserving {} ...'.format(ly_path))
+                messages.append('preserving {} ...'.format(pdf_path))
                 self._io_manager._display(messages)
+                return
             else:
-                result = systemtools.TestManager.compare_files(
-                    candidate_pdf_path,
-                    illustration_pdf_path,
-                    )
-                messages = self._make_candidate_messages(
-                    result,
-                    candidate_pdf_path,
-                    illustration_pdf_path,
-                    )
-                self._io_manager._display(messages)
-                if result:
-                    message = 'preserved {}.'.format(illustration_pdf_path)
+                message = 'overwriting {} ...'
+                message = message.format(ly_path)
+                self._io_manager._display(message)
+                try:
+                    shutil.move(candidate_ly_path, ly_path)
+                except IOError:
+                    message = 'could not overwrite {} with {}.'
+                    message = message.format(ly_path, candidate_ly_path)
                     self._io_manager._display(message)
-                    return
-                else:
-                    message = 'overwriting {} ...'
-                    message = message.format(illustration_source_path)
+            if not os.path.isfile(candidate_pdf_path):
+                message = 'could not make {}.'
+                message = message.format(candidate_pdf_path)
+                self._io_manager._display(message)
+                return
+            result = systemtools.TestManager.compare_files(
+                candidate_pdf_path,
+                pdf_path,
+                )
+            if result:
+                message = 'preserving {} ...'.format(pdf_path)
+                self._io_manager._display(message)
+                return
+            else:
+                message = 'overwriting {} ...'
+                message = message.format(pdf_path)
+                self._io_manager._display(message)
+                try:
+                    shutil.move(candidate_pdf_path, pdf_path)
+                except IOError:
+                    message = 'could not overwrite {} with {}.'
+                    message = message.format(pdf_path, candidate_pdf_path)
                     self._io_manager._display(message)
-                    try:
-                        shutil.move(
-                            candidate_ly_path,
-                            illustration_source_path,
-                            )
-                    except IOError:
-                        pass
-                    message = 'overwriting {} ...'
-                    message = message.format(illustration_pdf_path)
-                    self._io_manager._display(message)
-                    try:
-                        shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    except IOError:
-                        pass
-                    if not self._session.is_test:
-                        message = 'opening {} ...'
-                        message = message.format(illustration_pdf_path)
-                        self._io_manager._display(message)
-                        self._io_manager.open_file(illustration_pdf_path)
+            if not self._session.is_test:
+                message = 'opening {} ...'
+                message = message.format(pdf)
+                self._io_manager._display(message)
+                self._io_manager.open_file(pdf_path)
 
     @Command(
         'lyi',
