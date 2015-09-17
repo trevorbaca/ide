@@ -32,7 +32,7 @@ def test_AbjadIDE__find_up_to_date_path_02():
 
     path = abjad_ide._find_up_to_date_path('materials', system=True)
 
-    assert abjad_ide._is_material_package_path(path)
+    assert abjad_ide._is_material_directory(path)
     assert abjad_ide._is_git_versioned(path)
     assert abjad_ide._is_up_to_date(path)
     assert os.path.basename(os.path.dirname(path)) == 'materials'
@@ -45,7 +45,7 @@ def test_AbjadIDE__find_up_to_date_path_03():
 
     path = abjad_ide._find_up_to_date_path('segments', system=True)
 
-    assert abjad_ide._is_segment_package_path(path)
+    assert abjad_ide._is_segment_directory(path)
     assert abjad_ide._is_git_versioned(path)
     assert abjad_ide._is_up_to_date(path)
     assert os.path.basename(os.path.dirname(path)) == 'segments'

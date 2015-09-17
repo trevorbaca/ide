@@ -1168,7 +1168,8 @@ class AbjadIDE(object):
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if 'current_path_or_directory_name' in command.argument_names:
-                argument = current_path or directory_name
+                #argument = current_path or directory_name
+                argument = self._session.manifest_current_directory
                 command(argument)
             elif 'current_path' in command.argument_names:
                 command(current_path)
@@ -1320,8 +1321,16 @@ class AbjadIDE(object):
             return True
         return False
 
+    def _is_known_directory(self, path):
+        parent_directory = os.path.dirname(path)
+        if self._is_score_package_inner_path(parent_directory):
+            base_name = os.path.basename(path)
+            if base_name in self._known_directory_names:
+                return True
+        return False
+
     @staticmethod
-    def _is_material_package_path(path):
+    def _is_material_directory(path):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
@@ -1387,7 +1396,7 @@ class AbjadIDE(object):
         return False
 
     @staticmethod
-    def _is_segment_package_path(path):
+    def _is_segment_directory(path):
         if not isinstance(path, str):
             return False
         if path.startswith(configuration.composer_scores_directory):
@@ -2034,7 +2043,7 @@ class AbjadIDE(object):
             allow_asset_name_underscores = True
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
-        if self._is_segment_package_path(path):
+        if self._is_segment_directory(path):
             metadata_py_path = os.path.join(path, '__metadata__.py')
             segment_name = self._get_metadatum(
                 metadata_py_path,
@@ -2698,6 +2707,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'file not found: {}.'
@@ -2757,7 +2767,7 @@ class AbjadIDE(object):
         outside_score=False,
         section='build',
         )
-    def collect_segment_lilypond_files(self, current_score_directory):
+    def collect_segment_lilypond_files(self, score_directory):
         r'''Copies ``illustration.ly`` files from segment packages to build
         directory.
 
@@ -2770,8 +2780,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert os.path.isdir(score_directory), repr(score_directory)
         pairs = self._gather_segment_files(
-            current_score_directory,
+            score_directory,
             'illustration.ly',
             )
         if not pairs:
@@ -2797,40 +2808,49 @@ class AbjadIDE(object):
         never_in_score_directory=True,
         section='basic',
         )
-    def copy(self, current_path_or_directory_name):
-        r'''Copies external asset.
+    def copy(self, directory):
+        r'''Copies external asset in to `directory`.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
         example_scores = self._session.is_test
-        if 'build' == current_path_or_directory_name:
-            assets_ = self._collect_build_files(
-                example_scores=example_scores)
-        elif 'distribution' == current_path_or_directory_name:
-            assets_ = self._collect_distribution_files(
-                example_scores=example_scores)
-        elif 'etc' == current_path_or_directory_name:
-            assets_ = self._collect_etc_files(example_scores=example_scores)
-        elif 'makers' == current_path_or_directory_name:
-            assets_ = self._collect_maker_files(example_scores=example_scores)
-        elif 'materials' == current_path_or_directory_name:
-            assets_ = self._collect_material_directories(
-                example_scores=example_scores)
-        elif 'materials' in current_path_or_directory_name:
+
+        if self._is_known_directory(directory):
+            directory_name = os.path.basename(directory)
+            if directory_name == 'build':
+                assets_ = self._collect_build_files(
+                    example_scores=example_scores)
+            elif directory_name == 'distribution':
+                assets_ = self._collect_distribution_files(
+                    example_scores=example_scores)
+            elif directory_name == 'etc':
+                assets_ = self._collect_etc_files(
+                    example_scores=example_scores)
+            elif directory_name == 'makers':
+                assets_ = self._collect_maker_files(
+                    example_scores=example_scores)
+            elif directory_name == 'materials':
+                assets_ = self._collect_material_directories(
+                    example_scores=example_scores)
+            elif directory_name == 'segments':
+                assets_ = self._collect_segment_directories(
+                    example_scores=example_scores)
+            elif directory_name == 'stylesheets':
+                assets_ = self._collect_stylesheets(
+                    example_scores=example_scores)
+            elif directory_name == 'test':
+                assets_ = self._collect_test_files(
+                    example_scores=example_scores)
+        elif self._is_material_directory(directory):
             assets_ = self._collect_material_files(
                 example_scores=example_scores)
-        elif 'segments' == current_path_or_directory_name:
-            assets_ = self._collect_segment_directories(
-                example_scores=example_scores)
-        elif 'segments' in current_path_or_directory_name:
+        elif self._is_segment_directory(directory):
             assets_ = self._collect_segment_files(
                 example_scores=example_scores)
-        elif 'stylesheets' == current_path_or_directory_name:
-            assets_ = self._collect_stylesheets(example_scores=example_scores)
-        elif 'test' == current_path_or_directory_name:
-            assets_ = self._collect_test_files(example_scores=example_scores)
         else:
-            raise ValueError(current_path_or_directory_name)
+            raise ValueError(directory)
+
         selector = self._io_manager._make_selector(
             items=assets_,
             )
@@ -2840,14 +2860,14 @@ class AbjadIDE(object):
         if source_path not in assets_:
             return
         asset_name = os.path.basename(source_path)
-        if os.path.sep in current_path_or_directory_name:
+        if os.path.sep in directory:
             target_path = os.path.join(
-                current_path_or_directory_name,
+                directory,
                 asset_name,
                 )
         else:
             current_score_directory = self._session.current_score_directory
-            directory_name = os.path.basename(current_path_or_directory_name)
+            directory_name = os.path.basename(directory)
             asset_name = os.path.basename(source_path)
             target_path = os.path.join(
                 current_score_directory,
@@ -3731,6 +3751,144 @@ class AbjadIDE(object):
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
 
     @Command(
+        'lyi',
+        argument_names=('current_path',),
+        description='ly - interpret',
+        file_='illustration.ly',
+        outside_score=False,
+        section='ly',
+        )
+    def interpret_ly(self, directory, confirm=True, dry_run=False):
+        r'''Interprets illustration ly in `directory`.
+
+        Makes illustration PDF.
+
+        Returns a pair.
+        
+        Pairs equals list of STDERR messages from LilyPond together
+        with list of candidate messages.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        illustration_source_path = os.path.join(directory, 'illustration.ly')
+        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
+        inputs, outputs = [], []
+        if os.path.isfile(illustration_source_path):
+            inputs.append(illustration_source_path)
+            outputs.append((illustration_pdf_path,))
+        if dry_run:
+            return inputs, outputs
+        if not os.path.isfile(illustration_source_path):
+            message = 'the file {} does not exist.'
+            message = message.format(illustration_source_path)
+            self._io_manager._display(message)
+            return [], []
+        messages = self._format_messaging(inputs, outputs)
+        self._io_manager._display(messages)
+        if confirm:
+            result = self._io_manager._confirm()
+            if not result:
+                return [], []
+        result = self._io_manager.run_lilypond(illustration_source_path)
+        subprocess_messages, candidate_messages = result
+        return subprocess_messages, candidate_messages
+
+    @Command(
+        'mi',
+        argument_names=('current_score_directory',),
+        directories=('build'),
+        outside_score=False,
+        section='build',
+        )
+    def interpret_music(self, score_directory):
+        r'''Interprets ``music.ly``.
+
+        Returns none.
+        '''
+        self._call_lilypond_on_file_ending_with(
+            os.path.join(score_directory, 'build'),
+            'music.ly',
+            )
+
+    @Command(
+        'pi',
+        argument_names=('current_score_directory',),
+        directories=('build'),
+        outside_score=False,
+        section='build',
+        )
+    def interpret_preface(self, score_directory):
+        r'''Interprets ``preface.tex``.
+
+        Returns none.
+        '''
+        build_directory = os.path.join(score_directory, 'build')
+        self._interpret_file_ending_with(build_directory, 'preface.tex')
+
+    @Command(
+        'si',
+        argument_names=('current_score_directory',),
+        directories=('build'),
+        outside_score=False,
+        section='build',
+        )
+    def interpret_score(self, score_directory):
+        r'''Interprets ``score.tex``.
+
+        Returns none.
+        '''
+        build_directory = os.path.join(score_directory, 'build')
+        self._interpret_file_ending_with(build_directory, 'score.tex')
+
+    @Command('!', section='system')
+    def invoke_shell(self):
+        r'''Invokes shell.
+
+        Returns none.
+        '''
+        statement = self._io_manager._handle_input(
+            '$',
+            include_chevron=False,
+            include_newline=False,
+            )
+        statement = statement.strip()
+        self._io_manager._invoke_shell(statement)
+
+    @Command(
+        'illm',
+        argument_names=('current_path',),
+        description='illustrate file - make',
+        file_='__illustrate__.py',
+        outside_score=False,
+        section='illustrate_file',
+        )
+    def make_illustrate_file(self, directory):
+        r'''Makes illustrate file.
+
+        Returns none.
+        '''
+        score_directory = self._path_to_score_directory(directory)
+        score_package_name = os.path.basename(score_directory)
+        material_package_name = os.path.basename(directory)
+        source_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__illustrate_material__.py',
+            )
+        target_path = os.path.join(
+            directory,
+            '__illustrate__.py',
+            )
+        shutil.copyfile(source_path, target_path)
+        with open(target_path, 'r') as file_pointer:
+            template = file_pointer.read()
+        completed_template = template.format(
+            score_package_name=score_package_name,
+            material_package_name=material_package_name,
+            )
+        with open(target_path, 'w') as file_pointer:
+            file_pointer.write(completed_template)
+        self._session._pending_redraw = True
+
+    @Command(
         'lym',
         argument_names=('current_path',),
         description='ly - make',
@@ -3947,144 +4105,6 @@ class AbjadIDE(object):
                 message = message.format(pdf_path)
                 self._io_manager._display(message)
                 self._io_manager.open_file(pdf_path)
-
-    @Command(
-        'lyi',
-        argument_names=('current_path',),
-        description='ly - interpret',
-        file_='illustration.ly',
-        outside_score=False,
-        section='ly',
-        )
-    def interpret_ly(self, directory, confirm=True, dry_run=False):
-        r'''Interprets illustration ly in `directory`.
-
-        Makes illustration PDF.
-
-        Returns a pair.
-        
-        Pairs equals list of STDERR messages from LilyPond together
-        with list of candidate messages.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        illustration_source_path = os.path.join(directory, 'illustration.ly')
-        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
-        inputs, outputs = [], []
-        if os.path.isfile(illustration_source_path):
-            inputs.append(illustration_source_path)
-            outputs.append((illustration_pdf_path,))
-        if dry_run:
-            return inputs, outputs
-        if not os.path.isfile(illustration_source_path):
-            message = 'the file {} does not exist.'
-            message = message.format(illustration_source_path)
-            self._io_manager._display(message)
-            return [], []
-        messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        if confirm:
-            result = self._io_manager._confirm()
-            if not result:
-                return [], []
-        result = self._io_manager.run_lilypond(illustration_source_path)
-        subprocess_messages, candidate_messages = result
-        return subprocess_messages, candidate_messages
-
-    @Command(
-        'mi',
-        argument_names=('current_score_directory',),
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_music(self, score_directory):
-        r'''Interprets ``music.ly``.
-
-        Returns none.
-        '''
-        self._call_lilypond_on_file_ending_with(
-            os.path.join(score_directory, 'build'),
-            'music.ly',
-            )
-
-    @Command(
-        'pi',
-        argument_names=('current_score_directory',),
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_preface(self, score_directory):
-        r'''Interprets ``preface.tex``.
-
-        Returns none.
-        '''
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'preface.tex')
-
-    @Command(
-        'si',
-        argument_names=('current_score_directory',),
-        directories=('build'),
-        outside_score=False,
-        section='build',
-        )
-    def interpret_score(self, score_directory):
-        r'''Interprets ``score.tex``.
-
-        Returns none.
-        '''
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'score.tex')
-
-    @Command('!', section='system')
-    def invoke_shell(self):
-        r'''Invokes shell.
-
-        Returns none.
-        '''
-        statement = self._io_manager._handle_input(
-            '$',
-            include_chevron=False,
-            include_newline=False,
-            )
-        statement = statement.strip()
-        self._io_manager._invoke_shell(statement)
-
-    @Command(
-        'illm',
-        argument_names=('current_path',),
-        description='illustrate file - make',
-        file_='__illustrate__.py',
-        outside_score=False,
-        section='illustrate_file',
-        )
-    def make_illustrate_file(self, directory):
-        r'''Makes illustrate file.
-
-        Returns none.
-        '''
-        score_directory = self._path_to_score_directory(directory)
-        score_package_name = os.path.basename(score_directory)
-        material_package_name = os.path.basename(directory)
-        source_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            '__illustrate_material__.py',
-            )
-        target_path = os.path.join(
-            directory,
-            '__illustrate__.py',
-            )
-        shutil.copyfile(source_path, target_path)
-        with open(target_path, 'r') as file_pointer:
-            template = file_pointer.read()
-        completed_template = template.format(
-            score_package_name=score_package_name,
-            material_package_name=material_package_name,
-            )
-        with open(target_path, 'w') as file_pointer:
-            file_pointer.write(completed_template)
-        self._session._pending_redraw = True
 
     @Command(
         'new',
