@@ -2791,122 +2791,12 @@ class AbjadIDE(object):
 
     @Command(
         'cp',
-        argument_names=('directory_name',),
+        argument_names=('current_path_or_directory_name',),
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
         )
-    def copy(self, directory_name):
-        r'''Copies asset.
-
-        Returns none.
-        '''
-        source_path = self._select_visible_asset_path(
-            directory_name,
-            infinitive_phrase='to copy',
-            )
-        if self._is_score_package_inner_path(source_path):
-            source_path = os.path.dirname(source_path)
-        if not source_path:
-            return
-        source_name = os.path.basename(source_path)
-        if directory_name == 'scores':
-            target_directory = configuration.composer_scores_directory
-        elif self._session.is_in_score:
-            target_directory = self._session.manifest_current_directory
-        else:
-            score_directory = self._select_score_directory(directory_name)
-            if score_directory is None:
-                return
-            target_directory = os.path.join(score_directory, directory_name)
-        if target_directory is None:
-            return
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
-        message = 'existing {} name> {}'
-        message = message.format(
-            asset_identifier,
-            source_name,
-            )
-        self._io_manager._display(message)
-        message = 'new {} name'
-        message = message.format(asset_identifier)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        help_template = getter.prompts[0].help_template
-        string = 'Press <return> to preserve existing name.'
-        help_template = help_template + ' ' + string
-        getter.prompts[0]._help_template = help_template
-        target_name = getter._run(io_manager=self._io_manager)
-        if not target_name:
-            target_name = source_name
-        target_name = stringtools.strip_diacritics(target_name)
-        directory_name = os.path.basename(target_directory)
-        file_name_predicate = self._directory_name_to_file_name_predicate(
-            directory_name)
-        if file_name_predicate == stringtools.is_dash_case:
-            target_name = self._to_dash_case(target_name)
-        target_name = target_name.replace(' ', '_')
-        if not directory_name == 'makers':
-            target_name = target_name.lower()
-        file_extension = self._directory_name_to_file_extension.get(
-            directory_name)
-        if file_extension and not target_name.endswith(file_extension):
-            target_name = target_name + file_extension
-        target_path = os.path.join(target_directory, target_name)
-        if os.path.exists(target_path):
-            message = 'already exists: {}'.format(target_path)
-            self._io_manager._display(message)
-            self._io_manager._acknowledge()
-            return
-        messages = []
-        messages.append('will copy ...')
-        messages.append(' FROM: {}'.format(source_path))
-        messages.append('   TO: {}'.format(target_path))
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        if os.path.isfile(source_path):
-            shutil.copyfile(source_path, target_path)
-        elif os.path.isdir(source_path):
-            shutil.copytree(source_path, target_path)
-        else:
-            raise TypeError(source_path)
-        if self._is_score_package_outer_path(target_path):
-            false_inner_path = os.path.join(target_path, source_name)
-            assert os.path.exists(false_inner_path)
-            correct_inner_path = os.path.join(target_path, target_name)
-            shutil.move(false_inner_path, correct_inner_path)
-            for directory_entry in sorted(os.listdir(correct_inner_path)):
-                if not directory_entry.endswith('.py'):
-                    continue
-                path = os.path.join(correct_inner_path, directory_entry)
-                self._replace_in_file(
-                    path,
-                    source_name,
-                    target_name,
-                    )
-        if os.path.isdir(target_path):
-            for directory_entry in sorted(os.listdir(target_path)):
-                if not directory_entry.endswith('.py'):
-                    continue
-                path = os.path.join(target_path, directory_entry)
-                self._replace_in_file(
-                    path,
-                    source_name,
-                    target_name,
-                    )
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
-
-    @Command(
-        'from',
-        argument_names=('current_path_or_directory_name',),
-        outside_score=False,
-        section='global files',
-        )
-    def copy_external_asset(self, current_path_or_directory_name):
+    def copy(self, current_path_or_directory_name):
         r'''Copies external asset.
 
         Returns none.
