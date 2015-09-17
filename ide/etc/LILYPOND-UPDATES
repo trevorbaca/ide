@@ -6,8 +6,8 @@ SUMMARY. Run ...
 following four commands to rerender all test artifacts to accommodate a new
 version of LilyPond:
 
-    (red~example~score m ii* y q)
-    (red~example~score g ii* y q)
+    (red~example~score m lyi* y q)
+    (red~example~score g lyi* y q)
     (red~example~score u mi y q)
     (red~example~score u si y q)
 
@@ -53,8 +53,8 @@ Prior to July 2015:
 SUMMARY. Here're the commands necessary to rerender all test artifacts to
 accommodate a new version of LilyPond:
 
-    (red~example~score g ii* y q)
-    (red~example~score m ii* y q)
+    (red~example~score g lyi* y q)
+    (red~example~score m lyi* y q)
     (red~example~score u dc y q)
     (red~example~score u di q)
     (red~example~score u mi y q)
@@ -102,7 +102,7 @@ The following four IDE tests will fail:
 
 You can fix  ...
     test_SegmentPackageWrangler_interpret_every_illustration_source_02
-... by running (red~example~score g ii*).
+... by running (red~example~score g lyi*).
 This modifies ...
     scores/red_example_score/segments/segment_01/illustration.pdf
     scores/red_example_score/segments/segment_02/illustration.pdf
@@ -130,8 +130,8 @@ of changed artifacts that have not yet been checked in; these are marked with
 [*] above.
 
 The remaining three failed tests are marked with [N] above to indicate that
-they are new failures that result from running (red~example~score g ii*). These
-new failures must be remedied.
+they are new failures that result from running (red~example~score g lyi*).
+These new failures must be remedied.
 
 Finally, note that the test ...
     test_SegmentPackageManager_illustrate_definition_02
@@ -139,16 +139,15 @@ Finally, note that the test ...
 
 ###############################################################################
 
-We will proceed without checking in the three artifacts changed so far.
-For our second step we will attempt to fix ...
-    test_MaterialPackageWrangler_interpret_every_illustration_source_02
-... by running (red~example~score m ii* y q).
-This does indeed fix the test.
-This also causes the files ...
-    scores/red_example_score/materials/magic_numbers/illustration.pdf
-    scores/red_example_score/materials/pitch_range_inventory/illustration.pdf
-    scores/red_example_score/materials/tempo_inventory/illustration.pdf
-... to change.
+We will proceed without checking in the three artifacts changed so far. For our
+second step we will attempt to fix ...
+test_MaterialPackageWrangler_interpret_every_illustration_source_02 ... by
+running (red~example~score m ii* y q). This does indeed fix the test. This also
+causes the files ...
+scores/red_example_score/materials/magic_numbers/illustration.pdf
+scores/red_example_score/materials/pitch_range_inventory/illustration.pdf
+scores/red_example_score/materials/tempo_inventory/illustration.pdf ... to
+change.
 
 What output do we get if we now rerun the battery?
 
@@ -165,8 +164,8 @@ What output do we get if we now rerun the battery?
 Our number of failed tests has increased from 8 to 9. But five of these are
 'fake' display-status failures. Only four of these are tests that need
 legitimately to be fixed. And this is down from five legitimate failures before
-we ran (red~example~score m ii* y q). This means that running the command
-fixed the test we had targetted.
+we ran (red~example~score m lyi* y q). This means that running the command fixed
+the test we had targetted.
 
 ###############################################################################
 

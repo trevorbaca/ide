@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_interpret_every_illustration_source_01():
+def test_AbjadIDE_interpret_every_ly_01():
     r'''Does not display candidate messages for materials.
     '''
 
@@ -33,7 +33,7 @@ def test_AbjadIDE_interpret_every_illustration_source_01():
         for path in pdf_paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
-        input_ = 'red~example~score m ii* y q'
+        input_ = 'red~example~score m lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
@@ -50,7 +50,7 @@ def test_AbjadIDE_interpret_every_illustration_source_01():
     assert not 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_source_02():
+def test_AbjadIDE_interpret_every_ly_02():
     r'''Does display candidate messages for materials.
     '''
 
@@ -78,10 +78,10 @@ def test_AbjadIDE_interpret_every_illustration_source_02():
         for pdf_path in pdf_paths:
             os.remove(pdf_path)
         # generate PDFs a first time
-        input_ = 'red~example~score m ii* y q'
+        input_ = 'red~example~score m lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         # attempt (but fail) to generate PDFs a second time
-        input_ = 'red~example~score m ii* y q'
+        input_ = 'red~example~score m lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -96,7 +96,7 @@ def test_AbjadIDE_interpret_every_illustration_source_02():
     assert 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_source_03():
+def test_AbjadIDE_interpret_every_ly_03():
     r'''Does not display candidate messages for segments.
     '''
 
@@ -123,7 +123,7 @@ def test_AbjadIDE_interpret_every_illustration_source_03():
         for path in pdf_paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
-        input_ = 'red~example~score g ii* y q'
+        input_ = 'red~example~score g lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
@@ -140,7 +140,7 @@ def test_AbjadIDE_interpret_every_illustration_source_03():
     assert not 'Preserved' in contents
 
 
-def test_AbjadIDE_interpret_every_illustration_source_04():
+def test_AbjadIDE_interpret_every_ly_04():
     r'''Does display candidate messages for segments.
     '''
 
@@ -168,10 +168,10 @@ def test_AbjadIDE_interpret_every_illustration_source_04():
         for pdf_path in pdf_paths:
             os.remove(pdf_path)
         # generate PDFs a first time
-        input_ = 'red~example~score g ii* y q'
+        input_ = 'red~example~score g lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
         # attempt (but fail) to generate PDFs a second time
-        input_ = 'red~example~score g ii* y q'
+        input_ = 'red~example~score g lyi* y q'
         abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents

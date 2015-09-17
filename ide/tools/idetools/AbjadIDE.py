@@ -2935,7 +2935,7 @@ class AbjadIDE(object):
         self._open_in_every_package(directories, 'definition.py')
 
     @Command(
-        'eif',
+        'ill',
         argument_names=('current_path',),
         file_='__illustrate__.py',
         outside_score=False,
@@ -2949,20 +2949,33 @@ class AbjadIDE(object):
         illustrate_py_path = os.path.join(directory, '__illustrate__.py')
         self._io_manager.edit(illustrate_py_path)
 
+    @Command('log', section='global files')
+    def edit_lilypond_log(self):
+        r'''Edits LilyPond log.
+
+        Returns none.
+        '''
+        from abjad.tools import systemtools
+        self._session._attempted_to_open_file = True
+        if self._session.is_test:
+            return
+        systemtools.IOManager.open_last_log()
+
     @Command(
-        'eis',
+        'ly',
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='ly',
         )
-    def edit_illustration_source(self, directory):
-        r'''Opens ``illustration.ly``.
+    def edit_ly(self, directory):
+        r'''Edits ``illustration.ly`` in `directory`.
 
         Returns none.
         '''
-        illustration_source_path = os.path.join(directory, 'illustration.ly')
-        self._io_manager.open_file(illustration_source_path)
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'illustration.ly')
+        self._io_manager.open_file(file_path)
 
     @Command(
         'sty',
@@ -3089,40 +3102,6 @@ class AbjadIDE(object):
             os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
-
-    @Command(
-        'gif',
-        argument_names=('current_path',),
-        file_='__illustrate__.py',
-        outside_score=False,
-        section='illustrate_file',
-        )
-    def generate_illustrate_file(self, directory):
-        r'''Generates illustrate file.
-
-        Returns none.
-        '''
-        score_directory = self._path_to_score_directory(directory)
-        score_package_name = os.path.basename(score_directory)
-        material_package_name = os.path.basename(directory)
-        source_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            '__illustrate_material__.py',
-            )
-        target_path = os.path.join(
-            directory,
-            '__illustrate__.py',
-            )
-        shutil.copyfile(source_path, target_path)
-        with open(target_path, 'r') as file_pointer:
-            template = file_pointer.read()
-        completed_template = template.format(
-            score_package_name=score_package_name,
-            material_package_name=material_package_name,
-            )
-        with open(target_path, 'w') as file_pointer:
-            file_pointer.write(completed_template)
-        self._session._pending_redraw = True
 
     @Command(
         'mg',
@@ -3523,7 +3502,7 @@ class AbjadIDE(object):
         file_='definition.py',
         outside_score=False,
         parent_directories=('segments',),
-        section='package',
+        section='pdf',
         )
     def illustrate_definition(self, directory, dry_run=False):
         r'''Illustrates definition.
@@ -3684,27 +3663,27 @@ class AbjadIDE(object):
         self._interpret_file_ending_with(build_directory, 'back-cover.tex')
 
     @Command(
-        'ii*',
+        'lyi*',
         argument_names=('visible_asset_paths',),
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
         )
-    def interpret_every_illustration_source(
+    def interpret_every_ly(
         self,
         directories,
         open_every_illustration_pdf=True,
         ):
-        r'''Interprets ``illustration.ly`` in every package.
+        r'''Interprets illustration ly in every package.
 
-        Makes ``illustration.pdf`` in every package.
+        Makes illustration PDF in every package.
 
         Returns none.
         '''
         inputs, outputs = [], []
         method_name = 'interpret_illustration_source'
         for directory in directories:
-            inputs_, outputs_ = self.interpret_illustration_source(
+            inputs_, outputs_ = self.interpret_ly(
                 directory,
                 dry_run=True,
                 )
@@ -3716,7 +3695,7 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            result = self.interpret_illustration_source(
+            result = self.interpret_ly(
                 directory,
                 confirm=False,
                 )
@@ -3742,18 +3721,19 @@ class AbjadIDE(object):
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
 
     @Command(
-        'iif',
+        'pdfm',
         argument_names=('current_path',),
         file_='definition.py',
         outside_score=False,
         parent_directories=('materials',),
-        section='package',
+        section='pdf',
         )
-    def interpret_illustrate_file(self, directory, dry_run=False):
-        r'''Interprets illustrate file.
+    def make_pdf(self, directory, dry_run=False):
+        r'''Makes illustration PDF.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
@@ -3853,19 +3833,14 @@ class AbjadIDE(object):
                         self._io_manager.open_file(illustration_pdf_path)
 
     @Command(
-        'iis',
+        'lyi',
         argument_names=('current_path',),
         file_='illustration.ly',
         outside_score=False,
         section='ly',
         )
-    def interpret_illustration_source(
-        self, 
-        directory, 
-        confirm=True, 
-        dry_run=False,
-        ):
-        r'''Interprets illustration source.
+    def interpret_ly(self, directory, confirm=True, dry_run=False):
+        r'''Interprets illustration ly in `directory`.
 
         Makes illustration PDF.
 
@@ -3874,6 +3849,7 @@ class AbjadIDE(object):
         Pairs equals list of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
+        assert os.path.isdir(directory), repr(directory)
         illustration_source_path = os.path.join(directory, 'illustration.ly')
         illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
         inputs, outputs = [], []
@@ -3959,6 +3935,40 @@ class AbjadIDE(object):
         self._io_manager._invoke_shell(statement)
 
     @Command(
+        'illm',
+        argument_names=('current_path',),
+        file_='__illustrate__.py',
+        outside_score=False,
+        section='illustrate_file',
+        )
+    def make_illustrate_file(self, directory):
+        r'''Makes illustrate file.
+
+        Returns none.
+        '''
+        score_directory = self._path_to_score_directory(directory)
+        score_package_name = os.path.basename(score_directory)
+        material_package_name = os.path.basename(directory)
+        source_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__illustrate_material__.py',
+            )
+        target_path = os.path.join(
+            directory,
+            '__illustrate__.py',
+            )
+        shutil.copyfile(source_path, target_path)
+        with open(target_path, 'r') as file_pointer:
+            template = file_pointer.read()
+        completed_template = template.format(
+            score_package_name=score_package_name,
+            material_package_name=material_package_name,
+            )
+        with open(target_path, 'w') as file_pointer:
+            file_pointer.write(completed_template)
+        self._session._pending_redraw = True
+
+    @Command(
         'new',
         argument_names=('directory_name',),
         is_hidden=False,
@@ -4022,38 +4032,27 @@ class AbjadIDE(object):
             self._io_manager.open_file(paths)
 
     @Command(
-        'o',
+        'pdf',
         argument_names=('current_path',),
         file_='illustration.pdf',
         outside_score=False,
-        section='package',
+        section='pdf',
         )
-    def open_illustration(self, directory):
-        r'''Opens illustration.
+    def open_pdf(self, directory):
+        r'''Opens illustration PDF.
 
         Returns none.
         '''
-        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
-        self._io_manager.open_file(illustration_pdf_path)
-
-    @Command('log', section='global files')
-    def open_lilypond_log(self):
-        r'''Opens LilyPond log.
-
-        Returns none.
-        '''
-        from abjad.tools import systemtools
-        self._session._attempted_to_open_file = True
-        if self._session.is_test:
-            return
-        systemtools.IOManager.open_last_log()
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'illustration.pdf')
+        self._io_manager.open_file(file_path)
 
     @Command(
         'so',
         argument_names=('current_path',),
         in_score_directory_only=True,
         outside_score=False,
-        section='package',
+        section='pdf',
         )
     def open_score_pdf(self, directory, dry_run=False):
         r'''Opens ``score.pdf``.

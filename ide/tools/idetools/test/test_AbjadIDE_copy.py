@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 scores_directory = configuration.abjad_ide_example_scores_directory
 
 
-def test_AbjadIDE_copy_external_asset_01():
+def test_AbjadIDE_copy_01():
     r'''Copies file between build directories.
     '''
 
@@ -35,7 +35,7 @@ def test_AbjadIDE_copy_external_asset_01():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_02():
+def test_AbjadIDE_copy_02():
     r'''Copies file between distribution directories.
     '''
 
@@ -63,7 +63,7 @@ def test_AbjadIDE_copy_external_asset_02():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_03():
+def test_AbjadIDE_copy_03():
     r'''Copies file between etc directories.
     '''
 
@@ -91,7 +91,7 @@ def test_AbjadIDE_copy_external_asset_03():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_04():
+def test_AbjadIDE_copy_04():
     r'''Copies file between makers directories.
     '''
 
@@ -119,7 +119,7 @@ def test_AbjadIDE_copy_external_asset_04():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_05():
+def test_AbjadIDE_copy_05():
     r'''Copies file between material directories.
     '''
 
@@ -150,7 +150,7 @@ def test_AbjadIDE_copy_external_asset_05():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_06():
+def test_AbjadIDE_copy_06():
     r'''Copies package between materials directories.
     '''
 
@@ -180,7 +180,7 @@ def test_AbjadIDE_copy_external_asset_06():
         assert os.path.exists(target_package)
 
 
-def test_AbjadIDE_copy_external_asset_07():
+def test_AbjadIDE_copy_07():
     r'''Copies file between segment directories.
     '''
 
@@ -211,7 +211,7 @@ def test_AbjadIDE_copy_external_asset_07():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_08():
+def test_AbjadIDE_copy_08():
     r'''Copies package between segments directories.
     '''
 
@@ -241,7 +241,7 @@ def test_AbjadIDE_copy_external_asset_08():
         assert os.path.exists(target_package)
 
 
-def test_AbjadIDE_copy_external_asset_09():
+def test_AbjadIDE_copy_09():
     r'''Copies file between stylesheets directories.
     '''
 
@@ -269,7 +269,7 @@ def test_AbjadIDE_copy_external_asset_09():
         assert os.path.exists(target_file)
 
 
-def test_AbjadIDE_copy_external_asset_10():
+def test_AbjadIDE_copy_10():
     r'''Copies file between test directories.
     '''
 
