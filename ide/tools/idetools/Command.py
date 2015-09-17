@@ -39,7 +39,7 @@ class Command(object):
     def __init__(
         self, 
         command_name, 
-        argument_names=None,
+        argument_name=None,
         description=None, 
         directories=None,
         file_=None,
@@ -51,8 +51,8 @@ class Command(object):
         parent_directories=None,
         section=None,
         ):
-        argument_names = argument_names or ()
-        self.argument_names = argument_names
+        assert isinstance(argument_name, (str, type(None)))
+        self.argument_name = argument_name
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.command_name = command_name
@@ -87,7 +87,7 @@ class Command(object):
 
         Returns `method` with metadata attached.
         '''
-        method.argument_names = self.argument_names
+        method.argument_name = self.argument_name
         method.command_name = self.command_name
         if self.description is not None:
             method.description = self.description

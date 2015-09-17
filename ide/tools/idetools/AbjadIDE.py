@@ -1167,7 +1167,7 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
-            if 'current_directory' in command.argument_names:
+            if command.argument_name == 'current_directory':
                 current_directory = self._session.manifest_current_directory
                 command(current_directory)
             else:
@@ -2695,7 +2695,7 @@ class AbjadIDE(object):
 
     @Command(
         'dfk',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='definition file - check',
         file_='definition.py',
         outside_score=False,
@@ -2729,7 +2729,7 @@ class AbjadIDE(object):
 
     @Command(
         'dfk*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
@@ -2764,7 +2764,7 @@ class AbjadIDE(object):
 
     @Command(
         'mc',
-        argument_names=('current_directory'),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -2806,7 +2806,7 @@ class AbjadIDE(object):
 
     @Command(
         'cp',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
@@ -2915,7 +2915,7 @@ class AbjadIDE(object):
 
     @Command(
         'abb',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='abbreviations - edit',
         outside_score=False,
         section='global files',
@@ -2939,7 +2939,7 @@ class AbjadIDE(object):
 
     @Command(
         'df',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='definition file - edit',
         file_='definition.py',
         outside_score=False,
@@ -2956,7 +2956,7 @@ class AbjadIDE(object):
 
     @Command(
         'df*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('materials', 'segments'),
         section='star',
         )
@@ -2972,7 +2972,7 @@ class AbjadIDE(object):
 
     @Command(
         'ill',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='illustrate file - edit',
         file_='__illustrate__.py',
         outside_score=False,
@@ -3005,7 +3005,7 @@ class AbjadIDE(object):
 
     @Command(
         'ly',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='ly - edit',
         file_='illustration.ly',
         outside_score=False,
@@ -3022,7 +3022,7 @@ class AbjadIDE(object):
 
     @Command(
         'sty',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='stylesheet - edit',
         outside_score=False,
         section='global files',
@@ -3046,7 +3046,7 @@ class AbjadIDE(object):
 
     @Command(
         'bcg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3096,7 +3096,7 @@ class AbjadIDE(object):
 
     @Command(
         'fcg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3155,7 +3155,7 @@ class AbjadIDE(object):
 
     @Command(
         'mg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3257,7 +3257,7 @@ class AbjadIDE(object):
 
     @Command(
         'pg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3284,7 +3284,7 @@ class AbjadIDE(object):
 
     @Command(
         'sg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3311,7 +3311,7 @@ class AbjadIDE(object):
 
     @Command(
         'add*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score=False,
         outside_score='home',
         section='git',
@@ -3353,7 +3353,7 @@ class AbjadIDE(object):
 
     @Command(
         'ci*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score=False,
         outside_score='home',
         section='git',
@@ -3387,7 +3387,7 @@ class AbjadIDE(object):
 
     @Command(
         'st*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score=False,
         outside_score='home',
         section='git',
@@ -3407,7 +3407,7 @@ class AbjadIDE(object):
 
     @Command(
         'up*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score=False,
         outside_score='home',
         section='git',
@@ -3448,7 +3448,7 @@ class AbjadIDE(object):
 
     @Command(
         'bb',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3462,7 +3462,7 @@ class AbjadIDE(object):
 
     @Command(
         'dd',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3476,7 +3476,7 @@ class AbjadIDE(object):
 
     @Command(
         'ee',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3490,7 +3490,7 @@ class AbjadIDE(object):
 
     @Command(
         'kk',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3504,7 +3504,7 @@ class AbjadIDE(object):
 
     @Command(
         'mm',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3518,7 +3518,7 @@ class AbjadIDE(object):
 
     @Command(
         'ss',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3533,7 +3533,7 @@ class AbjadIDE(object):
 
     @Command(
         'gg',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3547,7 +3547,7 @@ class AbjadIDE(object):
 
     @Command(
         'yy',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3561,7 +3561,7 @@ class AbjadIDE(object):
 
     @Command(
         'tt',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         outside_score=False,
         section='navigation',
         )
@@ -3575,7 +3575,7 @@ class AbjadIDE(object):
 
     @Command(
         'i',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         file_='definition.py',
         outside_score=False,
         parent_directories=('segments',),
@@ -3698,7 +3698,7 @@ class AbjadIDE(object):
 
     @Command(
         'di*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('segments'),
         outside_score=False,
         section='star',
@@ -3730,7 +3730,7 @@ class AbjadIDE(object):
 
     @Command(
         'bci',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         section='build',
         outside_score=False,
@@ -3747,7 +3747,7 @@ class AbjadIDE(object):
 
     @Command(
         'lyi*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
@@ -3789,7 +3789,7 @@ class AbjadIDE(object):
 
     @Command(
         'fci',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3806,7 +3806,7 @@ class AbjadIDE(object):
 
     @Command(
         'lyi',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='ly - interpret',
         file_='illustration.ly',
         outside_score=False,
@@ -3848,7 +3848,7 @@ class AbjadIDE(object):
 
     @Command(
         'mi',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3868,7 +3868,7 @@ class AbjadIDE(object):
 
     @Command(
         'pi',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3885,7 +3885,7 @@ class AbjadIDE(object):
 
     @Command(
         'si',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -3916,7 +3916,7 @@ class AbjadIDE(object):
 
     @Command(
         'illm',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='illustrate file - make',
         file_='__illustrate__.py',
         outside_score=False,
@@ -3952,7 +3952,7 @@ class AbjadIDE(object):
 
     @Command(
         'lym',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='ly - make',
         file_='definition.py',
         outside_score=False,
@@ -4047,7 +4047,7 @@ class AbjadIDE(object):
 
     @Command(
         'pdfm',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='pdf - make',
         file_='definition.py',
         outside_score=False,
@@ -4170,7 +4170,7 @@ class AbjadIDE(object):
 
     @Command(
         'new',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
@@ -4195,7 +4195,7 @@ class AbjadIDE(object):
 
     @Command(
         'io*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('materials', 'segments'),
         outside_score=False,
         section='star',
@@ -4212,7 +4212,7 @@ class AbjadIDE(object):
 
     @Command(
         'so*',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score=False,
         outside_score='home',
         section='star',
@@ -4241,7 +4241,7 @@ class AbjadIDE(object):
 
     @Command(
         'pdf',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         description='pdf - open',
         file_='illustration.pdf',
         outside_score=False,
@@ -4258,7 +4258,7 @@ class AbjadIDE(object):
 
     @Command(
         'so',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         in_score_directory_only=True,
         outside_score=False,
         section='pdf',
@@ -4291,7 +4291,7 @@ class AbjadIDE(object):
 
     @Command(
         'sp',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=('build'),
         outside_score=False,
         section='build',
@@ -4337,7 +4337,7 @@ class AbjadIDE(object):
 
     @Command(
         'rm',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
@@ -4385,7 +4385,7 @@ class AbjadIDE(object):
 
     @Command(
         'ren',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         is_hidden=False,
         never_in_score_directory=True,
         section='basic',
@@ -4468,7 +4468,7 @@ class AbjadIDE(object):
 
     @Command(
         'ws',
-        argument_names=('current_directory',),
+        argument_name='current_directory',
         directories=(
             'build',
             'distribution',
