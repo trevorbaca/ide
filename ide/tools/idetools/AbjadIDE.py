@@ -595,6 +595,16 @@ class AbjadIDE(object):
             directory_name]
         return asset_identifier
 
+    def _directory_to_file_extension(self, directory):
+        file_extension = ''
+        if self._is_known_directory(directory, 'makers'):
+            file_extension = '.py'
+        elif self._is_known_directory(directory, 'stylesheets'):
+            file_extension = '.ily'
+        elif self._is_known_directory(directory, 'test'):
+            file_extension = '.py'
+        return file_extension
+
     def _directory_name_to_directory_entry_predicate(self, directory_name):
         file_prototype = (
             'build',
@@ -617,6 +627,21 @@ class AbjadIDE(object):
             raise ValueError(directory_name)
 
     def _directory_name_to_file_name_predicate(self, directory_name):
+        dash_case_prototype = (
+            'build',
+            'distribution',
+            'etc',
+            'stylesheets',
+            )
+        if directory_name in dash_case_prototype:
+            return stringtools.is_dash_case
+        elif directory_name == 'makers':
+            return stringtools.is_upper_camel_case
+        elif directory_name == 'test':
+            return stringtools.is_snake_case
+
+    def _directory_to_file_name_predicate(self, directory):
+        directory_name = self._path_to_directory_name(directory)
         dash_case_prototype = (
             'build',
             'distribution',
@@ -1331,11 +1356,15 @@ class AbjadIDE(object):
                 return True
         return False
 
-    def _is_known_directory(self, path):
+    def _is_known_directory(self, path, directory_name=None):
         parent_directory = os.path.dirname(path)
         if self._is_inner_score_directory(parent_directory):
             base_name = os.path.basename(path)
-            if base_name in self._known_directory_names:
+            if (directory_name is None and 
+                base_name in self._known_directory_names):
+                return True
+            if (base_name == directory_name and
+                base_name in self._known_directory_names):
                 return True
         return False
 
@@ -1726,10 +1755,8 @@ class AbjadIDE(object):
 
     def _make_file(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        directory_name = os.path.basename(directory)
-        file_extension = self._directory_name_to_file_extension.get(
-            directory_name, '')
         contents = ''
+        file_extension = self._directory_to_file_extension(directory)
         if file_extension == '.py':
             contents == self._unicode_directive
         getter = self._io_manager._make_getter()
@@ -1739,8 +1766,7 @@ class AbjadIDE(object):
             return
         name = stringtools.strip_diacritics(name)
         directory_name = os.path.basename(directory)
-        file_name_predicate = self._directory_name_to_file_name_predicate(
-            directory_name)
+        file_name_predicate = self._directory_to_file_name_predicate(directory)
         if file_name_predicate == stringtools.is_dash_case:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
