@@ -1211,7 +1211,7 @@ class AbjadIDE(object):
         elif self._is_package_directory(result):
             self._run_package_manager_menu(result)
         elif self._is_known_directory(result):
-            self._run_wrangler_menu(base_name)
+            self._run_wrangler_menu(result)
         else:
             current_score_directory = self._session.current_score_directory
             aliased_path = configuration.aliases.get(result, None)
@@ -2121,7 +2121,8 @@ class AbjadIDE(object):
         return package
 
     @staticmethod
-    def _path_to_score_directory(path):
+    def _path_to_score_directory(path, directory_name=None):
+        assert os.path.sep in path, repr(path)
         is_composer_score = False
         if path.startswith(configuration.composer_scores_directory):
             is_composer_score = True
@@ -2141,6 +2142,8 @@ class AbjadIDE(object):
         if os.path.normpath(score_path) == os.path.normpath(
             configuration.abjad_ide_example_scores_directory):
             return
+        if directory_name is not None:
+            score_path = os.path.join(score_path, directory_name)
         return score_path
 
     def _read_view(self, directory_token):
@@ -2264,13 +2267,18 @@ class AbjadIDE(object):
             if self._session.is_test:
                 shutil.copyfile(empty_views, views)
             while True:
-                self._run_wrangler_menu('scores')
+                directory = configuration.composer_scores_directory
+                self._run_wrangler_menu(directory)
                 if self._session.is_quitting:
                     break
         self._io_manager._clean_up()
 
     def _run_package_manager_menu(self, directory):
-        assert os.path.sep in directory, repr(directory)
+        if not os.path.exists(directory):
+            message = 'directory does not exist: {}.'
+            message = message.format(directory)
+            self._io_manager._display(message)
+            return
         self._session._pending_redraw = True
         while True:
             self._session._manifest_current_directory = directory
@@ -2286,33 +2294,24 @@ class AbjadIDE(object):
             if self._session.is_quitting:
                 return
 
-    def _run_wrangler_menu(self, directory_name):
-        assert (directory_name in self._known_directory_names or
-            directory_name == 'scores'), repr(directory_name)
-        if (directory_name == 'scores' or not self._session.is_in_score):
-            current_directory = configuration.composer_scores_directory
-        else:
-            current_directory = os.path.join(
-                self._session.current_score_directory,
-                directory_name,
-                )
-        if not os.path.exists(current_directory):
+    def _run_wrangler_menu(self, directory):
+        if not os.path.exists(directory):
             message = 'directory does not exist: {}.'
-            message = message.format(current_directory)
+            message = message.format(directory)
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
-        self._session._manifest_current_directory = current_directory
-        if self._is_scores_directory(current_directory):
+        self._session._manifest_current_directory = directory
+        if self._is_scores_directory(directory):
             menu_header = 'Abjad IDE - all score directories'
         else:
-            menu_header = self._path_to_menu_header(current_directory)
-        menu = self._make_main_menu(current_directory, menu_header)
+            menu_header = self._path_to_menu_header(directory)
+        menu = self._make_main_menu(directory, menu_header)
         while True:
-            self._session._manifest_current_directory = current_directory
-            os.chdir(current_directory)
+            self._session._manifest_current_directory = directory
+            os.chdir(directory)
             if self._session._pending_menu_rebuild:
-                menu = self._make_main_menu(current_directory, menu_header)
+                menu = self._make_main_menu(directory, menu_header)
                 self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
@@ -3418,7 +3417,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._run_wrangler_menu('scores')
+        directory = configuration.composer_scores_directory
+        self._run_wrangler_menu(directory)
 
     @Command(
         'bb',
@@ -3432,7 +3432,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('build')
+        directory = self._path_to_score_directory(directory, 'build')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'dd',
@@ -3446,7 +3447,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('distribution')
+        directory = self._path_to_score_directory(directory, 'distribution')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'ee',
@@ -3460,7 +3462,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('etc')
+        directory = self._path_to_score_directory(directory, 'etc')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'kk',
@@ -3474,7 +3477,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('makers')
+        directory = self._path_to_score_directory(directory, 'makers')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'mm',
@@ -3488,7 +3492,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('materials')
+        directory = self._path_to_score_directory(directory, 'materials')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'ss',
@@ -3502,8 +3507,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        current_score_directory = self._session.current_score_directory
-        self._run_package_manager_menu(current_score_directory)
+        #current_score_directory = self._session.current_score_directory
+        directory = self._path_to_score_directory(directory)
+        self._run_package_manager_menu(directory)
 
     @Command(
         'gg',
@@ -3517,7 +3523,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('segments')
+        directory = self._path_to_score_directory(directory, 'segments')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'yy',
@@ -3531,7 +3538,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('stylesheets')
+        directory = self._path_to_score_directory(directory, 'stylesheets')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'tt',
@@ -3545,7 +3553,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        self._run_wrangler_menu('test')
+        directory = self._path_to_score_directory(directory, 'test')
+        self._run_wrangler_menu(directory)
 
     @Command(
         'i',
