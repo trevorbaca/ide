@@ -588,6 +588,13 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
+    def _directory_to_asset_identifier(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        asset_identifier = self._directory_name_to_asset_identifier[
+            directory_name]
+        return asset_identifier
+
     def _directory_name_to_directory_entry_predicate(self, directory_name):
         file_prototype = (
             'build',
@@ -800,9 +807,7 @@ class AbjadIDE(object):
         return paths
 
     def _get_available_path_in_directory(self, directory):
-        directory_name = os.path.basename(directory)
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
+        asset_identifier = self._directory_to_asset_identifier(directory)
         while True:
             default_prompt = 'enter {} name'
             default_prompt = default_prompt.format(asset_identifier)
@@ -1560,6 +1565,8 @@ class AbjadIDE(object):
         return result
 
     def _list_visible_asset_paths(self, directory_name):
+        if os.path.isdir(directory_name):
+            directory_name = self._path_to_directory_name(directory_name)
         entries = self._make_asset_menu_entries(directory_name)
         paths = [_[-1] for _ in entries]
         return paths
@@ -1717,16 +1724,9 @@ class AbjadIDE(object):
                 name=menu_section_name,
                 )
 
-    def _make_file(self, directory_name):
-        if self._session.is_in_score:
-            path = self._get_current_directory()
-        else:
-            score_directory = self._select_score_directory(directory_name)
-            if score_directory is None:
-                return
-            if not directory_name == 'scores':
-                path = os.path.join(score_directory, directory_name)
-        directory_name = os.path.basename(path)
+    def _make_file(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = os.path.basename(directory)
         file_extension = self._directory_name_to_file_extension.get(
             directory_name, '')
         contents = ''
@@ -1738,7 +1738,7 @@ class AbjadIDE(object):
         if name is None:
             return
         name = stringtools.strip_diacritics(name)
-        directory_name = os.path.basename(path)
+        directory_name = os.path.basename(directory)
         file_name_predicate = self._directory_name_to_file_name_predicate(
             directory_name)
         if file_name_predicate == stringtools.is_dash_case:
@@ -1748,9 +1748,9 @@ class AbjadIDE(object):
             name = name.lower()
         if not name.endswith(file_extension):
             name = name + file_extension
-        path = os.path.join(path, name)
-        self._io_manager.write(path, contents)
-        self._io_manager.edit(path)
+        file_path = os.path.join(directory, name)
+        self._io_manager.write(file_path, contents)
+        self._io_manager.edit(file_path)
 
     def _make_main_menu(
         self,
@@ -1779,19 +1779,10 @@ class AbjadIDE(object):
             )
         return menu
 
-    def _make_material_or_segment_package(self, directory_name):
-        assert directory_name in ('materials', 'segments')
-        if self._session.is_in_score:
-            new_directory = os.path.join(
-                self._session.current_score_directory,
-                directory_name,
-                )
-        else:
-            score_directory = self._select_score_directory(directory_name)
-            if score_directory is None:
-                return
-            if not directory_name == 'scores':
-                new_directory = os.path.join(score_directory, directory_name)
+    def _make_material_or_segment_package(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        assert self._session.is_in_score
+        new_directory = directory
         path = self._get_available_path_in_directory(new_directory)
         if not path:
             return
@@ -1823,7 +1814,7 @@ class AbjadIDE(object):
             target_path = os.path.join(path, required_file)
             shutil.copyfile(source_path, target_path)
         new_path = path
-        paths = self._list_visible_asset_paths(directory_name)
+        paths = self._list_visible_asset_paths(directory)
         if path not in paths:
             self._clear_view(directory_name)
         self._run_package_manager_menu(new_path)
@@ -4181,15 +4172,15 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
-        if asset_identifier == 'file':
-            self._make_file(directory_name)
-        elif directory_name == 'scores':
+        asset_identifier = self._directory_to_asset_identifier(directory)
+        if self._is_scores_directory(directory):
             self._make_score_package()
+        elif asset_identifier == 'file':
+            self._make_file(directory)
+        elif asset_identifier == 'package':
+            self._make_material_or_segment_package(directory)
         else:
-            self._make_material_or_segment_package(directory_name)
+            raise ValueError(directory)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
