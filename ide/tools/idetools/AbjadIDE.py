@@ -1684,35 +1684,29 @@ class AbjadIDE(object):
     def _make_command_menu_sections(
         self,
         menu,
-        directory_name,
         menu_section_names=None,
         current_path=None,
         ):
+        assert current_path is not None, repr(current_path)
+        directory = current_path
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
-        if current_path is not None and self._is_path_in_score(current_path):
-            is_in_score = True
         required_files = ()
         optional_files = ()
-        if current_path is not None:
-            current_directory = current_path
-            directory_name = self._path_to_directory_name(current_path)
+        directory_name = self._path_to_directory_name(directory)
+        if (self._is_material_directory(directory) or
+            self._is_segment_directory(directory)):
             package_contents = self._directory_name_to_package_contents[
                 directory_name]
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
-        else:
-            current_directory = self._session.manifest_current_directory
-        if current_directory is None:
-            current_directory = configuration.composer_scores_directory
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
-        directory_name_ = os.path.basename(current_directory)
-        parent_directory_name = current_directory.split(os.path.sep)[-2]
+        directory_name_ = os.path.basename(directory)
+        parent_directory_name = directory.split(os.path.sep)[-2]
         is_home = False
-        if (current_directory == configuration.composer_scores_directory and
-            directory_name == 'scores'):
+        if self._is_scores_directory(directory):
             is_home = True
         for method_ in methods_:
             if is_in_score and not method_.in_score:
@@ -1784,24 +1778,26 @@ class AbjadIDE(object):
         current_path=None,
         directory_name=None,
         ):
+        assert directory_name is None, repr(directory_name)
+        assert current_path is not None, repr(current_path)
+        directory = current_path
         assert isinstance(explicit_header, str), repr(explicit_header)
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._io_manager._make_menu(
             explicit_header=explicit_header,
             name=name,
             )
-        if current_path is not None:
-            self._make_package_asset_menu_section(current_path, menu)
+        if (self._is_material_directory(directory) or
+            self._is_segment_directory(directory) or
+            self._is_inner_score_directory(directory)):
+            self._make_package_asset_menu_section(directory, menu)
         else:
-            self._make_wrangler_asset_menu_section(
-                menu,
-                directory_name,
-                directory=current_path,
-                )
+            self._make_wrangler_asset_menu_section(menu, directory)
+        assert os.path.isdir(directory), repr(directory)
         self._make_command_menu_sections(
             menu, 
-            directory_name, 
-            current_path=current_path,
+            #directory_name, 
+            current_path=directory,
             )
         return menu
 
@@ -1921,8 +1917,7 @@ class AbjadIDE(object):
     def _make_wrangler_asset_menu_section(
         self,
         menu,
-        directory_name,
-        directory=None,
+        directory,
         ):
         menu_entries = []
         if directory is not None:
@@ -1933,8 +1928,8 @@ class AbjadIDE(object):
             menu_entries_ = self._make_secondary_asset_menu_entries(
                 current_directory)
             menu_entries.extend(menu_entries_)
-        menu_entries.extend(
-            self._make_asset_menu_entries(directory_name))
+        directory_name = self._path_to_directory_name(directory)
+        menu_entries.extend(self._make_asset_menu_entries(directory_name))
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
@@ -2342,7 +2337,8 @@ class AbjadIDE(object):
             menu_header = menu_header.format(directory_name)
         menu = self._make_main_menu(
             explicit_header=menu_header,
-            directory_name=directory_name,
+            #directory_name=directory_name,
+            current_path=current_directory,
             )
         while True:
             self._session._manifest_current_directory = current_directory
@@ -2350,7 +2346,8 @@ class AbjadIDE(object):
             if self._session._pending_menu_rebuild:
                 menu = self._make_main_menu(
                     explicit_header=menu_header,
-                    directory_name=directory_name,
+                    #directory_name=directory_name,
+                    current_path=current_directory,
                     )
                 self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
@@ -2437,22 +2434,18 @@ class AbjadIDE(object):
 
     def _select_visible_asset_path(
         self,
-        directory_name,
+        directory,
         infinitive_phrase=None,
         ):
         getter = self._io_manager._make_getter()
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
+        asset_identifier = self._directory_to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
-        if hasattr(self, '_make_wrangler_asset_menu_section'):
-            dummy_menu = self._io_manager._make_menu()
-            self._make_wrangler_asset_menu_section(dummy_menu, directory_name)
-            asset_section = dummy_menu._asset_section
-        else:
-            menu = self._make_asset_selection_menu(directory_name)
-            asset_section = menu['assets']
+        directory_name = self._path_to_directory_name(directory)
+        dummy_menu = self._io_manager._make_menu()
+        self._make_wrangler_asset_menu_section(dummy_menu, directory)
+        asset_section = dummy_menu._asset_section
         getter.append_menu_section_item(
             message,
             asset_section,
@@ -4413,9 +4406,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
         source_path = self._select_visible_asset_path(
-            directory_name,
+            directory,
             infinitive_phrase='to rename',
             )
         if self._is_inner_score_directory(source_path):
