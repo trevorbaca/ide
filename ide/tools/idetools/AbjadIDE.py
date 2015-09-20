@@ -2061,7 +2061,7 @@ class AbjadIDE(object):
 
     def _path_to_menu_header(self, path):
         header_parts = []
-        if path == configuration.composer_scores_directory:
+        if self._is_scores_directory(path):
             return 'Abjad IDE - all score directories'
         score_directory = self._path_to_score_directory(path)
         score_part = self._get_title_metadatum(score_directory)
@@ -2280,11 +2280,15 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
+        self._session._manifest_current_directory = directory
+        menu_header = self._path_to_menu_header(directory)
+        menu = self._make_main_menu(directory, menu_header)
         while True:
             self._session._manifest_current_directory = directory
             os.chdir(directory)
-            menu_header = self._path_to_menu_header(directory)
-            menu = self._make_main_menu(directory, menu_header)
+            if self._session._pending_menu_rebuild:
+                menu = self._make_main_menu(directory, menu_header)
+                self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
                 return
@@ -2302,10 +2306,7 @@ class AbjadIDE(object):
             return
         self._session._pending_redraw = True
         self._session._manifest_current_directory = directory
-        if self._is_scores_directory(directory):
-            menu_header = 'Abjad IDE - all score directories'
-        else:
-            menu_header = self._path_to_menu_header(directory)
+        menu_header = self._path_to_menu_header(directory)
         menu = self._make_main_menu(directory, menu_header)
         while True:
             self._session._manifest_current_directory = directory
