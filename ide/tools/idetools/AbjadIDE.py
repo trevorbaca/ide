@@ -2428,6 +2428,10 @@ class AbjadIDE(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
 
+    def _start_abjad_ide(self):
+        input_ = ' '.join(sys.argv[1:])
+        self._run_main_menu(input_=input_)
+
     @staticmethod
     def _strip_annotation(display_string):
         if not display_string.endswith(')'):
@@ -4464,14 +4468,3 @@ class AbjadIDE(object):
             metadatum_name,
             view_name,
             )
-
-    @staticmethod
-    def start_abjad_ide(is_test=False):
-        r'''Starts Abjad IDE.
-
-        Returns none.
-        '''
-        import ide
-        abjad_ide = ide.tools.idetools.AbjadIDE(is_test=is_test)
-        input_ = ' '.join(sys.argv[1:])
-        abjad_ide._run_main_menu(input_=input_)

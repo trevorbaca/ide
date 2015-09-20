@@ -2,4 +2,5 @@
 import ide
 
 
-ide.tools.idetools.AbjadIDE.start_abjad_ide()
+abjad_ide = ide.tools.idetools.AbjadIDE()
+abjad_ide._start_abjad_ide()
