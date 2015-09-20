@@ -107,14 +107,12 @@ class IOManager(IOManager):
         self,
         clear_terminal=False,
         controller=None,
-        directory_name=None,
         is_in_confirmation_environment=False,
         ):
         from ide.tools import idetools
         return idetools.ControllerContext(
             clear_terminal=clear_terminal,
             controller=controller,
-            directory_name=directory_name,
             is_in_confirmation_environment=is_in_confirmation_environment,
             )
 

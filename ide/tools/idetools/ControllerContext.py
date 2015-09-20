@@ -11,7 +11,6 @@ class ControllerContext(ContextManager):
     __slots__ = (
         '_clear_terminal',
         '_controller',
-        '_directory_name',
         '_is_in_confirmation_environment',
         '_session',
         )
@@ -22,12 +21,10 @@ class ControllerContext(ContextManager):
         self,
         clear_terminal=False,
         controller=None,
-        directory_name=None,
         is_in_confirmation_environment=False,
         ):
         self._clear_terminal = clear_terminal
         self._controller = controller
-        self._directory_name = directory_name
         self._is_in_confirmation_environment = is_in_confirmation_environment
         self._session = self._controller._io_manager._session
 
