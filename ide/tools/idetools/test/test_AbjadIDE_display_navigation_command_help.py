@@ -30,7 +30,7 @@ def test_AbjadIDE_display_navigation_command_help_01():
         ]
 
     input_ = 'red~example~score ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -64,7 +64,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
     ]
 
     input_ = 'red~example~score mm magic~numbers ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -98,7 +98,7 @@ def test_AbjadIDE_display_navigation_command_help_03():
     ]
 
     input_ = 'red~example~score gg A ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -124,7 +124,7 @@ def test_AbjadIDE_display_navigation_command_help_04():
         ]
 
     input_ = '; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -159,7 +159,7 @@ def test_AbjadIDE_display_navigation_command_help_05():
         ]
 
     input_ = 'red~example~score mm ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -194,7 +194,7 @@ def test_AbjadIDE_display_navigation_command_help_06():
         ]
 
     input_ = 'red~example~score gg ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -229,7 +229,7 @@ def test_AbjadIDE_display_navigation_command_help_07():
         ]
 
     input_ = 'red~example~score yy ; q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start_abjad_ide(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):

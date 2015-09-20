@@ -31,7 +31,7 @@ def test_AbjadIDE_copy_01():
         input_ = 'Blue~Example~Score bb cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -59,7 +59,7 @@ def test_AbjadIDE_copy_02():
         input_ = 'Blue~Example~Score dd cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -87,7 +87,7 @@ def test_AbjadIDE_copy_03():
         input_ = 'Blue~Example~Score ee cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -115,7 +115,7 @@ def test_AbjadIDE_copy_04():
         input_ = 'Blue~Example~Score kk cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -146,7 +146,7 @@ def test_AbjadIDE_copy_05():
         input_ = 'Blue~Example~Score mm articulation~handler cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -176,7 +176,7 @@ def test_AbjadIDE_copy_06():
         input_ = 'Blue~Example~Score mm cp'
         input_ += ' {}'.format(source_package)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_package)
 
 
@@ -207,7 +207,7 @@ def test_AbjadIDE_copy_07():
         input_ = 'Blue~Example~Score gg segment~01 cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -237,7 +237,7 @@ def test_AbjadIDE_copy_08():
         input_ = 'Blue~Example~Score gg cp'
         input_ += ' {}'.format(source_package)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_package)
 
 
@@ -265,7 +265,7 @@ def test_AbjadIDE_copy_09():
         input_ = 'Blue~Example~Score yy cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)
 
 
@@ -293,5 +293,5 @@ def test_AbjadIDE_copy_10():
         input_ = 'Blue~Example~Score tt cp'
         input_ += ' {}'.format(source_file)
         input_ += ' y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(target_file)

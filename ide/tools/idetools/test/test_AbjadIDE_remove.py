@@ -22,7 +22,7 @@ def test_AbjadIDE_remove_01():
 
     with systemtools.FilesystemState(remove=[outer_path, inner_path]):
         input_ = 'new example~score~100 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(outer_path)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
@@ -31,7 +31,7 @@ def test_AbjadIDE_remove_01():
             title,
             )
         input_ = 'rm Example~Score~100 remove q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert not os.path.exists(outer_path)
 
 
@@ -63,10 +63,10 @@ def test_AbjadIDE_remove_02():
 
     with systemtools.FilesystemState(remove=paths):
         input_ = 'new example~score~100 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(path_100_outer)
         input_ = 'new example~score~101 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.exists(path_101_outer)
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
@@ -81,6 +81,6 @@ def test_AbjadIDE_remove_02():
             title,
             )
         input_ = 'rm Example~Score~100~-~Example~Score~101 remove~2 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert not os.path.exists(path_100_outer)
         assert not os.path.exists(path_101_outer)

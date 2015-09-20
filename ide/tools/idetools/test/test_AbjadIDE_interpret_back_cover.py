@@ -29,7 +29,7 @@ def test_AbjadIDE_interpret_back_cover_01():
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score bb bci q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
@@ -59,10 +59,10 @@ def test_AbjadIDE_interpret_back_cover_02():
         os.remove(pdf_path)
         # generate PDF first time
         input_ = 'red~example~score bb bci q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
         # attempt (but fail) to generate identical PDF
         input_ = 'red~example~score bb bci q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start_abjad_ide(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
