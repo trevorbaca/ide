@@ -1681,14 +1681,8 @@ class AbjadIDE(object):
             messages.append('... compare differently.')
         return messages
 
-    def _make_command_menu_sections(
-        self,
-        menu,
-        menu_section_names=None,
-        current_path=None,
-        ):
-        assert current_path is not None, repr(current_path)
-        directory = current_path
+    def _make_command_menu_sections(self, directory, menu):
+        assert os.path.isdir(directory), repr(directory)
         methods = []
         methods_ = self._get_commands()
         is_in_score = self._session.is_in_score
@@ -1729,9 +1723,6 @@ class AbjadIDE(object):
             methods.append(method_)
         method_groups = {}
         for method in methods:
-            if menu_section_names is not None:
-                if method.menu_section_name not in menu_section_names:
-                    continue
             if method.section not in method_groups:
                 method_groups[method.section] = []
             method_group = method_groups[method.section]
@@ -1772,15 +1763,8 @@ class AbjadIDE(object):
         self._io_manager.write(file_path, contents)
         self._io_manager.edit(file_path)
 
-    def _make_main_menu(
-        self,
-        explicit_header,
-        current_path=None,
-        directory_name=None,
-        ):
-        assert directory_name is None, repr(directory_name)
-        assert current_path is not None, repr(current_path)
-        directory = current_path
+    def _make_main_menu(self, directory, explicit_header):
+        assert os.path.isdir(directory), repr(directory)
         assert isinstance(explicit_header, str), repr(explicit_header)
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
         menu = self._io_manager._make_menu(
@@ -1794,11 +1778,7 @@ class AbjadIDE(object):
         else:
             self._make_wrangler_asset_menu_section(menu, directory)
         assert os.path.isdir(directory), repr(directory)
-        self._make_command_menu_sections(
-            menu, 
-            #directory_name, 
-            current_path=directory,
-            )
+        self._make_command_menu_sections(directory, menu)
         return menu
 
     def _make_material_or_segment_package(self, directory):
@@ -2297,10 +2277,7 @@ class AbjadIDE(object):
             self._session._manifest_current_directory = directory
             os.chdir(directory)
             menu_header = self._path_to_menu_header(directory)
-            menu = self._make_main_menu(
-                explicit_header=menu_header,
-                current_path=directory,
-                )
+            menu = self._make_main_menu(directory, menu_header)
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
                 return
@@ -2335,20 +2312,12 @@ class AbjadIDE(object):
         else:
             menu_header = 'Abjad IDE - all {} directories'
             menu_header = menu_header.format(directory_name)
-        menu = self._make_main_menu(
-            explicit_header=menu_header,
-            #directory_name=directory_name,
-            current_path=current_directory,
-            )
+        menu = self._make_main_menu(current_directory, menu_header)
         while True:
             self._session._manifest_current_directory = current_directory
             os.chdir(current_directory)
             if self._session._pending_menu_rebuild:
-                menu = self._make_main_menu(
-                    explicit_header=menu_header,
-                    #directory_name=directory_name,
-                    current_path=current_directory,
-                    )
+                menu = self._make_main_menu(current_directory, menu_header)
                 self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
             if self._session.is_quitting:
