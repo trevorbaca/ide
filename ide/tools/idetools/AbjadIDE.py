@@ -1206,8 +1206,12 @@ class AbjadIDE(object):
             result[:-1] in self._command_name_to_command):
             result = result[:-1]
             self._command_name_to_command[result]()
-        elif os.path.sep in result:
-            self._handle_numeric_user_input(result)
+        elif os.path.isfile(result):
+            self._io_manager.open_file(result)
+        elif self._is_package_directory(result):
+            self._run_package_manager_menu(result)
+        elif self._is_known_directory(result):
+            self._run_wrangler_menu(base_name)
         else:
             current_score_directory = self._session.current_score_directory
             aliased_path = configuration.aliases.get(result, None)
@@ -1226,20 +1230,6 @@ class AbjadIDE(object):
                 message = 'unknown command: {!r}.'
                 message = message.format(result)
                 self._io_manager._display([message, ''])
-
-    def _handle_numeric_user_input(self, result):
-        if os.path.isfile(result):
-            self._io_manager.open_file(result)
-        elif os.path.isdir(result):
-            base_name = os.path.basename(result)
-            if base_name in self._known_directory_names:
-                self._run_wrangler_menu(base_name)
-            else:
-                self._run_package_manager_menu(result)
-        else:
-            message = 'must be file or directory: {!r}.'
-            message = message.format(result)
-            raise Exception(message)
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Typesets TeX file.
@@ -1398,6 +1388,15 @@ class AbjadIDE(object):
         scores_directory_parts_count = len(scores_directory.split(os.path.sep))
         parts = path.split(os.path.sep)
         if len(parts) == scores_directory_parts_count + 1:
+            return True
+        return False
+
+    def _is_package_directory(self, path):
+        if self._is_inner_score_directory(path):
+            return True
+        if self._is_material_directory(path):
+            return True
+        if self._is_segment_directory(path):
             return True
         return False
 
@@ -2304,14 +2303,10 @@ class AbjadIDE(object):
             return
         self._session._pending_redraw = True
         self._session._manifest_current_directory = current_directory
-        if self._session.is_in_score:
-            menu_header = self._path_to_menu_header(
-                self._session.manifest_current_directory)
-        elif directory_name == 'scores':
+        if self._is_scores_directory(current_directory):
             menu_header = 'Abjad IDE - all score directories'
         else:
-            menu_header = 'Abjad IDE - all {} directories'
-            menu_header = menu_header.format(directory_name)
+            menu_header = self._path_to_menu_header(current_directory)
         menu = self._make_main_menu(current_directory, menu_header)
         while True:
             self._session._manifest_current_directory = current_directory
