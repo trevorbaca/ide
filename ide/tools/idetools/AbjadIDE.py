@@ -1236,6 +1236,7 @@ class AbjadIDE(object):
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
+        assert os.path.isdir(directory), repr(directory)
         directory_path = directory
         file_path = self._get_file_path_ending_with(directory_path, string)
         if not file_path:
@@ -1592,9 +1593,11 @@ class AbjadIDE(object):
                 result.append(path)
         return result
 
-    def _list_visible_asset_paths(self, directory_name):
-        if os.path.isdir(directory_name):
-            directory_name = self._path_to_directory_name(directory_name)
+    def _list_visible_asset_paths(self, directory):
+        if os.path.isdir(directory):
+            directory_name = self._path_to_directory_name(directory)
+        else:
+            directory_name = directory
         entries = self._make_asset_menu_entries(directory_name)
         paths = [_[-1] for _ in entries]
         return paths
@@ -2690,8 +2693,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        paths = self._list_visible_asset_paths(directory_name)
+        paths = self._list_visible_asset_paths(directory)
         inputs, outputs = [], []
         for path in paths:
             inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
@@ -2916,8 +2918,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        paths = self._list_visible_asset_paths(directory_name)
+        paths = self._list_visible_asset_paths(directory)
         self._open_in_every_package(paths, 'definition.py')
 
     @Command(
@@ -3272,8 +3273,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         self._session._attempted_method = 'git_add_every_package'
         if self._session.is_test:
             return
@@ -3314,8 +3314,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         self._session._attempted_method = 'git_commit_every_package'
         if self._session.is_test:
             return
@@ -3348,8 +3347,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         self._session._attempted_method = 'git_status_every_package'
         directories.sort()
         for directory in directories:
@@ -3368,8 +3366,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
@@ -3668,8 +3665,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         inputs, outputs = [], []
         method_name = 'illustrate_definition'
         for directory in directories:
@@ -3719,8 +3715,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         inputs, outputs = [], []
         method_name = 'interpret_illustration_source'
         for directory in directories:
@@ -4165,8 +4160,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
@@ -4182,8 +4176,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        directories = self._list_visible_asset_paths(directory_name)
+        directories = self._list_visible_asset_paths(directory)
         paths = []
         for directory in directories:
             inputs, outputs = self.open_score_pdf(directory, dry_run=True)
