@@ -262,7 +262,6 @@ class Getter(object):
         '''
         return self._capitalize_prompts
 
-
     @property
     def include_chevron(self):
         r'''Is true when user input getter incldues chevron.
@@ -467,25 +466,6 @@ class Getter(object):
         return isinstance(expr, bool)
 
     @staticmethod
-    def is_identifier(expr, allow_spaces=False):
-        r'''Predicate.
-        '''
-        if not isinstance(expr, str):
-            return False
-        if len(expr) < 1:
-            return False
-        if expr[0] in '0123456789':
-            return False
-        for _ in expr:
-            if allow_spaces:
-                if not (_.isalnum() or _ == '_' or _ == ' '):
-                    return False
-            else:
-                if not (_.isalnum() or _ == '_'):
-                    return False
-        return True
-
-    @staticmethod
     def is_integer(expr):
         r'''Predicate.
         '''
@@ -516,52 +496,10 @@ class Getter(object):
         return isinstance(expr, list)
 
     @staticmethod
-    def is_markup(expr):
-        r'''Predicate.
-        '''
-        return isinstance(expr, markuptools.Markup)
-
-    @staticmethod
-    def is_named_pitch(expr):
-        r'''Predicate.
-        '''
-        return isinstance(expr, NamedPitch)
-
-    @staticmethod
     def is_nonempty_string(expr):
         r'''Predicate.
         '''
         return isinstance(expr, str) and bool(expr)
-
-    @staticmethod
-    def is_page_layout_unit(expr):
-        r'''Predicate.
-        '''
-        return expr in ('in', 'mm', 'cm', 'pt', 'pica')
-
-    @staticmethod
-    def is_paper_dimension_string(expr):
-        r'''Predicate.
-        '''
-        if not isinstance(expr, str):
-            return False
-        parts = expr.split()
-        if not len(parts) == 4:
-            return False
-        width, x, height, units = parts
-        try:
-            float(width) 
-        except ValueError:
-            return False
-        try:
-            float(height) 
-        except ValueError:
-            return False
-        if not x == 'x':
-            return False
-        if not Getter.is_page_layout_unit(units):
-            return False
-        return True
 
     @staticmethod
     def is_string(expr):
