@@ -31,18 +31,6 @@ class AbjadIDE(object):
 
     _abjad_import_statement = 'from abjad import *'
 
-    _directory_name_to_asset_identifier = {
-        'build': 'file',
-        'distribution': 'file',
-        'etc': 'file',
-        'makers': 'file',
-        'materials': 'package',
-        'segments': 'package',
-        'scores': 'package',
-        'stylesheets': 'file',
-        'test': 'file',
-        }
-
     _directory_name_to_file_extension = {
         'makers': '.py',
         'stylesheets': '.ily',
@@ -626,8 +614,18 @@ class AbjadIDE(object):
     def _directory_to_asset_identifier(self, directory):
         assert os.path.isdir(directory), repr(directory)
         directory_name = self._path_to_directory_name(directory)
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
+        _temp = {
+            'build': 'file',
+            'distribution': 'file',
+            'etc': 'file',
+            'makers': 'file',
+            'materials': 'package',
+            'segments': 'package',
+            'scores': 'package',
+            'stylesheets': 'file',
+            'test': 'file',
+            }
+        asset_identifier = _temp[directory_name]
         return asset_identifier
 
     def _directory_to_file_extension(self, directory):
@@ -1599,17 +1597,18 @@ class AbjadIDE(object):
 
     def _list_visible_asset_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        entries = self._make_asset_menu_entries(directory_name)
+        entries = self._make_asset_menu_entries(directory)
         paths = [_[-1] for _ in entries]
         return paths
 
     def _make_asset_menu_entries(
         self,
-        directory_name,
+        directory,
         apply_current_directory=True,
         set_view=True,
         ):
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
         paths = self._list_asset_paths(directory_name)
         if (apply_current_directory or set_view) and self._session.is_in_score:
             paths = [
@@ -1663,9 +1662,10 @@ class AbjadIDE(object):
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         return entries
 
-    def _make_asset_selection_menu(self, directory_name):
+    def _make_asset_selection_menu(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         menu = self._io_manager._make_menu(name='asset selection')
-        menu_entries = self._make_asset_menu_entries(directory_name)
+        menu_entries = self._make_asset_menu_entries(directory)
         menu.make_asset_section(menu_entries=menu_entries)
         return menu
 
@@ -1898,11 +1898,8 @@ class AbjadIDE(object):
                 menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_wrangler_asset_menu_section(
-        self,
-        menu,
-        directory,
-        ):
+    def _make_wrangler_asset_menu_section(self, menu, directory):
+        assert os.path.isdir(directory), repr(directory)
         menu_entries = []
         if directory is not None:
             current_directory = directory
@@ -1912,12 +1909,15 @@ class AbjadIDE(object):
             menu_entries_ = self._make_secondary_asset_menu_entries(
                 current_directory)
             menu_entries.extend(menu_entries_)
-        directory_name = self._path_to_directory_name(directory)
-        menu_entries.extend(self._make_asset_menu_entries(directory_name))
+        menu_entries_  = self._make_asset_menu_entries(directory)
+        menu_entries.extend(menu_entries_)
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
-            section._group_by_annotation = not directory_name == 'scores'
+            if self._is_scores_directory(directory):
+                section._group_by_annotation = False
+            else:
+                section._group_by_annotation = True
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
@@ -2376,13 +2376,13 @@ class AbjadIDE(object):
         path = paths[index]
         return path
 
-    def _select_visible_asset_paths(self, directory_name):
+    def _select_visible_asset_paths(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         getter = self._io_manager._make_getter()
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
+        asset_identifier = self._directory_to_asset_identifier(directory)
         message = 'enter {}(s) to remove'
         message = message.format(asset_identifier)
-        menu = self._make_asset_selection_menu(directory_name)
+        menu = self._make_asset_selection_menu(directory)
         asset_section = menu['assets']
         getter.append_menu_section_range(
             message,
@@ -4307,8 +4307,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        paths = self._select_visible_asset_paths(directory_name)
+        paths = self._select_visible_asset_paths(directory)
         if not paths:
             return
         count = len(paths)
