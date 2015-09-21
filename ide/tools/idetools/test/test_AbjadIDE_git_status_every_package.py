@@ -9,7 +9,7 @@ def test_AbjadIDE_git_status_every_package_01():
     '''
 
     input_ = 'st* q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Repository status for' in contents

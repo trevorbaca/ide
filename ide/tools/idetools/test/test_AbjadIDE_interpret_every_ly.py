@@ -34,7 +34,7 @@ def test_AbjadIDE_interpret_every_ly_01():
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score mm lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
@@ -79,10 +79,10 @@ def test_AbjadIDE_interpret_every_ly_02():
             os.remove(pdf_path)
         # generate PDFs a first time
         input_ = 'red~example~score mm lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         # attempt (but fail) to generate PDFs a second time
         input_ = 'red~example~score mm lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
@@ -124,7 +124,7 @@ def test_AbjadIDE_interpret_every_ly_03():
             os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score gg lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert all(os.path.isfile(_) for _ in pdf_paths)
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
@@ -169,10 +169,10 @@ def test_AbjadIDE_interpret_every_ly_04():
             os.remove(pdf_path)
         # generate PDFs a first time
         input_ = 'red~example~score gg lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         # attempt (but fail) to generate PDFs a second time
         input_ = 'red~example~score gg lyi* y q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:

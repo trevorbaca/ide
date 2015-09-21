@@ -588,23 +588,6 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_to_asset_identifier(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        asset_identifier = self._directory_name_to_asset_identifier[
-            directory_name]
-        return asset_identifier
-
-    def _directory_to_file_extension(self, directory):
-        file_extension = ''
-        if self._is_known_directory(directory, 'makers'):
-            file_extension = '.py'
-        elif self._is_known_directory(directory, 'stylesheets'):
-            file_extension = '.ily'
-        elif self._is_known_directory(directory, 'test'):
-            file_extension = '.py'
-        return file_extension
-
     def _directory_name_to_directory_entry_predicate(self, directory_name):
         file_prototype = (
             'build',
@@ -639,6 +622,23 @@ class AbjadIDE(object):
             return stringtools.is_upper_camel_case
         elif directory_name == 'test':
             return stringtools.is_snake_case
+
+    def _directory_to_asset_identifier(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
+        asset_identifier = self._directory_name_to_asset_identifier[
+            directory_name]
+        return asset_identifier
+
+    def _directory_to_file_extension(self, directory):
+        file_extension = ''
+        if self._is_known_directory(directory, 'makers'):
+            file_extension = '.py'
+        elif self._is_known_directory(directory, 'stylesheets'):
+            file_extension = '.ily'
+        elif self._is_known_directory(directory, 'test'):
+            file_extension = '.py'
+        return file_extension
 
     def _directory_to_file_name_predicate(self, directory):
         directory_name = self._path_to_directory_name(directory)
@@ -1209,9 +1209,9 @@ class AbjadIDE(object):
         elif os.path.isfile(result):
             self._io_manager.open_file(result)
         elif self._is_package_directory(result):
-            self._run_menu(result)
+            self._manage_directory(result)
         elif self._is_known_directory(result):
-            self._run_menu(result)
+            self._manage_directory(result)
         else:
             current_score_directory = self._session.current_score_directory
             aliased_path = configuration.aliases.get(result, None)
@@ -1818,7 +1818,7 @@ class AbjadIDE(object):
         paths = self._list_visible_asset_paths(directory)
         if path not in paths:
             self._clear_view(directory_name)
-        self._run_menu(new_path)
+        self._manage_directory(new_path)
 
     def _make_package_asset_menu_section(self, directory, menu):
         directory_entries = self._list_directory(directory, smart_sort=True)
@@ -1882,7 +1882,7 @@ class AbjadIDE(object):
             outer_score_directory, 
             package_name,
             )
-        self._run_menu(inner_score_directory)
+        self._manage_directory(inner_score_directory)
 
     def _make_secondary_asset_menu_entries(self, directory_path):
         menu_entries = []
@@ -1913,6 +1913,31 @@ class AbjadIDE(object):
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
             section._group_by_annotation = not directory_name == 'scores'
+
+    def _manage_directory(self, directory):
+        if not os.path.exists(directory):
+            message = 'directory does not exist: {}.'
+            message = message.format(directory)
+            self._io_manager._display(message)
+            return
+        self._session._pending_redraw = True
+        self._session._manifest_current_directory = directory
+        menu_header = self._path_to_menu_header(directory)
+        menu = self._make_main_menu(directory, menu_header)
+        while True:
+            self._session._manifest_current_directory = directory
+            os.chdir(directory)
+            if self._session._pending_menu_rebuild:
+                menu = self._make_main_menu(directory, menu_header)
+                self._session._pending_menu_rebuild = False
+            result = menu._run(io_manager=self._io_manager)
+            if self._session.is_quitting:
+                return
+            if result is None:
+                continue
+            self._handle_input(result)
+            if self._session.is_quitting:
+                return
 
     @staticmethod
     def _match_display_string_view_pattern(pattern, entry):
@@ -2244,61 +2269,6 @@ class AbjadIDE(object):
             with open(file_path, 'w') as file_pointer:
                 file_pointer.write(new_file_contents)
 
-    def _run_menu(self, directory):
-        if not os.path.exists(directory):
-            message = 'directory does not exist: {}.'
-            message = message.format(directory)
-            self._io_manager._display(message)
-            return
-        self._session._pending_redraw = True
-        self._session._manifest_current_directory = directory
-        menu_header = self._path_to_menu_header(directory)
-        menu = self._make_main_menu(directory, menu_header)
-        while True:
-            self._session._manifest_current_directory = directory
-            os.chdir(directory)
-            if self._session._pending_menu_rebuild:
-                menu = self._make_main_menu(directory, menu_header)
-                self._session._pending_menu_rebuild = False
-            result = menu._run(io_manager=self._io_manager)
-            if self._session.is_quitting:
-                return
-            if result is None:
-                continue
-            self._handle_input(result)
-            if self._session.is_quitting:
-                return
-
-    def _run_main_menu(self, input_=None):
-        self._session._reinitialize()
-        type(self).__init__(self, session=self._session)
-        if input_:
-            self._session._pending_input = input_
-        state = systemtools.NullContextManager()
-        if self._session.is_test:
-            views = os.path.join(
-                configuration.abjad_ide_views_directory,
-                '__metadata__.py',
-                )
-            empty_views = os.path.join(
-                configuration.abjad_ide_boilerplate_directory,
-                '__metadata__.py',
-                )
-            paths_to_keep = []
-            paths_to_keep.append(views)
-            state = systemtools.FilesystemState(keep=paths_to_keep)
-        with state:
-            self._session._pending_redraw = True
-            if self._session.is_test:
-                shutil.copyfile(empty_views, views)
-            while True:
-                directory = configuration.composer_scores_directory
-                self._run_menu(directory)
-                if self._session.is_quitting:
-                    break
-        self._io_manager._clean_up()
-        self._io_manager.clear_terminal()
-
     def _select_score_directory(self, directory_name):
         display_strings, keys = [], []
         paths = self._list_asset_paths('scores')
@@ -2427,6 +2397,36 @@ class AbjadIDE(object):
         for key in sorted(dictionary):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
+
+    def _start(self, input_=None):
+        self._session._reinitialize()
+        type(self).__init__(self, session=self._session)
+        if input_:
+            self._session._pending_input = input_
+        state = systemtools.NullContextManager()
+        if self._session.is_test:
+            views = os.path.join(
+                configuration.abjad_ide_views_directory,
+                '__metadata__.py',
+                )
+            empty_views = os.path.join(
+                configuration.abjad_ide_boilerplate_directory,
+                '__metadata__.py',
+                )
+            paths_to_keep = []
+            paths_to_keep.append(views)
+            state = systemtools.FilesystemState(keep=paths_to_keep)
+        with state:
+            self._session._pending_redraw = True
+            if self._session.is_test:
+                shutil.copyfile(empty_views, views)
+            while True:
+                directory = configuration.composer_scores_directory
+                self._manage_directory(directory)
+                if self._session.is_quitting:
+                    break
+        self._io_manager._clean_up()
+        self._io_manager.clear_terminal()
 
     @staticmethod
     def _strip_annotation(display_string):
@@ -3395,7 +3395,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         directory = configuration.composer_scores_directory
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'bb',
@@ -3410,7 +3410,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'build')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'dd',
@@ -3425,7 +3425,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'distribution')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'ee',
@@ -3440,7 +3440,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'etc')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'kk',
@@ -3455,7 +3455,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'makers')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'mm',
@@ -3470,7 +3470,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'materials')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'ss',
@@ -3485,7 +3485,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory)
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'gg',
@@ -3500,7 +3500,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'segments')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'yy',
@@ -3515,7 +3515,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'stylesheets')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'tt',
@@ -3530,7 +3530,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._path_to_score_directory(directory, 'test')
-        self._run_menu(directory)
+        self._manage_directory(directory)
 
     @Command(
         'i',

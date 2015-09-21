@@ -37,7 +37,7 @@ def test_AbjadIDE_new_01():
     input_ = 'new Example~Score q'
 
     with systemtools.FilesystemState(remove=[outer_path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_path)
         session = ide.tools.idetools.Session(is_test=True)
@@ -61,22 +61,22 @@ def test_AbjadIDE_new_02():
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new ExampleScore1 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new exampleScore1 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new EXAMPLE_SCORE_1 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
     with systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new example_score_1 q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
 
@@ -101,7 +101,7 @@ def test_AbjadIDE_new_03():
     input_ = 'Red~Example~Score mm new testnotes q'
 
     with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
@@ -128,7 +128,7 @@ def test_AbjadIDE_new_04():
     input_ = 'red~example~score gg new segment~04 q'
 
     with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
@@ -151,7 +151,7 @@ def test_AbjadIDE_new_05():
     input_ = 'red~example~score bb new test-file.txt q'
 
     with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(path)
 
 
@@ -170,7 +170,7 @@ def test_AbjadIDE_new_06():
     input_ = 'red~example~score yy new new-stylesheet.ily q'
 
     with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(path)
 
 
@@ -189,5 +189,5 @@ def test_AbjadIDE_new_07():
     input_ = 'red~example~score kk new NewMaker.py q'
 
     with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
         assert os.path.exists(path)

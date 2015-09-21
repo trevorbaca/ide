@@ -11,7 +11,7 @@ def test_AbjadIDE_go_to_test_directory_01():
     '''
 
     input_ = 'red~example~score mm tempo~inventory tt q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -28,7 +28,7 @@ def test_AbjadIDE_go_to_test_directory_02():
     '''
 
     input_ = 'red~example~score gg A tt q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
@@ -45,7 +45,7 @@ def test_AbjadIDE_go_to_test_directory_03():
     '''
 
     input_ = 'red~example~score bb tt q'
-    abjad_ide._run_main_menu(input_=input_)
+    abjad_ide._start(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
@@ -72,7 +72,7 @@ def test_AbjadIDE_go_to_test_directory_04():
         command = command.format(test_directory)
         os.system(command)
         input_ = 'red~example~score tt q'
-        abjad_ide._run_main_menu(input_=input_)
+        abjad_ide._start(input_=input_)
 
     string = 'Directory does not exist:'
     assert string in abjad_ide._io_manager._transcript.contents
