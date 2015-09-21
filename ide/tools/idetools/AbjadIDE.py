@@ -501,7 +501,7 @@ class AbjadIDE(object):
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
-        segment_paths = self._list_visible_asset_paths('segments')
+        segment_paths = self._list_visible_asset_paths(segments_directory)
         segment_paths = segment_paths or []
         segment_names = []
         for segment_path in segment_paths:
@@ -966,7 +966,11 @@ class AbjadIDE(object):
                 )
 
     def _get_previous_segment_path(self, directory):
-        paths = self._list_visible_asset_paths('segments')
+        segments_directory = self._path_to_score_directory(
+            directory,
+            'segments',
+            )
+        paths = self._list_visible_asset_paths(segments_directory)
         for i, path in enumerate(paths):
             if path == directory:
                 break
@@ -1594,10 +1598,8 @@ class AbjadIDE(object):
         return result
 
     def _list_visible_asset_paths(self, directory):
-        if os.path.isdir(directory):
-            directory_name = self._path_to_directory_name(directory)
-        else:
-            directory_name = directory
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._path_to_directory_name(directory)
         entries = self._make_asset_menu_entries(directory_name)
         paths = [_[-1] for _ in entries]
         return paths
@@ -2535,8 +2537,13 @@ class AbjadIDE(object):
         with systemtools.TemporaryDirectoryChange(directory=path):
             self._io_manager.spawn_subprocess(command)
 
-    def _update_order_dependent_segment_metadata(self):
-        paths = self._list_visible_asset_paths('segments')
+    def _update_order_dependent_segment_metadata(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        directory = self._path_to_score_directory(
+            directory,
+            'segments',
+            )
+        paths = self._list_visible_asset_paths(directory)
         if not paths:
             return
         segment_count = len(paths)
@@ -3549,7 +3556,7 @@ class AbjadIDE(object):
             message = message.format(definition_path)
             self._io_manager._display(message)
             return
-        self._update_order_dependent_segment_metadata()
+        self._update_order_dependent_segment_metadata(directory)
         boilerplate_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
             '__illustrate_segment__.py',
