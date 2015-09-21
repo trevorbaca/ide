@@ -209,7 +209,7 @@ class AbjadIDE(object):
                 )
         directory_name = os.path.basename(directory_token)
         paths = self._list_asset_paths(
-            directory_name,
+            directory_token,
             valid_only=False,
             )
         if os.path.sep in directory_token:
@@ -481,9 +481,7 @@ class AbjadIDE(object):
 
     def _confirm_segment_names(self, score_directory):
         segments_directory = os.path.join(score_directory, 'segments')
-        view_name = self._read_view_name(
-            segments_directory,
-            )
+        view_name = self._read_view_name(segments_directory)
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
@@ -574,7 +572,7 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_name_to_directory_entry_predicate(self, directory_name):
+    def _directory_name_to_predicate(self, directory_name):
         file_prototype = (
             'build',
             'distribution',
@@ -1479,9 +1477,7 @@ class AbjadIDE(object):
         valid_only=True,
         ):
         result = []
-        directory_entry_predicate = \
-            self._directory_name_to_directory_entry_predicate(
-            directory_name)
+        predicate = self._directory_name_to_predicate(directory_name)
         directories = []
         if directory_name == 'scores':
             if example_score_packages:
@@ -1506,7 +1502,7 @@ class AbjadIDE(object):
             directory_entries = sorted(os.listdir(directory))
             for directory_entry in directory_entries:
                 if valid_only:
-                    if not directory_entry_predicate(
+                    if not predicate(
                         directory_entry,
                         directory_name,
                         ):
@@ -2314,17 +2310,13 @@ class AbjadIDE(object):
             return
         return result
 
-    def _select_visible_asset_path(
-        self,
-        directory,
-        infinitive_phrase=None,
-        ):
+    def _select_visible_asset_path(self, directory, infinitive_phrase=None):
+        assert os.path.isdir(directory), repr(directory)
         getter = self._io_manager._make_getter()
         asset_identifier = self._directory_to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
-        directory_name = self._path_to_directory_name(directory)
         dummy_menu = self._io_manager._make_menu()
         self._make_wrangler_asset_menu_section(dummy_menu, directory)
         asset_section = dummy_menu._asset_section
