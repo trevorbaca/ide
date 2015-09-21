@@ -144,7 +144,6 @@ class AbjadIDE(object):
         self._session = session
         io_manager = idetools.IOManager(session=session)
         self._io_manager = io_manager
-        self._supply_global_metadata_py()
 
     ### SPECIAL METHODS ###
 
@@ -649,12 +648,9 @@ class AbjadIDE(object):
         elif directory_name == 'test':
             return stringtools.is_snake_case
 
-    def _filter_asset_menu_entries_by_view(
-        self,
-        directory_token,
-        entries,
-        ):
-        view = self._read_view(directory_token)
+    def _filter_asset_menu_entries_by_view(self, directory, entries):
+        assert os.path.isdir(directory), repr(directory)
+        view = self._read_view(directory)
         if view is None:
             return entries
         entries = entries[:]
@@ -681,12 +677,12 @@ class AbjadIDE(object):
         return filtered_entries
 
     @staticmethod
-    def _find_first_file_name(directory_path):
-        for directory_entry in sorted(os.listdir(directory_path)):
-            if not directory_entry.startswith('.'):
-                path = os.path.join(directory_path, directory_entry)
+    def _find_first_file_name(directory):
+        for entry in sorted(os.listdir(directory)):
+            if not entry.startswith('.'):
+                path = os.path.join(directory, entry)
                 if (os.path.isfile(path) and not '__init__.py' in path):
-                    return directory_entry
+                    return entry
 
     def _find_up_to_date_path(
         self,
@@ -1023,17 +1019,9 @@ class AbjadIDE(object):
         return paths
 
     @staticmethod
-    def _get_views_py_path(directory_token):
-        if os.path.sep in directory_token:
-            return os.path.join(directory_token, '__views__.py')
-        else:
-            directory_path = configuration.abjad_ide_views_directory
-            file_name = '__all_{}_directories_views__.py'
-            file_name = file_name.format(directory_token)
-            return os.path.join(
-                configuration.abjad_ide_views_directory,
-                file_name,
-                )
+    def _get_views_py_path(directory):
+        assert os.path.isdir(directory), repr(directory)
+        return os.path.join(directory, '__views__.py')
 
     def _git_add(self, path, dry_run=False):
         change = systemtools.TemporaryDirectoryChange(directory=path)
@@ -1639,15 +1627,16 @@ class AbjadIDE(object):
             entries.append(entry)
         if set_view:
             current_score_directory = self._session.current_score_directory
-            if current_score_directory is None:
-                directory_token = directory_name
-            else:
-                directory_token = os.path.join(
-                    current_score_directory,
-                    directory_name,
-                    )
+            #if current_score_directory is None:
+            #    directory_token = directory_name
+            #else:
+            #    directory_token = os.path.join(
+            #        current_score_directory,
+            #        directory_name,
+            #        )
+            # TODO?
             entries = self._filter_asset_menu_entries_by_view(
-                directory_token,
+                directory,
                 entries,
                 )
         if not self._session.is_test:
@@ -2170,18 +2159,20 @@ class AbjadIDE(object):
             score_path = os.path.join(score_path, directory_name)
         return score_path
 
-    def _read_view(self, directory_token):
-        view_name = self._read_view_name(directory_token)
+    def _read_view(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        view_name = self._read_view_name(directory)
         if not view_name:
             return
-        view_inventory = self._read_view_inventory(directory_token)
+        view_inventory = self._read_view_inventory(directory)
         if not view_inventory:
             return
         return view_inventory.get(view_name)
 
-    def _read_view_inventory(self, directory_token):
+    def _read_view_inventory(self, directory):
         from ide.tools import idetools
-        views_py_path = self._get_views_py_path(directory_token)
+        assert os.path.isdir(directory), repr(directory)
+        views_py_path = self._get_views_py_path(directory)
         result = self._io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
@@ -2189,7 +2180,7 @@ class AbjadIDE(object):
         if result == 'corrupt':
             messages = []
             message = '{} __views.py__ is corrupt:'
-            message = message.format(directory_token)
+            message = message.format(directory)
             messages.append(message)
             messages.append('')
             message = '    {}'.format(views_py_path)
@@ -2206,13 +2197,10 @@ class AbjadIDE(object):
         view_inventory = idetools.ViewInventory(items)
         return view_inventory
 
-    def _read_view_name(self, directory_token):
-        if os.path.sep in directory_token:
-            metadata_py_path = os.path.join(directory_token, '__metadata__.py')
-            metadatum_name = 'view_name'
-        else:
-            metadata_py_path = configuration.abjad_ide_views_metadata_py_path
-            metadatum_name = '{}_view_name'.format(directory_token)
+    def _read_view_name(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        metadata_py_path = os.path.join(directory, '__metadata__.py')
+        metadatum_name = 'view_name'
         return self._get_metadatum(
             metadata_py_path,
             metadatum_name,
@@ -2268,18 +2256,9 @@ class AbjadIDE(object):
             with open(file_path, 'w') as file_pointer:
                 file_pointer.write(new_file_contents)
 
-    def _select_view(
-        self,
-        directory_name,
-        is_ranged=False,
-        ):
-        if self._session.is_in_score:
-            directory_token = self._session.manifest_current_directory
-        else:
-            directory_token = directory_name
-        view_inventory = self._read_view_inventory(
-            directory_token,
-            )
+    def _select_view(self, directory, is_ranged=False):
+        assert os.path.isdir(directory), repr(directory)
+        view_inventory = self._read_view_inventory(directory)
         if view_inventory is None:
             message = 'no views found.'
             self._io_manager._display(message)
@@ -2583,11 +2562,9 @@ class AbjadIDE(object):
         with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
 
-    def _write_view_inventory(
-        self,
-        directory_token,
-        view_inventory,
-        ):
+    # unused?
+    def _write_view_inventory(self, directory, view_inventory):
+        assert os.path.isdir(directory), repr(directory)
         lines = []
         lines.append(self._unicode_directive)
         lines.append(self._abjad_import_statement)
@@ -2598,7 +2575,7 @@ class AbjadIDE(object):
         line = 'view_inventory={}'.format(format(view_inventory))
         lines.append(line)
         contents = '\n'.join(lines)
-        views_py_path = self._get_views_py_path(directory_token)
+        views_py_path = self._get_views_py_path(directory)
         self._io_manager.write(views_py_path, contents)
 
     ### PUBLIC METHODS ###
@@ -4396,18 +4373,13 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directory_name = os.path.basename(directory)
-        view_name = self._select_view(directory_name)
+        view_name = self._select_view(directory)
         if view_name is None:
             return
         if view_name == 'none':
             view_name = None
-        if self._session.is_in_score:
-            view_directory = self._session.manifest_current_directory
-            metadatum_name = 'view_name'
-        else:
-            view_directory = configuration.abjad_ide_views_directory
-            metadatum_name = '{}_view_name'.format(directory_name)
+        view_directory = self._session.manifest_current_directory
+        metadatum_name = 'view_name'
         self._add_metadatum(
             view_directory,
             metadatum_name,
