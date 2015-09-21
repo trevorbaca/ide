@@ -308,21 +308,6 @@ class Getter(object):
 
     ### PUBLIC METHODS ###
 
-    def append_dash_case_file_name(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends dash case file name.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be dash case file name.'
-        self._make_prompt(
-            spaced_attribute_name,
-            help_template=help_template,
-            validation_function=stringtools.is_dash_case_file_name,
-            )
-
     def append_integer(
         self,
         spaced_attribute_name,
@@ -379,24 +364,6 @@ class Getter(object):
             help_template=help_template,
             )
 
-    def append_menu_section_item(
-        self,
-        spaced_attribute_name,
-        target_menu_section,
-        ):
-        r'''Appends menu section item.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be menu section item.'
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=Getter.is_list,
-            help_template=help_template,
-            target_menu_section=target_menu_section,
-            disallow_range=True,
-            )
-
     def append_menu_section_range(
         self,
         spaced_attribute_name,
@@ -429,6 +396,22 @@ class Getter(object):
         else:
             validation_function = Getter.is_nonempty_string
             help_template = 'value must be nonempty string.'
+        self._make_prompt(
+            spaced_attribute_name,
+            validation_function=validation_function,
+            help_template=help_template,
+            )
+
+    def append_string_or_integer(
+        self,
+        spaced_attribute_name,
+        ):
+        r'''Appends string or integer.
+
+        Returns prompt.
+        '''
+        validation_function = Getter.is_string_or_integer
+        help_template = 'value must be string or integer.'
         self._make_prompt(
             spaced_attribute_name,
             validation_function=validation_function,
@@ -585,6 +568,16 @@ class Getter(object):
         r'''Predicate.
         '''
         return isinstance(expr, str)
+
+    @staticmethod
+    def is_string_or_integer(expr):
+        r'''Predicate.
+        '''
+        if isinstance(expr, str):
+            return True
+        if isinstance(expr, int):
+            return True
+        return False
 
     @staticmethod
     def is_string_or_none(expr):

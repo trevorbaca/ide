@@ -1760,6 +1760,16 @@ class AbjadIDE(object):
             )
         self._manage_directory(inner_score_directory)
 
+    def _list_secondary_asset_paths(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        paths = []
+        for entry in os.listdir(directory):
+            if entry in self._known_secondary_assets:
+                path = os.path.join(directory, entry)
+                paths.append(path)
+        return paths
+
+    # TODO: reimplement in terms of self._list_secondary_asset_paths
     def _make_secondary_asset_menu_entries(self, directory):
         assert os.path.isdir(directory), repr(directory)
         menu_entries = []
@@ -2156,25 +2166,54 @@ class AbjadIDE(object):
 
     def _select_visible_asset_path(self, directory, infinitive_phrase=None):
         assert os.path.isdir(directory), repr(directory)
-        getter = self._io_manager._make_getter()
+        secondary_paths = self._list_secondary_asset_paths(directory)
+        visible_paths = self._list_visible_asset_paths(directory)
+        if not visible_paths:
+            message = 'nothing to rename.'
+            self._io_manager._display(message)
+            return
+        paths = secondary_paths + visible_paths
         asset_identifier = self._directory_to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
-        dummy_menu = self._io_manager._make_menu()
-        self._make_wrangler_asset_menu_section(directory, dummy_menu)
-        asset_section = dummy_menu._asset_section
-        getter.append_menu_section_item(message, asset_section)
-        numbers = getter._run(io_manager=self._io_manager)
-        if numbers is None:
+        getter = self._io_manager._make_getter()
+        getter.append_string_or_integer(message)
+        result = getter._run(io_manager=self._io_manager)
+        if not result:
             return
-        if not len(numbers) == 1:
+        if isinstance(result, int):
+            path_number = result
+            path_index = path_number - 1
+            path = paths[path_index]
+            if path in secondary_paths:
+                message = 'can not rename secondary asset {}.'
+                message = message.format(path)
+                self._io_manager._display(message)
+                return
+            return path
+        elif isinstance(result, str):
+            name = result
+            for path in visible_paths:
+                base_name = os.path.basename(path)
+                if base_name.startswith(name):
+                    return path
+                base_name = base_name.replace('_', ' ')
+                if base_name.startswith(name):
+                    return path
+                if not os.path.isdir(path):
+                    continue
+                title = self._get_metadatum(path, 'title')
+                if not title:
+                    continue
+                if title.startswith(name):
+                    return path
+            message = 'does not match visible path: {!r}.'
+            message = message.format(name)
+            self._io_manager._display(message)
             return
-        number = numbers[0]
-        index = number - 1
-        paths = [_.return_value for _ in asset_section.menu_entries]
-        path = paths[index]
-        return path
+        else:
+            raise ValueError(repr(result))
 
     def _select_visible_asset_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -4113,7 +4152,7 @@ class AbjadIDE(object):
         if not source_path:
             return
         getter = self._io_manager._make_getter()
-        getter.append_string('new name')
+        getter.append_string('new name', allow_empty=False)
         original_target_name = getter._run(io_manager=self._io_manager)
         if original_target_name is None:
             return
