@@ -245,12 +245,9 @@ class AbjadIDE(object):
         return messages, missing_files, missing_directories
 
     def _clear_view(self, directory_token):
-        if os.path.sep in directory_token:
-            view_directory = directory_token
-            metadatum_name = 'view_name'
-        else:
-            view_directory = configuration.abjad_ide_views_directory
-            metadatum_name = '{}_view_name'.format(directory_token)
+        assert os.path.isdir(directory_token), repr(directory_token)
+        view_directory = directory_token
+        metadatum_name = 'view_name'
         self._add_metadatum(
             view_directory,
             metadatum_name,
@@ -1865,7 +1862,7 @@ class AbjadIDE(object):
             configuration.composer_email,
             configuration.composer_github_username,
             )
-        self._clear_view('scores')
+        self._clear_view(configuration.composer_scores_directory)
         inner_score_directory = os.path.join(
             outer_score_directory, 
             package_name,
@@ -2346,28 +2343,11 @@ class AbjadIDE(object):
         type(self).__init__(self, session=self._session)
         if input_:
             self._session._pending_input = input_
-        state = systemtools.NullContextManager()
-        if self._session.is_test:
-            views = os.path.join(
-                configuration.abjad_ide_views_directory,
-                '__metadata__.py',
-                )
-            empty_views = os.path.join(
-                configuration.abjad_ide_boilerplate_directory,
-                '__metadata__.py',
-                )
-            paths_to_keep = []
-            paths_to_keep.append(views)
-            state = systemtools.FilesystemState(keep=paths_to_keep)
-        with state:
-            self._session._pending_redraw = True
-            if self._session.is_test:
-                shutil.copyfile(empty_views, views)
-            while True:
-                directory = configuration.composer_scores_directory
-                self._manage_directory(directory)
-                if self._session.is_quitting:
-                    break
+        self._session._pending_redraw = True
+        while True:
+            self._manage_directory(configuration.composer_scores_directory)
+            if self._session.is_quitting:
+                break
         self._io_manager._clean_up()
         self._io_manager.clear_terminal()
 
@@ -2379,12 +2359,6 @@ class AbjadIDE(object):
         result = display_string[:index]
         result = result.strip()
         return result
-
-    def _supply_global_metadata_py(self):
-        metadata_py_path = configuration.abjad_ide_views_metadata_py_path
-        if not os.path.exists(metadata_py_path):
-            metadata = self._get_metadata(metadata_py_path)
-            self._write_metadata_py(metadata_py_path, metadata)
 
     def _test_add(self, path):
         assert self._is_up_to_date(path)
