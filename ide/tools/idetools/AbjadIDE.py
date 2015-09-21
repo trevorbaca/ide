@@ -2428,10 +2428,6 @@ class AbjadIDE(object):
             new_dictionary[key] = dictionary[key]
         return new_dictionary
 
-    def _start_abjad_ide(self):
-        input_ = ' '.join(sys.argv[1:])
-        self._run_main_menu(input_=input_)
-
     @staticmethod
     def _strip_annotation(display_string):
         if not display_string.endswith(')'):
