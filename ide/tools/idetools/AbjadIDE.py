@@ -37,17 +37,6 @@ class AbjadIDE(object):
         'test': '.py',
         }
 
-    _directory_name_to_navigation_command_name = {
-        'build': 'u',
-        'distribution': 'd',
-        'etc': 'c',
-        'makers': 'k',
-        'materials': 'm',
-        'segments': 'g',
-        'stylesheets': 'y',
-        'test': 't',
-        }
-
     _directory_name_to_package_contents = {
         'materials': {
             'optional_directories': (
@@ -115,19 +104,15 @@ class AbjadIDE(object):
         '__abbreviations__.py',
         )
 
-    _navigation_command_name_to_directory_name = {
-        'd': 'distribution',
-        'c': 'etc',
-        'g': 'segments',
-        'k': 'makers',
-        'm': 'materials',
-        't': 'test',
-        'u': 'build',
-        'y': 'stylesheets',
-        }
-
-    _known_directory_names = sorted(
-        _navigation_command_name_to_directory_name.values()
+    _known_directory_names = (
+        'build',
+        'distribution',
+        'etc',
+        'makers',
+        'materials',
+        'segments',
+        'stylesheets',
+        'test',
         )
 
     _tab = 4 * ' '
@@ -195,64 +180,9 @@ class AbjadIDE(object):
             message = message.format(string)
             self._io_manager._display(message)
 
-    def _check_every_file(self, directory_token, score_directory):
-        if self._session.is_in_score:
-            directory_token = os.path.join(
-                self._session.current_score_directory,
-                directory_token,
-                )
-        elif score_directory is not None:
-            directory_token = os.path.join(
-                score_directory,
-                directory_token,
-                )
-        directory_name = os.path.basename(directory_token)
-        paths = self._list_asset_paths(
-            directory_token,
-            valid_only=False,
-            )
-        if os.path.sep in directory_token:
-            paths = [_ for _ in paths if _.startswith(directory_token)]
-        paths = [_ for _ in paths if os.path.basename(_)[0].isalpha()]
-        paths = [_ for _ in paths if not _.endswith('.pyc')]
-        invalid_paths = []
-        for path in paths:
-            file_name = os.path.basename(path)
-            if not file_name[0].isalpha():
-                invalid_paths.append(path)
-        messages = []
-        base_name = os.path.basename(directory_token)
-        directory_label = '{} directory'.format(base_name)
-        if not invalid_paths:
-            count = len(paths)
-            message = '{} ({} files): OK'.format(directory_label, count)
-            messages.append(message)
-        else:
-            message = '{}:'.format(directory_label)
-            messages.append(message)
-            identifier = 'file'
-            count = len(invalid_paths)
-            identifier = stringtools.pluralize(identifier, count)
-            message = '{} unrecognized {} found:'
-            message = message.format(count, identifier)
-            message = self._tab + message
-            messages.append(message)
-            for invalid_path in invalid_paths:
-                message = self._tab + self._tab + invalid_path
-                messages.append(message)
-        self._io_manager._display(messages)
-        missing_files, missing_directories = [], []
-        return messages, missing_files, missing_directories
-
-    def _clear_view(self, directory_token):
-        assert os.path.isdir(directory_token), repr(directory_token)
-        view_directory = directory_token
-        metadatum_name = 'view_name'
-        self._add_metadatum(
-            view_directory,
-            metadatum_name,
-            None,
-            )
+    def _clear_view(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        self._add_metadatum(directory, 'view_name', None)
 
     def _collect_build_files(self, example_scores=False):
         build_files = []
@@ -1624,14 +1554,6 @@ class AbjadIDE(object):
             entries.append(entry)
         if set_view:
             current_score_directory = self._session.current_score_directory
-            #if current_score_directory is None:
-            #    directory_token = directory_name
-            #else:
-            #    directory_token = os.path.join(
-            #        current_score_directory,
-            #        directory_name,
-            #        )
-            # TODO?
             entries = self._filter_asset_menu_entries_by_view(
                 directory,
                 entries,
