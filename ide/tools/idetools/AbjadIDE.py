@@ -774,15 +774,6 @@ class AbjadIDE(object):
             result.append(command)
         return result
 
-    def _get_current_directory(self):
-        if os.path.normpath(self._session.manifest_current_directory) == \
-            os.path.normpath(configuration.composer_scores_directory):
-            return
-        if os.path.normpath(self._session.manifest_current_directory) == \
-            os.path.normpath(configuration.abjad_ide_example_scores_directory):
-            return
-        return self._session.manifest_current_directory
-
     def _get_directory_names(self, directory):
         result = []
         directory_names = self._list_directory_names(directory)
@@ -855,19 +846,6 @@ class AbjadIDE(object):
             directory_name = os.path.basename(directory)
             name = directory_name.replace('_', ' ')
         return name
-
-    @staticmethod
-    def _get_outer_score_package_path(path):
-        if path.startswith(configuration.composer_scores_directory):
-            return os.path.join(
-                configuration.composer_scores_directory,
-                os.path.basename(path),
-                )
-        else:
-            return os.path.join(
-                configuration.abjad_ide_example_scores_directory,
-                os.path.basename(path),
-                )
 
     def _get_previous_segment_path(self, directory):
         segments_directory = self._path_to_score_directory(
@@ -978,7 +956,12 @@ class AbjadIDE(object):
                 result = self._io_manager._confirm()
                 if not result:
                     return
-            message = self._get_score_package_directory_name(path)
+            message = path
+            path = configuration.abjad_ide_example_scores_directory
+            message = message.replace(path, '')
+            path = configuration.composer_scores_directory
+            message = message.replace(path, '')
+            message = message.lstrip(os.path.sep)
             message = message + ' ...'
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, path)
@@ -1668,7 +1651,7 @@ class AbjadIDE(object):
             self._is_inner_score_directory(directory)):
             self._make_package_asset_menu_section(directory, menu)
         else:
-            self._make_wrangler_asset_menu_section(menu, directory)
+            self._make_wrangler_asset_menu_section(directory, menu)
         assert os.path.isdir(directory), repr(directory)
         self._make_command_menu_sections(directory, menu)
         return menu
@@ -1777,26 +1760,22 @@ class AbjadIDE(object):
             )
         self._manage_directory(inner_score_directory)
 
-    def _make_secondary_asset_menu_entries(self, directory_path):
+    def _make_secondary_asset_menu_entries(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         menu_entries = []
-        for entry in os.listdir(directory_path):
+        for entry in os.listdir(directory):
             if entry in self._known_secondary_assets:
-                path = os.path.join(directory_path, entry)
+                path = os.path.join(directory, entry)
                 menu_entry = (entry, None, None, path)
                 menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_wrangler_asset_menu_section(self, menu, directory):
+    def _make_wrangler_asset_menu_section(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
         menu_entries = []
-        if directory is not None:
-            current_directory = directory
-        else:
-            current_directory = self._get_current_directory()
-        if current_directory:
-            menu_entries_ = self._make_secondary_asset_menu_entries(
-                current_directory)
-            menu_entries.extend(menu_entries_)
+        current_directory = directory
+        menu_entries_ = self._make_secondary_asset_menu_entries(directory)
+        menu_entries.extend(menu_entries_)
         menu_entries_  = self._make_asset_menu_entries(directory)
         menu_entries.extend(menu_entries_)
         if menu_entries:
@@ -2163,14 +2142,7 @@ class AbjadIDE(object):
         else:
             target_name = 'view'
         target_name = '{} to apply'.format(target_name)
-        current_directory = self._get_current_directory()
-        if current_directory is not None:
-            menu_header = self._path_to_menu_header(current_directory)
-        elif directory_name == 'scores':
-            menu_header = 'Abjad IDE - all score directories'
-        else:
-            menu_header = 'Abjad IDE - all {} directories'
-            menu_header = menu_header.format(directory_name)
+        menu_header = self._path_to_menu_header(directory)
         selector = self._io_manager._make_selector(
             is_ranged=is_ranged,
             items=view_names,
@@ -2190,12 +2162,9 @@ class AbjadIDE(object):
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
         dummy_menu = self._io_manager._make_menu()
-        self._make_wrangler_asset_menu_section(dummy_menu, directory)
+        self._make_wrangler_asset_menu_section(directory, dummy_menu)
         asset_section = dummy_menu._asset_section
-        getter.append_menu_section_item(
-            message,
-            asset_section,
-            )
+        getter.append_menu_section_item(message, asset_section)
         numbers = getter._run(io_manager=self._io_manager)
         if numbers is None:
             return
