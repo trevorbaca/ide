@@ -32,13 +32,6 @@ class AbjadIDE(object):
 
     _abjad_import_statement = 'from abjad import *'
 
-    _directory_name_to_file_extension = {
-        'makers': '.py',
-        'stylesheets': '.ily',
-        'test': '.py',
-        }
-
-
     _known_secondary_assets = (
         '__init__.py',
         '__metadata__.py',
@@ -188,7 +181,7 @@ class AbjadIDE(object):
         files_ = []
         for outer_score_directory in outer_score_directories:
             triples = os.walk(outer_score_directory)
-            for root, directory_names, file_names in triples:
+            for root, directories, file_names in triples:
                 for file_name in file_names:
                     file_ = os.path.join(root, file_name)
                     files_.append(file_)
@@ -505,9 +498,9 @@ class AbjadIDE(object):
             )
         if directory_name in dash_case_prototype:
             return stringtools.is_dash_case
-        elif directory_name == 'makers':
+        elif self._is_score_directory(directory, 'makers'):
             return stringtools.is_upper_camel_case
-        elif directory_name == 'test':
+        elif self._is_score_directory(directory, 'test'):
             return stringtools.is_snake_case
 
     def _directory_to_package_contents(self, directory):
@@ -802,8 +795,8 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         name = self._get_metadatum(directory, 'name')
         if not name:
-            directory_name = os.path.basename(directory)
-            name = directory_name.replace('_', ' ')
+            name = os.path.basename(directory)
+            name = name.replace('_', ' ')
         return name
 
     def _get_previous_segment_path(self, directory):
@@ -830,16 +823,6 @@ class AbjadIDE(object):
         with systemtools.TemporaryDirectoryChange(directory=path):
             process = self._io_manager.make_subprocess(command)
         line = self._io_manager._read_one_line_from_pipe(process.stdout)
-        return line
-
-    @staticmethod
-    def _get_score_package_directory_name(path):
-        line = path
-        path = configuration.abjad_ide_example_scores_directory
-        line = line.replace(path, '')
-        path = configuration.composer_scores_directory
-        line = line.replace(path, '')
-        line = line.lstrip(os.path.sep)
         return line
 
     def _get_title_metadatum(self, score_directory, year=True):
