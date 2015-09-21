@@ -15,7 +15,6 @@ class Prompt(AbjadObject):
         '_include_chevron',
         '_message',
         '_setup_statements',
-        '_target_menu_section',
         '_validation_function',
         )
 
@@ -29,7 +28,6 @@ class Prompt(AbjadObject):
         include_chevron=True,
         message=None,
         setup_statements=None,
-        target_menu_section=None,
         validation_function=None,
         ):
         AbjadObject.__init__(self)
@@ -41,7 +39,6 @@ class Prompt(AbjadObject):
         self._include_chevron = include_chevron
         self._message = message
         self._setup_statements = setup_statements or []
-        self._target_menu_section = target_menu_section
         self._validation_function = validation_function
 
     ### PUBLIC PROPERTIES ###
@@ -105,12 +102,6 @@ class Prompt(AbjadObject):
         Returns list of strings.
         '''
         return self._setup_statements
-
-    @property
-    def target_menu_section(self):
-        r'''Gets target menu section of prompt.
-        '''
-        return self._target_menu_section
 
     @property
     def validation_function(self):

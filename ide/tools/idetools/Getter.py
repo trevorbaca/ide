@@ -82,19 +82,11 @@ class Getter(object):
     ### PRIVATE METHODS ###
 
     def _evaluate_input(self, input_, namespace):
-        section = self._current_prompt.target_menu_section
         setup_statements = self._current_prompt.setup_statements
         if 'evaluated_input' in namespace:
             del(namespace['evaluated_input'])
         if self.allow_none and input_ in ('', 'None'):
             namespace['evaluated_input'] = None
-        elif section is not None:
-            evaluated_input = section._argument_range_string_to_numbers(
-                input_)
-            if (1 < len(evaluated_input) and
-                self._current_prompt.disallow_range):
-                evaluated_input = None
-            namespace['evaluated_input'] = evaluated_input
         elif setup_statements:
             for setup_statement in self._current_prompt.setup_statements:
                 try:
@@ -144,7 +136,6 @@ class Getter(object):
         help_template_arguments=None,
         include_chevron=True,
         setup_statements=None,
-        target_menu_section=None,
         validation_function=None,
         ):
         from ide.tools import idetools
@@ -155,7 +146,6 @@ class Getter(object):
             include_chevron=include_chevron,
             message=spaced_attribute_name,
             setup_statements=setup_statements,
-            target_menu_section=target_menu_section,
             validation_function=validation_function,
             )
         self._prompts.append(prompt)
