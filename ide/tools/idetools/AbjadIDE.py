@@ -440,7 +440,6 @@ class AbjadIDE(object):
             return stringtools.is_snake_case
 
     def _directory_to_predicate(self, directory):
-        directory_name = self._path_to_directory_name(directory)
         file_prototype = (
             'build',
             'distribution',
@@ -452,31 +451,38 @@ class AbjadIDE(object):
         package_prototype = (
             'materials',
             'segments',
-            'scores',
             )
-        if directory_name in file_prototype:
+        if self._is_scores_directory(directory):
+            return self._is_valid_package_directory_entry
+        elif self._is_score_directory(directory, file_prototype):
             return self._is_valid_file_directory_entry
-        elif directory_name in package_prototype:
+        elif self._is_score_directory(directory, package_prototype):
             return self._is_valid_package_directory_entry
         else:
-            raise ValueError(directory_name)
+            raise ValueError(directory)
 
     def _directory_to_asset_identifier(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        _temp = {
-            'build': 'file',
-            'distribution': 'file',
-            'etc': 'file',
-            'makers': 'file',
-            'materials': 'package',
-            'segments': 'package',
-            'scores': 'package',
-            'stylesheets': 'file',
-            'test': 'file',
-            }
-        asset_identifier = _temp[directory_name]
-        return asset_identifier
+        file_prototype = (
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'stylesheets',
+            'test',
+            )
+        package_prototype = (
+            'materials',
+            'segments',
+            )
+        if self._is_scores_directory(directory):
+            return 'package'
+        elif self._is_score_directory(directory, file_prototype):
+            return 'file'
+        elif self._is_score_directory(directory, package_prototype):
+            return 'package'
+        else:
+            raise ValueError(directory)
 
     def _directory_to_file_extension(self, directory):
         file_extension = ''
@@ -489,14 +495,13 @@ class AbjadIDE(object):
         return file_extension
 
     def _directory_to_file_name_predicate(self, directory):
-        directory_name = self._path_to_directory_name(directory)
         dash_case_prototype = (
             'build',
             'distribution',
             'etc',
             'stylesheets',
             )
-        if directory_name in dash_case_prototype:
+        if self._is_score_directory(directory, dash_case_prototype):
             return stringtools.is_dash_case
         elif self._is_score_directory(directory, 'makers'):
             return stringtools.is_upper_camel_case
@@ -504,8 +509,8 @@ class AbjadIDE(object):
             return stringtools.is_snake_case
 
     def _directory_to_package_contents(self, directory):
-        dictionary = {
-            'materials': {
+        if self._is_material_directory(directory):
+            return {
                 'optional_directories': (
                     '__pycache__',
                     ),
@@ -520,8 +525,9 @@ class AbjadIDE(object):
                     '__metadata__.py',
                     'definition.py',
                     ),
-                },
-            'score': {
+                }
+        elif self._is_inner_score_directory(directory):
+            return {
                 'optional_directories': (
                     '__pycache__',
                     ),
@@ -546,8 +552,9 @@ class AbjadIDE(object):
                     os.path.join('segments', '__metadata__.py'),
                     os.path.join('segments', '__views__.py'),
                     ),
-                },
-            'segments': {
+                }
+        elif self._is_segment_directory(directory):
+            return {
                 'optional_directories': (
                     '__pycache__',
                     ),
@@ -561,10 +568,9 @@ class AbjadIDE(object):
                     '__metadata__.py',
                     'definition.py',
                     ),
-                },
-            }
-        directory_name = self._path_to_directory_name(directory)
-        return dictionary[directory_name]
+                }
+        else:
+            raise ValueError(directory)
 
     def _filter_asset_menu_entries_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
@@ -1172,13 +1178,16 @@ class AbjadIDE(object):
         return False
 
     def _is_score_directory(self, path, directory_name=None):
+        directory_name = directory_name or ()
+        if isinstance(directory_name, str):
+            directory_name = (directory_name,)
         parent_directory = os.path.dirname(path)
         if self._is_inner_score_directory(parent_directory):
             base_name = os.path.basename(path)
             if (directory_name is None and 
                 base_name in self._known_directory_names):
                 return True
-            if (base_name == directory_name and
+            if (base_name in directory_name and
                 base_name in self._known_directory_names):
                 return True
         return False
@@ -1510,7 +1519,7 @@ class AbjadIDE(object):
             optional_files = package_contents['optional_files']
         files = required_files + optional_files
         is_in_score_directory = self._is_in_score_directory()
-        directory_name_ = os.path.basename(directory)
+        directory_name = os.path.basename(directory)
         parent_directory_name = directory.split(os.path.sep)[-2]
         is_home = False
         if self._is_scores_directory(directory):
@@ -1524,7 +1533,7 @@ class AbjadIDE(object):
                 (not is_home and not is_in_score)):
                 continue
             if ((method_.directories or method_.parent_directories) and
-                directory_name_ not in method_.directories and
+                directory_name not in method_.directories and
                 parent_directory_name not in method_.parent_directories):
                 continue
             if method_.file_ is not None and method_.file_ not in files:
