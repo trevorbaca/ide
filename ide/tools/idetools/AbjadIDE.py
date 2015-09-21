@@ -431,7 +431,8 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_name_to_file_name_predicate(self, directory_name):
+    def _directory_to_file_name_predicate(self, directory):
+        directory_name = self._path_to_directory_name(directory)
         dash_case_prototype = (
             'build',
             'distribution',
@@ -440,12 +441,13 @@ class AbjadIDE(object):
             )
         if directory_name in dash_case_prototype:
             return stringtools.is_dash_case
-        elif directory_name == 'makers':
+        elif self._is_score_directory(directory, 'makers'):
             return stringtools.is_upper_camel_case
-        elif directory_name == 'test':
+        elif self._is_score_directory(directory, 'test'):
             return stringtools.is_snake_case
 
-    def _directory_name_to_predicate(self, directory_name):
+    def _directory_to_predicate(self, directory):
+        directory_name = self._path_to_directory_name(directory)
         file_prototype = (
             'build',
             'distribution',
@@ -738,15 +740,6 @@ class AbjadIDE(object):
             if not inspect.ismethod(command):
                 continue
             result.append(command)
-        return result
-
-    def _get_directory_names(self, directory):
-        result = []
-        directory_names = self._list_directory_names(directory)
-        for directory_name in directory_names:
-            if not directory_name in self._known_directory_names:
-                continue
-            result.append(directory_name)
         return result
 
     def _get_file_path_ending_with(self, directory, string):
@@ -1296,15 +1289,15 @@ class AbjadIDE(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    def _is_valid_file_directory_entry(self, expr, directory_name):
+    def _is_valid_file_directory_entry(self, expr, directory):
+        assert os.path.isdir(directory), repr(directory)
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 name, file_extension = os.path.splitext(expr)
-                file_name_predicate = \
-                    self._directory_name_to_file_name_predicate(directory_name)
-                required_file_extension = \
-                    self._directory_name_to_file_extension.get(
-                        directory_name, '')
+                file_name_predicate = self._directory_to_file_name_predicate(
+                    directory)
+                required_file_extension = self._directory_to_file_extension(
+                    directory)
                 if file_name_predicate(name):
                     if required_file_extension == '':
                         return True
@@ -1312,7 +1305,7 @@ class AbjadIDE(object):
                         return True
         return False
 
-    def _is_valid_package_directory_entry(self, expr, directory_name=None):
+    def _is_valid_package_directory_entry(self, expr, directory=None):
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 if '.' not in expr:
@@ -1329,9 +1322,9 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         result = []
         directory_name = self._path_to_directory_name(directory)
-        predicate = self._directory_name_to_predicate(directory_name)
+        predicate = self._directory_to_predicate(directory)
         directories = []
-        if directory_name == 'scores':
+        if self._is_scores_directory(directory):
             if example_score_packages:
                 directories.append(
                     configuration.abjad_ide_example_scores_directory)
@@ -1351,17 +1344,14 @@ class AbjadIDE(object):
                 continue
             if not os.path.exists(directory):
                 continue
-            directory_entries = sorted(os.listdir(directory))
-            for directory_entry in directory_entries:
+            entries = sorted(os.listdir(directory))
+            for entry in entries:
                 if valid_only:
-                    if not predicate(
-                        directory_entry,
-                        directory_name,
-                        ):
+                    if not predicate(entry, directory):
                         continue
-                path = os.path.join(directory, directory_entry)
-                if directory_name == 'scores':
-                    path = os.path.join(path, directory_entry)
+                path = os.path.join(directory, entry)
+                if self._is_scores_directory(directory):
+                    path = os.path.join(path, entry)
                 result.append(path)
         return result
 
@@ -1400,16 +1390,6 @@ class AbjadIDE(object):
                 files.append(entry)
         result = files + directories
         return result
-
-    @staticmethod
-    def _list_directory_names(path):
-        directory_names = []
-        for entry in os.listdir(path):
-            path_ = os.path.join(path, entry)
-            if os.path.isdir(path_):
-                if not entry == '__pycache__' :
-                    directory_names.append(entry)
-        return directory_names
 
     @staticmethod
     def _list_score_directories(
