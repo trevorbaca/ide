@@ -607,45 +607,6 @@ class AbjadIDE(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return entry
 
-    def _find_up_to_date_path(
-        self,
-        directory_name,
-        inside_score=True,
-        must_have_file=False,
-        system=True,
-        ):
-        example_score_packages = False
-        composer_score_packages = False
-        if system and inside_score:
-            example_score_packages = True
-        elif not system and inside_score:
-            composer_score_packages = True
-        else:
-            Exception
-        paths = self._list_asset_paths(
-            directory_name,
-            composer_score_packages=composer_score_packages,
-            example_score_packages=example_score_packages,
-            )
-        if directory_name == 'scores':
-            if system:
-                scores_directory = \
-                    configuration.abjad_ide_example_scores_directory
-            else:
-                scores_directory = configuration.composer_scores_directory
-            paths = []
-            for directory_entry in sorted(os.listdir(scores_directory)):
-                if not directory_entry[0].isalpha():
-                    continue
-                path = os.path.join(scores_directory, directory_entry)
-                if os.path.isdir(path):
-                    paths.append(path)
-        for path in paths:
-            if (self._is_git_versioned(path) and self._is_up_to_date(path)
-                and
-                (not must_have_file or self._find_first_file_name(path))):
-                return path
-
     @staticmethod
     def _format_messaging(inputs, outputs, verb='interpret'):
         messages = []
@@ -1358,15 +1319,16 @@ class AbjadIDE(object):
                     return True
         return False
 
-    # HERE
     def _list_asset_paths(
         self,
-        directory_name,
+        directory,
         composer_score_packages=True,
         example_score_packages=True,
         valid_only=True,
         ):
+        assert os.path.isdir(directory), repr(directory)
         result = []
+        directory_name = self._path_to_directory_name(directory)
         predicate = self._directory_name_to_predicate(directory_name)
         directories = []
         if directory_name == 'scores':
@@ -1501,9 +1463,7 @@ class AbjadIDE(object):
         set_view=True,
         ):
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._path_to_directory_name(directory)
-        # HERE
-        paths = self._list_asset_paths(directory_name)
+        paths = self._list_asset_paths(directory)
         if (apply_current_directory or set_view) and self._session.is_in_score:
             paths = [
                 _ for _ in paths
@@ -1514,7 +1474,8 @@ class AbjadIDE(object):
             string = self._path_to_asset_menu_display_string(path)
             strings.append(string)
         pairs = list(zip(strings, paths))
-        if (not self._session.is_in_score and not directory_name == 'scores'):
+        if (not self._session.is_in_score and not
+            self._is_scores_directory(directory)):
             def sort_function(pair):
                 string = pair[0]
                 if '(' not in string:
@@ -1545,7 +1506,7 @@ class AbjadIDE(object):
                 )
         if not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        if directory_name == 'scores' and self._session.is_test:
+        if self._is_scores_directory(directory) and self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         return entries
 
@@ -1949,29 +1910,20 @@ class AbjadIDE(object):
         height = eval(height)
         return width, height, units
 
-    # HERE
     def _path_to_annotation(self, path):
-        score_directories = (
-            configuration.abjad_ide_example_scores_directory,
-            configuration.composer_scores_directory,
-            )
-        if path.startswith(score_directories):
-            score_directory = self._path_to_score_directory(path)
-            metadata = self._get_metadata(score_directory)
+        annotation = None
+        if self._is_inner_score_directory(path):
+            metadata = self._get_metadata(path)
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
-                if self._is_inner_score_directory(path) and year:
+                if year:
                     annotation = '{} ({})'.format(title, year)
                 else:
                     annotation = str(title)
             else:
                 package_name = os.path.basename(path)
                 annotation = package_name
-        elif path.startswith(configuration.abjad_root_directory):
-            annotation = 'Abjad'
-        else:
-            annotation = None
         return annotation
 
     def _path_to_asset_menu_display_string(self, path, score_directory=None):
@@ -2006,14 +1958,15 @@ class AbjadIDE(object):
                 return part
         raise ValueError(path)
 
-    def _path_to_menu_header(self, path):
+    def _path_to_menu_header(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         header_parts = []
-        if self._is_scores_directory(path):
+        if self._is_scores_directory(directory):
             return 'Abjad IDE - all score directories'
-        score_directory = self._path_to_score_directory(path)
+        score_directory = self._path_to_score_directory(directory)
         score_part = self._get_title_metadatum(score_directory)
         score_part_count = len(score_directory.split(os.path.sep))
-        path_parts = path.split(os.path.sep)
+        path_parts = directory.split(os.path.sep)
         if score_part_count == len(path_parts):
             return score_part
         header_parts.append(score_part)
@@ -2026,8 +1979,8 @@ class AbjadIDE(object):
             header = ' - '.join(header_parts)
             return header
         package_name = interesting_path_parts[1]
-        assert (self._is_material_directory(path) or
-            self._is_segment_directory(path))
+        assert (self._is_material_directory(directory) or
+            self._is_segment_directory(directory))
         package_path = path_parts[:score_part_count+2]
         package_path = os.path.join('/', *package_path)
         package_path = os.path.normpath(package_path)
