@@ -6,21 +6,19 @@ import setuptools
 author = [
     'Trevor Bača',
     'Josiah Wolf Oberholtzer',
-    'Víctor Adán',
     ]
 author = ', '.join(author)
 
 author_email = [
-    'trevorbaca@gmail.com',
+    'trevor.baca@gmail.com',
     'josiah.oberholtzer@gmail.com',
-    'contact@victoradan.net',
     ]
 author_email = ', '.join(author_email)
 
 entry_points = {
-    'console_scripts': [
-        'start-abjad-ide = ide.tools.idetools:AbjadIDE.start_abjad_ide',
-        ],
+    #'console_scripts': [
+    #    'start-abjad-ide = ide.tools.idetools:AbjadIDE.start_abjad_ide',
+    #    ],
     }
 
 install_requires = ('abjad',)
