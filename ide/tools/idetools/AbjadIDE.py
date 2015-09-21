@@ -2613,32 +2613,26 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         example_scores = self._session.is_test
-        if self._is_score_directory(directory):
-            directory_name = os.path.basename(directory)
-            if directory_name == 'build':
-                assets_ = self._collect_build_files(
-                    example_scores=example_scores)
-            elif directory_name == 'distribution':
-                assets_ = self._collect_distribution_files(
-                    example_scores=example_scores)
-            elif directory_name == 'etc':
-                assets_ = self._collect_etc_files(
-                    example_scores=example_scores)
-            elif directory_name == 'makers':
-                assets_ = self._collect_maker_files(
-                    example_scores=example_scores)
-            elif directory_name == 'materials':
-                assets_ = self._collect_material_directories(
-                    example_scores=example_scores)
-            elif directory_name == 'segments':
-                assets_ = self._collect_segment_directories(
-                    example_scores=example_scores)
-            elif directory_name == 'stylesheets':
-                assets_ = self._collect_stylesheets(
-                    example_scores=example_scores)
-            elif directory_name == 'test':
-                assets_ = self._collect_test_files(
-                    example_scores=example_scores)
+        if self._is_score_directory(directory, 'build'):
+            assets_ = self._collect_build_files(example_scores=example_scores)
+        elif self._is_score_directory(directory, 'distribution'):
+            assets_ = self._collect_distribution_files(
+                example_scores=example_scores)
+        elif self._is_score_directory(directory, 'etc'):
+            assets_ = self._collect_etc_files(
+                example_scores=example_scores)
+        elif self._is_score_directory(directory, 'makers'):
+            assets_ = self._collect_maker_files(example_scores=example_scores)
+        elif self._is_score_directory(directory, 'materials'):
+            assets_ = self._collect_material_directories(
+                example_scores=example_scores)
+        elif self._is_score_directory(directory, 'segments'):
+            assets_ = self._collect_segment_directories(
+                example_scores=example_scores)
+        elif self._is_score_directory(directory, 'stylesheets'):
+            assets_ = self._collect_stylesheets(example_scores=example_scores)
+        elif self._is_score_directory(directory, 'test'):
+            assets_ = self._collect_test_files(example_scores=example_scores)
         elif self._is_material_directory(directory):
             assets_ = self._collect_material_files(
                 example_scores=example_scores)
@@ -2647,29 +2641,14 @@ class AbjadIDE(object):
                 example_scores=example_scores)
         else:
             raise ValueError(directory)
-        selector = self._io_manager._make_selector(
-            items=assets_,
-            )
+        selector = self._io_manager._make_selector(items=assets_)
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
             return
         if source_path not in assets_:
             return
         asset_name = os.path.basename(source_path)
-        if os.path.sep in directory:
-            target_path = os.path.join(
-                directory,
-                asset_name,
-                )
-        else:
-            current_score_directory = self._session.current_score_directory
-            directory_name = os.path.basename(directory)
-            asset_name = os.path.basename(source_path)
-            target_path = os.path.join(
-                current_score_directory,
-                directory_name,
-                asset_name,
-                )
+        target_path = os.path.join(directory, asset_name)
         messages = []
         messages.append('will copy ...')
         messages.append(' FROM: {}'.format(source_path))
