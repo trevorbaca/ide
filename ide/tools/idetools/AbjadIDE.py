@@ -403,7 +403,7 @@ class AbjadIDE(object):
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
-        segment_paths = self._list_visible_asset_paths(segments_directory)
+        segment_paths = self._list_visible_paths(segments_directory)
         segment_paths = segment_paths or []
         segment_names = []
         for segment_path in segment_paths:
@@ -490,6 +490,20 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
+    def _directory_name_to_file_name_predicate(self, directory_name):
+        dash_case_prototype = (
+            'build',
+            'distribution',
+            'etc',
+            'stylesheets',
+            )
+        if directory_name in dash_case_prototype:
+            return stringtools.is_dash_case
+        elif directory_name == 'makers':
+            return stringtools.is_upper_camel_case
+        elif directory_name == 'test':
+            return stringtools.is_snake_case
+
     def _directory_name_to_predicate(self, directory_name):
         file_prototype = (
             'build',
@@ -510,20 +524,6 @@ class AbjadIDE(object):
             return self._is_valid_package_directory_entry
         else:
             raise ValueError(directory_name)
-
-    def _directory_name_to_file_name_predicate(self, directory_name):
-        dash_case_prototype = (
-            'build',
-            'distribution',
-            'etc',
-            'stylesheets',
-            )
-        if directory_name in dash_case_prototype:
-            return stringtools.is_dash_case
-        elif directory_name == 'makers':
-            return stringtools.is_upper_camel_case
-        elif directory_name == 'test':
-            return stringtools.is_snake_case
 
     def _directory_to_asset_identifier(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -853,7 +853,7 @@ class AbjadIDE(object):
             directory,
             'segments',
             )
-        paths = self._list_visible_asset_paths(segments_directory)
+        paths = self._list_visible_paths(segments_directory)
         for i, path in enumerate(paths):
             if path == directory:
                 break
@@ -1474,7 +1474,16 @@ class AbjadIDE(object):
                 result.append(path)
         return result
 
-    def _list_visible_asset_paths(self, directory):
+    def _list_secondary_asset_paths(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        paths = []
+        for entry in os.listdir(directory):
+            if entry in self._known_secondary_assets:
+                path = os.path.join(directory, entry)
+                paths.append(path)
+        return paths
+
+    def _list_visible_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
         entries = self._make_asset_menu_entries(directory)
         paths = [_[-1] for _ in entries]
@@ -1692,7 +1701,7 @@ class AbjadIDE(object):
             target_path = os.path.join(path, required_file)
             shutil.copyfile(source_path, target_path)
         new_path = path
-        paths = self._list_visible_asset_paths(directory)
+        paths = self._list_visible_paths(directory)
         if path not in paths:
             self._clear_view(directory_name)
         self._manage_directory(new_path)
@@ -1760,15 +1769,6 @@ class AbjadIDE(object):
             package_name,
             )
         self._manage_directory(inner_score_directory)
-
-    def _list_secondary_asset_paths(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        paths = []
-        for entry in os.listdir(directory):
-            if entry in self._known_secondary_assets:
-                path = os.path.join(directory, entry)
-                paths.append(path)
-        return paths
 
     # TODO: reimplement in terms of self._list_secondary_asset_paths
     def _make_secondary_asset_menu_entries(self, directory):
@@ -1869,6 +1869,42 @@ class AbjadIDE(object):
             traceback.print_exc()
             return False
         return result
+
+    def _match_visible_path(self, secondary_paths, visible_paths, input_):
+        assert isinstance(input_, (str, int)), repr(input_)
+        paths = secondary_paths + visible_paths
+        if isinstance(input_, int):
+            path_number = input_
+            path_index = path_number - 1
+            path = paths[path_index]
+            if path in secondary_paths:
+                message = 'can not rename secondary asset {}.'
+                message = message.format(path)
+                self._io_manager._display(message)
+                return
+            return path
+        elif isinstance(input_, str):
+            name = input_
+            for path in visible_paths:
+                base_name = os.path.basename(path)
+                if base_name.startswith(name):
+                    return path
+                base_name = base_name.replace('_', ' ')
+                if base_name.startswith(name):
+                    return path
+                if not os.path.isdir(path):
+                    continue
+                title = self._get_metadatum(path, 'title')
+                if not title:
+                    continue
+                if title.startswith(name):
+                    return path
+            message = 'does not match visible path: {!r}.'
+            message = message.format(name)
+            self._io_manager._display(message)
+            return
+        else:
+            raise ValueError(repr(input_))
 
     def _open_in_every_package(self, directories, file_name, verb='open'):
         paths = []
@@ -2165,10 +2201,10 @@ class AbjadIDE(object):
             return
         return result
 
-    def _select_visible_asset_path(self, directory, infinitive_phrase=None):
+    def _select_visible_path(self, directory, infinitive_phrase=None):
         assert os.path.isdir(directory), repr(directory)
         secondary_paths = self._list_secondary_asset_paths(directory)
-        visible_paths = self._list_visible_asset_paths(directory)
+        visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
             message = 'nothing to rename.'
             self._io_manager._display(message)
@@ -2183,79 +2219,13 @@ class AbjadIDE(object):
         result = getter._run(io_manager=self._io_manager)
         if not result:
             return
-        if isinstance(result, int):
-            path_number = result
-            path_index = path_number - 1
-            path = paths[path_index]
-            if path in secondary_paths:
-                message = 'can not rename secondary asset {}.'
-                message = message.format(path)
-                self._io_manager._display(message)
-                return
-            return path
-        elif isinstance(result, str):
-            name = result
-            for path in visible_paths:
-                base_name = os.path.basename(path)
-                if base_name.startswith(name):
-                    return path
-                base_name = base_name.replace('_', ' ')
-                if base_name.startswith(name):
-                    return path
-                if not os.path.isdir(path):
-                    continue
-                title = self._get_metadatum(path, 'title')
-                if not title:
-                    continue
-                if title.startswith(name):
-                    return path
-            message = 'does not match visible path: {!r}.'
-            message = message.format(name)
-            self._io_manager._display(message)
-            return
-        else:
-            raise ValueError(repr(result))
+        path = self._match_visible_path(secondary_paths, visible_paths, result)
+        return path
 
-    def _match_visible_path(self, secondary_paths, visible_paths, input_):
-        assert isinstance(input_, (str, int)), repr(input_)
-        paths = secondary_paths + visible_paths
-        if isinstance(input_, int):
-            path_number = input_
-            path_index = path_number - 1
-            path = paths[path_index]
-            if path in secondary_paths:
-                message = 'can not rename secondary asset {}.'
-                message = message.format(path)
-                self._io_manager._display(message)
-                return
-            return path
-        elif isinstance(input_, str):
-            name = input_
-            for path in visible_paths:
-                base_name = os.path.basename(path)
-                if base_name.startswith(name):
-                    return path
-                base_name = base_name.replace('_', ' ')
-                if base_name.startswith(name):
-                    return path
-                if not os.path.isdir(path):
-                    continue
-                title = self._get_metadatum(path, 'title')
-                if not title:
-                    continue
-                if title.startswith(name):
-                    return path
-            message = 'does not match visible path: {!r}.'
-            message = message.format(name)
-            self._io_manager._display(message)
-            return
-        else:
-            raise ValueError(repr(input_))
-
-    def _select_visible_asset_paths(self, directory, infinitive_phrase=None):
+    def _select_visible_paths(self, directory, infinitive_phrase=None):
         assert os.path.isdir(directory), repr(directory)
         secondary_paths = self._list_secondary_asset_paths(directory)
-        visible_paths = self._list_visible_asset_paths(directory)
+        visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
             message = 'nothing to remove.'
             self._io_manager._display(message)
@@ -2409,7 +2379,7 @@ class AbjadIDE(object):
             directory,
             'segments',
             )
-        paths = self._list_visible_asset_paths(directory)
+        paths = self._list_visible_paths(directory)
         if not paths:
             return
         segment_count = len(paths)
@@ -2560,7 +2530,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._list_visible_asset_paths(directory)
+        paths = self._list_visible_paths(directory)
         inputs, outputs = [], []
         for path in paths:
             inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
@@ -2785,7 +2755,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._list_visible_asset_paths(directory)
+        paths = self._list_visible_paths(directory)
         self._open_in_every_package(paths, 'definition.py')
 
     @Command(
@@ -3128,7 +3098,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         self._session._attempted_method = 'git_add_every_package'
         if self._session.is_test:
             return
@@ -3169,7 +3139,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         self._session._attempted_method = 'git_commit_every_package'
         if self._session.is_test:
             return
@@ -3202,7 +3172,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         self._session._attempted_method = 'git_status_every_package'
         directories.sort()
         for directory in directories:
@@ -3221,7 +3191,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
@@ -3520,7 +3490,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         inputs, outputs = [], []
         method_name = 'illustrate_definition'
         for directory in directories:
@@ -3570,7 +3540,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         inputs, outputs = [], []
         method_name = 'interpret_illustration_source'
         for directory in directories:
@@ -4015,7 +3985,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
@@ -4031,7 +4001,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_asset_paths(directory)
+        directories = self._list_visible_paths(directory)
         paths = []
         for directory in directories:
             inputs, outputs = self.open_score_pdf(directory, dry_run=True)
@@ -4155,7 +4125,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._select_visible_asset_paths(directory, 'to remove')
+        paths = self._select_visible_paths(directory, 'to remove')
         if not paths:
             return
         count = len(paths)
@@ -4202,7 +4172,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        source_path = self._select_visible_asset_path(
+        source_path = self._select_visible_path(
             directory,
             infinitive_phrase='to rename',
             )
