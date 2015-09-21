@@ -307,6 +307,22 @@ class Getter(object):
 
     ### PUBLIC METHODS ###
 
+    def append_anything(
+        self,
+        spaced_attribute_name,
+        ):
+        r'''Appends anything.
+
+        Returns prompt.
+        '''
+        help_template = 'value may be anything.'
+        validation_function = lambda x: True
+        self._make_prompt(
+            spaced_attribute_name,
+            help_template=help_template,
+            validation_function=validation_function,
+            )
+
     def append_integer(
         self,
         spaced_attribute_name,
@@ -355,29 +371,17 @@ class Getter(object):
 
         Returns prompt.
         '''
-        help_template = 'value must be tuple of integers.'
-        function = lambda x: all(Getter.is_integer(y) for y in x)
+        help_template = 'value must be integer or tuple of integers.'
+        def helper(expr):
+            if isinstance(expr, int):
+                return True
+            if all(isinstance(_, int) for _ in expr):
+                return True
+            return False
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=function,
+            validation_function=helper,
             help_template=help_template,
-            )
-
-    def append_menu_section_range(
-        self,
-        spaced_attribute_name,
-        target_menu_section,
-        ):
-        r'''Appends menu section range.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be argument range.'
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=Getter.is_list,
-            help_template=help_template,
-            target_menu_section=target_menu_section,
             )
 
     def append_string(

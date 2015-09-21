@@ -80,7 +80,7 @@ def test_AbjadIDE_remove_02():
             'title',
             title,
             )
-        input_ = 'rm Example~Score~100~-~Example~Score~101 remove~2 q'
+        input_ = 'rm Example~Score~100,~Example~Score~101 remove~2 q'
         abjad_ide._start(input_=input_)
         assert not os.path.exists(path_100_outer)
         assert not os.path.exists(path_101_outer)

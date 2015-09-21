@@ -10,6 +10,7 @@ import sys
 import time
 from abjad.tools import datastructuretools
 from abjad.tools import lilypondfiletools
+from abjad.tools import mathtools
 from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
@@ -2215,24 +2216,82 @@ class AbjadIDE(object):
         else:
             raise ValueError(repr(result))
 
-    def _select_visible_asset_paths(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        getter = self._io_manager._make_getter()
-        asset_identifier = self._directory_to_asset_identifier(directory)
-        message = 'enter {}(s) to remove'
-        message = message.format(asset_identifier)
-        menu = self._make_asset_selection_menu(directory)
-        asset_section = menu['assets']
-        getter.append_menu_section_range(
-            message,
-            asset_section,
-            )
-        numbers = getter._run(io_manager=self._io_manager)
-        if numbers is None:
+    def _match_visible_path(self, secondary_paths, visible_paths, input_):
+        assert isinstance(input_, (str, int)), repr(input_)
+        paths = secondary_paths + visible_paths
+        if isinstance(input_, int):
+            path_number = input_
+            path_index = path_number - 1
+            path = paths[path_index]
+            if path in secondary_paths:
+                message = 'can not rename secondary asset {}.'
+                message = message.format(path)
+                self._io_manager._display(message)
+                return
+            return path
+        elif isinstance(input_, str):
+            name = input_
+            for path in visible_paths:
+                base_name = os.path.basename(path)
+                if base_name.startswith(name):
+                    return path
+                base_name = base_name.replace('_', ' ')
+                if base_name.startswith(name):
+                    return path
+                if not os.path.isdir(path):
+                    continue
+                title = self._get_metadatum(path, 'title')
+                if not title:
+                    continue
+                if title.startswith(name):
+                    return path
+            message = 'does not match visible path: {!r}.'
+            message = message.format(name)
+            self._io_manager._display(message)
             return
-        indices = [_ - 1 for _ in numbers]
-        paths = [_.return_value for _ in asset_section.menu_entries]
-        paths = sequencetools.retain_elements(paths, indices)
+        else:
+            raise ValueError(repr(input_))
+
+    def _select_visible_asset_paths(self, directory, infinitive_phrase=None):
+        assert os.path.isdir(directory), repr(directory)
+        secondary_paths = self._list_secondary_asset_paths(directory)
+        visible_paths = self._list_visible_asset_paths(directory)
+        if not visible_paths:
+            message = 'nothing to remove.'
+            self._io_manager._display(message)
+            return
+        paths = secondary_paths + visible_paths
+        asset_identifier = self._directory_to_asset_identifier(directory)
+        message = 'enter {}(s)'
+        if infinitive_phrase is not None:
+            message += ' ' + infinitive_phrase
+        message = message.format(asset_identifier)
+        getter = self._io_manager._make_getter()
+        getter.append_anything(message)
+        result = getter._run(io_manager=self._io_manager)
+        if not result:
+            return
+        if isinstance(result, int):
+            result = [result]
+        elif isinstance(result, str) and ',' in result:
+            result_ = result.split(',')
+            result = []
+            for part in result_:
+                part = part.strip()
+                if mathtools.is_integer_equivalent_expr(part):
+                    part = int(part)
+                result.append(part)
+        elif isinstance(result, str) and not ',' in result:
+            result = [result]
+        paths = []
+        for input_ in result:
+            path = self._match_visible_path(
+                secondary_paths, 
+                visible_paths,
+                input_,
+                )
+            if path:
+                paths.append(path)
         return paths
 
     @staticmethod
@@ -4096,7 +4155,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._select_visible_asset_paths(directory)
+        paths = self._select_visible_asset_paths(directory, 'to remove')
         if not paths:
             return
         count = len(paths)
