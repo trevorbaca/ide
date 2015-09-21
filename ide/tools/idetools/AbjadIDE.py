@@ -151,21 +151,12 @@ class AbjadIDE(object):
 
     ### PRIVATE METHODS ###
 
-    def _add_metadatum(
-        self,
-        metadata_py_path,
-        metadatum_name,
-        metadatum_value,
-        ):
-        if not metadata_py_path.endswith('__metadata__.py'):
-            metadata_py_path = os.path.join(
-                metadata_py_path,
-                '__metadata__.py',
-                )
+    def _add_metadatum(self, directory, metadatum_name, metadatum_value):
+        assert os.path.isdir(directory)
         assert ' ' not in metadatum_name, repr(metadatum_name)
-        metadata = self._get_metadata(metadata_py_path)
+        metadata = self._get_metadata(directory)
         metadata[metadatum_name] = metadatum_value
-        self._write_metadata_py(metadata_py_path, metadata)
+        self._write_metadata_py(directory, metadata)
 
     def _call_lilypond_on_file_ending_with(
         self,
@@ -816,12 +807,12 @@ class AbjadIDE(object):
         stdout_lines = stdout_lines.splitlines()
         return stdout_lines
 
-    def _get_metadata(self, metadata_py_path):
-        if not metadata_py_path.endswith('__metadata__.py'):
-            metadata_py_path = os.path.join(
-                metadata_py_path,
-                '__metadata__.py',
-                )
+    def _get_metadata(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        metadata_py_path = os.path.join(
+            directory,
+            '__metadata__.py',
+            )
         metadata = None
         if os.path.isfile(metadata_py_path):
             with open(metadata_py_path, 'r') as file_pointer:
@@ -839,12 +830,9 @@ class AbjadIDE(object):
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
-    def _get_metadatum(
-        self,
-        metadata_py_path,
-        metadatum_name,
-        ):
-        metadata = self._get_metadata(metadata_py_path)
+    def _get_metadatum(self, directory, metadatum_name):
+        assert os.path.isdir(directory), repr(directory)
+        metadata = self._get_metadata(directory)
         return metadata.get(metadatum_name)
 
     def _get_modified_asset_paths(self, path):
@@ -861,11 +849,10 @@ class AbjadIDE(object):
         return paths
 
     def _get_name_metadatum(self, directory):
-        metadata_py_path = os.path.join(directory, '__metadata__.py')
-        name = self._get_metadatum(metadata_py_path, 'name')
+        assert os.path.isdir(directory), repr(directory)
+        name = self._get_metadatum(directory, 'name')
         if not name:
-            parts = metadata_py_path.split(os.path.sep)
-            directory_name = parts[-2]
+            directory_name = os.path.basename(directory)
             name = directory_name.replace('_', ' ')
         return name
 
@@ -919,16 +906,15 @@ class AbjadIDE(object):
         return line
 
     def _get_title_metadatum(self, score_directory, year=True):
-        metadata_py_path = os.path.join(score_directory, '__metadata__.py')
-        if year and self._get_metadatum(metadata_py_path, 'year'):
+        if year and self._get_metadatum(score_directory, 'year'):
             result = '{} ({})'
             result = result.format(
                 self._get_title_metadatum(score_directory, year=False),
-                self._get_metadatum(metadata_py_path, 'year')
+                self._get_metadatum(score_directory, 'year')
                 )
             return result
         else:
-            result = self._get_metadatum(metadata_py_path, 'title')
+            result = self._get_metadatum(score_directory, 'title')
             result = result or '(untitled score)'
             return result
 
@@ -1918,10 +1904,7 @@ class AbjadIDE(object):
         self._io_manager.open_file(paths)
 
     def _parse_paper_dimensions(self, score_directory):
-        string = self._get_metadatum(
-            score_directory,
-            'paper_dimensions',
-            )
+        string = self._get_metadatum(score_directory, 'paper_dimensions')
         string = string or '8.5 x 11 in'
         parts = string.split()
         assert len(parts) == 4
@@ -1930,6 +1913,7 @@ class AbjadIDE(object):
         height = eval(height)
         return width, height, units
 
+    # HERE
     def _path_to_annotation(self, path):
         score_directories = (
             configuration.abjad_ide_example_scores_directory,
@@ -1937,8 +1921,7 @@ class AbjadIDE(object):
             )
         if path.startswith(score_directories):
             score_directory = self._path_to_score_directory(path)
-            metadata_py_path = os.path.join(score_directory, '__metadata__.py')
-            metadata = self._get_metadata(metadata_py_path)
+            metadata = self._get_metadata(score_directory)
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
@@ -1963,11 +1946,7 @@ class AbjadIDE(object):
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
         if self._is_segment_directory(path):
-            metadata_py_path = os.path.join(path, '__metadata__.py')
-            segment_name = self._get_metadatum(
-                metadata_py_path,
-                'name',
-                )
+            segment_name = self._get_metadatum(path, 'name')
             asset_name = segment_name or asset_name
         if self._session.is_in_score or score_directory is not None:
             string = asset_name
@@ -2118,12 +2097,7 @@ class AbjadIDE(object):
 
     def _read_view_name(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        metadata_py_path = os.path.join(directory, '__metadata__.py')
-        metadatum_name = 'view_name'
-        return self._get_metadatum(
-            metadata_py_path,
-            metadatum_name,
-            )
+        return self._get_metadatum(directory, 'view_name')
 
     def _remove(self, path):
         # handle score packages correctly
@@ -2393,10 +2367,7 @@ class AbjadIDE(object):
             'first_bar_number',
             first_bar_number,
             )
-        measure_count = self._get_metadatum(
-            path,
-            'measure_count',
-            )
+        measure_count = self._get_metadatum(path, 'measure_count')
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
@@ -2407,10 +2378,7 @@ class AbjadIDE(object):
                 'first_bar_number',
                 next_bar_number,
                 )
-            measure_count = self._get_metadatum(
-                path,
-                'measure_count',
-                )
+            measure_count = self._get_metadatum(path, 'measure_count')
             if not measure_count:
                 return
             next_bar_number = first_bar_number + measure_count
@@ -2441,7 +2409,9 @@ class AbjadIDE(object):
             replacements=replacements,
             )
 
-    def _write_metadata_py(self, metadata_py_path, metadata):
+    def _write_metadata_py(self, directory, metadata):
+        assert os.path.isdir(directory), repr(directory)
+        metadata_py_path = os.path.join(directory, '__metadata__.py')
         lines = []
         lines.append(self._unicode_directive)
         lines.append('from abjad import *')
@@ -2840,10 +2810,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         score_directory = self._path_to_score_directory(directory)
         replacements = {}
-        catalog_number = self._get_metadatum(
-            score_directory,
-            'catalog_number',
-            )
+        catalog_number = self._get_metadatum(score_directory, 'catalog_number')
         if catalog_number:
             old = 'CATALOG NUMBER'
             new = str(catalog_number)
@@ -2855,10 +2822,7 @@ class AbjadIDE(object):
             old = 'COMPOSER WEBSITE'
             new = str(composer_website)
             replacements[old] = new
-        price = self._get_metadatum(
-            score_directory,
-            'price',
-            )
+        price = self._get_metadatum(score_directory, 'price')
         if price:
             old = 'PRICE'
             new = str(price)
@@ -2899,18 +2863,12 @@ class AbjadIDE(object):
             old = 'TITLE'
             new = str(score_title.upper())
             replacements[old] = new
-        forces_tagline = self._get_metadatum(
-            score_directory,
-            'forces_tagline',
-            )
+        forces_tagline = self._get_metadatum(score_directory, 'forces_tagline')
         if forces_tagline:
             old = 'FOR INSTRUMENTS'
             new = str(forces_tagline)
             replacements[old] = new
-        year = self._get_metadatum(
-            score_directory,
-            'year',
-            )
+        year = self._get_metadatum(score_directory, 'year')
         if year:
             old = 'YEAR'
             new = str(year)

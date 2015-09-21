@@ -43,16 +43,12 @@ if __name__ == '__main__':
 
     try:
         current_directory = os.path.dirname(__file__)
-        metadata_py_path = os.path.join(
-            current_directory,
-            '__metadata__.py',
-            )
         dummy_session = idetools.Session()
         controller = idetools.AbjadIDE(
             session=dummy_session, 
             )
         controller._write_metadata_py(
-            metadata_py_path,
+            current_directory,
             segment_metadata, 
             )
     except:
