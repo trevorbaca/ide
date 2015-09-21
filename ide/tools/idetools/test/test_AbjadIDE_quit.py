@@ -9,7 +9,7 @@ def test_AbjadIDE_quit_01():
     '''
     
     input_ = 'red~example~score mm tempo~inventory q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert contents
@@ -20,7 +20,7 @@ def test_AbjadIDE_quit_02():
     '''
     
     input_ = 'red~example~score gg A q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert contents
@@ -30,7 +30,7 @@ def test_AbjadIDE_quit_03():
     '''
 
     input_ = 'red~example~score q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert contents

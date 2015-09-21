@@ -9,7 +9,7 @@ def test_AbjadIDE_display_action_command_help_01():
     '''
     
     input_ = 'red~example~score mm tempo~inventory ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'tempo inventory - action commands' in contents
@@ -20,7 +20,7 @@ def test_AbjadIDE_display_action_command_help_02():
     '''
     
     input_ = 'red~example~score gg A ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'segments directory - A - action commands' in contents
@@ -31,7 +31,7 @@ def test_AbjadIDE_display_action_command_help_03():
     '''
     
     input_ = 'red~example~score ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Red Example Score (2013) - action commands' in contents
@@ -57,7 +57,7 @@ def test_AbjadIDE_display_action_command_help_04():
     ]
 
     input_ = 'red~example~score ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -101,7 +101,7 @@ def test_AbjadIDE_display_action_command_help_05():
     ]
 
     input_ = 'red~example~score mm magic~numbers ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -141,7 +141,7 @@ def test_AbjadIDE_display_action_command_help_06():
     ]
 
     input_ = 'red~example~score gg A ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
 
@@ -154,7 +154,7 @@ def test_AbjadIDE_display_action_command_help_07():
     '''
     
     input_ = '? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Abjad IDE - all score directories - action commands' in contents
@@ -165,7 +165,7 @@ def test_AbjadIDE_display_action_command_help_08():
     '''
     
     input_ = 'red~example~score bb ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'build directory - action commands' in contents
@@ -176,7 +176,7 @@ def test_AbjadIDE_display_action_command_help_09():
     '''
     
     input_ = '? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     title = 'Abjad IDE - all score directories - action commands'
@@ -214,7 +214,7 @@ def test_AbjadIDE_display_action_command_help_10():
         ]
 
     input_ = '? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -249,7 +249,7 @@ def test_AbjadIDE_display_action_command_help_11():
         ]
 
     input_ = 'red~example~score mm ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -285,7 +285,7 @@ def test_AbjadIDE_display_action_command_help_12():
         ]
 
     input_ = 'red~example~score gg ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):
@@ -315,7 +315,7 @@ def test_AbjadIDE_display_action_command_help_13():
         ]
 
     input_ = 'red~example~score yy ? q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
     for line, actual_line in zip(lines, transcript_entry.lines):

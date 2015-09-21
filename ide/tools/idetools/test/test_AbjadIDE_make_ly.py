@@ -22,7 +22,7 @@ def test_AbjadIDE_make_ly_01():
     with systemtools.FilesystemState(keep=[ly_path]):
         os.remove(ly_path)
         input_ = 'red~example~score mm magic~numbers lym q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert systemtools.TestManager._compare_backup(ly_path)
 
@@ -54,11 +54,11 @@ def test_AbjadIDE_make_ly_02():
         assert not os.path.exists(ly_path)
         # generate ly first time
         input_ = 'red~example~score mm magic~numbers lym q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         # attempt to generate ly second time (but blocked)
         input_ = 'red~example~score mm magic~numbers lym q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
@@ -89,7 +89,7 @@ def test_AbjadIDE_make_ly_03():
         with open(ly_path, 'w') as file_pointer:
             file_pointer.write('text')
         input_ = 'red~example~score mm magic~numbers lym q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert systemtools.TestManager._compare_backup(ly_path)
 

@@ -24,7 +24,7 @@ def test_AbjadIDE_open_every_illustration_pdf_01():
         paths.append(path)
 
     input_ = 'red~example~score mm io* y q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert abjad_ide._session._attempted_to_open_file
     assert 'Will open ...' in contents
@@ -37,6 +37,6 @@ def test_AbjadIDE_open_every_illustration_pdf_02():
     '''
 
     input_ = 'red~example~score gg io* y q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

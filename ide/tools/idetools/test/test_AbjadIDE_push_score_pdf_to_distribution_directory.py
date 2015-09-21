@@ -24,7 +24,7 @@ def test_AbjadIDE_push_score_pdf_to_distribution_directory_01():
     with systemtools.FilesystemState(keep=[distribution_score_path]):
         os.remove(distribution_score_path)
         input_ = 'red~example~score bb sp q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.exists(distribution_score_path)
         contents = abjad_ide._io_manager._transcript.contents
         assert 'Copied' in contents

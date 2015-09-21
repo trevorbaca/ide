@@ -9,7 +9,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 def test_AbjadIDE_invoke_shell_01():
 
     input_ = 'red~example~score mm tempo~inventory !pwd q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
@@ -27,7 +27,7 @@ def test_AbjadIDE_invoke_shell_02():
     '''
 
     input_ = '!pwd q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.composer_scores_directory,
@@ -41,7 +41,7 @@ def test_AbjadIDE_invoke_shell_03():
     '''
 
     input_ = 'red~example~score bb !pwd q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,

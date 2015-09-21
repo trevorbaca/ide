@@ -33,7 +33,7 @@ def test_AbjadIDE_generate_back_cover_source_01():
     with systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
         input_ = 'blue~example~score bb bcg q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
             destination_contents = ''.join(file_pointer.readlines())
@@ -68,7 +68,7 @@ def test_AbjadIDE_generate_back_cover_source_02():
 
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
         input_ = 'red~example~score bb bcg q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(destination_path)
 
     with open(destination_path) as file_pointer:

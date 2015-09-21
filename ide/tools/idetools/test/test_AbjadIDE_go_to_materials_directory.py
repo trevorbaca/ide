@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_materials_directory_01():
     '''
 
     input_ = 'red~example~score bb mm q'
-    abjad_ide._start_abjad_ide(input_=input_)
+    abjad_ide._run_main_menu(input_=input_)
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',

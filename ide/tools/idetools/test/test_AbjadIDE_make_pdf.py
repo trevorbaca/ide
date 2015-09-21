@@ -24,7 +24,7 @@ def test_AbjadIDE_make_pdf_01():
         os.remove(ly_path)
         os.remove(pdf_path)
         input_ = 'red~example~score mm magic~numbers pdfm q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
@@ -62,12 +62,12 @@ def test_AbjadIDE_make_pdf_02():
         assert not os.path.exists(pdf_path)
         # generate PDF first time
         input_ = 'red~example~score mm magic~numbers pdfm q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         # attempt to generate PDF second time (but blocked)
         input_ = 'red~example~score mm magic~numbers pdfm q'
-        abjad_ide._start_abjad_ide(input_=input_)
+        abjad_ide._run_main_menu(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Preserving' in contents
