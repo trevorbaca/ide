@@ -38,65 +38,6 @@ class AbjadIDE(object):
         'test': '.py',
         }
 
-    _directory_name_to_package_contents = {
-        'materials': {
-            'optional_directories': (
-                '__pycache__',
-                ),
-            'optional_files': (
-                '__illustrate__.py',
-                'illustration.ly',
-                'illustration.pdf',
-                ),
-            'required_directories': (),
-            'required_files': (
-                '__init__.py',
-                '__metadata__.py',
-                'definition.py',
-                ),
-            },
-        'score': {
-            'optional_directories': (
-                '__pycache__',
-                ),
-            'optional_files': (),
-            'required_directories': (
-                'build',
-                'distribution',
-                'etc',
-                'makers',
-                'materials',
-                'segments',
-                'stylesheets',
-                'test',
-                ),
-            'required_files': (
-                '__init__.py',
-                '__metadata__.py',
-                os.path.join('makers', '__init__.py'),
-                os.path.join('materials', '__abbreviations__.py'),
-                os.path.join('materials', '__init__.py'),
-                os.path.join('segments', '__init__.py'),
-                os.path.join('segments', '__metadata__.py'),
-                os.path.join('segments', '__views__.py'),
-                ),
-            },
-        'segments': {
-            'optional_directories': (
-                '__pycache__',
-                ),
-            'optional_files': (
-                'illustration.ly',
-                'illustration.pdf',
-                ),
-            'required_directories': (),
-            'required_files': (
-                '__init__.py',
-                '__metadata__.py',
-                'definition.py',
-                ),
-            },
-        }
 
     _known_secondary_assets = (
         '__init__.py',
@@ -566,6 +507,69 @@ class AbjadIDE(object):
             return stringtools.is_upper_camel_case
         elif directory_name == 'test':
             return stringtools.is_snake_case
+
+    def _directory_to_package_contents(self, directory):
+        dictionary = {
+            'materials': {
+                'optional_directories': (
+                    '__pycache__',
+                    ),
+                'optional_files': (
+                    '__illustrate__.py',
+                    'illustration.ly',
+                    'illustration.pdf',
+                    ),
+                'required_directories': (),
+                'required_files': (
+                    '__init__.py',
+                    '__metadata__.py',
+                    'definition.py',
+                    ),
+                },
+            'score': {
+                'optional_directories': (
+                    '__pycache__',
+                    ),
+                'optional_files': (),
+                'required_directories': (
+                    'build',
+                    'distribution',
+                    'etc',
+                    'makers',
+                    'materials',
+                    'segments',
+                    'stylesheets',
+                    'test',
+                    ),
+                'required_files': (
+                    '__init__.py',
+                    '__metadata__.py',
+                    os.path.join('makers', '__init__.py'),
+                    os.path.join('materials', '__abbreviations__.py'),
+                    os.path.join('materials', '__init__.py'),
+                    os.path.join('segments', '__init__.py'),
+                    os.path.join('segments', '__metadata__.py'),
+                    os.path.join('segments', '__views__.py'),
+                    ),
+                },
+            'segments': {
+                'optional_directories': (
+                    '__pycache__',
+                    ),
+                'optional_files': (
+                    'illustration.ly',
+                    'illustration.pdf',
+                    ),
+                'required_directories': (),
+                'required_files': (
+                    '__init__.py',
+                    '__metadata__.py',
+                    'definition.py',
+                    ),
+                },
+            }
+        directory_name = self._path_to_directory_name(directory)
+        return dictionary[directory_name]
 
     def _filter_asset_menu_entries_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
@@ -1354,6 +1358,7 @@ class AbjadIDE(object):
                     return True
         return False
 
+    # HERE
     def _list_asset_paths(
         self,
         directory_name,
@@ -1497,6 +1502,7 @@ class AbjadIDE(object):
         ):
         assert os.path.isdir(directory), repr(directory)
         directory_name = self._path_to_directory_name(directory)
+        # HERE
         paths = self._list_asset_paths(directory_name)
         if (apply_current_directory or set_view) and self._session.is_in_score:
             paths = [
@@ -1573,11 +1579,9 @@ class AbjadIDE(object):
         is_in_score = self._session.is_in_score
         required_files = ()
         optional_files = ()
-        directory_name = self._path_to_directory_name(directory)
         if (self._is_material_directory(directory) or
             self._is_segment_directory(directory)):
-            package_contents = self._directory_name_to_package_contents[
-                directory_name]
+            package_contents = self._directory_to_package_contents(directory)
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
         files = required_files + optional_files
@@ -1709,7 +1713,7 @@ class AbjadIDE(object):
         new_path = path
         paths = self._list_visible_paths(directory)
         if path not in paths:
-            self._clear_view(directory_name)
+            self._clear_view(directory)
         self._manage_directory(new_path)
 
     def _make_package_asset_menu_section(self, directory, menu):
@@ -2022,14 +2026,13 @@ class AbjadIDE(object):
             header = ' - '.join(header_parts)
             return header
         package_name = interesting_path_parts[1]
-        if directory_name in ('materials', 'segments'):
-            package_path = path_parts[:score_part_count+2]
-            package_path = os.path.join('/', *package_path)
-            package_path = os.path.normpath(package_path)
-            package_part = self._get_name_metadatum(package_path)
-            header_parts.append(package_part)
-        else:
-            raise ValueError(directory_name)
+        assert (self._is_material_directory(path) or
+            self._is_segment_directory(path))
+        package_path = path_parts[:score_part_count+2]
+        package_path = os.path.join('/', *package_path)
+        package_path = os.path.normpath(package_path)
+        package_part = self._get_name_metadatum(package_path)
+        header_parts.append(package_part)
         if len(interesting_path_parts) == 2:
             header = ' - '.join(header_parts)
             return header
