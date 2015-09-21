@@ -544,11 +544,11 @@ class AbjadIDE(object):
 
     def _directory_to_file_extension(self, directory):
         file_extension = ''
-        if self._is_known_directory(directory, 'makers'):
+        if self._is_score_directory(directory, 'makers'):
             file_extension = '.py'
-        elif self._is_known_directory(directory, 'stylesheets'):
+        elif self._is_score_directory(directory, 'stylesheets'):
             file_extension = '.ily'
-        elif self._is_known_directory(directory, 'test'):
+        elif self._is_score_directory(directory, 'test'):
             file_extension = '.py'
         return file_extension
 
@@ -1093,7 +1093,7 @@ class AbjadIDE(object):
             self._io_manager.open_file(result)
         elif self._is_package_directory(result):
             self._manage_directory(result)
-        elif self._is_known_directory(result):
+        elif self._is_score_directory(result):
             self._manage_directory(result)
         else:
             current_score_directory = self._session.current_score_directory
@@ -1230,7 +1230,7 @@ class AbjadIDE(object):
                 return True
         return False
 
-    def _is_known_directory(self, path, directory_name=None):
+    def _is_score_directory(self, path, directory_name=None):
         parent_directory = os.path.dirname(path)
         if self._is_inner_score_directory(parent_directory):
             base_name = os.path.basename(path)
@@ -1625,27 +1625,33 @@ class AbjadIDE(object):
 
     def _make_file(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        contents = ''
-        file_extension = self._directory_to_file_extension(directory)
-        if file_extension == '.py':
-            contents == self._unicode_directive
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
         name = getter._run(io_manager=self._io_manager)
         if name is None:
             return
         name = stringtools.strip_diacritics(name)
-        directory_name = os.path.basename(directory)
+        file_extension = self._directory_to_file_extension(directory)
         file_name_predicate = self._directory_to_file_name_predicate(directory)
         if file_name_predicate == stringtools.is_dash_case:
             name = self._to_dash_case(name)
         name = name.replace(' ', '_')
-        if not directory_name == 'makers':
+        if not self._is_score_directory(directory, 'makers'):
             name = name.lower()
         if not name.endswith(file_extension):
             name = name + file_extension
         file_path = os.path.join(directory, name)
-        self._io_manager.write(file_path, contents)
+        if self._is_score_directory(directory, 'makers'):
+            source_file = os.path.join(
+                configuration.abjad_ide_boilerplate_directory,
+                'Maker.py',
+                )
+            shutil.copyfile(source_file, file_path)
+        else:
+            contents = ''
+            if file_extension == '.py':
+                contents == self._unicode_directive
+            self._io_manager.write(file_path, contents)
         self._io_manager.edit(file_path)
 
     def _make_main_menu(self, directory, explicit_header):
@@ -2607,7 +2613,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         example_scores = self._session.is_test
-        if self._is_known_directory(directory):
+        if self._is_score_directory(directory):
             directory_name = os.path.basename(directory)
             if directory_name == 'build':
                 assets_ = self._collect_build_files(

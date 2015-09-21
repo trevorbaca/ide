@@ -81,7 +81,7 @@ def test_AbjadIDE_new_02():
 
 
 def test_AbjadIDE_new_03():
-    r'''Makes new material package inside score.
+    r'''Makes new material package.
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
@@ -109,7 +109,7 @@ def test_AbjadIDE_new_03():
 
 
 def test_AbjadIDE_new_04():
-    r'''Makes new segment package inside score.
+    r'''Makes new segment package.
     '''
 
     path = os.path.join(
@@ -137,7 +137,7 @@ def test_AbjadIDE_new_04():
 
 
 def test_AbjadIDE_new_05():
-    r'''Makes new build file inside score.
+    r'''Makes new build file.
     '''
 
     path = os.path.join(
@@ -156,7 +156,7 @@ def test_AbjadIDE_new_05():
 
 
 def test_AbjadIDE_new_06():
-    r'''Makes new stylesheet inside score.
+    r'''Makes new stylesheet.
     '''
 
     path = os.path.join(
@@ -175,7 +175,7 @@ def test_AbjadIDE_new_06():
 
 
 def test_AbjadIDE_new_07():
-    r'''Makes new maker file inside score.
+    r'''Makes new maker file.
     '''
 
     path = os.path.join(
@@ -191,3 +191,6 @@ def test_AbjadIDE_new_07():
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
+        with open(path, 'r') as file_pointer:
+            string = file_pointer.read()
+            assert 'class Maker(object)' in string
