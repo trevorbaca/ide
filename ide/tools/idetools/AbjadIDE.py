@@ -144,8 +144,6 @@ class AbjadIDE(object):
         self._session = session
         io_manager = idetools.IOManager(session=session)
         self._io_manager = io_manager
-        for directory_name in self._known_directory_names:
-            self._supply_global_views_file(directory_name)
         self._supply_global_metadata_py()
 
     ### SPECIAL METHODS ###
@@ -2416,15 +2414,6 @@ class AbjadIDE(object):
         if not os.path.exists(metadata_py_path):
             metadata = self._get_metadata(metadata_py_path)
             self._write_metadata_py(metadata_py_path, metadata)
-
-    def _supply_global_views_file(self, directory_name):
-        from ide.tools import idetools
-        views_py_path = self._get_views_py_path(directory_name)
-        if not os.path.isfile(views_py_path):
-            self._write_view_inventory(
-                directory_name,
-                idetools.ViewInventory(),
-                )
 
     def _test_add(self, path):
         assert self._is_up_to_date(path)
