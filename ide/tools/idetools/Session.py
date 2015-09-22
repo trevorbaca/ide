@@ -110,7 +110,7 @@ class Session(object):
         '''
         from ide.tools import idetools
         if self.manifest_current_directory is not None:
-            return idetools.AbjadIDE._path_to_score_directory(
+            return idetools.AbjadIDE._to_score_directory(
                 self.manifest_current_directory)
 
     @property

@@ -788,7 +788,7 @@ class AbjadIDE(object):
         return name
 
     def _get_previous_segment_path(self, directory):
-        segments_directory = self._path_to_score_directory(
+        segments_directory = self._to_score_directory(
             directory,
             'segments',
             )
@@ -1994,7 +1994,7 @@ class AbjadIDE(object):
         header_parts = []
         if self._is_scores_directory(directory):
             return 'Abjad IDE - all score directories'
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         score_part = self._get_title_metadatum(score_directory)
         score_part_count = len(score_directory.split(os.path.sep))
         path_parts = directory.split(os.path.sep)
@@ -2049,32 +2049,6 @@ class AbjadIDE(object):
             package = os.path.sep.join(parts)
         package = package.replace(os.path.sep, '.')
         return package
-
-    @staticmethod
-    def _path_to_score_directory(path, directory_name=None):
-        assert os.path.sep in path, repr(path)
-        is_composer_score = False
-        if path.startswith(configuration.composer_scores_directory):
-            is_composer_score = True
-            prefix = len(configuration.composer_scores_directory)
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            prefix = len(configuration.abjad_ide_example_scores_directory)
-        else:
-            return
-        path_prefix = path[:prefix]
-        path_suffix = path[prefix + 1:]
-        score_name = path_suffix.split(os.path.sep)[0]
-        score_path = os.path.join(path_prefix, score_name)
-        score_path = os.path.join(score_path, score_name)
-        if os.path.normpath(score_path) == os.path.normpath(
-            configuration.composer_scores_directory):
-            return
-        if os.path.normpath(score_path) == os.path.normpath(
-            configuration.abjad_ide_example_scores_directory):
-            return
-        if directory_name is not None:
-            score_path = os.path.join(score_path, directory_name)
-        return score_path
 
     def _read_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -2372,6 +2346,32 @@ class AbjadIDE(object):
         assert self._is_package_name(name), repr(name)
         return name
 
+    @staticmethod
+    def _to_score_directory(path, directory_name=None):
+        assert os.path.sep in path, repr(path)
+        is_composer_score = False
+        if path.startswith(configuration.composer_scores_directory):
+            is_composer_score = True
+            prefix = len(configuration.composer_scores_directory)
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            prefix = len(configuration.abjad_ide_example_scores_directory)
+        else:
+            return
+        path_prefix = path[:prefix]
+        path_suffix = path[prefix + 1:]
+        score_name = path_suffix.split(os.path.sep)[0]
+        score_path = os.path.join(path_prefix, score_name)
+        score_path = os.path.join(score_path, score_name)
+        if os.path.normpath(score_path) == os.path.normpath(
+            configuration.composer_scores_directory):
+            return
+        if os.path.normpath(score_path) == os.path.normpath(
+            configuration.abjad_ide_example_scores_directory):
+            return
+        if directory_name is not None:
+            score_path = os.path.join(score_path, directory_name)
+        return score_path
+
     def _to_stylesheet_name(self, name):
         assert isinstance(name, str), repr(name)
         name = stringtools.strip_diacritics(name)
@@ -2445,7 +2445,7 @@ class AbjadIDE(object):
 
     def _update_order_dependent_segment_metadata(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        directory = self._path_to_score_directory(
+        directory = self._to_score_directory(
             directory,
             'segments',
             )
@@ -2642,7 +2642,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         pairs = self._gather_segment_files(
             score_directory,
             'illustration.ly',
@@ -2765,7 +2765,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         path = os.path.join(
             score_directory,
             'materials',
@@ -2871,7 +2871,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         path = os.path.join(
             score_directory,
             'stylesheets',
@@ -2895,7 +2895,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         replacements = {}
         catalog_number = self._get_metadatum(score_directory, 'catalog_number')
         if catalog_number:
@@ -2939,7 +2939,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         file_name = 'front-cover.tex'
         replacements = {}
         score_title = self._get_title_metadatum(
@@ -2992,7 +2992,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         result = self._confirm_segment_names(score_directory)
         if not isinstance(result, list):
             return
@@ -3094,7 +3094,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         replacements = {}
         width, height, unit = self._parse_paper_dimensions(score_directory)
         if width and height:
@@ -3121,7 +3121,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         replacements = {}
         width, height, unit = self._parse_paper_dimensions(score_directory)
         if width and height:
@@ -3281,7 +3281,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'build')
+        directory = self._to_score_directory(directory, 'build')
         self._manage_directory(directory)
 
     @Command(
@@ -3296,7 +3296,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'distribution')
+        directory = self._to_score_directory(directory, 'distribution')
         self._manage_directory(directory)
 
     @Command(
@@ -3311,7 +3311,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'etc')
+        directory = self._to_score_directory(directory, 'etc')
         self._manage_directory(directory)
 
     @Command(
@@ -3326,7 +3326,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'makers')
+        directory = self._to_score_directory(directory, 'makers')
         self._manage_directory(directory)
 
     @Command(
@@ -3341,7 +3341,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'materials')
+        directory = self._to_score_directory(directory, 'materials')
         self._manage_directory(directory)
 
     @Command(
@@ -3356,7 +3356,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory)
+        directory = self._to_score_directory(directory)
         self._manage_directory(directory)
 
     @Command(
@@ -3371,7 +3371,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'segments')
+        directory = self._to_score_directory(directory, 'segments')
         self._manage_directory(directory)
 
     @Command(
@@ -3386,7 +3386,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'stylesheets')
+        directory = self._to_score_directory(directory, 'stylesheets')
         self._manage_directory(directory)
 
     @Command(
@@ -3401,7 +3401,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._path_to_score_directory(directory, 'test')
+        directory = self._to_score_directory(directory, 'test')
         self._manage_directory(directory)
 
     @Command(
@@ -3468,7 +3468,7 @@ class AbjadIDE(object):
             if previous_segment_path is None:
                 statement = 'previous_segment_metadata = None'
             else:
-                score_directory = self._path_to_score_directory(directory)
+                score_directory = self._to_score_directory(directory)
                 score_name = os.path.basename(score_directory)
                 previous_segment_name = previous_segment_path
                 previous_segment_name = os.path.basename(previous_segment_path)
@@ -3571,7 +3571,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'back-cover.tex')
 
@@ -3629,7 +3629,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'front-cover.tex')
 
@@ -3688,7 +3688,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._call_lilypond_on_file_ending_with(
             build_directory,
@@ -3708,7 +3708,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'preface.tex')
 
@@ -3725,7 +3725,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         build_directory = os.path.join(score_directory, 'build')
         self._interpret_file_ending_with(build_directory, 'score.tex')
 
@@ -3757,7 +3757,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         score_package_name = os.path.basename(score_directory)
         material_package_name = os.path.basename(directory)
         source_path = os.path.join(
@@ -4129,7 +4129,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._path_to_score_directory(directory)
+        score_directory = self._to_score_directory(directory)
         path = os.path.join(score_directory, 'build')
         build_score_path = os.path.join(path, 'score.pdf')
         if not os.path.exists(build_score_path):
