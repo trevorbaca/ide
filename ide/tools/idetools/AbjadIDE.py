@@ -159,7 +159,7 @@ class AbjadIDE(object):
             if not os.path.isdir(score_directory):
                 continue
             score_directories.append(score_directory)
-        if directory_name == 'inner':
+        if directory_name in ('inner', 'score'):
             return score_directories
         if directory_name in ('material', 'segment'):
             directories = []
@@ -333,6 +333,8 @@ class AbjadIDE(object):
         file_prototype = ('build', 'distribution', 'etc')
         package_prototype = ('materials', 'segments', 'scores')
         if self._is_score_directory(directory, 'scores'):
+            return self._is_package_name
+        elif self._is_score_directory(directory, ('score', 'inner')):
             return self._is_package_name
         elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
@@ -1159,60 +1161,19 @@ class AbjadIDE(object):
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_menu_entries(
-        self,
-        directory,
-        apply_current_directory=True,
-        set_view=True,
-        ):
-        assert os.path.isdir(directory), repr(directory)
-        paths = self._list_paths(directory)
-        if (apply_current_directory or set_view) and self._session.is_in_score:
-            paths = [
-                _ for _ in paths
-                if _.startswith(self._session.current_score_directory)
-                ]
-        strings = []
-        for path in paths:
-            string = self._path_to_menu_display_string(path)
-            strings.append(string)
-        pairs = list(zip(strings, paths))
-        if (not self._session.is_in_score and not
-            self._is_score_directory(directory, 'scores')):
-            def sort_function(pair):
-                string = pair[0]
-                if '(' not in string:
-                    return string
-                open_parenthesis_index = string.find('(')
-                assert string.endswith(')')
-                annotation = string[open_parenthesis_index:]
-                annotation = annotation.replace("'", '')
-                annotation = stringtools.strip_diacritics(annotation)
-                return annotation
-            pairs.sort(key=lambda _: sort_function(_))
+    def _make_asset_menu_section(self, directory, menu):
+        menu_entries = []
+        menu_entries_ = self._make_secondary_menu_entries(directory)
+        menu_entries.extend(menu_entries_)
+        menu_entries_  = self._make_menu_entries(directory)
+        menu_entries.extend(menu_entries_)
+        if not menu_entries:
+            return
+        section = menu.make_asset_section(menu_entries=menu_entries)
+        if self._is_score_directory(directory, 'scores'):
+            section._group_by_annotation = False
         else:
-            def sort_function(pair):
-                string = pair[0]
-                string = stringtools.strip_diacritics(string)
-                string = string.replace("'", '')
-                return string
-            pairs.sort(key=lambda _: sort_function(_))
-        entries = []
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        if set_view:
-            current_score_directory = self._session.current_score_directory
-            entries = self._filter_menu_entries_by_view(
-                directory,
-                entries,
-                )
-        if not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        if (self._is_score_directory(directory, 'scores') and 
-            self._session.is_test):
-            entries = [_ for _ in entries if 'Example Score' in _[0]]
-        return entries
+            section._group_by_annotation = True
 
     def _make_candidate_messages(
         self,
@@ -1366,38 +1327,60 @@ class AbjadIDE(object):
             self._clear_view(directory)
         self._manage_directory(new_path)
 
-    def _make_asset_menu_section(self, directory, menu):
-        package_prototype = ('inner', 'material', 'segment')
-        if self._is_score_directory(directory, package_prototype):
-            names = []
-            for name in os.listdir(directory):
-                if name == '__pycache__':
-                    continue
-                if name.startswith('.'):
-                    continue
-                if name.endswith('.pyc'):
-                    continue
-                names.append(name)
-            names.sort()
-            menu_entries = []
-            for name in names:
-                path = os.path.join(directory, name)
-                menu_entry = (name, None, None, path)
-                menu_entries.append(menu_entry)
-            menu.make_asset_section(menu_entries=menu_entries)
+    def _make_menu_entries(
+        self,
+        directory,
+        apply_current_directory=True,
+        set_view=True,
+        ):
+        assert os.path.isdir(directory), repr(directory)
+        paths = self._list_paths(directory)
+        if (apply_current_directory or set_view) and self._session.is_in_score:
+            paths = [
+                _ for _ in paths
+                if _.startswith(self._session.current_score_directory)
+                ]
+        strings = []
+        for path in paths:
+            string = self._path_to_menu_display_string(path)
+            strings.append(string)
+        pairs = list(zip(strings, paths))
+        if (not self._session.is_in_score and not
+            self._is_score_directory(directory, 'scores')):
+            def sort_function(pair):
+                string = pair[0]
+                if '(' not in string:
+                    return string
+                open_parenthesis_index = string.find('(')
+                assert string.endswith(')')
+                annotation = string[open_parenthesis_index:]
+                annotation = annotation.replace("'", '')
+                annotation = stringtools.strip_diacritics(annotation)
+                return annotation
+            pairs.sort(key=lambda _: sort_function(_))
         else:
-            menu_entries = []
-            menu_entries_ = self._make_secondary_menu_entries(directory)
-            menu_entries.extend(menu_entries_)
-            menu_entries_  = self._make_menu_entries(directory)
-            menu_entries.extend(menu_entries_)
-            if menu_entries:
-                section = menu.make_asset_section(menu_entries=menu_entries)
-                assert section is not None
-                if self._is_score_directory(directory, 'scores'):
-                    section._group_by_annotation = False
-                else:
-                    section._group_by_annotation = True
+            def sort_function(pair):
+                string = pair[0]
+                string = stringtools.strip_diacritics(string)
+                string = string.replace("'", '')
+                return string
+            pairs.sort(key=lambda _: sort_function(_))
+        entries = []
+        for string, path in pairs:
+            entry = (string, None, None, path)
+            entries.append(entry)
+        if set_view:
+            current_score_directory = self._session.current_score_directory
+            entries = self._filter_menu_entries_by_view(
+                directory,
+                entries,
+                )
+        if not self._session.is_test:
+            entries = [_ for _ in entries if 'Example Score' not in _[0]]
+        if (self._is_score_directory(directory, 'scores') and 
+            self._session.is_test):
+            entries = [_ for _ in entries if 'Example Score' in _[0]]
+        return entries
 
     def _make_score_package(self):
         message = 'enter title'
