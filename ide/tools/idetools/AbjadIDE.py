@@ -296,6 +296,8 @@ class AbjadIDE(object):
             'distribution',
             'etc',
             'makers',
+            'material',
+            'segment',
             'stylesheets',
             'test',
             )
@@ -1123,6 +1125,12 @@ class AbjadIDE(object):
         if isinstance(directory_name, str):
             directory_name = (directory_name,)
         parent_directory = os.path.dirname(path)
+        if 'material' in directory_name:
+            if self._is_material_directory(path):
+                return True
+        if 'segment' in directory_name:
+            if self._is_segment_directory(path):
+                return True
         if self._is_inner_score_directory(parent_directory):
             base_name = os.path.basename(path)
             if (directory_name is None and 
@@ -1222,7 +1230,7 @@ class AbjadIDE(object):
         ):
         assert os.path.isdir(directory), repr(directory)
         result = []
-        directory_name = self._path_to_directory_name(directory)
+        directory_name = self._to_directory_name(directory)
         directories = []
         if self._is_scores_directory(directory):
             if example_score_packages:
@@ -1829,18 +1837,6 @@ class AbjadIDE(object):
                 string = '{} ({})'.format(asset_name, annotation)
         return string
 
-    def _path_to_directory_name(self, path):
-        if self._is_scores_directory(path):
-            return 'scores'
-        if self._is_outer_score_directory(path):
-            return 'score'
-        if self._is_inner_score_directory(path):
-            return 'score'
-        for part in reversed(path.split(os.path.sep)):
-            if part in self._known_directory_names:
-                return part
-        raise ValueError(path)
-
     def _path_to_menu_header(self, directory):
         assert os.path.isdir(directory), repr(directory)
         header_parts = []
@@ -2178,6 +2174,19 @@ class AbjadIDE(object):
         name = name + extension
         assert self._is_dash_case_file_name(name), repr(name)
         return name
+
+    def _to_directory_name(self, path):
+        assert os.path.sep in path, repr(path)
+        if self._is_scores_directory(path):
+            return 'scores'
+        if self._is_outer_score_directory(path):
+            return 'score'
+        if self._is_inner_score_directory(path):
+            return 'score'
+        for part in reversed(path.split(os.path.sep)):
+            if part in self._known_directory_names:
+                return part
+        raise ValueError(path)
 
     def _to_module_file_name(self, name):
         assert isinstance(name, str), repr(name)
@@ -2529,58 +2538,22 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         example_scores = self._session.is_test
-        if self._is_score_directory(directory, 'build'):
+        directory_name = self._to_directory_name(directory)
+        if directory_name in ('materials', 'segments'):
+            directory_name = directory_name[:-1]
+        asset_identifier = self._directory_to_asset_identifier(directory)
+        if asset_identifier == 'file':
             assets_ = self._collect_files(
-                'build', 
+                directory_name,
                 example_scores=example_scores,
                 )
-        elif self._is_score_directory(directory, 'distribution'):
-            assets_ = self._collect_files(
-                'distribution',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'etc'):
-            assets_ = self._collect_files(
-                'etc',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'makers'):
-            assets_ = self._collect_files(
-                'makers',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'materials'):
+        elif asset_identifier == 'package':
             assets_ = self._collect_directories(
-                'material',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'segments'):
-            assets_ = self._collect_directories(
-                'segment',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'stylesheets'):
-            assets_ = self._collect_files(
-                'stylesheets',
-                example_scores=example_scores,
-                )
-        elif self._is_score_directory(directory, 'test'):
-            assets_ = self._collect_files(
-                'test',
-                example_scores=example_scores,
-                )
-        elif self._is_material_directory(directory):
-            assets_ = self._collect_files(
-                'material',
-                example_scores=example_scores,
-                )
-        elif self._is_segment_directory(directory):
-            assets_ = self._collect_files(
-                'segment',
+                directory_name,
                 example_scores=example_scores,
                 )
         else:
-            raise ValueError(directory)
+            raise ValueError(asset_identifier)
         selector = self._io_manager._make_selector(items=assets_)
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
