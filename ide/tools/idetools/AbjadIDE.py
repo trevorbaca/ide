@@ -172,6 +172,37 @@ class AbjadIDE(object):
             score_directories.append(score_directory)
         if directory_name == 'inner':
             return score_directories
+#        if directory_name == 'material':
+#            material_directories = []
+#            materials_directories = self._collect_directories(
+#                'materials',
+#                example_scores=example_scores,
+#                )
+#            for directory in materials_directories:
+#                for name in os.listdir(directory):
+#                    if not name[0].isalpha():
+#                        continue
+#                    material_directory = os.path.join(directory, name)
+#                    if not os.path.isdir(material_directory):
+#                        continue
+#                    material_directories.append(material_directory)
+#            return material_directories
+        if directory_name in ('material', 'segment'):
+            directories = []
+            parent_directory_name= directory_name + 's'
+            parent_directories = self._collect_directories(
+                parent_directory_name,
+                example_scores=example_scores,
+                )
+            for parent_directory in parent_directories:
+                for name in os.listdir(parent_directory):
+                    if not name[0].isalpha():
+                        continue
+                    directory = os.path.join(parent_directory, name)
+                    if not os.path.isdir(directory):
+                        continue
+                    directories.append(directory)
+            return directories
         for score_directory in score_directories:
             directory = os.path.join(score_directory, directory_name)
             if os.path.isdir(directory):
@@ -228,25 +259,10 @@ class AbjadIDE(object):
                 maker_files.append(maker_file)
         return maker_files
 
-    def _collect_material_directories(self, example_scores=False):
-        material_directories = []
-        materials_directories = self._collect_directories(
-            'materials',
-            example_scores=example_scores,
-            )
-        for materials_directory in materials_directories:
-            for name in os.listdir(materials_directory):
-                if not name[0].isalpha():
-                    continue
-                material_directory = os.path.join(materials_directory, name)
-                if not os.path.isdir(material_directory):
-                    continue
-                material_directories.append(material_directory)
-        return material_directories
-
     def _collect_material_files(self, example_scores=False):
         material_files = []
-        material_directories = self._collect_material_directories(
+        material_directories = self._collect_directories(
+            'material',
             example_scores=example_scores,
             )
         for material_directory in material_directories:
@@ -257,25 +273,10 @@ class AbjadIDE(object):
                 material_files.append(material_file)
         return material_files
 
-    def _collect_segment_directories(self, example_scores=False):
-        segment_directories = []
-        segments_directories = self._collect_directories(
-            'segments',
-            example_scores=example_scores,
-            )
-        for segments_directory in segments_directories:
-            for name in os.listdir(segments_directory):
-                if not name[0].isalpha():
-                    continue
-                segment_directory = os.path.join(segments_directory, name)
-                if not os.path.isdir(segment_directory):
-                    continue
-                segment_directories.append(segment_directory)
-        return segment_directories
-
     def _collect_segment_files(self, example_scores=False):
         segment_files = []
-        segment_directories = self._collect_segment_directories(
+        segment_directories = self._collect_directories(
+            'segment',
             example_scores=example_scores,
             )
         for segment_directory in segment_directories:
@@ -2664,11 +2665,15 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, 'makers'):
             assets_ = self._collect_maker_files(example_scores=example_scores)
         elif self._is_score_directory(directory, 'materials'):
-            assets_ = self._collect_material_directories(
-                example_scores=example_scores)
+            assets_ = self._collect_directories(
+                'material',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'segments'):
-            assets_ = self._collect_segment_directories(
-                example_scores=example_scores)
+            assets_ = self._collect_directories(
+                'segment',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'stylesheets'):
             assets_ = self._collect_stylesheets(example_scores=example_scores)
         elif self._is_score_directory(directory, 'test'):
