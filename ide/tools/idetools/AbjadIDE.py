@@ -1175,37 +1175,6 @@ class AbjadIDE(object):
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_asset_menu_entries(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        paths = self._list_visible_paths(directory)
-        strings = [self._to_menu_string(_) for _ in paths]
-        pairs = list(zip(strings, paths))
-        def sort_function(pair):
-            string = pair[0]
-            string = stringtools.strip_diacritics(string)
-            string = string.replace("'", '')
-            return string
-        pairs.sort(key=lambda _: sort_function(_))
-        entries = []
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        return entries
-
-    def _make_asset_menu_section(self, directory, menu):
-        menu_entries = []
-        menu_entries_ = self._make_secondary_menu_entries(directory)
-        menu_entries.extend(menu_entries_)
-        menu_entries_  = self._make_asset_menu_entries(directory)
-        menu_entries.extend(menu_entries_)
-        if not menu_entries:
-            return
-        section = menu.make_asset_section(menu_entries=menu_entries)
-        if self._is_score_directory(directory, 'scores'):
-            section._group_by_annotation = False
-        else:
-            section._group_by_annotation = True
-
     def _make_candidate_messages(
         self,
         result,
@@ -1222,6 +1191,7 @@ class AbjadIDE(object):
             messages.append('... compare differently.')
         return messages
 
+    # TODO: reimplement this so it's comprehensible
     def _make_command_menu_sections(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
         methods = []
@@ -1314,7 +1284,34 @@ class AbjadIDE(object):
             explicit_header=explicit_header,
             name=name,
             )
-        self._make_asset_menu_section(directory, menu)
+        menu_entries = []
+        secondary_menu_entries = self._make_secondary_menu_entries(directory)
+        secondary_menu_entries = []
+        for path in self._list_secondary_paths(directory):
+            base_name = os.path.basename(path)
+            menu_entry = (base_name, None, None, path)
+            secondary_menu_entries.append(menu_entry)
+        menu_entries.extend(secondary_menu_entries)
+        asset_menu_entries = []
+        paths = self._list_visible_paths(directory)
+        strings = [self._to_menu_string(_) for _ in paths]
+        pairs = list(zip(strings, paths))
+        def sort_function(pair):
+            string = pair[0]
+            string = stringtools.strip_diacritics(string)
+            string = string.replace("'", '')
+            return string
+        pairs.sort(key=lambda _: sort_function(_))
+        for string, path in pairs:
+            asset_menu_entry = (string, None, None, path)
+            asset_menu_entries.append(asset_menu_entry)
+        menu_entries.extend(asset_menu_entries)
+        if menu_entries:
+            section = menu.make_asset_section(menu_entries=menu_entries)
+            if self._is_score_directory(directory, 'scores'):
+                section._group_by_annotation = False
+            else:
+                section._group_by_annotation = True
         self._make_command_menu_sections(directory, menu)
         return menu
 
@@ -1560,26 +1557,6 @@ class AbjadIDE(object):
                 package_name = os.path.basename(path)
                 annotation = package_name
         return annotation
-
-    def _to_menu_string(self, path, score_directory=None):
-        asset_name = os.path.basename(path)
-        allow_asset_name_underscores = False
-        if 'test' in path.split(os.path.sep):
-            allow_asset_name_underscores = True
-        if '_' in asset_name and not allow_asset_name_underscores:
-            asset_name = stringtools.to_space_delimited_lowercase(asset_name)
-        if self._is_score_directory(path, 'segment'):
-            segment_name = self._get_metadatum(path, 'name')
-            asset_name = segment_name or asset_name
-        if self._session.is_in_score or score_directory is not None:
-            string = asset_name
-        else:
-            annotation = self._path_to_annotation(path)
-            if self._is_score_directory(path, 'inner'):
-                string = annotation
-            else:
-                string = '{} ({})'.format(asset_name, annotation)
-        return string
 
     def _path_to_menu_header(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -1933,6 +1910,26 @@ class AbjadIDE(object):
             if part in self._known_directory_names:
                 return part
         raise ValueError(path)
+
+    def _to_menu_string(self, path, score_directory=None):
+        asset_name = os.path.basename(path)
+        allow_asset_name_underscores = False
+        if 'test' in path.split(os.path.sep):
+            allow_asset_name_underscores = True
+        if '_' in asset_name and not allow_asset_name_underscores:
+            asset_name = stringtools.to_space_delimited_lowercase(asset_name)
+        if self._is_score_directory(path, 'segment'):
+            segment_name = self._get_metadatum(path, 'name')
+            asset_name = segment_name or asset_name
+        if self._session.is_in_score or score_directory is not None:
+            string = asset_name
+        else:
+            annotation = self._path_to_annotation(path)
+            if self._is_score_directory(path, 'inner'):
+                string = annotation
+            else:
+                string = '{} ({})'.format(asset_name, annotation)
+        return string
 
     def _to_module_file_name(self, name):
         assert isinstance(name, str), repr(name)
