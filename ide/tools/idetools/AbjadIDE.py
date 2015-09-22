@@ -477,7 +477,7 @@ class AbjadIDE(object):
                 )
             if not os.path.isfile(source_file_path):
                 continue
-            score_package = self._path_to_package(score_directory)
+            score_package = os.path.basename(score_directory)
             score_name = score_package.replace('_', '-')
             directory_entry = directory_entry.replace('_', '-')
             target_file_name = directory_entry + file_extension
@@ -1387,7 +1387,7 @@ class AbjadIDE(object):
             return
         self._session._pending_redraw = True
         self._session._manifest_current_directory = directory
-        menu_header = self._path_to_menu_header(directory)
+        menu_header = self._to_menu_header(directory)
         menu = self._make_main_menu(directory, menu_header)
         while True:
             self._session._manifest_current_directory = directory
@@ -1540,66 +1540,6 @@ class AbjadIDE(object):
                 annotation = package_name
         return annotation
 
-    def _path_to_menu_header(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        header_parts = []
-        if self._is_score_directory(directory, 'scores'):
-            return 'Abjad IDE - all score directories'
-        score_directory = self._to_score_directory(directory)
-        score_part = self._get_title_metadatum(score_directory)
-        score_part_count = len(score_directory.split(os.path.sep))
-        path_parts = directory.split(os.path.sep)
-        if score_part_count == len(path_parts):
-            return score_part
-        header_parts.append(score_part)
-        interesting_path_parts = path_parts[score_part_count:]
-        directory_name = interesting_path_parts[0]
-        directory_part = '{} directory'
-        directory_part = directory_part.format(directory_name)
-        header_parts.append(directory_part)
-        if len(interesting_path_parts) == 1:
-            header = ' - '.join(header_parts)
-            return header
-        package_name = interesting_path_parts[1]
-        assert self._is_score_directory(directory, ('material', 'segment'))
-        package_path = path_parts[:score_part_count+2]
-        package_path = os.path.join('/', *package_path)
-        package_path = os.path.normpath(package_path)
-        package_part = self._get_name_metadatum(package_path)
-        header_parts.append(package_part)
-        if len(interesting_path_parts) == 2:
-            header = ' - '.join(header_parts)
-            return header
-        raise NotImplementedError
-
-    @staticmethod
-    def _path_to_package(path):
-        if path is None:
-            return
-        assert isinstance(path, str), repr(path)
-        if path.endswith('.py'):
-            path, file_extension = os.path.splitext(path)
-        if path.startswith(configuration.abjad_ide_example_scores_directory):
-            prefix = len(configuration.abjad_ide_example_scores_directory) + 1
-        elif path.startswith(configuration.abjad_ide_directory):
-            prefix = len(
-                os.path.dirname(configuration.abjad_ide_directory)) + 1
-        elif path.startswith(configuration.composer_scores_directory):
-            prefix = len(configuration.composer_scores_directory) + 1
-        else:
-            message = 'can not change path to package: {!r}.'
-            message = message.format(path)
-            raise Exception(message)
-        package = path[prefix:]
-        if path.startswith(configuration.abjad_ide_example_scores_directory):
-            # change red_example_score/red_example_score/materials/foo
-            # to red_example_score/materials/foo
-            parts = package.split(os.path.sep)
-            parts = parts[1:]
-            package = os.path.sep.join(parts)
-        package = package.replace(os.path.sep, '.')
-        return package
-
     def _read_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
         view_name = self._read_view_name(directory)
@@ -1706,7 +1646,7 @@ class AbjadIDE(object):
         else:
             target_name = 'view'
         target_name = '{} to apply'.format(target_name)
-        menu_header = self._path_to_menu_header(directory)
+        menu_header = self._to_menu_header(directory)
         selector = self._io_manager._make_selector(
             is_ranged=is_ranged,
             items=view_names,
@@ -1879,6 +1819,34 @@ class AbjadIDE(object):
         name = name + extension
         assert self._is_dash_case_file_name(name), repr(name)
         return name
+
+    def _to_menu_header(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        header_parts = []
+        if self._is_score_directory(directory, 'scores'):
+            return 'Abjad IDE - all score directories'
+        score_directory = self._to_score_directory(directory)
+        score_part = self._get_title_metadatum(score_directory)
+        header_parts.append(score_part)
+        trimmed_path = self._trim_scores_directory(directory)
+        path_parts = trimmed_path.split(os.path.sep)
+        path_parts = path_parts[2:]
+        if not path_parts:
+            directory_part, package_part = None, None
+        elif len(path_parts) == 1:
+            directory_part, package_part = path_parts[0], None
+        elif len(path_parts) == 2:
+            directory_part, package_part = path_parts
+        else:
+            raise ValueError(directory)
+        if directory_part:
+            directory_part = directory_part + ' directory'
+            header_parts.append(directory_part)
+        if package_part:
+            package_part = self._get_name_metadatum(directory)
+            header_parts.append(package_part)
+        header = ' - '.join(header_parts)
+        return header
 
     def _to_menu_string(self, directory):
         if self._is_score_directory(directory, 'inner'):
