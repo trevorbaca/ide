@@ -1322,12 +1322,7 @@ class AbjadIDE(object):
             explicit_header=explicit_header,
             name=name,
             )
-        package_prototype = ('inner', 'material', 'segment')
-        if self._is_score_directory(directory, package_prototype):
-            self._make_package_menu_section(directory, menu)
-        else:
-            self._make_wrangler_menu_section(directory, menu)
-        assert os.path.isdir(directory), repr(directory)
+        self._make_asset_menu_section(directory, menu)
         self._make_command_menu_sections(directory, menu)
         return menu
 
@@ -1371,41 +1366,38 @@ class AbjadIDE(object):
             self._clear_view(directory)
         self._manage_directory(new_path)
 
-    def _make_package_menu_section(self, directory, menu):
-        names = []
-        for name in os.listdir(directory):
-            if name == '__pycache__':
-                continue
-            if name.startswith('.'):
-                continue
-            if name.endswith('.pyc'):
-                continue
-            names.append(name)
-        names.sort()
-        menu_entries = []
-        for name in names:
-            path = os.path.join(directory, name)
-            menu_entry = (name, None, None, path)
-            menu_entries.append(menu_entry)
-        menu.make_asset_section(menu_entries=menu_entries)
-
-    def _make_score_into_installable_package(
-        self,
-        inner_path,
-        outer_path,
-        ):
-        old_path = outer_path
-        temporary_path = os.path.join(
-            os.path.dirname(outer_path),
-            '_TEMPORARY_SCORE_PACKAGE',
-            )
-        shutil.move(old_path, temporary_path)
-        shutil.move(temporary_path, inner_path)
-        self._write_enclosing_artifacts(
-            inner_path,
-            outer_path,
-            )
-        return inner_path
+    def _make_asset_menu_section(self, directory, menu):
+        package_prototype = ('inner', 'material', 'segment')
+        if self._is_score_directory(directory, package_prototype):
+            names = []
+            for name in os.listdir(directory):
+                if name == '__pycache__':
+                    continue
+                if name.startswith('.'):
+                    continue
+                if name.endswith('.pyc'):
+                    continue
+                names.append(name)
+            names.sort()
+            menu_entries = []
+            for name in names:
+                path = os.path.join(directory, name)
+                menu_entry = (name, None, None, path)
+                menu_entries.append(menu_entry)
+            menu.make_asset_section(menu_entries=menu_entries)
+        else:
+            menu_entries = []
+            menu_entries_ = self._make_secondary_menu_entries(directory)
+            menu_entries.extend(menu_entries_)
+            menu_entries_  = self._make_menu_entries(directory)
+            menu_entries.extend(menu_entries_)
+            if menu_entries:
+                section = menu.make_asset_section(menu_entries=menu_entries)
+                assert section is not None
+                if self._is_score_directory(directory, 'scores'):
+                    section._group_by_annotation = False
+                else:
+                    section._group_by_annotation = True
 
     def _make_score_package(self):
         message = 'enter title'
@@ -1448,22 +1440,6 @@ class AbjadIDE(object):
             menu_entry = (base_name, None, None, path)
             menu_entries.append(menu_entry)
         return menu_entries
-
-    def _make_wrangler_menu_section(self, directory, menu):
-        assert os.path.isdir(directory), repr(directory)
-        menu_entries = []
-        current_directory = directory
-        menu_entries_ = self._make_secondary_menu_entries(directory)
-        menu_entries.extend(menu_entries_)
-        menu_entries_  = self._make_menu_entries(directory)
-        menu_entries.extend(menu_entries_)
-        if menu_entries:
-            section = menu.make_asset_section(menu_entries=menu_entries)
-            assert section is not None
-            if self._is_score_directory(directory, 'scores'):
-                section._group_by_annotation = False
-            else:
-                section._group_by_annotation = True
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
