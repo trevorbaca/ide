@@ -130,6 +130,8 @@ class AbjadIDE(object):
         return name
 
     def _collect_directories(self, directory_name, example_scores=False):
+        if os.path.sep in directory_name:
+            directory_name = self._to_directory_name(directory_name)
         directories = []
         scores_directories = [configuration.composer_scores_directory]
         if example_scores:
@@ -624,10 +626,13 @@ class AbjadIDE(object):
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
-    def _get_metadatum(self, directory, metadatum_name):
+    def _get_metadatum(self, directory, metadatum_name, default=None):
         assert os.path.isdir(directory), repr(directory)
         metadata = self._get_metadata(directory)
-        return metadata.get(metadatum_name)
+        metadatum = metadata.get(metadatum_name)
+        if not metadatum:
+            metadatum = default
+        return metadatum
 
     def _get_modified_asset_paths(self, path):
         paths = []
@@ -1124,9 +1129,8 @@ class AbjadIDE(object):
     def _list_paths(self, directory, example_scores=True):
         assert os.path.isdir(directory), repr(directory)
         paths = []
-        directory_name = self._to_directory_name(directory)
         directories = self._collect_directories(
-            directory_name,
+            directory,
             example_scores=example_scores,
             )
         directory_ = directory
@@ -1911,25 +1915,16 @@ class AbjadIDE(object):
                 return part
         raise ValueError(path)
 
-    def _to_menu_string(self, path, score_directory=None):
-        asset_name = os.path.basename(path)
-        allow_asset_name_underscores = False
-        if 'test' in path.split(os.path.sep):
-            allow_asset_name_underscores = True
-        if '_' in asset_name and not allow_asset_name_underscores:
-            asset_name = stringtools.to_space_delimited_lowercase(asset_name)
-        if self._is_score_directory(path, 'segment'):
-            segment_name = self._get_metadatum(path, 'name')
-            asset_name = segment_name or asset_name
-        if self._session.is_in_score or score_directory is not None:
-            string = asset_name
+    def _to_menu_string(self, directory):
+        if self._is_score_directory(directory, 'inner'):
+            return self._path_to_annotation(directory)
+        name = os.path.basename(directory)
+        if '_' in name and not self._is_score_directory(directory, 'test'):
+            name = stringtools.to_space_delimited_lowercase(name)
+        if self._is_score_directory(directory, 'segment'):
+            return self._get_metadatum(directory, 'name', name)
         else:
-            annotation = self._path_to_annotation(path)
-            if self._is_score_directory(path, 'inner'):
-                string = annotation
-            else:
-                string = '{} ({})'.format(asset_name, annotation)
-        return string
+            return name
 
     def _to_module_file_name(self, name):
         assert isinstance(name, str), repr(name)
