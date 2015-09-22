@@ -1122,8 +1122,7 @@ class AbjadIDE(object):
     def _list_asset_paths(
         self,
         directory,
-        composer_score_packages=True,
-        example_score_packages=True,
+        example_scores=True,
         valid_only=True,
         ):
         assert os.path.isdir(directory), repr(directory)
@@ -1131,15 +1130,13 @@ class AbjadIDE(object):
         directory_name = self._to_directory_name(directory)
         directories = []
         if self._is_score_directory(directory, 'scores'):
-            if example_score_packages:
+            if example_scores:
                 directories.append(
                     configuration.abjad_ide_example_scores_directory)
-            if composer_score_packages:
-                directories.append(configuration.composer_scores_directory)
+            directories.append(configuration.composer_scores_directory)
         else:
             score_directories = self._list_score_directories(
-                composer_score_packages=composer_score_packages,
-                example_score_packages=example_score_packages,
+                example_scores=example_scores,
                 )
             directories = [
                 os.path.join(_, directory_name)
@@ -1162,18 +1159,12 @@ class AbjadIDE(object):
                 result.append(path)
         return result
 
-    @staticmethod
-    def _list_score_directories(
-        composer_score_packages=False,
-        example_score_packages=False,
-        ):
+    def _list_score_directories(self, example_scores=False):
         result = []
-        scores_directories = []
-        if example_score_packages:
-            scores_directories.append(
-                configuration.abjad_ide_example_scores_directory)
-        if composer_score_packages:
-            scores_directories.append(configuration.composer_scores_directory)
+        scores_directories = self._collect_directories(
+            'scores',
+            example_scores=example_scores,
+            )
         for scores_directory in scores_directories:
             directory_entries = sorted(os.listdir(scores_directory))
             for directory_entry in directory_entries:
