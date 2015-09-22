@@ -472,8 +472,8 @@ class IOManager(IOManager):
             process.stdout, strip=strip).splitlines()
         stderr_lines = self._read_from_pipe(
             process.stderr, strip=strip).splitlines()
-        self._display(stdout_lines, capitalize=False)
-        self._display(stderr_lines, capitalize=False)
+        #self._display(stdout_lines, capitalize=False)
+        #self._display(stderr_lines, capitalize=False)
         return stdout_lines, stderr_lines
 
     def open_file(self, path):

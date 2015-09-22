@@ -1880,11 +1880,11 @@ class AbjadIDE(object):
         if dry_run:
             inputs.append(definition_path)
             return inputs, outputs
-        stdout_lines, stderr_lines = self._io_manager.interpret_file(
-            definition_path)
+        result = self._io_manager.interpret_file(definition_path, strip=False)
+        stdout_lines, stderr_lines = result
         if stderr_lines:
             messages = [definition_path + ' FAILED:']
-            messages.extend('    ' + _ for _ in stderr_lines)
+            messages.extend(stderr_lines)
             self._io_manager._display(messages)
         else:
             message = '{} OK.'.format(definition_path)
@@ -3216,7 +3216,6 @@ class AbjadIDE(object):
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
-                
             if not os.path.isfile(candidate_ly_path):
                 message = 'could not make {}.'
                 message = message.format(candidate_ly_path)
