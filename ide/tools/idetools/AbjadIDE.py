@@ -129,9 +129,9 @@ class AbjadIDE(object):
             raise ValueError(directory)
         return name
 
-    def _collect_directories(self, directory_name, example_scores=False):
-        if os.path.sep in directory_name:
-            directory_name = self._to_directory_name(directory_name)
+    def _collect_directories(self, directory, example_scores=False):
+        assert os.path.isdir(directory), repr(directory)
+        directory_name = self._to_directory_name(directory)
         directories = []
         scores_directories = [configuration.composer_scores_directory]
         if example_scores:
@@ -163,63 +163,27 @@ class AbjadIDE(object):
             score_directories.append(score_directory)
         if directory_name in ('inner', 'score'):
             return score_directories
-        if directory_name in ('material', 'segment'):
+        if self._is_score_directory(directory, ('material', 'segment')):
             directories = []
-            parent_directory_name= directory_name + 's'
+            parent_directory = os.path.dirname(directory)
             parent_directories = self._collect_directories(
-                parent_directory_name,
+                parent_directory,
                 example_scores=example_scores,
                 )
             for parent_directory in parent_directories:
                 for name in os.listdir(parent_directory):
                     if not name[0].isalpha():
                         continue
-                    directory = os.path.join(parent_directory, name)
-                    if not os.path.isdir(directory):
+                    directory_ = os.path.join(parent_directory, name)
+                    if not os.path.isdir(directory_):
                         continue
-                    directories.append(directory)
+                    directories.append(directory_)
             return directories
         for score_directory in score_directories:
-            directory = os.path.join(score_directory, directory_name)
-            if os.path.isdir(directory):
-                directories.append(directory)
+            directory_ = os.path.join(score_directory, directory_name)
+            if os.path.isdir(directory_):
+                directories.append(directory_)
         return directories
-
-#    def _collect_directory_contents(self, directory, example_scores=False):
-#        directories = self._collect_directories(
-#            directory,
-#            example_scores=example_scores,
-#            )
-#        paths = []
-#        for directory in directories:
-#            for name in os.listdir(directory):
-#                if name.endswith('.pyc'):
-#                    continue
-#                if name.startswith('.'):
-#                    continue
-#                if name == '__pycache__':
-#                    continue
-#                path = os.path.join(directory, name)
-#                paths.append(path)
-#        return paths
-
-    def _collect_files(self, directory_name, example_scores=False):
-        files = []
-        directories = self._collect_directories(
-            directory_name,
-            example_scores=example_scores,
-            )
-        for directory in directories:
-            for name in os.listdir(directory):
-                if name.startswith('.'):
-                    continue
-                if name.endswith('.pyc'):
-                    continue
-                path = os.path.join(directory, name)
-                if not os.path.isfile(path):
-                    continue
-                files.append(path)
-        return files
 
     def _confirm_segment_names(self, score_directory):
         segments_directory = os.path.join(score_directory, 'segments')
