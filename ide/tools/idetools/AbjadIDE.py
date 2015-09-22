@@ -1857,13 +1857,15 @@ class AbjadIDE(object):
         return name
 
     @staticmethod
-    def _to_score_directory(path, directory_name=None):
+    def _to_score_directory(path, name=None):
         assert os.path.sep in path, repr(path)
-        if directory_name == 'scores':
-            if path.startswith(configuration.composer_scores_directory):
-                return configuration.composer_scores_directory
-            elif path.startswith(configuration.abjad_ide_example_scores_directory):
-                return configuration.abjad_ide_example_scores_directory
+        if name == 'scores':
+            scores_directory = configuration.composer_scores_directory
+            if path.startswith(scores_directory):
+                return scores_directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
+            if path.startswith(scores_directory):
+                return scores_directory
         if path.startswith(configuration.composer_scores_directory):
             prefix = len(configuration.composer_scores_directory)
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
@@ -1881,8 +1883,8 @@ class AbjadIDE(object):
         if os.path.normpath(score_path) == os.path.normpath(
             configuration.abjad_ide_example_scores_directory):
             return
-        if directory_name is not None:
-            score_path = os.path.join(score_path, directory_name)
+        if name is not None:
+            score_path = os.path.join(score_path, name)
         return score_path
 
     def _to_stylesheet_name(self, name):
