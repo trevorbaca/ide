@@ -1180,27 +1180,16 @@ class AbjadIDE(object):
             messages.append('... compare differently.')
         return messages
 
-    # TODO: reimplement this so it's comprehensible
     def _make_command_menu_sections(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
         methods = []
         commands = self._get_commands()
         for command in commands:
-            if self._session.is_in_score and not command.in_score:
-                continue
-            if not self._session.is_in_score and not command.outside_score:
-                continue
-            if (command.outside_score == 'home' and
-                (not self._is_score_directory(directory, 'scores') and
-                not self._session.is_in_score)):
-                continue
             if not self._is_score_directory(directory, command.directories):
                 continue
-            if (command.in_score_directory_only and not
-                self._is_score_directory(directory, 'inner')):
-                continue
-            if (command.never_in_score_directory and
-                self._is_score_directory(directory, 'inner')):
+            if (command.forbidden_directories and
+                self._is_score_directory(
+                directory, command.forbidden_directories)):
                 continue
             methods.append(command)
         command_groups = {}
@@ -2117,7 +2106,6 @@ class AbjadIDE(object):
         'dfk*',
         argument_name='current_directory',
         directories=('materials', 'segments'),
-        outside_score=False,
         section='star',
         )
     def check_every_definition_file(self, directory):
@@ -2151,7 +2139,6 @@ class AbjadIDE(object):
         'mc',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def collect_segment_lilypond_files(self, directory):
@@ -2192,8 +2179,8 @@ class AbjadIDE(object):
     @Command(
         'cp',
         argument_name='current_directory',
+        forbidden_directories=('inner',),
         is_hidden=False,
-        never_in_score_directory=True,
         section='basic',
         )
     def copy(self, directory):
@@ -2268,7 +2255,7 @@ class AbjadIDE(object):
         'abb',
         argument_name='current_directory',
         description='abbreviations - edit',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='global files',
         )
     def edit_abbreviations_file(self, directory):
@@ -2371,7 +2358,7 @@ class AbjadIDE(object):
         'sty',
         argument_name='current_directory',
         description='stylesheet - edit',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='global files',
         )
     def edit_score_stylesheet(self, directory):
@@ -2395,7 +2382,6 @@ class AbjadIDE(object):
         'bcg',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def generate_back_cover_source(self, directory):
@@ -2439,7 +2425,6 @@ class AbjadIDE(object):
         'fcg',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def generate_front_cover_source(self, directory):
@@ -2492,7 +2477,6 @@ class AbjadIDE(object):
         'mg',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def generate_music_source(self, directory):
@@ -2594,7 +2578,6 @@ class AbjadIDE(object):
         'pg',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def generate_preface_source(self, directory):
@@ -2621,7 +2604,6 @@ class AbjadIDE(object):
         'sg',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def generate_score_source(self, directory):
@@ -2647,8 +2629,7 @@ class AbjadIDE(object):
     @Command(
         'add*',
         argument_name='current_directory',
-        in_score=False,
-        outside_score='home',
+        directories=('scores',),
         section='git',
         )
     def git_add_every_package(self, directory):
@@ -2688,8 +2669,7 @@ class AbjadIDE(object):
     @Command(
         'ci*',
         argument_name='current_directory',
-        in_score=False,
-        outside_score='home',
+        directories=('scores',),
         section='git',
         )
     def git_commit_every_package(self, directory):
@@ -2721,8 +2701,7 @@ class AbjadIDE(object):
     @Command(
         'st*',
         argument_name='current_directory',
-        in_score=False,
-        outside_score='home',
+        directories=('scores',),
         section='git',
         )
     def git_status_every_package(self, directory):
@@ -2740,8 +2719,7 @@ class AbjadIDE(object):
     @Command(
         'up*',
         argument_name='current_directory',
-        in_score=False,
-        outside_score='home',
+        directories=('scores',),
         section='git',
         )
     def git_update_every_package(self, directory):
@@ -2783,7 +2761,7 @@ class AbjadIDE(object):
     @Command(
         'bb',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_build_directory(self, directory):
@@ -2798,7 +2776,7 @@ class AbjadIDE(object):
     @Command(
         'dd',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_distribution_directory(self, directory):
@@ -2813,7 +2791,7 @@ class AbjadIDE(object):
     @Command(
         'ee',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_etc_directory(self, directory):
@@ -2828,7 +2806,7 @@ class AbjadIDE(object):
     @Command(
         'kk',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_makers_directory(self, directory):
@@ -2843,7 +2821,7 @@ class AbjadIDE(object):
     @Command(
         'mm',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_materials_directory(self, directory):
@@ -2858,7 +2836,7 @@ class AbjadIDE(object):
     @Command(
         'ss',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_score_directory(self, directory):
@@ -2873,7 +2851,7 @@ class AbjadIDE(object):
     @Command(
         'gg',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_segments_directory(self, directory):
@@ -2888,7 +2866,7 @@ class AbjadIDE(object):
     @Command(
         'yy',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_stylesheets_directory(self, directory):
@@ -2903,7 +2881,7 @@ class AbjadIDE(object):
     @Command(
         'tt',
         argument_name='current_directory',
-        outside_score=False,
+        forbidden_directories=('scores',),
         section='navigation',
         )
     def go_to_test_directory(self, directory):
@@ -3502,8 +3480,7 @@ class AbjadIDE(object):
     @Command(
         'new',
         argument_name='current_directory',
-        is_hidden=False,
-        never_in_score_directory=True,
+        forbidden_directories=('inner',),
         section='basic',
         )
     def new(self, directory):
@@ -3543,8 +3520,7 @@ class AbjadIDE(object):
     @Command(
         'so*',
         argument_name='current_directory',
-        in_score=False,
-        outside_score='home',
+        directories=('scores',),
         section='star',
         )
     def open_every_score_pdf(self, directory):
@@ -3587,8 +3563,7 @@ class AbjadIDE(object):
     @Command(
         'so',
         argument_name='current_directory',
-        in_score_directory_only=True,
-        outside_score=False,
+        directories=('inner',),
         section='pdf',
         )
     def open_score_pdf(self, directory, dry_run=False):
@@ -3666,8 +3641,8 @@ class AbjadIDE(object):
     @Command(
         'rm',
         argument_name='current_directory',
+        forbidden_directories=('inner',),
         is_hidden=False,
-        never_in_score_directory=True,
         section='basic',
         )
     def remove(self, directory):
@@ -3713,8 +3688,8 @@ class AbjadIDE(object):
     @Command(
         'ren',
         argument_name='current_directory',
+        forbidden_directories=('inner',),
         is_hidden=False,
-        never_in_score_directory=True,
         section='basic',
         )
     def rename(self, directory):
