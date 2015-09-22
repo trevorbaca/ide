@@ -106,34 +106,85 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         self._add_metadatum(directory, 'view_name', None)
 
-    def _coerce_file_name(self, directory, file_name):
-        file_name = stringtools.strip_diacritics(file_name)
-        if self._is_score_directory(directory, 'build'):
-            file_name = stringtools.to_dash_case(file_name)
-            file_name = file_name.lower()
-        elif self._is_score_directory(directory, 'distribution'):
-            file_name = stringtools.to_dash_case(file_name)
-            file_name = file_name.lower()
-        elif self._is_score_directory(directory, 'etc'):
-            file_name = stringtools.to_dash_case(file_name)
-            file_name = file_name.lower()
+    def _to_classfile_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_upper_camel_case(name)
+        name = name + '.py'
+        assert self._is_classfile_name(name), repr(name)
+        return name
+
+    def _to_dash_case_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_dash_case(name)
+        extension = extension or '.txt'
+        name = name + extension
+        assert self._is_dash_case_file_name(name), repr(name)
+        return name
+
+    def _to_module_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        name = name + '.py'
+        assert self._is_module_file_name(name), repr(name)
+        return name
+
+    def _to_package_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        assert self._is_package_name(name), repr(name)
+        return name
+
+    def _to_stylesheet_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_dash_case(name)
+        name = name + '.ily'
+        assert self._is_stylesheet_name(name), repr(name)
+        return name
+
+    def _to_test_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        if not name.startswith('test_'):
+            name = 'test_' + name
+        name = name + '.py'
+        assert self._is_test_file_name(name), repr(name)
+        return name
+    
+    def _coerce_name(self, directory, name):
+        dash_case_prototype = ('build', 'distribution', 'etc')
+        package_prototype = ('scores', 'materials', 'segments')
+        if self._is_scores_directory(directory):
+            name = self._to_package_name(name)
+        elif self._is_score_directory(directory, dash_case_prototype):
+            name = self._to_dash_case_file_name(name)
         elif self._is_score_directory(directory, 'makers'):
-            file_name = stringtools.to_upper_camel_case(file_name)
-        elif self._is_score_directory(directory, 'materials'):
-            file_name = stringtools.to_snake_case(file_name)
-            file_name = file_name.lower()
-        elif self._is_score_directory(directory, 'segments'):
-            file_name = stringtools.to_snake_case(file_name)
-            file_name = file_name.lower()
+            name = self._to_classfile_name(name)
+        elif self._is_score_directory(directory, package_prototype):
+            name = self._to_package_name(name)
         elif self._is_score_directory(directory, 'stylesheets'):
-            file_name = stringtools.to_dash_case(file_name)
-            file_name = file_name.lower()
+            name = self._to_stylesheet_name(name)
         elif self._is_score_directory(directory, 'test'):
-            file_name = stringtools.to_snake_case(file_name)
-            file_name = file_name.lower()
+            name = self._to_test_file_name(name)
         else:
             raise ValueError(directory)
-        return file_name
+        return name
 
     def _collect_build_files(self, example_scores=False):
         build_files = []
@@ -447,7 +498,7 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_to_file_name_predicate(self, directory):
+    def _directory_to_name_predicate(self, directory):
         directory_name = self._path_to_directory_name(directory)
         dash_case_prototype = (
             'build',
@@ -462,27 +513,27 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, 'test'):
             return stringtools.is_snake_case
 
-    def _directory_to_predicate(self, directory):
-        file_prototype = (
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'stylesheets',
-            'test',
-            )
-        package_prototype = (
-            'materials',
-            'segments',
-            )
-        if self._is_scores_directory(directory):
-            return self._is_valid_package_directory_entry
-        elif self._is_score_directory(directory, file_prototype):
-            return self._is_valid_file_directory_entry
-        elif self._is_score_directory(directory, package_prototype):
-            return self._is_valid_package_directory_entry
-        else:
-            raise ValueError(directory)
+#    def _directory_to_predicate(self, directory):
+#        file_prototype = (
+#            'build',
+#            'distribution',
+#            'etc',
+#            'makers',
+#            'stylesheets',
+#            'test',
+#            )
+#        package_prototype = (
+#            'materials',
+#            'segments',
+#            )
+#        if self._is_scores_directory(directory):
+#            return self._is_valid_package_directory_entry
+#        elif self._is_score_directory(directory, file_prototype):
+#            return self._is_valid_file_directory_entry
+#        elif self._is_score_directory(directory, package_prototype):
+#            return self._is_valid_package_directory_entry
+#        else:
+#            raise ValueError(directory)
 
     def _directory_to_asset_identifier(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -517,19 +568,100 @@ class AbjadIDE(object):
             file_extension = '.py'
         return file_extension
 
-    def _directory_to_file_name_predicate(self, directory):
-        dash_case_prototype = (
-            'build',
-            'distribution',
-            'etc',
-            'stylesheets',
-            )
-        if self._is_score_directory(directory, dash_case_prototype):
-            return stringtools.is_dash_case
+    def _directory_to_name_predicate(self, directory):
+        file_prototype = ('build', 'distribution', 'etc')
+        package_prototype = ('materials', 'segments', 'scores')
+        if self._is_scores_directory(directory):
+            return self._is_package_name
+        elif self._is_score_directory(directory, file_prototype):
+            return self._is_dash_case_file_name
         elif self._is_score_directory(directory, 'makers'):
-            return stringtools.is_upper_camel_case
+            return self._is_classfile_name
+        elif self._is_score_directory(directory, package_prototype):
+            return self._is_package_name
+        elif self._is_score_directory(directory, ('material', 'segment')):
+            return self._is_module_file_name
+        elif self._is_score_directory(directory, 'stylesheets'):
+            return self._is_stylesheet_name
         elif self._is_score_directory(directory, 'test'):
             return stringtools.is_snake_case
+        else:
+            raise ValueError(directory)
+
+    @staticmethod
+    def _is_dash_case_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_dash_case(file_name):
+            return False
+        if not file_extension:
+            return False
+        return True
+
+    @staticmethod
+    def _is_classfile_name(expr):
+        if not isinstance(expr, str):
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_upper_camel_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
+
+    @staticmethod
+    def _is_module_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_snake_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
+
+    @staticmethod
+    def _is_package_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        if os.path.sep in expr:
+            return False
+        if not stringtools.is_snake_case(expr):
+            return False
+        return True
+
+    @staticmethod
+    def _is_stylesheet_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_dash_case(file_name):
+            return False
+        if not file_extension == '.ily':
+            return False
+        return True
+
+    @staticmethod
+    def _is_test_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr.startswith('test_'):
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_snake_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
 
     def _directory_to_package_contents(self, directory):
         if self._is_material_directory(directory):
@@ -1309,7 +1441,7 @@ class AbjadIDE(object):
         if expr[0].isalpha():
             if not expr.endswith('.pyc'):
                 name, file_extension = os.path.splitext(expr)
-                file_name_predicate = self._directory_to_file_name_predicate(
+                file_name_predicate = self._directory_to_name_predicate(
                     directory)
                 required_file_extension = self._directory_to_file_extension(
                     directory)
@@ -1337,7 +1469,6 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         result = []
         directory_name = self._path_to_directory_name(directory)
-        predicate = self._directory_to_predicate(directory)
         directories = []
         if self._is_scores_directory(directory):
             if example_score_packages:
@@ -1355,6 +1486,7 @@ class AbjadIDE(object):
                 for _ in score_directories
                 ]
         for directory in directories:
+            name_predicate = self._directory_to_name_predicate(directory)
             if not directory:
                 continue
             if not os.path.exists(directory):
@@ -1362,7 +1494,7 @@ class AbjadIDE(object):
             entries = sorted(os.listdir(directory))
             for entry in entries:
                 if valid_only:
-                    if not predicate(entry, directory):
+                    if not name_predicate(entry):
                         continue
                 path = os.path.join(directory, entry)
                 if self._is_scores_directory(directory):
@@ -1590,19 +1722,14 @@ class AbjadIDE(object):
         file_name = getter._run(io_manager=self._io_manager)
         if file_name is None:
             return
-        file_name, file_extension = os.path.splitext(file_name)
-        file_name = self._coerce_file_name(directory, file_name)
-        predicate = self._directory_to_file_name_predicate(directory)
-        if not predicate(file_name):
+        file_name = self._coerce_name(directory, file_name)
+        name_predicate = self._directory_to_name_predicate(directory)
+        if not name_predicate(file_name):
             message = 'invalid file name: {!r}.'
             message = message.format(file_name)
             self._io_manager._display(message)
             self._io_manager._acknowledge()
             return
-        file_name = file_name + file_extension
-        file_extension = self._directory_to_file_extension(directory)
-        if not file_name.endswith(file_extension):
-            file_name = file_name + file_extension
         file_path = os.path.join(directory, file_name)
         if self._is_score_directory(directory, 'makers'):
             source_file = os.path.join(
@@ -1612,8 +1739,9 @@ class AbjadIDE(object):
             shutil.copyfile(source_file, file_path)
         else:
             contents = ''
+            file_name, file_extension = os.path.splitext(file_name)
             if file_extension == '.py':
-                contents == self._unicode_directive
+                contents = self._unicode_directive
             self._io_manager.write(file_path, contents)
         self._io_manager.edit(file_path)
 
@@ -1854,8 +1982,10 @@ class AbjadIDE(object):
             return path
         elif isinstance(input_, str):
             name = input_
+            name = name.lower()
             for path in visible_paths:
                 base_name = os.path.basename(path)
+                base_name = base_name.lower()
                 if base_name.startswith(name):
                     return path
                 base_name = base_name.replace('_', ' ')
@@ -1866,6 +1996,7 @@ class AbjadIDE(object):
                 title = self._get_metadatum(path, 'title')
                 if not title:
                     continue
+                title = title.lower()
                 if title.startswith(name):
                     return path
             message = 'does not match visible path: {!r}.'
@@ -2166,7 +2297,10 @@ class AbjadIDE(object):
         secondary_paths = self._list_secondary_asset_paths(directory)
         visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
-            message = 'nothing to rename.'
+            message = 'no visible paths'
+            if infinitive_phrase is not None:
+                message = message + ' ' + infinitive_phrase
+            message = message + '.'
             self._io_manager._display(message)
             return
         paths = secondary_paths + visible_paths
@@ -2187,7 +2321,10 @@ class AbjadIDE(object):
         secondary_paths = self._list_secondary_asset_paths(directory)
         visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
-            message = 'nothing to remove.'
+            message = 'no visible paths'
+            if infinitive_phrase is not None:
+                message = message + ' ' + infinitive_phrase
+            message = message + '.'
             self._io_manager._display(message)
             return
         paths = secondary_paths + visible_paths
@@ -2320,6 +2457,21 @@ class AbjadIDE(object):
         lines = ''.join(lines)
         with open(file_path, 'w') as file_pointer:
             file_pointer.write(lines)
+
+    @staticmethod
+    def _trim_scores_directory(path):
+        assert os.path.sep in path, repr(path)
+        if path.startswith(configuration.composer_scores_directory):
+            scores_directory = configuration.composer_scores_directory
+        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+            scores_directory = configuration.abjad_ide_example_scores_directory
+        else:
+            return path
+        count = len(scores_directory.split(os.path.sep))
+        parts = path.split(os.path.sep)
+        parts = parts[count:]
+        path = os.path.join(*parts)
+        return path
 
     def _unadd_added_assets(self, path):
         paths = []
@@ -4112,23 +4264,21 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        source_path = self._select_visible_path(
-            directory,
-            infinitive_phrase='to rename',
-            )
+        source_path = self._select_visible_path(directory, 'to rename')
         if self._is_inner_score_directory(source_path):
             source_path = os.path.dirname(source_path)
         if not source_path:
             return
+        message = 'Will rename]> {}'
+        trimmed_source_path = self._trim_scores_directory(source_path)
+        message = message.format(trimmed_source_path)
+        self._io_manager._display(message)
         getter = self._io_manager._make_getter()
-        getter.append_string('new name', allow_empty=False)
+        getter.append_string('new name or return to cancel')
         original_target_name = getter._run(io_manager=self._io_manager)
-        if original_target_name is None:
+        if not original_target_name:
             return
-        target_name = stringtools.strip_diacritics(original_target_name)
-        target_name = target_name.replace(' ', '_')
-        if not 'makers' in source_path.split(os.path.sep):
-            target_name = target_name.lower()
+        target_name = self._coerce_name(directory, original_target_name)
         source_name = os.path.basename(source_path)
         target_path = os.path.join(
             os.path.dirname(source_path),
