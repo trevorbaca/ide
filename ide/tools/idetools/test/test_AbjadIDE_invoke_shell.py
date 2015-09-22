@@ -29,9 +29,7 @@ def test_AbjadIDE_invoke_shell_02():
     input_ = '!pwd q'
     abjad_ide._start(input_=input_)
 
-    path = os.path.join(
-        configuration.composer_scores_directory,
-        )
+    path = configuration.abjad_ide_example_scores_directory
     string = '\n{}\n'.format(path)
     assert string in abjad_ide._io_manager._transcript.contents
 

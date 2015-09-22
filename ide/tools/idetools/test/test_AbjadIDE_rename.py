@@ -11,20 +11,20 @@ def test_AbjadIDE_rename_01():
     '''
 
     path_100_outer = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         )
     path_100_inner = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         'example_score_100',
         )
     path_101_outer = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         )
     path_101_inner = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         'example_score_101',
         )

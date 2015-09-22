@@ -1130,6 +1130,7 @@ class AbjadIDE(object):
             directory_name,
             example_scores=example_scores,
             )
+        directory_ = directory
         for directory in directories:
             if not directory:
                 continue
@@ -1143,6 +1144,8 @@ class AbjadIDE(object):
                 path = os.path.join(directory, entry)
                 if self._is_score_directory(directory, 'scores'):
                     path = os.path.join(path, entry)
+                if not path.startswith(directory_):
+                    continue
                 paths.append(path)
         return paths
 
@@ -1155,6 +1158,7 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
+    # TODO: remove call to _make_menu_entries()
     def _list_visible_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
         entries = self._make_menu_entries(directory)
@@ -1327,19 +1331,9 @@ class AbjadIDE(object):
             self._clear_view(directory)
         self._manage_directory(new_path)
 
-    def _make_menu_entries(
-        self,
-        directory,
-        apply_current_directory=True,
-        set_view=True,
-        ):
+    def _make_menu_entries(self, directory):
         assert os.path.isdir(directory), repr(directory)
         paths = self._list_paths(directory)
-        if (apply_current_directory or set_view) and self._session.is_in_score:
-            paths = [
-                _ for _ in paths
-                if _.startswith(self._session.current_score_directory)
-                ]
         strings = []
         for path in paths:
             string = self._path_to_menu_display_string(path)
@@ -1369,12 +1363,11 @@ class AbjadIDE(object):
         for string, path in pairs:
             entry = (string, None, None, path)
             entries.append(entry)
-        if set_view:
-            current_score_directory = self._session.current_score_directory
-            entries = self._filter_menu_entries_by_view(
-                directory,
-                entries,
-                )
+        current_score_directory = self._session.current_score_directory
+        entries = self._filter_menu_entries_by_view(
+            directory,
+            entries,
+            )
         if not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
         if (self._is_score_directory(directory, 'scores') and 
@@ -1391,10 +1384,10 @@ class AbjadIDE(object):
             return
         package_name = stringtools.strip_diacritics(title)
         package_name = stringtools.to_snake_case(package_name)
-        outer_score_directory = os.path.join(
-            configuration.composer_scores_directory,
-            package_name,
-            )
+        scores_directory = configuration.composer_scores_directory
+        if self._session.is_test:
+            scores_directory = configuration.abjad_ide_example_scores_directory
+        outer_score_directory = os.path.join(scores_directory, package_name)
         if os.path.exists(outer_score_directory):
             message = 'directory already exists: {}.'
             message = message.format(outer_score_directory)
@@ -1409,7 +1402,7 @@ class AbjadIDE(object):
             configuration.composer_email,
             configuration.composer_github_username,
             )
-        self._clear_view(configuration.composer_scores_directory)
+        self._clear_view(scores_directory)
         inner_score_directory = os.path.join(
             outer_score_directory, 
             package_name,
@@ -1865,8 +1858,11 @@ class AbjadIDE(object):
         if input_:
             self._session._pending_input = input_
         self._session._pending_redraw = True
+        directory = configuration.composer_scores_directory
+        if self._session.is_test:
+            directory = configuration.abjad_ide_example_scores_directory
         while True:
-            self._manage_directory(configuration.composer_scores_directory)
+            self._manage_directory(directory)
             if self._session.is_quitting:
                 break
         self._io_manager._clean_up()
@@ -2886,6 +2882,8 @@ class AbjadIDE(object):
         Returns none.
         '''
         directory = configuration.composer_scores_directory
+        if self._session.is_test:
+            directory = configuration.abjad_ide_example_scores_directory
         self._manage_directory(directory)
 
     @Command(

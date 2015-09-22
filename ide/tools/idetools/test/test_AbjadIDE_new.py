@@ -11,7 +11,7 @@ def test_AbjadIDE_new_01():
     '''
 
     outer_path = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score',
         )
     inner_path = os.path.join(outer_path, 'example_score')
@@ -57,7 +57,7 @@ def test_AbjadIDE_new_02():
     '''
 
     score_package = os.path.join(
-        configuration.composer_scores_directory,
+        configuration.abjad_ide_example_scores_directory,
         'example_score_1',
         )
 
