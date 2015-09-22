@@ -149,6 +149,7 @@ class AbjadIDE(object):
         if directory_name == 'outer':
             return score_directories
         outer_score_directories = score_directories
+        score_directories = []
         for outer_score_directory in outer_score_directories:
             base_name = os.path.basename(outer_score_directory)
             score_directory = os.path.join(
@@ -1135,7 +1136,8 @@ class AbjadIDE(object):
                     configuration.abjad_ide_example_scores_directory)
             directories.append(configuration.composer_scores_directory)
         else:
-            score_directories = self._list_score_directories(
+            score_directories = self._collect_directories(
+                'inner',
                 example_scores=example_scores,
                 )
             directories = [
@@ -1156,30 +1158,6 @@ class AbjadIDE(object):
                 path = os.path.join(directory, entry)
                 if self._is_score_directory(directory, 'scores'):
                     path = os.path.join(path, entry)
-                result.append(path)
-        return result
-
-    def _list_score_directories(self, example_scores=False):
-        result = []
-        scores_directories = self._collect_directories(
-            'scores',
-            example_scores=example_scores,
-            )
-        for scores_directory in scores_directories:
-            directory_entries = sorted(os.listdir(scores_directory))
-            for directory_entry in directory_entries:
-                if not directory_entry[0].isalpha():
-                    continue
-                path = os.path.join(
-                    scores_directory,
-                    directory_entry,
-                    )
-                init_path = os.path.join(path, '__init__.py')
-                if not os.path.exists(init_path):
-                    path = os.path.join(path, directory_entry)
-                    init_path = os.path.join(path, '__init__.py')
-                    if not os.path.exists(init_path):
-                        continue
                 result.append(path)
         return result
 
