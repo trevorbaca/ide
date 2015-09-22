@@ -34,6 +34,7 @@ class AbjadIDE(object):
 
     _secondary_names = (
         '__init__.py',
+        '__illustrate__.py',
         '__metadata__.py',
         '__views__.py',
         '__abbreviations__.py',
