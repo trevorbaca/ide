@@ -32,13 +32,6 @@ class AbjadIDE(object):
 
     _abjad_import_statement = 'from abjad import *'
 
-    _known_secondary_assets = (
-        '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
-        '__abbreviations__.py',
-        )
-
     _known_directory_names = (
         'build',
         'distribution',
@@ -52,6 +45,13 @@ class AbjadIDE(object):
         'segments',
         'stylesheets',
         'test',
+        )
+
+    _secondary_names = (
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        '__abbreviations__.py',
         )
 
     _tab = 4 * ' '
@@ -1120,53 +1120,36 @@ class AbjadIDE(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    def _list_asset_paths(
-        self,
-        directory,
-        example_scores=True,
-        valid_only=True,
-        ):
+    def _list_paths(self, directory, example_scores=True):
         assert os.path.isdir(directory), repr(directory)
-        result = []
+        paths = []
         directory_name = self._to_directory_name(directory)
-        directories = []
-        if self._is_score_directory(directory, 'scores'):
-            if example_scores:
-                directories.append(
-                    configuration.abjad_ide_example_scores_directory)
-            directories.append(configuration.composer_scores_directory)
-        else:
-            score_directories = self._collect_directories(
-                'inner',
-                example_scores=example_scores,
-                )
-            directories = [
-                os.path.join(_, directory_name)
-                for _ in score_directories
-                ]
+        directories = self._collect_directories(
+            directory_name,
+            example_scores=example_scores,
+            )
         for directory in directories:
-            name_predicate = self._directory_to_name_predicate(directory)
             if not directory:
                 continue
             if not os.path.exists(directory):
                 continue
+            name_predicate = self._directory_to_name_predicate(directory)
             entries = sorted(os.listdir(directory))
             for entry in entries:
-                if valid_only:
-                    if not name_predicate(entry):
-                        continue
+                if not name_predicate(entry):
+                    continue
                 path = os.path.join(directory, entry)
                 if self._is_score_directory(directory, 'scores'):
                     path = os.path.join(path, entry)
-                result.append(path)
-        return result
+                paths.append(path)
+        return paths
 
-    def _list_secondary_asset_paths(self, directory):
+    def _list_secondary_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
         paths = []
-        for entry in os.listdir(directory):
-            if entry in self._known_secondary_assets:
-                path = os.path.join(directory, entry)
+        for name in os.listdir(directory):
+            if name in self._secondary_names:
+                path = os.path.join(directory, name)
                 paths.append(path)
         return paths
 
@@ -1183,7 +1166,7 @@ class AbjadIDE(object):
         set_view=True,
         ):
         assert os.path.isdir(directory), repr(directory)
-        paths = self._list_asset_paths(directory)
+        paths = self._list_paths(directory)
         if (apply_current_directory or set_view) and self._session.is_in_score:
             paths = [
                 _ for _ in paths
@@ -1465,12 +1448,12 @@ class AbjadIDE(object):
             )
         self._manage_directory(inner_score_directory)
 
-    # TODO: reimplement in terms of self._list_secondary_asset_paths
+    # TODO: reimplement in terms of self._list_secondary_paths
     def _make_secondary_asset_menu_entries(self, directory):
         assert os.path.isdir(directory), repr(directory)
         menu_entries = []
         for entry in os.listdir(directory):
-            if entry in self._known_secondary_assets:
+            if entry in self._secondary_names:
                 path = os.path.join(directory, entry)
                 menu_entry = (entry, None, None, path)
                 menu_entries.append(menu_entry)
@@ -1853,7 +1836,7 @@ class AbjadIDE(object):
 
     def _select_visible_path(self, directory, infinitive_phrase=None):
         assert os.path.isdir(directory), repr(directory)
-        secondary_paths = self._list_secondary_asset_paths(directory)
+        secondary_paths = self._list_secondary_paths(directory)
         visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
             message = 'no visible paths'
@@ -1877,7 +1860,7 @@ class AbjadIDE(object):
 
     def _select_visible_paths(self, directory, infinitive_phrase=None):
         assert os.path.isdir(directory), repr(directory)
-        secondary_paths = self._list_secondary_asset_paths(directory)
+        secondary_paths = self._list_secondary_paths(directory)
         visible_paths = self._list_visible_paths(directory)
         if not visible_paths:
             message = 'no visible paths'
