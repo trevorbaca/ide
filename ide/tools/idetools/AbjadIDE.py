@@ -349,7 +349,7 @@ class AbjadIDE(object):
             raise ValueError(directory)
 
     def _directory_to_package_contents(self, directory):
-        if self._is_material_directory(directory):
+        if self._is_score_directory(directory, 'material'):
             return {
                 'optional_directories': (
                     '__pycache__',
@@ -393,7 +393,7 @@ class AbjadIDE(object):
                     os.path.join('segments', '__views__.py'),
                     ),
                 }
-        elif self._is_segment_directory(directory):
+        elif self._is_score_directory(directory, 'segment'):
             return {
                 'optional_directories': (
                     '__pycache__',
@@ -1026,23 +1026,6 @@ class AbjadIDE(object):
         return False
 
     @staticmethod
-    def _is_material_directory(path):
-        if not isinstance(path, str):
-            return False
-        if path.startswith(configuration.composer_scores_directory):
-            scores_directory = configuration.composer_scores_directory
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        else:
-            return False
-        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-        parts = path.split(os.path.sep)
-        if len(parts) == scores_directory_parts_count + 4:
-            if parts[-2] == 'materials':
-                return True
-        return False
-
-    @staticmethod
     def _is_module_file_name(expr):
         if not isinstance(expr, str):
             return False
@@ -1111,12 +1094,20 @@ class AbjadIDE(object):
                 if parts[-1] == parts[-2]:
                     return True
         parent_directory = os.path.dirname(directory)
-        if 'material' in prototype:
-            if self._is_material_directory(directory):
-                return True
-        if 'segment' in prototype:
-            if self._is_segment_directory(directory):
-                return True
+        if 'material' in prototype and scores_directory:
+            scores_directory_parts_count = len(
+                scores_directory.split(os.path.sep))
+            parts = directory.split(os.path.sep)
+            if len(parts) == scores_directory_parts_count + 4:
+                if parts[-2] == 'materials':
+                    return True
+        if 'segment' in prototype and scores_directory:
+            scores_directory_parts_count = len(
+                scores_directory.split(os.path.sep))
+            parts = directory.split(os.path.sep)
+            if len(parts) == scores_directory_parts_count + 4:
+                if parts[-2] == 'segments':
+                    return True
         base_name = os.path.basename(directory)
         if (prototype is None and 
             base_name in self._known_directory_names):
@@ -1124,23 +1115,6 @@ class AbjadIDE(object):
         if (base_name in prototype and
             base_name in self._known_directory_names):
             return True
-        return False
-
-    @staticmethod
-    def _is_segment_directory(path):
-        if not isinstance(path, str):
-            return False
-        if path.startswith(configuration.composer_scores_directory):
-            scores_directory = configuration.composer_scores_directory
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        else:
-            return False
-        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-        parts = path.split(os.path.sep)
-        if len(parts) == scores_directory_parts_count + 4:
-            if parts[-2] == 'segments':
-                return True
         return False
 
     @staticmethod
@@ -1407,8 +1381,7 @@ class AbjadIDE(object):
         is_in_score = self._session.is_in_score
         required_files = ()
         optional_files = ()
-        if (self._is_material_directory(directory) or
-            self._is_segment_directory(directory)):
+        if self._is_score_directory(directory, ('material', 'segment')):
             package_contents = self._directory_to_package_contents(directory)
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
@@ -1493,9 +1466,8 @@ class AbjadIDE(object):
             explicit_header=explicit_header,
             name=name,
             )
-        if (self._is_material_directory(directory) or
-            self._is_segment_directory(directory) or
-            self._is_score_directory(directory, 'inner')):
+        package_prototype = ('inner', 'material', 'segment')
+        if self._is_score_directory(directory, package_prototype):
             self._make_package_asset_menu_section(directory, menu)
         else:
             self._make_wrangler_asset_menu_section(directory, menu)
@@ -1802,7 +1774,7 @@ class AbjadIDE(object):
             allow_asset_name_underscores = True
         if '_' in asset_name and not allow_asset_name_underscores:
             asset_name = stringtools.to_space_delimited_lowercase(asset_name)
-        if self._is_segment_directory(path):
+        if self._is_score_directory(path, 'segment'):
             segment_name = self._get_metadatum(path, 'name')
             asset_name = segment_name or asset_name
         if self._session.is_in_score or score_directory is not None:
@@ -1836,8 +1808,7 @@ class AbjadIDE(object):
             header = ' - '.join(header_parts)
             return header
         package_name = interesting_path_parts[1]
-        assert (self._is_material_directory(directory) or
-            self._is_segment_directory(directory))
+        assert self._is_score_directory(directory, ('material', 'segment'))
         package_path = path_parts[:score_part_count+2]
         package_path = os.path.join('/', *package_path)
         package_path = os.path.normpath(package_path)
