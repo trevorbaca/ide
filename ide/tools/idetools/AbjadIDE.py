@@ -413,7 +413,7 @@ class AbjadIDE(object):
         else:
             raise ValueError(directory)
 
-    def _filter_asset_menu_entries_by_view(self, directory, entries):
+    def _filter_menu_entries_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
         view = self._read_view(directory)
         if view is None:
@@ -1155,11 +1155,11 @@ class AbjadIDE(object):
 
     def _list_visible_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        entries = self._make_asset_menu_entries(directory)
+        entries = self._make_menu_entries(directory)
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_asset_menu_entries(
+    def _make_menu_entries(
         self,
         directory,
         apply_current_directory=True,
@@ -1174,7 +1174,7 @@ class AbjadIDE(object):
                 ]
         strings = []
         for path in paths:
-            string = self._path_to_asset_menu_display_string(path)
+            string = self._path_to_menu_display_string(path)
             strings.append(string)
         pairs = list(zip(strings, paths))
         if (not self._session.is_in_score and not
@@ -1203,7 +1203,7 @@ class AbjadIDE(object):
             entries.append(entry)
         if set_view:
             current_score_directory = self._session.current_score_directory
-            entries = self._filter_asset_menu_entries_by_view(
+            entries = self._filter_menu_entries_by_view(
                 directory,
                 entries,
                 )
@@ -1213,13 +1213,6 @@ class AbjadIDE(object):
             self._session.is_test):
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         return entries
-
-    def _make_asset_selection_menu(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        menu = self._io_manager._make_menu(name='asset selection')
-        menu_entries = self._make_asset_menu_entries(directory)
-        menu.make_asset_section(menu_entries=menu_entries)
-        return menu
 
     def _make_candidate_messages(
         self,
@@ -1331,9 +1324,9 @@ class AbjadIDE(object):
             )
         package_prototype = ('inner', 'material', 'segment')
         if self._is_score_directory(directory, package_prototype):
-            self._make_package_asset_menu_section(directory, menu)
+            self._make_package_menu_section(directory, menu)
         else:
-            self._make_wrangler_asset_menu_section(directory, menu)
+            self._make_wrangler_menu_section(directory, menu)
         assert os.path.isdir(directory), repr(directory)
         self._make_command_menu_sections(directory, menu)
         return menu
@@ -1378,7 +1371,7 @@ class AbjadIDE(object):
             self._clear_view(directory)
         self._manage_directory(new_path)
 
-    def _make_package_asset_menu_section(self, directory, menu):
+    def _make_package_menu_section(self, directory, menu):
         names = []
         for name in os.listdir(directory):
             if name == '__pycache__':
@@ -1448,24 +1441,21 @@ class AbjadIDE(object):
             )
         self._manage_directory(inner_score_directory)
 
-    # TODO: reimplement in terms of self._list_secondary_paths
-    def _make_secondary_asset_menu_entries(self, directory):
-        assert os.path.isdir(directory), repr(directory)
+    def _make_secondary_menu_entries(self, directory):
         menu_entries = []
-        for entry in os.listdir(directory):
-            if entry in self._secondary_names:
-                path = os.path.join(directory, entry)
-                menu_entry = (entry, None, None, path)
-                menu_entries.append(menu_entry)
+        for path in self._list_secondary_paths(directory):
+            base_name = os.path.basename(path)
+            menu_entry = (base_name, None, None, path)
+            menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_wrangler_asset_menu_section(self, directory, menu):
+    def _make_wrangler_menu_section(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
         menu_entries = []
         current_directory = directory
-        menu_entries_ = self._make_secondary_asset_menu_entries(directory)
+        menu_entries_ = self._make_secondary_menu_entries(directory)
         menu_entries.extend(menu_entries_)
-        menu_entries_  = self._make_asset_menu_entries(directory)
+        menu_entries_  = self._make_menu_entries(directory)
         menu_entries.extend(menu_entries_)
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
@@ -1636,7 +1626,7 @@ class AbjadIDE(object):
                 annotation = package_name
         return annotation
 
-    def _path_to_asset_menu_display_string(self, path, score_directory=None):
+    def _path_to_menu_display_string(self, path, score_directory=None):
         asset_name = os.path.basename(path)
         allow_asset_name_underscores = False
         if 'test' in path.split(os.path.sep):
@@ -2915,7 +2905,7 @@ class AbjadIDE(object):
         self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
-            message = self._path_to_asset_menu_display_string(directory)
+            message = self._path_to_menu_display_string(directory)
             message = self._strip_annotation(message)
             message = message + ':'
             messages_ = self._git_update(
