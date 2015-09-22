@@ -1096,31 +1096,20 @@ class AbjadIDE(object):
                 return True
             if directory == configuration.abjad_ide_example_scores_directory:
                 return True
-        if 'outer' in prototype:
-            scores_directory = None
-            if directory.startswith(configuration.composer_scores_directory):
-                scores_directory = configuration.composer_scores_directory
-            elif directory.startswith(configuration.abjad_ide_example_scores_directory):
-                scores_directory = configuration.abjad_ide_example_scores_directory
-            if scores_directory is not None:
-                scores_directory_parts_count = len(
-                    scores_directory.split(os.path.sep))
-                parts = directory.split(os.path.sep)
-                if len(parts) == scores_directory_parts_count + 1:
+        scores_directory = self._to_score_directory(directory, 'scores')
+        if 'outer' in prototype and scores_directory:
+            scores_directory_parts_count = len(
+                scores_directory.split(os.path.sep))
+            parts = directory.split(os.path.sep)
+            if len(parts) == scores_directory_parts_count + 1:
+                return True
+        if 'inner' in prototype and scores_directory:
+            scores_directory_parts_count = len(
+                scores_directory.split(os.path.sep))
+            parts = directory.split(os.path.sep)
+            if len(parts) == scores_directory_parts_count + 2:
+                if parts[-1] == parts[-2]:
                     return True
-        if 'inner' in prototype:
-            scores_directory = None
-            if directory.startswith(configuration.composer_scores_directory):
-                scores_directory = configuration.composer_scores_directory
-            elif directory.startswith(configuration.abjad_ide_example_scores_directory):
-                scores_directory = configuration.abjad_ide_example_scores_directory
-            if scores_directory:
-                scores_directory_parts_count = len(
-                    scores_directory.split(os.path.sep))
-                parts = directory.split(os.path.sep)
-                if len(parts) == scores_directory_parts_count + 2:
-                    if parts[-1] == parts[-2]:
-                        return True
         parent_directory = os.path.dirname(directory)
         if 'material' in prototype:
             if self._is_material_directory(directory):
@@ -2199,9 +2188,12 @@ class AbjadIDE(object):
     @staticmethod
     def _to_score_directory(path, directory_name=None):
         assert os.path.sep in path, repr(path)
-        is_composer_score = False
+        if directory_name == 'scores':
+            if path.startswith(configuration.composer_scores_directory):
+                return configuration.composer_scores_directory
+            elif path.startswith(configuration.abjad_ide_example_scores_directory):
+                return configuration.abjad_ide_example_scores_directory
         if path.startswith(configuration.composer_scores_directory):
-            is_composer_score = True
             prefix = len(configuration.composer_scores_directory)
         elif path.startswith(configuration.abjad_ide_example_scores_directory):
             prefix = len(configuration.abjad_ide_example_scores_directory)
