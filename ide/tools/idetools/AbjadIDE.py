@@ -170,9 +170,9 @@ class AbjadIDE(object):
                 directories.append(directory_)
         return directories
 
-    def _confirm_segment_names(self, score_directory):
-        segments_directory = os.path.join(score_directory, 'segments')
-        view_name = self._read_view_name(segments_directory)
+    def _confirm_segment_names(self, directory):
+        segments_directory = os.path.join(directory, 'segments')
+        view_name = self._get_metadatum(directory, 'view_name')
         view_inventory = self._read_view_inventory(segments_directory)
         if not view_inventory or view_name not in view_inventory:
             view_name = None
@@ -480,14 +480,6 @@ class AbjadIDE(object):
             metadatum = default
         return metadatum
 
-    def _get_name_metadatum(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        name = self._get_metadatum(directory, 'name')
-        if not name:
-            name = os.path.basename(directory)
-            name = name.replace('_', ' ')
-        return name
-
     def _get_previous_segment_directory(self, directory):
         segments_directory = self._to_score_directory(
             directory,
@@ -539,11 +531,6 @@ class AbjadIDE(object):
                 path = os.path.join(root_directory, path)
                 paths.append(path)
         return paths
-
-    @staticmethod
-    def _get_views_py_path(directory):
-        assert os.path.isdir(directory), repr(directory)
-        return os.path.join(directory, '__views__.py')
 
     def _git_add(self, path, dry_run=False):
         change = systemtools.TemporaryDirectoryChange(directory=path)
@@ -721,7 +708,7 @@ class AbjadIDE(object):
                 self._io_manager._display([message, ''])
 
     def _interpret_file_ending_with(self, directory, string):
-        r'''Typesets TeX file.
+        r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
@@ -803,16 +790,6 @@ class AbjadIDE(object):
         if first_line.startswith('?'):
             return True
         return False
-
-    def _is_git_versioned(self, path):
-        if not self._is_in_git_repository(path):
-            return False
-        git_status_lines = self._get_git_status_lines(path)
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('?'):
-            return False
-        return True
 
     def _is_in_git_repository(self, path):
         if path is None:
@@ -1005,12 +982,7 @@ class AbjadIDE(object):
         paths = [_[-1] for _ in entries]
         return paths
 
-    def _make_candidate_messages(
-        self,
-        result,
-        candidate_path,
-        incumbent_path,
-        ):
+    def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []
         messages.append('the files ...')
         messages.append(self._tab + candidate_path)
@@ -1116,11 +1088,9 @@ class AbjadIDE(object):
         self._make_command_menu_sections(directory, menu)
         return menu
 
-    def _make_material_or_segment_package(self, directory):
+    def _make_package(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        assert self._session.is_in_score
-        new_directory = directory
-        path = self._get_available_path(new_directory)
+        path = self._get_available_path(directory)
         if not path:
             return
         assert not os.path.exists(path)
@@ -1333,7 +1303,8 @@ class AbjadIDE(object):
             return
         self._io_manager.open_file(paths)
 
-    def _parse_paper_dimensions(self, score_directory):
+    def _parse_paper_dimensions(self, directory):
+        score_directory = self._to_score_directory(directory)
         string = self._get_metadatum(score_directory, 'paper_dimensions')
         string = string or '8.5 x 11 in'
         parts = string.split()
@@ -1343,25 +1314,9 @@ class AbjadIDE(object):
         height = eval(height)
         return width, height, units
 
-    def _path_to_annotation(self, path):
-        annotation = None
-        if self._is_score_directory(path, 'inner'):
-            metadata = self._get_metadata(path)
-            if metadata:
-                year = metadata.get('year')
-                title = metadata.get('title')
-                if year:
-                    annotation = '{} ({})'.format(title, year)
-                else:
-                    annotation = str(title)
-            else:
-                package_name = os.path.basename(path)
-                annotation = package_name
-        return annotation
-
     def _read_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        view_name = self._read_view_name(directory)
+        view_name = self._get_metadatum(directory, 'view_name')
         if not view_name:
             return
         view_inventory = self._read_view_inventory(directory)
@@ -1372,7 +1327,7 @@ class AbjadIDE(object):
     def _read_view_inventory(self, directory):
         from ide.tools import idetools
         assert os.path.isdir(directory), repr(directory)
-        views_py_path = self._get_views_py_path(directory)
+        views_py_path = os.path.join(directory, '__views__.py')
         result = self._io_manager.execute_file(
             path=views_py_path,
             attribute_names=('view_inventory',),
@@ -1396,10 +1351,6 @@ class AbjadIDE(object):
         items = list(view_inventory.items())
         view_inventory = idetools.ViewInventory(items)
         return view_inventory
-
-    def _read_view_name(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        return self._get_metadatum(directory, 'view_name')
 
     def _remove(self, path):
         # handle score packages correctly
@@ -1546,13 +1497,6 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    @staticmethod
-    def _sort_ordered_dictionary(dictionary):
-        new_dictionary = type(dictionary)()
-        for key in sorted(dictionary):
-            new_dictionary[key] = dictionary[key]
-        return new_dictionary
-
     def _start(self, input_=None):
         self._session._reinitialize()
         type(self).__init__(self, session=self._session)
@@ -1568,15 +1512,6 @@ class AbjadIDE(object):
                 break
         self._io_manager._clean_up()
         self._io_manager.clear_terminal()
-
-    @staticmethod
-    def _strip_annotation(display_string):
-        if not display_string.endswith(')'):
-            return display_string
-        index = display_string.find('(')
-        result = display_string[:index]
-        result = result.strip()
-        return result
 
     def _test_add(self, path):
         assert self._is_up_to_date(path)
@@ -1598,24 +1533,6 @@ class AbjadIDE(object):
             self._unadd_added_assets(path)
             assert self._get_unadded_asset_paths(path) == [path_1, path_2]
             assert self._get_added_asset_paths(path) == []
-        assert self._is_up_to_date(path)
-        return True
-
-    def _test_revert(self, path):
-        assert self._is_up_to_date(path)
-        assert self._get_modified_asset_paths(path) == []
-        file_name = self._find_first_file_name(path)
-        if not file_name:
-            return
-        file_path = os.path.join(path, file_name)
-        with systemtools.FilesystemState(keep=[file_path]):
-            with open(file_path, 'a') as file_pointer:
-                string = '# extra text appended during testing'
-                file_pointer.write(string)
-            assert not self._is_up_to_date(path)
-            assert self._get_modified_asset_paths(path) == [file_path]
-            self._get_revert(path)
-        assert self._get_modified_asset_paths(path) == []
         assert self._is_up_to_date(path)
         return True
 
@@ -1686,14 +1603,26 @@ class AbjadIDE(object):
             directory_part = directory_part + ' directory'
             header_parts.append(directory_part)
         if package_part:
-            package_part = self._get_name_metadatum(directory)
+            package_part = package_part.replace('_', ' ')
+            package_part = self._get_metadatum(directory, 'name', package_part)
             header_parts.append(package_part)
         header = ' - '.join(header_parts)
         return header
 
     def _to_menu_string(self, directory):
         if self._is_score_directory(directory, 'inner'):
-            return self._path_to_annotation(directory)
+            annotation = None
+            metadata = self._get_metadata(directory)
+            if metadata:
+                year = metadata.get('year')
+                title = metadata.get('title')
+                if year:
+                    annotation = '{} ({})'.format(title, year)
+                else:
+                    annotation = str(title)
+            else:
+                annotation = os.path.basename(directory)
+            return annotation
         name = os.path.basename(directory)
         if '_' in name and not self._is_score_directory(directory, 'test'):
             name = stringtools.to_space_delimited_lowercase(name)
@@ -1795,7 +1724,6 @@ class AbjadIDE(object):
         name = name + '.py'
         assert self._is_test_file_name(name), repr(name)
         return name
-    
 
     @staticmethod
     def _trim_lilypond_file(file_path):
@@ -1891,32 +1819,6 @@ class AbjadIDE(object):
             if not measure_count:
                 return
             next_bar_number = first_bar_number + measure_count
-
-    def _write_enclosing_artifacts(self, inner_path, outer_path):
-        self._copy_boilerplate(
-            'README.md',
-            outer_path,
-            )
-        self._copy_boilerplate(
-            'requirements.txt',
-            outer_path,
-            )
-        self._copy_boilerplate(
-            'setup.cfg',
-            outer_path,
-            )
-        package_name = os.path.basename(outer_path)
-        replacements = {
-            'COMPOSER_EMAIL': configuration.composer_email,
-            'COMPOSER_FULL_NAME': configuration.composer_full_name,
-            'COMPOSER_GITHUB_USERNAME': configuration.composer_github_username,
-            'PACKAGE_NAME': package_name,
-            }
-        self._copy_boilerplate(
-            'setup.py',
-            outer_path,
-            replacements=replacements,
-            )
 
     def _write_metadata_py(self, directory, metadata):
         assert os.path.isdir(directory), repr(directory)
@@ -2596,7 +2498,10 @@ class AbjadIDE(object):
         for directory in directories:
             messages = []
             message = self._to_menu_string(directory)
-            message = self._strip_annotation(message)
+            if message.endswith(')'):
+                index = message.find('(')
+                message = message[:index]
+                message = message.strip()
             message = message + ':'
             messages_ = self._git_update(
                 directory,
@@ -3347,15 +3252,12 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        asset_identifier = self._to_asset_identifier(directory)
         if self._is_score_directory(directory, 'scores'):
             self._make_score_package()
-        elif asset_identifier == 'file':
-            self._make_file(directory)
-        elif asset_identifier == 'package':
-            self._make_material_or_segment_package(directory)
+        elif self._is_score_directory(directory, ('materials', 'segments')):
+            self._make_package(directory)
         else:
-            raise ValueError(directory)
+            self._make_file(directory)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
