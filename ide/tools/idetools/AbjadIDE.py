@@ -1024,22 +1024,22 @@ class AbjadIDE(object):
             return True
         return False
 
-    @staticmethod
-    def _is_inner_score_directory(path):
-        if not isinstance(path, str):
-            return False
-        if path.startswith(configuration.composer_scores_directory):
-            scores_directory = configuration.composer_scores_directory
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        else:
-            return False
-        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-        parts = path.split(os.path.sep)
-        if len(parts) == scores_directory_parts_count + 2:
-            if parts[-1] == parts[-2]:
-                return True
-        return False
+    def _is_inner_score_directory(self, path):
+#        if not isinstance(path, str):
+#            return False
+#        if path.startswith(configuration.composer_scores_directory):
+#            scores_directory = configuration.composer_scores_directory
+#        elif path.startswith(configuration.abjad_ide_example_scores_directory):
+#            scores_directory = configuration.abjad_ide_example_scores_directory
+#        else:
+#            return False
+#        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
+#        parts = path.split(os.path.sep)
+#        if len(parts) == scores_directory_parts_count + 2:
+#            if parts[-1] == parts[-2]:
+#                return True
+#        return False
+        return self._is_score_directory(path, 'inner')
 
     @staticmethod
     def _is_material_directory(path):
@@ -1125,6 +1125,10 @@ class AbjadIDE(object):
         return False
 
     def _is_score_directory(self, directory, prototype=()):
+        if not isinstance(directory, str):
+            return False
+        if not os.path.isdir(directory):
+            return False
         if isinstance(prototype, str):
             prototype = (prototype,)
         assert all(isinstance(_, str) for _ in prototype)
@@ -1133,6 +1137,19 @@ class AbjadIDE(object):
                 return True
             if directory == configuration.abjad_ide_example_scores_directory:
                 return True
+        if 'inner' in prototype:
+            scores_directory = None
+            if directory.startswith(configuration.composer_scores_directory):
+                scores_directory = configuration.composer_scores_directory
+            elif directory.startswith(configuration.abjad_ide_example_scores_directory):
+                scores_directory = configuration.abjad_ide_example_scores_directory
+            if scores_directory:
+                scores_directory_parts_count = len(
+                    scores_directory.split(os.path.sep))
+                parts = directory.split(os.path.sep)
+                if len(parts) == scores_directory_parts_count + 2:
+                    if parts[-1] == parts[-2]:
+                        return True
         parent_directory = os.path.dirname(directory)
         if 'material' in prototype:
             if self._is_material_directory(directory):
@@ -1140,14 +1157,13 @@ class AbjadIDE(object):
         if 'segment' in prototype:
             if self._is_segment_directory(directory):
                 return True
-        if self._is_inner_score_directory(parent_directory):
-            base_name = os.path.basename(directory)
-            if (prototype is None and 
-                base_name in self._known_directory_names):
-                return True
-            if (base_name in prototype and
-                base_name in self._known_directory_names):
-                return True
+        base_name = os.path.basename(directory)
+        if (prototype is None and 
+            base_name in self._known_directory_names):
+            return True
+        if (base_name in prototype and
+            base_name in self._known_directory_names):
+            return True
         return False
 
     @staticmethod
