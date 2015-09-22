@@ -185,28 +185,23 @@ class AbjadIDE(object):
                 directories.append(directory)
         return directories
 
-    def _collect_directory_contents(self, directory, example_scores=False):
-        directories = self._collect_directories(
-            directory,
-            example_scores=example_scores,
-            )
-        directory_name = self._to_directory_name(directory)
-        if directory_name in ('materials', 'segments'):
-            directory_name = directory_name[:-1]
-        asset_identifier = self._directory_to_asset_identifier(directory)
-        if asset_identifier == 'file':
-            paths = self._collect_files(
-                directory_name,
-                example_scores=example_scores,
-                )
-        elif asset_identifier == 'package':
-            paths = self._collect_directories(
-                directory_name,
-                example_scores=example_scores,
-                )
-        else:
-            raise ValueError(asset_identifier)
-        return paths
+#    def _collect_directory_contents(self, directory, example_scores=False):
+#        directories = self._collect_directories(
+#            directory,
+#            example_scores=example_scores,
+#            )
+#        paths = []
+#        for directory in directories:
+#            for name in os.listdir(directory):
+#                if name.endswith('.pyc'):
+#                    continue
+#                if name.startswith('.'):
+#                    continue
+#                if name == '__pycache__':
+#                    continue
+#                path = os.path.join(directory, name)
+#                paths.append(path)
+#        return paths
 
     def _collect_files(self, directory_name, example_scores=False):
         files = []
@@ -1933,6 +1928,10 @@ class AbjadIDE(object):
             return 'score'
         if self._is_score_directory(path, 'inner'):
             return 'score'
+        if self._is_score_directory(path, 'material'):
+            return 'material'
+        if self._is_score_directory(path, 'segment'):
+            return 'segment'
         for part in reversed(path.split(os.path.sep)):
             if part in self._known_directory_names:
                 return part
@@ -2296,15 +2295,26 @@ class AbjadIDE(object):
         section='basic',
         )
     def copy(self, directory):
-        r'''Copies external asset in to `directory`.
+        r'''Copies into `directory`.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._collect_directory_contents(
+        directories = self._collect_directories(
             directory,
             example_scores=self._session.is_test,
             )
+        paths = []
+        for directory_ in directories:
+            for name in os.listdir(directory_):
+                if name.endswith('.pyc'):
+                    continue
+                if name.startswith('.'):
+                    continue
+                if name == '__pycache__':
+                    continue
+                path = os.path.join(directory_, name)
+                paths.append(path)
         selector = self._io_manager._make_selector(items=paths)
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
