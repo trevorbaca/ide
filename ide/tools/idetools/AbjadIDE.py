@@ -1177,7 +1177,7 @@ class AbjadIDE(object):
     def _make_command_menu_sections(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
         methods = []
-        methods_ = self._get_commands()
+        commands = self._get_commands()
         is_in_score = self._session.is_in_score
         required_files = ()
         optional_files = ()
@@ -1186,45 +1186,44 @@ class AbjadIDE(object):
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
         files = required_files + optional_files
-        is_in_score_directory = self._is_score_directory(directory, 'inner')
         directory_name = os.path.basename(directory)
         parent_directory_name = directory.split(os.path.sep)[-2]
-        is_home = False
-        if self._is_score_directory(directory, 'scores'):
-            is_home = True
-        for method_ in methods_:
-            if is_in_score and not method_.in_score:
+        for command in commands:
+            if is_in_score and not command.in_score:
                 continue
-            if not is_in_score and not method_.outside_score:
+            if not is_in_score and not command.outside_score:
                 continue
-            if (method_.outside_score == 'home' and
-                (not is_home and not is_in_score)):
+            if (command.outside_score == 'home' and
+                (not self._is_score_directory(directory, 'scores') and
+                not is_in_score)):
                 continue
-            if ((method_.directories or method_.parent_directories) and
-                directory_name not in method_.directories and
-                parent_directory_name not in method_.parent_directories):
+            if ((command.directories or command.parent_directories) and
+                directory_name not in command.directories and
+                parent_directory_name not in command.parent_directories):
                 continue
-            if method_.file_ is not None and method_.file_ not in files:
+            if command.file_ is not None and command.file_ not in files:
                 continue
-            if method_.in_score_directory_only and not is_in_score_directory:
+            if (command.in_score_directory_only and not
+                self._is_score_directory(directory, 'inner')):
                 continue
-            if method_.never_in_score_directory and is_in_score_directory:
+            if (command.never_in_score_directory and
+                self._is_score_directory(directory, 'inner')):
                 continue
-            methods.append(method_)
-        method_groups = {}
+            methods.append(command)
+        command_groups = {}
         for method in methods:
-            if method.section not in method_groups:
-                method_groups[method.section] = []
-            method_group = method_groups[method.section]
-            method_group.append(method)
-        for menu_section_name in method_groups:
-            method_group = method_groups[menu_section_name]
+            if method.section not in command_groups:
+                command_groups[method.section] = []
+            command_group = command_groups[method.section]
+            command_group.append(method)
+        for menu_section_name in command_groups:
+            command_group = command_groups[menu_section_name]
             is_hidden = True
             if menu_section_name == 'basic':
                 is_hidden = False
             menu.make_command_section(
                 is_hidden=is_hidden,
-                commands=method_group,
+                commands=command_group,
                 name=menu_section_name,
                 )
 
