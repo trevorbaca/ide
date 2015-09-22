@@ -1008,23 +1008,6 @@ class AbjadIDE(object):
             return False
         return True
 
-    def _is_in_score_directory(self):
-        current_directory = self._session.manifest_current_directory
-        if current_directory is None:
-            current_directory = configuration.composer_scores_directory
-        current_directory = os.path.normpath(current_directory)
-        current_directory_parts = current_directory.split(os.path.sep)
-        grandparent_directory_parts = current_directory_parts[:-2]
-        scores_directory = configuration.composer_scores_directory
-        scores_directory_parts = scores_directory.split(os.path.sep)
-        if grandparent_directory_parts == scores_directory_parts:
-            return True
-        scores_directory = configuration.abjad_ide_example_scores_directory
-        scores_directory_parts = scores_directory.split(os.path.sep)
-        if grandparent_directory_parts == scores_directory_parts:
-            return True
-        return False
-
     @staticmethod
     def _is_module_file_name(expr):
         if not isinstance(expr, str):
@@ -1049,22 +1032,6 @@ class AbjadIDE(object):
         if not stringtools.is_snake_case(expr):
             return False
         return True
-
-    @staticmethod
-    def _is_path_in_score(path):
-        if not isinstance(path, str):
-            return False
-        if path.startswith(configuration.composer_scores_directory):
-            scores_directory = configuration.composer_scores_directory
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        else:
-            return False
-        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-        parts = path.split(os.path.sep)
-        if scores_directory_parts_count < len(parts):
-            return True
-        return False
 
     def _is_score_directory(self, directory, prototype=()):
         if not isinstance(directory, str):
@@ -1386,7 +1353,7 @@ class AbjadIDE(object):
             required_files = package_contents['required_files']
             optional_files = package_contents['optional_files']
         files = required_files + optional_files
-        is_in_score_directory = self._is_in_score_directory()
+        is_in_score_directory = self._is_score_directory(directory, 'inner')
         directory_name = os.path.basename(directory)
         parent_directory_name = directory.split(os.path.sep)[-2]
         is_home = False
