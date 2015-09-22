@@ -42,7 +42,9 @@ def test_AbjadIDE_new_01():
         assert os.path.exists(outer_path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        assert abjad_ide._list_directory(inner_path) == inner_directory_entries
+        entries = os.listdir(inner_path)
+        for entry in inner_directory_entries:
+            assert entry in entries, repr(entry)
         for file_name in outer_directory_entries:
             path = os.path.join(outer_path, file_name)
             assert os.path.exists(path)
@@ -187,7 +189,9 @@ def test_AbjadIDE_new_07():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        assert abjad_ide._list_directory(path) == directory_entries
+        entries = os.listdir(path)
+        for entry in directory_entries:
+            assert entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_08():
@@ -215,7 +219,9 @@ def test_AbjadIDE_new_08():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        assert abjad_ide._list_directory(path) == directory_entries
+        entries = os.listdir(path)
+        for entry in directory_entries:
+            assert entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_09():
@@ -243,7 +249,9 @@ def test_AbjadIDE_new_09():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        assert abjad_ide._list_directory(path) == directory_entries
+        entries = os.listdir(path)
+        for entry in directory_entries:
+            assert entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_10():
@@ -271,7 +279,9 @@ def test_AbjadIDE_new_10():
         assert os.path.exists(path)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        assert abjad_ide._list_directory(path) == directory_entries
+        entries = os.listdir(path)
+        for entry in directory_entries:
+            assert entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_11():

@@ -582,10 +582,13 @@ class AbjadIDE(object):
         return result
 
     def _get_file_path_ending_with(self, directory, string):
-        for file_name in self._list_directory(directory):
-            if file_name.endswith(string):
-                file_path = os.path.join(directory, file_name)
-                return file_path
+        if not os.path.isdir(directory):
+            return
+        for name in os.listdir(directory):
+            if name.endswith(string):
+                path = os.path.join(directory, name)
+                if os.path.isfile(path):
+                    return path
 
     def _get_git_status_lines(self, directory):
         command = 'git status --porcelain {}'
@@ -1116,29 +1119,6 @@ class AbjadIDE(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
-    def _is_valid_file_directory_entry(self, expr, directory):
-        assert os.path.isdir(directory), repr(directory)
-        if expr[0].isalpha():
-            if not expr.endswith('.pyc'):
-                name, file_extension = os.path.splitext(expr)
-                file_name_predicate = self._directory_to_name_predicate(
-                    directory)
-                required_file_extension = self._directory_to_file_extension(
-                    directory)
-                if file_name_predicate(name):
-                    if required_file_extension == '':
-                        return True
-                    elif required_file_extension == file_extension:
-                        return True
-        return False
-
-    def _is_valid_package_directory_entry(self, expr, directory=None):
-        if expr[0].isalpha():
-            if not expr.endswith('.pyc'):
-                if '.' not in expr:
-                    return True
-        return False
-
     def _list_asset_paths(
         self,
         directory,
@@ -1180,42 +1160,6 @@ class AbjadIDE(object):
                 if self._is_score_directory(directory, 'scores'):
                     path = os.path.join(path, entry)
                 result.append(path)
-        return result
-
-    @staticmethod
-    def _list_directory(
-        path,
-        public_entries_only=False,
-        smart_sort=False,
-        ):
-        entries = []
-        if not os.path.exists(path):
-            return entries
-        if public_entries_only:
-            for entry in sorted(os.listdir(path)):
-                if entry == '__pycache__':
-                    continue
-                if entry[0].isalpha():
-                    if not entry.endswith('.pyc'):
-                        if not entry in ('test',):
-                            entries.append(entry)
-        else:
-            for entry in sorted(os.listdir(path)):
-                if entry == '__pycache__':
-                    continue
-                if not entry.startswith('.'):
-                    if not entry.endswith('.pyc'):
-                        entries.append(entry)
-        if not smart_sort:
-            return entries
-        files, directories = [], []
-        for entry in entries:
-            path = os.path.join(path, entry)
-            if os.path.isdir(path):
-                directories.append(entry + '/')
-            else:
-                files.append(entry)
-        result = files + directories
         return result
 
     @staticmethod
@@ -1483,14 +1427,20 @@ class AbjadIDE(object):
         self._manage_directory(new_path)
 
     def _make_package_asset_menu_section(self, directory, menu):
-        directory_entries = self._list_directory(directory, smart_sort=True)
+        names = []
+        for name in os.listdir(directory):
+            if name == '__pycache__':
+                continue
+            if name.startswith('.'):
+                continue
+            if name.endswith('.pyc'):
+                continue
+            names.append(name)
+        names.sort()
         menu_entries = []
-        for directory_entry in directory_entries:
-            clean_directory_entry = directory_entry
-            if directory_entry.endswith('/'):
-                clean_directory_entry = directory_entry[:-1]
-            path = os.path.join(directory, clean_directory_entry)
-            menu_entry = (directory_entry, None, None, path)
+        for name in names:
+            path = os.path.join(directory, name)
+            menu_entry = (name, None, None, path)
             menu_entries.append(menu_entry)
         menu.make_asset_section(menu_entries=menu_entries)
 
