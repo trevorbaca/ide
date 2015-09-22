@@ -12,7 +12,6 @@ class Command(object):
         'back-home-quit',
         'basic',
         'build',
-        'comparison',
         'definition_file',
         'display navigation',
         'git',
@@ -42,12 +41,8 @@ class Command(object):
         argument_name=None,
         description=None, 
         directories=None,
-        file_=None,
         forbidden_directories=(),
-        in_score_directory_only=False,
         is_hidden=True,
-        never_in_score_directory=False,
-        outside_score=True,
         section=None,
         ):
         assert isinstance(argument_name, (str, type(None)))
@@ -60,17 +55,9 @@ class Command(object):
         if isinstance(directories, str):
             directories = (directories,)
         self.directories = directories
-        assert isinstance(file_, (str, type(None)))
-        self.file_ = file_
         self.forbidden_directories = forbidden_directories
-        assert isinstance(in_score_directory_only, bool)
-        self.in_score_directory_only = in_score_directory_only
         assert isinstance(is_hidden, bool), repr(is_hidden)
         self.is_hidden = is_hidden
-        assert isinstance(never_in_score_directory, bool)
-        self.never_in_score_directory = never_in_score_directory
-        assert isinstance(outside_score, bool) or outside_score == 'home'
-        self.outside_score = outside_score
         assert section in self._allowable_sections, repr(section)
         self.section = section
 
@@ -88,13 +75,9 @@ class Command(object):
         else:
             method.description = method.__name__.replace('_', ' ')
         method.directories = self.directories
-        method.file_ = self.file_
         method.forbidden_directories = self.forbidden_directories
-        method.in_score_directory_only = self.in_score_directory_only
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
-        method.outside_score = self.outside_score
-        method.never_in_score_directory = self.never_in_score_directory
         method.section = self.section
         return method
 

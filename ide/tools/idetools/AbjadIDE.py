@@ -1182,27 +1182,24 @@ class AbjadIDE(object):
 
     def _make_command_menu_sections(self, directory, menu):
         assert os.path.isdir(directory), repr(directory)
-        methods = []
-        commands = self._get_commands()
-        for command in commands:
+        commands = []
+        for command in self._get_commands():
             if not self._is_score_directory(directory, command.directories):
                 continue
             if (command.forbidden_directories and
                 self._is_score_directory(
                 directory, command.forbidden_directories)):
                 continue
-            methods.append(command)
+            commands.append(command)
         command_groups = {}
-        for method in methods:
-            if method.section not in command_groups:
-                command_groups[method.section] = []
-            command_group = command_groups[method.section]
-            command_group.append(method)
+        for command in commands:
+            if command.section not in command_groups:
+                command_groups[command.section] = []
+            command_group = command_groups[command.section]
+            command_group.append(command)
         for menu_section_name in command_groups:
             command_group = command_groups[menu_section_name]
-            is_hidden = True
-            if menu_section_name == 'basic':
-                is_hidden = False
+            is_hidden = not menu_section_name == 'basic'
             menu.make_command_section(
                 is_hidden=is_hidden,
                 commands=command_group,
@@ -2180,7 +2177,6 @@ class AbjadIDE(object):
         'cp',
         argument_name='current_directory',
         forbidden_directories=('inner',),
-        is_hidden=False,
         section='basic',
         )
     def copy(self, directory):
@@ -2229,10 +2225,7 @@ class AbjadIDE(object):
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
-    @Command(
-        '?', 
-        section='system',
-        )
+    @Command('?', section='system')
     def display_action_command_help(self):
         r'''Displays action commands.
 
@@ -2240,10 +2233,7 @@ class AbjadIDE(object):
         '''
         pass
 
-    @Command(
-        ';', 
-        section='display navigation',
-        )
+    @Command(';', section='display navigation')
     def display_navigation_command_help(self):
         r'''Displays navigation commands.
 
@@ -3049,7 +3039,6 @@ class AbjadIDE(object):
         argument_name='current_directory',
         directories=('build'),
         section='build',
-        outside_score=False,
         )
     def interpret_back_cover(self, directory):
         r'''Interprets ``back-cover.tex``.
@@ -3065,7 +3054,6 @@ class AbjadIDE(object):
         'lyi*',
         argument_name='current_directory',
         directories=('materials', 'segments'),
-        outside_score=False,
         section='star',
         )
     def interpret_every_ly(self, directory, open_every_illustration_pdf=True):
@@ -3106,7 +3094,6 @@ class AbjadIDE(object):
         'fci',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def interpret_front_cover(self, directory):
@@ -3164,7 +3151,6 @@ class AbjadIDE(object):
         'mi',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def interpret_music(self, directory):
@@ -3184,7 +3170,6 @@ class AbjadIDE(object):
         'pi',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def interpret_preface(self, directory):
@@ -3201,7 +3186,6 @@ class AbjadIDE(object):
         'si',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def interpret_score(self, directory):
@@ -3505,7 +3489,6 @@ class AbjadIDE(object):
         'io*',
         argument_name='current_directory',
         directories=('materials', 'segments'),
-        outside_score=False,
         section='star',
         )
     def open_every_illustration_pdf(self, directory):
@@ -3596,7 +3579,6 @@ class AbjadIDE(object):
         'sp',
         argument_name='current_directory',
         directories=('build'),
-        outside_score=False,
         section='build',
         )
     def push_score_pdf_to_distribution_directory(self, directory):
@@ -3642,7 +3624,6 @@ class AbjadIDE(object):
         'rm',
         argument_name='current_directory',
         forbidden_directories=('inner',),
-        is_hidden=False,
         section='basic',
         )
     def remove(self, directory):
@@ -3689,7 +3670,6 @@ class AbjadIDE(object):
         'ren',
         argument_name='current_directory',
         forbidden_directories=('inner',),
-        is_hidden=False,
         section='basic',
         )
     def rename(self, directory):
@@ -3768,18 +3748,7 @@ class AbjadIDE(object):
     @Command(
         'ws',
         argument_name='current_directory',
-        directories=(
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'materials',
-            'scores',
-            'segments',
-            'stylesheets',
-            'test',
-            ),
-        outside_score='home',
+        forbidden_directories=('inner', 'material', 'segment',),
         section='view',
         )
     def set_view(self, directory):
