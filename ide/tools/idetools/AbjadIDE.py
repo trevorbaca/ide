@@ -32,21 +32,6 @@ class AbjadIDE(object):
 
     _abjad_import_statement = 'from abjad import *'
 
-    _known_directory_names = (
-        'build',
-        'distribution',
-        'etc',
-        'makers',
-        'material',
-        'materials',
-        'score',
-        'scores',
-        'segment',
-        'segments',
-        'stylesheets',
-        'test',
-        )
-
     _secondary_names = (
         '__init__.py',
         '__metadata__.py',
@@ -1068,11 +1053,22 @@ class AbjadIDE(object):
                 if parts[-2] == 'segments':
                     return True
         base_name = os.path.basename(directory)
-        if (prototype is None and 
-            base_name in self._known_directory_names):
-            return True
-        if (base_name in prototype and
-            base_name in self._known_directory_names):
+        if base_name not in (
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'material',
+            'materials',
+            'score',
+            'scores',
+            'segment',
+            'segments',
+            'stylesheets',
+            'test',
+            ):
+            return False
+        if prototype is None or base_name in prototype:
             return True
         return False
 
