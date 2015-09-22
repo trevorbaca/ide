@@ -1017,6 +1017,13 @@ class AbjadIDE(object):
             return False
         if isinstance(prototype, str):
             prototype = (prototype,)
+        if not prototype:
+            scores_directory = configuration.composer_scores_directory
+            if directory.startswith(scores_directory):
+                return True
+            scores_directory = configuration.abjad_ide_example_scores_directory
+            if directory.startswith(scores_directory):
+                return True
         assert all(isinstance(_, str) for _ in prototype)
         if 'scores'in prototype:
             if directory == configuration.composer_scores_directory:
@@ -1178,30 +1185,16 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         methods = []
         commands = self._get_commands()
-        is_in_score = self._session.is_in_score
-        required_files = ()
-        optional_files = ()
-        if self._is_score_directory(directory, ('material', 'segment')):
-            package_contents = self._directory_to_package_contents(directory)
-            required_files = package_contents['required_files']
-            optional_files = package_contents['optional_files']
-        files = required_files + optional_files
-        directory_name = os.path.basename(directory)
-        parent_directory_name = directory.split(os.path.sep)[-2]
         for command in commands:
-            if is_in_score and not command.in_score:
+            if self._session.is_in_score and not command.in_score:
                 continue
-            if not is_in_score and not command.outside_score:
+            if not self._session.is_in_score and not command.outside_score:
                 continue
             if (command.outside_score == 'home' and
                 (not self._is_score_directory(directory, 'scores') and
-                not is_in_score)):
+                not self._session.is_in_score)):
                 continue
-            if ((command.directories or command.parent_directories) and
-                directory_name not in command.directories and
-                parent_directory_name not in command.parent_directories):
-                continue
-            if command.file_ is not None and command.file_ not in files:
+            if not self._is_score_directory(directory, command.directories):
                 continue
             if (command.in_score_directory_only and not
                 self._is_score_directory(directory, 'inner')):
@@ -2091,8 +2084,7 @@ class AbjadIDE(object):
         'dfk',
         argument_name='current_directory',
         description='definition file - check',
-        file_='definition.py',
-        outside_score=False,
+        directories=('material', 'segment',),
         section='definition_file',
         )
     def check_definition_file(self, directory, dry_run=False):
@@ -2300,8 +2292,7 @@ class AbjadIDE(object):
         'df',
         argument_name='current_directory',
         description='definition file - edit',
-        file_='definition.py',
-        outside_score=False,
+        directories=('material', 'segment',),
         section='definition_file',
         )
     def edit_definition_file(self, directory):
@@ -2332,8 +2323,7 @@ class AbjadIDE(object):
         'ill',
         argument_name='current_directory',
         description='illustrate file - edit',
-        file_='__illustrate__.py',
-        outside_score=False,
+        directories=('material',),
         section='illustrate_file',
         )
     def edit_illustrate_file(self, directory):
@@ -2365,8 +2355,7 @@ class AbjadIDE(object):
         'ly',
         argument_name='current_directory',
         description='ly - edit',
-        file_='illustration.ly',
-        outside_score=False,
+        directories=('material', 'segment',),
         section='ly',
         )
     def edit_ly(self, directory):
@@ -2929,9 +2918,7 @@ class AbjadIDE(object):
     @Command(
         'i',
         argument_name='current_directory',
-        file_='definition.py',
-        outside_score=False,
-        parent_directories=('segments',),
+        directories=('segment',),
         section='pdf',
         )
     def illustrate_definition(self, directory, dry_run=False):
@@ -3053,7 +3040,6 @@ class AbjadIDE(object):
         'di*',
         argument_name='current_directory',
         directories=('segments'),
-        outside_score=False,
         section='star',
         )
     def illustrate_every_definition(self, directories):
@@ -3159,8 +3145,7 @@ class AbjadIDE(object):
         'lyi',
         argument_name='current_directory',
         description='ly - interpret',
-        file_='illustration.ly',
-        outside_score=False,
+        directories=('material', 'segment',),
         section='ly',
         )
     def interpret_ly(self, directory, confirm=True, dry_run=False):
@@ -3269,8 +3254,7 @@ class AbjadIDE(object):
         'illm',
         argument_name='current_directory',
         description='illustrate file - make',
-        file_='__illustrate__.py',
-        outside_score=False,
+        directories=('material',),
         section='illustrate_file',
         )
     def make_illustrate_file(self, directory):
@@ -3305,9 +3289,7 @@ class AbjadIDE(object):
         'lym',
         argument_name='current_directory',
         description='ly - make',
-        file_='definition.py',
-        outside_score=False,
-        parent_directories=('materials',),
+        directories=('material',),
         section='ly',
         )
     def make_ly(self, directory, dry_run=False):
@@ -3400,9 +3382,7 @@ class AbjadIDE(object):
         'pdfm',
         argument_name='current_directory',
         description='pdf - make',
-        file_='definition.py',
-        outside_score=False,
-        parent_directories=('materials',),
+        directories=('material',),
         section='pdf',
         )
     def make_pdf(self, directory, dry_run=False):
@@ -3592,8 +3572,7 @@ class AbjadIDE(object):
         'pdf',
         argument_name='current_directory',
         description='pdf - open',
-        file_='illustration.pdf',
-        outside_score=False,
+        directories=('material', 'segment',),
         section='pdf',
         )
     def open_pdf(self, directory):
