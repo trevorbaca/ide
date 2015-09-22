@@ -415,7 +415,7 @@ class AbjadIDE(object):
         else:
             raise ValueError(directory)
 
-    def _filter_menu_entries_by_view(self, directory, entries):
+    def _filter_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
         view = self._read_view(directory)
         if view is None:
@@ -1334,45 +1334,24 @@ class AbjadIDE(object):
     def _make_menu_entries(self, directory):
         assert os.path.isdir(directory), repr(directory)
         paths = self._list_paths(directory)
-        strings = []
-        for path in paths:
-            string = self._path_to_menu_display_string(path)
-            strings.append(string)
+        strings = [self._to_menu_string(_) for _ in paths]
         pairs = list(zip(strings, paths))
-        if (not self._session.is_in_score and not
-            self._is_score_directory(directory, 'scores')):
-            def sort_function(pair):
-                string = pair[0]
-                if '(' not in string:
-                    return string
-                open_parenthesis_index = string.find('(')
-                assert string.endswith(')')
-                annotation = string[open_parenthesis_index:]
-                annotation = annotation.replace("'", '')
-                annotation = stringtools.strip_diacritics(annotation)
-                return annotation
-            pairs.sort(key=lambda _: sort_function(_))
-        else:
-            def sort_function(pair):
-                string = pair[0]
-                string = stringtools.strip_diacritics(string)
-                string = string.replace("'", '')
-                return string
-            pairs.sort(key=lambda _: sort_function(_))
+        def sort_function(pair):
+            string = pair[0]
+            string = stringtools.strip_diacritics(string)
+            string = string.replace("'", '')
+            return string
+        pairs.sort(key=lambda _: sort_function(_))
         entries = []
         for string, path in pairs:
             entry = (string, None, None, path)
             entries.append(entry)
-        current_score_directory = self._session.current_score_directory
-        entries = self._filter_menu_entries_by_view(
-            directory,
-            entries,
-            )
-        if not self._session.is_test:
-            entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        if (self._is_score_directory(directory, 'scores') and 
-            self._session.is_test):
-            entries = [_ for _ in entries if 'Example Score' in _[0]]
+        entries = self._filter_by_view(directory, entries)
+        if self._is_score_directory(directory, 'scores'):
+            if self._session.is_test:
+                entries = [_ for _ in entries if 'Example Score' in _[0]]
+            else:
+                entries = [_ for _ in entries if 'Example Score' not in _[0]]
         return entries
 
     def _make_score_package(self):
@@ -1578,7 +1557,7 @@ class AbjadIDE(object):
                 annotation = package_name
         return annotation
 
-    def _path_to_menu_display_string(self, path, score_directory=None):
+    def _to_menu_string(self, path, score_directory=None):
         asset_name = os.path.basename(path)
         allow_asset_name_underscores = False
         if 'test' in path.split(os.path.sep):
@@ -2860,7 +2839,7 @@ class AbjadIDE(object):
         self._session._attempted_method = 'git_update_every_package'
         for directory in directories:
             messages = []
-            message = self._path_to_menu_display_string(directory)
+            message = self._to_menu_string(directory)
             message = self._strip_annotation(message)
             message = message + ':'
             messages_ = self._git_update(
