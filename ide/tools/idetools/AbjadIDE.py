@@ -106,67 +106,6 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         self._add_metadatum(directory, 'view_name', None)
 
-    def _to_classfile_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_upper_camel_case(name)
-        name = name + '.py'
-        assert self._is_classfile_name(name), repr(name)
-        return name
-
-    def _to_dash_case_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name = name.lower()
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_dash_case(name)
-        extension = extension or '.txt'
-        name = name + extension
-        assert self._is_dash_case_file_name(name), repr(name)
-        return name
-
-    def _to_module_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name = name.lower()
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_snake_case(name)
-        name = name + '.py'
-        assert self._is_module_file_name(name), repr(name)
-        return name
-
-    def _to_package_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name = name.lower()
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_snake_case(name)
-        assert self._is_package_name(name), repr(name)
-        return name
-
-    def _to_stylesheet_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name = name.lower()
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_dash_case(name)
-        name = name + '.ily'
-        assert self._is_stylesheet_name(name), repr(name)
-        return name
-
-    def _to_test_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = stringtools.strip_diacritics(name)
-        name = name.lower()
-        name, extension = os.path.splitext(name)
-        name = stringtools.to_snake_case(name)
-        if not name.startswith('test_'):
-            name = 'test_' + name
-        name = name + '.py'
-        assert self._is_test_file_name(name), repr(name)
-        return name
-    
     def _coerce_name(self, directory, name):
         dash_case_prototype = ('build', 'distribution', 'etc')
         package_prototype = ('scores', 'materials', 'segments')
@@ -498,43 +437,6 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_to_name_predicate(self, directory):
-        directory_name = self._path_to_directory_name(directory)
-        dash_case_prototype = (
-            'build',
-            'distribution',
-            'etc',
-            'stylesheets',
-            )
-        if directory_name in dash_case_prototype:
-            return stringtools.is_dash_case
-        elif self._is_score_directory(directory, 'makers'):
-            return stringtools.is_upper_camel_case
-        elif self._is_score_directory(directory, 'test'):
-            return stringtools.is_snake_case
-
-#    def _directory_to_predicate(self, directory):
-#        file_prototype = (
-#            'build',
-#            'distribution',
-#            'etc',
-#            'makers',
-#            'stylesheets',
-#            'test',
-#            )
-#        package_prototype = (
-#            'materials',
-#            'segments',
-#            )
-#        if self._is_scores_directory(directory):
-#            return self._is_valid_package_directory_entry
-#        elif self._is_score_directory(directory, file_prototype):
-#            return self._is_valid_file_directory_entry
-#        elif self._is_score_directory(directory, package_prototype):
-#            return self._is_valid_package_directory_entry
-#        else:
-#            raise ValueError(directory)
-
     def _directory_to_asset_identifier(self, directory):
         assert os.path.isdir(directory), repr(directory)
         file_prototype = (
@@ -587,81 +489,6 @@ class AbjadIDE(object):
             return stringtools.is_snake_case
         else:
             raise ValueError(directory)
-
-    @staticmethod
-    def _is_dash_case_file_name(expr):
-        if not isinstance(expr, str):
-            return False
-        if not expr == expr.lower():
-            return False
-        file_name, file_extension = os.path.splitext(expr)
-        if not stringtools.is_dash_case(file_name):
-            return False
-        if not file_extension:
-            return False
-        return True
-
-    @staticmethod
-    def _is_classfile_name(expr):
-        if not isinstance(expr, str):
-            return False
-        file_name, file_extension = os.path.splitext(expr)
-        if not stringtools.is_upper_camel_case(file_name):
-            return False
-        if not file_extension == '.py':
-            return False
-        return True
-
-    @staticmethod
-    def _is_module_file_name(expr):
-        if not isinstance(expr, str):
-            return False
-        if not expr == expr.lower():
-            return False
-        file_name, file_extension = os.path.splitext(expr)
-        if not stringtools.is_snake_case(file_name):
-            return False
-        if not file_extension == '.py':
-            return False
-        return True
-
-    @staticmethod
-    def _is_package_name(expr):
-        if not isinstance(expr, str):
-            return False
-        if not expr == expr.lower():
-            return False
-        if os.path.sep in expr:
-            return False
-        if not stringtools.is_snake_case(expr):
-            return False
-        return True
-
-    @staticmethod
-    def _is_stylesheet_name(expr):
-        if not isinstance(expr, str):
-            return False
-        if not expr == expr.lower():
-            return False
-        file_name, file_extension = os.path.splitext(expr)
-        if not stringtools.is_dash_case(file_name):
-            return False
-        if not file_extension == '.ily':
-            return False
-        return True
-
-    @staticmethod
-    def _is_test_file_name(expr):
-        if not isinstance(expr, str):
-            return False
-        if not expr.startswith('test_'):
-            return False
-        file_name, file_extension = os.path.splitext(expr)
-        if not stringtools.is_snake_case(file_name):
-            return False
-        if not file_extension == '.py':
-            return False
-        return True
 
     def _directory_to_package_contents(self, directory):
         if self._is_material_directory(directory):
@@ -1264,6 +1091,30 @@ class AbjadIDE(object):
                 destination_path,
                 )
 
+    @staticmethod
+    def _is_classfile_name(expr):
+        if not isinstance(expr, str):
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_upper_camel_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
+
+    @staticmethod
+    def _is_dash_case_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_dash_case(file_name):
+            return False
+        if not file_extension:
+            return False
+        return True
+
     def _is_git_unknown(self, path):
         if path is None:
             return False
@@ -1332,21 +1183,6 @@ class AbjadIDE(object):
                 return True
         return False
 
-    def _is_score_directory(self, path, directory_name=None):
-        directory_name = directory_name or ()
-        if isinstance(directory_name, str):
-            directory_name = (directory_name,)
-        parent_directory = os.path.dirname(path)
-        if self._is_inner_score_directory(parent_directory):
-            base_name = os.path.basename(path)
-            if (directory_name is None and 
-                base_name in self._known_directory_names):
-                return True
-            if (base_name in directory_name and
-                base_name in self._known_directory_names):
-                return True
-        return False
-
     @staticmethod
     def _is_material_directory(path):
         if not isinstance(path, str):
@@ -1363,6 +1199,19 @@ class AbjadIDE(object):
             if parts[-2] == 'materials':
                 return True
         return False
+
+    @staticmethod
+    def _is_module_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_snake_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
 
     @staticmethod
     def _is_outer_score_directory(path):
@@ -1390,6 +1239,18 @@ class AbjadIDE(object):
         return False
 
     @staticmethod
+    def _is_package_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        if os.path.sep in expr:
+            return False
+        if not stringtools.is_snake_case(expr):
+            return False
+        return True
+
+    @staticmethod
     def _is_path_in_score(path):
         if not isinstance(path, str):
             return False
@@ -1403,6 +1264,21 @@ class AbjadIDE(object):
         parts = path.split(os.path.sep)
         if scores_directory_parts_count < len(parts):
             return True
+        return False
+
+    def _is_score_directory(self, path, directory_name=None):
+        directory_name = directory_name or ()
+        if isinstance(directory_name, str):
+            directory_name = (directory_name,)
+        parent_directory = os.path.dirname(path)
+        if self._is_inner_score_directory(parent_directory):
+            base_name = os.path.basename(path)
+            if (directory_name is None and 
+                base_name in self._known_directory_names):
+                return True
+            if (base_name in directory_name and
+                base_name in self._known_directory_names):
+                return True
         return False
 
     @staticmethod
@@ -1429,6 +1305,32 @@ class AbjadIDE(object):
             if parts[-2] == 'segments':
                 return True
         return False
+
+    @staticmethod
+    def _is_stylesheet_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_dash_case(file_name):
+            return False
+        if not file_extension == '.ily':
+            return False
+        return True
+
+    @staticmethod
+    def _is_test_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr.startswith('test_'):
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not stringtools.is_snake_case(file_name):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
 
     def _is_up_to_date(self, path):
         git_status_lines = self._get_git_status_lines(path)
@@ -2431,11 +2333,67 @@ class AbjadIDE(object):
         assert self._is_up_to_date(path)
         return True
 
-    @staticmethod
-    def _to_dash_case(file_name):
-        file_name = file_name.replace(' ', '-')
-        file_name = file_name.replace('_', '-')
-        return file_name
+    def _to_classfile_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_upper_camel_case(name)
+        name = name + '.py'
+        assert self._is_classfile_name(name), repr(name)
+        return name
+
+    def _to_dash_case_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_dash_case(name)
+        extension = extension or '.txt'
+        name = name + extension
+        assert self._is_dash_case_file_name(name), repr(name)
+        return name
+
+    def _to_module_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        name = name + '.py'
+        assert self._is_module_file_name(name), repr(name)
+        return name
+
+    def _to_package_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        assert self._is_package_name(name), repr(name)
+        return name
+
+    def _to_stylesheet_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_dash_case(name)
+        name = name + '.ily'
+        assert self._is_stylesheet_name(name), repr(name)
+        return name
+
+    def _to_test_file_name(self, name):
+        assert isinstance(name, str), repr(name)
+        name = stringtools.strip_diacritics(name)
+        name = name.lower()
+        name, extension = os.path.splitext(name)
+        name = stringtools.to_snake_case(name)
+        if not name.startswith('test_'):
+            name = 'test_' + name
+        name = name + '.py'
+        assert self._is_test_file_name(name), repr(name)
+        return name
+    
 
     @staticmethod
     def _trim_lilypond_file(file_path):
