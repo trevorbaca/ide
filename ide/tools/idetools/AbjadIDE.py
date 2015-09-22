@@ -366,7 +366,7 @@ class AbjadIDE(object):
                     'definition.py',
                     ),
                 }
-        elif self._is_inner_score_directory(directory):
+        elif self._is_score_directory(directory, 'inner'):
             return {
                 'optional_directories': (
                     '__pycache__',
@@ -1024,23 +1024,6 @@ class AbjadIDE(object):
             return True
         return False
 
-    def _is_inner_score_directory(self, path):
-#        if not isinstance(path, str):
-#            return False
-#        if path.startswith(configuration.composer_scores_directory):
-#            scores_directory = configuration.composer_scores_directory
-#        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-#            scores_directory = configuration.abjad_ide_example_scores_directory
-#        else:
-#            return False
-#        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-#        parts = path.split(os.path.sep)
-#        if len(parts) == scores_directory_parts_count + 2:
-#            if parts[-1] == parts[-2]:
-#                return True
-#        return False
-        return self._is_score_directory(path, 'inner')
-
     @staticmethod
     def _is_material_directory(path):
         if not isinstance(path, str):
@@ -1088,7 +1071,7 @@ class AbjadIDE(object):
         return False
 
     def _is_package_directory(self, path):
-        if self._is_inner_score_directory(path):
+        if self._is_score_directory(path, 'inner'):
             return True
         if self._is_material_directory(path):
             return True
@@ -1535,7 +1518,7 @@ class AbjadIDE(object):
             )
         if (self._is_material_directory(directory) or
             self._is_segment_directory(directory) or
-            self._is_inner_score_directory(directory)):
+            self._is_score_directory(directory, 'inner')):
             self._make_package_asset_menu_section(directory, menu)
         else:
             self._make_wrangler_asset_menu_section(directory, menu)
@@ -1821,7 +1804,7 @@ class AbjadIDE(object):
 
     def _path_to_annotation(self, path):
         annotation = None
-        if self._is_inner_score_directory(path):
+        if self._is_score_directory(path, 'inner'):
             metadata = self._get_metadata(path)
             if metadata:
                 year = metadata.get('year')
@@ -1849,7 +1832,7 @@ class AbjadIDE(object):
             string = asset_name
         else:
             annotation = self._path_to_annotation(path)
-            if self._is_inner_score_directory(path):
+            if self._is_score_directory(path, 'inner'):
                 string = annotation
             else:
                 string = '{} ({})'.format(asset_name, annotation)
@@ -2199,7 +2182,7 @@ class AbjadIDE(object):
             return 'scores'
         if self._is_outer_score_directory(path):
             return 'score'
-        if self._is_inner_score_directory(path):
+        if self._is_score_directory(path, 'inner'):
             return 'score'
         for part in reversed(path.split(os.path.sep)):
             if part in self._known_directory_names:
@@ -4090,7 +4073,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         source_path = self._select_visible_path(directory, 'to rename')
-        if self._is_inner_score_directory(source_path):
+        if self._is_score_directory(source_path, 'inner'):
             source_path = os.path.dirname(source_path)
         if not source_path:
             return
