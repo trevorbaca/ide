@@ -129,15 +129,14 @@ class AbjadIDE(object):
             raise ValueError(directory)
         return name
 
-    def _collect_directories(self, directory, example_scores=False):
+    def _collect_similar_directories(self, directory, example_scores=False):
         assert os.path.isdir(directory), repr(directory)
-        directory_name = self._to_directory_name(directory)
         directories = []
         scores_directories = [configuration.composer_scores_directory]
         if example_scores:
             scores_directory = configuration.abjad_ide_example_scores_directory
             scores_directories.append(scores_directory)
-        if directory_name == 'scores':
+        if self._is_score_directory(directory, 'scores'):
             return scores_directories
         score_directories = []
         for scores_directory in scores_directories:
@@ -148,7 +147,7 @@ class AbjadIDE(object):
                 if not os.path.isdir(score_directory):
                     continue
                 score_directories.append(score_directory)
-        if directory_name == 'outer':
+        if self._is_score_directory(directory, 'outer'):
             return score_directories
         outer_score_directories = score_directories
         score_directories = []
@@ -161,12 +160,12 @@ class AbjadIDE(object):
             if not os.path.isdir(score_directory):
                 continue
             score_directories.append(score_directory)
-        if directory_name in ('inner', 'score'):
+        if self._is_score_directory(directory, ('inner', 'score')):
             return score_directories
         if self._is_score_directory(directory, ('material', 'segment')):
             directories = []
             parent_directory = os.path.dirname(directory)
-            parent_directories = self._collect_directories(
+            parent_directories = self._collect_similar_directories(
                 parent_directory,
                 example_scores=example_scores,
                 )
@@ -179,8 +178,9 @@ class AbjadIDE(object):
                         continue
                     directories.append(directory_)
             return directories
+        base_name = os.path.basename(directory)
         for score_directory in score_directories:
-            directory_ = os.path.join(score_directory, directory_name)
+            directory_ = os.path.join(score_directory, base_name)
             if os.path.isdir(directory_):
                 directories.append(directory_)
         return directories
@@ -1111,7 +1111,7 @@ class AbjadIDE(object):
     def _list_paths(self, directory, example_scores=True):
         assert os.path.isdir(directory), repr(directory)
         paths = []
-        directories = self._collect_directories(
+        directories = self._collect_similar_directories(
             directory,
             example_scores=example_scores,
             )
@@ -1884,23 +1884,6 @@ class AbjadIDE(object):
         assert self._is_dash_case_file_name(name), repr(name)
         return name
 
-    def _to_directory_name(self, path):
-        assert os.path.sep in path, repr(path)
-        if self._is_score_directory(path, 'scores'):
-            return 'scores'
-        if self._is_score_directory(path, 'outer'):
-            return 'score'
-        if self._is_score_directory(path, 'inner'):
-            return 'score'
-        if self._is_score_directory(path, 'material'):
-            return 'material'
-        if self._is_score_directory(path, 'segment'):
-            return 'segment'
-        for part in reversed(path.split(os.path.sep)):
-            if part in self._known_directory_names:
-                return part
-        raise ValueError(path)
-
     def _to_menu_string(self, directory):
         if self._is_score_directory(directory, 'inner'):
             return self._path_to_annotation(directory)
@@ -2264,7 +2247,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._collect_directories(
+        directories = self._collect_similar_directories(
             directory,
             example_scores=self._session.is_test,
             )
