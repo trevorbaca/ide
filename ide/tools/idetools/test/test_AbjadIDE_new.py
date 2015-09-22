@@ -51,7 +51,7 @@ def test_AbjadIDE_new_01():
 
 
 def test_AbjadIDE_new_02():
-    r'''Accepts flexible package name input for score packages.
+    r'''Coerces score package name.
     '''
 
     score_package = os.path.join(
@@ -81,6 +81,88 @@ def test_AbjadIDE_new_02():
 
 
 def test_AbjadIDE_new_03():
+    r'''Makes new build file.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'test-file.txt',
+        )
+
+    input_ = 'red~example~score bb new test-file.txt q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_04():
+    r'''Coerces build file name.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'test-file.txt',
+        )
+
+    input_ = 'red~example~score bb new test_file.txt q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+
+
+def test_AbjadIDE_new_05():
+    r'''Makes new maker file.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'NewMaker.py',
+        )
+
+    input_ = 'red~example~score kk new NewMaker.py q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+        with open(path, 'r') as file_pointer:
+            string = file_pointer.read()
+            assert 'class Maker(object)' in string
+
+
+def test_AbjadIDE_new_06():
+    r'''Coerces maker file name.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'makers',
+        'NewMaker.py',
+        )
+
+    input_ = 'red~example~score kk new new~maker q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+        with open(path, 'r') as file_pointer:
+            string = file_pointer.read()
+            assert 'class Maker(object)' in string
+
+
+def test_AbjadIDE_new_07():
     r'''Makes new material package.
     '''
 
@@ -90,7 +172,7 @@ def test_AbjadIDE_new_03():
         'red_example_score',
         'red_example_score',
         'materials',
-        'testnotes',
+        'test_notes',
         )
     directory_entries = [
         '__init__.py',
@@ -98,7 +180,7 @@ def test_AbjadIDE_new_03():
         'definition.py',
         ]
 
-    input_ = 'Red~Example~Score mm new testnotes q'
+    input_ = 'Red~Example~Score mm new test_notes q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
@@ -108,8 +190,64 @@ def test_AbjadIDE_new_03():
         assert abjad_ide._list_directory(path) == directory_entries
 
 
-def test_AbjadIDE_new_04():
+def test_AbjadIDE_new_08():
+    r'''Coerces material package name.
+    '''
+
+    session = ide.tools.idetools.Session(is_test=True)
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        'test_notes',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    input_ = 'Red~Example~Score mm new test~notes q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+        session = ide.tools.idetools.Session(is_test=True)
+        io_manager = ide.tools.idetools.IOManager(session=session)
+        assert abjad_ide._list_directory(path) == directory_entries
+
+
+def test_AbjadIDE_new_09():
     r'''Makes new segment package.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_04',
+        )
+    directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'definition.py',
+        ]
+
+    input_ = 'red~example~score gg new segment_04 q'
+
+    with systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(path)
+        session = ide.tools.idetools.Session(is_test=True)
+        io_manager = ide.tools.idetools.IOManager(session=session)
+        assert abjad_ide._list_directory(path) == directory_entries
+
+
+def test_AbjadIDE_new_10():
+    r'''Coerces segment package name.
     '''
 
     path = os.path.join(
@@ -136,26 +274,7 @@ def test_AbjadIDE_new_04():
         assert abjad_ide._list_directory(path) == directory_entries
 
 
-def test_AbjadIDE_new_05():
-    r'''Makes new build file.
-    '''
-
-    path = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'build',
-        'test-file.txt',
-        )
-
-    input_ = 'red~example~score bb new test-file.txt q'
-
-    with systemtools.FilesystemState(remove=[path]):
-        abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-
-
-def test_AbjadIDE_new_06():
+def test_AbjadIDE_new_11():
     r'''Makes new stylesheet.
     '''
 
@@ -174,23 +293,20 @@ def test_AbjadIDE_new_06():
         assert os.path.exists(path)
 
 
-def test_AbjadIDE_new_07():
-    r'''Makes new maker file.
+def test_AbjadIDE_new_12():
+    r'''Coerces stylesheet new.
     '''
 
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
-        'NewMaker.py',
+        'stylesheets',
+        'new-stylesheet.ily',
         )
 
-    input_ = 'red~example~score kk new NewMaker.py q'
+    input_ = 'red~example~score yy new new~stylesheet q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
-        with open(path, 'r') as file_pointer:
-            string = file_pointer.read()
-            assert 'class Maker(object)' in string

@@ -93,11 +93,7 @@ class AbjadIDE(object):
         metadata[metadatum_name] = metadatum_value
         self._write_metadata_py(directory, metadata)
 
-    def _call_lilypond_on_file_ending_with(
-        self,
-        directory,
-        string,
-        ):
+    def _call_lilypond_on_file_ending_with(self, directory, string):
         file_path = self._get_file_path_ending_with(directory, string)
         if file_path:
             self._io_manager.run_lilypond(file_path)
@@ -109,6 +105,35 @@ class AbjadIDE(object):
     def _clear_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
         self._add_metadatum(directory, 'view_name', None)
+
+    def _coerce_file_name(self, directory, file_name):
+        file_name = stringtools.strip_diacritics(file_name)
+        if self._is_score_directory(directory, 'build'):
+            file_name = stringtools.to_dash_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'distribution'):
+            file_name = stringtools.to_dash_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'etc'):
+            file_name = stringtools.to_dash_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'makers'):
+            file_name = stringtools.to_upper_camel_case(file_name)
+        elif self._is_score_directory(directory, 'materials'):
+            file_name = stringtools.to_snake_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'segments'):
+            file_name = stringtools.to_snake_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'stylesheets'):
+            file_name = stringtools.to_dash_case(file_name)
+            file_name = file_name.lower()
+        elif self._is_score_directory(directory, 'test'):
+            file_name = stringtools.to_snake_case(file_name)
+            file_name = file_name.lower()
+        else:
+            raise ValueError(directory)
+        return file_name
 
     def _collect_build_files(self, example_scores=False):
         build_files = []
@@ -244,8 +269,6 @@ class AbjadIDE(object):
             )
         for material_directory in material_directories:
             for name in os.listdir(material_directory):
-                if not name[0].isalpha():
-                    continue
                 if name.endswith('.pyc'):
                     continue
                 material_file = os.path.join(material_directory, name)
@@ -1564,20 +1587,23 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
-        name = getter._run(io_manager=self._io_manager)
-        if name is None:
+        file_name = getter._run(io_manager=self._io_manager)
+        if file_name is None:
             return
-        name = stringtools.strip_diacritics(name)
+        file_name, file_extension = os.path.splitext(file_name)
+        file_name = self._coerce_file_name(directory, file_name)
+        predicate = self._directory_to_file_name_predicate(directory)
+        if not predicate(file_name):
+            message = 'invalid file name: {!r}.'
+            message = message.format(file_name)
+            self._io_manager._display(message)
+            self._io_manager._acknowledge()
+            return
+        file_name = file_name + file_extension
         file_extension = self._directory_to_file_extension(directory)
-        file_name_predicate = self._directory_to_file_name_predicate(directory)
-        if file_name_predicate == stringtools.is_dash_case:
-            name = self._to_dash_case(name)
-        name = name.replace(' ', '_')
-        if not self._is_score_directory(directory, 'makers'):
-            name = name.lower()
-        if not name.endswith(file_extension):
-            name = name + file_extension
-        file_path = os.path.join(directory, name)
+        if not file_name.endswith(file_extension):
+            file_name = file_name + file_extension
+        file_path = os.path.join(directory, file_name)
         if self._is_score_directory(directory, 'makers'):
             source_file = os.path.join(
                 configuration.abjad_ide_boilerplate_directory,
@@ -2591,6 +2617,7 @@ class AbjadIDE(object):
             shutil.copytree(source_path, target_path)
         else:
             raise ValueError(source_path)
+        self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
     @Command(
