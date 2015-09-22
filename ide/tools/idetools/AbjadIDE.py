@@ -37,6 +37,12 @@ class AbjadIDE(object):
         '__metadata__.py',
         '__views__.py',
         '__abbreviations__.py',
+        '.gitignore',
+        '.travis.yml',
+        'README.md',
+        'requirements.txt',
+        'setup.cfg',
+        'setup.py',
         )
 
     _tab = 4 * ' '
@@ -1081,7 +1087,7 @@ class AbjadIDE(object):
         menu_entries.extend(asset_menu_entries)
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
-            if self._is_score_directory(directory, 'scores'):
+            if self._is_score_directory(directory, ('scores', 'outer')):
                 section._group_by_annotation = False
             else:
                 section._group_by_annotation = True
@@ -1588,6 +1594,8 @@ class AbjadIDE(object):
         score_directory = self._to_score_directory(directory)
         score_part = self._get_title_metadatum(score_directory)
         header_parts.append(score_part)
+        if self._is_score_directory(directory, 'outer'):
+            header_parts.append('package wrapper')
         trimmed_path = self._trim_scores_directory(directory)
         path_parts = trimmed_path.split(os.path.sep)
         path_parts = path_parts[2:]
@@ -1650,6 +1658,8 @@ class AbjadIDE(object):
             return self._is_package_name
         elif self._is_score_directory(directory, 'scores'):
             return self._is_package_name
+        elif self._is_score_directory(directory, 'outer'):
+            return self._is_package_name
         elif self._is_score_directory(directory, ('score', 'inner')):
             return self._is_package_name
         elif self._is_score_directory(directory, 'makers'):
@@ -1691,17 +1701,22 @@ class AbjadIDE(object):
         path_prefix = path[:prefix]
         path_suffix = path[prefix + 1:]
         score_name = path_suffix.split(os.path.sep)[0]
-        score_path = os.path.join(path_prefix, score_name)
-        score_path = os.path.join(score_path, score_name)
-        if os.path.normpath(score_path) == os.path.normpath(
+        score_directory = os.path.join(path_prefix, score_name)
+        score_directory = os.path.join(score_directory, score_name)
+        if os.path.normpath(score_directory) == os.path.normpath(
             configuration.composer_scores_directory):
             return
-        if os.path.normpath(score_path) == os.path.normpath(
+        if os.path.normpath(score_directory) == os.path.normpath(
             configuration.abjad_ide_example_scores_directory):
             return
+        if name in ('inner', 'score'):
+            return score_directory
+        if name == 'outer':
+            outer_score_directory = os.path.dirname(score_directory)
+            return outer_score_directory
         if name is not None:
-            score_path = os.path.join(score_path, name)
-        return score_path
+            score_directory = os.path.join(score_directory, name)
+        return score_directory
 
     def _to_stylesheet_name(self, name):
         assert isinstance(name, str), repr(name)
@@ -2614,6 +2629,21 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._to_score_directory(directory)
+        self._manage_directory(directory)
+
+    @Command(
+        'ww',
+        argument_name='current_directory',
+        forbidden_directories=('scores',),
+        section='navigation',
+        )
+    def go_to_score_package_wrapper(self, directory):
+        r'''Goes to score package wrapper.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory)
+        directory = self._to_score_directory(directory, 'outer')
         self._manage_directory(directory)
 
     @Command(
