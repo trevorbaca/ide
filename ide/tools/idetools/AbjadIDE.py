@@ -44,7 +44,11 @@ class AbjadIDE(object):
         'distribution',
         'etc',
         'makers',
+        'material',
         'materials',
+        'score',
+        'scores',
+        'segment',
         'segments',
         'stylesheets',
         'test',
@@ -109,7 +113,7 @@ class AbjadIDE(object):
     def _coerce_name(self, directory, name):
         dash_case_prototype = ('build', 'distribution', 'etc')
         package_prototype = ('scores', 'materials', 'segments')
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             name = self._to_package_name(name)
         elif self._is_score_directory(directory, dash_case_prototype):
             name = self._to_dash_case_file_name(name)
@@ -305,7 +309,7 @@ class AbjadIDE(object):
             'materials',
             'segments',
             )
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             return 'package'
         elif self._is_score_directory(directory, file_prototype):
             return 'file'
@@ -327,7 +331,7 @@ class AbjadIDE(object):
     def _directory_to_name_predicate(self, directory):
         file_prototype = ('build', 'distribution', 'etc')
         package_prototype = ('materials', 'segments', 'scores')
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             return self._is_package_name
         elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
@@ -1120,33 +1124,30 @@ class AbjadIDE(object):
             return True
         return False
 
-    def _is_score_directory(self, path, directory_name=None):
-        directory_name = directory_name or ()
-        if isinstance(directory_name, str):
-            directory_name = (directory_name,)
-        parent_directory = os.path.dirname(path)
-        if 'material' in directory_name:
-            if self._is_material_directory(path):
+    def _is_score_directory(self, directory, prototype=()):
+        if isinstance(prototype, str):
+            prototype = (prototype,)
+        assert all(isinstance(_, str) for _ in prototype)
+        if 'scores'in prototype:
+            if directory == configuration.composer_scores_directory:
                 return True
-        if 'segment' in directory_name:
-            if self._is_segment_directory(path):
+            if directory == configuration.abjad_ide_example_scores_directory:
+                return True
+        parent_directory = os.path.dirname(directory)
+        if 'material' in prototype:
+            if self._is_material_directory(directory):
+                return True
+        if 'segment' in prototype:
+            if self._is_segment_directory(directory):
                 return True
         if self._is_inner_score_directory(parent_directory):
-            base_name = os.path.basename(path)
-            if (directory_name is None and 
+            base_name = os.path.basename(directory)
+            if (prototype is None and 
                 base_name in self._known_directory_names):
                 return True
-            if (base_name in directory_name and
+            if (base_name in prototype and
                 base_name in self._known_directory_names):
                 return True
-        return False
-
-    @staticmethod
-    def _is_scores_directory(path):
-        if path == configuration.composer_scores_directory:
-            return True
-        if path == configuration.abjad_ide_example_scores_directory:
-            return True
         return False
 
     @staticmethod
@@ -1232,7 +1233,7 @@ class AbjadIDE(object):
         result = []
         directory_name = self._to_directory_name(directory)
         directories = []
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             if example_score_packages:
                 directories.append(
                     configuration.abjad_ide_example_scores_directory)
@@ -1259,7 +1260,7 @@ class AbjadIDE(object):
                     if not name_predicate(entry):
                         continue
                 path = os.path.join(directory, entry)
-                if self._is_scores_directory(directory):
+                if self._is_score_directory(directory, 'scores'):
                     path = os.path.join(path, entry)
                 result.append(path)
         return result
@@ -1364,7 +1365,7 @@ class AbjadIDE(object):
             strings.append(string)
         pairs = list(zip(strings, paths))
         if (not self._session.is_in_score and not
-            self._is_scores_directory(directory)):
+            self._is_score_directory(directory, 'scores')):
             def sort_function(pair):
                 string = pair[0]
                 if '(' not in string:
@@ -1395,7 +1396,8 @@ class AbjadIDE(object):
                 )
         if not self._session.is_test:
             entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        if self._is_scores_directory(directory) and self._session.is_test:
+        if (self._is_score_directory(directory, 'scores') and 
+            self._session.is_test):
             entries = [_ for _ in entries if 'Example Score' in _[0]]
         return entries
 
@@ -1439,7 +1441,7 @@ class AbjadIDE(object):
         directory_name = os.path.basename(directory)
         parent_directory_name = directory.split(os.path.sep)[-2]
         is_home = False
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             is_home = True
         for method_ in methods_:
             if is_in_score and not method_.in_score:
@@ -1651,7 +1653,7 @@ class AbjadIDE(object):
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
             assert section is not None
-            if self._is_scores_directory(directory):
+            if self._is_score_directory(directory, 'scores'):
                 section._group_by_annotation = False
             else:
                 section._group_by_annotation = True
@@ -1840,7 +1842,7 @@ class AbjadIDE(object):
     def _path_to_menu_header(self, directory):
         assert os.path.isdir(directory), repr(directory)
         header_parts = []
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             return 'Abjad IDE - all score directories'
         score_directory = self._to_score_directory(directory)
         score_part = self._get_title_metadatum(score_directory)
@@ -2177,7 +2179,7 @@ class AbjadIDE(object):
 
     def _to_directory_name(self, path):
         assert os.path.sep in path, repr(path)
-        if self._is_scores_directory(path):
+        if self._is_score_directory(path, 'scores'):
             return 'scores'
         if self._is_outer_score_directory(path):
             return 'score'
@@ -3860,7 +3862,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         asset_identifier = self._directory_to_asset_identifier(directory)
-        if self._is_scores_directory(directory):
+        if self._is_score_directory(directory, 'scores'):
             self._make_score_package()
         elif asset_identifier == 'file':
             self._make_file(directory)
