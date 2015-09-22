@@ -143,9 +143,35 @@ class AbjadIDE(object):
 
     def _collect_directories(self, directory_name, example_scores=False):
         directories = []
-        score_directories = self._collect_score_directories(
-            example_scores=example_scores,
-            )
+        scores_directories = [configuration.composer_scores_directory]
+        if example_scores:
+            scores_directory = configuration.abjad_ide_example_scores_directory
+            scores_directories.append(scores_directory)
+        if directory_name == 'scores':
+            return scores_directories
+        score_directories = []
+        for scores_directory in scores_directories:
+            for name in os.listdir(scores_directory):
+                if not name[0].isalpha():
+                    continue
+                score_directory = os.path.join(scores_directory, name)
+                if not os.path.isdir(score_directory):
+                    continue
+                score_directories.append(score_directory)
+        if directory_name == 'outer':
+            return score_directories
+        outer_score_directories = score_directories
+        for outer_score_directory in outer_score_directories:
+            base_name = os.path.basename(outer_score_directory)
+            score_directory = os.path.join(
+                outer_score_directory,
+                base_name,
+                )
+            if not os.path.isdir(score_directory):
+                continue
+            score_directories.append(score_directory)
+        if directory_name == 'inner':
+            return score_directories
         for score_directory in score_directories:
             directory = os.path.join(score_directory, directory_name)
             if os.path.isdir(directory):
@@ -230,34 +256,6 @@ class AbjadIDE(object):
                 material_file = os.path.join(material_directory, name)
                 material_files.append(material_file)
         return material_files
-
-    def _collect_score_directories(self, example_scores=False, inner=True):
-        scores_directories = [configuration.composer_scores_directory]
-        if example_scores:
-            scores_directory = configuration.abjad_ide_example_scores_directory
-            scores_directories.append(scores_directory)
-        score_directories = []
-        for scores_directory in scores_directories:
-            for name in os.listdir(scores_directory):
-                if not name[0].isalpha():
-                    continue
-                score_directory = os.path.join(scores_directory, name)
-                if not os.path.isdir(score_directory):
-                    continue
-                score_directories.append(score_directory)
-        if not inner:
-            return score_directories
-        outer_score_directories = score_directories
-        for outer_score_directory in outer_score_directories:
-            base_name = os.path.basename(outer_score_directory)
-            score_directory = os.path.join(
-                outer_score_directory,
-                base_name,
-                )
-            if not os.path.isdir(score_directory):
-                continue
-            score_directories.append(score_directory)
-        return score_directories
 
     def _collect_segment_directories(self, example_scores=False):
         segment_directories = []
