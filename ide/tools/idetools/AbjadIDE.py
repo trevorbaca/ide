@@ -263,127 +263,6 @@ class AbjadIDE(object):
             self._io_manager._display(messages)
             return True
 
-    def _directory_to_asset_identifier(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        file_prototype = (
-            'build',
-            'distribution',
-            'etc',
-            'makers',
-            'material',
-            'segment',
-            'stylesheets',
-            'test',
-            )
-        package_prototype = (
-            'materials',
-            'segments',
-            )
-        if self._is_score_directory(directory, 'scores'):
-            return 'package'
-        elif self._is_score_directory(directory, file_prototype):
-            return 'file'
-        elif self._is_score_directory(directory, package_prototype):
-            return 'package'
-        else:
-            raise ValueError(directory)
-
-    def _directory_to_file_extension(self, directory):
-        file_extension = ''
-        if self._is_score_directory(directory, 'makers'):
-            file_extension = '.py'
-        elif self._is_score_directory(directory, 'stylesheets'):
-            file_extension = '.ily'
-        elif self._is_score_directory(directory, 'test'):
-            file_extension = '.py'
-        return file_extension
-
-    def _directory_to_name_predicate(self, directory):
-        file_prototype = ('build', 'distribution', 'etc')
-        package_prototype = ('materials', 'segments', 'scores')
-        if self._is_score_directory(directory, 'scores'):
-            return self._is_package_name
-        elif self._is_score_directory(directory, ('score', 'inner')):
-            return self._is_package_name
-        elif self._is_score_directory(directory, file_prototype):
-            return self._is_dash_case_file_name
-        elif self._is_score_directory(directory, 'makers'):
-            return self._is_classfile_name
-        elif self._is_score_directory(directory, package_prototype):
-            return self._is_package_name
-        elif self._is_score_directory(directory, ('material', 'segment')):
-            return self._is_module_file_name
-        elif self._is_score_directory(directory, 'stylesheets'):
-            return self._is_stylesheet_name
-        elif self._is_score_directory(directory, 'test'):
-            return stringtools.is_snake_case
-        else:
-            raise ValueError(directory)
-
-    def _directory_to_package_contents(self, directory):
-        if self._is_score_directory(directory, 'material'):
-            return {
-                'optional_directories': (
-                    '__pycache__',
-                    ),
-                'optional_files': (
-                    '__illustrate__.py',
-                    'illustration.ly',
-                    'illustration.pdf',
-                    ),
-                'required_directories': (),
-                'required_files': (
-                    '__init__.py',
-                    '__metadata__.py',
-                    'definition.py',
-                    ),
-                }
-        elif self._is_score_directory(directory, 'inner'):
-            return {
-                'optional_directories': (
-                    '__pycache__',
-                    ),
-                'optional_files': (),
-                'required_directories': (
-                    'build',
-                    'distribution',
-                    'etc',
-                    'makers',
-                    'materials',
-                    'segments',
-                    'stylesheets',
-                    'test',
-                    ),
-                'required_files': (
-                    '__init__.py',
-                    '__metadata__.py',
-                    os.path.join('makers', '__init__.py'),
-                    os.path.join('materials', '__abbreviations__.py'),
-                    os.path.join('materials', '__init__.py'),
-                    os.path.join('segments', '__init__.py'),
-                    os.path.join('segments', '__metadata__.py'),
-                    os.path.join('segments', '__views__.py'),
-                    ),
-                }
-        elif self._is_score_directory(directory, 'segment'):
-            return {
-                'optional_directories': (
-                    '__pycache__',
-                    ),
-                'optional_files': (
-                    'illustration.ly',
-                    'illustration.pdf',
-                    ),
-                'required_directories': (),
-                'required_files': (
-                    '__init__.py',
-                    '__metadata__.py',
-                    'definition.py',
-                    ),
-                }
-        else:
-            raise ValueError(directory)
-
     def _filter_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
         view = self._read_view(directory)
@@ -517,8 +396,8 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    def _get_available_path_in_directory(self, directory):
-        asset_identifier = self._directory_to_asset_identifier(directory)
+    def _get_available_path(self, directory):
+        asset_identifier = self._to_asset_identifier(directory)
         while True:
             default_prompt = 'enter {} name'
             default_prompt = default_prompt.format(asset_identifier)
@@ -601,19 +480,6 @@ class AbjadIDE(object):
             metadatum = default
         return metadatum
 
-    def _get_modified_asset_paths(self, path):
-        paths = []
-        git_status_lines = self._get_git_status_lines(path)
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith(('M', ' M')):
-                path = line.strip('M ')
-                path = path.strip()
-                root_directory = self._get_repository_root_directory(path)
-                path = os.path.join(root_directory, path)
-                paths.append(path)
-        return paths
-
     def _get_name_metadatum(self, directory):
         assert os.path.isdir(directory), repr(directory)
         name = self._get_metadatum(directory, 'name')
@@ -622,7 +488,7 @@ class AbjadIDE(object):
             name = name.replace('_', ' ')
         return name
 
-    def _get_previous_segment_path(self, directory):
+    def _get_previous_segment_directory(self, directory):
         segments_directory = self._to_score_directory(
             directory,
             'segments',
@@ -731,31 +597,6 @@ class AbjadIDE(object):
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, path)
             self._io_manager.run_command(command, capitalize=False)
-
-    def _git_revert(self, path):
-        change = systemtools.TemporaryDirectoryChange(directory=path)
-        with change:
-            self._io_manager._session._attempted_method = '_git_revert'
-            if self._io_manager._session.is_test:
-                return
-            paths = []
-            paths.extend(self._get_added_asset_paths(path))
-            paths.extend(self._get_modified_asset_paths(path))
-            messages = []
-            messages.append('will revert ...')
-            for path in paths:
-                messages.append(self._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if not result:
-                return
-            commands = []
-            for path in paths:
-                command = 'git checkout {}'.format(path)
-                commands.append(command)
-            command = ' && '.join(commands)
-            with systemtools.TemporaryDirectoryChange(directory=path):
-                self._io_manager.spawn_subprocess(command)
 
     def _git_status(self, path):
         change = systemtools.TemporaryDirectoryChange(directory=path)
@@ -1124,7 +965,7 @@ class AbjadIDE(object):
                 continue
             if not os.path.exists(directory):
                 continue
-            name_predicate = self._directory_to_name_predicate(directory)
+            name_predicate = self._to_name_predicate(directory)
             entries = sorted(os.listdir(directory))
             for entry in entries:
                 if not name_predicate(entry):
@@ -1214,7 +1055,7 @@ class AbjadIDE(object):
         if file_name is None:
             return
         file_name = self._coerce_name(directory, file_name)
-        name_predicate = self._directory_to_name_predicate(directory)
+        name_predicate = self._to_name_predicate(directory)
         if not name_predicate(file_name):
             message = 'invalid file name: {!r}.'
             message = message.format(file_name)
@@ -1279,7 +1120,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         assert self._session.is_in_score
         new_directory = directory
-        path = self._get_available_path_in_directory(new_directory)
+        path = self._get_available_path(new_directory)
         if not path:
             return
         assert not os.path.exists(path)
@@ -1648,7 +1489,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         paths = secondary_paths + visible_paths
-        asset_identifier = self._directory_to_asset_identifier(directory)
+        asset_identifier = self._to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
@@ -1672,7 +1513,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         paths = secondary_paths + visible_paths
-        asset_identifier = self._directory_to_asset_identifier(directory)
+        asset_identifier = self._to_asset_identifier(directory)
         message = 'enter {}(s)'
         if infinitive_phrase is not None:
             message += ' ' + infinitive_phrase
@@ -1778,6 +1619,30 @@ class AbjadIDE(object):
         assert self._is_up_to_date(path)
         return True
 
+    def _to_asset_identifier(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        file_prototype = (
+            'build',
+            'distribution',
+            'etc',
+            'makers',
+            'material',
+            'segment',
+            'stylesheets',
+            'test',
+            )
+        package_prototype = (
+            'scores',
+            'materials',
+            'segments',
+            )
+        if self._is_score_directory(directory, package_prototype):
+            return 'package'
+        elif self._is_score_directory(directory, file_prototype):
+            return 'file'
+        else:
+            raise ValueError(directory)
+
     def _to_classfile_name(self, name):
         assert isinstance(name, str), repr(name)
         name = stringtools.strip_diacritics(name)
@@ -1846,6 +1711,28 @@ class AbjadIDE(object):
         name = name + '.py'
         assert self._is_module_file_name(name), repr(name)
         return name
+
+    def _to_name_predicate(self, directory):
+        file_prototype = ('build', 'distribution', 'etc')
+        package_prototype = ('materials', 'segments', 'scores')
+        if self._is_score_directory(directory, file_prototype):
+            return self._is_dash_case_file_name
+        elif self._is_score_directory(directory, package_prototype):
+            return self._is_package_name
+        elif self._is_score_directory(directory, 'scores'):
+            return self._is_package_name
+        elif self._is_score_directory(directory, ('score', 'inner')):
+            return self._is_package_name
+        elif self._is_score_directory(directory, 'makers'):
+            return self._is_classfile_name
+        elif self._is_score_directory(directory, ('material', 'segment')):
+            return self._is_module_file_name
+        elif self._is_score_directory(directory, 'stylesheets'):
+            return self._is_stylesheet_name
+        elif self._is_score_directory(directory, 'test'):
+            return stringtools.is_snake_case
+        else:
+            raise ValueError(directory)
 
     def _to_package_name(self, name):
         assert isinstance(name, str), repr(name)
@@ -2049,22 +1936,6 @@ class AbjadIDE(object):
         contents = contents + '\n' + metadata_lines
         with open(metadata_py_path, 'w') as file_pointer:
             file_pointer.write(contents)
-
-    # unused?
-    def _write_view_inventory(self, directory, view_inventory):
-        assert os.path.isdir(directory), repr(directory)
-        lines = []
-        lines.append(self._unicode_directive)
-        lines.append(self._abjad_import_statement)
-        lines.append('from ide.tools import idetools')
-        lines.append('')
-        lines.append('')
-        view_inventory = self._sort_ordered_dictionary(view_inventory)
-        line = 'view_inventory={}'.format(format(view_inventory))
-        lines.append(line)
-        contents = '\n'.join(lines)
-        views_py_path = self._get_views_py_path(directory)
-        self._io_manager.write(views_py_path, contents)
 
     ### PUBLIC METHODS ###
 
@@ -2943,7 +2814,8 @@ class AbjadIDE(object):
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
-            previous_segment_path = self._get_previous_segment_path(directory)
+            previous_segment_path = self._get_previous_segment_directory(
+                directory)
             if previous_segment_path is None:
                 statement = 'previous_segment_metadata = None'
             else:
@@ -3475,7 +3347,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        asset_identifier = self._directory_to_asset_identifier(directory)
+        asset_identifier = self._to_asset_identifier(directory)
         if self._is_score_directory(directory, 'scores'):
             self._make_score_package()
         elif asset_identifier == 'file':
