@@ -862,6 +862,7 @@ class AbjadIDE(object):
         assert isinstance(result, str), repr(result)
         if result == '<return>':
             return
+        package_prototype = ('inner', 'material', 'segment')
         if result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
@@ -878,7 +879,7 @@ class AbjadIDE(object):
             self._command_name_to_command[result]()
         elif os.path.isfile(result):
             self._io_manager.open_file(result)
-        elif self._is_package_directory(result):
+        elif self._is_score_directory(result, package_prototype):
             self._manage_directory(result)
         elif self._is_score_directory(result):
             self._manage_directory(result)
@@ -1055,31 +1056,6 @@ class AbjadIDE(object):
         return True
 
     @staticmethod
-    def _is_outer_score_directory(path):
-        if not isinstance(path, str):
-            return False
-        if path.startswith(configuration.composer_scores_directory):
-            scores_directory = configuration.composer_scores_directory
-        elif path.startswith(configuration.abjad_ide_example_scores_directory):
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        else:
-            return False
-        scores_directory_parts_count = len(scores_directory.split(os.path.sep))
-        parts = path.split(os.path.sep)
-        if len(parts) == scores_directory_parts_count + 1:
-            return True
-        return False
-
-    def _is_package_directory(self, path):
-        if self._is_score_directory(path, 'inner'):
-            return True
-        if self._is_material_directory(path):
-            return True
-        if self._is_segment_directory(path):
-            return True
-        return False
-
-    @staticmethod
     def _is_package_name(expr):
         if not isinstance(expr, str):
             return False
@@ -1120,6 +1096,18 @@ class AbjadIDE(object):
                 return True
             if directory == configuration.abjad_ide_example_scores_directory:
                 return True
+        if 'outer' in prototype:
+            scores_directory = None
+            if directory.startswith(configuration.composer_scores_directory):
+                scores_directory = configuration.composer_scores_directory
+            elif directory.startswith(configuration.abjad_ide_example_scores_directory):
+                scores_directory = configuration.abjad_ide_example_scores_directory
+            if scores_directory is not None:
+                scores_directory_parts_count = len(
+                    scores_directory.split(os.path.sep))
+                parts = directory.split(os.path.sep)
+                if len(parts) == scores_directory_parts_count + 1:
+                    return True
         if 'inner' in prototype:
             scores_directory = None
             if directory.startswith(configuration.composer_scores_directory):
@@ -2180,7 +2168,7 @@ class AbjadIDE(object):
         assert os.path.sep in path, repr(path)
         if self._is_score_directory(path, 'scores'):
             return 'scores'
-        if self._is_outer_score_directory(path):
+        if self._is_score_directory(path, 'outer'):
             return 'score'
         if self._is_score_directory(path, 'inner'):
             return 'score'
@@ -4117,7 +4105,7 @@ class AbjadIDE(object):
                     source_name,
                     target_name,
                     )
-        if self._is_outer_score_directory(target_path):
+        if self._is_score_directory(target_path, 'outer'):
             false_inner_path = os.path.join(target_path, source_name)
             assert os.path.exists(false_inner_path)
             correct_inner_path = os.path.join(target_path, target_name)
