@@ -1157,18 +1157,46 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    # TODO: remove call to _make_menu_entries()
     def _list_visible_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        entries = self._make_menu_entries(directory)
+        paths = self._list_paths(directory)
+        strings = [self._to_menu_string(_) for _ in paths]
+        entries = []
+        pairs = list(zip(strings, paths))
+        for string, path in pairs:
+            entry = (string, None, None, path)
+            entries.append(entry)
+        entries = self._filter_by_view(directory, entries)
+        if self._is_score_directory(directory, 'scores'):
+            if self._session.is_test:
+                entries = [_ for _ in entries if 'Example Score' in _[0]]
+            else:
+                entries = [_ for _ in entries if 'Example Score' not in _[0]]
         paths = [_[-1] for _ in entries]
         return paths
+
+    def _make_asset_menu_entries(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        paths = self._list_visible_paths(directory)
+        strings = [self._to_menu_string(_) for _ in paths]
+        pairs = list(zip(strings, paths))
+        def sort_function(pair):
+            string = pair[0]
+            string = stringtools.strip_diacritics(string)
+            string = string.replace("'", '')
+            return string
+        pairs.sort(key=lambda _: sort_function(_))
+        entries = []
+        for string, path in pairs:
+            entry = (string, None, None, path)
+            entries.append(entry)
+        return entries
 
     def _make_asset_menu_section(self, directory, menu):
         menu_entries = []
         menu_entries_ = self._make_secondary_menu_entries(directory)
         menu_entries.extend(menu_entries_)
-        menu_entries_  = self._make_menu_entries(directory)
+        menu_entries_  = self._make_asset_menu_entries(directory)
         menu_entries.extend(menu_entries_)
         if not menu_entries:
             return
@@ -1329,41 +1357,6 @@ class AbjadIDE(object):
         if path not in paths:
             self._clear_view(directory)
         self._manage_directory(new_path)
-
-    def _list_flamingo_paths(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        paths = self._list_paths(directory)
-        strings = [self._to_menu_string(_) for _ in paths]
-        entries = []
-        pairs = list(zip(strings, paths))
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        entries = self._filter_by_view(directory, entries)
-        if self._is_score_directory(directory, 'scores'):
-            if self._session.is_test:
-                entries = [_ for _ in entries if 'Example Score' in _[0]]
-            else:
-                entries = [_ for _ in entries if 'Example Score' not in _[0]]
-        paths = [_[-1] for _ in entries]
-        return paths
-
-    def _make_menu_entries(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        paths = self._list_flamingo_paths(directory)
-        strings = [self._to_menu_string(_) for _ in paths]
-        pairs = list(zip(strings, paths))
-        def sort_function(pair):
-            string = pair[0]
-            string = stringtools.strip_diacritics(string)
-            string = string.replace("'", '')
-            return string
-        pairs.sort(key=lambda _: sort_function(_))
-        entries = []
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        return entries
 
     def _make_score_package(self):
         message = 'enter title'
