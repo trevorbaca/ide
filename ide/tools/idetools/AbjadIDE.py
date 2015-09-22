@@ -125,22 +125,6 @@ class AbjadIDE(object):
             raise ValueError(directory)
         return name
 
-    def _collect_build_files(self, example_scores=False):
-        build_files = []
-        build_directories = self._collect_directories(
-            'build',
-            example_scores=example_scores,
-            )
-        for build_directory in build_directories:
-            for name in os.listdir(build_directory):
-                if not name[0].isalpha():
-                    continue
-                build_file = os.path.join(build_directory, name)
-                if not os.path.isfile(build_file):
-                    continue
-                build_files.append(build_file)
-        return build_files
-
     def _collect_directories(self, directory_name, example_scores=False):
         directories = []
         scores_directories = [configuration.composer_scores_directory]
@@ -172,21 +156,6 @@ class AbjadIDE(object):
             score_directories.append(score_directory)
         if directory_name == 'inner':
             return score_directories
-#        if directory_name == 'material':
-#            material_directories = []
-#            materials_directories = self._collect_directories(
-#                'materials',
-#                example_scores=example_scores,
-#                )
-#            for directory in materials_directories:
-#                for name in os.listdir(directory):
-#                    if not name[0].isalpha():
-#                        continue
-#                    material_directory = os.path.join(directory, name)
-#                    if not os.path.isdir(material_directory):
-#                        continue
-#                    material_directories.append(material_directory)
-#            return material_directories
         if directory_name in ('material', 'segment'):
             directories = []
             parent_directory_name= directory_name + 's'
@@ -209,117 +178,23 @@ class AbjadIDE(object):
                 directories.append(directory)
         return directories
 
-    def _collect_distribution_files(self, example_scores=False):
-        distribution_files = []
-        distribution_directories = self._collect_directories(
-            'distribution',
+    def _collect_files(self, directory_name, example_scores=False):
+        files = []
+        directories = self._collect_directories(
+            directory_name,
             example_scores=example_scores,
             )
-        for distribution_directory in distribution_directories:
-            for name in os.listdir(distribution_directory):
-                if not name[0].isalpha():
-                    continue
-                distribution_file = os.path.join(distribution_directory, name)
-                if not os.path.isfile(distribution_file):
-                    continue
-                distribution_files.append(distribution_file)
-        return distribution_files
-
-    def _collect_etc_files(self, example_scores=False):
-        etc_files = []
-        etc_directories = self._collect_directories(
-            'etc',
-            example_scores=example_scores,
-            )
-        for etc_directory in etc_directories:
-            for name in os.listdir(etc_directory):
-                if not name[0].isalpha():
-                    continue
-                etc_file = os.path.join(etc_directory, name)
-                if not os.path.isfile(etc_file):
-                    continue
-                etc_files.append(etc_file)
-        return etc_files
-
-    def _collect_maker_files(self, example_scores=False):
-        maker_files = []
-        makers_directories = self._collect_directories(
-            'makers',
-            example_scores=example_scores,
-            )
-        for makers_directory in makers_directories:
-            for name in os.listdir(makers_directory):
-                if not name[0].isalpha():
-                    continue
-                if not name.endswith('.py'):
-                    continue
-                maker_file = os.path.join(makers_directory, name)
-                if not os.path.isfile(maker_file):
-                    continue
-                maker_files.append(maker_file)
-        return maker_files
-
-    def _collect_material_files(self, example_scores=False):
-        material_files = []
-        material_directories = self._collect_directories(
-            'material',
-            example_scores=example_scores,
-            )
-        for material_directory in material_directories:
-            for name in os.listdir(material_directory):
-                if name.endswith('.pyc'):
-                    continue
-                material_file = os.path.join(material_directory, name)
-                material_files.append(material_file)
-        return material_files
-
-    def _collect_segment_files(self, example_scores=False):
-        segment_files = []
-        segment_directories = self._collect_directories(
-            'segment',
-            example_scores=example_scores,
-            )
-        for segment_directory in segment_directories:
-            for name in os.listdir(segment_directory):
-                if not name[0].isalpha():
+        for directory in directories:
+            for name in os.listdir(directory):
+                if name.startswith('.'):
                     continue
                 if name.endswith('.pyc'):
                     continue
-                segment_file = os.path.join(segment_directory, name)
-                segment_files.append(segment_file)
-        return segment_files
-
-    def _collect_stylesheets(self, example_scores=False):
-        stylesheets = []
-        stylesheets_directories = self._collect_directories(
-            'stylesheets',
-            example_scores=example_scores,
-            )
-        for stylesheets_directory in stylesheets_directories:
-            for name in os.listdir(stylesheets_directory):
-                if not name[0].isalpha():
+                path = os.path.join(directory, name)
+                if not os.path.isfile(path):
                     continue
-                stylesheet = os.path.join(stylesheets_directory, name)
-                if not os.path.isfile(stylesheet):
-                    continue
-                stylesheets.append(stylesheet)
-        return stylesheets
-
-    def _collect_test_files(self, example_scores=False):
-        test_files = []
-        test_directories = self._collect_directories(
-            'test',
-            example_scores=example_scores,
-            )
-        for test_directory in test_directories:
-            for name in os.listdir(test_directory):
-                if not name[0].isalpha():
-                    continue
-                test_file = os.path.join(test_directory, name)
-                if not os.path.isfile(test_file):
-                    continue
-                test_files.append(test_file)
-        return test_files
+                files.append(path)
+        return files
 
     def _confirm_segment_names(self, score_directory):
         segments_directory = os.path.join(score_directory, 'segments')
@@ -2655,15 +2530,25 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         example_scores = self._session.is_test
         if self._is_score_directory(directory, 'build'):
-            assets_ = self._collect_build_files(example_scores=example_scores)
+            assets_ = self._collect_files(
+                'build', 
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'distribution'):
-            assets_ = self._collect_distribution_files(
-                example_scores=example_scores)
+            assets_ = self._collect_files(
+                'distribution',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'etc'):
-            assets_ = self._collect_etc_files(
-                example_scores=example_scores)
+            assets_ = self._collect_files(
+                'etc',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'makers'):
-            assets_ = self._collect_maker_files(example_scores=example_scores)
+            assets_ = self._collect_files(
+                'makers',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'materials'):
             assets_ = self._collect_directories(
                 'material',
@@ -2675,15 +2560,25 @@ class AbjadIDE(object):
                 example_scores=example_scores,
                 )
         elif self._is_score_directory(directory, 'stylesheets'):
-            assets_ = self._collect_stylesheets(example_scores=example_scores)
+            assets_ = self._collect_files(
+                'stylesheets',
+                example_scores=example_scores,
+                )
         elif self._is_score_directory(directory, 'test'):
-            assets_ = self._collect_test_files(example_scores=example_scores)
+            assets_ = self._collect_files(
+                'test',
+                example_scores=example_scores,
+                )
         elif self._is_material_directory(directory):
-            assets_ = self._collect_material_files(
-                example_scores=example_scores)
+            assets_ = self._collect_files(
+                'material',
+                example_scores=example_scores,
+                )
         elif self._is_segment_directory(directory):
-            assets_ = self._collect_segment_files(
-                example_scores=example_scores)
+            assets_ = self._collect_files(
+                'segment',
+                example_scores=example_scores,
+                )
         else:
             raise ValueError(directory)
         selector = self._io_manager._make_selector(items=assets_)
