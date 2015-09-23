@@ -1893,6 +1893,7 @@ class AbjadIDE(object):
             return inputs, outputs
         result = self._io_manager.interpret_file(definition_path, strip=False)
         stdout_lines, stderr_lines = result
+        self._io_manager._display(stdout_lines)
         if stderr_lines:
             messages = [definition_path + ' FAILED:']
             messages.extend(stderr_lines)
