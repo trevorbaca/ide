@@ -1192,6 +1192,10 @@ class AbjadIDE(object):
                     result = None
                     if os.path.isfile(path):
                         self._io_manager.open_file(path)
+                        parent_directory = os.path.dirname(path)
+                        names = ('material', 'segment')
+                        if self._is_score_directory(parent_directory, names):
+                            self._manage_directory(parent_directory)
                     else:
                         message = 'file does not exist: {}.'
                         message = message.format(path)
@@ -2089,6 +2093,7 @@ class AbjadIDE(object):
             return
         path = configuration.abjad_ide_aliases_file_path
         self._io_manager.edit(path)
+        configuration._read_aliases_file()
 
     @Command(
         'df',
