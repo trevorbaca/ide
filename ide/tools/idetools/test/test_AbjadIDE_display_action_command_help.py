@@ -5,6 +5,42 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_display_action_command_help_01():
+    r'''In package wrapper.
+    '''
+
+    lines = [
+        'Red Example Score (2013) - package wrapper - action commands',
+        '',
+        '    display action command help (?)',
+        '    invoke shell (!)',
+        '',
+        '    abbreviations - edit (abb)',
+        '    aliases - edit (al)',
+        '    log - edit (log)',
+        '    stylesheet - edit (sty)',
+        '',
+        '    git - add (add)',
+        '    git - commit (ci)',
+        '    git - status (st)',
+        '    git - update (up)',
+        '',
+        '    copy (cp)',
+        '    new (new)',
+        '    remove (rm)',
+        '    rename (ren)',
+        '',
+        '>',
+        ]
+
+    input_ = 'red~example~score ww ? q'
+    abjad_ide._start(input_=input_)
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
+
+    for line, actual_line in zip(lines, transcript_entry.lines):
+        assert line == actual_line
+
+
+def test_AbjadIDE_display_action_command_help_02():
     r'''In material directory.
     '''
     
@@ -15,7 +51,7 @@ def test_AbjadIDE_display_action_command_help_01():
     assert 'tempo inventory - action commands' in contents
 
 
-def test_AbjadIDE_display_action_command_help_02():
+def test_AbjadIDE_display_action_command_help_03():
     r'''In segment directory.
     '''
     
@@ -26,7 +62,7 @@ def test_AbjadIDE_display_action_command_help_02():
     assert 'segments directory - A - action commands' in contents
 
 
-def test_AbjadIDE_display_action_command_help_03():
+def test_AbjadIDE_display_action_command_help_04():
     r'''In score directory.
     '''
     
@@ -37,8 +73,8 @@ def test_AbjadIDE_display_action_command_help_03():
     assert 'Red Example Score (2013) - action commands' in contents
 
 
-def test_AbjadIDE_display_action_command_help_04():
-    r'''Works in score directory.
+def test_AbjadIDE_display_action_command_help_05():
+    r'''In score directory.
     '''
 
     lines = [
@@ -54,6 +90,11 @@ def test_AbjadIDE_display_action_command_help_04():
         '',
         '    open score pdf (so)',
         '',
+        '    git - add (add)',
+        '    git - commit (ci)',
+        '    git - status (st)',
+        '    git - update (up)',
+        '',
         '>',
     ]
 
@@ -66,8 +107,8 @@ def test_AbjadIDE_display_action_command_help_04():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_05():
-    r'''Works in material directory.
+def test_AbjadIDE_display_action_command_help_06():
+    r'''In material directory.
     '''
 
     lines = [
@@ -111,8 +152,8 @@ def test_AbjadIDE_display_action_command_help_05():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_06():
-    r'''Works in segment directory.
+def test_AbjadIDE_display_action_command_help_07():
+    r'''In segment directory.
     '''
 
     lines = [
@@ -152,7 +193,7 @@ def test_AbjadIDE_display_action_command_help_06():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_07():
+def test_AbjadIDE_display_action_command_help_08():
     r'''Displays correct title at home.
     '''
     
@@ -163,7 +204,7 @@ def test_AbjadIDE_display_action_command_help_07():
     assert 'Abjad IDE - all score directories - action commands' in contents
 
 
-def test_AbjadIDE_display_action_command_help_08():
+def test_AbjadIDE_display_action_command_help_09():
     r'''Displays correct title in build directory.
     '''
     
@@ -174,7 +215,7 @@ def test_AbjadIDE_display_action_command_help_08():
     assert 'build directory - action commands' in contents
 
 
-def test_AbjadIDE_display_action_command_help_09():
+def test_AbjadIDE_display_action_command_help_10():
     r'''Displays only one blank line after title.
     '''
     
@@ -189,8 +230,8 @@ def test_AbjadIDE_display_action_command_help_09():
     assert string in contents
 
 
-def test_AbjadIDE_display_action_command_help_10():
-    r'''Works at home screen.
+def test_AbjadIDE_display_action_command_help_11():
+    r'''In scores directory.
     '''
 
     lines = [
@@ -225,8 +266,8 @@ def test_AbjadIDE_display_action_command_help_10():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_11():
-    r'''Works in materials directory.
+def test_AbjadIDE_display_action_command_help_12():
+    r'''In materials directory.
     '''
 
     lines = [
@@ -261,8 +302,8 @@ def test_AbjadIDE_display_action_command_help_11():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_12():
-    r'''Works in segments directory.
+def test_AbjadIDE_display_action_command_help_13():
+    r'''In segments directory.
     '''
 
     lines = [
@@ -298,8 +339,8 @@ def test_AbjadIDE_display_action_command_help_12():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_13():
-    r'''Works in stylesheets directory.
+def test_AbjadIDE_display_action_command_help_14():
+    r'''In stylesheets directory.
     '''
 
     lines = [

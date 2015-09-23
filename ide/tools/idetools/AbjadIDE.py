@@ -560,113 +560,6 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    def _git_add(self, path, dry_run=False):
-        change = systemtools.TemporaryDirectoryChange(directory=path)
-        with change:
-            inputs = self._get_unadded_asset_paths(path)
-            outputs = []
-            if dry_run:
-                return inputs, outputs
-            if not inputs:
-                message = 'nothing to add.'
-                self._io_manager._display(message)
-                return
-            messages = []
-            messages.append('will add ...')
-            for path in inputs:
-                messages.append(self._tab + path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if not result:
-                return
-            command = 'git add -A {}'
-            command = command.format(path)
-            assert isinstance(command, str)
-            self._io_manager.run_command(command)
-
-    def _git_commit(self, path, commit_message=None):
-        change = systemtools.TemporaryDirectoryChange(directory=path)
-        with change:
-            self._io_manager._session._attempted_method = '_git_commit'
-            if self._io_manager._session.is_test:
-                return
-            if commit_message is None:
-                getter = self._io_manager._make_getter()
-                getter.append_string('commit message')
-                commit_message = getter._run(io_manager=self._io_manager)
-                if commit_message is None:
-                    return
-                message = 'commit message will be: "{}"'
-                message = message.format(commit_message)
-                self._io_manager._display(message)
-                result = self._io_manager._confirm()
-                if not result:
-                    return
-            message = path
-            path = configuration.abjad_ide_example_scores_directory
-            message = message.replace(path, '')
-            path = configuration.composer_scores_directory
-            message = message.replace(path, '')
-            message = message.lstrip(os.path.sep)
-            message = message + ' ...'
-            command = 'git commit -m "{}" {}; git push'
-            command = command.format(commit_message, path)
-            self._io_manager.run_command(command, capitalize=False)
-
-    def _git_status(self, path):
-        change = systemtools.TemporaryDirectoryChange(directory=path)
-        with change:
-            command = 'git status {}'.format(path)
-            messages = []
-            self._io_manager._session._attempted_method = '_git_status'
-            message = 'Repository status for {} ...'
-            message = message.format(path)
-            messages.append(message)
-            with systemtools.TemporaryDirectoryChange(directory=path):
-                process = self._io_manager.make_subprocess(command)
-            path_ = path + os.path.sep
-            clean_lines = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
-                line = str(line)
-                clean_line = line.strip()
-                clean_line = clean_line.replace(path_, '')
-                clean_lines.append(clean_line)
-            everything_ok = False
-            for line in clean_lines:
-                if 'nothing to commit' in line:
-                    everything_ok = True
-                    break
-            if clean_lines and not everything_ok:
-                messages.extend(clean_lines)
-            else:
-                first_message = messages[0]
-                first_message = first_message + ' OK'
-                messages[0] = first_message
-                clean_lines.append(message)
-            self._io_manager._display(messages, capitalize=False)
-
-    def _git_update(self, path, messages_only=False):
-        messages = []
-        change = systemtools.TemporaryDirectoryChange(directory=path)
-        with change:
-            if self._io_manager._session.is_test:
-                return messages
-            root_directory = self._get_repository_root_directory(path)
-            command = 'git pull {}'
-            command = command.format(root_directory)
-            messages = self._io_manager.run_command(
-                command,
-                messages_only=True,
-                )
-        if messages and messages[-1].startswith('At revision'):
-            messages = messages[-1:]
-        elif messages and 'Already up-to-date' in messages[-1]:
-            messages = messages[-1:]
-        if messages_only:
-            return messages
-        self._io_manager._display(messages)
-
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
@@ -2517,6 +2410,41 @@ class AbjadIDE(object):
             )
 
     @Command(
+        'add',
+        argument_name='current_directory',
+        description='git - add',
+        directories=('inner', 'outer',),
+        section='git',
+        )
+    def git_add(self, path, dry_run=False):
+        r'''Adds all unadded files to working copy of current score package.
+
+        Returns none.
+        '''
+        change = systemtools.TemporaryDirectoryChange(directory=path)
+        with change:
+            inputs = self._get_unadded_asset_paths(path)
+            outputs = []
+            if dry_run:
+                return inputs, outputs
+            if not inputs:
+                message = 'nothing to add.'
+                self._io_manager._display(message)
+                return
+            messages = []
+            messages.append('will add ...')
+            for path in inputs:
+                messages.append(self._tab + path)
+            self._io_manager._display(messages)
+            result = self._io_manager._confirm()
+            if not result:
+                return
+            command = 'git add -A {}'
+            command = command.format(path)
+            assert isinstance(command, str)
+            self._io_manager.run_command(command)
+
+    @Command(
         'add*',
         argument_name='current_directory',
         directories=('scores',),
@@ -2533,7 +2461,7 @@ class AbjadIDE(object):
         if self._session.is_test:
             return
         inputs, outputs = [], []
-        method_name = '_git_add'
+        method_name = 'git_add'
         for directory in directories:
             inputs_, outputs_ = self._git_add(
                 directory,
@@ -2549,12 +2477,52 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            self._git_add(directory)
+            self.git_add(directory)
         count = len(inputs)
         identifier = stringtools.pluralize('file', count)
         message = 'added {} {} to repository.'
         message = message.format(count, identifier)
         self._io_manager._display(message)
+
+    @Command(
+        'ci',
+        argument_name='current_directory',
+        description='git - commit',
+        directories=('inner', 'outer',),
+        section='git',
+        )
+    def git_commit(self, path, commit_message=None):
+        r'''Commits working copy of current score package to repository.
+
+        Returns none.
+        '''
+        change = systemtools.TemporaryDirectoryChange(directory=path)
+        with change:
+            self._io_manager._session._attempted_method = 'git_commit'
+            if self._io_manager._session.is_test:
+                return
+            if commit_message is None:
+                getter = self._io_manager._make_getter()
+                getter.append_string('commit message')
+                commit_message = getter._run(io_manager=self._io_manager)
+                if commit_message is None:
+                    return
+                message = 'commit message will be: "{}"'
+                message = message.format(commit_message)
+                self._io_manager._display(message)
+                result = self._io_manager._confirm()
+                if not result:
+                    return
+            message = path
+            path = configuration.abjad_ide_example_scores_directory
+            message = message.replace(path, '')
+            path = configuration.composer_scores_directory
+            message = message.replace(path, '')
+            message = message.lstrip(os.path.sep)
+            message = message + ' ...'
+            command = 'git commit -m "{}" {}; git push'
+            command = command.format(commit_message, path)
+            self._io_manager.run_command(command, capitalize=False)
 
     @Command(
         'ci*',
@@ -2583,10 +2551,52 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            self._git_commit(
-                directory,
-                commit_message=commit_message,
-                )
+            self.git_commit(directory, commit_message=commit_message)
+
+    @Command(
+        'st',
+        argument_name='current_directory',
+        description='git - status',
+        directories=('inner', 'outer',),
+        section='git',
+        )
+    def git_status(self, path):
+        r'''Displays Git status of current score package.
+
+        Returns none.
+        '''
+        path = self._to_score_directory(path, 'outer')
+        change = systemtools.TemporaryDirectoryChange(directory=path)
+        with change:
+            command = 'git status {}'.format(path)
+            messages = []
+            self._io_manager._session._attempted_method = 'git_status'
+            message = 'Repository status for {} ...'
+            message = message.format(path)
+            messages.append(message)
+            with systemtools.TemporaryDirectoryChange(directory=path):
+                process = self._io_manager.make_subprocess(command)
+            path_ = path + os.path.sep
+            clean_lines = []
+            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+            for line in stdout_lines.splitlines():
+                line = str(line)
+                clean_line = line.strip()
+                clean_line = clean_line.replace(path_, '')
+                clean_lines.append(clean_line)
+            everything_ok = False
+            for line in clean_lines:
+                if 'nothing to commit' in line:
+                    everything_ok = True
+                    break
+            if clean_lines and not everything_ok:
+                messages.extend(clean_lines)
+            else:
+                first_message = messages[0]
+                first_message = first_message + ' OK'
+                messages[0] = first_message
+                clean_lines.append(message)
+            self._io_manager._display(messages, capitalize=False)
 
     @Command(
         'st*',
@@ -2604,7 +2614,39 @@ class AbjadIDE(object):
         self._session._attempted_method = 'git_status_every_package'
         directories.sort()
         for directory in directories:
-            self._git_status(directory)
+            self.git_status(directory)
+
+    @Command(
+        'up',
+        argument_name='current_directory',
+        description='git - update',
+        directories=('inner', 'outer',),
+        section='git',
+        )
+    def git_update(self, path, messages_only=False):
+        r'''Updates working copy of current score package.
+
+        Returns none.
+        '''
+        messages = []
+        change = systemtools.TemporaryDirectoryChange(directory=path)
+        with change:
+            if self._io_manager._session.is_test:
+                return messages
+            root_directory = self._get_repository_root_directory(path)
+            command = 'git pull {}'
+            command = command.format(root_directory)
+            messages = self._io_manager.run_command(
+                command,
+                messages_only=True,
+                )
+        if messages and messages[-1].startswith('At revision'):
+            messages = messages[-1:]
+        elif messages and 'Already up-to-date' in messages[-1]:
+            messages = messages[-1:]
+        if messages_only:
+            return messages
+        self._io_manager._display(messages)
 
     @Command(
         'up*',
@@ -2628,10 +2670,7 @@ class AbjadIDE(object):
                 message = message[:index]
                 message = message.strip()
             message = message + ':'
-            messages_ = self._git_update(
-                directory,
-                messages_only=True,
-                )
+            messages_ = self.git_update(directory, messages_only=True)
             if len(messages_) == 1:
                 message = message + ' ' + messages_[0]
                 messages.append(message)
