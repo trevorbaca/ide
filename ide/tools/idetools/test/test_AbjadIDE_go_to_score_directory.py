@@ -66,3 +66,31 @@ def test_AbjadIDE_go_to_score_directory_04():
         'Red Example Score (2013)',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_score_directory_05():
+    r'''With substring matching.
+    '''
+
+    input_ = 'lue q'
+    abjad_ide._start(input_=input_)
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Blue Example Score (2013)',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_score_directory_06():
+    r'''With capital letter matching.
+    '''
+
+    input_ = 'BES q'
+    abjad_ide._start(input_=input_)
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Blue Example Score (2013)',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles
