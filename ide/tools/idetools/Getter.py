@@ -209,19 +209,15 @@ class Getter(object):
     def _run(self, io_manager, clear_terminal=False, title=False):
         assert io_manager is not None
         self._io_manager = io_manager
-        with self._io_manager._controller(
-            controller=self,
-            is_in_confirmation_environment=True,
-            ):
-            self._present_prompts(include_chevron=self._include_chevron)
-            if len(self._evaluated_input) == 1:
-                result = self._evaluated_input[0]
-            else:
-                result = self._evaluated_input[:]
-            if result == []:
-                result = None
-            self._io_manager = None
-            return result
+        self._present_prompts(include_chevron=self._include_chevron)
+        if len(self._evaluated_input) == 1:
+            result = self._evaluated_input[0]
+        else:
+            result = self._evaluated_input[:]
+        if result == []:
+            result = None
+        self._io_manager = None
+        return result
 
     def _validate_evaluated_input(self, evaluated_input):
         if evaluated_input is None and self.allow_none:

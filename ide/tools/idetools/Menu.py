@@ -531,30 +531,29 @@ class Menu(object):
 
     def _run(self, io_manager):
         self._io_manager = io_manager
-        with self._io_manager._controller(controller=self):
-            while True:
-                if self._io_manager._session.pending_redraw:
-                    self._redraw()
-                    message = self._io_manager._session._after_redraw_message
-                    if message:
-                        self._io_manager._session._io_manager._display(message)
-                        self._io_manager._session._after_redraw_message = None
-                result = None
-                if not result:
-                    result = self._handle_user_input()
-                if self._io_manager._session.is_quitting:
-                    return result
-                elif result == '<return>':
-                    self._io_manager._session._pending_redraw = True
-                    self._io_manager = None
-                    return
-                elif result == '?':
-                    self._redraw(command_type='action')
-                elif result == ';':
-                    self._redraw(command_type='navigation')
-                else:
-                    self._io_manager = None
-                    return result
+        while True:
+            if self._io_manager._session.pending_redraw:
+                self._redraw()
+                message = self._io_manager._session._after_redraw_message
+                if message:
+                    self._io_manager._session._io_manager._display(message)
+                    self._io_manager._session._after_redraw_message = None
+            result = None
+            if not result:
+                result = self._handle_user_input()
+            if self._io_manager._session.is_quitting:
+                return result
+            elif result == '<return>':
+                self._io_manager._session._pending_redraw = True
+                self._io_manager = None
+                return
+            elif result == '?':
+                self._redraw(command_type='action')
+            elif result == ';':
+                self._redraw(command_type='navigation')
+            else:
+                self._io_manager = None
+                return result
         self._io_manager = None
 
     def _sort_menu_sections(self, command_type):

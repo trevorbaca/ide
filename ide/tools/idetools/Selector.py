@@ -93,19 +93,15 @@ class Selector(object):
     def _run(self, io_manager):
         assert io_manager is not None
         self._io_manager = io_manager
-        with self._io_manager._controller(
-            clear_terminal=True,
-            controller=self,
-            ):
-            while True:
-                menu = self._make_main_menu()
-                result = menu._run(io_manager=self._io_manager)
-                if result is None:
-                    self._io_manager = None
-                    return
-                elif result:
-                    self._io_manager = None
-                    return result
+        while True:
+            menu = self._make_main_menu()
+            result = menu._run(io_manager=self._io_manager)
+            if result is None:
+                self._io_manager = None
+                return
+            elif result:
+                self._io_manager = None
+                return result
         self._io_manager = None
 
     ### PUBLIC PROPERTIES ###

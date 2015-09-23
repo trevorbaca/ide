@@ -2,7 +2,7 @@
 
 
 class Session(object):
-    r'''Abjad IDE session.
+    r'''Session.
 
         ::
 
@@ -22,7 +22,6 @@ class Session(object):
         '_clear_terminal_after_quit',
         '_confirm',
         '_current_directory',
-        '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_test',
         '_pending_input',
@@ -41,7 +40,6 @@ class Session(object):
         self._attempted_to_open_file = False
         self._clear_terminal_after_quit = False
         self._confirm = True
-        self._is_in_confirmation_environment = False
         self._is_quitting = False
         self._is_test = is_test
         self._current_directory = None
@@ -89,22 +87,6 @@ class Session(object):
         Returns string.
         '''
         return self._current_directory
-
-    @property
-    def is_in_confirmation_environment(self):
-        r'''Is true when session is in confirmation environment.
-        Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_confirmation_environment
-                False
-
-        Returns true or false..
-        '''
-        return self._is_in_confirmation_environment
 
     @property
     def is_quitting(self):

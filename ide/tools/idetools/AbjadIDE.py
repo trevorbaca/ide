@@ -64,7 +64,7 @@ class AbjadIDE(object):
     ### SPECIAL METHODS ###
 
     def __repr__(self):
-        r'''Gets interpreter representation of asset controller.
+        r'''Gets interpreter representation of AbjadIDE.
 
         Returns string.
         '''

@@ -44,10 +44,10 @@ if __name__ == '__main__':
     try:
         current_directory = os.path.dirname(__file__)
         dummy_session = idetools.Session()
-        controller = idetools.AbjadIDE(
+        abjad_ide = idetools.AbjadIDE(
             session=dummy_session, 
             )
-        controller._write_metadata_py(
+        abjad_ide._write_metadata_py(
             current_directory,
             segment_metadata, 
             )

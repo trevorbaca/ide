@@ -101,19 +101,6 @@ class IOManager(IOManager):
             if 'no'.startswith(result.lower()):
                 return False
 
-    def _controller(
-        self,
-        clear_terminal=False,
-        controller=None,
-        is_in_confirmation_environment=False,
-        ):
-        from ide.tools import idetools
-        return idetools.ControllerContext(
-            clear_terminal=clear_terminal,
-            controller=controller,
-            is_in_confirmation_environment=is_in_confirmation_environment,
-            )
-
     def _display(self, lines, capitalize=True, is_menu=False):
         assert isinstance(lines, (str, list)), repr(lines)
         if isinstance(lines, str):
