@@ -252,21 +252,6 @@ class IOManager(IOManager):
             )
         return getter
 
-    def _make_interaction(
-        self,
-        confirm=True,
-        display=True,
-        dry_run=False,
-        ):
-        from ide.tools import idetools
-        return idetools.Interaction(
-            confirm=confirm,
-            display=display,
-            dry_run=dry_run,
-            io_manager=self,
-            session=self._session,
-            )
-
     def _make_menu(
         self,
         explicit_header=None,
