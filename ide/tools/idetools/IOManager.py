@@ -312,7 +312,7 @@ class IOManager(IOManager):
             input_parts = self._session.pending_input.split(' ')
             first_parts, rest_parts = [], []
             for i, part in enumerate(input_parts):
-                if not part.endswith((',', '-')):
+                if part == '-' or not part.endswith((',', '-')):
                     break
             first_parts = input_parts[:i+1]
             rest_parts = input_parts[i+1:]

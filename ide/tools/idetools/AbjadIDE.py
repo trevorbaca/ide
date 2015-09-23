@@ -1182,11 +1182,22 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
-        self._session._manifest_current_directory = directory
+#        if not self._session.manifest_current_directory == \
+#            self._session._previous_directory:
+#        self._session._previous_directory = \
+#            self._session.manifest_current_directory
+#        self._session._manifest_current_directory = directory
+        if not self._session.manifest_current_directory == directory:
+            self._session._previous_directory = \
+                self._session.manifest_current_directory
+            self._session._manifest_current_directory = directory
         menu_header = self._to_menu_header(directory)
         menu = self._make_main_menu(directory, menu_header)
         while True:
-            self._session._manifest_current_directory = directory
+            if not self._session.manifest_current_directory == directory:
+                self._session._previous_directory = \
+                    self._session.manifest_current_directory
+                self._session._manifest_current_directory = directory
             os.chdir(directory)
             if self._session._pending_menu_rebuild:
                 menu = self._make_main_menu(directory, menu_header)
@@ -2530,6 +2541,16 @@ class AbjadIDE(object):
                 messages_ = [self._tab + _ for _ in messages_]
                 messages.extend(messages_)
             self._io_manager._display(messages, capitalize=False)
+
+    @Command('-', description='back', section='back-home-quit')
+    def go_back(self):
+        r'''Goes back.
+
+        Returns none.
+        '''
+        directory = self._session.previous_directory
+        if directory:
+            self._manage_directory(directory)
 
     @Command('h', description='home', section='back-home-quit')
     def go_home(self):

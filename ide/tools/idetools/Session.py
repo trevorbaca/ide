@@ -31,6 +31,7 @@ class Session(object):
         '_pending_input',
         '_pending_menu_rebuild',
         '_pending_redraw',
+        '_previous_directory',
         )
 
     ### INITIALIZER ###
@@ -53,6 +54,7 @@ class Session(object):
         self._pending_input = input_
         self._pending_menu_rebuild = False
         self._pending_redraw = True
+        self._previous_directory = None
 
     ### SPECIAL METHODS ###
 
@@ -259,6 +261,14 @@ class Session(object):
                 >>> session.pending_redraw
                 True
 
-        Returns true or false..
+        Returns true or false.
         '''
         return self._pending_redraw
+
+    @property
+    def previous_directory(self):
+        r'''Gets previous directory.
+
+        Returns directory.
+        '''
+        return self._previous_directory
