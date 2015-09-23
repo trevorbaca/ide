@@ -121,6 +121,27 @@ class AbjadIDE(object):
             raise ValueError(directory)
         return name
 
+    def _collect_all_display_strings_in_score(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        strings, paths = [], []
+        names = (
+            'segments',
+            'materials',
+            'makers',
+            'stylesheets',
+            'etc',
+            'distribution',
+            'test',
+            )
+        for name in names:
+            directory_ = self._to_score_directory(directory, name)
+            paths_ = self._list_visible_paths(directory_)
+            paths.extend(paths_)
+            strings_ = [self._to_menu_string(_) for _ in paths_]
+            strings.extend(strings_)
+        assert len(strings) == len(paths), repr((len(strings), len(paths)))
+        return strings, paths
+
     def _collect_similar_directories(self, directory, example_scores=False):
         assert os.path.isdir(directory), repr(directory)
         directories = []
@@ -678,11 +699,25 @@ class AbjadIDE(object):
         if result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
+        elif result.startswith('@'):
+            directory = self._session.current_directory
+            result = result[1:]
+            path = self._match_display_string_in_score(directory, result)
+            if path:
+                if self._is_score_directory(path, ('material', 'segment')):
+                    definition_file = os.path.join(path, 'definition.py')
+                    self._io_manager.open_file(definition_file)
+                    self._manage_directory(path)
+                elif os.path.isfile(path):
+                    self._io_manager.open_file(path)
+            else:
+                message = 'matches no display string: @{}.'
+                message = message.format(result)
+                self._io_manager._display(message)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if command.argument_name == 'current_directory':
-                current_directory = self._session.current_directory
-                command(current_directory)
+                command(self._session.current_directory)
             else:
                 command()
         elif (result.endswith('!') and
@@ -1221,6 +1256,33 @@ class AbjadIDE(object):
         score_directory = self._to_score_directory(directory, 'inner')
         path = os.path.join(score_directory, path)
         return path
+
+    def _match_display_string_in_score(self, directory, expr):
+        strings, paths = self._collect_all_display_strings_in_score(directory)
+        for string, path in zip(strings, paths):
+            if string == expr:
+                return path
+        for string, path in zip(strings, paths):
+            if string.startswith(expr):
+                return path
+        for string, path in zip(strings, paths):
+            if expr in string:
+                return path
+        initial_strings = []
+        initial_paths = []
+        for string, path in zip(strings, paths):
+            string, _ = os.path.splitext(string)
+            words = stringtools.delimit_words(string)
+            initial_letters = [_[0] for _ in words]
+            if not initial_letters:
+                continue
+            initial_string = ''.join(initial_letters)
+            initial_strings.append(initial_string)
+            initial_paths.append(path)
+        pairs = zip(initial_strings, initial_paths)
+        for initial_string, initial_path in pairs:
+            if initial_string == expr:
+                return initial_path
 
     @staticmethod
     def _match_display_string_view_pattern(pattern, entry):

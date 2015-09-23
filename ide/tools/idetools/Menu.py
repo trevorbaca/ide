@@ -132,6 +132,8 @@ class Menu(object):
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
         input_ = stringtools.strip_diacritics(input_)
+        if input_.startswith('@'):
+            return input_
         if input_.startswith('!') and self._has_command('!'):
             return input_
         ends_with_bang = input_.endswith('!')
