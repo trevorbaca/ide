@@ -38,7 +38,6 @@ class AbjadIDE(object):
         '__metadata__.py',
         '__views__.py',
         '__abbreviations__.py',
-        '.gitignore',
         '.travis.yml',
         'README.md',
         'requirements.txt',
@@ -730,6 +729,20 @@ class AbjadIDE(object):
         git_status_lines = git_status_lines or ['']
         first_line = git_status_lines[0]
         if first_line.startswith('fatal:'):
+            return False
+        return True
+
+    @staticmethod
+    def _is_lowercase_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if not expr == expr.lower():
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if not (stringtools.is_snake_case(file_name) or
+            stringtools.is_dash_case(file_name)):
+            return False
+        if not file_extension in ('.py', '.ly', '.pdf'):
             return False
         return True
 
@@ -1604,10 +1617,11 @@ class AbjadIDE(object):
         header = ' - '.join(header_parts)
         return header
 
-    def _to_menu_string(self, directory):
-        if self._is_score_directory(directory, 'inner'):
+    def _to_menu_string(self, path):
+        assert os.path.sep in path, repr(path)
+        if self._is_score_directory(path, 'inner'):
             annotation = None
-            metadata = self._get_metadata(directory)
+            metadata = self._get_metadata(path)
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
@@ -1616,13 +1630,16 @@ class AbjadIDE(object):
                 else:
                     annotation = str(title)
             else:
-                annotation = os.path.basename(directory)
+                annotation = os.path.basename(path)
             return annotation
-        name = os.path.basename(directory)
+        name = os.path.basename(path)
+        directory = path 
+        if os.path.isfile(directory):
+            directory = os.path.dirname(directory)
         if '_' in name and not self._is_score_directory(directory, 'test'):
             name = stringtools.to_space_delimited_lowercase(name)
-        if self._is_score_directory(directory, 'segment'):
-            return self._get_metadatum(directory, 'name', name)
+        if self._is_score_directory(path, 'segment'):
+            return self._get_metadatum(path, 'name', name)
         else:
             return name
 
@@ -1652,11 +1669,11 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, 'makers'):
             return self._is_classfile_name
         elif self._is_score_directory(directory, ('material', 'segment')):
-            return self._is_module_file_name
+            return self._is_lowercase_file_name
         elif self._is_score_directory(directory, 'stylesheets'):
             return self._is_stylesheet_name
         elif self._is_score_directory(directory, 'test'):
-            return stringtools.is_snake_case
+            return self._is_module_file_name
         else:
             raise ValueError(directory)
 

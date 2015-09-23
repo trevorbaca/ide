@@ -66,3 +66,14 @@ def test_AbjadIDE_go_to_build_directory_04():
         'Red Example Score (2013) - build directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_AbjadIDE_go_to_build_directory_05():
+    r'''Git ignore file is hidden.
+    '''
+
+    input_ = 'red~example~score bb q'
+    abjad_ide._start(input_=input_)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert '.gitignore' not in contents

@@ -59,7 +59,6 @@ def test_AbjadIDE_go_to_test_directory_04():
     r'''No explosions if test directory is missing.
     '''
 
-
     test_directory = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
@@ -76,3 +75,14 @@ def test_AbjadIDE_go_to_test_directory_04():
 
     string = 'Directory does not exist:'
     assert string in abjad_ide._io_manager._transcript.contents
+
+
+def test_AbjadIDE_go_to_test_directory_05():
+    r'''Filenames appear correctly.
+    '''
+
+    input_ = 'red~example~score tt q'
+    abjad_ide._start(input_=input_)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert '1: test_import.py' in contents
