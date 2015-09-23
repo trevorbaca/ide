@@ -2075,6 +2075,22 @@ class AbjadIDE(object):
         self._io_manager.edit(path)
 
     @Command(
+        'al', 
+        description='aliases - edit',
+        section='global files',
+        )
+    def edit_aliases_file(self):
+        r'''Edits aliases file.
+
+        Returns none.
+        '''
+        self._session._attempted_to_open_file = True
+        if self._session.is_test:
+            return
+        path = configuration.abjad_ide_aliases_file_path
+        self._io_manager.edit(path)
+
+    @Command(
         'df',
         argument_name='current_directory',
         description='definition file - edit',
@@ -2131,11 +2147,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        from abjad.tools import systemtools
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
-        systemtools.IOManager.open_last_log()
+        self._io_manager.open_last_log()
 
     @Command(
         'ly',
