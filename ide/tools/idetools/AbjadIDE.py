@@ -2491,12 +2491,12 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_commit(self, path, commit_message=None):
+    def git_commit(self, directory, commit_message=None):
         r'''Commits working copy of current score package to repository.
 
         Returns none.
         '''
-        change = systemtools.TemporaryDirectoryChange(directory=path)
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             self._io_manager._session._attempted_method = 'git_commit'
             if self._io_manager._session.is_test:
@@ -2513,15 +2513,15 @@ class AbjadIDE(object):
                 result = self._io_manager._confirm()
                 if not result:
                     return
-            message = path
-            path = configuration.abjad_ide_example_scores_directory
-            message = message.replace(path, '')
-            path = configuration.composer_scores_directory
-            message = message.replace(path, '')
+            message = directory
+            scores_directory = configuration.abjad_ide_example_scores_directory
+            message = message.replace(scores_directory, '')
+            scores_directory = configuration.composer_scores_directory
+            message = message.replace(scores_directory, '')
             message = message.lstrip(os.path.sep)
             message = message + ' ...'
             command = 'git commit -m "{}" {}; git push'
-            command = command.format(commit_message, path)
+            command = command.format(commit_message, directory)
             self._io_manager.run_command(command, capitalize=False)
 
     @Command(
