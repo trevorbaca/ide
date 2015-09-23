@@ -145,40 +145,22 @@ class Menu(object):
                     default_value = section._default_value
             if default_value is not None:
                 return self._enclose_in_list(default_value)
-        # match on exact case
         asset_section = None
         for section in self.menu_sections:
             if section.is_asset_section:
                 asset_section = section
                 continue
             for menu_entry in section:
-                if menu_entry.matches(input_):
+                if (menu_entry.matches(input_) or
+                    menu_entry.matches(input_.lower())):
                     return_value = menu_entry.return_value
                     if ends_with_bang:
                         return_value = return_value + '!'
                     return self._enclose_in_list(return_value)
         if asset_section is not None:
             for menu_entry in asset_section:
-                if menu_entry.matches(input_):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
-        # lower case version of the two sections above
-        asset_section = None
-        for section in self.menu_sections:
-            if section.is_asset_section:
-                asset_section = section
-                continue
-            for menu_entry in section:
-                if menu_entry.matches(input_.lower()):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
-        if asset_section is not None:
-            for menu_entry in asset_section:
-                if menu_entry.matches(input_.lower()):
+                if (menu_entry.matches(input_) or
+                    menu_entry.matches(input_.lower())):
                     return_value = menu_entry.return_value
                     if ends_with_bang:
                         return_value = return_value + '!'
