@@ -468,8 +468,10 @@ class AbjadIDE(object):
                     return path
 
     def _get_git_status_lines(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         command = 'git status --porcelain {}'
         command = command.format(directory)
+        directory = self._to_score_directory(directory, 'outer')
         with systemtools.TemporaryDirectoryChange(directory=directory):
             process = self._io_manager.make_subprocess(command)
         stdout_lines = self._io_manager._read_from_pipe(process.stdout)
@@ -546,14 +548,20 @@ class AbjadIDE(object):
             result = result or '(untitled score)'
             return result
 
-    def _get_unadded_asset_paths(self, path):
+    def _get_unadded_asset_paths(self, directory):
+        assert os.path.isdir(directory), repr(directory)
         paths = []
-        root_directory = self._get_repository_root_directory(path)
-        git_status_lines = self._get_git_status_lines(path)
+        root_directory = self._get_repository_root_directory(directory)
+        git_status_lines = self._get_git_status_lines(directory)
         for line in git_status_lines:
             line = str(line)
             if line.startswith('?'):
                 path = line.strip('?')
+                path = path.strip()
+                path = os.path.join(root_directory, path)
+                paths.append(path)
+            elif line.startswith('M'):
+                path = line.strip('M')
                 path = path.strip()
                 path = os.path.join(root_directory, path)
                 paths.append(path)
@@ -2433,14 +2441,15 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_add(self, path, dry_run=False):
+    def git_add(self, directory, dry_run=False):
         r'''Adds all unadded files to working copy of current score package.
 
         Returns none.
         '''
-        change = systemtools.TemporaryDirectoryChange(directory=path)
+        assert os.path.isdir(directory), repr(directory)
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
-            inputs = self._get_unadded_asset_paths(path)
+            inputs = self._get_unadded_asset_paths(directory)
             outputs = []
             if dry_run:
                 return inputs, outputs
@@ -2450,16 +2459,17 @@ class AbjadIDE(object):
                 return
             messages = []
             messages.append('will add ...')
-            for path in inputs:
-                messages.append(self._tab + path)
+            for file_ in inputs:
+                trimmed_path = self._trim_scores_directory(file_)
+                messages.append(self._tab + trimmed_path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
             if not result:
                 return
             command = 'git add -A {}'
-            command = command.format(path)
-            assert isinstance(command, str)
-            self._io_manager.run_command(command)
+            for file_ in inputs:
+                command = command.format(directory)
+                self._io_manager.run_command(command)
 
     @Command(
         'add*',
@@ -2513,6 +2523,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             self._io_manager._session._attempted_method = 'git_commit'
@@ -2577,23 +2588,24 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_status(self, path):
+    def git_status(self, directory):
         r'''Displays Git status of current score package.
 
         Returns none.
         '''
-        path = self._to_score_directory(path, 'outer')
-        change = systemtools.TemporaryDirectoryChange(directory=path)
+        assert os.path.isdir(directory), repr(directory)
+        directory = self._to_score_directory(directory, 'outer')
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
-            command = 'git status {}'.format(path)
+            command = 'git status {}'.format(directory)
             messages = []
             self._io_manager._session._attempted_method = 'git_status'
             message = 'Repository status for {} ...'
-            message = message.format(path)
+            message = message.format(directory)
             messages.append(message)
-            with systemtools.TemporaryDirectoryChange(directory=path):
+            with systemtools.TemporaryDirectoryChange(directory=directory):
                 process = self._io_manager.make_subprocess(command)
-            path_ = path + os.path.sep
+            path_ = directory + os.path.sep
             clean_lines = []
             stdout_lines = self._io_manager._read_from_pipe(process.stdout)
             for line in stdout_lines.splitlines():
@@ -2640,17 +2652,18 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_update(self, path, messages_only=False):
+    def git_update(self, directory, messages_only=False):
         r'''Updates working copy of current score package.
 
         Returns none.
         '''
+        assert os.path.isdir(directory), repr(directory)
         messages = []
-        change = systemtools.TemporaryDirectoryChange(directory=path)
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
         with change:
             if self._io_manager._session.is_test:
                 return messages
-            root_directory = self._get_repository_root_directory(path)
+            root_directory = self._get_repository_root_directory(directory)
             command = 'git pull {}'
             command = command.format(root_directory)
             messages = self._io_manager.run_command(
