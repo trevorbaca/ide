@@ -25,8 +25,6 @@ class Session(object):
         '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_test',
-        '_last_asset_path',
-        '_last_score_path',
         '_pending_input',
         '_pending_menu_rebuild',
         '_pending_redraw',
@@ -46,8 +44,6 @@ class Session(object):
         self._is_in_confirmation_environment = False
         self._is_quitting = False
         self._is_test = is_test
-        self._last_asset_path = None
-        self._last_score_path = None
         self._current_directory = None
         self._pending_input = input_
         self._pending_menu_rebuild = False
@@ -155,41 +151,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._is_test
-
-    @property
-    def last_asset_path(self):
-        r'''Gets last material directory path.
-
-        Set on package manager entry and persists after package manager exit.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.last_asset_path is None
-                True
-
-        Returns string or none.
-        '''
-        return self._last_asset_path
-
-    @property
-    def last_score_path(self):
-        r'''Gets last score directory path.
-
-        Set on score directory manager entry and persists after score directory
-        manager exit.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.last_score_path is None
-                True
-
-        Returns string or none.
-        '''
-        return self._last_score_path
 
     @property
     def pending_input(self):
