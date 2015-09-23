@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_go_to_test_directory_01():
-    r'''From material package.
+    r'''From material directory.
     '''
 
     input_ = 'red~example~score mm tempo~inventory tt q'
@@ -24,7 +24,7 @@ def test_AbjadIDE_go_to_test_directory_01():
 
 
 def test_AbjadIDE_go_to_test_directory_02():
-    r'''From segment package.
+    r'''From segment directory.
     '''
 
     input_ = 'red~example~score gg A tt q'

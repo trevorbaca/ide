@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_segments_directory_01():
-    r'''From material package.
+    r'''From material directory.
     '''
 
     input_ = 'red~example~score mm tempo~inventory gg q'
@@ -22,7 +22,7 @@ def test_AbjadIDE_go_to_segments_directory_01():
 
 
 def test_AbjadIDE_go_to_segments_directory_02():
-    r'''From segment package.
+    r'''From segment directory.
     '''
 
     input_ = 'red~example~score gg A gg q'
@@ -39,7 +39,7 @@ def test_AbjadIDE_go_to_segments_directory_02():
 
 
 def test_AbjadIDE_go_to_segments_directory_03():
-    r'''From score package.
+    r'''From score directory.
     '''
 
     input_ = 'red~example~score gg q'

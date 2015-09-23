@@ -41,7 +41,7 @@ def test_AbjadIDE_display_navigation_command_help_01():
 
 
 def test_AbjadIDE_display_navigation_command_help_02():
-    r'''Works in material package.
+    r'''Works in material directory.
     '''
 
     lines = [
@@ -77,7 +77,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
 
 
 def test_AbjadIDE_display_navigation_command_help_03():
-    r'''Works in segment package.
+    r'''Works in segment directory.
     '''
 
     lines = [

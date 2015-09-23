@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_collect_segment_lilypond_files_01():
-    r'''Copies LilyPond files from segment packages to build directory
+    r'''Copies LilyPond files from segment directorys to build directory
     when build directory contains no segment LilyPond files.
     '''
 
@@ -41,7 +41,7 @@ def test_AbjadIDE_collect_segment_lilypond_files_01():
 
 
 def test_AbjadIDE_collect_segment_lilypond_files_02():
-    r'''Preseves build directory segment LilyPond files when segment package
+    r'''Preseves build directory segment LilyPond files when segment directory
     LilyPond files compare equal to build directory segment LilyPond files.
     '''
 

@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_quit_01():
-    r'''In material package.
+    r'''In material directory.
     '''
     
     input_ = 'red~example~score mm tempo~inventory q'
@@ -16,7 +16,7 @@ def test_AbjadIDE_quit_01():
 
 
 def test_AbjadIDE_quit_02():
-    r'''In segment package.
+    r'''In segment directory.
     '''
     
     input_ = 'red~example~score gg A q'
@@ -26,7 +26,7 @@ def test_AbjadIDE_quit_02():
     assert contents
 
 def test_AbjadIDE_quit_03():
-    r'''In score package.
+    r'''In score directory.
     '''
 
     input_ = 'red~example~score q'

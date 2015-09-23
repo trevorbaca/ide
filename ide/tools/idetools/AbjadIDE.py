@@ -497,7 +497,7 @@ class AbjadIDE(object):
             if path == directory:
                 break
         else:
-            message = 'can not find segment package path.'
+            message = 'can not find segment directory path.'
             raise Exception(message)
         current_path_index = i
         if current_path_index == 0:
@@ -1371,7 +1371,7 @@ class AbjadIDE(object):
         return view_inventory
 
     def _remove(self, path):
-        # handle score packages correctly
+        # handle score directorys correctly
         parts = path.split(os.path.sep)
         if parts[-2] == parts[-1]:
             parts = parts[:-1]
@@ -1941,7 +1941,7 @@ class AbjadIDE(object):
         section='build',
         )
     def collect_segment_lilypond_files(self, directory):
-        r'''Copies ``illustration.ly`` files from segment packages to build
+        r'''Copies ``illustration.ly`` files from segment directorys to build
         directory.
 
         Trims top-level comments, includes and directives from each
@@ -2660,7 +2660,7 @@ class AbjadIDE(object):
         section='navigation',
         )
     def go_to_score_package_wrapper(self, directory):
-        r'''Goes to score package wrapper.
+        r'''Goes to score directory wrapper.
 
         Returns none.
         '''

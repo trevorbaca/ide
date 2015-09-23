@@ -194,7 +194,7 @@ class Session(object):
 
     @property
     def last_asset_path(self):
-        r'''Gets last material package path.
+        r'''Gets last material directory path.
 
         Set on package manager entry and persists after package manager exit.
 
@@ -211,9 +211,9 @@ class Session(object):
 
     @property
     def last_score_path(self):
-        r'''Gets last score package path.
+        r'''Gets last score directory path.
 
-        Set on score package manager entry and persists after score package
+        Set on score directory manager entry and persists after score directory
         manager exit.
 
         ..  container:: example

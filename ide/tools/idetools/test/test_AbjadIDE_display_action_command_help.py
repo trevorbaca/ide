@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_display_action_command_help_01():
-    r'''In material package.
+    r'''In material directory.
     '''
     
     input_ = 'red~example~score mm tempo~inventory ? q'
@@ -16,7 +16,7 @@ def test_AbjadIDE_display_action_command_help_01():
 
 
 def test_AbjadIDE_display_action_command_help_02():
-    r'''In segment package.
+    r'''In segment directory.
     '''
     
     input_ = 'red~example~score gg A ? q'
@@ -66,7 +66,7 @@ def test_AbjadIDE_display_action_command_help_04():
 
 
 def test_AbjadIDE_display_action_command_help_05():
-    r'''Works in material package.
+    r'''Works in material directory.
     '''
 
     lines = [
@@ -110,7 +110,7 @@ def test_AbjadIDE_display_action_command_help_05():
 
 
 def test_AbjadIDE_display_action_command_help_06():
-    r'''Works in segment package.
+    r'''Works in segment directory.
     '''
 
     lines = [

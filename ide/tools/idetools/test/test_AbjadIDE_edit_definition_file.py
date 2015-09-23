@@ -4,7 +4,7 @@ import ide
 
 
 def test_AbjadIDE_edit_definition_file_01():
-    r'''In material package.
+    r'''In material directory.
     '''
 
     abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -15,7 +15,7 @@ def test_AbjadIDE_edit_definition_file_01():
 
 
 def test_AbjadIDE_edit_definition_file_02():
-    r'''In segment package.
+    r'''In segment directory.
     '''
 
     abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)

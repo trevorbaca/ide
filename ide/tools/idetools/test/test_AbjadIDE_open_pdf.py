@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_open_pdf_01():
-    r'''In material package.
+    r'''In material directory.
     '''
 
     input_ = 'red~example~score mm magic~numbers pdf q'
@@ -15,7 +15,7 @@ def test_AbjadIDE_open_pdf_01():
 
 
 def test_AbjadIDE_open_pdf_02():
-    r'''In segment package.
+    r'''In segment directory.
     '''
 
     input_ = 'red~example~score gg A pdf q'

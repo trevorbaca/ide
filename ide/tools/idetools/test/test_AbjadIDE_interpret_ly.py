@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_interpret_ly_01():
-    r'''Works when illustration.ly already exists in material package.
+    r'''Works when illustration.ly already exists in material directory.
     '''
 
     ly_path = os.path.join(
@@ -37,7 +37,7 @@ def test_AbjadIDE_interpret_ly_01():
 
 
 def test_AbjadIDE_interpret_ly_02():
-    r'''Works when illustration.ly already exists in segment package.
+    r'''Works when illustration.ly already exists in segment directory.
     '''
 
     ly_path = os.path.join(

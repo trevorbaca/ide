@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_push_score_pdf_to_distribution_directory_01():
-    r'''Works in score package.
+    r'''Works in score directory.
     '''
 
     distribution_score_path = os.path.join(

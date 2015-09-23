@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_edit_score_stylesheet_01():
-    r'''In material package.
+    r'''In material directory.
     '''
 
     input_ = 'red~example~score mm tempo~inventory sty q'
@@ -15,7 +15,7 @@ def test_AbjadIDE_edit_score_stylesheet_01():
 
 
 def test_AbjadIDE_edit_score_stylesheet_02():
-    r'''In segment package.
+    r'''In segment directory.
     '''
 
     input_ = 'red~example~score gg A sty q'
@@ -25,7 +25,7 @@ def test_AbjadIDE_edit_score_stylesheet_02():
 
 
 def test_AbjadIDE_edit_score_stylesheet_03():
-    r'''In score package.
+    r'''In score directory.
     '''
 
     input_ = 'red~example~score sty q'

@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_open_every_illustration_pdf_01():
-    r'''Opens illustration PDF in every material package.
+    r'''Opens illustration PDF in every material directory.
     '''
 
     package_names = ('pitch_range_inventory', 'tempo_inventory')
@@ -33,7 +33,7 @@ def test_AbjadIDE_open_every_illustration_pdf_01():
 
 
 def test_AbjadIDE_open_every_illustration_pdf_02():
-    r'''Opens illustration PDF in every segment package.
+    r'''Opens illustration PDF in every segment directory.
     '''
 
     input_ = 'red~example~score gg io* y q'

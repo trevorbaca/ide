@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_new_01():
-    r'''Makes new score package.
+    r'''Makes new score directory.
     '''
 
     outer_path = os.path.join(
@@ -53,7 +53,7 @@ def test_AbjadIDE_new_01():
 
 
 def test_AbjadIDE_new_02():
-    r'''Coerces score package name.
+    r'''Coerces score directory name.
     '''
 
     score_package = os.path.join(
@@ -165,7 +165,7 @@ def test_AbjadIDE_new_06():
 
 
 def test_AbjadIDE_new_07():
-    r'''Makes new material package.
+    r'''Makes new material directory.
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
@@ -195,7 +195,7 @@ def test_AbjadIDE_new_07():
 
 
 def test_AbjadIDE_new_08():
-    r'''Coerces material package name.
+    r'''Coerces material directory name.
     '''
 
     session = ide.tools.idetools.Session(is_test=True)
@@ -225,7 +225,7 @@ def test_AbjadIDE_new_08():
 
 
 def test_AbjadIDE_new_09():
-    r'''Makes new segment package.
+    r'''Makes new segment directory.
     '''
 
     path = os.path.join(
@@ -255,7 +255,7 @@ def test_AbjadIDE_new_09():
 
 
 def test_AbjadIDE_new_10():
-    r'''Coerces segment package name.
+    r'''Coerces segment directory name.
     '''
 
     path = os.path.join(

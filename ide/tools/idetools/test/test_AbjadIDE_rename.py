@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_rename_01():
-    r'''Renames score package.
+    r'''Renames score directory.
     '''
 
     path_100_outer = os.path.join(
@@ -48,7 +48,7 @@ def test_AbjadIDE_rename_01():
 
 
 def test_AbjadIDE_rename_02():
-    r'''Renames material package in score.
+    r'''Renames material directory in score.
     '''
 
     path = os.path.join(
@@ -77,7 +77,7 @@ def test_AbjadIDE_rename_02():
 
 
 def test_AbjadIDE_rename_03():
-    r'''Renames segment package inside score.
+    r'''Renames segment directory inside score.
     '''
 
     path = os.path.join(

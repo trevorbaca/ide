@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_remove_01():
-    r'''Removes one score package.
+    r'''Removes one score directory.
     '''
 
     outer_path = os.path.join(
@@ -36,7 +36,7 @@ def test_AbjadIDE_remove_01():
 
 
 def test_AbjadIDE_remove_02():
-    r'''Removes range of score packages.
+    r'''Removes range of score directorys.
     '''
 
     path_100_outer = os.path.join(
