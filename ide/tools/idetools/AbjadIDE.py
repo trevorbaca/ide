@@ -3483,12 +3483,11 @@ class AbjadIDE(object):
         message = message.format(confirmation_string)
         getter = self._io_manager._make_getter()
         getter.append_string(message)
-        if self._session.confirm:
-            result = getter._run(io_manager=self._io_manager)
-            if result is None:
-                return
-            if not result == confirmation_string:
-                return
+        result = getter._run(io_manager=self._io_manager)
+        if result is None:
+            return
+        if not result == confirmation_string:
+            return
         for path in paths:
             self._remove(path)
         self._session._pending_menu_rebuild = True

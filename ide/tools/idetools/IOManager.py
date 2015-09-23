@@ -89,8 +89,6 @@ class IOManager(IOManager):
         self._transcript._write()
 
     def _confirm(self, message='ok?', include_chevron=False):
-        if not self._session.confirm:
-            return True
         getter = self._make_getter(include_newlines=False)
         getter.append_yes_no_string(
             message,

@@ -83,22 +83,6 @@ class Session(object):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def confirm(self):
-        r'''Is true when confirmation messaging should be displayed.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.confirm
-                True
-
-        Returns true or false..
-        '''
-        return self._confirm
-
-    @property
     def current_directory(self):
         r'''Gets manifest current directory.
 
