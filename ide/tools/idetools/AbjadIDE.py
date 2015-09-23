@@ -681,7 +681,7 @@ class AbjadIDE(object):
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if command.argument_name == 'current_directory':
-                current_directory = self._session.manifest_current_directory
+                current_directory = self._session.current_directory
                 command(current_directory)
             else:
                 command()
@@ -1182,22 +1182,22 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
-#        if not self._session.manifest_current_directory == \
+#        if not self._session.current_directory == \
 #            self._session._previous_directory:
 #        self._session._previous_directory = \
-#            self._session.manifest_current_directory
-#        self._session._manifest_current_directory = directory
-        if not self._session.manifest_current_directory == directory:
+#            self._session.current_directory
+#        self._session._current_directory = directory
+        if not self._session.current_directory == directory:
             self._session._previous_directory = \
-                self._session.manifest_current_directory
-            self._session._manifest_current_directory = directory
+                self._session.current_directory
+            self._session._current_directory = directory
         menu_header = self._to_menu_header(directory)
         menu = self._make_main_menu(directory, menu_header)
         while True:
-            if not self._session.manifest_current_directory == directory:
+            if not self._session.current_directory == directory:
                 self._session._previous_directory = \
-                    self._session.manifest_current_directory
-                self._session._manifest_current_directory = directory
+                    self._session.current_directory
+                self._session._current_directory = directory
             os.chdir(directory)
             if self._session._pending_menu_rebuild:
                 menu = self._make_main_menu(directory, menu_header)
@@ -3589,7 +3589,7 @@ class AbjadIDE(object):
             return
         if view_name == 'none':
             view_name = None
-        view_directory = self._session.manifest_current_directory
+        view_directory = self._session.current_directory
         metadatum_name = 'view_name'
         self._add_metadatum(
             view_directory,

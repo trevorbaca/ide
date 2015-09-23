@@ -21,13 +21,13 @@ class Session(object):
         '_attempted_to_open_file',
         '_clear_terminal_after_quit',
         '_confirm',
+        '_current_directory',
         '_display',
         '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_test',
         '_last_asset_path',
         '_last_score_path',
-        '_manifest_current_directory',
         '_pending_input',
         '_pending_menu_rebuild',
         '_pending_redraw',
@@ -50,7 +50,7 @@ class Session(object):
         self._is_test = is_test
         self._last_asset_path = None
         self._last_score_path = None
-        self._manifest_current_directory = None
+        self._current_directory = None
         self._pending_input = input_
         self._pending_menu_rebuild = False
         self._pending_redraw = True
@@ -105,15 +105,23 @@ class Session(object):
         return self._confirm
 
     @property
+    def current_directory(self):
+        r'''Gets manifest current directory.
+
+        Returns string.
+        '''
+        return self._current_directory
+
+    @property
     def current_score_directory(self):
         r'''Gets current score directory.
 
         Returns string or none.
         '''
         from ide.tools import idetools
-        if self.manifest_current_directory is not None:
+        if self.current_directory is not None:
             return idetools.AbjadIDE._to_score_directory(
-                self.manifest_current_directory)
+                self.current_directory)
 
     @property
     def display(self):
@@ -226,14 +234,6 @@ class Session(object):
         Returns string or none.
         '''
         return self._last_score_path
-
-    @property
-    def manifest_current_directory(self):
-        r'''Gets manifest current directory.
-
-        Returns string.
-        '''
-        return self._manifest_current_directory
 
     @property
     def pending_input(self):
