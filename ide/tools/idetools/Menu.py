@@ -165,6 +165,7 @@ class Menu(object):
                     return self._enclose_in_list(return_value)
         if self._user_enters_argument_range(input_):
             return self._handle_argument_range_input(input_)
+        return (input_,)
 
     def _enclose_in_list(self, expr):
         if self._has_ranged_section():

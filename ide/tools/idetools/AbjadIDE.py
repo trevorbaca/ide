@@ -696,24 +696,9 @@ class AbjadIDE(object):
         elif self._is_score_directory(result):
             self._manage_directory(result)
         else:
-            current_score_directory = self._to_score_directory(
-                self._session.current_directory)
-            aliased_path = configuration.aliases.get(result, None)
-            if current_score_directory and aliased_path:
-                aliased_path = os.path.join(
-                    current_score_directory,
-                    aliased_path,
-                    )
-                if os.path.isfile(aliased_path):
-                    self._io_manager.open_file(aliased_path)
-                else:
-                    message = 'file does not exist: {}.'
-                    message = message.format(aliased_path)
-                    self._io_manager._display(message)
-            else:
-                message = 'unknown command: {!r}.'
-                message = message.format(result)
-                self._io_manager._display([message, ''])
+            message = 'unknown command: {!r}.'
+            message = message.format(result)
+            self._io_manager._display([message, ''])
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
@@ -1183,11 +1168,6 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         self._session._pending_redraw = True
-#        if not self._session.current_directory == \
-#            self._session._previous_directory:
-#        self._session._previous_directory = \
-#            self._session.current_directory
-#        self._session._current_directory = directory
         if not self._session.current_directory == directory:
             self._session._previous_directory = \
                 self._session.current_directory
@@ -1204,6 +1184,19 @@ class AbjadIDE(object):
                 menu = self._make_main_menu(directory, menu_header)
                 self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
+            if isinstance(result, tuple):
+                assert len(result) == 1, repr(result)
+                unknown_string = result = result[0]
+                path = self._match_alias(directory, unknown_string)
+                if path:
+                    result = None
+                    if os.path.isfile(path):
+                        self._io_manager.open_file(path)
+                    else:
+                        message = 'file does not exist: {}.'
+                        message = message.format(path)
+                        self._io_manager._display(message)
+            assert isinstance(result, (str, type(None))), repr(result)
             if self._session.is_quitting:
                 return
             if result is None:
@@ -1211,6 +1204,19 @@ class AbjadIDE(object):
             self._handle_input(result)
             if self._session.is_quitting:
                 return
+
+    def _match_alias(self, directory, string):
+        if self._is_score_directory(directory, 'scores'):
+            return
+        aliases = configuration.aliases
+        if not aliases:
+            return
+        path = configuration.aliases.get(string)
+        if not path:
+            return
+        score_directory = self._to_score_directory(directory, 'inner')
+        path = os.path.join(score_directory, path)
+        return path
 
     @staticmethod
     def _match_display_string_view_pattern(pattern, entry):
