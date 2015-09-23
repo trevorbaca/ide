@@ -211,20 +211,31 @@ class MenuEntry(AbjadObject):
 
         Returns true or false.
         '''
-        values = (input_, input_.lower())
-        for input_ in values:
-            if self.key is not None and input_ == self.key:
+        normalized_display_string = stringtools.strip_diacritics(
+            self.display_string)
+        normalized_display_string = normalized_display_string.lower()
+        display_capital_letters = [
+            _ for _ in self.display_string
+            if _.isupper()
+            ]
+        display_capital_letters = ''.join(display_capital_letters)
+        if (self.menu_section.match_on_display_string and
+            display_capital_letters and
+            input_ == display_capital_letters):
+            return True
+        if self.key is not None and input_ == self.key:
+            return True
+        if self.menu_section.is_numbered and input_ == str(self.number):
+            return True
+        if (self.menu_section.match_on_display_string and 
+            3 <= len(input_)):
+            if normalized_display_string.startswith(input_.lower()):
                 return True
-            if self.menu_section.is_numbered and input_ == str(self.number):
-                return True
-            if (self.menu_section.match_on_display_string and 
-                3 <= len(input_)):
-                helper = stringtools.strip_diacritics
-                normalized_display_string = helper(self.display_string)
-                normalized_display_string = normalized_display_string.lower()
-                if normalized_display_string.startswith(input_.lower()):
-                    return True
-            if (self.menu_section.match_on_display_string and
-                input_ == self.display_string):
-                    return True
+        if (self.menu_section.match_on_display_string and
+            input_ == self.display_string):
+            return True
+        if (self.menu_section.match_on_display_string and
+            3 <= len(input_) and
+            input_ in normalized_display_string):
+            return True
         return False
