@@ -696,7 +696,8 @@ class AbjadIDE(object):
         elif self._is_score_directory(result):
             self._manage_directory(result)
         else:
-            current_score_directory = self._session.current_score_directory
+            current_score_directory = self._to_score_directory(
+                self._session.current_directory)
             aliased_path = configuration.aliases.get(result, None)
             if current_score_directory and aliased_path:
                 aliased_path = os.path.join(

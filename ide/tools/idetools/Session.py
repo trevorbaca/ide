@@ -113,17 +113,6 @@ class Session(object):
         return self._current_directory
 
     @property
-    def current_score_directory(self):
-        r'''Gets current score directory.
-
-        Returns string or none.
-        '''
-        from ide.tools import idetools
-        if self.current_directory is not None:
-            return idetools.AbjadIDE._to_score_directory(
-                self.current_directory)
-
-    @property
     def display(self):
         r'''Is true when messaging should be displayed.
         Otherwise false.
@@ -154,21 +143,6 @@ class Session(object):
         Returns true or false..
         '''
         return self._is_in_confirmation_environment
-
-    @property
-    def is_in_score(self):
-        r'''Is true when session is in score. Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> session.is_in_score
-                False
-
-        Returns true or false..
-        '''
-        return self.current_score_directory is not None
 
     @property
     def is_quitting(self):
