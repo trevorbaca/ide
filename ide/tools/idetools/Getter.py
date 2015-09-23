@@ -235,7 +235,7 @@ class Getter(object):
         r'''Is true when user input getter allows none.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._allow_none
 
@@ -244,7 +244,7 @@ class Getter(object):
         r'''Is true when user input getter capitalizes prompts.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._capitalize_prompts
 
@@ -253,7 +253,7 @@ class Getter(object):
         r'''Is true when user input getter incldues chevron.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._include_chevron
 
@@ -262,7 +262,7 @@ class Getter(object):
         r'''Is true when user input getter incldues newlines.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._include_newlines
 
@@ -271,7 +271,7 @@ class Getter(object):
         r'''Is true when user input getter numbers prompts.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._number_prompts
 

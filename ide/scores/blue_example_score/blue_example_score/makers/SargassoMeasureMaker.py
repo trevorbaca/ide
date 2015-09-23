@@ -205,7 +205,7 @@ class SargassoMeasureMaker(AbjadObject):
         public properties equal to those of this sargasso measure-maker.
         Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         from abjad.tools import systemtools
         return systemtools.StorageFormatManager.compare(self, expr)
@@ -333,7 +333,7 @@ class SargassoMeasureMaker(AbjadObject):
     def measures_are_scaled(self):
         r'''Is true when measures are scaled. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._measures_are_scaled
 
@@ -341,7 +341,7 @@ class SargassoMeasureMaker(AbjadObject):
     def measures_are_shuffled(self):
         r'''Is true when measures are shuffled. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._measures_are_shuffled
 
@@ -349,7 +349,7 @@ class SargassoMeasureMaker(AbjadObject):
     def measures_are_split(self):
         r'''Is true when measures are split. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._measures_are_split
 

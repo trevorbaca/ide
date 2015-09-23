@@ -110,7 +110,7 @@ class Selector(object):
     def is_numbered(self):
         r'''Is true when selector is numbered. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_numbered
 
@@ -118,7 +118,7 @@ class Selector(object):
     def is_ranged(self):
         r'''Is true when selector is ranged. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_ranged
 

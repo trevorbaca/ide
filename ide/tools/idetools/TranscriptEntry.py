@@ -64,7 +64,7 @@ class TranscriptEntry(AbjadObject):
     def is_menu(self):
         r'''Is true when entry is menu. First line will then be menu title.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._is_menu
 

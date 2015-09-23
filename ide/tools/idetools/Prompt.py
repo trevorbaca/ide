@@ -47,7 +47,7 @@ class Prompt(AbjadObject):
     def disallow_range(self):
         r'''Is true when prompt disallows argument range.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._disallow_range
 
@@ -83,7 +83,7 @@ class Prompt(AbjadObject):
     def include_chevron(self):
         r'''Is true when prompt includes chevron. Otherwise false.
 
-        Returns boolean.
+        Returns true or false.
         '''
         return self._include_chevron
 
