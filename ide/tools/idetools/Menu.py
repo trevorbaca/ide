@@ -151,16 +151,14 @@ class Menu(object):
                 asset_section = section
                 continue
             for menu_entry in section:
-                if (menu_entry.matches(input_) or
-                    menu_entry.matches(input_.lower())):
+                if (menu_entry.matches(input_)):
                     return_value = menu_entry.return_value
                     if ends_with_bang:
                         return_value = return_value + '!'
                     return self._enclose_in_list(return_value)
         if asset_section is not None:
             for menu_entry in asset_section:
-                if (menu_entry.matches(input_) or
-                    menu_entry.matches(input_.lower())):
+                if (menu_entry.matches(input_)):
                     return_value = menu_entry.return_value
                     if ends_with_bang:
                         return_value = return_value + '!'

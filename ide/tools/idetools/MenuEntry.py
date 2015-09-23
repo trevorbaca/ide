@@ -211,18 +211,20 @@ class MenuEntry(AbjadObject):
 
         Returns true or false.
         '''
-        if self.key is not None and input_ == self.key:
-            return True
-        if self.menu_section.is_numbered and input_ == str(self.number):
-            return True
-        if (self.menu_section.match_on_display_string and 
-            3 <= len(input_)):
-            helper = stringtools.strip_diacritics
-            normalized_display_string = helper(self.display_string)
-            normalized_display_string = normalized_display_string.lower()
-            if normalized_display_string.startswith(input_.lower()):
+        values = (input_, input_.lower())
+        for input_ in values:
+            if self.key is not None and input_ == self.key:
                 return True
-        if (self.menu_section.match_on_display_string and
-            input_ == self.display_string):
+            if self.menu_section.is_numbered and input_ == str(self.number):
                 return True
+            if (self.menu_section.match_on_display_string and 
+                3 <= len(input_)):
+                helper = stringtools.strip_diacritics
+                normalized_display_string = helper(self.display_string)
+                normalized_display_string = normalized_display_string.lower()
+                if normalized_display_string.startswith(input_.lower()):
+                    return True
+            if (self.menu_section.match_on_display_string and
+                input_ == self.display_string):
+                    return True
         return False
