@@ -118,8 +118,6 @@ class IOManager(IOManager):
 
     def _display(self, lines, capitalize=True, is_menu=False):
         assert isinstance(lines, (str, list)), repr(lines)
-        if not self._session.display:
-            return
         if isinstance(lines, str):
             lines = [lines]
         if capitalize:

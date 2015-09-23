@@ -22,7 +22,6 @@ class Session(object):
         '_clear_terminal_after_quit',
         '_confirm',
         '_current_directory',
-        '_display',
         '_is_in_confirmation_environment',
         '_is_quitting',
         '_is_test',
@@ -44,7 +43,6 @@ class Session(object):
         self._attempted_to_open_file = False
         self._clear_terminal_after_quit = False
         self._confirm = True
-        self._display = True
         self._is_in_confirmation_environment = False
         self._is_quitting = False
         self._is_test = is_test
@@ -111,22 +109,6 @@ class Session(object):
         Returns string.
         '''
         return self._current_directory
-
-    @property
-    def display(self):
-        r'''Is true when messaging should be displayed.
-        Otherwise false.
-
-        ..  container:: example
-
-            ::
-
-                >>> session.display
-                True
-
-        Returns true or false..
-        '''
-        return self._display
 
     @property
     def is_in_confirmation_environment(self):
