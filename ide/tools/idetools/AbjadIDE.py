@@ -702,6 +702,15 @@ class AbjadIDE(object):
         elif result.startswith('@'):
             directory = self._session.current_directory
             result = result[1:]
+            line_number = None
+            if '+' in result:
+                index = result.find('+')
+                line_number = result[index+1:]
+                if mathtools.is_integer_equivalent_expr(line_number):
+                    line_number = int(line_number)
+                else:
+                    line_number = None
+                result = result[:index]
             path = self._match_display_string_in_score(directory, result)
             if path:
                 if self._is_score_directory(path, ('material', 'segment')):
@@ -709,7 +718,7 @@ class AbjadIDE(object):
                     self._io_manager.open_file(definition_file)
                     self._manage_directory(path)
                 elif os.path.isfile(path):
-                    self._io_manager.open_file(path)
+                    self._io_manager.open_file(path, line_number=line_number)
             else:
                 message = 'matches no display string: @{}.'
                 message = message.format(result)

@@ -53,6 +53,22 @@ def test_IOManager_open_file_03():
 
 
 def test_IOManager_open_file_04():
+    r'''@-addressing to makers file with line number
+    '''
+
+    input_ = 'red~example~score @RM+14 q'
+    abjad_ide._start(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Red Example Score (2013)',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_IOManager_open_file_05():
     r'''@-addressing to stylesheet.
     '''
 

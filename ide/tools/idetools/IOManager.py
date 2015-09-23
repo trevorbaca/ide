@@ -440,17 +440,18 @@ class IOManager(IOManager):
             process.stdout, strip=strip).splitlines()
         stderr_lines = self._read_from_pipe(
             process.stderr, strip=strip).splitlines()
-        #self._display(stdout_lines, capitalize=False)
-        #self._display(stderr_lines, capitalize=False)
         return stdout_lines, stderr_lines
 
-    def open_file(self, path):
+    def open_file(self, path, line_number=None):
         r'''Opens file `path`.
 
         Also works when `path` is a list.
 
         Returns none.
         '''
+        line_number_string = ''
+        if line_number is not None:
+            line_number_string = ' +{}'.format(line_number)
         if not isinstance(path, list) and not os.path.isfile(path):
             return
         if (isinstance(path, list) and
@@ -477,6 +478,7 @@ class IOManager(IOManager):
             command = 'open {}'.format(path)
         else:
             command = 'vim {}'.format(path)
+        command = command + line_number_string
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
