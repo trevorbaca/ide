@@ -40,7 +40,7 @@ def test_AbjadIDE_interpret_every_ly_01():
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
-        assert path in contents
+        assert abjad_ide._trim_path(path) in contents
 
     assert 'Will interpret ...' in contents
     assert 'INPUT:' in contents
@@ -86,7 +86,7 @@ def test_AbjadIDE_interpret_every_ly_02():
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
-        assert path in contents
+        assert abjad_ide._trim_path(path) in contents
 
     assert 'Will interpret ...' in contents
     assert 'INPUT:' in contents
@@ -130,7 +130,7 @@ def test_AbjadIDE_interpret_every_ly_03():
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
-        assert path in contents
+        assert abjad_ide._trim_path(path) in contents
 
     assert 'Will interpret ...' in contents
     assert 'INPUT:' in contents
@@ -176,7 +176,7 @@ def test_AbjadIDE_interpret_every_ly_04():
 
     contents = abjad_ide._io_manager._transcript.contents
     for path in paths:
-        assert path in contents
+        assert abjad_ide._trim_path(path) in contents
 
     assert 'Will interpret ...' in contents
     assert 'INPUT:' in contents

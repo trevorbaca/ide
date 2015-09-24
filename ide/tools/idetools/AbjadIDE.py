@@ -325,8 +325,7 @@ class AbjadIDE(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return entry
 
-    @staticmethod
-    def _format_messaging(inputs, outputs, verb='interpret'):
+    def _format_messaging(self, inputs, outputs, verb='interpret'):
         messages = []
         if not inputs and not outputs:
             message = 'no files to {}.'
@@ -345,7 +344,10 @@ class AbjadIDE(object):
                 if isinstance(path_list, str):
                     path_list = [path_list]
                 for path in path_list:
-                    messages.append('{}{}'.format(input_label, path))
+                    messages.append('{}{}'.format(
+                        input_label, 
+                        self._trim_path(path),
+                        ))
         else:
             for inputs_, outputs_ in zip(inputs, outputs):
                 if isinstance(inputs_, str):
@@ -355,12 +357,18 @@ class AbjadIDE(object):
                     if isinstance(path_list, str):
                         path_list = [path_list]
                     for path in path_list:
-                        messages.append('{}{}'.format(input_label, path))
+                        messages.append('{}{}'.format(
+                            input_label, 
+                            self._trim_path(path),
+                            ))
                 for path_list in outputs_:
                     if isinstance(path_list, str):
                         path_list = [path_list]
                     for path in path_list:
-                        messages.append('{}{}'.format(output_label, path))
+                        messages.append('{}{}'.format(
+                            output_label, 
+                            self._trim_path(path),
+                            ))
                 messages.append('')
         return messages
 
@@ -3479,28 +3487,32 @@ class AbjadIDE(object):
         with list of candidate messages.
         '''
         assert os.path.isdir(directory), repr(directory)
-        illustration_source_path = os.path.join(directory, 'illustration.ly')
-        illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
-        inputs, outputs = [], []
-        if os.path.isfile(illustration_source_path):
-            inputs.append(illustration_source_path)
-            outputs.append((illustration_pdf_path,))
-        if dry_run:
-            return inputs, outputs
-        if not os.path.isfile(illustration_source_path):
-            message = 'the file {} does not exist.'
-            message = message.format(illustration_source_path)
-            self._io_manager._display(message)
-            return [], []
-        messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        if confirm:
-            result = self._io_manager._confirm()
-            if not result:
+        with self._io_manager._make_interaction():
+            illustration_source_path = os.path.join(
+                directory, 
+                'illustration.ly',
+                )
+            illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
+            inputs, outputs = [], []
+            if os.path.isfile(illustration_source_path):
+                inputs.append(illustration_source_path)
+                outputs.append((illustration_pdf_path,))
+            if dry_run:
+                return inputs, outputs
+            if not os.path.isfile(illustration_source_path):
+                message = 'the file {} does not exist.'
+                message = message.format(illustration_source_path)
+                self._io_manager._display(message)
                 return [], []
-        result = self._io_manager.run_lilypond(illustration_source_path)
-        subprocess_messages, candidate_messages = result
-        return subprocess_messages, candidate_messages
+            messages = self._format_messaging(inputs, outputs)
+            self._io_manager._display(messages)
+            if confirm:
+                result = self._io_manager._confirm()
+                if not result:
+                    return [], []
+            result = self._io_manager.run_lilypond(illustration_source_path)
+            subprocess_messages, candidate_messages = result
+            return subprocess_messages, candidate_messages
 
     @Command(
         'mi',
@@ -3615,13 +3627,13 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        if self._is_score_directory(directory, 'material'):
-            self._make_material_ly(directory)
-        elif self._is_score_directory(directory, 'segment'):
-            self._make_segment_ly(directory)
-        else:
-            raise ValueError(directory)
-        self._io_manager._display('')
+        with self._io_manager._make_interaction():
+            if self._is_score_directory(directory, 'material'):
+                self._make_material_ly(directory)
+            elif self._is_score_directory(directory, 'segment'):
+                self._make_segment_ly(directory)
+            else:
+                raise ValueError(directory)
 
     @Command(
         'pdfm',
@@ -3889,9 +3901,9 @@ class AbjadIDE(object):
             return
         messages = []
         messages.append('will rename ...')
-        message = ' FROM: {}'.format(source_path)
+        message = ' FROM: {}'.format(self._trim_path(source_path))
         messages.append(message)
-        message = '   TO: {}'.format(target_path)
+        message = '   TO: {}'.format(self._trim_path(target_path))
         messages.append(message)
         self._io_manager._display(messages)
         if not self._io_manager._confirm():
