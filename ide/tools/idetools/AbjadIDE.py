@@ -608,25 +608,26 @@ class AbjadIDE(object):
         elif result.startswith(('@', '%')):
             directory = self._session.current_directory
             prefix = result[0]
-            result = result[1:]
+            body = result[1:]
             line_number = None
-            if '+' in result:
-                index = result.find('+')
-                line_number = result[index+1:]
+            if '+' in body:
+                index = body.find('+')
+                line_number = body[index+1:]
                 if mathtools.is_integer_equivalent_expr(line_number):
                     line_number = int(line_number)
                 else:
                     line_number = None
-                result = result[:index]
-            path = self._match_display_string_in_score(directory, result)
+                body = body[:index]
+            path = self._match_display_string_in_score(directory, body)
             if path:
-                if self._is_score_directory(path, ('material', 'segment')):
-                    if prefix == '@':
-                        definition_file = os.path.join(path, 'definition.py')
-                        self._io_manager.open_file(definition_file)
-                    self._manage_directory(path)
-                elif os.path.isfile(path) and prefix == '@':
+                if prefix == '@':
+                    if self._is_score_directory(path, ('material', 'segment')):
+                        path = os.path.join(path, 'definition.py')
                     self._io_manager.open_file(path, line_number=line_number)
+                elif prefix == '%':
+                    self._manage_directory(path)
+                else:
+                    raise ValueError(prefix)
             else:
                 message = 'matches no display string: {}{}.'
                 message = message.format(prefix, result)

@@ -27,7 +27,6 @@ def test_AbjadIDE_edit_definition_file_02():
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory - magic numbers',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -46,7 +45,6 @@ def test_AbjadIDE_edit_definition_file_03():
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
-        'Red Example Score (2013) - materials directory - magic numbers',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -75,7 +73,6 @@ def test_AbjadIDE_edit_definition_file_05():
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory - A',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -94,6 +91,5 @@ def test_AbjadIDE_edit_definition_file_06():
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - segments directory - A',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
