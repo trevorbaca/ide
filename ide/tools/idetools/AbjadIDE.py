@@ -1604,7 +1604,7 @@ class AbjadIDE(object):
         header_parts.append(score_part)
         if self._is_score_directory(directory, 'outer'):
             header_parts.append('package wrapper')
-        trimmed_path = self._trim_scores_directory(directory)
+        trimmed_path = self._trim_path(directory)
         path_parts = trimmed_path.split(os.path.sep)
         path_parts = path_parts[2:]
         if not path_parts:
@@ -1774,7 +1774,7 @@ class AbjadIDE(object):
             file_pointer.write(lines)
 
     @staticmethod
-    def _trim_scores_directory(path):
+    def _trim_path(path):
         assert os.path.sep in path, repr(path)
         if path.startswith(configuration.composer_scores_directory):
             scores_directory = configuration.composer_scores_directory
@@ -2461,7 +2461,7 @@ class AbjadIDE(object):
             messages = []
             messages.append('will add ...')
             for file_ in inputs:
-                trimmed_path = self._trim_scores_directory(file_)
+                trimmed_path = self._trim_path(file_)
                 messages.append(self._tab + trimmed_path)
             self._io_manager._display(messages)
             result = self._io_manager._confirm()
@@ -3536,7 +3536,13 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         file_path = os.path.join(directory, 'illustration.pdf')
-        self._io_manager.open_file(file_path)
+        if not os.path.isfile(file_path):
+            message = 'file does not exist: {}.'
+            trimmed_path = self._trim_path(file_path)
+            message = message.format(trimmed_path)
+            self._io_manager._display(message)
+        else:
+            self._io_manager.open_file(file_path)
 
     @Command(
         'so',
@@ -3678,7 +3684,7 @@ class AbjadIDE(object):
         if not source_path:
             return
         message = 'Will rename]> {}'
-        trimmed_source_path = self._trim_scores_directory(source_path)
+        trimmed_source_path = self._trim_path(source_path)
         message = message.format(trimmed_source_path)
         self._io_manager._display(message)
         getter = self._io_manager._make_getter()
