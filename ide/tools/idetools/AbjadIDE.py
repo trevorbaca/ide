@@ -592,11 +592,17 @@ class AbjadIDE(object):
         self._io_manager._display(messages)
 
     def _handle_input(self, result):
-        assert isinstance(result, str), repr(result)
+        assert isinstance(result, (str, tuple)), repr(result)
         if result == '<return>':
             return
         package_prototype = ('inner', 'material', 'segment')
-        if result.startswith('!'):
+        if isinstance(result, tuple):
+            assert len(result) == 1, repr(result)
+            result = result[0]
+            message = 'unknown command: {!r}.'
+            message = message.format(result)
+            self._io_manager._display([message, ''])
+        elif result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
         elif result.startswith('@'):
@@ -1144,7 +1150,7 @@ class AbjadIDE(object):
             result = menu._run(io_manager=self._io_manager)
             if isinstance(result, tuple):
                 assert len(result) == 1, repr(result)
-                unknown_string = result = result[0]
+                unknown_string = result[0]
                 path = self._match_alias(directory, unknown_string)
                 if path:
                     result = None
@@ -1157,8 +1163,8 @@ class AbjadIDE(object):
                     else:
                         message = 'file does not exist: {}.'
                         message = message.format(path)
-                        self._io_manager._display(message)
-            assert isinstance(result, (str, type(None))), repr(result)
+                        self._io_manager._display([message, ''])
+            assert isinstance(result, (str, tuple, type(None))), repr(result)
             if self._session.is_quitting:
                 return
             if result is None:
@@ -3540,7 +3546,7 @@ class AbjadIDE(object):
             message = 'file does not exist: {}.'
             trimmed_path = self._trim_path(file_path)
             message = message.format(trimmed_path)
-            self._io_manager._display(message)
+            self._io_manager._display([message, ''])
         else:
             self._io_manager.open_file(file_path)
 
