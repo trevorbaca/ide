@@ -2761,21 +2761,25 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_add(self, directory, dry_run=False):
+    def git_add(self, directory, dry_run=False, interaction=True):
         r'''Adds all unadded files to working copy of current score package.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
+        directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
+        do_it = interaction and not dry_run
+        interaction = self._io_manager._make_interaction(dry_run=not do_it)
+        with change, interaction:
             inputs = self._get_unadded_asset_paths(directory)
             outputs = []
+            nothing_message = '{} ... nothing to add.'
+            nothing_message = nothing_message.format(directory)
             if dry_run:
                 return inputs, outputs
             if not inputs:
-                message = 'nothing to add.'
-                self._io_manager._display(message)
+                self._io_manager._display(nothing_message)
                 return
             messages = []
             messages.append('will add ...')
@@ -2790,6 +2794,11 @@ class AbjadIDE(object):
             for file_ in inputs:
                 command = command.format(directory)
                 self._io_manager.run_command(command)
+            count = len(inputs)
+            identifier = stringtools.pluralize('file', count)
+            message = 'added {} {}.'
+            message = message.format(count, identifier)
+            self._io_manager._display(message)
 
     @Command(
         'add*',
@@ -2803,33 +2812,31 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        self._session._attempted_method = 'git_add_every_package'
-        if self._session.is_test:
-            return
-        inputs, outputs = [], []
-        method_name = 'git_add'
-        for directory in directories:
-            inputs_, outputs_ = self._git_add(
-                directory,
-                dry_run=True,
-                )
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='add')
-        self._io_manager._display(messages)
-        if not inputs:
-            return
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        for directory in directories:
-            self.git_add(directory)
-        count = len(inputs)
-        identifier = stringtools.pluralize('file', count)
-        message = 'added {} {} to repository.'
-        message = message.format(count, identifier)
-        self._io_manager._display(message)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            self._session._attempted_method = 'git_add_every_package'
+            if self._session.is_test:
+                return
+            inputs, outputs = [], []
+            method_name = 'git_add'
+            for directory in directories:
+                inputs_, outputs_ = self.git_add(directory, dry_run=True)
+                inputs.extend(inputs_)
+                outputs.extend(outputs_)
+            if inputs:
+                messages = self._format_messaging(inputs, outputs, verb='add')
+                self._io_manager._display(messages)
+                result = self._io_manager._confirm()
+                if not result:
+                    return
+            for directory in directories:
+                self.git_add(directory, interaction=False)
+            if inputs:
+                count = len(inputs)
+                identifier = stringtools.pluralize('file', count)
+                message = 'added {} {} to repository.'
+                message = message.format(count, identifier)
+                self._io_manager._display(message)
 
     @Command(
         'ci',
@@ -2871,6 +2878,7 @@ class AbjadIDE(object):
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, directory)
             self._io_manager.run_command(command, capitalize=False)
+        self._io_manager._display('')
 
     @Command(
         'ci*',
@@ -2908,7 +2916,7 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_status(self, directory):
+    def git_status(self, directory, dry_run=False):
         r'''Displays Git status of current score package.
 
         Returns none.
@@ -2916,11 +2924,12 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
+        interaction = self._io_manager._make_interaction(dry_run=dry_run)
+        with change, interaction:
             command = 'git status {}'.format(directory)
             messages = []
             self._io_manager._session._attempted_method = 'git_status'
-            message = 'Repository status for {} ...'
+            message = '{} ...'
             message = message.format(directory)
             messages.append(message)
             with systemtools.TemporaryDirectoryChange(directory=directory):
@@ -2959,11 +2968,12 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        self._session._attempted_method = 'git_status_every_package'
-        directories.sort()
-        for directory in directories:
-            self.git_status(directory)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            self._session._attempted_method = 'git_status_every_package'
+            directories.sort()
+            for directory in directories:
+                self.git_status(directory, dry_run=True)
 
     @Command(
         'up',
@@ -2972,15 +2982,18 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_update(self, directory, messages_only=False):
+    def git_update(self, directory, interaction=True):
         r'''Updates working copy of current score package.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
+        directory = self._to_score_directory(directory, 'outer')
         messages = []
         change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
+        dry_run = not interaction
+        interaction = self._io_manager._make_interaction(dry_run=dry_run)
+        with change, interaction:
             if self._io_manager._session.is_test:
                 return messages
             root_directory = self._get_repository_root_directory(directory)
@@ -2990,13 +3003,11 @@ class AbjadIDE(object):
                 command,
                 messages_only=True,
                 )
-        if messages and messages[-1].startswith('At revision'):
-            messages = messages[-1:]
-        elif messages and 'Already up-to-date' in messages[-1]:
-            messages = messages[-1:]
-        if messages_only:
-            return messages
-        self._io_manager._display(messages)
+            if messages and 'Already up-to-date' in messages[-1]:
+                message = '{} ... already up-to-date.'
+                message = message.format(directory)
+                messages = [message]
+            self._io_manager._display(messages)
 
     @Command(
         'up*',
@@ -3010,24 +3021,18 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        self._session._attempted_method = 'git_update_every_package'
-        for directory in directories:
-            messages = []
-            message = self._to_menu_string(directory)
-            if message.endswith(')'):
-                index = message.find('(')
-                message = message[:index]
-                message = message.strip()
-            message = message + ':'
-            messages_ = self.git_update(directory, messages_only=True)
-            if len(messages_) == 1:
-                message = message + ' ' + messages_[0]
-                messages.append(message)
-            else:
-                messages_ = [self._tab + _ for _ in messages_]
-                messages.extend(messages_)
-            self._io_manager._display(messages, capitalize=False)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            self._session._attempted_method = 'git_update_every_package'
+            for directory in directories:
+                messages = []
+                message = self._to_menu_string(directory)
+                if message.endswith(')'):
+                    index = message.find('(')
+                    message = message[:index]
+                    message = message.strip()
+                message = message + ':'
+                self.git_update(directory, interaction=False)
 
     @Command('-', description='back', section='back-home-quit')
     def go_back(self):

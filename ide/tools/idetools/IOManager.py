@@ -235,6 +235,14 @@ class IOManager(IOManager):
             )
         return getter
 
+    def _make_interaction(self, dry_run=False):
+        from ide.tools import idetools
+        if dry_run:
+            interaction = systemtools.NullContextManager()
+        else:
+            interaction = idetools.Interaction(io_manager=self)
+        return interaction
+
     def _make_menu(
         self,
         explicit_header=None,
