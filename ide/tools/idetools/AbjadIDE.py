@@ -2443,23 +2443,28 @@ class AbjadIDE(object):
                     continue
                 path = os.path.join(directory_, name)
                 paths.append(path)
+        trimmed_paths = [self._trim_path(_) for _ in paths]
         menu_header = self._to_menu_header(directory)
         menu_header = menu_header + ' - select:'
         selector = self._io_manager._make_selector(
-            items=paths,
+            items=trimmed_paths,
             menu_header=menu_header,
             )
-        source_path = selector._run(io_manager=self._io_manager)
-        if not source_path:
+        trimmed_source_path = selector._run(io_manager=self._io_manager)
+        if not trimmed_source_path:
             return
-        if source_path not in paths:
+        if trimmed_source_path not in trimmed_paths:
             return
+        scores_directory = configuration.composer_scores_directory
+        if self._session.is_test:
+            scores_directory = configuration.abjad_ide_example_scores_directory
+        source_path = os.path.join(scores_directory, trimmed_source_path)
         asset_name = os.path.basename(source_path)
         target_path = os.path.join(directory, asset_name)
         messages = []
         messages.append('will copy ...')
-        messages.append(' FROM: {}'.format(source_path))
-        messages.append('   TO: {}'.format(target_path))
+        messages.append(' FROM: {}'.format(self._trim_path(source_path)))
+        messages.append('   TO: {}'.format(self._trim_path(target_path)))
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
         if not result:

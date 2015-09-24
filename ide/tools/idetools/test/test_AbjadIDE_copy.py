@@ -25,11 +25,13 @@ def test_AbjadIDE_copy_01():
         'build',
         'front-cover.tex',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score bb cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -38,8 +40,8 @@ def test_AbjadIDE_copy_01():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_02():
@@ -60,11 +62,13 @@ def test_AbjadIDE_copy_02():
         'distribution',
         'red-example-score-score.pdf',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score dd cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -73,8 +77,8 @@ def test_AbjadIDE_copy_02():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_03():
@@ -95,11 +99,13 @@ def test_AbjadIDE_copy_03():
         'etc',
         'notes.txt',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score ee cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -108,8 +114,8 @@ def test_AbjadIDE_copy_03():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_04():
@@ -130,11 +136,13 @@ def test_AbjadIDE_copy_04():
         'makers',
         'ScoreTemplate.py',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score kk cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -143,8 +151,8 @@ def test_AbjadIDE_copy_04():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_05():
@@ -167,12 +175,14 @@ def test_AbjadIDE_copy_05():
         'articulation_handler',
         'definition.py',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score mm articulation~handler cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -181,8 +191,8 @@ def test_AbjadIDE_copy_05():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_06():
@@ -204,12 +214,14 @@ def test_AbjadIDE_copy_06():
         'materials',
         'magic_numbers',
         )
+    trimmed_source_package = abjad_ide._trim_path(source_package)
+    trimmed_target_package = abjad_ide._trim_path(target_package)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
         input_ = 'Blue~Example~Score mm cp'
-        input_ += ' {}'.format(source_package)
+        input_ += ' {}'.format(trimmed_source_package)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_package)
@@ -218,8 +230,8 @@ def test_AbjadIDE_copy_06():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_package in contents
-    assert target_package in contents
+    assert trimmed_source_package in contents
+    assert trimmed_target_package in contents
 
 
 def test_AbjadIDE_copy_07():
@@ -242,12 +254,14 @@ def test_AbjadIDE_copy_07():
         'segment_01',
         'definition.py',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score gg segment~01 cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -256,8 +270,8 @@ def test_AbjadIDE_copy_07():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_08():
@@ -279,12 +293,14 @@ def test_AbjadIDE_copy_08():
         'segments',
         'segment_03',
         )
+    trimmed_source_package = abjad_ide._trim_path(source_package)
+    trimmed_target_package = abjad_ide._trim_path(target_package)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
         input_ = 'Blue~Example~Score gg cp'
-        input_ += ' {}'.format(source_package)
+        input_ += ' {}'.format(trimmed_source_package)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_package)
@@ -293,8 +309,8 @@ def test_AbjadIDE_copy_08():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_package in contents
-    assert target_package in contents
+    assert trimmed_source_package in contents
+    assert trimmed_target_package in contents
 
 
 def test_AbjadIDE_copy_09():
@@ -315,11 +331,13 @@ def test_AbjadIDE_copy_09():
         'stylesheets',
         'stylesheet.ily',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score yy cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -328,8 +346,8 @@ def test_AbjadIDE_copy_09():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
 
 
 def test_AbjadIDE_copy_10():
@@ -350,11 +368,13 @@ def test_AbjadIDE_copy_10():
         'test',
         'test_import.py',
         )
+    trimmed_source_file = abjad_ide._trim_path(source_file)
+    trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score tt cp'
-        input_ += ' {}'.format(source_file)
+        input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
@@ -364,5 +384,5 @@ def test_AbjadIDE_copy_10():
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents
-    assert source_file in contents
-    assert target_file in contents
+    assert trimmed_source_file in contents
+    assert trimmed_target_file in contents
