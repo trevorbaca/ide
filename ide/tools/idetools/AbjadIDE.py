@@ -605,8 +605,9 @@ class AbjadIDE(object):
         elif result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
-        elif result.startswith('@'):
+        elif result.startswith(('@', '%')):
             directory = self._session.current_directory
+            prefix = result[0]
             result = result[1:]
             line_number = None
             if '+' in result:
@@ -620,14 +621,15 @@ class AbjadIDE(object):
             path = self._match_display_string_in_score(directory, result)
             if path:
                 if self._is_score_directory(path, ('material', 'segment')):
-                    definition_file = os.path.join(path, 'definition.py')
-                    self._io_manager.open_file(definition_file)
+                    if prefix == '@':
+                        definition_file = os.path.join(path, 'definition.py')
+                        self._io_manager.open_file(definition_file)
                     self._manage_directory(path)
-                elif os.path.isfile(path):
+                elif os.path.isfile(path) and prefix == '@':
                     self._io_manager.open_file(path, line_number=line_number)
             else:
-                message = 'matches no display string: @{}.'
-                message = message.format(result)
+                message = 'matches no display string: {}{}.'
+                message = message.format(prefix, result)
                 self._io_manager._display(message)
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
