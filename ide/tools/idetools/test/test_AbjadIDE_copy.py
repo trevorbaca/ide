@@ -8,7 +8,7 @@ scores_directory = configuration.abjad_ide_example_scores_directory
 
 
 def test_AbjadIDE_copy_01():
-    r'''Copies file between build directories.
+    r'''Into build directory.
     '''
 
     source_file = os.path.join(
@@ -36,7 +36,7 @@ def test_AbjadIDE_copy_01():
 
 
 def test_AbjadIDE_copy_02():
-    r'''Copies file between distribution directories.
+    r'''Into distribution directory.
     '''
 
     source_file = os.path.join(
@@ -64,7 +64,7 @@ def test_AbjadIDE_copy_02():
 
 
 def test_AbjadIDE_copy_03():
-    r'''Copies file between etc directories.
+    r'''Into etc directory.
     '''
 
     source_file = os.path.join(
@@ -92,7 +92,7 @@ def test_AbjadIDE_copy_03():
 
 
 def test_AbjadIDE_copy_04():
-    r'''Copies file between makers directories.
+    r'''Into makers directory.
     '''
 
     source_file = os.path.join(
@@ -120,7 +120,7 @@ def test_AbjadIDE_copy_04():
 
 
 def test_AbjadIDE_copy_05():
-    r'''Copies file between material directories.
+    r'''Into material directory.
     '''
 
     source_file = os.path.join(
@@ -151,7 +151,7 @@ def test_AbjadIDE_copy_05():
 
 
 def test_AbjadIDE_copy_06():
-    r'''Copies package between materials directories.
+    r'''Into materials directory.
     '''
 
     source_package = os.path.join(
@@ -181,7 +181,7 @@ def test_AbjadIDE_copy_06():
 
 
 def test_AbjadIDE_copy_07():
-    r'''Copies file between segment directories.
+    r'''Into segment directory.
     '''
 
     source_file = os.path.join(
@@ -212,7 +212,7 @@ def test_AbjadIDE_copy_07():
 
 
 def test_AbjadIDE_copy_08():
-    r'''Copies package between segments directories.
+    r'''Into segments directory.
     '''
 
     source_package = os.path.join(
@@ -242,7 +242,7 @@ def test_AbjadIDE_copy_08():
 
 
 def test_AbjadIDE_copy_09():
-    r'''Copies file between stylesheets directories.
+    r'''Into stylesheets directory.
     '''
 
     source_file = os.path.join(
@@ -270,7 +270,7 @@ def test_AbjadIDE_copy_09():
 
 
 def test_AbjadIDE_copy_10():
-    r'''Copies file between test directories.
+    r'''Into test directory.
     '''
 
     source_file = os.path.join(
