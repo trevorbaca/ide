@@ -2317,26 +2317,30 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        definition_path = os.path.join(directory, 'definition.py')
-        if not os.path.isfile(definition_path):
-            message = 'file not found: {}.'
-            message = message.format(definition_path)
-            self._io_manager._display(message)
-            return
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_path)
-            return inputs, outputs
-        result = self._io_manager.interpret_file(definition_path, strip=False)
-        stdout_lines, stderr_lines = result
-        self._io_manager._display(stdout_lines)
-        if stderr_lines:
-            messages = [definition_path + ' FAILED:']
-            messages.extend(stderr_lines)
-            self._io_manager._display(messages)
-        else:
-            message = '{} OK.'.format(definition_path)
-            self._io_manager._display(message)
+        with self._io_manager._make_interaction():
+            definition_path = os.path.join(directory, 'definition.py')
+            if not os.path.isfile(definition_path):
+                message = 'file not found: {}.'
+                message = message.format(definition_path)
+                self._io_manager._display(message)
+                return
+            inputs, outputs = [], []
+            if dry_run:
+                inputs.append(definition_path)
+                return inputs, outputs
+            result = self._io_manager.interpret_file(
+                definition_path, 
+                strip=False,
+                )
+            stdout_lines, stderr_lines = result
+            self._io_manager._display(stdout_lines)
+            if stderr_lines:
+                messages = [definition_path + ' FAILED:']
+                messages.extend(stderr_lines)
+                self._io_manager._display(messages)
+            else:
+                message = '{} OK.'.format(definition_path)
+                self._io_manager._display(message)
 
     @Command(
         'dfk*',

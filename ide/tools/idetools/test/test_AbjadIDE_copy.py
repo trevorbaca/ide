@@ -34,6 +34,13 @@ def test_AbjadIDE_copy_01():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
+
 
 def test_AbjadIDE_copy_02():
     r'''Into distribution directory.
@@ -61,6 +68,13 @@ def test_AbjadIDE_copy_02():
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
 
 
 def test_AbjadIDE_copy_03():
@@ -90,6 +104,13 @@ def test_AbjadIDE_copy_03():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
+
 
 def test_AbjadIDE_copy_04():
     r'''Into makers directory.
@@ -117,6 +138,13 @@ def test_AbjadIDE_copy_04():
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
 
 
 def test_AbjadIDE_copy_05():
@@ -149,6 +177,13 @@ def test_AbjadIDE_copy_05():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
+
 
 def test_AbjadIDE_copy_06():
     r'''Into materials directory.
@@ -178,6 +213,13 @@ def test_AbjadIDE_copy_06():
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_package)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_package in contents
+    assert target_package in contents
 
 
 def test_AbjadIDE_copy_07():
@@ -210,6 +252,13 @@ def test_AbjadIDE_copy_07():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
+
 
 def test_AbjadIDE_copy_08():
     r'''Into segments directory.
@@ -240,6 +289,13 @@ def test_AbjadIDE_copy_08():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_package)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_package in contents
+    assert target_package in contents
+
 
 def test_AbjadIDE_copy_09():
     r'''Into stylesheets directory.
@@ -268,6 +324,13 @@ def test_AbjadIDE_copy_09():
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
 
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents
+
 
 def test_AbjadIDE_copy_10():
     r'''Into test directory.
@@ -295,3 +358,10 @@ def test_AbjadIDE_copy_10():
         input_ += ' y q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(target_file)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'Will copy' in contents
+    assert 'FROM:' in contents
+    assert 'TO:' in contents
+    assert source_file in contents
+    assert target_file in contents

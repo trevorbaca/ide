@@ -93,8 +93,10 @@ class Selector(object):
     def _run(self, io_manager):
         assert io_manager is not None
         self._io_manager = io_manager
+        self._io_manager._session._pending_redraw = True
         while True:
             menu = self._make_main_menu()
+            print(menu.menu_sections)
             result = menu._run(io_manager=self._io_manager)
             if result is None:
                 self._io_manager = None
