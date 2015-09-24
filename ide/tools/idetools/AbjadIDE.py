@@ -697,9 +697,12 @@ class AbjadIDE(object):
         pdf_path = os.path.join(directory, 'illustration.pdf')
         source_make_pdf_file = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
-            '__make_pdf__.py',
+            '__make_material_pdf__.py',
             )
-        target_make_pdf_file = os.path.join(directory, '__make_pdf__.py')
+        target_make_pdf_file = os.path.join(
+            directory, 
+            '__make_material_pdf__.py',
+            )
         temporary_files = (
             candidate_ly_path,
             candidate_pdf_path,
@@ -1314,9 +1317,12 @@ class AbjadIDE(object):
             )
         source_make_ly_file = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
-            '__make_ly__.py',
+            '__make_material_ly__.py',
             )
-        target_make_ly_file = os.path.join(directory, '__make_ly__.py')
+        target_make_ly_file = os.path.join(
+            directory, 
+            '__make_material_ly__.py',
+            )
         temporary_files = (
             candidate_ly_path,
             target_make_ly_file,
