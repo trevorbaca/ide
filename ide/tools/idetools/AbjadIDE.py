@@ -893,13 +893,17 @@ class AbjadIDE(object):
                     if not result:
                         return
                     try:
-                        shutil.move(candidate_ly_path, illustration_source_path)
+                        shutil.move(
+                            candidate_ly_path, 
+                            illustration_source_path,
+                            )
                     except IOError:
                         pass
                     try:
                         shutil.move(candidate_pdf_path, illustration_pdf_path)
                     except IOError:
                         pass
+
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
@@ -1460,8 +1464,88 @@ class AbjadIDE(object):
 
     def _make_segment_ly(self, directory, dry_run=False):
         assert os.path.isdir(directory), repr(directory)
-        message = 'not yet implemented.'
-        self._io_manager._display(message)
+        assert self._is_score_directory(directory, 'segment')
+        definition_path = os.path.join(directory, 'definition.py')
+
+        if not os.path.isfile(definition_path):
+            message = 'File not found: {}.'
+            message = message.format(definition_path)
+            self._io_manager._display(message)
+            return
+        self._update_order_dependent_segment_metadata(directory)
+        boilerplate_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__make_segment_ly__.py',
+            )
+        illustrate_path = os.path.join(directory, '__make_segment_ly__.py')
+        candidate_ly_path = os.path.join(
+            directory,
+            'illustration.candidate.ly'
+            )
+        temporary_files = (
+            illustrate_path,
+            candidate_ly_path,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        ly_path = os.path.join(directory, 'illustration.ly')
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_path)
+            outputs.append(illustration_source_path)
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(boilerplate_path, illustrate_path)
+            previous_segment_path = self._get_previous_segment_directory(
+                directory)
+            if previous_segment_path is None:
+                statement = 'previous_segment_metadata = None'
+            else:
+                score_directory = self._to_score_directory(directory)
+                score_name = os.path.basename(score_directory)
+                previous_segment_name = previous_segment_path
+                previous_segment_name = os.path.basename(previous_segment_path)
+                statement = 'from {}.segments.{}.__metadata__'
+                statement += ' import metadata as previous_segment_metadata'
+                statement = statement.format(score_name, previous_segment_name)
+            self._replace_in_file(
+                illustrate_path,
+                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
+                statement,
+                )
+            result = self._io_manager.interpret_file(
+                illustrate_path,
+                strip=False,
+                )
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            if not os.path.isfile(candidate_ly_path):
+                message = 'can not make {}.'
+                message = message.format(self._trim_path(candidate_ly_path))
+                self._io_manager._display(message)
+                return
+            result = systemtools.TestManager.compare_files(
+                candidate_ly_path,
+                ly_path,
+                )
+            messages = self._make_candidate_messages(
+                result,
+                candidate_ly_path,
+                ly_path,
+                )
+            self._io_manager._display(messages)
+            if result:
+                message = 'preserved {}.'
+                message = message.format(self._trim_path(ly_path))
+                self._io_manager._display(message)
+                return
+            shutil.move(candidate_ly_path, ly_path)
+            message = 'wrote {}.'
+            message = message.format(self._trim_path(ly_path))
+            self._io_manager._display(message)
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
