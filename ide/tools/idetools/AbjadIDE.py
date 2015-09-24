@@ -657,13 +657,13 @@ class AbjadIDE(object):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
-            message = message.format(definition_path)
+            message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         illustrate_file_path = os.path.join(directory, '__illustrate__.py')
         if not os.path.isfile(illustrate_file_path):
             message = 'File not found: {}.'
-            message = message.format(illustrate_file_path)
+            message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
             return
         candidate_ly_path = os.path.join(
@@ -693,7 +693,7 @@ class AbjadIDE(object):
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
             message = 'interpreting {} ...'
-            message = message.format(target_make_pdf_file)
+            message = message.format(self._trim_path(target_make_pdf_file))
             self._io_manager._display(message)
             result = self._io_manager.interpret_file(
                 target_make_pdf_file,
@@ -705,7 +705,7 @@ class AbjadIDE(object):
                 return
             if not os.path.isfile(candidate_ly_path):
                 message = 'could not make {}.'
-                message = message.format(candidate_ly_path)
+                message = message.format(self._trim_path(candidate_ly_path))
                 self._io_manager._display(message)
                 return
             result = systemtools.TestManager.compare_files(
@@ -714,23 +714,30 @@ class AbjadIDE(object):
                 )
             if result:
                 messages = []
-                messages.append('preserving {} ...'.format(ly_path))
-                messages.append('preserving {} ...'.format(pdf_path))
+                message = 'preserving {} ...'
+                message = message.format(self._trim_path(ly_path))
+                messages.append(message)
+                message = 'preserving {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
                 self._io_manager._display(messages)
                 return
             else:
                 message = 'overwriting {} ...'
-                message = message.format(ly_path)
+                message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 try:
                     shutil.move(candidate_ly_path, ly_path)
                 except IOError:
                     message = 'could not overwrite {} with {}.'
-                    message = message.format(ly_path, candidate_ly_path)
+                    message = message.format(
+                        self._trim_path(ly_path), 
+                        self._trim_path(candidate_ly_path),
+                        )
                     self._io_manager._display(message)
             if not os.path.isfile(candidate_pdf_path):
                 message = 'could not make {}.'
-                message = message.format(candidate_pdf_path)
+                message = message.format(self._trim_path(candidate_pdf_path))
                 self._io_manager._display(message)
                 return
             result = systemtools.TestManager.compare_files(
@@ -738,22 +745,25 @@ class AbjadIDE(object):
                 pdf_path,
                 )
             if result:
-                message = 'preserving {} ...'.format(pdf_path)
+                message = 'preserving {} ...'.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
                 return
             else:
                 message = 'overwriting {} ...'
-                message = message.format(pdf_path)
+                message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
                 try:
                     shutil.move(candidate_pdf_path, pdf_path)
                 except IOError:
                     message = 'could not overwrite {} with {}.'
-                    message = message.format(pdf_path, candidate_pdf_path)
+                    message = message.format(
+                        self._trim_path(pdf_path), 
+                        self._trim_path(candidate_pdf_path),
+                        )
                     self._io_manager._display(message)
             if not self._session.is_test:
                 message = 'opening {} ...'
-                message = message.format(pdf_path)
+                message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
                 self._io_manager.open_file(pdf_path)
 
@@ -1160,7 +1170,9 @@ class AbjadIDE(object):
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []
         messages.append('the files ...')
+        candidate_path = self._trim_path(candidate_path)
         messages.append(self._tab + candidate_path)
+        incumbent_path = self._trim_path(incumbent_path)
         messages.append(self._tab + incumbent_path)
         if result:
             messages.append('... compare the same.')

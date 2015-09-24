@@ -34,8 +34,8 @@ def test_AbjadIDE_make_pdf_01():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Overwriting' in contents
-    assert ly_path in contents
-    assert pdf_path in contents
+    assert abjad_ide._trim_path(ly_path) in contents
+    assert abjad_ide._trim_path(pdf_path) in contents
 
 
 def test_AbjadIDE_make_pdf_02():
@@ -75,8 +75,8 @@ def test_AbjadIDE_make_pdf_02():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Preserving' in contents
-    assert ly_path in contents
-    assert pdf_path in contents
+    assert abjad_ide._trim_path(ly_path) in contents
+    assert abjad_ide._trim_path(pdf_path) in contents
 
 
 def test_AbjadIDE_make_pdf_03():
@@ -107,8 +107,8 @@ def test_AbjadIDE_make_pdf_03():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Wrote ...' in contents
-    assert ly_path in contents
-    assert pdf_path in contents
+    assert abjad_ide._trim_path(ly_path) in contents
+    assert abjad_ide._trim_path(pdf_path) in contents
 
 
 def test_AbjadIDE_make_pdf_04():
@@ -148,9 +148,9 @@ def test_AbjadIDE_make_pdf_04():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
-    assert pdf_path in contents
-    assert candidate_pdf_path in contents
-    assert ly_path not in contents
+    assert abjad_ide._trim_path(pdf_path) in contents
+    assert abjad_ide._trim_path(candidate_pdf_path) in contents
+    assert abjad_ide._trim_path(ly_path) not in contents
     assert '... compare the same.' in contents
 
 
@@ -187,6 +187,6 @@ def test_AbjadIDE_make_pdf_05():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
-    assert pdf_path in contents
-    assert candidate_pdf_path in contents
+    assert abjad_ide._trim_path(pdf_path) in contents
+    assert abjad_ide._trim_path(candidate_pdf_path) in contents
     assert '... compare differently.' in contents
