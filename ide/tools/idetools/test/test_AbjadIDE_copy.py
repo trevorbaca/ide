@@ -360,6 +360,7 @@ def test_AbjadIDE_copy_10():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Blue Example Score (2013) - test directory - select:' in contents
     assert 'Will copy' in contents
     assert 'FROM:' in contents
     assert 'TO:' in contents

@@ -2443,7 +2443,12 @@ class AbjadIDE(object):
                     continue
                 path = os.path.join(directory_, name)
                 paths.append(path)
-        selector = self._io_manager._make_selector(items=paths)
+        menu_header = self._to_menu_header(directory)
+        menu_header = menu_header + ' - select:'
+        selector = self._io_manager._make_selector(
+            items=paths,
+            menu_header=menu_header,
+            )
         source_path = selector._run(io_manager=self._io_manager)
         if not source_path:
             return

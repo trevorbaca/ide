@@ -69,11 +69,9 @@ class Selector(object):
 
     def _make_main_menu(self):
         name = stringtools.to_space_delimited_lowercase(type(self).__name__)
-        subtitle = stringtools.capitalize_start(self.target_name)
         menu = self._io_manager._make_menu(
             explicit_header=self.menu_header,
             name=name, 
-            subtitle=subtitle,
             )
         self._make_asset_menu_section(menu)
         return menu
