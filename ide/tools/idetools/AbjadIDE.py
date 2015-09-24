@@ -653,6 +653,25 @@ class AbjadIDE(object):
             message = message.format(result)
             self._io_manager._display([message, ''])
 
+    def _has_pending_commit(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        command = 'git status {}'.format(directory)
+        with systemtools.TemporaryDirectoryChange(directory=directory):
+            process = self._io_manager.make_subprocess(command)
+        path = directory + os.path.sep
+        clean_lines = []
+        stdout_lines = self._io_manager._read_from_pipe(process.stdout)
+        for line in stdout_lines.splitlines():
+            line = str(line)
+            clean_line = line.strip()
+            clean_line = clean_line.replace(path, '')
+            clean_lines.append(clean_line)
+        for line in clean_lines:
+            if 'Changes not staged for commit:' in line:
+                return True
+            if 'Changes to be committed:' in line:
+                return True
+
     def _illustrate_material_definition(self, directory):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
@@ -2845,22 +2864,50 @@ class AbjadIDE(object):
         directories=('inner', 'outer',),
         section='git',
         )
-    def git_commit(self, directory, commit_message=None):
+    def git_commit(
+        self, 
+        directory, 
+        commit_message=None, 
+        dry_run=False,
+        interaction=True,
+        ):
         r'''Commits working copy of current score package to repository.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
+        self._io_manager._session._attempted_method = 'git_commit'
+        if self._io_manager._session.is_test:
+            return
+        directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
-        with change:
-            self._io_manager._session._attempted_method = 'git_commit'
-            if self._io_manager._session.is_test:
+        interaction = self._io_manager._make_interaction(
+            dry_run=not interaction)
+        with change, interaction:
+            pending_commit = self._has_pending_commit(directory)
+            if pending_commit:
+                if dry_run:
+                    message = '{} ... PENDING COMMIT.'
+                    message = message.format(directory)
+                    messages = [message]
+                    self._io_manager._display(messages)
+                    return True
+                else:
+                    message = '{} ...'
+                    message = message.format(directory)
+                    messages = [message]
+                    self._io_manager._display(messages)
+            else:
+                message = '{} ... nothing to commit.'
+                message = message.format(directory)
+                messages = [message]
+                self._io_manager._display(messages)
                 return
             if commit_message is None:
                 getter = self._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run(io_manager=self._io_manager)
-                if commit_message is None:
+                if not commit_message:
                     return
                 message = 'commit message will be: "{}"'
                 message = message.format(commit_message)
@@ -2878,7 +2925,6 @@ class AbjadIDE(object):
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, directory)
             self._io_manager.run_command(command, capitalize=False)
-        self._io_manager._display('')
 
     @Command(
         'ci*',
@@ -2892,22 +2938,40 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
+        assert self._is_score_directory(directory, 'scores'), repr(directory)
         self._session._attempted_method = 'git_commit_every_package'
         if self._session.is_test:
             return
-        getter = self._io_manager._make_getter()
-        getter.append_string('commit message')
-        commit_message = getter._run(io_manager=self._io_manager)
-        if commit_message is None:
-            return
-        line = 'commit message will be: "{}"'.format(commit_message)
-        self._io_manager._display(line)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        for directory in directories:
-            self.git_commit(directory, commit_message=commit_message)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            directories_to_commit = []
+            for directory in directories:
+                result = self.git_commit(
+                    directory, 
+                    dry_run=True,
+                    interaction=False,
+                    )
+                if result:
+                    directories_to_commit.append(directory)
+            if not directories_to_commit:
+                return
+            self._io_manager._display('')
+            getter = self._io_manager._make_getter()
+            getter.append_string('commit message')
+            commit_message = getter._run(io_manager=self._io_manager)
+            if not commit_message:
+                return
+            line = 'commit message will be: "{}"'.format(commit_message)
+            self._io_manager._display(line)
+            result = self._io_manager._confirm()
+            if not result:
+                return
+            for directory in directories_to_commit:
+                result = self.git_commit(
+                    directory, 
+                    commit_message=commit_message,
+                    interaction=False,
+                    )
 
     @Command(
         'st',
