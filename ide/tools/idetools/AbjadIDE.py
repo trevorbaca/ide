@@ -318,7 +318,6 @@ class AbjadIDE(object):
                     display_string, _, _, path = entry
                     if pattern == display_string:
                         filtered_entries.append(entry)
-        print(filtered_entries)
         return filtered_entries
 
     @staticmethod
