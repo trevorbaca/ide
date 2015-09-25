@@ -1188,7 +1188,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         paths = []
         for name in os.listdir(directory):
-            if name in self._secondary_names:
+            if name in sorted(self._secondary_names):
                 path = os.path.join(directory, name)
                 paths.append(path)
         return paths
