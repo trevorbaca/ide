@@ -805,7 +805,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
-            message = 'File not found: {}.'
+            message = 'file not found: {}.'
             message = message.format(definition_path)
             self._io_manager._display(message)
             return
@@ -814,7 +814,7 @@ class AbjadIDE(object):
             configuration.abjad_ide_boilerplate_directory,
             '__illustrate_segment__.py',
             )
-        illustrate_path = os.path.join(
+        illustrate_file_path = os.path.join(
             directory,
             '__illustrate_segment__.py',
             )
@@ -827,78 +827,69 @@ class AbjadIDE(object):
             'illustration.candidate.pdf'
             )
         temporary_files = (
-            illustrate_path,
+            illustrate_file_path,
             candidate_ly_path,
             candidate_pdf_path,
             )
         for path in temporary_files:
             if os.path.exists(path):
                 os.remove(path)
-        illustration_source_path = os.path.join(
-            directory,
-            'illustration.ly',
-            )
-        illustration_pdf_path = os.path.join(
-            directory,
-            'illustration.pdf',
-            )
+        ly_path = os.path.join(directory, 'illustration.ly')
+        pdf_path = os.path.join(directory, 'illustration.pdf')
         inputs, outputs = [], []
         if dry_run:
             inputs.append(definition_path)
-            outputs.append((illustration_source_path, illustration_pdf_path))
+            outputs.append((ly_path, pdf_path))
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
-            shutil.copyfile(boilerplate_path, illustrate_path)
-            previous_segment_path = self._get_previous_segment_directory(
+            shutil.copyfile(boilerplate_path, illustrate_file_path)
+            previous_segment_directory = self._get_previous_segment_directory(
                 directory)
-            if previous_segment_path is None:
+            if previous_segment_directory is None:
                 statement = 'previous_segment_metadata = None'
             else:
+                assert os.path.isdir(previous_segment_directory)
                 score_directory = self._to_score_directory(directory)
                 score_name = os.path.basename(score_directory)
-                previous_segment_name = previous_segment_path
-                previous_segment_name = os.path.basename(previous_segment_path)
+                previous_segment_name = previous_segment_directory
+                previous_segment_name = os.path.basename(
+                    previous_segment_directory,
+                    )
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_segment_metadata'
                 statement = statement.format(score_name, previous_segment_name)
             self._replace_in_file(
-                illustrate_path,
+                illustrate_file_path,
                 'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
                 statement,
                 )
             result = self._io_manager.interpret_file(
-                illustrate_path,
+                illustrate_file_path,
                 strip=False,
                 )
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
-            if not os.path.exists(illustration_pdf_path):
+            if not os.path.exists(pdf_path):
                 messages = []
                 messages.append('Wrote ...')
                 if os.path.exists(candidate_ly_path):
-                    shutil.move(candidate_ly_path, illustration_source_path)
-                    messages.append(self._tab + illustration_source_path)
+                    shutil.move(candidate_ly_path, ly_path)
+                    messages.append(self._tab + ly_path)
                 if os.path.exists(candidate_pdf_path):
-                    shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    messages.append(self._tab + illustration_pdf_path)
+                    shutil.move(candidate_pdf_path, pdf_path)
+                    messages.append(self._tab + pdf_path)
                 self._io_manager._display(messages)
             else:
                 result = systemtools.TestManager.compare_files(
                     candidate_pdf_path,
-                    illustration_pdf_path,
+                    pdf_path,
                     )
-#                messages = self._make_candidate_messages(
-#                    result,
-#                    candidate_pdf_path,
-#                    illustration_pdf_path,
-#                    )
-#                self._io_manager._display(messages)
                 if result:
                     message = 'preserved {}.'
                     message = message.format(
-                        self._trim_path(illustration_pdf_path),
+                        self._trim_path(pdf_path),
                         )
                     self._io_manager._display(message)
                     return
@@ -906,26 +897,26 @@ class AbjadIDE(object):
                     if os.path.isfile(candidate_ly_path):
                         message = 'overwriting {} ...'
                         message = message.format(
-                            self._trim_path(illustration_source_path),
+                            self._trim_path(ly_path),
                             )
                         self._io_manager._display(message)
                         shutil.move(
                             candidate_ly_path, 
-                            illustration_source_path,
+                            ly_path,
                             )
                     if os.path.isfile(candidate_pdf_path):
                         message = 'overwriting {} ...'
                         message = message.format(
-                            self._trim_path(illustration_pdf_path),
+                            self._trim_path(pdf_path),
                             )
                         self._io_manager._display(message)
-                        shutil.move(candidate_pdf_path, illustration_pdf_path)
+                        shutil.move(candidate_pdf_path, pdf_path)
                     message = 'opening {} ...'
                     message = message.format(
-                        self._trim_path(illustration_pdf_path),
+                        self._trim_path(pdf_path),
                         )
                     self._io_manager._display(message)
-                    self._io_manager.open_file(illustration_pdf_path)
+                    self._io_manager.open_file(pdf_path)
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
