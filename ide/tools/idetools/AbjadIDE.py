@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import codecs
+import collections
 import datetime
 import glob
 import inspect
@@ -1812,9 +1813,9 @@ class AbjadIDE(object):
         assert len(result) == 1
         view_inventory = result[0]
         if view_inventory is None:
-            view_inventory = idetools.ViewInventory()
+            view_inventory = collections.OrderedDict()
         items = list(view_inventory.items())
-        view_inventory = idetools.ViewInventory(items)
+        view_inventory = collections.OrderedDict(items)
         return view_inventory
 
     def _remove(self, path):
