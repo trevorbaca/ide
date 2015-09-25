@@ -9,7 +9,7 @@ def test_AbjadIDE_display_navigation_command_help_01():
     '''
 
     lines = [
-        'Red Example Score (2013) - view & navigation commands',
+        'Red Example Score (2013) - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -45,7 +45,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
     '''
 
     lines = [
-        'Red Example Score (2013) - materials directory - magic numbers - view & navigation commands',
+        'Red Example Score (2013) - materials directory - magic numbers - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -81,7 +81,7 @@ def test_AbjadIDE_display_navigation_command_help_03():
     '''
 
     lines = [
-        'Red Example Score (2013) - segments directory - A - view & navigation commands',
+        'Red Example Score (2013) - segments directory - A - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -117,15 +117,13 @@ def test_AbjadIDE_display_navigation_command_help_04():
     '''
 
     lines = [
-        'Abjad IDE - all score directories - view & navigation commands',
+        'Abjad IDE - all score directories - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
         '    back (-)',
         '    home (h)',
         '    quit (q)',
-        '',
-        '    set view (ws)',
         '',
         '>',
         ]
@@ -143,7 +141,7 @@ def test_AbjadIDE_display_navigation_command_help_05():
     '''
 
     lines = [
-        'Red Example Score (2013) - materials directory - view & navigation commands',
+        'Red Example Score (2013) - materials directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -161,8 +159,6 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
-        '',
-        '    set view (ws)',
         '',
         '>',
         ]
@@ -180,7 +176,7 @@ def test_AbjadIDE_display_navigation_command_help_06():
     '''
 
     lines = [
-        'Red Example Score (2013) - segments directory - view & navigation commands',
+        'Red Example Score (2013) - segments directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -198,8 +194,6 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
-        '',
-        '    set view (ws)',
         '',
         '>',
         ]
@@ -217,7 +211,7 @@ def test_AbjadIDE_display_navigation_command_help_07():
     '''
 
     lines = [
-        'Red Example Score (2013) - stylesheets directory - view & navigation commands',
+        'Red Example Score (2013) - stylesheets directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -235,8 +229,6 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
-        '',
-        '    set view (ws)',
         '',
         '>',
         ]

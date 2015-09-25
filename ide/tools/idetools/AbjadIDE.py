@@ -3953,28 +3953,3 @@ class AbjadIDE(object):
                     )
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
-
-    @Command(
-        'ws',
-        argument_name='current_directory',
-        forbidden_directories=('inner', 'material', 'segment',),
-        section='view',
-        )
-    def set_view(self, directory):
-        r'''Sets view.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        view_name = self._select_view(directory)
-        if view_name is None:
-            return
-        if view_name == 'none':
-            view_name = None
-        view_directory = self._session.current_directory
-        metadatum_name = 'view_name'
-        self._add_metadatum(
-            view_directory,
-            metadatum_name,
-            view_name,
-            )

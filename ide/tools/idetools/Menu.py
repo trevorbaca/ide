@@ -413,7 +413,7 @@ class Menu(object):
         if command_type == 'action':
             title = title + ' - action commands'
         elif command_type == 'navigation':
-            title = title + ' - view & navigation commands'
+            title = title + ' - navigation commands'
         else:
             raise ValueError(repr(command_type))
         title = stringtools.capitalize_start(title)
