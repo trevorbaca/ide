@@ -3,4 +3,14 @@ from abjad import *
 from ide.tools import idetools
 
 
-view_inventory = idetools.ViewInventory([])
+view_inventory=idetools.ViewInventory(
+    [
+        (
+            'reverse',
+            idetools.View([
+                'segment 02',
+                'segment 01',
+                ]),
+            ),
+        ]
+    )

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad.tools import datastructuretools
+import collections
 
 
-metadata = datastructuretools.TypedOrderedDict([
-    ('view_name', None),
+metadata = collections.OrderedDict([
+    ('view_name', 'inventories first'),
     ])

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import collections
 
 
-metadata = datastructuretools.TypedOrderedDict()
+metadata = collections.OrderedDict([
+    ('view_name', 'reverse'),
+    ])

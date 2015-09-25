@@ -6,16 +6,11 @@ from ide.tools import idetools
 view_inventory=idetools.ViewInventory(
     [
         (
-            'inventories',
-            idetools.View(
-                ["'inventory' in :ds:"]
-                ),
-            ),
-        (
-            'magic',
-            idetools.View(
-                ["'magic_' in :path:"]
-                ),
+            'inventories first',
+            idetools.View([
+                "'inventory' in :ds:",
+                "'inventory' not in :ds:",
+                ]),
             ),
         ]
     )
