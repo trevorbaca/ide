@@ -317,6 +317,7 @@ class AbjadIDE(object):
                     display_string, _, _, path = entry
                     if pattern == display_string:
                         filtered_entries.append(entry)
+        print(filtered_entries)
         return filtered_entries
 
     @staticmethod
@@ -1306,12 +1307,13 @@ class AbjadIDE(object):
         paths = self._list_visible_paths(directory)
         strings = [self._to_menu_string(_) for _ in paths]
         pairs = list(zip(strings, paths))
-        def sort_function(pair):
-            string = pair[0]
-            string = stringtools.strip_diacritics(string)
-            string = string.replace("'", '')
-            return string
-        pairs.sort(key=lambda _: sort_function(_))
+        if self._is_score_directory(directory, 'scores'):
+            def sort_function(pair):
+                string = pair[0]
+                string = stringtools.strip_diacritics(string)
+                string = string.replace("'", '')
+                return string
+            pairs.sort(key=lambda _: sort_function(_))
         for string, path in pairs:
             asset_menu_entry = (string, None, None, path)
             asset_menu_entries.append(asset_menu_entry)
@@ -1666,7 +1668,7 @@ class AbjadIDE(object):
             result = eval(pattern)
         except:
             traceback.print_exc()
-            return False
+            result = False
         return result
 
     def _match_metadata_view_pattern(self, pattern, entry):

@@ -10,11 +10,22 @@ def test_AbjadIDE_new_01():
     r'''Makes new score directory.
     '''
 
-    outer_path = os.path.join(
+    outer_score_directory = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'example_score',
         )
-    inner_path = os.path.join(outer_path, 'example_score')
+    inner_score_directory = os.path.join(
+        outer_score_directory, 
+        'example_score',
+        )
+    materials_directory = os.path.join(
+        inner_score_directory,
+        'materials',
+        )
+    segments_directory = os.path.join(
+        inner_score_directory,
+        'segments',
+        )
     outer_directory_entries = [
         'README.md',
         'requirements.txt',
@@ -33,20 +44,38 @@ def test_AbjadIDE_new_01():
         'stylesheets',
         'test',
         ]
+    materials_directory_entries = [
+        '__abbreviations__.py',
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        ]
+    segments_directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        ]
 
     input_ = 'new Example~Score q'
 
-    with systemtools.FilesystemState(remove=[outer_path]):
+    with systemtools.FilesystemState(remove=[outer_score_directory]):
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(outer_path)
+        assert os.path.exists(outer_score_directory)
         session = ide.tools.idetools.Session(is_test=True)
         io_manager = ide.tools.idetools.IOManager(session=session)
-        entries = os.listdir(inner_path)
+        entries = os.listdir(inner_score_directory)
+        for entry in outer_directory_entries:
+            path = os.path.join(outer_score_directory, entry)
+            assert os.path.exists(path)
         for entry in inner_directory_entries:
-            assert entry in entries, repr(entry)
-        for file_name in outer_directory_entries:
-            path = os.path.join(outer_path, file_name)
+            path = os.path.join(inner_score_directory, entry)
+            assert os.path.exists(path)
+        for entry in materials_directory_entries:
+            path = os.path.join(materials_directory, entry)
+            assert os.path.exists(path)
+        for entry in segments_directory_entries:
+            path = os.path.join(segments_directory, entry)
             assert os.path.exists(path)
 
     assert 'Enter title]> Example Score' in contents
