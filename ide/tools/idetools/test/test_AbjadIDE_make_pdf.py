@@ -106,7 +106,7 @@ def test_AbjadIDE_make_pdf_03():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Wrote ...' in contents
+    assert 'Writing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
 
@@ -147,9 +147,9 @@ def test_AbjadIDE_make_pdf_04():
         abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Preserved' in contents
+    assert 'Preserving' in contents
     assert abjad_ide._trim_path(pdf_path) in contents
-    #assert abjad_ide._trim_path(ly_path) not in contents
+    assert abjad_ide._trim_path(ly_path) in contents
 
 
 def test_AbjadIDE_make_pdf_05():

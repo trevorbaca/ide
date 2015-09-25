@@ -871,52 +871,56 @@ class AbjadIDE(object):
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
-            if not os.path.exists(pdf_path):
-                messages = []
-                messages.append('Wrote ...')
-                if os.path.exists(candidate_ly_path):
+            made_new_pdf = False
+            if (not os.path.exists(ly_path) and
+                os.path.isfile(candidate_ly_path)):
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(ly_path))
+                self._io_manager._display(message)
+                shutil.move(candidate_ly_path, ly_path)
+                made_new_pdf = True
+            if (not os.path.exists(pdf_path) and
+                os.path.isfile(candidate_pdf_path)):
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                shutil.move(candidate_pdf_path, pdf_path)
+            if (os.path.exists(ly_path) and
+                os.path.isfile(candidate_ly_path)):
+                same = systemtools.TestManager.compare_files(
+                    candidate_ly_path,
+                    ly_path,
+                    )
+                if same:
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(ly_path))
+                    self._io_manager._display(message)
+                else:
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(ly_path))
+                    self._io_manager._display(message)
                     shutil.move(candidate_ly_path, ly_path)
-                    messages.append(self._tab + ly_path)
-                if os.path.exists(candidate_pdf_path):
-                    shutil.move(candidate_pdf_path, pdf_path)
-                    messages.append(self._tab + pdf_path)
-                self._io_manager._display(messages)
-            else:
-                result = systemtools.TestManager.compare_files(
+            if (os.path.exists(pdf_path) and
+                os.path.isfile(candidate_pdf_path)):
+                same = systemtools.TestManager.compare_files(
                     candidate_pdf_path,
                     pdf_path,
                     )
-                if result:
-                    message = 'preserved {}.'
-                    message = message.format(
-                        self._trim_path(pdf_path),
-                        )
+                if same:
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(pdf_path))
                     self._io_manager._display(message)
-                    return
                 else:
-                    if os.path.isfile(candidate_ly_path):
-                        message = 'overwriting {} ...'
-                        message = message.format(
-                            self._trim_path(ly_path),
-                            )
-                        self._io_manager._display(message)
-                        shutil.move(
-                            candidate_ly_path, 
-                            ly_path,
-                            )
-                    if os.path.isfile(candidate_pdf_path):
-                        message = 'overwriting {} ...'
-                        message = message.format(
-                            self._trim_path(pdf_path),
-                            )
-                        self._io_manager._display(message)
-                        shutil.move(candidate_pdf_path, pdf_path)
-                    message = 'opening {} ...'
-                    message = message.format(
-                        self._trim_path(pdf_path),
-                        )
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(pdf_path))
                     self._io_manager._display(message)
-                    self._io_manager.open_file(pdf_path)
+                    shutil.move(candidate_pdf_path, pdf_path)
+                    made_new_pdf = True
+            if made_new_pdf:
+                message = 'opening {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                self._io_manager.open_file(pdf_path)
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
