@@ -3508,7 +3508,7 @@ class AbjadIDE(object):
         directories=('materials', 'segments'),
         section='star',
         )
-    def interpret_every_ly(self, directory, open_every_illustration_pdf=True):
+    def interpret_every_ly(self, directory):
         r'''Interprets illustration ly in every package.
 
         Makes illustration PDF in every package.
@@ -3768,13 +3768,13 @@ class AbjadIDE(object):
         self._session._pending_redraw = True
 
     @Command(
-        'io*',
+        'pdf*',
         argument_name='current_directory',
         directories=('materials', 'segments'),
         section='star',
         )
-    def open_every_illustration_pdf(self, directory):
-        r'''Opens ``illustration.pdf`` in every package.
+    def open_every_pdf(self, directory):
+        r'''Opens PDF in every package.
 
         Returns none.
         '''
