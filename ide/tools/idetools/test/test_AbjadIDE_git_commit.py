@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_git_status_01():
+def test_AbjadIDE_git_commit_01():
     r'''Available in all directories except scores directory.
     '''
 

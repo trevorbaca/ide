@@ -5,7 +5,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_display_navigation_command_help_01():
-    r'''Works in score directory.
+    r'''In score directory.
     '''
 
     lines = [
@@ -41,7 +41,7 @@ def test_AbjadIDE_display_navigation_command_help_01():
 
 
 def test_AbjadIDE_display_navigation_command_help_02():
-    r'''Works in material directory.
+    r'''In material directory.
     '''
 
     lines = [
@@ -64,6 +64,9 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '',
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
         '>',
     ]
 
@@ -77,7 +80,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
 
 
 def test_AbjadIDE_display_navigation_command_help_03():
-    r'''Works in segment directory.
+    r'''In segment directory.
     '''
 
     lines = [
@@ -100,6 +103,9 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '',
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
         '>',
     ]
 
@@ -113,7 +119,7 @@ def test_AbjadIDE_display_navigation_command_help_03():
 
 
 def test_AbjadIDE_display_navigation_command_help_04():
-    r'''Works at home screen.
+    r'''In scores directory.
     '''
 
     lines = [
@@ -137,7 +143,7 @@ def test_AbjadIDE_display_navigation_command_help_04():
 
 
 def test_AbjadIDE_display_navigation_command_help_05():
-    r'''Works in materials directory.
+    r'''In materials directory.
     '''
 
     lines = [
@@ -160,6 +166,9 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '',
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
         '>',
         ]
 
@@ -172,7 +181,7 @@ def test_AbjadIDE_display_navigation_command_help_05():
 
 
 def test_AbjadIDE_display_navigation_command_help_06():
-    r'''Works in segments directory.
+    r'''In segments directory.
     '''
 
     lines = [
@@ -195,6 +204,9 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '',
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
         '>',
         ]
 
@@ -207,7 +219,7 @@ def test_AbjadIDE_display_navigation_command_help_06():
 
 
 def test_AbjadIDE_display_navigation_command_help_07():
-    r'''Works in stylesheets directory.
+    r'''In stylesheets directory.
     '''
 
     lines = [

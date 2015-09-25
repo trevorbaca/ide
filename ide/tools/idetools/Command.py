@@ -20,17 +20,17 @@ class Command(object):
         'ly',
         'pdf',
         'navigation',
+        'sibling navigation',
         'star',
         'system',
-        'view',
         )
 
     _navigation_section_names = (
-        'display navigation',
         'back-home-quit',
+        'display navigation',
         'comparison',
         'navigation',
-        'view',
+        'sibling navigation',
         )
 
     ### INITIALIZER ###

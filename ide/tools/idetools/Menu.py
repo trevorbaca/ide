@@ -63,7 +63,7 @@ class Menu(object):
         'back-home-quit',
         'comparison',
         'navigation',
-        'view',
+        'sibling navigation',
         )
 
     _tab = 4 * ' '

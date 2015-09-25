@@ -520,6 +520,54 @@ class AbjadIDE(object):
             metadatum = default
         return metadatum
 
+    def _get_next_package(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        if self._is_score_directory(directory, 'material'):
+            materials_directory = os.path.dirname(directory)
+            paths = self._list_visible_paths(materials_directory)
+            index = paths.index(directory)
+            paths = datastructuretools.CyclicTuple(paths)
+            path = paths[index+1]
+        elif self._is_score_directory(directory, 'materials'):
+            paths = self._list_visible_paths(directory)
+            path = paths[0]
+        elif self._is_score_directory(directory, 'segment'):
+            segments_directory = os.path.dirname(directory)
+            paths = self._list_visible_paths(segments_directory)
+            index = paths.index(directory)
+            paths = datastructuretools.CyclicTuple(paths)
+            path = paths[index+1]
+        elif self._is_score_directory(directory, 'segments'):
+            paths = self._list_visible_paths(directory)
+            path = paths[0]
+        else:
+            raise ValueError(directory)
+        return path
+
+    def _get_previous_package(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        if self._is_score_directory(directory, 'material'):
+            materials_directory = os.path.dirname(directory)
+            paths = self._list_visible_paths(materials_directory)
+            index = paths.index(directory)
+            paths = datastructuretools.CyclicTuple(paths)
+            path = paths[index-1]
+        elif self._is_score_directory(directory, 'materials'):
+            paths = self._list_visible_paths(directory)
+            path = paths[-1]
+        elif self._is_score_directory(directory, 'segment'):
+            segments_directory = os.path.dirname(directory)
+            paths = self._list_visible_paths(segments_directory)
+            index = paths.index(directory)
+            paths = datastructuretools.CyclicTuple(paths)
+            path = paths[index-1]
+        elif self._is_score_directory(directory, 'segments'):
+            paths = self._list_visible_paths(directory)
+            path = paths[-1]
+        else:
+            raise ValueError(directory)
+        return path
+
     def _get_previous_segment_directory(self, directory):
         segments_directory = self._to_score_directory(
             directory,
@@ -3301,6 +3349,36 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._to_score_directory(directory, 'materials')
+        self._manage_directory(directory)
+
+    @Command(
+        '>',
+        argument_name='current_directory',
+        directories=('material', 'materials', 'segment', 'segments'),
+        section='sibling navigation',
+        )
+    def go_to_next_package(self, directory):
+        r'''Goes to next package.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        directory = self._get_next_package(directory)
+        self._manage_directory(directory)
+
+    @Command(
+        '<',
+        argument_name='current_directory',
+        directories=('material', 'materials', 'segment', 'segments'),
+        section='sibling navigation',
+        )
+    def go_to_previous_package(self, directory):
+        r'''Goes to previous package.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        directory = self._get_previous_package(directory)
         self._manage_directory(directory)
 
     @Command(
