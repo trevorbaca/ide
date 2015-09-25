@@ -1318,10 +1318,7 @@ class AbjadIDE(object):
         menu_entries.extend(asset_menu_entries)
         if menu_entries:
             section = menu.make_asset_section(menu_entries=menu_entries)
-            if self._is_score_directory(directory, ('scores', 'outer')):
-                section._group_by_annotation = False
-            else:
-                section._group_by_annotation = True
+            section._group_by_annotation = False
         self._make_command_menu_sections(directory, menu)
         return menu
 
