@@ -281,11 +281,13 @@ class AbjadIDE(object):
                     destination_path,
                     )
                 messages.extend(messages_)
-                message = 'preserved {}.'.format(destination_path)
+                message = 'preserved {}.'
+                message = message.format(self._trim_path(destination_path))
                 messages.append(message)
             else:
                 shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
+                message = 'overwrote {}.'
+                message = message.format(self._trim_path(destination_path))
                 messages.append(message)
             self._io_manager._display(messages)
             return True
@@ -591,11 +593,13 @@ class AbjadIDE(object):
                 destination_path,
                 )
             messages.extend(messages_)
-            message = 'preserved {}.'.format(destination_path)
+            message = 'preserved {}.'
+            message = message.format(self._trim_path(destination_path))
             messages.append(message)
         else:
             shutil.copyfile(candidate_path, destination_path)
-            message = 'overwrote {}.'.format(destination_path)
+            message = 'overwrote {}.'
+            message = message.format(self._trim_path(destination_path))
             messages.append(message)
         self._io_manager._display(messages)
 
@@ -882,35 +886,46 @@ class AbjadIDE(object):
                 self._io_manager._display(messages)
             else:
                 result = systemtools.TestManager.compare_files(
-                candidate_pdf_path,
-                illustration_pdf_path,
-                )
-                messages = self._make_candidate_messages(
-                    result,
                     candidate_pdf_path,
                     illustration_pdf_path,
                     )
-                self._io_manager._display(messages)
+#                messages = self._make_candidate_messages(
+#                    result,
+#                    candidate_pdf_path,
+#                    illustration_pdf_path,
+#                    )
+#                self._io_manager._display(messages)
                 if result:
-                    message = 'preserved {}.'.format(illustration_pdf_path)
+                    message = 'preserved {}.'
+                    message = message.format(
+                        self._trim_path(illustration_pdf_path),
+                        )
                     self._io_manager._display(message)
                     return
                 else:
-                    message = 'overwrite existing PDF with candidate PDF?'
-                    result = self._io_manager._confirm(message=message)
-                    if not result:
-                        return
-                    try:
+                    if os.path.isfile(candidate_ly_path):
+                        message = 'overwriting {} ...'
+                        message = message.format(
+                            self._trim_path(illustration_source_path),
+                            )
+                        self._io_manager._display(message)
                         shutil.move(
                             candidate_ly_path, 
                             illustration_source_path,
                             )
-                    except IOError:
-                        pass
-                    try:
+                    if os.path.isfile(candidate_pdf_path):
+                        message = 'overwriting {} ...'
+                        message = message.format(
+                            self._trim_path(illustration_pdf_path),
+                            )
+                        self._io_manager._display(message)
                         shutil.move(candidate_pdf_path, illustration_pdf_path)
-                    except IOError:
-                        pass
+                    message = 'opening {} ...'
+                    message = message.format(
+                        self._trim_path(illustration_pdf_path),
+                        )
+                    self._io_manager._display(message)
+                    self._io_manager.open_file(illustration_pdf_path)
 
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
@@ -1370,12 +1385,13 @@ class AbjadIDE(object):
                 )
             self._io_manager._display(messages)
             if result:
-                message = 'preserved {}.'.format(ly_path)
+                message = 'preserved {}.'
+                message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 return
             else:
                 message = 'overwriting {} ...'
-                message = message.format(ly_path)
+                message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 try:
                     shutil.move(
@@ -3662,12 +3678,13 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        if self._is_score_directory(directory, 'material'):
-            self._illustrate_material_definition(directory)
-        elif self._is_score_directory(directory, 'segment'):
-            self._illustrate_segment_definition(directory)
-        else:
-            raise ValueError(directory)
+        with self._io_manager._make_interaction():
+            if self._is_score_directory(directory, 'material'):
+                self._illustrate_material_definition(directory)
+            elif self._is_score_directory(directory, 'segment'):
+                self._illustrate_segment_definition(directory)
+            else:
+                raise ValueError(directory)
 
     @Command(
         'new',
