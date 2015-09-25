@@ -477,11 +477,11 @@ class AbjadIDE(object):
                 if os.path.isfile(path):
                     return path
 
-    def _get_git_status_lines(self, directory):
-        assert os.path.isdir(directory), repr(directory)
+    def _get_git_status_lines(self, path):
+        assert os.path.sep in path,repr(path)
         command = 'git status --porcelain {}'
-        command = command.format(directory)
-        directory = self._to_score_directory(directory, 'outer')
+        command = command.format(path)
+        directory = self._to_score_directory(path, 'outer')
         with systemtools.TemporaryDirectoryChange(directory=directory):
             process = self._io_manager.make_subprocess(command)
         stdout_lines = self._io_manager._read_from_pipe(process.stdout)
@@ -1272,6 +1272,12 @@ class AbjadIDE(object):
                 'Maker.py',
                 )
             shutil.copyfile(source_file, file_path)
+            with open(file_path, 'r') as file_pointer:
+                template = file_pointer.read()
+            class_name, _ = os.path.splitext(file_name)
+            completed_template = template.format(class_name=class_name)
+            with open(file_path, 'w') as file_pointer:
+                file_pointer.write(completed_template)
         else:
             contents = ''
             file_name, file_extension = os.path.splitext(file_name)
