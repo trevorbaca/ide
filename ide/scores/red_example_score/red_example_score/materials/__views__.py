@@ -1,16 +1,10 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-from ide.tools import idetools
+import collections
 
 
-view_inventory=idetools.ViewInventory(
-    [
-        (
-            'inventories first',
-            idetools.View([
-                "'inventory' in :ds:",
-                "'inventory' not in :ds:",
-                ]),
-            ),
-        ]
-    )
+view_inventory = collections.OrderedDict([
+    (
+        'inventories first',
+        ["'inventory' in :ds:", "'inventory' not in :ds:"],
+        ),
+    ])
