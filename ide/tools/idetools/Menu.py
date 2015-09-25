@@ -182,25 +182,6 @@ class Menu(object):
             if section._menu_entry_return_values:
                 return section._menu_entry_return_values[0]
 
-    def _group_by_annotation(self, lines):
-        new_lines = []
-        current_annotation = ''
-        pattern = re.compile('(.*)(\s+)\((.+)\)')
-        for line in lines:
-            line = line.replace('', '')
-            match = pattern.match(line)
-            if match:
-                display_string, _, annotation = match.groups()
-                if not annotation == current_annotation:
-                    current_annotation = annotation
-                    new_line = '{}{}:'.format(self._tab, current_annotation)
-                    new_lines.append(new_line)
-                new_line = self._tab + display_string
-                new_lines.append(new_line)
-            else:
-                new_lines.append(line)
-        return new_lines
-
     def _handle_argument_range_input(self, input_):
         if not self._has_ranged_section():
             return
@@ -297,8 +278,6 @@ class Menu(object):
             return []
         assert section.is_asset_section
         lines = section._make_lines()
-        if section.group_by_annotation:
-            lines = self._group_by_annotation(lines)
         lines = self._make_bicolumnar(lines, strip=False)
         return lines
 
@@ -455,7 +434,6 @@ class Menu(object):
         self,
         default_index=None,
         display_prepopulated_values=False,
-        group_by_annotation=True,
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
@@ -473,7 +451,6 @@ class Menu(object):
         section = idetools.MenuSection(
             default_index=default_index,
             display_prepopulated_values=display_prepopulated_values,
-            group_by_annotation=group_by_annotation,
             is_asset_section=is_asset_section,
             is_command_section=is_command_section,
             is_hidden=is_hidden,
@@ -706,7 +683,6 @@ class Menu(object):
         '''
         section = self._make_section(
             default_index=default_index,
-            group_by_annotation=False,
             is_command_section=True,
             is_hidden=is_hidden,
             match_on_display_string=match_on_display_string,

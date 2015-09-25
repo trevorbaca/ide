@@ -36,7 +36,6 @@ class MenuSection(AbjadObject):
     __slots__ = (
         '_default_index',
         '_display_prepopulated_values',
-        '_group_by_annotation',
         '_is_asset_section',
         '_is_command_section',
         '_is_hidden',
@@ -62,7 +61,6 @@ class MenuSection(AbjadObject):
         self,
         default_index=None,
         display_prepopulated_values=False,
-        group_by_annotation=True,
         is_asset_section=False,
         is_command_section=False,
         is_hidden=False,
@@ -80,7 +78,6 @@ class MenuSection(AbjadObject):
         assert return_value_attribute in self.return_value_attributes
         self._default_index = default_index
         self._display_prepopulated_values = display_prepopulated_values
-        self._group_by_annotation = group_by_annotation
         self._is_asset_section = is_asset_section
         self._is_command_section = is_command_section
         self._is_hidden = is_hidden
@@ -293,14 +290,6 @@ class MenuSection(AbjadObject):
         Returns true or false.
         '''
         return self._display_prepopulated_values
-
-    @property
-    def group_by_annotation(self):
-        r'''Is true when entries should group by annotation. Otherwise false.
-
-        Returns true or false.
-        '''
-        return self._group_by_annotation
 
     @property
     def is_asset_section(self):

@@ -58,7 +58,6 @@ class Selector(object):
         if not menu_entries:
             return
         menu._make_section(
-            group_by_annotation=False,
             is_asset_section=True,
             is_numbered=self.is_numbered,
             is_ranged=self.is_ranged,
