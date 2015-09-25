@@ -46,16 +46,16 @@ class Menu(object):
         )
 
     _action_command_section_order = (
+        'star',
         'system',
         'global files',
         'definition_file',
         'illustrate_file',
         'ly',
         'pdf',
-        'star',
-        'git',
         'build',
         'basic',
+        'git',
         )
 
     _navigation_command_section_order = (

@@ -2906,7 +2906,7 @@ class AbjadIDE(object):
         'add',
         argument_name='current_directory',
         description='git - add',
-        directories=('inner', 'outer',),
+        forbidden_directories=('scores',),
         section='git',
         )
     def git_add(self, directory, dry_run=False, interaction=True):
@@ -2982,7 +2982,7 @@ class AbjadIDE(object):
         'ci',
         argument_name='current_directory',
         description='git - commit',
-        directories=('inner', 'outer',),
+        forbidden_directories=('scores',),
         section='git',
         )
     def git_commit(
@@ -3087,7 +3087,7 @@ class AbjadIDE(object):
         'st',
         argument_name='current_directory',
         description='git - status',
-        directories=('inner', 'outer',),
+        forbidden_directories=('scores',),
         section='git',
         )
     def git_status(self, directory, dry_run=False):
@@ -3154,7 +3154,7 @@ class AbjadIDE(object):
         'up',
         argument_name='current_directory',
         description='git - update',
-        directories=('inner', 'outer',),
+        forbidden_directories=('scores',),
         section='git',
         )
     def git_update(self, directory, interaction=True):
