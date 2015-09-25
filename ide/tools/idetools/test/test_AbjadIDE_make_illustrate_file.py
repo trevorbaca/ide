@@ -24,4 +24,7 @@ def test_AbjadIDE_make_illustrate_file_01():
         assert not os.path.isfile(path)
         input_ = 'red~example~score mm magic~numbers illm q'
         abjad_ide._start(input_=input_)
-        assert os.path.isfile(path)
+
+    assert os.path.isfile(path)
+    contents = abjad_ide._io_manager._transcript.contents
+    assert '1: __illustrate__.py' in contents

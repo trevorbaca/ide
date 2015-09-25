@@ -3643,6 +3643,7 @@ class AbjadIDE(object):
             )
         with open(target_path, 'w') as file_pointer:
             file_pointer.write(completed_template)
+        self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
     @Command(
