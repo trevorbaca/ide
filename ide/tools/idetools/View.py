@@ -1,7 +1,7 @@
-from abjad.tools.datastructuretools.TypedList import TypedList
+# -*- coding: utf-8 -*-
 
 
-class View(TypedList):
+class View(list):
     r'''View.
     '''
 
