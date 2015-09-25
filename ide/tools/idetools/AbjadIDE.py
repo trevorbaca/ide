@@ -2929,24 +2929,16 @@ class AbjadIDE(object):
             if not inputs:
                 self._io_manager._display(nothing_message)
                 return
-            messages = []
-            messages.append('will add ...')
-            for file_ in inputs:
-                trimmed_path = self._trim_path(file_)
-                messages.append(self._tab + trimmed_path)
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if not result:
-                return
             command = 'git add -A {}'
             for file_ in inputs:
                 command = command.format(directory)
                 self._io_manager.run_command(command)
-            count = len(inputs)
-            identifier = stringtools.pluralize('file', count)
-            message = 'added {} {}.'
-            message = message.format(count, identifier)
-            self._io_manager._display(message)
+            messages = []
+            for file_ in inputs:
+                message = '{} ... added.'
+                message = message.format(self._trim_path(file_))
+                messages.append(message)
+            self._io_manager._display(messages, capitalize=False)
 
     @Command(
         'add*',
@@ -3038,12 +3030,6 @@ class AbjadIDE(object):
                 commit_message = getter._run(io_manager=self._io_manager)
                 if not commit_message:
                     return
-                message = 'commit message will be: "{}"'
-                message = message.format(commit_message)
-                self._io_manager._display(message)
-                result = self._io_manager._confirm()
-                if not result:
-                    return
             message = directory
             scores_directory = configuration.abjad_ide_example_scores_directory
             message = message.replace(scores_directory, '')
@@ -3089,11 +3075,6 @@ class AbjadIDE(object):
             getter.append_string('commit message')
             commit_message = getter._run(io_manager=self._io_manager)
             if not commit_message:
-                return
-            line = 'commit message will be: "{}"'.format(commit_message)
-            self._io_manager._display(line)
-            result = self._io_manager._confirm()
-            if not result:
                 return
             for directory in directories_to_commit:
                 result = self.git_commit(
