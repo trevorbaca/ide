@@ -3135,6 +3135,7 @@ class AbjadIDE(object):
                 clean_line = line.strip()
                 clean_line = clean_line.replace(path_, '')
                 clean_lines.append(clean_line)
+            clean_lines = [_ for _ in clean_lines if not _ == '']
             everything_ok = False
             for line in clean_lines:
                 if 'nothing to commit' in line:
