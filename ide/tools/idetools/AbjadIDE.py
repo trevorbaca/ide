@@ -2375,23 +2375,19 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='definition_file',
         )
-    def check_definition_file(self, directory, dry_run=False):
+    def check_definition_file(self, directory, subroutine=False):
         r'''Checks definition file.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             definition_path = os.path.join(directory, 'definition.py')
             if not os.path.isfile(definition_path):
                 message = 'file not found: {}.'
                 message = message.format(definition_path)
                 self._io_manager._display(message)
                 return
-            inputs, outputs = [], []
-            if dry_run:
-                inputs.append(definition_path)
-                return inputs, outputs
             result = self._io_manager.interpret_file(
                 definition_path, 
                 strip=False,
@@ -2403,8 +2399,9 @@ class AbjadIDE(object):
                 messages.extend(stderr_lines)
                 self._io_manager._display(messages)
             else:
-                message = '{} OK.'.format(definition_path)
-                self._io_manager._display(message)
+                message = '{} ... OK'
+                message = message.format(self._trim_path(definition_path))
+                self._io_manager._display(message, capitalize=False)
 
     @Command(
         'dfk*',
@@ -2419,26 +2416,18 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._list_visible_paths(directory)
-        inputs, outputs = [], []
-        for path in paths:
-            inputs_, outputs_ = self.check_definition_file(path, dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='check')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        start_time = time.time()
-        for path in paths:
-            self.check_definition_file(path)
-        stop_time = time.time()
-        total_time = stop_time - start_time
-        total_time = int(total_time)
-        message = 'total time: {} seconds.'
-        message = message.format(total_time)
-        self._io_manager._display(message)
+        with self._io_manager._make_interaction():
+            paths = self._list_visible_paths(directory)
+            start_time = time.time()
+            for path in paths:
+                self.check_definition_file(path, subroutine=True)
+            stop_time = time.time()
+            total_time = stop_time - start_time
+            total_time = int(total_time)
+            identifier = stringtools.pluralize('second', total_time)
+            message = 'total time: {} {}.'
+            message = message.format(total_time, identifier)
+            self._io_manager._display(message)
 
     @Command(
         'mc',

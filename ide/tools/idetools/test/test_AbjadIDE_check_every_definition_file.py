@@ -7,8 +7,10 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_check_every_definition_file_01():
+    r'''In materials directory.
+    '''
 
-    input_ = 'red~example~score mm dfk* y q'
+    input_ = 'red~example~score mm dfk* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -31,18 +33,18 @@ def test_AbjadIDE_check_every_definition_file_01():
             )
         paths.append(path)
 
-    confirmation_messages = [_ + ' OK.' for _ in paths]
-
-    assert 'Will check ...' in contents
     for path in paths:
-        assert path in contents
-    for confirmation_message in confirmation_messages:
-        assert confirmation_message in contents
+        message = '{} ... OK'
+        message = message.format(abjad_ide._trim_path(path))
+        assert message in contents
+    assert 'Total time:' in contents
 
 
 def test_AbjadIDE_check_every_definition_file_02():
+    r'''In segments directory.
+    '''
 
-    input_ = 'red~example~score gg dfk* y q'
+    input_ = 'red~example~score gg dfk* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -63,10 +65,8 @@ def test_AbjadIDE_check_every_definition_file_02():
             )
         paths.append(path)
 
-    confirmation_messages = [_ + ' OK.' for _ in paths]
-
-    assert 'Will check ...' in contents
     for path in paths:
-        assert path in contents
-    for confirmation_message in confirmation_messages:
-        assert confirmation_message in contents
+        message = '{} ... OK'
+        message = message.format(abjad_ide._trim_path(path))
+        assert message in contents
+    assert 'Total time:' in contents
