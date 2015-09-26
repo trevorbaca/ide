@@ -3549,7 +3549,10 @@ class AbjadIDE(object):
                 self._io_manager._display(message)
                 return
             pdf_path = os.path.join(directory, 'illustration.pdf')
-            backup_pdf_path = pdf_path + '._backup'
+            backup_pdf_path = os.path.join(
+                directory, 
+                'illustration.backup.pdf',
+                )
             assert not os.path.exists(backup_pdf_path)
             with systemtools.FilesystemState(remove=[backup_pdf_path]):
                 if not os.path.exists(pdf_path):
