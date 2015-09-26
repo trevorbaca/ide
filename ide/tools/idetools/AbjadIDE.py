@@ -733,7 +733,7 @@ class AbjadIDE(object):
             if 'Changes to be committed:' in line:
                 return True
 
-    def _illustrate_material_definition(self, directory):
+    def _illustrate_material_definition(self, directory, dry_run=False):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
@@ -773,6 +773,12 @@ class AbjadIDE(object):
             if os.path.exists(path):
                 os.remove(path)
         inputs, outputs = [], []
+
+        if dry_run:
+            inputs.append(definition_path)
+            outputs.append((ly_path, pdf_path))
+            return inputs, outputs
+
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
             message = 'interpreting {} ...'
@@ -3463,20 +3469,18 @@ class AbjadIDE(object):
         directories=('segments'),
         section='star',
         )
-    def illustrate_every_definition(self, directories):
+    def illustrate_every_definition(self, directory):
         r'''Illustrates every definition.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
+        segments_directory = self._to_score_directory(directory, 'segments')
+        directories = self._list_visible_paths(segments_directory)
         inputs, outputs = [], []
         method_name = 'illustrate_definition'
         for directory in directories:
-            inputs_, outputs_ = self.illustrate_definition(
-                directory,
-                dry_run=True,
-                )
+            inputs_, outputs_ = self.make_pdf(directory, dry_run=True)
             inputs.extend(inputs_)
             outputs.extend(outputs_)
         messages = self._format_messaging(inputs, outputs, verb='illustrate')
@@ -3485,7 +3489,7 @@ class AbjadIDE(object):
         if not result:
             return
         for directory in directories:
-            self.illustrate_definition(directory)
+            self.make_pdf(directory)
 
     @Command(
         'bci',
@@ -3733,19 +3737,26 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='pdf',
         )
-    def make_pdf(self, directory):
+    def make_pdf(self, directory, dry_run=False):
         r'''Makes illustration PDF.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=dry_run):
             if self._is_score_directory(directory, 'material'):
-                self._illustrate_material_definition(directory)
+                result = self._illustrate_material_definition(
+                    directory, 
+                    dry_run=dry_run,
+                    )
             elif self._is_score_directory(directory, 'segment'):
-                self._illustrate_segment_definition(directory)
+                result = self._illustrate_segment_definition(
+                    directory, 
+                    dry_run=dry_run,
+                    )
             else:
                 raise ValueError(directory)
+            return result
 
     @Command(
         'new',
