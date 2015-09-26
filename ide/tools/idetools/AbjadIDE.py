@@ -3464,34 +3464,6 @@ class AbjadIDE(object):
         self._manage_directory(directory)
 
     @Command(
-        'di*',
-        argument_name='current_directory',
-        directories=('segments'),
-        section='star',
-        )
-    def illustrate_every_definition(self, directory):
-        r'''Illustrates every definition.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        segments_directory = self._to_score_directory(directory, 'segments')
-        directories = self._list_visible_paths(segments_directory)
-        inputs, outputs = [], []
-        method_name = 'illustrate_definition'
-        for directory in directories:
-            inputs_, outputs_ = self.make_pdf(directory, dry_run=True)
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs, verb='illustrate')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        for directory in directories:
-            self.make_pdf(directory)
-
-    @Command(
         'bci',
         argument_name='current_directory',
         directories=('build'),
@@ -3672,6 +3644,34 @@ class AbjadIDE(object):
             )
         statement = statement.strip()
         self._io_manager._invoke_shell(statement)
+
+    @Command(
+        'pdfm*',
+        argument_name='current_directory',
+        directories=('segments'),
+        section='star',
+        )
+    def make_every_pdf(self, directory):
+        r'''Makes PDF in every directory.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        segments_directory = self._to_score_directory(directory, 'segments')
+        directories = self._list_visible_paths(segments_directory)
+        inputs, outputs = [], []
+        method_name = 'illustrate_definition'
+        for directory in directories:
+            inputs_, outputs_ = self.make_pdf(directory, dry_run=True)
+            inputs.extend(inputs_)
+            outputs.extend(outputs_)
+        messages = self._format_messaging(inputs, outputs, verb='illustrate')
+        self._io_manager._display(messages)
+        result = self._io_manager._confirm()
+        if not result:
+            return
+        for directory in directories:
+            self.make_pdf(directory)
 
     @Command(
         'illm',
