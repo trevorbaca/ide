@@ -33,7 +33,7 @@ def test_AbjadIDE_make_pdf_01():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Overwriting' in contents
+    assert 'Writing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
 

@@ -1234,11 +1234,13 @@ class AbjadIDE(object):
             'illustration.candidate.ly'
             )
         ly_path = os.path.join(directory, 'illustration.ly')
+        ly_path_existed = os.path.exists(ly_path)
         candidate_pdf_path = os.path.join(
             directory,
             'illustration.candidate.pdf'
             )
         pdf_path = os.path.join(directory, 'illustration.pdf')
+        pdf_path_existed = os.path.exists(pdf_path)
         source_make_pdf_file = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
             '__make_material_pdf__.py',
@@ -1278,59 +1280,60 @@ class AbjadIDE(object):
                 message = message.format(self._trim_path(candidate_ly_path))
                 self._io_manager._display(message)
                 return
-            result = systemtools.TestManager.compare_files(
-                candidate_ly_path,
-                ly_path,
-                )
-            if result:
-                messages = []
-                message = 'preserving {} ...'
-                message = message.format(self._trim_path(ly_path))
-                messages.append(message)
-                message = 'preserving {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                messages.append(message)
-                self._io_manager._display(messages)
-                return
-            else:
-                message = 'overwriting {} ...'
+            if not ly_path_existed:
+                assert os.path.isfile(candidate_ly_path)
+                message = 'writing {} ...'
                 message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
-                try:
-                    shutil.move(candidate_ly_path, ly_path)
-                except IOError:
-                    message = 'could not overwrite {} with {}.'
-                    message = message.format(
-                        self._trim_path(ly_path), 
-                        self._trim_path(candidate_ly_path),
-                        )
+                shutil.move(candidate_ly_path, ly_path)
+            else:
+                same = systemtools.TestManager.compare_files(
+                    candidate_ly_path,
+                    ly_path,
+                    )
+                if same:
+                    messages = []
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(ly_path))
+                    messages.append(message)
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    messages.append(message)
+                    self._io_manager._display(messages)
+                    return
+                else:
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(ly_path))
                     self._io_manager._display(message)
+                    shutil.move(candidate_ly_path, ly_path)
             if not os.path.isfile(candidate_pdf_path):
                 message = 'could not make {}.'
                 message = message.format(self._trim_path(candidate_pdf_path))
                 self._io_manager._display(message)
                 return
-            result = systemtools.TestManager.compare_files(
-                candidate_pdf_path,
-                pdf_path,
-                )
-            if result:
-                message = 'preserving {} ...'.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                return
-            else:
-                message = 'overwriting {} ...'
+            if not pdf_path_existed:
+                assert os.path.isfile(candidate_pdf_path)
+                message = 'writing {} ...'
                 message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
-                try:
-                    shutil.move(candidate_pdf_path, pdf_path)
-                except IOError:
-                    message = 'could not overwrite {} with {}.'
-                    message = message.format(
-                        self._trim_path(pdf_path), 
-                        self._trim_path(candidate_pdf_path),
-                        )
+                shutil.move(candidate_pdf_path, pdf_path)
+            else:
+                same = systemtools.TestManager.compare_files(
+                    candidate_pdf_path,
+                    pdf_path,
+                    )
+                if same:
+                    messages = []
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    messages.append(message)
+                    self._io_manager._display(messages)
+                    return
+                else:
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(pdf_path))
                     self._io_manager._display(message)
+                    shutil.move(candidate_pdf_path, pdf_path)
             if not self._session.is_test:
                 message = 'opening {} ...'
                 message = message.format(self._trim_path(pdf_path))

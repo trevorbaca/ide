@@ -44,8 +44,7 @@ def test_AbjadIDE_make_every_pdf_01():
     assert 'Will illustrate ...' in contents
     assert 'INPUT:' in contents
     assert 'OUTPUT:' in contents
-    # TODO: make this messaging work
-    #assert 'Writing' in contents
+    assert 'Writing' in contents
 
 
 def test_AbjadIDE_make_every_pdf_02():
