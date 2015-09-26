@@ -7,10 +7,15 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_open_every_pdf_01():
-    r'''In every material directory.
+    r'''In materials directory.
     '''
 
-    package_names = ('pitch_range_inventory', 'tempo_inventory')
+    # only these three packages have PDFs
+    package_names = (
+        'pitch_range_inventory',
+        'tempo_inventory',
+        'magic_numbers',
+        )
     paths = []
     for name in package_names:
         path = os.path.join(
@@ -23,20 +28,41 @@ def test_AbjadIDE_open_every_pdf_01():
             )
         paths.append(path)
 
-    input_ = 'red~example~score mm pdf* y q'
+    input_ = 'red~example~score mm pdf* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
+
     assert abjad_ide._session._attempted_to_open_file
-    assert 'Will open ...' in contents
     for path in paths:
-        assert path in contents
+        message = 'Opening {} ...'
+        message = message.format(abjad_ide._trim_path(path))
+        assert message in contents
 
 
 def test_AbjadIDE_open_every_pdf_02():
-    r'''In every segment directory.
+    r'''In segments directory.
     '''
 
-    input_ = 'red~example~score gg pdf* y q'
+    package_names = ('segment_01', 'segment_02', 'segment_03')
+    paths = []
+    for name in package_names:
+        path = os.path.join(
+            configuration.abjad_ide_example_scores_directory,
+            'red_example_score',
+            'red_example_score',
+            'segments',
+            name,
+            'illustration.pdf',
+            )
+        paths.append(path)
+
+    input_ = 'red~example~score gg pdf* q'
     abjad_ide._start(input_=input_)
+    contents = abjad_ide._io_manager._transcript.contents
 
     assert abjad_ide._session._attempted_to_open_file
+    assert abjad_ide._session._attempted_to_open_file
+    for path in paths:
+        message = 'Opening {} ...'
+        message = message.format(abjad_ide._trim_path(path))
+        assert message in contents

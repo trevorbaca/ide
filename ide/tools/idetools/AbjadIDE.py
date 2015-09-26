@@ -1812,15 +1812,11 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         messages = []
-        message = 'will {} ...'.format(verb)
-        messages.append(message)
         for path in paths:
-            message = '   ' + path
+            message = 'opening {} ...'
+            message = message.format(self._trim_path(path))
             messages.append(message)
         self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
         self._io_manager.open_file(paths)
 
     def _parse_paper_dimensions(self, directory):
@@ -2633,8 +2629,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        paths = self._list_visible_paths(directory)
-        self._open_in_every_package(paths, 'definition.py')
+        with self._io_manager._make_interaction():
+            paths = self._list_visible_paths(directory)
+            self._open_in_every_package(paths, 'definition.py')
 
     @Command(
         'ill',
@@ -3791,8 +3788,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        self._open_in_every_package(directories, 'illustration.pdf')
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
         'so*',
