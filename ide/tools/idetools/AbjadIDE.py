@@ -690,9 +690,9 @@ class AbjadIDE(object):
                 else:
                     raise ValueError(prefix)
             else:
-                message = 'matches no display string: {}{}.'
-                message = message.format(prefix, result)
-                self._io_manager._display(message)
+                message = 'matches no display string: {!r}.'
+                message = message.format(result)
+                self._io_manager._display([message, ''])
         elif result in self._command_name_to_command:
             command = self._command_name_to_command[result]
             if command.argument_name == 'current_directory':
