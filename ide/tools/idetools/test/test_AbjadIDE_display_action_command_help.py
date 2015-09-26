@@ -287,6 +287,7 @@ def test_AbjadIDE_display_action_command_help_12():
         '    every definition file - check (dfk*)',
         '    every definition file - edit (df*)',
         '    every ly - interpret (lyi*)',
+        '    every pdf - make (pdfm*)',
         '    every pdf - open (pdf*)',
         '',
         '    display action command help (?)',

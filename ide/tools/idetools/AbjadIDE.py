@@ -3636,7 +3636,7 @@ class AbjadIDE(object):
         'pdfm*',
         argument_name='current_directory',
         description='every pdf - make',
-        directories=('segments'),
+        directories=('materials', 'segments'),
         section='star',
         )
     def make_every_pdf(self, directory):
@@ -3645,20 +3645,24 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        segments_directory = self._to_score_directory(directory, 'segments')
-        directories = self._list_visible_paths(segments_directory)
+        assert self._is_score_directory(directory, ('materials', 'segments'))
+        directories = self._list_visible_paths(directory)
         inputs, outputs = [], []
-        method_name = 'illustrate_definition'
+        valid_directories = []
         for directory in directories:
-            inputs_, outputs_ = self.make_pdf(directory, dry_run=True)
+            result = self.make_pdf(directory, dry_run=True)
+            if result is None:
+                continue
+            inputs_, outputs_ = result
             inputs.extend(inputs_)
             outputs.extend(outputs_)
+            valid_directories.append(directory)
         messages = self._format_messaging(inputs, outputs, verb='illustrate')
         self._io_manager._display(messages)
         result = self._io_manager._confirm()
         if not result:
             return
-        for directory in directories:
+        for directory in valid_directories:
             self.make_pdf(directory)
 
     @Command(

@@ -7,9 +7,49 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_make_every_pdf_01():
+    r'''In materials directory when neither LilyPond files nor PDFs exist.
+    '''
+
+    path = configuration.abjad_ide_example_scores_directory
+    path = os.path.join(
+        path,
+        'red_example_score',
+        'red_example_score',
+        'materials',
+        )
+    # only this package has an illustrate file
+    package_names = (
+        'magic_numbers',
+        )
+    ly_paths = [
+        os.path.join(path, _, 'illustration.ly')
+        for _ in package_names
+        ]
+    pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
+    paths = ly_paths + pdf_paths
+
+    with systemtools.FilesystemState(keep=paths):
+        for path in paths:
+            os.remove(path)
+        assert not any(os.path.exists(_) for _ in paths)
+        input_ = 'red~example~score mm pdfm* y q'
+        abjad_ide._start(input_=input_)
+        assert all(os.path.isfile(_) for _ in paths)
+        assert systemtools.TestManager._compare_backup(pdf_paths)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    for path in paths:
+        assert abjad_ide._trim_path(path) in contents
+
+    assert 'Will illustrate ...' in contents
+    assert 'INPUT:' in contents
+    assert 'OUTPUT:' in contents
+    # TODO: make this messaging work
+    #assert 'Writing' in contents
+
+
+def test_AbjadIDE_make_every_pdf_02():
     r'''In segments directory when neither LilyPond files nor PDFs exist.
-    
-    Does not display candidate messages.
     '''
 
     path = configuration.abjad_ide_example_scores_directory
@@ -50,10 +90,8 @@ def test_AbjadIDE_make_every_pdf_01():
     assert 'Writing' in contents
 
 
-def test_AbjadIDE_make_every_pdf_02():
-    r'''In segments directory.
-    
-    Does display candidate messages for segments.
+def test_AbjadIDE_make_every_pdf_03():
+    r'''In segments directory when PDFs already exist.
     '''
 
     path = configuration.abjad_ide_example_scores_directory
