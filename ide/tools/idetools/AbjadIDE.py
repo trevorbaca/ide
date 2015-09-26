@@ -733,250 +733,6 @@ class AbjadIDE(object):
             if 'Changes to be committed:' in line:
                 return True
 
-    def _illustrate_material_definition(self, directory, dry_run=False):
-        definition_path = os.path.join(directory, 'definition.py')
-        if not os.path.isfile(definition_path):
-            message = 'File not found: {}.'
-            message = message.format(self._trim_path(definition_path))
-            self._io_manager._display(message)
-            return
-        illustrate_file_path = os.path.join(directory, '__illustrate__.py')
-        if not os.path.isfile(illustrate_file_path):
-            message = 'File not found: {}.'
-            message = message.format(self._trim_path(illustrate_file_path))
-            self._io_manager._display(message)
-            return
-        candidate_ly_path = os.path.join(
-            directory,
-            'illustration.candidate.ly'
-            )
-        ly_path = os.path.join(directory, 'illustration.ly')
-        candidate_pdf_path = os.path.join(
-            directory,
-            'illustration.candidate.pdf'
-            )
-        pdf_path = os.path.join(directory, 'illustration.pdf')
-        source_make_pdf_file = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            '__make_material_pdf__.py',
-            )
-        target_make_pdf_file = os.path.join(
-            directory, 
-            '__make_material_pdf__.py',
-            )
-        temporary_files = (
-            candidate_ly_path,
-            candidate_pdf_path,
-            target_make_pdf_file,
-            )
-        for path in temporary_files:
-            if os.path.exists(path):
-                os.remove(path)
-        inputs, outputs = [], []
-
-        if dry_run:
-            inputs.append(definition_path)
-            outputs.append((ly_path, pdf_path))
-            return inputs, outputs
-
-        with systemtools.FilesystemState(remove=temporary_files):
-            shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
-            message = 'interpreting {} ...'
-            message = message.format(self._trim_path(target_make_pdf_file))
-            self._io_manager._display(message)
-            result = self._io_manager.interpret_file(
-                target_make_pdf_file,
-                strip=False,
-                )
-            stdout_lines, stderr_lines = result
-            if stderr_lines:
-                self._io_manager._display_errors(stderr_lines)
-                return
-            if not os.path.isfile(candidate_ly_path):
-                message = 'could not make {}.'
-                message = message.format(self._trim_path(candidate_ly_path))
-                self._io_manager._display(message)
-                return
-            result = systemtools.TestManager.compare_files(
-                candidate_ly_path,
-                ly_path,
-                )
-            if result:
-                messages = []
-                message = 'preserving {} ...'
-                message = message.format(self._trim_path(ly_path))
-                messages.append(message)
-                message = 'preserving {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                messages.append(message)
-                self._io_manager._display(messages)
-                return
-            else:
-                message = 'overwriting {} ...'
-                message = message.format(self._trim_path(ly_path))
-                self._io_manager._display(message)
-                try:
-                    shutil.move(candidate_ly_path, ly_path)
-                except IOError:
-                    message = 'could not overwrite {} with {}.'
-                    message = message.format(
-                        self._trim_path(ly_path), 
-                        self._trim_path(candidate_ly_path),
-                        )
-                    self._io_manager._display(message)
-            if not os.path.isfile(candidate_pdf_path):
-                message = 'could not make {}.'
-                message = message.format(self._trim_path(candidate_pdf_path))
-                self._io_manager._display(message)
-                return
-            result = systemtools.TestManager.compare_files(
-                candidate_pdf_path,
-                pdf_path,
-                )
-            if result:
-                message = 'preserving {} ...'.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                return
-            else:
-                message = 'overwriting {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                try:
-                    shutil.move(candidate_pdf_path, pdf_path)
-                except IOError:
-                    message = 'could not overwrite {} with {}.'
-                    message = message.format(
-                        self._trim_path(pdf_path), 
-                        self._trim_path(candidate_pdf_path),
-                        )
-                    self._io_manager._display(message)
-            if not self._session.is_test:
-                message = 'opening {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                self._io_manager.open_file(pdf_path)
-
-    def _illustrate_segment_definition(self, directory, dry_run=False):
-        assert os.path.isdir(directory), repr(directory)
-        definition_path = os.path.join(directory, 'definition.py')
-        if not os.path.isfile(definition_path):
-            message = 'file not found: {}.'
-            message = message.format(definition_path)
-            self._io_manager._display(message)
-            return
-        self._update_order_dependent_segment_metadata(directory)
-        boilerplate_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            '__illustrate_segment__.py',
-            )
-        illustrate_file_path = os.path.join(
-            directory,
-            '__illustrate_segment__.py',
-            )
-        candidate_ly_path = os.path.join(
-            directory,
-            'illustration.candidate.ly'
-            )
-        candidate_pdf_path = os.path.join(
-            directory,
-            'illustration.candidate.pdf'
-            )
-        temporary_files = (
-            illustrate_file_path,
-            candidate_ly_path,
-            candidate_pdf_path,
-            )
-        for path in temporary_files:
-            if os.path.exists(path):
-                os.remove(path)
-        ly_path = os.path.join(directory, 'illustration.ly')
-        pdf_path = os.path.join(directory, 'illustration.pdf')
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_path)
-            outputs.append((ly_path, pdf_path))
-            return inputs, outputs
-        with systemtools.FilesystemState(remove=temporary_files):
-            shutil.copyfile(boilerplate_path, illustrate_file_path)
-            previous_segment_directory = self._get_previous_segment_directory(
-                directory)
-            if previous_segment_directory is None:
-                statement = 'previous_segment_metadata = None'
-            else:
-                assert os.path.isdir(previous_segment_directory)
-                score_directory = self._to_score_directory(directory)
-                score_name = os.path.basename(score_directory)
-                previous_segment_name = previous_segment_directory
-                previous_segment_name = os.path.basename(
-                    previous_segment_directory,
-                    )
-                statement = 'from {}.segments.{}.__metadata__'
-                statement += ' import metadata as previous_segment_metadata'
-                statement = statement.format(score_name, previous_segment_name)
-            self._replace_in_file(
-                illustrate_file_path,
-                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
-                statement,
-                )
-            result = self._io_manager.interpret_file(
-                illustrate_file_path,
-                strip=False,
-                )
-            stdout_lines, stderr_lines = result
-            if stderr_lines:
-                self._io_manager._display_errors(stderr_lines)
-                return
-            made_new_pdf = False
-            if (not os.path.exists(ly_path) and
-                os.path.isfile(candidate_ly_path)):
-                message = 'writing {} ...'
-                message = message.format(self._trim_path(ly_path))
-                self._io_manager._display(message)
-                shutil.move(candidate_ly_path, ly_path)
-                made_new_pdf = True
-            if (not os.path.exists(pdf_path) and
-                os.path.isfile(candidate_pdf_path)):
-                message = 'writing {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                shutil.move(candidate_pdf_path, pdf_path)
-            if (os.path.exists(ly_path) and
-                os.path.isfile(candidate_ly_path)):
-                same = systemtools.TestManager.compare_files(
-                    candidate_ly_path,
-                    ly_path,
-                    )
-                if same:
-                    message = 'preserving {} ...'
-                    message = message.format(self._trim_path(ly_path))
-                    self._io_manager._display(message)
-                else:
-                    message = 'overwriting {} ...'
-                    message = message.format(self._trim_path(ly_path))
-                    self._io_manager._display(message)
-                    shutil.move(candidate_ly_path, ly_path)
-            if (os.path.exists(pdf_path) and
-                os.path.isfile(candidate_pdf_path)):
-                same = systemtools.TestManager.compare_files(
-                    candidate_pdf_path,
-                    pdf_path,
-                    )
-                if same:
-                    message = 'preserving {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                else:
-                    message = 'overwriting {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                    shutil.move(candidate_pdf_path, pdf_path)
-                    made_new_pdf = True
-            if made_new_pdf:
-                message = 'opening {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                self._io_manager.open_file(pdf_path)
-
     def _interpret_file_ending_with(self, directory, string):
         r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
@@ -1460,6 +1216,127 @@ class AbjadIDE(object):
                     self._io_manager._display(message)
                     self._io_manager.open_file(ly_path)
 
+    def _make_material_pdf(self, directory, dry_run=False):
+        definition_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_path):
+            message = 'File not found: {}.'
+            message = message.format(self._trim_path(definition_path))
+            self._io_manager._display(message)
+            return
+        illustrate_file_path = os.path.join(directory, '__illustrate__.py')
+        if not os.path.isfile(illustrate_file_path):
+            message = 'File not found: {}.'
+            message = message.format(self._trim_path(illustrate_file_path))
+            self._io_manager._display(message)
+            return
+        candidate_ly_path = os.path.join(
+            directory,
+            'illustration.candidate.ly'
+            )
+        ly_path = os.path.join(directory, 'illustration.ly')
+        candidate_pdf_path = os.path.join(
+            directory,
+            'illustration.candidate.pdf'
+            )
+        pdf_path = os.path.join(directory, 'illustration.pdf')
+        source_make_pdf_file = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__make_material_pdf__.py',
+            )
+        target_make_pdf_file = os.path.join(
+            directory, 
+            '__make_material_pdf__.py',
+            )
+        temporary_files = (
+            candidate_ly_path,
+            candidate_pdf_path,
+            target_make_pdf_file,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_path)
+            outputs.append((ly_path, pdf_path))
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
+            message = 'interpreting {} ...'
+            message = message.format(self._trim_path(target_make_pdf_file))
+            self._io_manager._display(message)
+            result = self._io_manager.interpret_file(
+                target_make_pdf_file,
+                strip=False,
+                )
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            if not os.path.isfile(candidate_ly_path):
+                message = 'could not make {}.'
+                message = message.format(self._trim_path(candidate_ly_path))
+                self._io_manager._display(message)
+                return
+            result = systemtools.TestManager.compare_files(
+                candidate_ly_path,
+                ly_path,
+                )
+            if result:
+                messages = []
+                message = 'preserving {} ...'
+                message = message.format(self._trim_path(ly_path))
+                messages.append(message)
+                message = 'preserving {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
+                self._io_manager._display(messages)
+                return
+            else:
+                message = 'overwriting {} ...'
+                message = message.format(self._trim_path(ly_path))
+                self._io_manager._display(message)
+                try:
+                    shutil.move(candidate_ly_path, ly_path)
+                except IOError:
+                    message = 'could not overwrite {} with {}.'
+                    message = message.format(
+                        self._trim_path(ly_path), 
+                        self._trim_path(candidate_ly_path),
+                        )
+                    self._io_manager._display(message)
+            if not os.path.isfile(candidate_pdf_path):
+                message = 'could not make {}.'
+                message = message.format(self._trim_path(candidate_pdf_path))
+                self._io_manager._display(message)
+                return
+            result = systemtools.TestManager.compare_files(
+                candidate_pdf_path,
+                pdf_path,
+                )
+            if result:
+                message = 'preserving {} ...'.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                return
+            else:
+                message = 'overwriting {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                try:
+                    shutil.move(candidate_pdf_path, pdf_path)
+                except IOError:
+                    message = 'could not overwrite {} with {}.'
+                    message = message.format(
+                        self._trim_path(pdf_path), 
+                        self._trim_path(candidate_pdf_path),
+                        )
+                    self._io_manager._display(message)
+            if not self._session.is_test:
+                message = 'opening {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                self._io_manager.open_file(pdf_path)
+
     def _make_package(self, directory):
         assert os.path.isdir(directory), repr(directory)
         path = self._get_available_path(directory)
@@ -1624,6 +1501,127 @@ class AbjadIDE(object):
             message = 'wrote {}.'
             message = message.format(self._trim_path(ly_path))
             self._io_manager._display(message)
+
+    def _make_segment_pdf(self, directory, dry_run=False):
+        assert os.path.isdir(directory), repr(directory)
+        definition_path = os.path.join(directory, 'definition.py')
+        if not os.path.isfile(definition_path):
+            message = 'file not found: {}.'
+            message = message.format(definition_path)
+            self._io_manager._display(message)
+            return
+        self._update_order_dependent_segment_metadata(directory)
+        boilerplate_path = os.path.join(
+            configuration.abjad_ide_boilerplate_directory,
+            '__illustrate_segment__.py',
+            )
+        illustrate_file_path = os.path.join(
+            directory,
+            '__illustrate_segment__.py',
+            )
+        candidate_ly_path = os.path.join(
+            directory,
+            'illustration.candidate.ly'
+            )
+        candidate_pdf_path = os.path.join(
+            directory,
+            'illustration.candidate.pdf'
+            )
+        temporary_files = (
+            illustrate_file_path,
+            candidate_ly_path,
+            candidate_pdf_path,
+            )
+        for path in temporary_files:
+            if os.path.exists(path):
+                os.remove(path)
+        ly_path = os.path.join(directory, 'illustration.ly')
+        pdf_path = os.path.join(directory, 'illustration.pdf')
+        inputs, outputs = [], []
+        if dry_run:
+            inputs.append(definition_path)
+            outputs.append((ly_path, pdf_path))
+            return inputs, outputs
+        with systemtools.FilesystemState(remove=temporary_files):
+            shutil.copyfile(boilerplate_path, illustrate_file_path)
+            previous_segment_directory = self._get_previous_segment_directory(
+                directory)
+            if previous_segment_directory is None:
+                statement = 'previous_segment_metadata = None'
+            else:
+                assert os.path.isdir(previous_segment_directory)
+                score_directory = self._to_score_directory(directory)
+                score_name = os.path.basename(score_directory)
+                previous_segment_name = previous_segment_directory
+                previous_segment_name = os.path.basename(
+                    previous_segment_directory,
+                    )
+                statement = 'from {}.segments.{}.__metadata__'
+                statement += ' import metadata as previous_segment_metadata'
+                statement = statement.format(score_name, previous_segment_name)
+            self._replace_in_file(
+                illustrate_file_path,
+                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
+                statement,
+                )
+            result = self._io_manager.interpret_file(
+                illustrate_file_path,
+                strip=False,
+                )
+            stdout_lines, stderr_lines = result
+            if stderr_lines:
+                self._io_manager._display_errors(stderr_lines)
+                return
+            made_new_pdf = False
+            if (not os.path.exists(ly_path) and
+                os.path.isfile(candidate_ly_path)):
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(ly_path))
+                self._io_manager._display(message)
+                shutil.move(candidate_ly_path, ly_path)
+                made_new_pdf = True
+            if (not os.path.exists(pdf_path) and
+                os.path.isfile(candidate_pdf_path)):
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                shutil.move(candidate_pdf_path, pdf_path)
+            if (os.path.exists(ly_path) and
+                os.path.isfile(candidate_ly_path)):
+                same = systemtools.TestManager.compare_files(
+                    candidate_ly_path,
+                    ly_path,
+                    )
+                if same:
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(ly_path))
+                    self._io_manager._display(message)
+                else:
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(ly_path))
+                    self._io_manager._display(message)
+                    shutil.move(candidate_ly_path, ly_path)
+            if (os.path.exists(pdf_path) and
+                os.path.isfile(candidate_pdf_path)):
+                same = systemtools.TestManager.compare_files(
+                    candidate_pdf_path,
+                    pdf_path,
+                    )
+                if same:
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    self._io_manager._display(message)
+                else:
+                    message = 'overwriting {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    self._io_manager._display(message)
+                    shutil.move(candidate_pdf_path, pdf_path)
+                    made_new_pdf = True
+            if made_new_pdf:
+                message = 'opening {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                self._io_manager.open_file(pdf_path)
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
@@ -2411,6 +2409,7 @@ class AbjadIDE(object):
     @Command(
         'dfk*',
         argument_name='current_directory',
+        description='every definition file - check',
         directories=('materials', 'segments'),
         section='star',
         )
@@ -2620,6 +2619,7 @@ class AbjadIDE(object):
     @Command(
         'df*',
         argument_name='current_directory',
+        description='every definition file - edit',
         directories=('materials', 'segments'),
         section='star',
         )
@@ -3479,6 +3479,7 @@ class AbjadIDE(object):
     @Command(
         'lyi*',
         argument_name='current_directory',
+        description='every ly - interpret',
         directories=('materials', 'segments'),
         section='star',
         )
@@ -3645,6 +3646,7 @@ class AbjadIDE(object):
     @Command(
         'pdfm*',
         argument_name='current_directory',
+        description='every pdf - make',
         directories=('segments'),
         section='star',
         )
@@ -3742,15 +3744,9 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=dry_run):
             if self._is_score_directory(directory, 'material'):
-                result = self._illustrate_material_definition(
-                    directory, 
-                    dry_run=dry_run,
-                    )
+                result = self._make_material_pdf(directory, dry_run=dry_run)
             elif self._is_score_directory(directory, 'segment'):
-                result = self._illustrate_segment_definition(
-                    directory, 
-                    dry_run=dry_run,
-                    )
+                result = self._make_segment_pdf(directory, dry_run=dry_run)
             else:
                 raise ValueError(directory)
             return result
@@ -3779,6 +3775,7 @@ class AbjadIDE(object):
     @Command(
         'pdf*',
         argument_name='current_directory',
+        description='every pdf - open',
         directories=('materials', 'segments'),
         section='star',
         )
