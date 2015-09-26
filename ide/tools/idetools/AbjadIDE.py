@@ -2422,11 +2422,10 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             paths = self._list_visible_paths(directory)
             start_time = time.time()
-            for path in paths:
-                self.check_definition_file(path, subroutine=True)
-            stop_time = time.time()
-            total_time = stop_time - start_time
-            total_time = int(total_time)
+            with systemtools.Timer() as timer:
+                for path in paths:
+                    self.check_definition_file(path, subroutine=True)
+            total_time = int(timer.elapsed_time)
             identifier = stringtools.pluralize('second', total_time)
             message = 'total time: {} {}.'
             message = message.format(total_time, identifier)
@@ -3483,31 +3482,30 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        inputs, outputs = [], []
-        method_name = 'interpret_illustration_source'
-        for directory in directories:
-            inputs_, outputs_ = self.interpret_ly(
-                directory,
-                dry_run=True,
-                )
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-        messages = self._format_messaging(inputs, outputs)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        for directory in directories:
-            result = self.interpret_ly(
-                directory,
-                confirm=False,
-                )
-            subprocess_messages, candidate_messages = result
-            if subprocess_messages:
-                self._io_manager._display(subprocess_messages)
-                self._io_manager._display(candidate_messages)
-                self._io_manager._display('')
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            ly_files = []
+            for directory in directories:
+                ly_file = os.path.join(directory, 'illustration.ly')
+                if os.path.isfile(ly_file):
+                    ly_files.append(ly_file)
+            if not ly_files:
+                message = 'no LilyPond files found.'
+                message._io_manager._display(message)
+                return
+            messages = []
+            messages.append('will interpret ...')
+            for ly_file in ly_files:
+                message = '    ' + self._trim_path(ly_file)
+                messages.append(message)
+            messages.append('')
+            self._io_manager._display(messages)
+            result = self._io_manager._confirm()
+            if not result:
+                return
+            for ly_file in ly_files:
+                directory = os.path.dirname(ly_file)
+                result = self.interpret_ly(directory, subroutine=True)
 
     @Command(
         'fci',
@@ -3532,7 +3530,7 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='ly',
         )
-    def interpret_ly(self, directory, confirm=True, dry_run=False):
+    def interpret_ly(self, directory, subroutine=False):
         r'''Interprets illustration ly in `directory`.
 
         Makes illustration PDF.
@@ -3543,32 +3541,51 @@ class AbjadIDE(object):
         with list of candidate messages.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
-            illustration_source_path = os.path.join(
-                directory, 
-                'illustration.ly',
-                )
-            illustration_pdf_path = os.path.join(directory, 'illustration.pdf')
-            inputs, outputs = [], []
-            if os.path.isfile(illustration_source_path):
-                inputs.append(illustration_source_path)
-                outputs.append((illustration_pdf_path,))
-            if dry_run:
-                return inputs, outputs
-            if not os.path.isfile(illustration_source_path):
+        with self._io_manager._make_interaction(dry_run=subroutine):
+            ly_path = os.path.join(directory, 'illustration.ly')
+            if not os.path.isfile(ly_path):
                 message = 'the file {} does not exist.'
-                message = message.format(illustration_source_path)
+                message = message.format(ly_path)
                 self._io_manager._display(message)
-                return [], []
-            messages = self._format_messaging(inputs, outputs)
-            self._io_manager._display(messages)
-            if confirm:
-                result = self._io_manager._confirm()
-                if not result:
-                    return [], []
-            result = self._io_manager.run_lilypond(illustration_source_path)
-            subprocess_messages, candidate_messages = result
-            return subprocess_messages, candidate_messages
+                return
+            pdf_path = os.path.join(directory, 'illustration.pdf')
+            backup_pdf_path = pdf_path + '._backup'
+            assert not os.path.exists(backup_pdf_path)
+            with systemtools.FilesystemState(remove=[backup_pdf_path]):
+                if not os.path.exists(pdf_path):
+                    backup_pdf_path = None
+                else:
+                    shutil.move(pdf_path, backup_pdf_path)
+                    assert not os.path.exists(pdf_path)
+                message = 'interpreting {} ...'
+                message = message.format(self._trim_path(ly_path))
+                self._io_manager._display(message)
+                self._io_manager.run_lilypond(ly_path, candidacy=False)
+                if not os.path.isfile(pdf_path):
+                    message = 'could not produce {}.'
+                    message = message.format(self._trim_path(pdf_path))
+                    self._io_manager._display(message)
+                    if backup_pdf_path:
+                        shutil.move(backup_pdf_path, pdf_path)
+                    return
+                if backup_pdf_path is None:
+                    message = 'writing {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    self._io_manager._display(message)
+                    return
+                same = systemtools.TestManager.compare_files(
+                    pdf_path,
+                    backup_pdf_path,
+                    )
+                if same:
+                    message = 'preserving {} ...'
+                    message = message.format(self._trim_path(pdf_path))
+                    self._io_manager._display(message)
+                    return
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+                return
 
     @Command(
         'mi',

@@ -7,7 +7,9 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_interpret_ly_01():
-    r'''Works when illustration.ly already exists in material directory.
+    r'''In material directory.
+    
+    LilyPond file exists but PDF does not exist.
     '''
 
     ly_path = os.path.join(
@@ -30,14 +32,23 @@ def test_AbjadIDE_interpret_ly_01():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score mm tempo~inventory lyi y q'
+        input_ = 'red~example~score mm tempo~inventory lyi q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
+
+    message = 'Interpreting {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    message = 'Writing {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
 
 
 def test_AbjadIDE_interpret_ly_02():
-    r'''Works when illustration.ly already exists in segment directory.
+    r'''In segment directory.
+
+    LilyPond file exists but PDF does not exist.
     '''
 
     ly_path = os.path.join(
@@ -60,7 +71,14 @@ def test_AbjadIDE_interpret_ly_02():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
-        input_ = 'red~example~score gg A lyi y q'
+        input_ = 'red~example~score gg A lyi q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
+
+    message = 'Interpreting {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    message = 'Writing {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents

@@ -532,7 +532,6 @@ class IOManager(IOManager):
                     )
                 stderr_messages = self._read_from_pipe(process.stderr)
                 stderr_messages = stderr_messages.splitlines()
-            self._display(stderr_messages)
             return stderr_messages, []
         base_candidate_path = base + '.candidate'
         candidate_path = base_candidate_path + '.pdf'
