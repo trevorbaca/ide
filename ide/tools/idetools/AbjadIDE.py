@@ -1350,6 +1350,7 @@ class AbjadIDE(object):
             base_name = os.path.basename(path)
             menu_entry = (base_name, None, None, path)
             secondary_menu_entries.append(menu_entry)
+        secondary_menu_entries.sort(key=lambda _: _[0])
         menu_entries.extend(secondary_menu_entries)
         asset_menu_entries = []
         paths = self._list_visible_paths(directory)
