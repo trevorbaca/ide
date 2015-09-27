@@ -2609,8 +2609,8 @@ class AbjadIDE(object):
         self._io_manager.edit(illustrate_py_path)
 
     @Command(
-        'log', 
-        description='log - edit',
+        'lpg', 
+        description='lilypond log - edit',
         section='global files',
         )
     def edit_lilypond_log(self):
@@ -2622,6 +2622,24 @@ class AbjadIDE(object):
         if self._session.is_test:
             return
         self._io_manager.open_last_log()
+
+    @Command(
+        'lxg', 
+        description='latex log - edit',
+        section='global files',
+        )
+    def edit_latex_log(self):
+        r'''Edits LaTeX log.
+
+        Returns none.
+        '''
+        self._session._attempted_to_open_file = True
+        if not os.path.isfile(configuration.latex_log_file_path):
+            message = 'can not find {}.'
+            message = message.format(configuration.latex_log_file_path)
+            self._io_manager._display([message, ''])
+        else:
+            self._io_manager.open_file(configuration.latex_log_file_path)
 
     @Command(
         'ly',
