@@ -2552,6 +2552,7 @@ class AbjadIDE(object):
                 message = 'no segment lys found.'
                 self._io_manager._display(message)
                 return
+            messages = []
             for source_ly_path, target_ly_path in pairs:
                 candidate_ly_path = target_ly_path.replace(
                     '.ly',
@@ -2560,16 +2561,18 @@ class AbjadIDE(object):
                 with systemtools.FilesystemState(remove=[candidate_ly_path]):
                     shutil.copyfile(source_ly_path, candidate_ly_path)
                     self._trim_ly(candidate_ly_path)
-                    messages = self._handle_candidate(
+                    messages_ = self._handle_candidate(
                         candidate_ly_path,
                         target_ly_path,
                         )
-                    if messages[0].startswith('writing') and not subroutine:
-                        self._session._pending_menu_rebuild = True
-                        self._session._pending_redraw = True
-                        self._session._after_redraw_messages = messages
-                    else:
-                        self._io_manager._display(messages)
+                    messages.extend(messages_)
+            for message in messages:
+                if message[0].startswith('writing') and not subroutine:
+                    self._session._pending_menu_rebuild = True
+                    self._session._pending_redraw = True
+                    self._session._after_redraw_messages = messages
+                    return
+            self._io_manager._display(messages)
 
     @Command('?', section='system')
     def display_action_command_help(self):
