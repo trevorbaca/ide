@@ -2487,7 +2487,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='segment lys - copy',
         directories=('build'),
-        section='build',
+        section='build-preliminary',
         )
     def copy_segment_lys(self, directory):
         r'''Copies segment lys.
@@ -2643,7 +2643,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='back cover - generate',
         directories=('build'),
-        section='build',
+        section='build-generate',
         )
     def generate_back_cover_source(self, directory):
         r'''Generates ``back-cover.tex``.
@@ -2694,7 +2694,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='front cover - generate',
         directories=('build'),
-        section='build',
+        section='build-generate',
         )
     def generate_front_cover_source(self, directory):
         r'''Generates ``front-cover.tex``.
@@ -2750,7 +2750,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='music - generate',
         directories=('build'),
-        section='build',
+        section='build-generate',
         )
     def generate_music_source(self, directory):
         r'''Generates ``music.ly``.
@@ -2852,7 +2852,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='preface - generate',
         directories=('build'),
-        section='build',
+        section='build-generate',
         )
     def generate_preface_source(self, directory):
         r'''Generates ``preface.tex``.
@@ -2882,7 +2882,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='score - generate',
         directories=('build'),
-        section='build',
+        section='build-generate',
         )
     def generate_score_source(self, directory):
         r'''Generates ``score.tex``.
@@ -3417,7 +3417,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='back cover - interpret',
         directories=('build'),
-        section='build',
+        section='build-interpret',
         )
     def interpret_back_cover(self, directory):
         r'''Interprets ``back-cover.tex``.
@@ -3466,7 +3466,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='front cover - interpret',
         directories=('build'),
-        section='build',
+        section='build-interpret',
         )
     def interpret_front_cover(self, directory):
         r'''Interprets ``front-cover.tex``.
@@ -3550,7 +3550,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='music - interpret',
         directories=('build'),
-        section='build',
+        section='build-interpret',
         )
     def interpret_music(self, directory):
         r'''Interprets ``music.ly``.
@@ -3570,7 +3570,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='preface - interpret',
         directories=('build'),
-        section='build',
+        section='build-interpret',
         )
     def interpret_preface(self, directory):
         r'''Interprets ``preface.tex``.
@@ -3587,7 +3587,7 @@ class AbjadIDE(object):
         argument_name='current_directory',
         description='score - interpret',
         directories=('build'),
-        section='build',
+        section='build-interpret',
         )
     def interpret_score(self, directory):
         r'''Interprets ``score.tex``.
