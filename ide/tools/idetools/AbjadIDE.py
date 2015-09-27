@@ -2337,6 +2337,41 @@ class AbjadIDE(object):
 
     ### PUBLIC METHODS ###
 
+#    @Command(
+#        'spb',
+#        argument_name='current_directory',
+#        description='score pdf - build',
+#        directories=('build',),
+#        section='build',
+#        )
+#    def build_score_pdf(self, directory):
+#        r'''Builds score from the ground up.
+#
+#        Returns none.
+#        '''
+#        assert os.path.isdir(directory), repr(directory)
+#        build_directory = self._to_score_directory(directory, 'build')
+#        with self._io_manager._make_interaction():
+#            self.copy_segment_lys(directory, subroutine=True)
+#            self.generate_music_source(directory)
+#            self.interpret_music(directory)
+#            file_path = os.path.join(build_directory, 'front-cover.pdf')
+#            if not file_path:
+#                self.generate_front_cover(directory)
+#                self.interpret_front_cover(directory)
+#            file_path = os.path.join(build_directory, 'preface.pdf')
+#            if not file_path:
+#                self.generate_preface(directory)
+#                self.interpret_preface(directory)
+#            file_path = os.path.join(build_directory, 'back-cover.pdf')
+#            if not file_path:
+#                self.generate_back_cover(directory)
+#                self.interpret_back_cover(directory)
+#            self.generate_score_source(directory)
+#            self.interpret_score(directory)
+#            file_path = os.path.join(build_directory, 'score.pdf')
+#            self._io_manager.open_file(file_path)
+    
     @Command(
         'dfk',
         argument_name='current_directory',
@@ -2462,7 +2497,7 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-preliminary',
         )
-    def copy_segment_lys(self, directory):
+    def copy_segment_lys(self, directory, subroutine=False):
         r'''Copies segment lys.
         
         Copies from egment directories to build directory.
@@ -2478,7 +2513,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
+            message = 'copying segment lys ...'
+            self._io_manager._display(message)
             directory = self._to_score_directory(directory)
             pairs = self._gather_segment_lys(directory)
             if not pairs:
@@ -2497,7 +2534,7 @@ class AbjadIDE(object):
                         candidate_ly_path,
                         target_ly_path,
                         )
-                    if messages[0].startswith('writing'):
+                    if messages[0].startswith('writing') and not subroutine:
                         self._session._pending_menu_rebuild = True
                         self._session._pending_redraw = True
                         self._session._after_redraw_messages = messages
