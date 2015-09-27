@@ -26,6 +26,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
     __slots__ = (
         '_aliases',
+        '_composer_scores_directory_override',
         )
 
     ### INITIALIZER ###
@@ -34,6 +35,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         AbjadConfiguration.__init__(self)
         self._make_missing_directories()
         self._read_aliases_file()
+        self._composer_scores_directory_override = None
 
     ### PRIVATE PROPERTIES ###
 
@@ -348,6 +350,8 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
         Returns string.
         '''
+        if self._composer_scores_directory_override is not None:
+            return self._composer_scores_directory_override
         path = self._settings['composer_scores_directory']
         path = os.path.expanduser(path)
         return path
