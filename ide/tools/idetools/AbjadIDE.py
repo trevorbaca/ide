@@ -665,17 +665,14 @@ class AbjadIDE(object):
             if 'Changes to be committed:' in line:
                 return True
 
-    def _interpret_file_ending_with(self, directory, string):
+    def _interpret_tex_file(self, file_path):
         r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
         Some LaTeX packages like ``tikz`` require two passes.
         '''
-        assert os.path.isdir(directory), repr(directory)
-        directory_path = directory
-        file_path = self._get_file_path_ending_with(directory_path, string)
-        if not file_path:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
+        if not os.path.isfile(file_path):
+            message = 'file not found: {}.'
+            message = message.format(file_path)
             self._io_manager._display(message)
             return
         message = 'interpreting {} ...'
@@ -3451,10 +3448,8 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            messages = self._interpret_file_ending_with(
-                build_directory, 
-                'back-cover.tex',
-                )
+            file_path = os.path.join(build_directory, 'back-cover.tex')
+            messages = self._interpret_tex_file(file_path)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
@@ -3510,10 +3505,8 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            messages = self._interpret_file_ending_with(
-                build_directory, 
-                'front-cover.tex',
-                )
+            file_path = os.path.join(build_directory, 'front-cover.tex')
+            messages = self._interpret_tex_file(file_path)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
@@ -3601,10 +3594,8 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            messages = self._interpret_file_ending_with(
-                build_directory, 
-                'preface.tex',
-                )
+            file_path = os.path.join(build_directory, 'preface.tex')
+            messages = self._interpret_tex_file(file_path)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
@@ -3628,10 +3619,8 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            messages = self._interpret_file_ending_with(
-                build_directory, 
-                'score.tex',
-                )
+            file_path = os.path.join(build_directory, 'score.tex')
+            messages = self._interpret_tex_file(file_path)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
