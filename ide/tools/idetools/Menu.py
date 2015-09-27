@@ -514,13 +514,18 @@ class Menu(object):
         while True:
             if self._io_manager._session.pending_redraw:
                 self._redraw()
-                message = self._io_manager._session._after_redraw_message
+                message = self._io_manager._session._after_redraw_messages
                 if message:
-                    self._io_manager._session._io_manager._display(message)
-                    self._io_manager._session._after_redraw_message = None
+                    previous_input = self._io_manager._session.previous_input
+                    prompt_string = '> ' + previous_input
+                    self._io_manager._display(prompt_string)
+                    self._io_manager._display(message)
+                    self._io_manager._display('')
+                    self._io_manager._session._after_redraw_messages = None
             result = None
             if not result:
                 result = self._handle_user_input()
+                self._io_manager._session._previous_input = result
             if self._io_manager._session.is_quitting:
                 return result
             elif result == '<return>':

@@ -16,7 +16,7 @@ class Session(object):
 
     __slots__ = (
         '_allow_unknown_command_during_test',
-        '_after_redraw_message',
+        '_after_redraw_messages',
         '_attempted_method',
         '_attempted_to_open_file',
         '_clear_terminal_after_quit',
@@ -28,13 +28,14 @@ class Session(object):
         '_pending_menu_rebuild',
         '_pending_redraw',
         '_previous_directory',
+        '_previous_input',
         )
 
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_test=False):
         from ide.tools import idetools
-        self._after_redraw_message = None
+        self._after_redraw_messages = None
         self._allow_unknown_command_during_test = False
         self._attempted_method = None
         self._attempted_to_open_file = False
@@ -47,6 +48,7 @@ class Session(object):
         self._pending_menu_rebuild = False
         self._pending_redraw = True
         self._previous_directory = None
+        self._previous_input = None
 
     ### SPECIAL METHODS ###
 
@@ -155,3 +157,11 @@ class Session(object):
         Returns directory.
         '''
         return self._previous_directory
+
+    @property
+    def previous_input(self):
+        r'''Gets previous input.
+
+        Returns string or none.
+        '''
+        return self._previous_input

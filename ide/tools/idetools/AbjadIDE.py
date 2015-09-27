@@ -290,8 +290,9 @@ class AbjadIDE(object):
                 message = 'overwrote {}.'
                 message = message.format(self._trim_path(destination_path))
                 messages.append(message)
-            self._io_manager._display(messages)
-            return True
+            #self._io_manager._display(messages)
+            #return True
+            return messages
 
     def _filter_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
@@ -2640,6 +2641,7 @@ class AbjadIDE(object):
     @Command(
         'bcg',
         argument_name='current_directory',
+        description='back cover - generate',
         directories=('build'),
         section='build',
         )
@@ -2649,36 +2651,43 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        replacements = {}
-        catalog_number = self._get_metadatum(score_directory, 'catalog_number')
-        if catalog_number:
-            old = 'CATALOG NUMBER'
-            new = str(catalog_number)
-            replacements[old] = new
-        composer_website = configuration.composer_website
-        if self._session.is_test:
-            composer_website = 'www.composer-website.com'
-        if composer_website:
-            old = 'COMPOSER WEBSITE'
-            new = str(composer_website)
-            replacements[old] = new
-        price = self._get_metadatum(score_directory, 'price')
-        if price:
-            old = 'PRICE'
-            new = str(price)
-            replacements[old] = new
-        width, height, unit = self._parse_paper_dimensions(score_directory)
-        if width and height:
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            replacements[old] = new
-        self._copy_boilerplate(
-            'back-cover.tex',
-            os.path.join(score_directory, 'build'),
-            replacements=replacements,
-            )
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            replacements = {}
+            catalog_number = self._get_metadatum(
+                score_directory, 
+                'catalog_number',
+                )
+            if catalog_number:
+                old = 'CATALOG NUMBER'
+                new = str(catalog_number)
+                replacements[old] = new
+            composer_website = configuration.composer_website
+            if self._session.is_test:
+                composer_website = 'www.composer-website.com'
+            if composer_website:
+                old = 'COMPOSER WEBSITE'
+                new = str(composer_website)
+                replacements[old] = new
+            price = self._get_metadatum(score_directory, 'price')
+            if price:
+                old = 'PRICE'
+                new = str(price)
+                replacements[old] = new
+            width, height, unit = self._parse_paper_dimensions(score_directory)
+            if width and height:
+                old = '{PAPER_SIZE}'
+                new = '{{{}{}, {}{}}}'
+                new = new.format(width, unit, height, unit)
+                replacements[old] = new
+            messages = self._copy_boilerplate(
+                'back-cover.tex',
+                os.path.join(score_directory, 'build'),
+                replacements=replacements,
+                )
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+        self._session._after_redraw_messages = messages
 
     @Command(
         'fcg',
@@ -2726,11 +2735,14 @@ class AbjadIDE(object):
             new = '{{{}{}, {}{}}}'
             new = new.format(width, unit, height, unit)
             replacements[old] = new
-        self._copy_boilerplate(
+        messages = self._copy_boilerplate(
             file_name,
             os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+        self._session._after_redraw_messages = messages
 
     @Command(
         'mg',
@@ -2853,11 +2865,14 @@ class AbjadIDE(object):
             new = '{{{}{}, {}{}}}'
             new = new.format(width, unit, height, unit)
             replacements[old] = new
-        self._copy_boilerplate(
+        messages = self._copy_boilerplate(
             'preface.tex',
             os.path.join(score_directory, 'build'),
             replacements=replacements,
             )
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+        self._session._after_redraw_messages = messages
 
     @Command(
         'sg',
