@@ -94,12 +94,14 @@ class AbjadIDE(object):
 
     def _call_lilypond_on_file_ending_with(self, directory, string):
         file_path = self._get_file_path_ending_with(directory, string)
-        if file_path:
-            self._io_manager.run_lilypond(file_path)
-        else:
+        if not file_path:
             message = 'file ending in {!r} not found.'
             message = message.format(string)
             self._io_manager._display(message)
+            return
+        result = self._io_manager.run_lilypond(file_path, candidacy=False)
+        stderr_messages, candidate_messages = result
+        self._io_manager._display(stderr_messages)
 
     def _clear_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -743,10 +745,11 @@ class AbjadIDE(object):
             for file_name in glob.glob('*.log'):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
-            self._handle_candidate(
+            messages = self._handle_candidate_revised(
                 candidate_path,
                 destination_path,
                 )
+            return messages
 
     @staticmethod
     def _is_classfile_name(expr):
@@ -3405,9 +3408,19 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'back-cover.tex')
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            build_directory = os.path.join(score_directory, 'build')
+            messages = self._interpret_file_ending_with(
+                build_directory, 
+                'back-cover.tex',
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'lyi*',
@@ -3454,9 +3467,19 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'front-cover.tex')
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            build_directory = os.path.join(score_directory, 'build')
+            messages = self._interpret_file_ending_with(
+                build_directory, 
+                'front-cover.tex',
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'lyi',
@@ -3538,12 +3561,19 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        build_directory = os.path.join(score_directory, 'build')
-        self._call_lilypond_on_file_ending_with(
-            build_directory,
-            'music.ly',
-            )
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            build_directory = os.path.join(score_directory, 'build')
+            messages = self._call_lilypond_on_file_ending_with(
+                build_directory,
+                'music.ly',
+                )
+#            if messages[0].startswith('writing'):
+#                self._session._pending_menu_rebuild = True
+#                self._session._pending_redraw = True
+#                self._session._after_redraw_messages = messages
+#            else:
+#                self._io_manager._display(messages)
 
     @Command(
         'pi',
@@ -3558,9 +3588,19 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'preface.tex')
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            build_directory = os.path.join(score_directory, 'build')
+            messages = self._interpret_file_ending_with(
+                build_directory, 
+                'preface.tex',
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'si',
@@ -3575,9 +3615,19 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        build_directory = os.path.join(score_directory, 'build')
-        self._interpret_file_ending_with(build_directory, 'score.tex')
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            build_directory = os.path.join(score_directory, 'build')
+            messages = self._interpret_file_ending_with(
+                build_directory, 
+                'score.tex',
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command('!', section='system')
     def invoke_shell(self):

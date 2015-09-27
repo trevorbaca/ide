@@ -63,8 +63,6 @@ def test_AbjadIDE_interpret_back_cover_02():
         # attempt (but fail) to generate identical PDF
         input_ = 'red~example~score bb bci q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
-    assert '... compare the same.' in contents
-    assert 'Preserved' in contents
+    assert 'Preserving' in contents
