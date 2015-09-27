@@ -1,13 +1,13 @@
-% SCORE_TITLE FORCES_TAGLINE 
+% {score_title} {forces_tagline}
 
-% LILYPOND_VERSION_DIRECTIVE
-% LILYPOND_LANGUAGE_DIRECTIVE
+% {lilypond_version_directive}
+% {lilypond_language_directive}
 
 #(ly:set-option 'relative-includes #t)
-% STYLESHEET_INCLUDE_STATEMENT
+% {stylesheet_include_statement}
 
-\score {
-    {
-%%% SEGMENTS %%%
-    }
-}
+\score {{
+    {{
+    {segment_include_statements}
+    }}
+}}

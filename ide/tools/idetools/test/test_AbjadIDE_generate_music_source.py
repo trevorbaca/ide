@@ -24,7 +24,7 @@ def test_AbjadIDE_generate_music_source_01():
 
     with systemtools.FilesystemState(keep=[music_path]):
         os.remove(music_path)
-        input_ = 'red~example~score bb mg y q'
+        input_ = 'red~example~score bb mg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(music_path)
         with open(music_path, 'r') as file_pointer:
@@ -33,7 +33,6 @@ def test_AbjadIDE_generate_music_source_01():
         assert 'Red Example Score (2013) for piano' in file_contents
         assert r'\language' in file_contents
         assert r'\version' in file_contents
-        #assert r'\context Score = "Red Example Score"' in file_contents
 
 
 def test_AbjadIDE_generate_music_source_02():
@@ -49,10 +48,15 @@ def test_AbjadIDE_generate_music_source_02():
         )
 
     with systemtools.FilesystemState(keep=[music_path]):
-        input_ = 'red~example~score bb mg y q'
+        os.remove(music_path)
+        # generate first time
+        input_ = 'red~example~score bb mg q'
         abjad_ide._start(input_=input_)
+        # attempt to generate second time
+        input_ = 'red~example~score bb mg q'
+        abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
 
-    contents = abjad_ide._io_manager._transcript.contents
     assert 'Preserving' in contents
 
 
@@ -69,7 +73,7 @@ def test_AbjadIDE_generate_music_source_03():
         )
 
     with systemtools.FilesystemState(keep=[music_path]):
-        input_ = 'red~example~score bb mg y q'
+        input_ = 'red~example~score bb mg q'
         abjad_ide._start(input_=input_)
 
     with open(music_path, 'r') as file_pointer:

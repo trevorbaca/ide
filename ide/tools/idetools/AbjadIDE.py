@@ -2774,68 +2774,59 @@ class AbjadIDE(object):
                 )
             with systemtools.FilesystemState(remove=[candidate_path]):
                 shutil.copyfile(source_path, candidate_path)
-                result = self._parse_paper_dimensions(score_directory)
-                width, height, unit = result
-                old = '{PAPER_SIZE}'
-                new = '{{{}{}, {}{}}}'
-                new = new.format(width, unit, height, unit)
-                self._replace_in_file(candidate_path, old, new)
                 lines = []
-                for lilypond_name in lilypond_names:
+                segment_include_statements = ''
+                for i, lilypond_name in enumerate(lilypond_names):
                     file_name = lilypond_name + '.ly'
-                    line = self._tab + r'\include "{}"'
+                    line = r'\include "{}"'
+                    if 0 < i:
+                        line = self._tab + line
                     line = line.format(file_name)
                     lines.append(line)
                 if lines:
                     new = '\n'.join(lines)
-                    old = '%%% SEGMENTS %%%'
-                    self._replace_in_file(candidate_path, old, new)
-                else:
-                    line_to_remove = '%%% SEGMENTS %%%\n'
-                    self._remove_file_line(candidate_path, line_to_remove)
+                    segment_include_statements = new
                 stylesheet_path = os.path.join(
                     score_directory,
                     'stylesheets',
                     'stylesheet.ily',
                     )
+                stylesheet_include_statement = ''
                 if stylesheet_path:
-                    old = '% STYLESHEET_INCLUDE_STATEMENT'
-                    new = r'\include "../stylesheets/stylesheet.ily"'
-                    self._replace_in_file(candidate_path, old, new)
+                    line = r'\include "../stylesheets/stylesheet.ily"'
+                    stylesheet_include_statement = line
                 language_token = lilypondfiletools.LilyPondLanguageToken()
                 lilypond_language_directive = format(language_token)
-                old = '% LILYPOND_LANGUAGE_DIRECTIVE'
-                new = lilypond_language_directive
-                self._replace_in_file(candidate_path, old, new)
                 version_token = lilypondfiletools.LilyPondVersionToken()
                 lilypond_version_directive = format(version_token)
-                old = '% LILYPOND_VERSION_DIRECTIVE'
-                new = lilypond_version_directive
-                self._replace_in_file(candidate_path, old, new)
-                score_title = self._get_title_metadatum(
-                    score_directory,
-                    year=False,
-                    )
-                if score_title:
-                    old = 'SCORE_NAME'
-                    new = score_title
-                    self._replace_in_file(candidate_path, old, new)
                 annotated_title = self._get_title_metadatum(
                     score_directory,
                     year=True,
                     )
                 if annotated_title:
-                    old = 'SCORE_TITLE'
-                    new = annotated_title
-                    self._replace_in_file(candidate_path, old, new)
+                    score_title = annotated_title
+                else:
+                    score_title = self._get_title_metadatum(
+                        score_directory,
+                        year=False,
+                        )
                 forces_tagline = self._get_metadatum(
                     score_directory,
                     'forces_tagline',
+                    ''
                     )
-                if forces_tagline:
-                    old = 'FORCES_TAGLINE'
-                    new = forces_tagline
-                    self._replace_in_file(candidate_path, old, new)
+                with open(candidate_path, 'r') as file_pointer:
+                    template = file_pointer.read()
+                completed_template = template.format(
+                    forces_tagline=forces_tagline,
+                    lilypond_language_directive=lilypond_language_directive,
+                    lilypond_version_directive=lilypond_version_directive,
+                    score_title=score_title,
+                    segment_include_statements=segment_include_statements,
+                    stylesheet_include_statement=stylesheet_include_statement,
+                    )
+                with open(candidate_path, 'w') as file_pointer:
+                    file_pointer.write(completed_template)
                 messages_ = self._handle_candidate_revised(
                     candidate_path,
                     destination_path,
