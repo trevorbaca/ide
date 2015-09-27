@@ -27,6 +27,7 @@ class AbjadIDE(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
+        '_configuration',
         '_io_manager',
         '_session',
         )
@@ -54,6 +55,7 @@ class AbjadIDE(object):
 
     def __init__(self, session=None, is_example=False, is_test=False):
         from ide.tools import idetools
+        self._configuration = configuration
         if session is None:
             session = idetools.Session()
             session._is_example = is_example
