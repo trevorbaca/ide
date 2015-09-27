@@ -3820,13 +3820,14 @@ class AbjadIDE(object):
             self._io_manager._display(message)
 
     @Command(
-        'sp',
+        'spp',
         argument_name='current_directory',
+        description='score pdf - publish',
         directories=('build'),
         section='build',
         )
-    def push_score_pdf_to_distribution_directory(self, directory):
-        r'''Pushes ``score.pdf`` to distribution directory.
+    def publish_score_pdf(self, directory):
+        r'''Publishes score PDF in distribution directory.
 
         Returns none.
         '''
