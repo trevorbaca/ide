@@ -1830,19 +1830,6 @@ class AbjadIDE(object):
         return True
 
     @staticmethod
-    def _remove_file_line(file_path, line_to_remove):
-        lines_to_keep = []
-        with open(file_path, 'r') as file_pointer:
-            for line in file_pointer.readlines():
-                if line == line_to_remove:
-                    pass
-                else:
-                    lines_to_keep.append(line)
-        with open(file_path, 'w') as file_pointer:
-            contents = ''.join(lines_to_keep)
-            file_pointer.write(contents)
-
-    @staticmethod
     def _replace_in_file(file_path, old, new):
         assert isinstance(old, str), repr(old)
         assert isinstance(new, str), repr(new)
