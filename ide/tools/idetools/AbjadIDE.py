@@ -3725,7 +3725,9 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction(dry_run=subroutine):
+        interaction = self._io_manager._make_interaction(dry_run=subroutine)
+        timer = systemtools.Timer()
+        with interaction, timer:
             if self._is_score_directory(directory, 'material'):
                 result = self._make_material_pdf(
                     directory,
@@ -3738,6 +3740,8 @@ class AbjadIDE(object):
                     )
             else:
                 raise ValueError(directory)
+            if not subroutine:
+                self._io_manager._display(timer.total_time_message)
             return result
 
     @Command(
