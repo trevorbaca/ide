@@ -425,3 +425,21 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return self.abjad_ide_configuration_file_path
+
+    @property
+    def latex_log_file_path(self):
+        r'''Gets LaTeX log file path.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.latex_log_file_path
+                '.../.abjad/ide/latex.log'
+
+        Returns string.
+        '''
+        return os.path.join(
+            self.abjad_ide_configuration_directory,
+            'latex.log',
+            )
