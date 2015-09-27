@@ -566,32 +566,6 @@ class AbjadIDE(object):
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
-            shutil.copyfile(candidate_path, destination_path)
-            message = 'wrote {}.'.format(destination_path)
-            messages.append(message)
-        elif systemtools.TestManager.compare_files(
-            candidate_path,
-            destination_path,
-            ):
-            messages_ = self._make_candidate_messages(
-                True,
-                candidate_path,
-                destination_path,
-                )
-            messages.extend(messages_)
-            message = 'preserved {}.'
-            message = message.format(self._trim_path(destination_path))
-            messages.append(message)
-        else:
-            shutil.copyfile(candidate_path, destination_path)
-            message = 'overwrote {}.'
-            message = message.format(self._trim_path(destination_path))
-            messages.append(message)
-        self._io_manager._display(messages)
-
-    def _handle_candidate_revised(self, candidate_path, destination_path):
-        messages = []
-        if not os.path.exists(destination_path):
             message = 'writing {} ...'
             message = message.format(self._trim_path(destination_path))
             messages.append(message)
@@ -734,7 +708,7 @@ class AbjadIDE(object):
             for file_name in glob.glob('*.log'):
                 path = os.path.join(output_directory, file_name)
                 os.remove(path)
-            messages = self._handle_candidate_revised(
+            messages = self._handle_candidate(
                 candidate_path,
                 destination_path,
                 )
@@ -2515,7 +2489,7 @@ class AbjadIDE(object):
                 with systemtools.FilesystemState(remove=[candidate_ly_path]):
                     shutil.copyfile(source_ly_path, candidate_ly_path)
                     self._trim_ly(candidate_ly_path)
-                    messages = self._handle_candidate_revised(
+                    messages = self._handle_candidate(
                         candidate_ly_path,
                         target_ly_path,
                         )
@@ -2609,21 +2583,6 @@ class AbjadIDE(object):
         self._io_manager.edit(illustrate_py_path)
 
     @Command(
-        'lpg', 
-        description='lilypond log - edit',
-        section='global files',
-        )
-    def edit_lilypond_log(self):
-        r'''Edits LilyPond log.
-
-        Returns none.
-        '''
-        self._session._attempted_to_open_file = True
-        if self._session.is_test:
-            return
-        self._io_manager.open_last_log()
-
-    @Command(
         'lxg', 
         description='latex log - edit',
         section='global files',
@@ -2640,6 +2599,21 @@ class AbjadIDE(object):
             self._io_manager._display([message, ''])
         else:
             self._io_manager.open_file(configuration.latex_log_file_path)
+
+    @Command(
+        'lpg', 
+        description='lilypond log - edit',
+        section='global files',
+        )
+    def edit_lilypond_log(self):
+        r'''Edits LilyPond log.
+
+        Returns none.
+        '''
+        self._session._attempted_to_open_file = True
+        if self._session.is_test:
+            return
+        self._io_manager.open_last_log()
 
     @Command(
         'ly',
@@ -2870,7 +2844,7 @@ class AbjadIDE(object):
                     )
                 with open(candidate_path, 'w') as file_pointer:
                     file_pointer.write(completed_template)
-                messages_ = self._handle_candidate_revised(
+                messages_ = self._handle_candidate(
                     candidate_path,
                     destination_path,
                     )
