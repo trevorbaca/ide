@@ -2542,7 +2542,7 @@ class AbjadIDE(object):
         pass
 
     @Command(
-        'al', 
+        'als', 
         description='aliases - edit',
         section='global files',
         )
@@ -2692,6 +2692,7 @@ class AbjadIDE(object):
     @Command(
         'fcg',
         argument_name='current_directory',
+        description='front cover - generate',
         directories=('build'),
         section='build',
         )
@@ -2747,6 +2748,7 @@ class AbjadIDE(object):
     @Command(
         'mg',
         argument_name='current_directory',
+        description='music - generate',
         directories=('build'),
         section='build',
         )
@@ -2848,6 +2850,7 @@ class AbjadIDE(object):
     @Command(
         'pg',
         argument_name='current_directory',
+        description='preface - generate',
         directories=('build'),
         section='build',
         )
@@ -2877,6 +2880,7 @@ class AbjadIDE(object):
     @Command(
         'sg',
         argument_name='current_directory',
+        description='score - generate',
         directories=('build'),
         section='build',
         )
@@ -3411,6 +3415,7 @@ class AbjadIDE(object):
     @Command(
         'bci',
         argument_name='current_directory',
+        description='back cover - interpret',
         directories=('build'),
         section='build',
         )
@@ -3459,6 +3464,7 @@ class AbjadIDE(object):
     @Command(
         'fci',
         argument_name='current_directory',
+        description='front cover - interpret',
         directories=('build'),
         section='build',
         )
@@ -3542,6 +3548,7 @@ class AbjadIDE(object):
     @Command(
         'mi',
         argument_name='current_directory',
+        description='music - interpret',
         directories=('build'),
         section='build',
         )
@@ -3561,6 +3568,7 @@ class AbjadIDE(object):
     @Command(
         'pi',
         argument_name='current_directory',
+        description='preface - interpret',
         directories=('build'),
         section='build',
         )
@@ -3577,6 +3585,7 @@ class AbjadIDE(object):
     @Command(
         'si',
         argument_name='current_directory',
+        description='score - interpret',
         directories=('build'),
         section='build',
         )
