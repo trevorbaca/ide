@@ -1372,7 +1372,6 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         assert self._is_score_directory(directory, 'segment')
         definition_path = os.path.join(directory, 'definition.py')
-
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
             message = message.format(definition_path)
@@ -1415,11 +1414,13 @@ class AbjadIDE(object):
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_segment_metadata'
                 statement = statement.format(score_name, previous_segment_name)
-            self._replace_in_file(
-                illustrate_path,
-                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
-                statement,
+            with open(illustrate_path, 'r') as file_pointer:
+                template = file_pointer.read()
+            completed_template = template.format(
+                previous_segment_metadata_import_statement=statement
                 )
+            with open(illustrate_path, 'w') as file_pointer:
+                file_pointer.write(completed_template)
             result = self._io_manager.interpret_file(
                 illustrate_path,
                 strip=False,
@@ -1505,11 +1506,13 @@ class AbjadIDE(object):
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_segment_metadata'
                 statement = statement.format(score_name, previous_segment_name)
-            self._replace_in_file(
-                illustrate_file_path,
-                'PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT',
-                statement,
+            with open(illustrate_file_path, 'r') as file_pointer:
+                template = file_pointer.read()
+            completed_template = template.format(
+                previous_segment_metadata_import_statement=statement
                 )
+            with open(illustrate_file_path, 'w') as file_pointer:
+                file_pointer.write(completed_template)
             result = self._io_manager.interpret_file(
                 illustrate_file_path,
                 strip=False,

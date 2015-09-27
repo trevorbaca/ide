@@ -22,7 +22,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        PREVIOUS_SEGMENT_METADATA_IMPORT_STATEMENT
+        {previous_segment_metadata_import_statement}
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 previous_segment_metadata=previous_segment_metadata,
                 )
             lilypond_file, segment_metadata = result
-        message = 'Abjad runtime: {} sec.'
+        message = 'Abjad runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))
         print(message)
     except:
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             )
         with systemtools.Timer() as timer:
             persist(lilypond_file).as_ly(candidate_path)
-        message = 'LilyPond runtime: {} sec.'
+        message = 'LilyPond runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))
         print(message)
     except:

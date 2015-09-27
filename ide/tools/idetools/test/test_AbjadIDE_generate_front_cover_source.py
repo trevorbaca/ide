@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import filecmp
 import os
 from abjad import *
 import ide
@@ -26,10 +25,10 @@ def test_AbjadIDE_generate_front_cover_source_01():
         # generate first time
         input_ = 'red~example~score bb fcg q'
         abjad_ide._start(input_=input_)
+        assert os.path.isfile(cover_path)
         # attempt to generate second time
         input_ = 'red~example~score bb fcg q'
         abjad_ide._start(input_=input_)
-        assert filecmp.cmp(cover_path, cover_path + '.backup')
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Preserving' in contents
@@ -54,7 +53,7 @@ def test_AbjadIDE_generate_front_cover_source_02():
         assert not os.path.exists(cover_path)
         input_ = 'red~example~score bb fcg q'
         abjad_ide._start(input_=input_)
-        assert filecmp.cmp(cover_path, cover_path + '.backup')
+        assert os.path.isfile(cover_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Writing' in contents
