@@ -513,18 +513,33 @@ class IOManager(IOManager):
 
         Returns list of candidate messages.
         '''
+        from ide.tools import idetools
         if self.find_executable('lilypond'):
             executable = 'lilypond'
         else:
             message = 'cannot find LilyPond executable.'
             raise ValueError(message)
-        base, file_extension = os.path.splitext(ly_path)
-        pdf_path = base + '.pdf'
         directory = os.path.dirname(ly_path)
+        file_name, file_extension = os.path.splitext(ly_path)
+        pdf_path = file_name + '.pdf'
         pdf_existed = os.path.exists(pdf_path)
+        backup_file_name = '{}._backup.pdf'
+        backup_file_name = backup_file_name.format(file_name)
+        backup_pdf_path = os.path.join(directory, backup_file_name)
+        assert not os.path.exists(backup_pdf_path)
         command = '{} -dno-point-and-click {}'
         command = command.format(executable, ly_path)
-        with systemtools.TemporaryDirectoryChange(directory):
+        directory_change = systemtools.TemporaryDirectoryChange(directory)
+        filesystem_state = systemtools.FilesystemState(
+            remove=[backup_pdf_path]
+            )
+        messages = []
+        with directory_change, filesystem_state:
+            if not os.path.exists(pdf_path):
+                backup_pdf_path = None
+            else:
+                shutil.move(pdf_path, backup_pdf_path)
+                assert not os.path.exists(pdf_path)
             process = subprocess.Popen(
                 command,
                 shell=True,
@@ -533,10 +548,35 @@ class IOManager(IOManager):
                 )
             stderr_messages = self._read_from_pipe(process.stderr)
             stderr_messages = stderr_messages.splitlines()
-        candidate_messages = []
-        if not candidacy:
-            return stderr_messages, candidate_messages
-        raise NotImplementedError('implemented revised candidacy.')
+            if not os.path.isfile(pdf_path):
+                message = 'can not produce {} ...'
+                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
+                message = message.format(trimmed_path)
+                messages.append(message)
+                if backup_pdf_path:
+                    shutil.move(backup_pdf_path, pdf_path)
+                return stderr_messages, messages
+            if backup_pdf_path is None or not candidacy:
+                message = 'writing {} ...'
+                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
+                message = message.format(trimmed_path)
+                messages.append(message)
+                return stderr_messages, messages
+            if systemtools.TestManager.compare_files(
+                pdf_path,
+                backup_pdf_path,
+                ):
+                message = 'preserving {} ...'
+                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
+                message = message.format(trimmed_path)
+                messages.append(message)
+                return stderr_messages, messages
+            else:
+                message = 'overwriting {} ...'
+                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
+                message = message.format(trimmed_path)
+                messages.append(message)
+                return stderr_messages, messages
 
     def write(self, path, string):
         r'''Writes `string` to `path`.

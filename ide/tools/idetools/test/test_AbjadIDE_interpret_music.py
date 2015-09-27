@@ -67,4 +67,4 @@ def test_AbjadIDE_interpret_music_02():
         contents = abjad_ide._io_manager._transcript.contents
 
     # TODO: make messaging work like this again
-    #assert 'Preserving' in contents
+    assert 'Preserving' in contents

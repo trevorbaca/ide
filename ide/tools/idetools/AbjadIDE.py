@@ -99,9 +99,12 @@ class AbjadIDE(object):
             message = message.format(string)
             self._io_manager._display(message)
             return
-        result = self._io_manager.run_lilypond(file_path, candidacy=False)
+        message = 'interpreting {} ...'
+        message = message.format(file_path)
+        self._io_manager._display(message)
+        result = self._io_manager.run_lilypond(file_path, candidacy=True)
         stderr_messages, candidate_messages = result
-        self._io_manager._display(stderr_messages)
+        return stderr_messages, candidate_messages
 
     def _clear_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -3564,16 +3567,17 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            messages = self._call_lilypond_on_file_ending_with(
+            result = self._call_lilypond_on_file_ending_with(
                 build_directory,
                 'music.ly',
                 )
-#            if messages[0].startswith('writing'):
-#                self._session._pending_menu_rebuild = True
-#                self._session._pending_redraw = True
-#                self._session._after_redraw_messages = messages
-#            else:
-#                self._io_manager._display(messages)
+            stderr_messages, messages = result
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'pi',
