@@ -375,50 +375,29 @@ class AbjadIDE(object):
                 messages.append('')
         return messages
 
-    def _gather_segment_files(self, score_directory, file_name):
-        segments_directory = os.path.join(score_directory, 'segments')
-        build_directory = os.path.join(score_directory, 'build')
-        directory_entries = sorted(os.listdir(segments_directory))
-        source_file_paths, target_file_paths = [], []
-        _, file_extension = os.path.splitext(file_name)
-        for directory_entry in directory_entries:
-            segment_directory = os.path.join(
-                segments_directory,
-                directory_entry,
-                )
+    def _gather_segment_lys(self, directory):
+        score_directory = self._to_score_directory(directory, 'inner')
+        segments_directory = self._to_score_directory(directory, 'segments')
+        build_directory = self._to_score_directory(directory, 'build')
+        entries = sorted(os.listdir(segments_directory))
+        source_ly_paths, target_ly_paths = [], []
+        for entry in entries:
+            segment_directory = os.path.join(segments_directory, entry)
             if not os.path.isdir(segment_directory):
                 continue
-            source_file_path = os.path.join(
-                segment_directory,
-                file_name,
-                )
-            if not os.path.isfile(source_file_path):
+            source_ly_path = os.path.join(segment_directory, 'illustration.ly')
+            if not os.path.isfile(source_ly_path):
                 continue
             score_package = os.path.basename(score_directory)
             score_name = score_package.replace('_', '-')
-            directory_entry = directory_entry.replace('_', '-')
-            target_file_name = directory_entry + file_extension
-            target_file_path = os.path.join(
-                build_directory,
-                target_file_name,
-                )
-            source_file_paths.append(source_file_path)
-            target_file_paths.append(target_file_path)
-        if source_file_paths:
-            messages = []
-            messages.append('will copy ...')
-            pairs = zip(source_file_paths, target_file_paths)
-            for source_file_path, target_file_path in pairs:
-                message = ' FROM: {}'.format(source_file_path)
-                messages.append(message)
-                message = '   TO: {}'.format(target_file_path)
-                messages.append(message)
-            self._io_manager._display(messages)
-            if not self._io_manager._confirm():
-                return
+            entry = entry.replace('_', '-')
+            target_ly_name = entry + '.ly'
+            target_ly_path = os.path.join(build_directory, target_ly_name)
+            source_ly_paths.append(source_ly_path)
+            target_ly_paths.append(target_ly_path)
         if not os.path.exists(build_directory):
             os.mkdir(build_directory)
-        pairs = zip(source_file_paths, target_file_paths)
+        pairs = zip(source_ly_paths, target_ly_paths)
         return pairs
 
     def _get_added_asset_paths(self, path):
@@ -651,6 +630,29 @@ class AbjadIDE(object):
             message = message.format(self._trim_path(destination_path))
             messages.append(message)
         self._io_manager._display(messages)
+
+    def _handle_candidate_revised(self, candidate_path, destination_path):
+        messages = []
+        if not os.path.exists(destination_path):
+            message = 'writing {} ...'
+            message = message.format(self._trim_path(destination_path))
+            self._io_manager._display(message)
+            shutil.copyfile(candidate_path, destination_path)
+            return
+        same = systemtools.TestManager.compare_files(
+            candidate_path,
+            destination_path,
+            )
+        if same:
+            message = 'preserving {} ...'
+            message = message.format(self._trim_path(destination_path))
+            self._io_manager._display(message)
+            return
+        else:
+            message = 'overwriting {} ...'
+            message = message.format(self._trim_path(destination_path))
+            self._io_manager._display(message)
+            shutil.copyfile(candidate_path, destination_path)
 
     def _handle_input(self, result):
         assert isinstance(result, (str, tuple)), repr(result)
@@ -2246,9 +2248,9 @@ class AbjadIDE(object):
         return name
 
     @staticmethod
-    def _trim_lilypond_file(file_path):
+    def _trim_ly(ly_path):
         lines = []
-        with open(file_path, 'r') as file_pointer:
+        with open(ly_path, 'r') as file_pointer:
             found_score_block = False
             for line in file_pointer.readlines():
                 if line.startswith(r'\score'):
@@ -2263,7 +2265,7 @@ class AbjadIDE(object):
         if lines and lines[-1] == '\n':
             lines.pop()
         lines = ''.join(lines)
-        with open(file_path, 'w') as file_pointer:
+        with open(ly_path, 'w') as file_pointer:
             file_pointer.write(lines)
 
     @staticmethod
@@ -2418,47 +2420,6 @@ class AbjadIDE(object):
             self._io_manager._display(timer.total_time_message)
 
     @Command(
-        'mc',
-        argument_name='current_directory',
-        directories=('build'),
-        section='build',
-        )
-    def collect_segment_lilypond_files(self, directory):
-        r'''Copies ``illustration.ly`` files from segment directorys to build
-        directory.
-
-        Trims top-level comments, includes and directives from each
-        ``illustration.ly`` file.
-
-        Trims header and paper block from each ``illustration.ly`` file.
-
-        Leaves score block in each ``illustration.ly`` file.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        pairs = self._gather_segment_files(
-            score_directory,
-            'illustration.ly',
-            )
-        if not pairs:
-            return
-        for source_file_path, target_file_path in pairs:
-            candidate_file_path = target_file_path.replace(
-                '.ly',
-                '.candidate.ly',
-                )
-            with systemtools.FilesystemState(remove=[candidate_file_path]):
-                shutil.copyfile(source_file_path, candidate_file_path)
-                self._trim_lilypond_file(candidate_file_path)
-                self._handle_candidate(
-                    candidate_file_path,
-                    target_file_path,
-                    )
-                self._io_manager._display('')
-
-    @Command(
         'cp',
         argument_name='current_directory',
         forbidden_directories=('inner',),
@@ -2520,6 +2481,49 @@ class AbjadIDE(object):
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
+    @Command(
+        'lyc',
+        argument_name='current_directory',
+        description='segment lys - copy',
+        directories=('build'),
+        section='build',
+        )
+    def copy_segment_lys(self, directory):
+        r'''Copies segment lys.
+        
+        Copies from egment directories to build directory.
+
+        Trims top-level comments.
+        
+        Preserves includes and directives from each ly.
+
+        Trims header and paper block from each ly.
+
+        Preserves score block in each ly.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            directory = self._to_score_directory(directory)
+            pairs = self._gather_segment_lys(directory)
+            if not pairs:
+                message = 'no segment lys found.'
+                self._io_manager._display(message)
+                return
+            for source_ly_path, target_ly_path in pairs:
+                candidate_ly_path = target_ly_path.replace(
+                    '.ly',
+                    '.candidate.ly',
+                    )
+                with systemtools.FilesystemState(remove=[candidate_ly_path]):
+                    shutil.copyfile(source_ly_path, candidate_ly_path)
+                    self._trim_ly(candidate_ly_path)
+                    self._handle_candidate_revised(
+                        candidate_ly_path,
+                        target_ly_path,
+                        )
+
     @Command('?', section='system')
     def display_action_command_help(self):
         r'''Displays action commands.
@@ -2535,30 +2539,6 @@ class AbjadIDE(object):
         Returns none.
         '''
         pass
-
-    @Command(
-        'abb',
-        argument_name='current_directory',
-        description='abbreviations - edit',
-        forbidden_directories=('scores',),
-        section='global files',
-        )
-    def edit_abbreviations_file(self, directory):
-        r'''Edits abbreviations file.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        path = os.path.join(
-            score_directory,
-            'materials',
-            '__abbreviations__.py',
-            )
-        if not path or not os.path.isfile(path):
-            with open(path, 'w') as file_pointer:
-                file_pointer.write('')
-        self._io_manager.edit(path)
 
     @Command(
         'al', 
