@@ -52,10 +52,11 @@ class AbjadIDE(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, session=None, is_test=False):
+    def __init__(self, session=None, is_example=False, is_test=False):
         from ide.tools import idetools
         if session is None:
             session = idetools.Session()
+            session._is_example = is_example
             session._is_test = is_test
         self._session = session
         io_manager = idetools.IOManager(session=session)
@@ -998,7 +999,7 @@ class AbjadIDE(object):
             entries.append(entry)
         entries = self._filter_by_view(directory, entries)
         if self._is_score_directory(directory, 'scores'):
-            if self._session.is_test:
+            if self._session.is_test or self._session.is_example:
                 entries = [_ for _ in entries if 'Example Score' in _[0]]
             else:
                 entries = [_ for _ in entries if 'Example Score' not in _[0]]
@@ -1366,7 +1367,7 @@ class AbjadIDE(object):
         package_name = stringtools.strip_diacritics(title)
         package_name = stringtools.to_snake_case(package_name)
         scores_directory = configuration.composer_scores_directory
-        if self._session.is_test:
+        if self._session.is_test or self._session.is_example:
             scores_directory = configuration.abjad_ide_example_scores_directory
         outer_score_directory = os.path.join(scores_directory, package_name)
         if os.path.exists(outer_score_directory):
@@ -1994,7 +1995,7 @@ class AbjadIDE(object):
             self._session._pending_input = input_
         self._session._pending_redraw = True
         directory = configuration.composer_scores_directory
-        if self._session.is_test:
+        if self._session.is_test or self._session.is_example:
             directory = configuration.abjad_ide_example_scores_directory
         while True:
             self._manage_directory(directory)
@@ -2414,7 +2415,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         directories = self._collect_similar_directories(
             directory,
-            example_scores=self._session.is_test,
+            example_scores=self._session.is_test or self._session.is_example,
             )
         paths = []
         for directory_ in directories:
@@ -2440,7 +2441,7 @@ class AbjadIDE(object):
         if trimmed_source_path not in trimmed_paths:
             return
         scores_directory = configuration.composer_scores_directory
-        if self._session.is_test:
+        if self._session.is_test or self._session.is_example:
             scores_directory = configuration.abjad_ide_example_scores_directory
         source_path = os.path.join(scores_directory, trimmed_source_path)
         asset_name = os.path.basename(source_path)
@@ -2649,7 +2650,7 @@ class AbjadIDE(object):
                 new = str(catalog_number)
                 replacements[old] = new
             composer_website = configuration.composer_website
-            if self._session.is_test:
+            if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
             if composer_website:
                 old = 'COMPOSER WEBSITE'
@@ -2717,7 +2718,7 @@ class AbjadIDE(object):
                 new = str(year)
                 replacements[old] = new
             composer = configuration.composer_uppercase_name
-            if self._session.is_test:
+            if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
             if composer:
                 old = 'COMPOSER'
@@ -3242,7 +3243,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         directory = configuration.composer_scores_directory
-        if self._session.is_test:
+        if self._session.is_test or self._session.is_example:
             directory = configuration.abjad_ide_example_scores_directory
         self._manage_directory(directory)
 

@@ -22,6 +22,7 @@ class Session(object):
         '_clear_terminal_after_quit',
         '_confirm',
         '_current_directory',
+        '_is_example',
         '_is_quitting',
         '_is_test',
         '_pending_input',
@@ -33,7 +34,7 @@ class Session(object):
 
     ### INITIALIZER ###
 
-    def __init__(self, input_=None, is_test=False):
+    def __init__(self, input_=None, is_example=False, is_test=False):
         from ide.tools import idetools
         self._after_redraw_messages = None
         self._allow_unknown_command_during_test = False
@@ -41,6 +42,7 @@ class Session(object):
         self._attempted_to_open_file = False
         self._clear_terminal_after_quit = False
         self._confirm = True
+        self._is_example = is_example
         self._is_quitting = False
         self._is_test = is_test
         self._current_directory = None
@@ -77,7 +79,11 @@ class Session(object):
     def _reinitialize(self):
         is_test = self._is_test
         allow_unknown = self._allow_unknown_command_during_test
-        type(self).__init__(self, is_test=self.is_test)
+        type(self).__init__(
+            self, 
+            is_example=self.is_example, 
+            is_test=self.is_test,
+            )
         self._allow_unknown_command_during_test = allow_unknown
 
     ### PUBLIC PROPERTIES ###
@@ -91,6 +97,21 @@ class Session(object):
         return self._current_directory
 
     @property
+    def is_example(self):
+        r'''Is true when session is example. Otherwise false.
+
+        ..  container:: example
+
+            ::
+
+                >>> session.is_example
+                False
+
+        Returns true or false.
+        '''
+        return self._is_example
+
+    @property
     def is_quitting(self):
         r'''Gets and sets flag that user specified quit.
 
@@ -101,7 +122,7 @@ class Session(object):
                 >>> session.is_quitting
                 False
 
-        Returns true or false..
+        Returns true or false.
         '''
         return self._is_quitting
 
@@ -116,7 +137,7 @@ class Session(object):
                 >>> session.is_test
                 False
 
-        Returns true or false..
+        Returns true or false.
         '''
         return self._is_test
 
