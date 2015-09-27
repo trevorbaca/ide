@@ -33,9 +33,9 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
     def __init__(self):
         AbjadConfiguration.__init__(self)
-        self._make_missing_directories()
         self._read_aliases_file()
         self._composer_scores_directory_override = None
+        self._make_missing_directories()
 
     ### PRIVATE PROPERTIES ###
 
