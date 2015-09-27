@@ -3495,48 +3495,14 @@ class AbjadIDE(object):
                 message = message.format(ly_path)
                 self._io_manager._display(message)
                 return
-            pdf_path = os.path.join(directory, 'illustration.pdf')
-            backup_pdf_path = os.path.join(
-                directory, 
-                'illustration.backup.pdf',
+            message = 'interpreting {} ...'
+            message = message.format(self._trim_path(ly_path))
+            self._io_manager._display(message)
+            messages = self._io_manager.run_lilypond(
+                ly_path, 
+                candidacy=True,
                 )
-            assert not os.path.exists(backup_pdf_path)
-            with systemtools.FilesystemState(remove=[backup_pdf_path]):
-                if not os.path.exists(pdf_path):
-                    backup_pdf_path = None
-                else:
-                    shutil.move(pdf_path, backup_pdf_path)
-                    assert not os.path.exists(pdf_path)
-                message = 'interpreting {} ...'
-                message = message.format(self._trim_path(ly_path))
-                self._io_manager._display(message)
-                # TODO: simplify below
-                self._io_manager.run_lilypond(ly_path, candidacy=False)
-                if not os.path.isfile(pdf_path):
-                    message = 'could not produce {}.'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                    if backup_pdf_path:
-                        shutil.move(backup_pdf_path, pdf_path)
-                    return
-                if backup_pdf_path is None:
-                    message = 'writing {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                    return
-                same = systemtools.TestManager.compare_files(
-                    pdf_path,
-                    backup_pdf_path,
-                    )
-                if same:
-                    message = 'preserving {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                    return
-                message = 'writing {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                return
+            self._io_manager._display(messages)
 
     @Command(
         'mi',
