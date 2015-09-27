@@ -50,6 +50,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         assert message in contents
 
     assert not 'Preserving' in contents
+    assert 'Total time:' in contents
 
 
 def test_AbjadIDE_interpret_every_ly_02():
@@ -97,6 +98,8 @@ def test_AbjadIDE_interpret_every_ly_02():
         message = message.format(abjad_ide._trim_path(pdf_path))
         assert message in contents
 
+    assert 'Total time:' in contents
+
 
 def test_AbjadIDE_interpret_every_ly_03():
     r'''In segments directory.
@@ -142,6 +145,7 @@ def test_AbjadIDE_interpret_every_ly_03():
         assert message in contents
 
     assert not 'Preserving' in contents
+    assert 'Total time:' in contents
 
 
 def test_AbjadIDE_interpret_every_ly_04():
@@ -188,3 +192,5 @@ def test_AbjadIDE_interpret_every_ly_04():
         message = 'Preserving {} ...'
         message = message.format(abjad_ide._trim_path(pdf_path))
         assert message in contents
+
+    assert 'Total time:' in contents

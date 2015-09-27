@@ -3475,9 +3475,9 @@ class AbjadIDE(object):
         section='star',
         )
     def interpret_every_ly(self, directory):
-        r'''Interprets illustration ly in every package.
+        r'''Interprets LilyPond file in every directory.
 
-        Makes illustration PDF in every package.
+        Makes PDF in every directory.
 
         Returns none.
         '''
@@ -3493,19 +3493,13 @@ class AbjadIDE(object):
                 message = 'no LilyPond files found.'
                 message._io_manager._display(message)
                 return
-            messages = []
-            messages.append('will interpret ...')
-            for ly_file in ly_files:
-                message = '    ' + self._trim_path(ly_file)
-                messages.append(message)
-            messages.append('')
-            self._io_manager._display(messages)
-            result = self._io_manager._confirm()
-            if not result:
-                return
-            for ly_file in ly_files:
-                directory = os.path.dirname(ly_file)
-                result = self.interpret_ly(directory, subroutine=True)
+            with systemtools.Timer() as timer:
+                for ly_file in ly_files:
+                    directory = os.path.dirname(ly_file)
+                    result = self.interpret_ly(directory, subroutine=True)
+                message = 'total time: {} seconds.'
+                message = message.format(int(timer.elapsed_time))
+                self._io_manager._display(message)
 
     @Command(
         'fci',
