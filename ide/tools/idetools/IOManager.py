@@ -506,34 +506,37 @@ class IOManager(IOManager):
             return lines
         self._display(lines, capitalize=capitalize)
 
-    def run_lilypond(self, path, candidacy=True):
-        r'''Runs LilyPond on file `path`.
+    def run_lilypond(self, ly_path, candidacy=True):
+        r'''Runs LilyPond on `ly_path`.
 
-        Returns pair. List of STDERR messages from LilyPond together
-        with list of candidate messages.
+        Returns list of LilyPond STDERR messages.
+
+        Returns list of candidate messages.
         '''
-        assert candidacy == False
         if self.find_executable('lilypond'):
             executable = 'lilypond'
         else:
             message = 'cannot find LilyPond executable.'
             raise ValueError(message)
-        base, file_extension = os.path.splitext(path)
-        output_path = base + '.pdf'
-        input_directory = os.path.dirname(path)
-        if not os.path.exists(output_path) or not candidacy:
-            command = '{} -dno-point-and-click {}'
-            command = command.format(executable, path)
-            with systemtools.TemporaryDirectoryChange(input_directory):
-                process = subprocess.Popen(
-                    command,
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    )
-                stderr_messages = self._read_from_pipe(process.stderr)
-                stderr_messages = stderr_messages.splitlines()
-            return stderr_messages, []
+        base, file_extension = os.path.splitext(ly_path)
+        pdf_path = base + '.pdf'
+        directory = os.path.dirname(ly_path)
+        pdf_existed = os.path.exists(pdf_path)
+        command = '{} -dno-point-and-click {}'
+        command = command.format(executable, ly_path)
+        with systemtools.TemporaryDirectoryChange(directory):
+            process = subprocess.Popen(
+                command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                )
+            stderr_messages = self._read_from_pipe(process.stderr)
+            stderr_messages = stderr_messages.splitlines()
+        candidate_messages = []
+        if not candidacy:
+            return stderr_messages, candidate_messages
+        raise NotImplementedError('implemented revised candidacy.')
 
     def write(self, path, string):
         r'''Writes `string` to `path`.
