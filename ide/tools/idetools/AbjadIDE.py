@@ -1858,6 +1858,58 @@ class AbjadIDE(object):
             with open(file_path, 'w') as file_pointer:
                 file_pointer.write(new_file_contents)
 
+    def _run_lilypond(self, ly_path):
+        if systemtools.IOManager.find_executable('lilypond'):
+            executable = 'lilypond'
+        else:
+            message = 'cannot find LilyPond executable.'
+            raise ValueError(message)
+        directory = os.path.dirname(ly_path)
+        file_name, file_extension = os.path.splitext(ly_path)
+        pdf_path = file_name + '.pdf'
+        pdf_existed = os.path.exists(pdf_path)
+        backup_file_name = '{}._backup.pdf'
+        backup_file_name = backup_file_name.format(file_name)
+        backup_pdf_path = os.path.join(directory, backup_file_name)
+        assert not os.path.exists(backup_pdf_path)
+        directory_change = systemtools.TemporaryDirectoryChange(directory)
+        filesystem_state = systemtools.FilesystemState(
+            remove=[backup_pdf_path]
+            )
+        messages = []
+        with directory_change, filesystem_state:
+            if not os.path.exists(pdf_path):
+                backup_pdf_path = None
+            else:
+                shutil.move(pdf_path, backup_pdf_path)
+                assert not os.path.exists(pdf_path)
+            systemtools.IOManager.run_lilypond(ly_path)
+            if not os.path.isfile(pdf_path):
+                message = 'can not produce {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
+                if backup_pdf_path:
+                    shutil.move(backup_pdf_path, pdf_path)
+                return messages
+            if backup_pdf_path is None:
+                message = 'writing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
+                return messages
+            if systemtools.TestManager.compare_files(
+                pdf_path,
+                backup_pdf_path,
+                ):
+                message = 'preserving {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
+                return messages
+            else:
+                message = 'overwriting {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                messages.append(message)
+                return messages
+
     def _select_view(self, directory, is_ranged=False):
         assert os.path.isdir(directory), repr(directory)
         view_inventory = self._read_view_inventory(directory)
@@ -3498,10 +3550,7 @@ class AbjadIDE(object):
             message = 'interpreting {} ...'
             message = message.format(self._trim_path(ly_path))
             self._io_manager._display(message)
-            messages = self._io_manager.run_lilypond(
-                ly_path, 
-                candidacy=True,
-                )
+            messages = self._run_lilypond(ly_path)
             self._io_manager._display(messages)
 
     @Command(
@@ -3529,7 +3578,7 @@ class AbjadIDE(object):
             message = 'interpreting {} ...'
             message = message.format(ly_path)
             self._io_manager._display(message)
-            messages = self._io_manager.run_lilypond(ly_path, candidacy=True)
+            messages = self._run_lilypond(ly_path)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True

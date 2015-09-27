@@ -506,67 +506,6 @@ class IOManager(IOManager):
             return lines
         self._display(lines, capitalize=capitalize)
 
-    def run_lilypond(self, ly_path, candidacy=True):
-        r'''Runs LilyPond on `ly_path`.
-
-        Returns list of candidate messages.
-        '''
-        from ide.tools import idetools
-        if self.find_executable('lilypond'):
-            executable = 'lilypond'
-        else:
-            message = 'cannot find LilyPond executable.'
-            raise ValueError(message)
-        directory = os.path.dirname(ly_path)
-        file_name, file_extension = os.path.splitext(ly_path)
-        pdf_path = file_name + '.pdf'
-        pdf_existed = os.path.exists(pdf_path)
-        backup_file_name = '{}._backup.pdf'
-        backup_file_name = backup_file_name.format(file_name)
-        backup_pdf_path = os.path.join(directory, backup_file_name)
-        assert not os.path.exists(backup_pdf_path)
-        directory_change = systemtools.TemporaryDirectoryChange(directory)
-        filesystem_state = systemtools.FilesystemState(
-            remove=[backup_pdf_path]
-            )
-        messages = []
-        with directory_change, filesystem_state:
-            if not os.path.exists(pdf_path):
-                backup_pdf_path = None
-            else:
-                shutil.move(pdf_path, backup_pdf_path)
-                assert not os.path.exists(pdf_path)
-            systemtools.IOManager.run_lilypond(ly_path)
-            if not os.path.isfile(pdf_path):
-                message = 'can not produce {} ...'
-                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
-                message = message.format(trimmed_path)
-                messages.append(message)
-                if backup_pdf_path:
-                    shutil.move(backup_pdf_path, pdf_path)
-                return messages
-            if backup_pdf_path is None or not candidacy:
-                message = 'writing {} ...'
-                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
-                message = message.format(trimmed_path)
-                messages.append(message)
-                return messages
-            if systemtools.TestManager.compare_files(
-                pdf_path,
-                backup_pdf_path,
-                ):
-                message = 'preserving {} ...'
-                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
-                message = message.format(trimmed_path)
-                messages.append(message)
-                return messages
-            else:
-                message = 'overwriting {} ...'
-                trimmed_path = idetools.AbjadIDE._trim_path(pdf_path)
-                message = message.format(trimmed_path)
-                messages.append(message)
-                return messages
-
     def write(self, path, string):
         r'''Writes `string` to `path`.
 
