@@ -27,7 +27,7 @@ def test_AbjadIDE_generate_preface_source_01():
 
     with open(source_path) as file_pointer:
         source_contents = ''.join(file_pointer.readlines())
-    assert 'PAPER_SIZE' in source_contents
+    assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
     with systemtools.FilesystemState(
@@ -37,7 +37,7 @@ def test_AbjadIDE_generate_preface_source_01():
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
             destination_contents = ''.join(file_pointer.readlines())
-        assert 'PAPER_SIZE' not in destination_contents
+        assert 'paper_size' not in destination_contents
         assert '{8.5in, 11in}' in destination_contents
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -63,7 +63,7 @@ def test_AbjadIDE_generate_preface_source_02():
 
     with open(source_path) as file_pointer:
         source_contents = ''.join(file_pointer.readlines())
-    assert 'PAPER_SIZE' in source_contents
+    assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
@@ -72,7 +72,7 @@ def test_AbjadIDE_generate_preface_source_02():
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
             destination_contents = ''.join(file_pointer.readlines())
-        assert 'PAPER_SIZE' not in destination_contents
+        assert 'paper_size' not in destination_contents
         assert '{8.5in, 11in}' in destination_contents
 
     contents = abjad_ide._io_manager._transcript.contents

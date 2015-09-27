@@ -22,6 +22,11 @@ def test_AbjadIDE_generate_front_cover_source_01():
         )
 
     with systemtools.FilesystemState(keep=[cover_path]):
+        os.remove(cover_path)
+        # generate first time
+        input_ = 'red~example~score bb fcg q'
+        abjad_ide._start(input_=input_)
+        # attempt to generate second time
         input_ = 'red~example~score bb fcg q'
         abjad_ide._start(input_=input_)
         assert filecmp.cmp(cover_path, cover_path + '.backup')

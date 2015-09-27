@@ -223,9 +223,11 @@ class AbjadIDE(object):
         messages = []
         with systemtools.FilesystemState(remove=[candidate_path]):
             shutil.copyfile(source_path, candidate_path)
-            for old in replacements:
-                new = replacements[old]
-                self._replace_in_file(candidate_path, old, new)
+            with open(candidate_path, 'r') as file_pointer:
+                template = file_pointer.read()
+            completed_template = template.format(**replacements)
+            with open(candidate_path, 'w') as file_pointer:
+                file_pointer.write(completed_template)
             if not os.path.exists(destination_path):
                 shutil.copyfile(candidate_path, destination_path)
                 message = 'writing {} ...'.format(destination_path)
@@ -2598,29 +2600,19 @@ class AbjadIDE(object):
             catalog_number = self._get_metadatum(
                 score_directory, 
                 'catalog_number',
+                '',
                 )
-            if catalog_number:
-                old = 'CATALOG NUMBER'
-                new = str(catalog_number)
-                replacements[old] = new
-            composer_website = configuration.composer_website
+            replacements['catalog_number'] = catalog_number
+            composer_website = configuration.composer_website or ''
             if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
-            if composer_website:
-                old = 'COMPOSER WEBSITE'
-                new = str(composer_website)
-                replacements[old] = new
+            replacements['composer_website'] = composer_website
             price = self._get_metadatum(score_directory, 'price')
-            if price:
-                old = 'PRICE'
-                new = str(price)
-                replacements[old] = new
+            replacements['price'] = price
             width, height, unit = self._parse_paper_dimensions(score_directory)
-            if width and height:
-                old = '{PAPER_SIZE}'
-                new = '{{{}{}, {}{}}}'
-                new = new.format(width, unit, height, unit)
-                replacements[old] = new
+            paper_size = '{{{}{}, {}{}}}'
+            paper_size = paper_size.format(width, unit, height, unit)
+            replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'back-cover.tex',
                 os.path.join(score_directory, 'build'),
@@ -2654,36 +2646,23 @@ class AbjadIDE(object):
                 score_directory,
                 year=False,
                 )
-            if score_title:
-                old = 'TITLE'
-                new = str(score_title.upper())
-                replacements[old] = new
+            replacements['score_title'] = score_title
             forces_tagline = self._get_metadatum(
                 score_directory, 
                 'forces_tagline',
+                '',
                 )
-            if forces_tagline:
-                old = 'FOR INSTRUMENTS'
-                new = str(forces_tagline)
-                replacements[old] = new
-            year = self._get_metadatum(score_directory, 'year')
-            if year:
-                old = 'YEAR'
-                new = str(year)
-                replacements[old] = new
+            replacements['forces_tagline'] = forces_tagline
+            year = self._get_metadatum(score_directory, 'year', '')
+            replacements['year'] = str(year)
             composer = configuration.composer_uppercase_name
             if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
-            if composer:
-                old = 'COMPOSER'
-                new = str(composer)
-                replacements[old] = new
+            replacements['composer'] = str(composer)
             width, height, unit = self._parse_paper_dimensions(score_directory)
-            if width and height:
-                old = '{PAPER_SIZE}'
-                new = '{{{}{}, {}{}}}'
-                new = new.format(width, unit, height, unit)
-                replacements[old] = new
+            paper_size = '{{{}{}, {}{}}}'
+            paper_size = paper_size.format(width, unit, height, unit)
+            replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 file_name,
                 os.path.join(score_directory, 'build'),
@@ -2843,11 +2822,9 @@ class AbjadIDE(object):
             score_directory = self._to_score_directory(directory)
             replacements = {}
             width, height, unit = self._parse_paper_dimensions(score_directory)
-            if width and height:
-                old = '{PAPER_SIZE}'
-                new = '{{{}{}, {}{}}}'
-                new = new.format(width, unit, height, unit)
-                replacements[old] = new
+            paper_size = '{{{}{}, {}{}}}'
+            paper_size = paper_size.format(width, unit, height, unit)
+            replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'preface.tex',
                 os.path.join(score_directory, 'build'),
@@ -2877,11 +2854,9 @@ class AbjadIDE(object):
             score_directory = self._to_score_directory(directory)
             replacements = {}
             width, height, unit = self._parse_paper_dimensions(score_directory)
-            if width and height:
-                old = '{PAPER_SIZE}'
-                new = '{{{}{}, {}{}}}'
-                new = new.format(width, unit, height, unit)
-                replacements[old] = new
+            paper_size = '{{{}{}, {}{}}}'
+            paper_size = paper_size.format(width, unit, height, unit)
+            replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'score.tex',
                 os.path.join(score_directory, 'build'),

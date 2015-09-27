@@ -1,20 +1,20 @@
-\documentclass[11pt]{report}
-\usepackage[papersize={PAPER_SIZE}, margin=1in]{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{palatino}
-\usepackage{tikz}
-\usetikzlibrary{calc}
+\documentclass[11pt]{{report}}
+\usepackage[papersize={paper_size}, margin=1in]{{geometry}}
+\usepackage[utf8]{{inputenc}}
+\usepackage[T1]{{fontenc}}
+\usepackage{{palatino}}
+\usepackage{{tikz}}
+\usetikzlibrary{{calc}}
 % uncomment for use with xelatex
-%\usepackage{xltxtra,fontspec,xunicode}
-%\defaultfontfeatures{Scale=MatchLowercase}
-%\setromanfont[Numbers=Uppercase]{Didot}
-\newlength{\drop}
+%\usepackage{{xltxtra,fontspec,xunicode}}
+%\defaultfontfeatures{{Scale=MatchLowercase}}
+%\setromanfont[Numbers=Uppercase]{{Didot}}
+\newlength{{\drop}}
 \parindent=0pt
 
-\begin{document}
-    \begin{titlepage}
-        \begin{tikzpicture}[remember picture, overlay]
+\begin{{document}}
+    \begin{{titlepage}}
+        \begin{{tikzpicture}}[remember picture, overlay]
             \draw[line width = 1.6pt]
                 ($(current page.north west) + (1in,-1in)$)
                 rectangle
@@ -23,24 +23,24 @@
                 ($(current page.north west) + (1in,-1in) + (2.8pt,-2.8pt)$)
                 rectangle
                 ($(current page.south east) + (-1in,1in) + (-2.8pt,2.8pt)$);
-        \end{tikzpicture}
+        \end{{tikzpicture}}
         \drop=0.1\textheight
         \centering
         % must leave blank line below for vspace to work
 
-        {\vspace{0.2in}}
-        {\fontsize{4.5cm}{2em}\selectfont TITLE}
+        {{\vspace{{0.2in}}}}
+        {{\fontsize{{4.5cm}}{{2em}}\selectfont {score_title}}}
         \\
-        \vspace{1.5 in}
-        {
+        \vspace{{1.5 in}}
+        {{
             \Huge
-            \textit{FOR INSTRUMENTS}
-            \vspace*{0.5\baselineskip}
+            \textit{{{forces_tagline}}}
+            \vspace*{{0.5\baselineskip}}
             \\
-            \textit{(YEAR)}
-        }
+            \textit{{({year})}}
+        }}
         \\
-        \vspace{3 in}
-        {\fontsize{4.5cm}{2em}\selectfont COMPOSER}
-    \end{titlepage}
-\end{document}
+        \vspace{{3 in}}
+        {{\fontsize{{4.5cm}}{{2em}}\selectfont {composer}}}
+    \end{{titlepage}}
+\end{{document}}
