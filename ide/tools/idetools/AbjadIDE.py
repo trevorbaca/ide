@@ -2658,30 +2658,6 @@ class AbjadIDE(object):
         self._io_manager.open_file(file_path)
 
     @Command(
-        'sty',
-        argument_name='current_directory',
-        description='stylesheet - edit',
-        forbidden_directories=('scores',),
-        section='global files',
-        )
-    def edit_score_stylesheet(self, directory):
-        r'''Edits score stylesheet.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        path = os.path.join(
-            score_directory,
-            'stylesheets',
-            'stylesheet.ily',
-            )
-        if not path or not os.path.isfile(path):
-            with open(path, 'w') as file_pointer:
-                file_pointer.write('')
-        self._io_manager.edit(path)
-
-    @Command(
         'bcg',
         argument_name='current_directory',
         directories=('build'),
