@@ -92,6 +92,59 @@ class AbjadIDE(object):
         metadata[metadatum_name] = metadatum_value
         self._write_metadata_py(directory, metadata)
 
+    def _call_latex_on_file(self, file_path):
+        r'''Interprets TeX file.
+        Calls ``pdflatex`` on file TWICE.
+        Some LaTeX packages like ``tikz`` require two passes.
+        '''
+        if not os.path.isfile(file_path):
+            message = 'file not found: {}.'
+            message = message.format(file_path)
+            self._io_manager._display(message)
+            return
+        message = 'calling LaTeX on {} ...'
+        message = message.format(file_path)
+        self._io_manager._display(message)
+        input_directory = os.path.dirname(file_path)
+        output_directory = input_directory
+        basename = os.path.basename(file_path)
+        input_file_name_stem, file_extension = os.path.splitext(basename)
+        job_name = '{}.candidate'.format(input_file_name_stem)
+        candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
+        candidate_path = os.path.join(output_directory, candidate_name)
+        destination_name = '{}.pdf'.format(input_file_name_stem)
+        destination_path = os.path.join(output_directory, destination_name)
+        command = 'date > {};'
+        command += ' pdflatex --jobname={} -output-directory={} {}/{}.tex'
+        command += ' >> {} 2>&1'
+        command = command.format(
+            configuration.latex_log_file_path,
+            job_name,
+            output_directory,
+            input_directory,
+            input_file_name_stem,
+            configuration.latex_log_file_path,
+            )
+        command_called_twice = '{}; {}'.format(command, command)
+        filesystem = systemtools.FilesystemState(remove=[candidate_path])
+        directory = systemtools.TemporaryDirectoryChange(input_directory)
+        with filesystem, directory:
+            self._io_manager.spawn_subprocess(command_called_twice)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.aux'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            for file_name in glob.glob('*.log'):
+                path = os.path.join(output_directory, file_name)
+                os.remove(path)
+            messages = self._handle_candidate(
+                candidate_path,
+                destination_path,
+                )
+            return messages
+
     def _clear_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
         self._add_metadatum(directory, 'view_name', None)
@@ -664,59 +717,6 @@ class AbjadIDE(object):
                 return True
             if 'Changes to be committed:' in line:
                 return True
-
-    def _interpret_tex_file(self, file_path):
-        r'''Interprets TeX file.
-        Calls ``pdflatex`` on file TWICE.
-        Some LaTeX packages like ``tikz`` require two passes.
-        '''
-        if not os.path.isfile(file_path):
-            message = 'file not found: {}.'
-            message = message.format(file_path)
-            self._io_manager._display(message)
-            return
-        message = 'interpreting {} ...'
-        message = message.format(file_path)
-        self._io_manager._display(message)
-        input_directory = os.path.dirname(file_path)
-        output_directory = input_directory
-        basename = os.path.basename(file_path)
-        input_file_name_stem, file_extension = os.path.splitext(basename)
-        job_name = '{}.candidate'.format(input_file_name_stem)
-        candidate_name = '{}.candidate.pdf'.format(input_file_name_stem)
-        candidate_path = os.path.join(output_directory, candidate_name)
-        destination_name = '{}.pdf'.format(input_file_name_stem)
-        destination_path = os.path.join(output_directory, destination_name)
-        command = 'date > {};'
-        command += ' pdflatex --jobname={} -output-directory={} {}/{}.tex'
-        command += ' >> {} 2>&1'
-        command = command.format(
-            configuration.latex_log_file_path,
-            job_name,
-            output_directory,
-            input_directory,
-            input_file_name_stem,
-            configuration.latex_log_file_path,
-            )
-        command_called_twice = '{}; {}'.format(command, command)
-        filesystem = systemtools.FilesystemState(remove=[candidate_path])
-        directory = systemtools.TemporaryDirectoryChange(input_directory)
-        with filesystem, directory:
-            self._io_manager.spawn_subprocess(command_called_twice)
-            for file_name in glob.glob('*.aux'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            for file_name in glob.glob('*.aux'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            for file_name in glob.glob('*.log'):
-                path = os.path.join(output_directory, file_name)
-                os.remove(path)
-            messages = self._handle_candidate(
-                candidate_path,
-                destination_path,
-                )
-            return messages
 
     @staticmethod
     def _is_classfile_name(expr):
@@ -2337,40 +2337,70 @@ class AbjadIDE(object):
 
     ### PUBLIC METHODS ###
 
-#    @Command(
-#        'spb',
-#        argument_name='current_directory',
-#        description='score pdf - build',
-#        directories=('build',),
-#        section='build',
-#        )
-#    def build_score_pdf(self, directory):
-#        r'''Builds score from the ground up.
-#
-#        Returns none.
-#        '''
-#        assert os.path.isdir(directory), repr(directory)
-#        build_directory = self._to_score_directory(directory, 'build')
-#        with self._io_manager._make_interaction():
-#            self.copy_segment_lys(directory, subroutine=True)
-#            self.generate_music_source(directory)
-#            self.interpret_music(directory)
-#            file_path = os.path.join(build_directory, 'front-cover.pdf')
-#            if not file_path:
-#                self.generate_front_cover(directory)
-#                self.interpret_front_cover(directory)
-#            file_path = os.path.join(build_directory, 'preface.pdf')
-#            if not file_path:
-#                self.generate_preface(directory)
-#                self.interpret_preface(directory)
-#            file_path = os.path.join(build_directory, 'back-cover.pdf')
-#            if not file_path:
-#                self.generate_back_cover(directory)
-#                self.interpret_back_cover(directory)
-#            self.generate_score_source(directory)
-#            self.interpret_score(directory)
-#            file_path = os.path.join(build_directory, 'score.pdf')
-#            self._io_manager.open_file(file_path)
+    @Command(
+        'bld',
+        argument_name='current_directory',
+        description='score pdf - build',
+        directories=('build',),
+        section='build',
+        )
+    def build_score(self, directory):
+        r'''Builds score from the ground up.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        build_directory = self._to_score_directory(directory, 'build')
+        message = 'building score ...'
+        self._io_manager._display(message)
+        with self._io_manager._make_interaction():
+            self.copy_segment_lys(directory, subroutine=True)
+            self.generate_music_ly(directory, subroutine=True)
+            self.interpret_music(directory, subroutine=True)
+            tex_file_path = os.path.join(build_directory, 'front-cover.tex')
+            pdf_path = os.path.join(build_directory, 'front-cover.pdf')
+            if tex_file_path:
+                self.interpret_front_cover(directory, subroutine=True)
+            elif pdf_path:
+                message = 'using existing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+            else:
+                message = 'can make front cover ...'
+                self._io_manager._display(message)
+                return
+            tex_file_path = os.path.join(build_directory, 'preface.tex')
+            pdf_path = os.path.join(build_directory, 'preface.pdf')
+            if tex_file_path:
+                self.interpret_preface(directory, subroutine=True)
+            elif pdf_path:
+                message = 'using existing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+            else:
+                message = 'can make front cover ...'
+                self._io_manager._display(message)
+                return
+            tex_file_path = os.path.join(build_directory, 'back-cover.tex')
+            pdf_path = os.path.join(build_directory, 'back-cover.pdf')
+            if tex_file_path:
+                self.interpret_back_cover(directory, subroutine=True)
+            elif pdf_path:
+                message = 'using existing {} ...'
+                message = message.format(self._trim_path(pdf_path))
+                self._io_manager._display(message)
+            else:
+                message = 'can make front cover ...'
+                self._io_manager._display(message)
+                return
+            self.generate_score_source(directory, subroutine=True)
+            messages = self.interpret_score(directory, subroutine=True)
+            if not messages[0].startswith('preserving'):
+                file_path = os.path.join(build_directory, 'score.pdf')
+                message = 'opening {} ...'
+                message = message.format(file_path)
+                self._io_manager._display(message)
+                self._io_manager.open_file(file_path)
     
     @Command(
         'dfk',
@@ -2514,7 +2544,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            message = 'copying segment lys ...'
+            message = 'copying segment LilyPond files into build directory ...'
             self._io_manager._display(message)
             directory = self._to_score_directory(directory)
             pairs = self._gather_segment_lys(directory)
@@ -2774,13 +2804,15 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-generate',
         )
-    def generate_music_source(self, directory):
+    def generate_music_ly(self, directory, subroutine=False):
         r'''Generates ``music.ly``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
+            message = 'generating music LilyPond file ...'
+            self._io_manager._display(message)
             messages = []
             score_directory = self._to_score_directory(directory)
             segments_directory = self._to_score_directory(
@@ -2797,17 +2829,17 @@ class AbjadIDE(object):
                 if not view_inventory or view_name not in view_inventory:
                     view_name = None
                 if view_name:
-                    message = 'including segments in {!r} order ...'
+                    message = 'examining segments in {!r} order ...'
                     message = message.format(view_name)
                     messages.append(message)
                 else:
-                    message = 'including segments in alphabetical order ...'
+                    message = 'examining segments in alphabetical order ...'
                     messages.append(message)
             else:
                 message = 'no segments found ...'
                 messages.append(message)
             for ly_path in ly_paths:
-                message = 'including {} ...'
+                message = 'examining {} ...'
                 message = message.format(self._trim_path(ly_path))
                 messages.append(message)
             segment_names = []
@@ -2890,7 +2922,7 @@ class AbjadIDE(object):
                     destination_path,
                     )
                 messages.extend(messages_)
-                if messages_[0].startswith('writing'):
+                if messages_[0].startswith('writing') and not subroutine:
                     self._session._pending_menu_rebuild = True
                     self._session._pending_redraw = True
                     self._session._after_redraw_messages = messages
@@ -2936,13 +2968,15 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-generate',
         )
-    def generate_score_source(self, directory):
+    def generate_score_source(self, directory, subroutine=False):
         r'''Generates ``score.tex``.
 
         Returns none.
         '''
         assert os.path.isdir(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
+            message = 'generating score LaTeX file ...'
+            self._io_manager._display(message)
             score_directory = self._to_score_directory(directory)
             replacements = {}
             width, height, unit = self._parse_paper_dimensions(score_directory)
@@ -2954,7 +2988,7 @@ class AbjadIDE(object):
                 os.path.join(score_directory, 'build'),
                 replacements=replacements,
                 )
-            if messages[0].startswith('writing'):
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
@@ -3476,18 +3510,18 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-interpret',
         )
-    def interpret_back_cover(self, directory):
+    def interpret_back_cover(self, directory, subroutine=False):
         r'''Interprets ``back-cover.tex``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
             file_path = os.path.join(build_directory, 'back-cover.tex')
-            messages = self._interpret_tex_file(file_path)
-            if messages[0].startswith('writing'):
+            messages = self._call_latex_on_file(file_path)
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
@@ -3533,18 +3567,18 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-interpret',
         )
-    def interpret_front_cover(self, directory):
+    def interpret_front_cover(self, directory, subroutine=False):
         r'''Interprets ``front-cover.tex``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
             file_path = os.path.join(build_directory, 'front-cover.tex')
-            messages = self._interpret_tex_file(file_path)
-            if messages[0].startswith('writing'):
+            messages = self._call_latex_on_file(file_path)
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
@@ -3589,13 +3623,13 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-interpret',
         )
-    def interpret_music(self, directory):
+    def interpret_music(self, directory, subroutine=False):
         r'''Interprets ``music.ly``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
             ly_path = os.path.join(build_directory, 'music.ly')
@@ -3604,11 +3638,11 @@ class AbjadIDE(object):
                 message = message.format(ly_path)
                 self._io_manager._display(message)
                 return
-            message = 'interpreting {} ...'
+            message = 'calling LilyPond on {} ...'
             message = message.format(ly_path)
             self._io_manager._display(message)
             messages = self._run_lilypond(ly_path)
-            if messages[0].startswith('writing'):
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
@@ -3622,18 +3656,18 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-interpret',
         )
-    def interpret_preface(self, directory):
+    def interpret_preface(self, directory, subroutine=False):
         r'''Interprets ``preface.tex``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
             file_path = os.path.join(build_directory, 'preface.tex')
-            messages = self._interpret_tex_file(file_path)
-            if messages[0].startswith('writing'):
+            messages = self._call_latex_on_file(file_path)
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
@@ -3647,23 +3681,24 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-interpret',
         )
-    def interpret_score(self, directory):
+    def interpret_score(self, directory, subroutine=False):
         r'''Interprets ``score.tex``.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
+        with self._io_manager._make_interaction(dry_run=subroutine):
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
             file_path = os.path.join(build_directory, 'score.tex')
-            messages = self._interpret_tex_file(file_path)
-            if messages[0].startswith('writing'):
+            messages = self._call_latex_on_file(file_path)
+            if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 self._session._after_redraw_messages = messages
             else:
                 self._io_manager._display(messages)
+            return messages
 
     @Command('!', section='system')
     def invoke_shell(self):

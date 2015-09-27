@@ -136,6 +136,7 @@ def test_AbjadIDE_display_action_command_help_04():
         '    preface - interpret (pi)',
         '    score - interpret (si)',
         '',
+        '    score pdf - build (bld)',
         '    score pdf - publish (spp)',
         '',
         '    copy (cp)',

@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_generate_music_source_01():
+def test_AbjadIDE_generate_music_ly_01():
     r'''When music does not exist yet.
 
     (Can't use filecmp because music.ly file contains LilyPond version
@@ -35,7 +35,7 @@ def test_AbjadIDE_generate_music_source_01():
         assert r'\version' in file_contents
 
 
-def test_AbjadIDE_generate_music_source_02():
+def test_AbjadIDE_generate_music_ly_02():
     r'''When music already exists.
     '''
 
@@ -60,7 +60,7 @@ def test_AbjadIDE_generate_music_source_02():
     assert 'Preserving' in contents
 
 
-def test_AbjadIDE_generate_music_source_03():
+def test_AbjadIDE_generate_music_ly_03():
     r'''Indents include files exacty four spaces.
     '''
 
