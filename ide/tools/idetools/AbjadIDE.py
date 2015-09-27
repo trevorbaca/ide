@@ -678,6 +678,9 @@ class AbjadIDE(object):
             message = message.format(string)
             self._io_manager._display(message)
             return
+        message = 'interpreting {} ...'
+        message = message.format(file_path)
+        self._io_manager._display(message)
         input_directory = os.path.dirname(file_path)
         output_directory = input_directory
         basename = os.path.basename(file_path)
@@ -687,12 +690,16 @@ class AbjadIDE(object):
         candidate_path = os.path.join(output_directory, candidate_name)
         destination_name = '{}.pdf'.format(input_file_name_stem)
         destination_path = os.path.join(output_directory, destination_name)
-        command = 'pdflatex --jobname={} -output-directory={} {}/{}.tex'
+        command = 'date > {};'
+        command += ' pdflatex --jobname={} -output-directory={} {}/{}.tex'
+        command += ' >> {} 2>&1'
         command = command.format(
+            configuration.latex_log_file_path,
             job_name,
             output_directory,
             input_directory,
             input_file_name_stem,
+            configuration.latex_log_file_path,
             )
         command_called_twice = '{}; {}'.format(command, command)
         filesystem = systemtools.FilesystemState(remove=[candidate_path])
