@@ -512,6 +512,7 @@ class IOManager(IOManager):
         Returns pair. List of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
+        assert candidacy == False
         if self.find_executable('lilypond'):
             executable = 'lilypond'
         else:
@@ -533,45 +534,6 @@ class IOManager(IOManager):
                 stderr_messages = self._read_from_pipe(process.stderr)
                 stderr_messages = stderr_messages.splitlines()
             return stderr_messages, []
-        base_candidate_path = base + '.candidate'
-        candidate_path = base_candidate_path + '.pdf'
-        with systemtools.FilesystemState(remove=[candidate_path]):
-            command = '{} -dno-point-and-click --output={} {}'
-            command = command.format(executable, base_candidate_path, path)
-            with systemtools.TemporaryDirectoryChange(input_directory):
-                process = subprocess.Popen(
-                    command,
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    )
-                stderr_messages = self._read_from_pipe(process.stderr)
-                stderr_messages = stderr_messages.splitlines()
-            self._display(stderr_messages)
-            tab = self._tab
-            candidate_messages = []
-            if systemtools.TestManager.compare_files(
-                output_path,
-                candidate_path,
-                ):
-                candidate_messages.append('The files ...')
-                candidate_messages.append(tab + candidate_path)
-                candidate_messages.append(tab + output_path)
-                candidate_messages.append('... compare the same.')
-                candidate_messages.append('Preserved {}.'.format(output_path))
-                self._display(candidate_messages)
-                return stderr_messages, candidate_messages
-            candidate_messages.append('The files ...')
-            candidate_messages.append(tab + candidate_path)
-            candidate_messages.append(tab + output_path)
-            candidate_messages.append('... compare differently.')
-            self._display(candidate_messages)
-            message = 'overwrite existing PDF with candidate PDF?'
-            result = self._confirm(message=message)
-            if not result:
-                return stderr_messages, candidate_messages
-            shutil.move(candidate_path, output_path)
-            return stderr_messages, candidate_messages
 
     def write(self, path, string):
         r'''Writes `string` to `path`.
