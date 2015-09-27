@@ -2660,6 +2660,7 @@ class AbjadIDE(object):
                 score_directory,
                 year=False,
                 )
+            score_title = score_title.upper()
             replacements['score_title'] = score_title
             forces_tagline = self._get_metadatum(
                 score_directory, 
