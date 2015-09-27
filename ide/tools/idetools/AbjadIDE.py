@@ -526,6 +526,18 @@ class AbjadIDE(object):
         line = self._io_manager._read_one_line_from_pipe(process.stdout)
         return line
 
+    def _get_segment_metadata(self, directory):
+        assert self._is_score_directory(directory, 'segment'), repr(directory)
+        previous_directory = self._get_previous_directory(directory)
+        assert self._is_score_directory(previous_directory, 'segment')
+        segment_metadata = self._get_metadata(directory)
+        segments_directory = self._to_score_directory(directory, 'segments')
+        paths = self._list_visible_paths(segments_directory)
+        if directory == paths[0]:
+            return segment_metadata
+        previous_segment_metadata = self._get_metadata(previous_directory)
+        return segment_metadata, previous_segment_metadata
+
     def _get_title_metadatum(self, score_directory, year=True):
         if year and self._get_metadatum(score_directory, 'year'):
             result = '{} ({})'
@@ -2238,10 +2250,7 @@ class AbjadIDE(object):
 
     def _update_order_dependent_segment_metadata(self, directory):
         assert os.path.isdir(directory), repr(directory)
-        directory = self._to_score_directory(
-            directory,
-            'segments',
-            )
+        directory = self._to_score_directory(directory, 'segments')
         paths = self._list_visible_paths(directory)
         if not paths:
             return
