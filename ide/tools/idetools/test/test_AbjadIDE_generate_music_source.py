@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_generate_music_source_01():
-    r'''Works when music.ly source doesn't yet exist.
+    r'''When music does not exist yet.
 
     (Can't use filecmp because music.ly file contains LilyPond version
     directive, LilyPond language directive and file paths. All depend
@@ -37,7 +37,7 @@ def test_AbjadIDE_generate_music_source_01():
 
 
 def test_AbjadIDE_generate_music_source_02():
-    r'''Works when music.ly already exists.
+    r'''When music already exists.
     '''
 
     music_path = os.path.join(
@@ -57,7 +57,7 @@ def test_AbjadIDE_generate_music_source_02():
 
 
 def test_AbjadIDE_generate_music_source_03():
-    r'''Include files are indentented exacty four spaces.
+    r'''Indents include files exacty four spaces.
     '''
 
     music_path = os.path.join(

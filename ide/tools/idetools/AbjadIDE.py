@@ -199,39 +199,6 @@ class AbjadIDE(object):
                 directories.append(directory_)
         return directories
 
-    def _confirm_segment_names(self, directory):
-        segments_directory = os.path.join(directory, 'segments')
-        view_name = self._get_metadatum(directory, 'view_name')
-        view_inventory = self._read_view_inventory(segments_directory)
-        if not view_inventory or view_name not in view_inventory:
-            view_name = None
-        segment_paths = self._list_visible_paths(segments_directory)
-        segment_paths = segment_paths or []
-        segment_names = []
-        for segment_path in segment_paths:
-            segment_name = os.path.basename(segment_path)
-            segment_names.append(segment_name)
-        messages = []
-        if view_name:
-            message = 'the {!r} segment view is currently selected.'
-            message = message.format(view_name)
-            messages.append(message)
-        if segment_names:
-            message = 'will assemble segments in this order:'
-            messages.append(message)
-            for segment_name in segment_names:
-                message = '    ' + segment_name
-                messages.append(message)
-        else:
-            message = 'no segments found:'
-            message += ' will generate source without segments.'
-            messages.append(message)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return False
-        return segment_names
-
     def _copy_boilerplate(
         self,
         source_file_name,
@@ -2756,11 +2723,40 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction():
+            messages = []
             score_directory = self._to_score_directory(directory)
-            result = self._confirm_segment_names(score_directory)
-            if not isinstance(result, list):
-                return
-            segment_names = result
+            segments_directory = self._to_score_directory(
+                directory,
+                'segments',
+                )
+            ly_paths = self._list_visible_paths(segments_directory)
+            if ly_paths:
+                view_name = self._get_metadatum(
+                    segments_directory, 
+                    'view_name',
+                    )
+                view_inventory = self._read_view_inventory(segments_directory)
+                if not view_inventory or view_name not in view_inventory:
+                    view_name = None
+                if view_name:
+                    message = 'including segments in {!r} order ...'
+                    message = message.format(view_name)
+                    messages.append(message)
+                else:
+                    message = 'including segments in alphabetical order ...'
+                    messages.append(message)
+            else:
+                message = 'no segments found ...'
+                messages.append(message)
+            for ly_path in ly_paths:
+                message = 'including {} ...'
+                message = message.format(self._trim_path(ly_path))
+                messages.append(message)
+            segment_names = []
+            for ly_path in ly_paths:
+                segment_name = os.path.basename(ly_path)
+                segment_name, _ = os.path.splitext(segment_name)
+                segment_names.append(segment_name)
             lilypond_names = [_.replace('_', '-') for _ in segment_names]
             source_path = os.path.join(
                 configuration.abjad_ide_boilerplate_directory,
@@ -2840,11 +2836,12 @@ class AbjadIDE(object):
                     old = 'FORCES_TAGLINE'
                     new = forces_tagline
                     self._replace_in_file(candidate_path, old, new)
-                messages = self._handle_candidate_revised(
+                messages_ = self._handle_candidate_revised(
                     candidate_path,
                     destination_path,
                     )
-                if messages[0].startswith('writing'):
+                messages.extend(messages_)
+                if messages_[0].startswith('writing'):
                     self._session._pending_menu_rebuild = True
                     self._session._pending_redraw = True
                     self._session._after_redraw_messages = messages
