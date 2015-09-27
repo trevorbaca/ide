@@ -3510,6 +3510,7 @@ class AbjadIDE(object):
                 message = 'interpreting {} ...'
                 message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
+                # TODO: simplify below
                 self._io_manager.run_lilypond(ly_path, candidacy=False)
                 if not os.path.isfile(pdf_path):
                     message = 'could not produce {}.'
@@ -3562,8 +3563,7 @@ class AbjadIDE(object):
             message = 'interpreting {} ...'
             message = message.format(ly_path)
             self._io_manager._display(message)
-            result = self._io_manager.run_lilypond(ly_path, candidacy=True)
-            stderr_messages, messages = result
+            messages = self._io_manager.run_lilypond(ly_path, candidacy=True)
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
