@@ -1216,7 +1216,7 @@ class AbjadIDE(object):
                     self._io_manager._display(message)
                     self._io_manager.open_file(ly_path)
 
-    def _make_material_pdf(self, directory, dry_run=False):
+    def _make_material_pdf(self, directory, subroutine=False):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
@@ -1257,11 +1257,6 @@ class AbjadIDE(object):
         for path in temporary_files:
             if os.path.exists(path):
                 os.remove(path)
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_path)
-            outputs.append((ly_path, pdf_path))
-            return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
             message = 'interpreting {} ...'
@@ -1334,7 +1329,7 @@ class AbjadIDE(object):
                     message = message.format(self._trim_path(pdf_path))
                     self._io_manager._display(message)
                     shutil.move(candidate_pdf_path, pdf_path)
-            if not self._session.is_test:
+            if not self._session.is_test and not subroutine:
                 message = 'opening {} ...'
                 message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
@@ -1505,7 +1500,7 @@ class AbjadIDE(object):
             message = message.format(self._trim_path(ly_path))
             self._io_manager._display(message)
 
-    def _make_segment_pdf(self, directory, dry_run=False):
+    def _make_segment_pdf(self, directory, subroutine=False):
         assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
@@ -1540,11 +1535,6 @@ class AbjadIDE(object):
                 os.remove(path)
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_path)
-            outputs.append((ly_path, pdf_path))
-            return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_file_path)
             previous_segment_directory = self._get_previous_segment_directory(
@@ -1620,7 +1610,7 @@ class AbjadIDE(object):
                     self._io_manager._display(message)
                     shutil.move(candidate_pdf_path, pdf_path)
                     made_new_pdf = True
-            if made_new_pdf:
+            if made_new_pdf and not subroutine:
                 message = 'opening {} ...'
                 message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
@@ -2425,11 +2415,7 @@ class AbjadIDE(object):
             with systemtools.Timer() as timer:
                 for path in paths:
                     self.check_definition_file(path, subroutine=True)
-            total_time = int(timer.elapsed_time)
-            identifier = stringtools.pluralize('second', total_time)
-            message = 'total time: {} {}.'
-            message = message.format(total_time, identifier)
-            self._io_manager._display(message)
+            self._io_manager._display(timer.total_time_message)
 
     @Command(
         'mc',
@@ -3497,9 +3483,7 @@ class AbjadIDE(object):
                 for ly_file in ly_files:
                     directory = os.path.dirname(ly_file)
                     result = self.interpret_ly(directory, subroutine=True)
-                message = 'total time: {} seconds.'
-                message = message.format(int(timer.elapsed_time))
-                self._io_manager._display(message)
+                self._io_manager._display(timer.total_time_message)
 
     @Command(
         'fci',
@@ -3663,24 +3647,13 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         assert self._is_score_directory(directory, ('materials', 'segments'))
-        directories = self._list_visible_paths(directory)
-        inputs, outputs = [], []
-        valid_directories = []
-        for directory in directories:
-            result = self.make_pdf(directory, dry_run=True)
-            if result is None:
-                continue
-            inputs_, outputs_ = result
-            inputs.extend(inputs_)
-            outputs.extend(outputs_)
-            valid_directories.append(directory)
-        messages = self._format_messaging(inputs, outputs, verb='illustrate')
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        for directory in valid_directories:
-            self.make_pdf(directory)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            valid_directories = directories[:]
+            with systemtools.Timer() as timer:
+                for directory in valid_directories:
+                    self.make_pdf(directory, subroutine=True)
+                self._io_manager._display(timer.total_time_message)
 
     @Command(
         'illm',
@@ -3746,17 +3719,23 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='pdf',
         )
-    def make_pdf(self, directory, dry_run=False):
+    def make_pdf(self, directory, subroutine=False):
         r'''Makes illustration PDF.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction(dry_run=dry_run):
+        with self._io_manager._make_interaction(dry_run=subroutine):
             if self._is_score_directory(directory, 'material'):
-                result = self._make_material_pdf(directory, dry_run=dry_run)
+                result = self._make_material_pdf(
+                    directory,
+                    subroutine=subroutine,
+                    )
             elif self._is_score_directory(directory, 'segment'):
-                result = self._make_segment_pdf(directory, dry_run=dry_run)
+                result = self._make_segment_pdf(
+                    directory,
+                    subroutine=subroutine,
+                    )
             else:
                 raise ValueError(directory)
             return result
