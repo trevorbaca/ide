@@ -103,7 +103,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         message = 'calling LaTeX on {} ...'
-        message = message.format(file_path)
+        message = message.format(self._trim_path(file_path))
         self._io_manager._display(message)
         input_directory = os.path.dirname(file_path)
         output_directory = input_directory
@@ -2398,7 +2398,7 @@ class AbjadIDE(object):
             if not messages[0].startswith('preserving'):
                 file_path = os.path.join(build_directory, 'score.pdf')
                 message = 'opening {} ...'
-                message = message.format(file_path)
+                message = message.format(self._trim_path(file_path))
                 self._io_manager._display(message)
                 self._io_manager.open_file(file_path)
     
@@ -3639,7 +3639,7 @@ class AbjadIDE(object):
                 self._io_manager._display(message)
                 return
             message = 'calling LilyPond on {} ...'
-            message = message.format(ly_path)
+            message = message.format(self._trim_path(ly_path))
             self._io_manager._display(message)
             messages = self._run_lilypond(ly_path)
             if messages[0].startswith('writing') and not subroutine:
