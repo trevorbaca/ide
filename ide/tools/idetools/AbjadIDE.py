@@ -235,7 +235,6 @@ class AbjadIDE(object):
         self,
         source_file_name,
         destination_directory,
-        candidacy=True,
         replacements=None,
         ):
         replacements = replacements or {}
@@ -261,37 +260,20 @@ class AbjadIDE(object):
                 self._replace_in_file(candidate_path, old, new)
             if not os.path.exists(destination_path):
                 shutil.copyfile(candidate_path, destination_path)
-                message = 'wrote {}.'.format(destination_path)
-                messages.append(message)
-            elif not candidacy:
-                message = 'overwrite {}?'
-                message = message.format(destination_path)
-                result = self._io_manager._confirm(message)
-                if not result:
-                    return False
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'.format(destination_path)
+                message = 'writing {} ...'.format(destination_path)
                 messages.append(message)
             elif systemtools.TestManager.compare_files(
                 candidate_path,
                 destination_path,
                 ):
-                messages_ = self._make_candidate_messages(
-                    True,
-                    candidate_path,
-                    destination_path,
-                    )
-                messages.extend(messages_)
-                message = 'preserved {}.'
+                message = 'preserving {} ...'
                 message = message.format(self._trim_path(destination_path))
                 messages.append(message)
             else:
-                shutil.copyfile(candidate_path, destination_path)
-                message = 'overwrote {}.'
+                message = 'overwriting {} ...'
                 message = message.format(self._trim_path(destination_path))
                 messages.append(message)
-            #self._io_manager._display(messages)
-            #return True
+                shutil.copyfile(candidate_path, destination_path)
             return messages
 
     def _filter_by_view(self, directory, entries):
@@ -637,23 +619,21 @@ class AbjadIDE(object):
         if not os.path.exists(destination_path):
             message = 'writing {} ...'
             message = message.format(self._trim_path(destination_path))
-            self._io_manager._display(message)
+            messages.append(message)
             shutil.copyfile(candidate_path, destination_path)
-            return
-        same = systemtools.TestManager.compare_files(
+        elif systemtools.TestManager.compare_files(
             candidate_path,
             destination_path,
-            )
-        if same:
+            ):
             message = 'preserving {} ...'
             message = message.format(self._trim_path(destination_path))
-            self._io_manager._display(message)
-            return
+            messages.append(message)
         else:
             message = 'overwriting {} ...'
             message = message.format(self._trim_path(destination_path))
-            self._io_manager._display(message)
+            messages.append(message)
             shutil.copyfile(candidate_path, destination_path)
+        return messages
 
     def _handle_input(self, result):
         assert isinstance(result, (str, tuple)), repr(result)
@@ -2520,10 +2500,16 @@ class AbjadIDE(object):
                 with systemtools.FilesystemState(remove=[candidate_ly_path]):
                     shutil.copyfile(source_ly_path, candidate_ly_path)
                     self._trim_ly(candidate_ly_path)
-                    self._handle_candidate_revised(
+                    messages = self._handle_candidate_revised(
                         candidate_ly_path,
                         target_ly_path,
                         )
+                    if messages[0].startswith('writing'):
+                        self._session._pending_menu_rebuild = True
+                        self._session._pending_redraw = True
+                        self._session._after_redraw_messages = messages
+                    else:
+                        self._io_manager._display(messages)
 
     @Command('?', section='system')
     def display_action_command_help(self):
@@ -2685,9 +2671,12 @@ class AbjadIDE(object):
                 os.path.join(score_directory, 'build'),
                 replacements=replacements,
                 )
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
-        self._session._after_redraw_messages = messages
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'fcg',
@@ -2702,48 +2691,55 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        file_name = 'front-cover.tex'
-        replacements = {}
-        score_title = self._get_title_metadatum(
-            score_directory,
-            year=False,
-            )
-        if score_title:
-            old = 'TITLE'
-            new = str(score_title.upper())
-            replacements[old] = new
-        forces_tagline = self._get_metadatum(score_directory, 'forces_tagline')
-        if forces_tagline:
-            old = 'FOR INSTRUMENTS'
-            new = str(forces_tagline)
-            replacements[old] = new
-        year = self._get_metadatum(score_directory, 'year')
-        if year:
-            old = 'YEAR'
-            new = str(year)
-            replacements[old] = new
-        composer = configuration.composer_uppercase_name
-        if self._session.is_test:
-            composer = 'EXAMPLE COMPOSER NAME'
-        if composer:
-            old = 'COMPOSER'
-            new = str(composer)
-            replacements[old] = new
-        width, height, unit = self._parse_paper_dimensions(score_directory)
-        if width and height:
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            replacements[old] = new
-        messages = self._copy_boilerplate(
-            file_name,
-            os.path.join(score_directory, 'build'),
-            replacements=replacements,
-            )
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
-        self._session._after_redraw_messages = messages
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            file_name = 'front-cover.tex'
+            replacements = {}
+            score_title = self._get_title_metadatum(
+                score_directory,
+                year=False,
+                )
+            if score_title:
+                old = 'TITLE'
+                new = str(score_title.upper())
+                replacements[old] = new
+            forces_tagline = self._get_metadatum(
+                score_directory, 
+                'forces_tagline',
+                )
+            if forces_tagline:
+                old = 'FOR INSTRUMENTS'
+                new = str(forces_tagline)
+                replacements[old] = new
+            year = self._get_metadatum(score_directory, 'year')
+            if year:
+                old = 'YEAR'
+                new = str(year)
+                replacements[old] = new
+            composer = configuration.composer_uppercase_name
+            if self._session.is_test:
+                composer = 'EXAMPLE COMPOSER NAME'
+            if composer:
+                old = 'COMPOSER'
+                new = str(composer)
+                replacements[old] = new
+            width, height, unit = self._parse_paper_dimensions(score_directory)
+            if width and height:
+                old = '{PAPER_SIZE}'
+                new = '{{{}{}, {}{}}}'
+                new = new.format(width, unit, height, unit)
+                replacements[old] = new
+            messages = self._copy_boilerplate(
+                file_name,
+                os.path.join(score_directory, 'build'),
+                replacements=replacements,
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'mg',
@@ -2758,94 +2754,101 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        result = self._confirm_segment_names(score_directory)
-        if not isinstance(result, list):
-            return
-        segment_names = result
-        lilypond_names = [_.replace('_', '-') for _ in segment_names]
-        source_path = os.path.join(
-            configuration.abjad_ide_boilerplate_directory,
-            'music.ly',
-            )
-        destination_path = os.path.join(
-            score_directory,
-            'build',
-            'music.ly',
-            )
-        candidate_path = os.path.join(
-            score_directory,
-            'build',
-            'music.candidate.ly',
-            )
-        with systemtools.FilesystemState(remove=[candidate_path]):
-            shutil.copyfile(source_path, candidate_path)
-            result = self._parse_paper_dimensions(score_directory)
-            width, height, unit = result
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            self._replace_in_file(candidate_path, old, new)
-            lines = []
-            for lilypond_name in lilypond_names:
-                file_name = lilypond_name + '.ly'
-                line = self._tab + r'\include "{}"'
-                line = line.format(file_name)
-                lines.append(line)
-            if lines:
-                new = '\n'.join(lines)
-                old = '%%% SEGMENTS %%%'
-                self._replace_in_file(candidate_path, old, new)
-            else:
-                line_to_remove = '%%% SEGMENTS %%%\n'
-                self._remove_file_line(candidate_path, line_to_remove)
-            stylesheet_path = os.path.join(
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            result = self._confirm_segment_names(score_directory)
+            if not isinstance(result, list):
+                return
+            segment_names = result
+            lilypond_names = [_.replace('_', '-') for _ in segment_names]
+            source_path = os.path.join(
+                configuration.abjad_ide_boilerplate_directory,
+                'music.ly',
+                )
+            destination_path = os.path.join(
                 score_directory,
-                'stylesheets',
-                'stylesheet.ily',
+                'build',
+                'music.ly',
                 )
-            if stylesheet_path:
-                old = '% STYLESHEET_INCLUDE_STATEMENT'
-                new = r'\include "../stylesheets/stylesheet.ily"'
-                self._replace_in_file(candidate_path, old, new)
-            language_token = lilypondfiletools.LilyPondLanguageToken()
-            lilypond_language_directive = format(language_token)
-            old = '% LILYPOND_LANGUAGE_DIRECTIVE'
-            new = lilypond_language_directive
-            self._replace_in_file(candidate_path, old, new)
-            version_token = lilypondfiletools.LilyPondVersionToken()
-            lilypond_version_directive = format(version_token)
-            old = '% LILYPOND_VERSION_DIRECTIVE'
-            new = lilypond_version_directive
-            self._replace_in_file(candidate_path, old, new)
-            score_title = self._get_title_metadatum(
+            candidate_path = os.path.join(
                 score_directory,
-                year=False,
+                'build',
+                'music.candidate.ly',
                 )
-            if score_title:
-                old = 'SCORE_NAME'
-                new = score_title
+            with systemtools.FilesystemState(remove=[candidate_path]):
+                shutil.copyfile(source_path, candidate_path)
+                result = self._parse_paper_dimensions(score_directory)
+                width, height, unit = result
+                old = '{PAPER_SIZE}'
+                new = '{{{}{}, {}{}}}'
+                new = new.format(width, unit, height, unit)
                 self._replace_in_file(candidate_path, old, new)
-            annotated_title = self._get_title_metadatum(
-                score_directory,
-                year=True,
-                )
-            if annotated_title:
-                old = 'SCORE_TITLE'
-                new = annotated_title
+                lines = []
+                for lilypond_name in lilypond_names:
+                    file_name = lilypond_name + '.ly'
+                    line = self._tab + r'\include "{}"'
+                    line = line.format(file_name)
+                    lines.append(line)
+                if lines:
+                    new = '\n'.join(lines)
+                    old = '%%% SEGMENTS %%%'
+                    self._replace_in_file(candidate_path, old, new)
+                else:
+                    line_to_remove = '%%% SEGMENTS %%%\n'
+                    self._remove_file_line(candidate_path, line_to_remove)
+                stylesheet_path = os.path.join(
+                    score_directory,
+                    'stylesheets',
+                    'stylesheet.ily',
+                    )
+                if stylesheet_path:
+                    old = '% STYLESHEET_INCLUDE_STATEMENT'
+                    new = r'\include "../stylesheets/stylesheet.ily"'
+                    self._replace_in_file(candidate_path, old, new)
+                language_token = lilypondfiletools.LilyPondLanguageToken()
+                lilypond_language_directive = format(language_token)
+                old = '% LILYPOND_LANGUAGE_DIRECTIVE'
+                new = lilypond_language_directive
                 self._replace_in_file(candidate_path, old, new)
-            forces_tagline = self._get_metadatum(
-                score_directory,
-                'forces_tagline',
-                )
-            if forces_tagline:
-                old = 'FORCES_TAGLINE'
-                new = forces_tagline
+                version_token = lilypondfiletools.LilyPondVersionToken()
+                lilypond_version_directive = format(version_token)
+                old = '% LILYPOND_VERSION_DIRECTIVE'
+                new = lilypond_version_directive
                 self._replace_in_file(candidate_path, old, new)
-            self._handle_candidate(
-                candidate_path,
-                destination_path,
-                )
+                score_title = self._get_title_metadatum(
+                    score_directory,
+                    year=False,
+                    )
+                if score_title:
+                    old = 'SCORE_NAME'
+                    new = score_title
+                    self._replace_in_file(candidate_path, old, new)
+                annotated_title = self._get_title_metadatum(
+                    score_directory,
+                    year=True,
+                    )
+                if annotated_title:
+                    old = 'SCORE_TITLE'
+                    new = annotated_title
+                    self._replace_in_file(candidate_path, old, new)
+                forces_tagline = self._get_metadatum(
+                    score_directory,
+                    'forces_tagline',
+                    )
+                if forces_tagline:
+                    old = 'FORCES_TAGLINE'
+                    new = forces_tagline
+                    self._replace_in_file(candidate_path, old, new)
+                messages = self._handle_candidate_revised(
+                    candidate_path,
+                    destination_path,
+                    )
+                if messages[0].startswith('writing'):
+                    self._session._pending_menu_rebuild = True
+                    self._session._pending_redraw = True
+                    self._session._after_redraw_messages = messages
+                else:
+                    self._io_manager._display(messages)
 
     @Command(
         'pg',
@@ -2860,22 +2863,26 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        score_directory = self._to_score_directory(directory)
-        replacements = {}
-        width, height, unit = self._parse_paper_dimensions(score_directory)
-        if width and height:
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            replacements[old] = new
-        messages = self._copy_boilerplate(
-            'preface.tex',
-            os.path.join(score_directory, 'build'),
-            replacements=replacements,
-            )
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
-        self._session._after_redraw_messages = messages
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            replacements = {}
+            width, height, unit = self._parse_paper_dimensions(score_directory)
+            if width and height:
+                old = '{PAPER_SIZE}'
+                new = '{{{}{}, {}{}}}'
+                new = new.format(width, unit, height, unit)
+                replacements[old] = new
+            messages = self._copy_boilerplate(
+                'preface.tex',
+                os.path.join(score_directory, 'build'),
+                replacements=replacements,
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'sg',
@@ -2890,19 +2897,26 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        score_directory = self._to_score_directory(directory)
-        replacements = {}
-        width, height, unit = self._parse_paper_dimensions(score_directory)
-        if width and height:
-            old = '{PAPER_SIZE}'
-            new = '{{{}{}, {}{}}}'
-            new = new.format(width, unit, height, unit)
-            replacements[old] = new
-        self._copy_boilerplate(
-            'score.tex',
-            os.path.join(score_directory, 'build'),
-            replacements=replacements,
-            )
+        with self._io_manager._make_interaction():
+            score_directory = self._to_score_directory(directory)
+            replacements = {}
+            width, height, unit = self._parse_paper_dimensions(score_directory)
+            if width and height:
+                old = '{PAPER_SIZE}'
+                new = '{{{}{}, {}{}}}'
+                new = new.format(width, unit, height, unit)
+                replacements[old] = new
+            messages = self._copy_boilerplate(
+                'score.tex',
+                os.path.join(score_directory, 'build'),
+                replacements=replacements,
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
 
     @Command(
         'add',

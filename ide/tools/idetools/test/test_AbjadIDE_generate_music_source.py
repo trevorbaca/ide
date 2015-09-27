@@ -53,9 +53,7 @@ def test_AbjadIDE_generate_music_source_02():
         abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
-    assert '... compare the same.' in contents
-    assert 'Preserved' in contents
+    assert 'Preserving' in contents
 
 
 def test_AbjadIDE_generate_music_source_03():

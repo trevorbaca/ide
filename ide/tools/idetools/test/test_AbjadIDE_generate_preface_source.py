@@ -41,8 +41,7 @@ def test_AbjadIDE_generate_preface_source_01():
         assert '{8.5in, 11in}' in destination_contents
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Overwrite' not in contents
-    assert 'Overwrote' not in contents
+    assert 'Overwriting' not in contents
 
 
 def test_AbjadIDE_generate_preface_source_02():
@@ -77,6 +76,4 @@ def test_AbjadIDE_generate_preface_source_02():
         assert '{8.5in, 11in}' in destination_contents
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
-    assert '... compare the same.' in contents
-    assert 'Preserved' in contents
+    assert 'Preserving' in contents

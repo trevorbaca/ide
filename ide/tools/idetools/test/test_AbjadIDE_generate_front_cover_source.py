@@ -27,9 +27,7 @@ def test_AbjadIDE_generate_front_cover_source_01():
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'The files ...' in contents
-    assert '... compare the same.' in contents
-    assert 'Preserved' in contents
+    assert 'Preserving' in contents
 
 
 def test_AbjadIDE_generate_front_cover_source_02():
@@ -54,4 +52,4 @@ def test_AbjadIDE_generate_front_cover_source_02():
         assert filecmp.cmp(cover_path, cover_path + '.backup')
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Wrote' in contents
+    assert 'Writing' in contents
