@@ -92,20 +92,6 @@ class AbjadIDE(object):
         metadata[metadatum_name] = metadatum_value
         self._write_metadata_py(directory, metadata)
 
-    def _call_lilypond_on_file_ending_with(self, directory, string):
-        file_path = self._get_file_path_ending_with(directory, string)
-        if not file_path:
-            message = 'file ending in {!r} not found.'
-            message = message.format(string)
-            self._io_manager._display(message)
-            return
-        message = 'interpreting {} ...'
-        message = message.format(file_path)
-        self._io_manager._display(message)
-        result = self._io_manager.run_lilypond(file_path, candidacy=True)
-        stderr_messages, candidate_messages = result
-        return stderr_messages, candidate_messages
-
     def _clear_view(self, directory):
         assert os.path.isdir(directory), repr(directory)
         self._add_metadatum(directory, 'view_name', None)
@@ -3567,10 +3553,16 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             build_directory = os.path.join(score_directory, 'build')
-            result = self._call_lilypond_on_file_ending_with(
-                build_directory,
-                'music.ly',
-                )
+            ly_path = os.path.join(build_directory, 'music.ly')
+            if not ly_path:
+                message = 'file not found: {}.'
+                message = message.format(ly_path)
+                self._io_manager._display(message)
+                return
+            message = 'interpreting {} ...'
+            message = message.format(ly_path)
+            self._io_manager._display(message)
+            result = self._io_manager.run_lilypond(ly_path, candidacy=True)
             stderr_messages, messages = result
             if messages[0].startswith('writing'):
                 self._session._pending_menu_rebuild = True
