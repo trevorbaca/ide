@@ -99,7 +99,7 @@ class AbjadIDE(object):
         '''
         if not os.path.isfile(file_path):
             message = 'file not found: {}.'
-            message = message.format(file_path)
+            message = message.format(self._trim_path(file_path))
             self._io_manager._display(message)
             return
         message = 'calling LaTeX on {} ...'
@@ -490,7 +490,7 @@ class AbjadIDE(object):
                 metadata = result[0]
             except SyntaxError:
                 message = 'can not interpret metadata py: {!r}.'
-                message = message.format(metadata_py_path)
+                message = message.format(self._trim_path(metadata_py_path))
                 self._io_manager._display(message)
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
@@ -1041,7 +1041,7 @@ class AbjadIDE(object):
         name_predicate = self._to_name_predicate(directory)
         if not name_predicate(file_name):
             message = 'invalid file name: {!r}.'
-            message = message.format(file_name)
+            message = message.format(self._trim_path(file_name))
             self._io_manager._display(message)
             self._io_manager._acknowledge()
             return
@@ -1108,13 +1108,13 @@ class AbjadIDE(object):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
-            message = message.format(definition_path)
+            message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         illustrate_file_path = os.path.join(directory, '__illustrate__.py')
         if not os.path.isfile(illustrate_file_path):
             message = 'File not found: {}.'
-            message = message.format(illustrate_file_path)
+            message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
             return
         candidate_ly_path = os.path.join(
@@ -1150,7 +1150,7 @@ class AbjadIDE(object):
                 return
             if not os.path.isfile(candidate_ly_path):
                 message = 'could not make {}.'
-                message = message.format(candidate_ly_path)
+                message = message.format(self._trim_path(candidate_ly_path))
                 self._io_manager._display(message)
                 return
             result = systemtools.TestManager.compare_files(
@@ -1181,7 +1181,7 @@ class AbjadIDE(object):
                     pass
                 if not self._session.is_test:
                     message = 'opening {} ...'
-                    message = message.format(ly_path)
+                    message = message.format(self._trim_path(ly_path))
                     self._io_manager._display(message)
                     self._io_manager.open_file(ly_path)
 
@@ -1390,7 +1390,7 @@ class AbjadIDE(object):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'File not found: {}.'
-            message = message.format(definition_path)
+            message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         self._update_order_dependent_segment_metadata(directory)
@@ -1475,7 +1475,7 @@ class AbjadIDE(object):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
             message = 'file not found: {}.'
-            message = message.format(definition_path)
+            message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         self._update_order_dependent_segment_metadata(directory)
@@ -1629,7 +1629,7 @@ class AbjadIDE(object):
                             self._manage_directory(parent_directory)
                     else:
                         message = 'file does not exist: {}.'
-                        message = message.format(path)
+                        message = message.format(self._trim_path(path))
                         self._io_manager._display([message, ''])
             assert isinstance(result, (str, tuple, type(None))), repr(result)
             if self._session.is_quitting:
@@ -1737,7 +1737,7 @@ class AbjadIDE(object):
             path = paths[path_index]
             if path in secondary_paths:
                 message = 'can not rename secondary asset {}.'
-                message = message.format(path)
+                message = message.format(self._trim_path(path))
                 self._io_manager._display(message)
                 return
             return path
@@ -1818,7 +1818,7 @@ class AbjadIDE(object):
         if result == 'corrupt':
             messages = []
             message = '{} __views.py__ is corrupt:'
-            message = message.format(directory)
+            message = message.format(self._trim_path(directory))
             messages.append(message)
             messages.append('')
             message = '    {}'.format(views_py_path)
@@ -2436,7 +2436,7 @@ class AbjadIDE(object):
             definition_path = os.path.join(directory, 'definition.py')
             if not os.path.isfile(definition_path):
                 message = 'file not found: {}.'
-                message = message.format(definition_path)
+                message = message.format(self._trim_path(definition_path))
                 self._io_manager._display(message)
                 return
             with systemtools.Timer() as timer:
@@ -3093,11 +3093,6 @@ class AbjadIDE(object):
                     messages = [message]
                     self._io_manager._display(messages)
                     return True
-#                else:
-#                    message = '{} ...'
-#                    message = message.format(directory)
-#                    messages = [message]
-#                    self._io_manager._display(messages)
             else:
                 message = '{} ... nothing to commit.'
                 message = message.format(directory)
@@ -3596,7 +3591,7 @@ class AbjadIDE(object):
             ly_path = os.path.join(directory, 'illustration.ly')
             if not os.path.isfile(ly_path):
                 message = 'the file {} does not exist.'
-                message = message.format(ly_path)
+                message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 return
             message = 'calling LilyPond on {} ...'
@@ -3624,7 +3619,7 @@ class AbjadIDE(object):
             ly_path = os.path.join(build_directory, 'music.ly')
             if not ly_path:
                 message = 'file not found: {}.'
-                message = message.format(ly_path)
+                message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 return
             message = 'calling LilyPond on {} ...'
@@ -3859,25 +3854,23 @@ class AbjadIDE(object):
         section='star',
         )
     def open_every_score_pdf(self, directory):
-        r'''Opens ``score.pdf`` in every package.
+        r'''Opens score PDF in every package.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._list_visible_paths(directory)
-        paths = []
-        for directory in directories:
-            inputs, outputs = self.open_score_pdf(directory, dry_run=True)
-            paths.extend(inputs)
-        messages = ['will open ...']
-        paths = [self._tab + _ for _ in paths]
-        messages.extend(paths)
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        if paths:
-            self._io_manager.open_file(paths)
+        with self._io_manager._make_interaction():
+            directories = self._list_visible_paths(directory)
+            paths = []
+            for directory in directories:
+                inputs, outputs = self.open_score_pdf(directory, dry_run=True)
+                paths.extend(inputs)
+            for path in paths:
+                message = 'opening {} ...'
+                message = message.format(self._trim_path(path))
+                self._io_manager._display(message)
+            if paths:
+                self._io_manager.open_file(paths)
 
     @Command(
         'pdf',
@@ -3895,8 +3888,7 @@ class AbjadIDE(object):
         file_path = os.path.join(directory, 'illustration.pdf')
         if not os.path.isfile(file_path):
             message = 'file does not exist: {}.'
-            trimmed_path = self._trim_path(file_path)
-            message = message.format(trimmed_path)
+            message = message.format(self._trim_path(file_path))
             self._io_manager._display([message, ''])
         else:
             self._io_manager.open_file(file_path)
@@ -3951,7 +3943,7 @@ class AbjadIDE(object):
         build_score_path = os.path.join(path, 'score.pdf')
         if not os.path.exists(build_score_path):
             message = 'does not exist: {!r}.'
-            message = message.format(build_score_path)
+            message = message.format(self._trim_path(build_score_path))
             self._io_manager._display(message)
             return
         score_package_name = os.path.basename(score_directory)
@@ -4058,8 +4050,7 @@ class AbjadIDE(object):
         if not source_path:
             return
         message = 'Will rename]> {}'
-        trimmed_source_path = self._trim_path(source_path)
-        message = message.format(trimmed_source_path)
+        message = message.format(self._trim_path(source_path))
         self._io_manager._display(message)
         getter = self._io_manager._make_getter()
         getter.append_string('new name or return to cancel')
@@ -4074,7 +4065,7 @@ class AbjadIDE(object):
             )
         if os.path.exists(target_path):
             message = 'path already exists: {!r}.'
-            message = message.format(target_path)
+            message = message.format(self._trim_path(target_path))
             self._io_manager._display(message)
             return
         messages = []
