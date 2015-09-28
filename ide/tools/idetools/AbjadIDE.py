@@ -3805,8 +3805,7 @@ class AbjadIDE(object):
                     )
             else:
                 raise ValueError(directory)
-            if not subroutine:
-                self._io_manager._display(timer.total_time_message)
+            self._io_manager._display(timer.total_time_message)
             return result
 
     @Command(
