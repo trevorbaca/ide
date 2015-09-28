@@ -1506,8 +1506,8 @@ class AbjadIDE(object):
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
         with systemtools.FilesystemState(remove=temporary_files):
-            message = 'calling LilyPond on {} ...'
-            message = message.format(self._trim_path(ly_path))
+            message = 'calling Python on {} ...'
+            message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
             shutil.copyfile(boilerplate_path, illustrate_file_path)
             previous_segment_directory = self._get_previous_segment_directory(

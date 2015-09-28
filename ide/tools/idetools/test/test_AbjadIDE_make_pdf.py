@@ -98,6 +98,10 @@ def test_AbjadIDE_make_pdf_03():
         )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
+    illustrate_file_path = os.path.join(
+        segment_directory,
+        '__illustrate_segment__.py',
+        )
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(ly_path)
@@ -110,8 +114,8 @@ def test_AbjadIDE_make_pdf_03():
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    message = 'Calling LilyPond on {} ...'
-    message = message.format(abjad_ide._trim_path(ly_path))
+    message = 'Calling Python on {} ...'
+    message = message.format(abjad_ide._trim_path(illustrate_file_path))
     assert message in contents
     assert 'Abjad runtime' in contents
     assert 'LilyPond runtime' in contents
@@ -140,6 +144,10 @@ def test_AbjadIDE_make_pdf_04():
         'segments',
         'segment_01',
         )
+    illustrate_file_path = os.path.join(
+        segment_directory,
+        '__illustrate_segment__.py',
+        )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
     candidate_pdf_path = os.path.join(
@@ -163,8 +171,8 @@ def test_AbjadIDE_make_pdf_04():
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
 
-    message = 'Calling LilyPond on {} ...'
-    message = message.format(abjad_ide._trim_path(ly_path))
+    message = 'Calling Python on {} ...'
+    message = message.format(abjad_ide._trim_path(illustrate_file_path))
     assert message in contents
     assert 'Abjad runtime' in contents
     assert 'LilyPond runtime' in contents
@@ -190,6 +198,10 @@ def test_AbjadIDE_make_pdf_05():
         'segments',
         'segment_01',
         )
+    illustrate_file_path = os.path.join(
+        segment_directory,
+        '__illustrate_segment__.py',
+        )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
     candidate_pdf_path = os.path.join(
@@ -208,8 +220,8 @@ def test_AbjadIDE_make_pdf_05():
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    message = 'Calling LilyPond on {} ...'
-    message = message.format(abjad_ide._trim_path(ly_path))
+    message = 'Calling Python on {} ...'
+    message = message.format(abjad_ide._trim_path(illustrate_file_path))
     assert message in contents
     assert 'Abjad runtime' in contents
     assert 'LilyPond runtime' in contents
