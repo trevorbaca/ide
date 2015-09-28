@@ -1804,25 +1804,6 @@ class AbjadIDE(object):
         view_inventory = collections.OrderedDict(items)
         return view_inventory
 
-    def _remove(self, path):
-        # handle score directorys correctly
-        parts = path.split(os.path.sep)
-        if parts[-2] == parts[-1]:
-            parts = parts[:-1]
-        path = os.path.sep.join(parts)
-        if self._is_in_git_repository(path):
-            if self._is_git_unknown(path):
-                command = 'rm -rf {}'
-            else:
-                command = 'git rm --force -r {}'
-        else:
-            command = 'rm -rf {}'
-        command = command.format(path)
-        with systemtools.TemporaryDirectoryChange(directory=path):
-            process = self._io_manager.make_subprocess(command)
-        self._io_manager._read_one_line_from_pipe(process.stdout)
-        return True
-
     @staticmethod
     def _replace_in_file(file_path, old, new):
         assert isinstance(old, str), repr(old)
@@ -4008,7 +3989,7 @@ class AbjadIDE(object):
         section='basic',
         )
     def remove(self, directory):
-        r'''Removes asset(s).
+        r'''Removes file or directory.
 
         Returns none.
         '''
@@ -4042,7 +4023,23 @@ class AbjadIDE(object):
         if not result == confirmation_string:
             return
         for path in paths:
-            self._remove(path)
+            if self._is_score_directory(path, 'inner'):
+                path = self._to_score_directory(path, 'outer')
+            if self._is_in_git_repository(path):
+                if self._is_git_unknown(path):
+                    command = 'rm -rf {}'
+                else:
+                    command = 'git rm --force -r {}'
+            else:
+                command = 'rm -rf {}'
+            command = command.format(path)
+            with systemtools.TemporaryDirectoryChange(directory=path):
+                process = self._io_manager.make_subprocess(command)
+            self._io_manager._read_one_line_from_pipe(process.stdout)
+            # to get rid of directories lingering with .pycs
+            cleanup_command = 'rm -rf {}'
+            cleanup_command = cleanup_command.format(path)
+            self._io_manager.run_command(command)
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
