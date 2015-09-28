@@ -345,7 +345,7 @@ class IOManager(IOManager):
         Returns none.
         '''
         if not os.path.isfile(path):
-            message = 'file not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(path)
             self._display(message)
             return
@@ -424,7 +424,7 @@ class IOManager(IOManager):
         and then display stderr lines after execution.
         '''
         if not os.path.exists(path):
-            message = 'file not found: {}'.format(path)
+            message = 'can not find {} ...'.format(path)
             self._display(message)
             return False
         _, file_extension = os.path.splitext(path)

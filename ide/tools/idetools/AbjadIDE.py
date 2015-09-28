@@ -98,7 +98,7 @@ class AbjadIDE(object):
         Some LaTeX packages like ``tikz`` require two passes.
         '''
         if not os.path.isfile(file_path):
-            message = 'file not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(file_path))
             self._io_manager._display(message)
             return
@@ -1107,13 +1107,13 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
-            message = 'File not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         illustrate_file_path = os.path.join(directory, '__illustrate__.py')
         if not os.path.isfile(illustrate_file_path):
-            message = 'File not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
             return
@@ -1188,13 +1188,13 @@ class AbjadIDE(object):
     def _make_material_pdf(self, directory, subroutine=False):
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
-            message = 'File not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
         illustrate_file_path = os.path.join(directory, '__illustrate__.py')
         if not os.path.isfile(illustrate_file_path):
-            message = 'File not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
             return
@@ -1390,7 +1390,7 @@ class AbjadIDE(object):
         assert self._is_score_directory(directory, 'segment')
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
-            message = 'File not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
@@ -1475,7 +1475,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         definition_path = os.path.join(directory, 'definition.py')
         if not os.path.isfile(definition_path):
-            message = 'file not found: {}.'
+            message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
@@ -2436,7 +2436,7 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction(dry_run=subroutine):
             definition_path = os.path.join(directory, 'definition.py')
             if not os.path.isfile(definition_path):
-                message = 'file not found: {}.'
+                message = 'can not find {} ...'
                 message = message.format(self._trim_path(definition_path))
                 self._io_manager._display(message)
                 return
@@ -3619,7 +3619,7 @@ class AbjadIDE(object):
             build_directory = os.path.join(score_directory, 'build')
             ly_path = os.path.join(build_directory, 'music.ly')
             if not ly_path:
-                message = 'file not found: {}.'
+                message = 'can not find {} ...'
                 message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
                 return
