@@ -82,3 +82,19 @@ def test_IOManager_open_file_05():
         'Red Example Score (2013)',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+
+
+def test_IOManager_open_file_06():
+    r'''@-addressing to abbreviations file.
+    '''
+
+    input_ = 'red~example~score @abb q'
+    abjad_ide._start(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file
+
+    titles = [
+        'Abjad IDE - all score directories',
+        'Red Example Score (2013)',
+        ]
+    assert abjad_ide._io_manager._transcript.titles == titles

@@ -186,6 +186,11 @@ class AbjadIDE(object):
             paths.extend(paths_)
             strings_ = [self._to_menu_string(_) for _ in paths_]
             strings.extend(strings_)
+            file_name = '__abbreviations__.py'
+            file_path = os.path.join(directory_, file_name)
+            if os.path.isfile(file_path):
+                paths.append(file_path)
+                strings.append(file_name)
         assert len(strings) == len(paths), repr((len(strings), len(paths)))
         return strings, paths
 
