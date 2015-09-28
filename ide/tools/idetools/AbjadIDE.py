@@ -1228,7 +1228,7 @@ class AbjadIDE(object):
                 os.remove(path)
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
-            message = 'Calling LilyPond on {} ...'
+            message = 'Calling Python on {} ...'
             message = message.format(self._trim_path(target_make_pdf_file))
             self._io_manager._display(message)
             result = self._io_manager.interpret_file(
@@ -1236,6 +1236,7 @@ class AbjadIDE(object):
                 strip=False,
                 )
             stdout_lines, stderr_lines = result
+            self._io_manager._display(stdout_lines)
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return

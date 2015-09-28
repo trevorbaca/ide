@@ -10,53 +10,49 @@ from ide.tools import idetools
 
 if __name__ == '__main__':
 
-    try:
-        from definition import segment_maker
-    except ImportError:
-        traceback.print_exc()
-        sys.exit(1)
-
-    try:
-        from __metadata__ import metadata as segment_metadata
-    except ImportError:
-        traceback.print_exc()
-        sys.exit(1)
-
-    try:
-        {previous_segment_metadata_import_statement}
-    except ImportError:
-        traceback.print_exc()
-        sys.exit(1)
-
-    try:
-        with systemtools.Timer() as timer:
+    with systemtools.Timer() as timer:
+        try:
+            from definition import segment_maker
+        except ImportError:
+            traceback.print_exc()
+            sys.exit(1)
+        try:
+            from __metadata__ import metadata as segment_metadata
+        except ImportError:
+            traceback.print_exc()
+            sys.exit(1)
+        try:
+            {previous_segment_metadata_import_statement}
+        except ImportError:
+            traceback.print_exc()
+            sys.exit(1)
+        try:
             result = segment_maker(
                 segment_metadata=segment_metadata,
                 previous_segment_metadata=previous_segment_metadata,
                 )
             lilypond_file, segment_metadata = result
+        except:
+            traceback.print_exc()
+            sys.exit(1)
+        try:
+            current_directory = os.path.dirname(__file__)
+            dummy_session = idetools.Session()
+            abjad_ide = idetools.AbjadIDE(
+                session=dummy_session, 
+                )
+            abjad_ide._write_metadata_py(
+                current_directory,
+                segment_metadata, 
+                )
+        except:
+            traceback.print_exc()
+            sys.exit(1)
         message = 'Abjad runtime {{}} {{}} ...'
         total_time = int(timer.elapsed_time)
         identifier = stringtools.pluralize('second', total_time)
         message = message.format(total_time, identifier)
         print(message)
-    except:
-        traceback.print_exc()
-        sys.exit(1)
-
-    try:
-        current_directory = os.path.dirname(__file__)
-        dummy_session = idetools.Session()
-        abjad_ide = idetools.AbjadIDE(
-            session=dummy_session, 
-            )
-        abjad_ide._write_metadata_py(
-            current_directory,
-            segment_metadata, 
-            )
-    except:
-        traceback.print_exc()
-        sys.exit(1)
 
     try:
         current_directory = os.path.dirname(__file__)

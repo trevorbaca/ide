@@ -2,13 +2,21 @@
 import os
 import sys
 import traceback
+from abjad.tools import stringtools
+from abjad.tools import systemtools
 from abjad.tools.topleveltools import persist
 
 
 if __name__ == '__main__':
     
     try:
-        from __illustrate__ import lilypond_file
+        with systemtools.Timer() as timer:
+            from __illustrate__ import lilypond_file
+        message = 'Abjad runtime {} {} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = stringtools.pluralize('second', total_time)
+        message = message.format(total_time, identifier)
+        print(message)
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
@@ -19,7 +27,13 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.pdf',
             )
-        persist(lilypond_file).as_pdf(candidate_path)
+        with systemtools.Timer() as timer:
+            persist(lilypond_file).as_pdf(candidate_path)
+        message = 'LilyPond runtime {} {} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = stringtools.pluralize('second', total_time)
+        message = message.format(total_time, identifier)
+        print(message)
     except:
         traceback.print_exc()
         sys.exit(1)
