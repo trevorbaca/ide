@@ -1201,7 +1201,7 @@ class AbjadIDE(object):
                 os.remove(path)
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_pdf_file, target_make_pdf_file)
-            message = 'interpreting {} ...'
+            message = 'Calling LilyPond on {} ...'
             message = message.format(self._trim_path(target_make_pdf_file))
             self._io_manager._display(message)
             result = self._io_manager.interpret_file(
@@ -1479,6 +1479,9 @@ class AbjadIDE(object):
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
         with systemtools.FilesystemState(remove=temporary_files):
+            message = 'calling LilyPond on {} ...'
+            message = message.format(self._trim_path(ly_path))
+            self._io_manager._display(message)
             shutil.copyfile(boilerplate_path, illustrate_file_path)
             previous_segment_directory = self._get_previous_segment_directory(
                 directory)
@@ -3602,7 +3605,7 @@ class AbjadIDE(object):
                 message = message.format(ly_path)
                 self._io_manager._display(message)
                 return
-            message = 'interpreting {} ...'
+            message = 'calling LilyPond on {} ...'
             message = message.format(self._trim_path(ly_path))
             self._io_manager._display(message)
             messages = self._run_lilypond(ly_path)

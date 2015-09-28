@@ -33,6 +33,7 @@ def test_AbjadIDE_make_pdf_01():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Calling LilyPond on' in contents
     assert 'Writing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
@@ -75,6 +76,7 @@ def test_AbjadIDE_make_pdf_02():
         abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Calling LilyPond on' in contents
     assert 'Preserving' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
@@ -108,6 +110,7 @@ def test_AbjadIDE_make_pdf_03():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Calling LilyPond on' in contents
     assert 'Writing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
@@ -149,6 +152,7 @@ def test_AbjadIDE_make_pdf_04():
         abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Calling LilyPond on' in contents
     assert 'Preserving' in contents
     assert abjad_ide._trim_path(pdf_path) in contents
     assert abjad_ide._trim_path(ly_path) in contents
@@ -179,7 +183,7 @@ def test_AbjadIDE_make_pdf_05():
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         with open(pdf_path, 'w') as file_pointer:
             file_pointer.write('text')
-        input_ = 'red~example~score gg A pdfm y q'
+        input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
@@ -187,6 +191,7 @@ def test_AbjadIDE_make_pdf_05():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
+    assert 'Calling LilyPond on' in contents
     assert 'Overwriting' in contents
     assert 'Opening' in contents
     assert abjad_ide._trim_path(ly_path) in contents

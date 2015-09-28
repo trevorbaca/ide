@@ -42,7 +42,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Interpreting {} ...'
+        message = 'Calling LilyPond on {} ...'
         message = message.format(abjad_ide._trim_path(ly_path))
         assert message in contents
         message = 'Writing {} ...'
@@ -91,7 +91,7 @@ def test_AbjadIDE_interpret_every_ly_02():
         contents = abjad_ide._io_manager._transcript.contents
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Interpreting {} ...'
+        message = 'Calling LilyPond on {} ...'
         message = message.format(abjad_ide._trim_path(ly_path))
         assert message in contents
         message = 'Preserving {} ...'
@@ -137,7 +137,7 @@ def test_AbjadIDE_interpret_every_ly_03():
         assert systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Interpreting {} ...'
+        message = 'Calling LilyPond on {} ...'
         message = message.format(abjad_ide._trim_path(ly_path))
         assert message in contents
         message = 'Writing {} ...'
@@ -186,7 +186,7 @@ def test_AbjadIDE_interpret_every_ly_04():
         contents = abjad_ide._io_manager._transcript.contents
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Interpreting {} ...'
+        message = 'Calling LilyPond on {} ...'
         message = message.format(abjad_ide._trim_path(ly_path))
         assert message in contents
         message = 'Preserving {} ...'

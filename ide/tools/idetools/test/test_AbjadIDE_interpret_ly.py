@@ -38,7 +38,7 @@ def test_AbjadIDE_interpret_ly_01():
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    message = 'Interpreting {} ...'
+    message = 'Calling LilyPond on {} ...'
     message = message.format(abjad_ide._trim_path(ly_path))
     message = 'Writing {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
@@ -77,7 +77,7 @@ def test_AbjadIDE_interpret_ly_02():
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    message = 'Interpreting {} ...'
+    message = 'Calling LilyPond on {} ...'
     message = message.format(abjad_ide._trim_path(ly_path))
     message = 'Writing {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
