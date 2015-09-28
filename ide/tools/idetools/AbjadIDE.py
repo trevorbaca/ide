@@ -3848,7 +3848,7 @@ class AbjadIDE(object):
             self._open_in_every_package(directories, 'illustration.pdf')
 
     @Command(
-        'so*',
+        'pdf*',
         argument_name='current_directory',
         directories=('scores',),
         section='star',

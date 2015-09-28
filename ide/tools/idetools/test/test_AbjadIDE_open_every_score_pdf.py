@@ -16,7 +16,7 @@ def test_AbjadIDE_open_every_score_pdf_01():
         'red-example-score-score.pdf',
         )
 
-    input_ = 'so* q'
+    input_ = 'pdf* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
