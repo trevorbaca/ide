@@ -2427,10 +2427,11 @@ class AbjadIDE(object):
                 message = message.format(definition_path)
                 self._io_manager._display(message)
                 return
-            result = self._io_manager.interpret_file(
-                definition_path, 
-                strip=False,
-                )
+            with systemtools.Timer() as timer:
+                result = self._io_manager.interpret_file(
+                    definition_path, 
+                    strip=False,
+                    )
             stdout_lines, stderr_lines = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
@@ -2441,6 +2442,8 @@ class AbjadIDE(object):
                 message = '{} ... OK'
                 message = message.format(self._trim_path(definition_path))
                 self._io_manager._display(message, capitalize=False)
+            if not subroutine:
+                self._io_manager._display(timer.total_time_message)
 
     @Command(
         'dfk*',
