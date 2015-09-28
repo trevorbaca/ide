@@ -26,7 +26,7 @@ def test_AbjadIDE_check_definition_01():
     message = '{} ... OK'
     message = message.format(abjad_ide._trim_path(path))
     assert message in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_check_definition_02():
@@ -49,4 +49,4 @@ def test_AbjadIDE_check_definition_02():
     message = '{} ... OK'
     message = message.format(abjad_ide._trim_path(path))
     assert message in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents

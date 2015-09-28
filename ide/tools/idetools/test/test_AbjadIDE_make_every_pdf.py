@@ -49,7 +49,7 @@ def test_AbjadIDE_make_every_pdf_01():
         assert message in contents
 
     assert not 'Opening' in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_every_pdf_02():
@@ -96,7 +96,7 @@ def test_AbjadIDE_make_every_pdf_02():
         assert message in contents
 
     assert not 'Opening' in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_every_pdf_03():
@@ -145,4 +145,4 @@ def test_AbjadIDE_make_every_pdf_03():
         assert message in contents
 
     assert not 'Opening' in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents

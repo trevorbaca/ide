@@ -37,7 +37,7 @@ def test_AbjadIDE_make_pdf_01():
     assert 'Writing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_pdf_02():
@@ -80,7 +80,7 @@ def test_AbjadIDE_make_pdf_02():
     assert 'Preserving' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_pdf_03():
@@ -124,7 +124,7 @@ def test_AbjadIDE_make_pdf_03():
     message = 'Opening {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
     assert message in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_pdf_04():
@@ -174,7 +174,7 @@ def test_AbjadIDE_make_pdf_04():
     message = 'Preserving {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
     assert message in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_pdf_05():
@@ -222,4 +222,4 @@ def test_AbjadIDE_make_pdf_05():
     message = 'Opening {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
     assert message in contents
-    assert 'Total time:' in contents
+    assert 'Total time ' in contents
