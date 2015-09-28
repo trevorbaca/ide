@@ -104,16 +104,27 @@ def test_AbjadIDE_make_pdf_03():
         os.remove(pdf_path)
         input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Calling LilyPond on' in contents
-    assert 'Writing' in contents
-    assert abjad_ide._trim_path(ly_path) in contents
-    assert abjad_ide._trim_path(pdf_path) in contents
+    message = 'Calling LilyPond on {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    assert 'Abjad runtime' in contents
+    assert 'LilyPond runtime' in contents
+    message = 'Writing {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    message = 'Writing {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
+    message = 'Opening {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
+    assert 'Total time:' in contents
 
 
 def test_AbjadIDE_make_pdf_04():
@@ -150,20 +161,26 @@ def test_AbjadIDE_make_pdf_04():
         # attempt to generate PDF second time (but blocked)
         input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Calling LilyPond on' in contents
-    assert 'Preserving' in contents
-    assert abjad_ide._trim_path(pdf_path) in contents
-    assert abjad_ide._trim_path(ly_path) in contents
+    message = 'Calling LilyPond on {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    assert 'Abjad runtime' in contents
+    assert 'LilyPond runtime' in contents
+    message = 'Preserving {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    message = 'Preserving {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
     assert 'Total time:' in contents
 
 
 def test_AbjadIDE_make_pdf_05():
     r'''In segment directory.
     
-    Prompts composer to overwrite existing PDF when candidate compares
-    differently.
+    Overwrites existing PDF.
     '''
 
     segment_directory = os.path.join(
@@ -185,15 +202,24 @@ def test_AbjadIDE_make_pdf_05():
             file_pointer.write('text')
         input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
         assert systemtools.TestManager._compare_backup(ly_path)
         assert systemtools.TestManager._compare_backup(pdf_path)
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Calling LilyPond on' in contents
-    assert 'Overwriting' in contents
-    assert 'Opening' in contents
-    assert abjad_ide._trim_path(ly_path) in contents
-    assert abjad_ide._trim_path(pdf_path) in contents
+    message = 'Calling LilyPond on {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    assert 'Abjad runtime' in contents
+    assert 'LilyPond runtime' in contents
+    message = 'Preserving {} ...'
+    message = message.format(abjad_ide._trim_path(ly_path))
+    assert message in contents
+    message = 'Overwriting {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
+    message = 'Opening {} ...'
+    message = message.format(abjad_ide._trim_path(pdf_path))
+    assert message in contents
     assert 'Total time:' in contents

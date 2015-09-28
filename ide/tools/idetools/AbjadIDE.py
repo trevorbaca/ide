@@ -1537,6 +1537,7 @@ class AbjadIDE(object):
                 strip=False,
                 )
             stdout_lines, stderr_lines = result
+            self._io_manager._display(stdout_lines)
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return

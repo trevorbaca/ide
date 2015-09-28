@@ -3,6 +3,7 @@ import os
 import sys
 import traceback
 from abjad import persist
+from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools import idetools
 
@@ -34,8 +35,10 @@ if __name__ == '__main__':
                 previous_segment_metadata=previous_segment_metadata,
                 )
             lilypond_file, segment_metadata = result
-        message = 'Abjad runtime: {{}} sec.'
-        message = message.format(int(timer.elapsed_time))
+        message = 'Abjad runtime {{}} {{}} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = stringtools.pluralize('second', total_time)
+        message = message.format(total_time, identifier)
         print(message)
     except:
         traceback.print_exc()
@@ -63,8 +66,10 @@ if __name__ == '__main__':
             )
         with systemtools.Timer() as timer:
             persist(lilypond_file).as_pdf(candidate_path)
-        message = 'LilyPond runtime: {{}} sec.'
-        message = message.format(int(timer.elapsed_time))
+        message = 'LilyPond runtime {{}} {{}} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = stringtools.pluralize('second', total_time)
+        message = message.format(total_time, identifier)
         print(message)
     except:
         traceback.print_exc()
