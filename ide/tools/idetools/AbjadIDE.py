@@ -3088,6 +3088,8 @@ class AbjadIDE(object):
         self._io_manager._session._attempted_method = 'git_commit'
         if self._io_manager._session.is_test:
             return
+        self.git_add(directory, interaction=False)
+        self.git_status(directory, subroutine=True)
         directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
         interaction = self._io_manager._make_interaction(
@@ -3101,11 +3103,11 @@ class AbjadIDE(object):
                     messages = [message]
                     self._io_manager._display(messages)
                     return True
-                else:
-                    message = '{} ...'
-                    message = message.format(directory)
-                    messages = [message]
-                    self._io_manager._display(messages)
+#                else:
+#                    message = '{} ...'
+#                    message = message.format(directory)
+#                    messages = [message]
+#                    self._io_manager._display(messages)
             else:
                 message = '{} ... nothing to commit.'
                 message = message.format(directory)
@@ -3113,6 +3115,7 @@ class AbjadIDE(object):
                 self._io_manager._display(messages)
                 return
             if commit_message is None:
+                self._io_manager._display('')
                 getter = self._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run(io_manager=self._io_manager)
@@ -3178,7 +3181,7 @@ class AbjadIDE(object):
         forbidden_directories=('scores',),
         section='git',
         )
-    def git_status(self, directory, dry_run=False):
+    def git_status(self, directory, dry_run=False, subroutine=False):
         r'''Displays Git status of current score package.
 
         Returns none.
@@ -3186,7 +3189,8 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
-        interaction = self._io_manager._make_interaction(dry_run=dry_run)
+        hold_off = dry_run or subroutine
+        interaction = self._io_manager._make_interaction(dry_run=hold_off)
         with change, interaction:
             command = 'git status {}'.format(directory)
             messages = []
