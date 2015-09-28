@@ -621,6 +621,33 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
+    def _git_add(self, directory, dry_run=False, interaction=True):
+        assert os.path.isdir(directory), repr(directory)
+        directory = self._to_score_directory(directory, 'outer')
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        do_it = interaction and not dry_run
+        interaction = self._io_manager._make_interaction(dry_run=not do_it)
+        with change, interaction:
+            inputs = self._get_unadded_asset_paths(directory)
+            outputs = []
+            nothing_message = '{} ... nothing to add.'
+            nothing_message = nothing_message.format(directory)
+            if dry_run:
+                return inputs, outputs
+            if not inputs:
+                self._io_manager._display(nothing_message)
+                return
+            command = 'git add -A {}'
+            for file_ in inputs:
+                command = command.format(directory)
+                self._io_manager.run_command(command)
+            messages = []
+            for file_ in inputs:
+                message = '{} ... added.'
+                message = message.format(self._trim_path(file_))
+                messages.append(message)
+            self._io_manager._display(messages, capitalize=False)
+
     def _handle_candidate(self, candidate_path, destination_path):
         messages = []
         if not os.path.exists(destination_path):
@@ -2991,44 +3018,6 @@ class AbjadIDE(object):
                 self._io_manager._display(messages)
 
     @Command(
-        'add',
-        argument_name='current_directory',
-        description='git - add',
-        forbidden_directories=('scores',),
-        section='git',
-        )
-    def git_add(self, directory, dry_run=False, interaction=True):
-        r'''Adds all unadded files to working copy of current score package.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        directory = self._to_score_directory(directory, 'outer')
-        change = systemtools.TemporaryDirectoryChange(directory=directory)
-        do_it = interaction and not dry_run
-        interaction = self._io_manager._make_interaction(dry_run=not do_it)
-        with change, interaction:
-            inputs = self._get_unadded_asset_paths(directory)
-            outputs = []
-            nothing_message = '{} ... nothing to add.'
-            nothing_message = nothing_message.format(directory)
-            if dry_run:
-                return inputs, outputs
-            if not inputs:
-                self._io_manager._display(nothing_message)
-                return
-            command = 'git add -A {}'
-            for file_ in inputs:
-                command = command.format(directory)
-                self._io_manager.run_command(command)
-            messages = []
-            for file_ in inputs:
-                message = '{} ... added.'
-                message = message.format(self._trim_path(file_))
-                messages.append(message)
-            self._io_manager._display(messages, capitalize=False)
-
-    @Command(
         'add*',
         argument_name='current_directory',
         directories=('scores',),
@@ -3046,9 +3035,9 @@ class AbjadIDE(object):
             if self._session.is_test:
                 return
             inputs, outputs = [], []
-            method_name = 'git_add'
+            method_name = '_git_add'
             for directory in directories:
-                inputs_, outputs_ = self.git_add(directory, dry_run=True)
+                inputs_, outputs_ = self._git_add(directory, dry_run=True)
                 inputs.extend(inputs_)
                 outputs.extend(outputs_)
             if inputs:
@@ -3058,7 +3047,7 @@ class AbjadIDE(object):
                 if not result:
                     return
             for directory in directories:
-                self.git_add(directory, interaction=False)
+                self._git_add(directory, interaction=False)
             if inputs:
                 count = len(inputs)
                 identifier = stringtools.pluralize('file', count)
@@ -3088,7 +3077,7 @@ class AbjadIDE(object):
         self._io_manager._session._attempted_method = 'git_commit'
         if self._io_manager._session.is_test:
             return
-        self.git_add(directory, interaction=False)
+        self._git_add(directory, interaction=False)
         self.git_status(directory, subroutine=True)
         directory = self._to_score_directory(directory, 'outer')
         change = systemtools.TemporaryDirectoryChange(directory=directory)
