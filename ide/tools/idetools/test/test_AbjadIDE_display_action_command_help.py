@@ -11,7 +11,7 @@ def test_AbjadIDE_display_action_command_help_01():
     lines = [
         'Abjad IDE - all score directories - action commands',
         '',
-        '    open every score pdf (pdf*)',
+        '    open every score pdf (so*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
