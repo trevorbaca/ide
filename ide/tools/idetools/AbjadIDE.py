@@ -3116,7 +3116,8 @@ class AbjadIDE(object):
             message = message + ' ...'
             command = 'git commit -m "{}" {}; git push'
             command = command.format(commit_message, directory)
-            self._io_manager.run_command(command, capitalize=False)
+            lines = self._io_manager.run_command(command)
+            self._io_manager._display(lines, capitalize=False)
 
     @Command(
         'ci*',
@@ -3252,15 +3253,12 @@ class AbjadIDE(object):
             root_directory = self._get_repository_root_directory(directory)
             command = 'git pull {}'
             command = command.format(root_directory)
-            messages = self._io_manager.run_command(
-                command,
-                messages_only=True,
-                )
-            if messages and 'Already up-to-date' in messages[-1]:
-                message = '{} ... already up-to-date.'
-                message = message.format(directory)
-                messages = [message]
-            self._io_manager._display(messages)
+            lines = self._io_manager.run_command(command)
+            if lines and 'Already up-to-date' in lines[-1]:
+                line = '{} ... already up-to-date.'
+                line = line.format(directory)
+                lines = [line]
+            self._io_manager._display(lines)
 
     @Command(
         'up*',
@@ -4130,7 +4128,7 @@ class AbjadIDE(object):
         with interaction, change:
             command = 'ajv doctest {}'
             command = command.format(directory)
-            lines = self._io_manager.run_command(command, messages_only=True)
+            lines = self._io_manager.run_command(command)
             lines = [_ for _ in lines if not _ == '']
             self._io_manager._display(lines, capitalize=False)
 
@@ -4151,6 +4149,6 @@ class AbjadIDE(object):
             directory = self._to_score_directory(directory, 'inner')
             command = 'py.test -rf {}'
             command = command.format(directory)
-            lines = self._io_manager.run_command(command, messages_only=True)
+            lines = self._io_manager.run_command(command)
             lines = [_ for _ in lines if not _ == '']
             self._io_manager._display(lines, capitalize=False)

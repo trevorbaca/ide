@@ -492,20 +492,19 @@ class IOManager(IOManager):
             return
         self.spawn_subprocess(command)
 
-    def run_command(self, command, capitalize=True, messages_only=False):
-        r'''Makes subprocess with `command` and then runs and displays
-        output of subprocess.
+    def run_command(self, command):
+        r'''Makes subprocess with `command`.
 
-        Returns none.
+        Runs command.
+
+        Displays nothing.
+
+        Returns stdout from subprocess.
         '''
         process = self.make_subprocess(command)
         lines = self._read_from_pipe(process.stdout, strip=False)
         lines = lines.splitlines()
-        if not lines:
-            return
-        if messages_only:
-            return lines
-        self._display(lines, capitalize=capitalize)
+        return lines
 
     def write(self, path, string):
         r'''Writes `string` to `path`.
