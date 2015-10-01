@@ -681,6 +681,7 @@ class AbjadIDE(object):
         elif result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
+            self._io_manager._display('')
         elif result.startswith(('@', '%')):
             directory = self._session.current_directory
             prefix = result[0]
@@ -1137,10 +1138,7 @@ class AbjadIDE(object):
         inputs, outputs = [], []
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_ly_file, target_make_ly_file)
-            result = self._io_manager.interpret_file(
-                target_make_ly_file,
-                strip=False,
-                )
+            result = self._io_manager.interpret_file(target_make_ly_file)
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
@@ -1228,10 +1226,7 @@ class AbjadIDE(object):
             message = 'Calling Python on {} ...'
             message = message.format(self._trim_path(target_make_pdf_file))
             self._io_manager._display(message)
-            result = self._io_manager.interpret_file(
-                target_make_pdf_file,
-                strip=False,
-                )
+            result = self._io_manager.interpret_file(target_make_pdf_file)
             stdout_lines, stderr_lines = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
@@ -1435,10 +1430,7 @@ class AbjadIDE(object):
                 )
             with open(illustrate_path, 'w') as file_pointer:
                 file_pointer.write(completed_template)
-            result = self._io_manager.interpret_file(
-                illustrate_path,
-                strip=False,
-                )
+            result = self._io_manager.interpret_file(illustrate_path)
             stdout_lines, stderr_lines = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
@@ -1530,10 +1522,7 @@ class AbjadIDE(object):
                 )
             with open(illustrate_file_path, 'w') as file_pointer:
                 file_pointer.write(completed_template)
-            result = self._io_manager.interpret_file(
-                illustrate_file_path,
-                strip=False,
-                )
+            result = self._io_manager.interpret_file(illustrate_file_path)
             stdout_lines, stderr_lines = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
@@ -2438,10 +2427,7 @@ class AbjadIDE(object):
                 self._io_manager._display(message)
                 return
             with systemtools.Timer() as timer:
-                result = self._io_manager.interpret_file(
-                    definition_path, 
-                    strip=False,
-                    )
+                result = self._io_manager.interpret_file(definition_path)
             stdout_lines, stderr_lines = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
@@ -3685,13 +3671,14 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        statement = self._io_manager._handle_input(
-            '$',
-            include_chevron=False,
-            include_newline=False,
-            )
-        statement = statement.strip()
-        self._io_manager._invoke_shell(statement)
+        with self._io_manager._make_interaction():
+            statement = self._io_manager._handle_input(
+                '$',
+                include_chevron=False,
+                include_newline=False,
+                )
+            statement = statement.strip()
+            self._io_manager._invoke_shell(statement)
 
     @Command(
         'pdfm*',

@@ -206,17 +206,14 @@ class IOManager(IOManager):
         return input_
 
     def _invoke_shell(self, statement):
-        lines = []
+        statement = statement.strip()
         process = subprocess.Popen(
             statement,
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             )
-        try:
-            lines = self._read_from_pipe(process.stdout).splitlines()
-        except:
-            lines.append('expression not executable.')
+        lines = self._read_from_pipe(process.stdout).splitlines()
         lines = lines or []
         lines = [_.strip() for _ in lines]
         self._display(lines, capitalize=False)
@@ -306,20 +303,16 @@ class IOManager(IOManager):
         for title in self.transcript.titles:
             print(repr(title))
 
-    def _read_from_pipe(self, pipe, strip=True):
+    def _read_from_pipe(self, pipe):
         lines = []
         string = pipe.read()
         if sys.version_info[0] == 2:
             for line in string.splitlines():
                 line = str(line)
-                if strip:
-                    line = line.strip()
                 lines.append(line)
         else:
             for line in string.splitlines():
                 line = line.decode('utf-8')
-                if strip:
-                    line = line.strip()
                 lines.append(line)
         return '\n'.join(lines)
 
@@ -404,7 +397,7 @@ class IOManager(IOManager):
         result = tuple(result)
         return result
 
-    def interpret_file(self, path, strip=True):
+    def interpret_file(self, path):
         r'''Invokes Python or LilyPond on `path`.
 
         Displays any in-file messaging during interpretation.
@@ -434,10 +427,8 @@ class IOManager(IOManager):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 )
-        stdout_lines = self._read_from_pipe(
-            process.stdout, strip=strip).splitlines()
-        stderr_lines = self._read_from_pipe(
-            process.stderr, strip=strip).splitlines()
+        stdout_lines = self._read_from_pipe(process.stdout).splitlines()
+        stderr_lines = self._read_from_pipe(process.stderr).splitlines()
         return stdout_lines, stderr_lines
 
     def open_file(self, path, line_number=None):
@@ -492,7 +483,7 @@ class IOManager(IOManager):
         Returns stdout from subprocess.
         '''
         process = self.make_subprocess(command)
-        lines = self._read_from_pipe(process.stdout, strip=False)
+        lines = self._read_from_pipe(process.stdout)
         lines = lines.splitlines()
         return lines
 
