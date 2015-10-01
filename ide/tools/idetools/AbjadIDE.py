@@ -467,10 +467,8 @@ class AbjadIDE(object):
         command = command.format(path)
         directory = self._to_score_directory(path, 'outer')
         with systemtools.TemporaryDirectoryChange(directory=directory):
-            process = self._io_manager.make_subprocess(command)
-        stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-        stdout_lines = stdout_lines.splitlines()
-        return stdout_lines
+            lines = self._io_manager.run_command(command)
+        return lines
 
     def _get_metadata(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -735,11 +733,10 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         command = 'git status {}'.format(directory)
         with systemtools.TemporaryDirectoryChange(directory=directory):
-            process = self._io_manager.make_subprocess(command)
+            lines = self._io_manager.run_command(command)
         path = directory + os.path.sep
         clean_lines = []
-        stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-        for line in stdout_lines.splitlines():
+        for line in lines:
             line = str(line)
             clean_line = line.strip()
             clean_line = clean_line.replace(path, '')
@@ -3186,11 +3183,10 @@ class AbjadIDE(object):
             message = message.format(directory)
             messages.append(message)
             with systemtools.TemporaryDirectoryChange(directory=directory):
-                process = self._io_manager.make_subprocess(command)
+                lines = self._io_manager.run_command(command)
             path_ = directory + os.path.sep
             clean_lines = []
-            stdout_lines = self._io_manager._read_from_pipe(process.stdout)
-            for line in stdout_lines.splitlines():
+            for line in lines:
                 line = str(line)
                 clean_line = line.strip()
                 clean_line = clean_line.replace(path_, '')
