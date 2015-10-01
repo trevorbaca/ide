@@ -26,6 +26,7 @@ class Command(object):
         'sibling navigation',
         'star',
         'system',
+        'tests',
         )
 
     _navigation_section_names = (

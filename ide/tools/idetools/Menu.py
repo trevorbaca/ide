@@ -49,6 +49,7 @@ class Menu(object):
         'star',
         'system',
         'global files',
+        'tests',
         'definition_file',
         'illustrate_file',
         'ly',

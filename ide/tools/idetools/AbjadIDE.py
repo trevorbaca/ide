@@ -4109,3 +4109,46 @@ class AbjadIDE(object):
                     )
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
+
+
+    @Command(
+        'dt',
+        argument_name='current_directory',
+        description='doctest - run',
+        forbidden_directories=('scores',),
+        section='tests',
+        )
+    def run_doctest(self, directory):
+        r'''Runs doctest on entire score.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            directory = self._to_score_directory(directory, 'inner')
+            command = 'ajv doctest {}'
+            command = command.format(directory)
+            lines = self._io_manager.run_command(command, messages_only=True)
+            lines = [_ for _ in lines if not _ == '']
+            self._io_manager._display(lines, capitalize=False)
+
+    @Command(
+        'pt',
+        argument_name='current_directory',
+        description='pytest - run',
+        forbidden_directories=('scores',),
+        section='tests',
+        )
+    def run_pytest(self, directory):
+        r'''Runs pytest on entire score.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            directory = self._to_score_directory(directory, 'inner')
+            command = 'py.test -rf {}'
+            command = command.format(directory)
+            lines = self._io_manager.run_command(command, messages_only=True)
+            lines = [_ for _ in lines if not _ == '']
+            self._io_manager._display(lines, capitalize=False)
