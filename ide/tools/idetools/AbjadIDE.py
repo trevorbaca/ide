@@ -4085,6 +4085,41 @@ class AbjadIDE(object):
         self._session._pending_menu_rebuild = True
         self._session._pending_redraw = True
 
+    @Command(
+        'rp',
+        argument_name='current_directory',
+        section='system',
+        )
+    def replace(self, directory):
+        r'''Replaces expression.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        change = systemtools.TemporaryDirectoryChange(directory)
+        with self._io_manager._make_interaction(), change:
+            assert self._io_manager.find_executable('ack')
+            getter = self._io_manager._make_getter()
+            getter.append_string('enter search string')
+            search_string = getter._run(io_manager=self._io_manager)
+            if not search_string:
+                return
+            getter = self._io_manager._make_getter()
+            getter.append_string('enter replace string')
+            replace_string = getter._run(io_manager=self._io_manager)
+            if not replace_string:
+                return
+            complete_words = False
+            result = self._io_manager._confirm('complete words only?')
+            if result:
+                complete_words = True
+            command = 'ajv replace {!r} {!r}'
+            command = command.format(search_string, replace_string)
+            if complete_words:
+                command += ' -Y'  
+            lines = self._io_manager.run_command(command)
+            lines = [_.strip() for _ in lines if not _ == '']
+            self._io_manager._display(lines, capitalize=False)
 
     @Command(
         'dt',
