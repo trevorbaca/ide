@@ -2474,55 +2474,50 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        directories = self._collect_similar_directories(
-            directory,
-            example_scores=self._session.is_test or self._session.is_example,
-            )
-        paths = []
-        for directory_ in directories:
-            for name in os.listdir(directory_):
-                if name.endswith('.pyc'):
-                    continue
-                if name.startswith('.'):
-                    continue
-                if name == '__pycache__':
-                    continue
-                path = os.path.join(directory_, name)
-                paths.append(path)
-        trimmed_paths = [self._trim_path(_) for _ in paths]
-        menu_header = self._to_menu_header(directory)
-        menu_header = menu_header + ' - select:'
-        selector = self._io_manager._make_selector(
-            items=trimmed_paths,
-            menu_header=menu_header,
-            )
-        trimmed_source_path = selector._run(io_manager=self._io_manager)
-        if not trimmed_source_path:
-            return
-        if trimmed_source_path not in trimmed_paths:
-            return
-        scores_directory = configuration.composer_scores_directory
-        if self._session.is_test or self._session.is_example:
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        source_path = os.path.join(scores_directory, trimmed_source_path)
-        asset_name = os.path.basename(source_path)
-        target_path = os.path.join(directory, asset_name)
-        messages = []
-        messages.append('will copy ...')
-        messages.append(' FROM: {}'.format(self._trim_path(source_path)))
-        messages.append('   TO: {}'.format(self._trim_path(target_path)))
-        self._io_manager._display(messages)
-        result = self._io_manager._confirm()
-        if not result:
-            return
-        if os.path.isfile(source_path):
-            shutil.copyfile(source_path, target_path)
-        elif os.path.isdir(source_path):
-            shutil.copytree(source_path, target_path)
-        else:
-            raise ValueError(source_path)
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
+        with self._io_manager._make_interaction():
+            example_scores = self._session.is_test or self._session.is_example
+            directories = self._collect_similar_directories(
+                directory,
+                example_scores=example_scores,
+                )
+            paths = []
+            for directory_ in directories:
+                for name in os.listdir(directory_):
+                    if name.endswith('.pyc'):
+                        continue
+                    if name.startswith('.'):
+                        continue
+                    if name == '__pycache__':
+                        continue
+                    path = os.path.join(directory_, name)
+                    paths.append(path)
+            trimmed_paths = [self._trim_path(_) for _ in paths]
+            menu_header = self._to_menu_header(directory)
+            menu_header = menu_header + ' - select:'
+            selector = self._io_manager._make_selector(
+                items=trimmed_paths,
+                menu_header=menu_header,
+                )
+            trimmed_source_path = selector._run(io_manager=self._io_manager)
+            if not trimmed_source_path:
+                return
+            if trimmed_source_path not in trimmed_paths:
+                return
+            scores_directory = configuration.composer_scores_directory
+            if self._session.is_test or self._session.is_example:
+                scores_directory = \
+                    configuration.abjad_ide_example_scores_directory
+            source_path = os.path.join(scores_directory, trimmed_source_path)
+            asset_name = os.path.basename(source_path)
+            target_path = os.path.join(directory, asset_name)
+            if os.path.isfile(source_path):
+                shutil.copyfile(source_path, target_path)
+            elif os.path.isdir(source_path):
+                shutil.copytree(source_path, target_path)
+            else:
+                raise ValueError(source_path)
+            self._session._pending_menu_rebuild = True
+            self._session._pending_redraw = True
 
     @Command(
         'lyc',

@@ -37,11 +37,7 @@ def test_AbjadIDE_copy_01():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - build directory - select:' in contents
 
 
 def test_AbjadIDE_copy_02():
@@ -74,11 +70,7 @@ def test_AbjadIDE_copy_02():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - distribution directory - select:' in contents
 
 
 def test_AbjadIDE_copy_03():
@@ -111,11 +103,7 @@ def test_AbjadIDE_copy_03():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - etc directory - select:' in contents
 
 
 def test_AbjadIDE_copy_04():
@@ -148,11 +136,7 @@ def test_AbjadIDE_copy_04():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - makers directory - select:' in contents
 
 
 def test_AbjadIDE_copy_05():
@@ -188,11 +172,7 @@ def test_AbjadIDE_copy_05():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - materials directory - articulation handler - select:' in contents
 
 
 def test_AbjadIDE_copy_06():
@@ -227,11 +207,7 @@ def test_AbjadIDE_copy_06():
         assert os.path.exists(target_package)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_package in contents
-    assert trimmed_target_package in contents
+    assert 'Blue Example Score (2013) - materials directory - select:' in contents
 
 
 def test_AbjadIDE_copy_07():
@@ -267,11 +243,7 @@ def test_AbjadIDE_copy_07():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - segments directory - segment 01 - select:' in contents
 
 
 def test_AbjadIDE_copy_08():
@@ -306,11 +278,7 @@ def test_AbjadIDE_copy_08():
         assert os.path.exists(target_package)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_package in contents
-    assert trimmed_target_package in contents
+    assert 'Blue Example Score (2013) - segments directory - select:' in contents
 
 
 def test_AbjadIDE_copy_09():
@@ -343,11 +311,7 @@ def test_AbjadIDE_copy_09():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
+    assert 'Blue Example Score (2013) - stylesheets directory - select:' in contents
 
 
 def test_AbjadIDE_copy_10():
@@ -381,8 +345,3 @@ def test_AbjadIDE_copy_10():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Blue Example Score (2013) - test directory - select:' in contents
-    assert 'Will copy' in contents
-    assert 'FROM:' in contents
-    assert 'TO:' in contents
-    assert trimmed_source_file in contents
-    assert trimmed_target_file in contents
