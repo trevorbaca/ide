@@ -17,30 +17,48 @@ class ScoreTemplate(abctools.AbjadObject):
     def __call__(self):
         r'''Calls score template.
 
-        Returns LilyPondFile object.
-        '''
+        ..  container:: example
 
-        # make rh voice and staff
+            >>> from red_example_score import makers
+            >>> template = makers.ScoreTemplate()
+            >>> score = template()
+
+        ::
+
+            >>> f(score)
+            \context Score = "Red Example Score" <<
+                \context StaffGroup = "Piano Staff Group" <<
+                    \context RHStaff = "RH Staff" {
+                        \context RHVoice = "RH Voice" {
+                        }
+                    }
+                    \context LHStaff = "LH Staff" {
+                        \context LHVoice = "LH Voice" {
+                        }
+                    }
+                >>
+            >>
+
+        Returns score.
+        '''
         rh_voice = Voice(
             context_name='RHVoice',
             name='RH Voice',
             )
         rh_staff = Staff(
+            [rh_voice],
             context_name='RHStaff',
             name='RH Staff',
             )
-
-        # make lh voice and staff
         lh_voice = Voice(
             context_name='LHVoice',
             name='LH Voice',
             )
         lh_staff = Staff(
+            [lh_voice],
             context_name='LHStaff',
             name='LH Staff',
             )
-
-        # maker piano staff group
         piano_staff_group = scoretools.StaffGroup(
             [
                 rh_staff,
@@ -48,14 +66,10 @@ class ScoreTemplate(abctools.AbjadObject):
                 ],
             name='Piano Staff Group',
             )
-
-        # make score
         score = Score(
             [
                 piano_staff_group,
             ],
             name='Red Example Score',
             )
-
-        # return score
         return score

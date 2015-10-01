@@ -499,7 +499,8 @@ class IOManager(IOManager):
         Returns none.
         '''
         process = self.make_subprocess(command)
-        lines = self._read_from_pipe(process.stdout).splitlines()
+        lines = self._read_from_pipe(process.stdout, strip=False)
+        lines = lines.splitlines()
         if not lines:
             return
         if messages_only:

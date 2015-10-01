@@ -21,7 +21,7 @@ def test_AbjadIDE_run_doctest_01():
     assert 'build/__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__views__.py \x1b[94mOK\x1b[0m' in contents
     assert 'makers/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
-    assert '0 of 0 tests pass in 33 modules.'
+    assert '4 of 4 tests pass in 33 modules.'
 
 
 def test_AbjadIDE_run_doctest_02():
@@ -39,4 +39,4 @@ def test_AbjadIDE_run_doctest_02():
     assert 'build/__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__views__.py \x1b[94mOK\x1b[0m' in contents
     assert 'makers/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
-    assert '0 of 0 tests pass in 33 modules.'
+    assert '4 of 4 tests pass in 33 modules.'
