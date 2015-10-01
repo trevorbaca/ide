@@ -3,5 +3,4 @@ from abjad.tools import datastructuretools
 
 
 metadata = datastructuretools.TypedOrderedDict([
-    ('output_material_class_name', 'ContiguousSelection'),
     ])
