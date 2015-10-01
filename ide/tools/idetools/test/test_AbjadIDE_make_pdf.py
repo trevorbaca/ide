@@ -104,7 +104,7 @@ def test_AbjadIDE_make_pdf_03():
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
     illustrate_file_path = os.path.join(
         segment_directory,
-        '__illustrate_segment__.py',
+        '__illustrate__.py',
         )
 
     with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
@@ -150,7 +150,7 @@ def test_AbjadIDE_make_pdf_04():
         )
     illustrate_file_path = os.path.join(
         segment_directory,
-        '__illustrate_segment__.py',
+        '__illustrate__.py',
         )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
@@ -204,7 +204,7 @@ def test_AbjadIDE_make_pdf_05():
         )
     illustrate_file_path = os.path.join(
         segment_directory,
-        '__illustrate_segment__.py',
+        '__illustrate__.py',
         )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')

@@ -1475,7 +1475,7 @@ class AbjadIDE(object):
             )
         illustrate_file_path = os.path.join(
             directory,
-            '__illustrate_segment__.py',
+            '__illustrate__.py',
             )
         candidate_ly_path = os.path.join(
             directory,
