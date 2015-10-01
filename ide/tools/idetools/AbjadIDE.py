@@ -2640,6 +2640,28 @@ class AbjadIDE(object):
             self._open_in_every_package(paths, 'definition.py')
 
     @Command(
+        'ff*',
+        argument_name='current_directory',
+        section='star',
+        )
+    def edit_every_file(self, directory):
+        r'''Edits files in every subdirectory of `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            getter = self._io_manager._make_getter()
+            getter.append_string('enter filename')
+            name = getter._run(io_manager=self._io_manager)
+            if not name:
+                return
+            command = 'find {} -name {}'
+            command = command.format(directory, name)
+            paths = self._io_manager.run_command(command)
+            self._io_manager.open_file(paths)
+
+    @Command(
         'ill',
         argument_name='current_directory',
         description='illustrate file - edit',
