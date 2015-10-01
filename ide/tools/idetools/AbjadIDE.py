@@ -4124,8 +4124,10 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction():
-            directory = self._to_score_directory(directory, 'inner')
+        directory = self._to_score_directory(directory, 'inner')
+        interaction = self._io_manager._make_interaction()
+        change = systemtools.TemporaryDirectoryChange(directory=directory)
+        with interaction, change:
             command = 'ajv doctest {}'
             command = command.format(directory)
             lines = self._io_manager.run_command(command, messages_only=True)
