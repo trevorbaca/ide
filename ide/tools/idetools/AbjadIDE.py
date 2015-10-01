@@ -571,9 +571,9 @@ class AbjadIDE(object):
     def _get_repository_root_directory(self, path):
         command = 'git rev-parse --show-toplevel'
         with systemtools.TemporaryDirectoryChange(directory=path):
-            process = self._io_manager.make_subprocess(command)
-        line = self._io_manager._read_one_line_from_pipe(process.stdout)
-        return line
+            lines = self._io_manager.run_command(command)
+            first_line = lines[0]
+            return first_line
 
     def _get_segment_metadata(self, directory):
         assert self._is_score_directory(directory, 'segment'), repr(directory)
@@ -4017,9 +4017,7 @@ class AbjadIDE(object):
                 command = 'rm -rf {}'
             command = command.format(path)
             with systemtools.TemporaryDirectoryChange(directory=path):
-                process = self._io_manager.make_subprocess(command)
-            self._io_manager._read_one_line_from_pipe(process.stdout)
-            # to get rid of directories lingering with .pycs
+                self._io_manager.run_command(command)
             cleanup_command = 'rm -rf {}'
             cleanup_command = cleanup_command.format(path)
             self._io_manager.run_command(command)

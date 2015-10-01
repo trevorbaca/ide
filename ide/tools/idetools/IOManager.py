@@ -323,16 +323,6 @@ class IOManager(IOManager):
                 lines.append(line)
         return '\n'.join(lines)
 
-    def _read_one_line_from_pipe(self, pipe, strip=True):
-        line = pipe.readline()
-        if sys.version_info[0] == 2:
-            line = str(line)
-        else:
-            line = line.decode('utf-8')
-        if strip:
-            line = line.strip()
-        return line
-
     ### PUBLIC METHODS ###
 
     def edit(self, path, line_number=None):
