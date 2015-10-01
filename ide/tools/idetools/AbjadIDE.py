@@ -3872,6 +3872,7 @@ class AbjadIDE(object):
     @Command(
         'so',
         argument_name='current_directory',
+        description='score pdf - open',
         directories=('inner',),
         section='pdf',
         )
@@ -4127,4 +4128,29 @@ class AbjadIDE(object):
             command = command.format(directory)
             lines = self._io_manager.run_command(command)
             lines = [_ for _ in lines if not _ == '']
+            self._io_manager._display(lines, capitalize=False)
+
+    @Command(
+        'sr',
+        argument_name='current_directory',
+        section='system',
+        )
+    def search(self, directory):
+        r'''Searches for expression
+
+        Delegates to ack.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            assert self._io_manager.find_executable('ack')
+            getter = self._io_manager._make_getter()
+            getter.append_string('enter search string')
+            search_string = getter._run(io_manager=self._io_manager)
+            if not search_string:
+                return
+            command = r'ack {!r}'
+            command = command.format(search_string)
+            lines = self._io_manager.run_command(command)
             self._io_manager._display(lines, capitalize=False)
