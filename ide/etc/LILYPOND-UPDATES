@@ -1,15 +1,15 @@
 SUMMARY. Run ...
 
-    test-abjad-ide
+    example-abjad-ide
 
 ... to make Red Example Score visible when you start the IDE. Then run the
 following four commands to rerender all test artifacts to accommodate a new
 version of LilyPond:
 
-    (red~example~score mm lyi* y q)
-    (red~example~score gg lyi* y q)
-    (red~example~score bb mi y q)
-    (red~example~score bb si y q)
+    (red~example~score mm lyi* q)
+    (red~example~score gg lyi* q)
+    (red~example~score bb mi q)
+    (red~example~score bb si q)
 
 Then update the IDE Travis configuration file by changing the old LilyPond
 version number...
@@ -19,8 +19,8 @@ version number...
 
 ... to the new LilyPond version number ...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.26-1.linux-64.sh
-    - sudo sh lilypond-2.26.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.28-1.linux-64.sh
+    - sudo sh lilypond-2.28.15-1.linux-64.sh --batch
 
 ... instead.
 
@@ -29,7 +29,7 @@ these 5 commands. These tests will pass again after commit:
 
     git add .
 
-    git commit "Rerendered all test artifacts to accommodate LilyPond 2.19.23."
+    git commit "Rerendered all test artifacts to accommodate LilyPond 2.19.28."
 
 Then run the battery and confirm that no tests fail.
 
@@ -37,8 +37,7 @@ Then run the battery and confirm that no tests fail.
 
 Explanation: Removed versioning from IDE during July 2015. This simplifies the
 process of installing a new version of LilyPond. Installing a new version of
-LilyPond and running the tests now causes only the three following tests to
-fail:
+LilyPond and running the tests now causes only these three tests to fail:
 
     test_BuildFileWrangler_interpret_music.py
     test_SegmentPackageManager_illustrate_definition.py
