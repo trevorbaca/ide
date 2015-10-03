@@ -4120,7 +4120,6 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         change = systemtools.TemporaryDirectoryChange(directory)
         with self._io_manager._make_interaction(), change:
-            assert self._io_manager.find_executable('ack')
             getter = self._io_manager._make_getter()
             getter.append_string('enter search string')
             search_string = getter._run(io_manager=self._io_manager)
