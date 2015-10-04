@@ -4194,19 +4194,33 @@ class AbjadIDE(object):
     def search(self, directory):
         r'''Searches for expression
 
-        Delegates to ack.
+        Delegates to ack (if available) or grep.
 
         Returns none.
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction():
-            assert self._io_manager.find_executable('ack')
+            executable =  self._io_manager.find_executable('ack')
+            if not executable:
+                executable = self._io_manager.find_executable('grep')
+            if not executable:
+                messages = []
+                messages.append('can not find ack.')
+                messages.append('can not find grep.')
+                self._io_manager._display(messages)
+                return
+            assert len(executable) == 1
+            executable = executable[0]
             getter = self._io_manager._make_getter()
             getter.append_string('enter search string')
             search_string = getter._run(io_manager=self._io_manager)
             if not search_string:
                 return
-            command = r'ack {!r}'
-            command = command.format(search_string)
+            if executable.endswith('ack'):
+                command = r'{} {}'
+                command = command.format(executable, search_string)
+            elif executable.endswith('grep'):
+                command = r'{} -r {!r} *'
+                command = command.format(executable, search_string)
             lines = self._io_manager.run_command(command)
             self._io_manager._display(lines, capitalize=False)
