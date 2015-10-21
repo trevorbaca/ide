@@ -30,8 +30,8 @@ version number...
 
 ... to the new LilyPond version number ...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.28-1.linux-64.sh
-    - sudo sh lilypond-2.28.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.29-1.linux-64.sh
+    - sudo sh lilypond-2.29.15-1.linux-64.sh --batch
 
 ... instead.
 
@@ -40,7 +40,7 @@ these 5 commands. These tests will pass again after commit:
 
     git add .
 
-    git commit "Rerendered all test artifacts to accommodate LilyPond 2.19.28."
+    git commit "Rerendered all test artifacts to accommodate LilyPond 2.19.29."
 
 Then run the battery and confirm that no tests fail.
 
