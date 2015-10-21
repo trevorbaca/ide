@@ -332,6 +332,27 @@ class AbjadIDE(object):
                 if (os.path.isfile(path) and not '__init__.py' in path):
                     return entry
 
+    def _find_empty_score_directories(self):
+        empty_score_directories = []
+        scores_directory = configuration.composer_scores_directory
+        for entry in os.listdir(scores_directory):
+            if not entry[0].isalpha():
+                continue
+            if not entry[0].islower():
+                continue
+            score_directory = os.path.join(scores_directory, entry)
+            if not os.path.isdir(score_directory):
+                continue
+            for subentry in os.listdir(score_directory):
+                path = os.path.join(score_directory, subentry)
+                if not subentry[0].isalpha():
+                    continue
+                if os.path.isdir(path):
+                    break
+            else:
+                empty_score_directories.append(score_directory)
+        return empty_score_directories
+
     def _format_messaging(self, inputs, outputs, verb='interpret'):
         messages = []
         if not inputs and not outputs:
@@ -1336,23 +1357,41 @@ class AbjadIDE(object):
         self._manage_directory(new_path)
 
     def _make_score_package(self):
+        scores_directory = configuration.composer_scores_directory
+        if self._session.is_test or self._session.is_example:
+            scores_directory = configuration.abjad_ide_example_scores_directory
+        outer_score_directory = None
+        package_name = None
+        empty_score_directories = self._find_empty_score_directories()
+        if empty_score_directories:
+            path = empty_score_directories[0]
+            message = 'found empty score directory {}/.'
+            message = message.format(self._trim_path(path))
+            self._io_manager._display(message)
+            message = 'populate {}/ with score contents?'
+            message =  message.format(self._trim_path(path))
+            result = self._io_manager._confirm(message)
+            if result:
+                outer_score_directory = path
+                package_name = path
         message = 'enter title'
         getter = self._io_manager._make_getter()
         getter.append_string(message)
         title = getter._run(io_manager=self._io_manager)
         if not title:
             return
-        package_name = stringtools.strip_diacritics(title)
-        package_name = stringtools.to_snake_case(package_name)
-        scores_directory = configuration.composer_scores_directory
-        if self._session.is_test or self._session.is_example:
-            scores_directory = configuration.abjad_ide_example_scores_directory
-        outer_score_directory = os.path.join(scores_directory, package_name)
-        if os.path.exists(outer_score_directory):
-            message = 'directory already exists: {}.'
-            message = message.format(outer_score_directory)
-            self._io_manager._display(message)
-            return
+        if not outer_score_directory:
+            package_name = stringtools.strip_diacritics(title)
+            package_name = stringtools.to_snake_case(package_name)
+            outer_score_directory = os.path.join(
+                scores_directory, 
+                package_name,
+                )
+            if os.path.exists(outer_score_directory):
+                message = 'directory already exists: {}.'
+                message = message.format(outer_score_directory)
+                self._io_manager._display(message)
+                return
         year = datetime.date.today().year
         systemtools.IOManager._make_score_package(
             outer_score_directory,
