@@ -40,11 +40,6 @@ class AbjadIDE(object):
         '__metadata__.py',
         '__views__.py',
         '__abbreviations__.py',
-        '.travis.yml',
-        'README.md',
-        'requirements.txt',
-        'setup.cfg',
-        'setup.py',
         )
 
     _tab = 4 * ' '
@@ -158,6 +153,8 @@ class AbjadIDE(object):
             name = self._to_dash_case_file_name(name)
         elif self._is_score_directory(directory, 'makers'):
             name = self._to_classfile_name(name)
+        elif self._is_score_directory(directory, 'outer'):
+            pass
         elif self._is_score_directory(directory, package_prototype):
             name = self._to_package_name(name)
         elif self._is_score_directory(directory, 'stylesheets'):
@@ -856,6 +853,12 @@ class AbjadIDE(object):
         return True
 
     @staticmethod
+    def _is_outer_score_package_name(expr):
+        if expr == '.git':
+            return False
+        return True
+
+    @staticmethod
     def _is_package_name(expr):
         if not isinstance(expr, str):
             return False
@@ -1071,7 +1074,7 @@ class AbjadIDE(object):
         name_predicate = self._to_name_predicate(directory)
         if not name_predicate(file_name):
             message = 'invalid file name: {!r}.'
-            message = message.format(self._trim_path(file_name))
+            message = message.format(file_name)
             self._io_manager._display(message)
             self._io_manager._acknowledge()
             return
@@ -2198,7 +2201,7 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, 'scores'):
             return self._is_package_name
         elif self._is_score_directory(directory, 'outer'):
-            return self._is_package_name
+            return self._is_outer_score_package_name
         elif self._is_score_directory(directory, ('score', 'inner')):
             return self._is_package_name
         elif self._is_score_directory(directory, 'makers'):
