@@ -82,6 +82,91 @@ def test_AbjadIDE_new_01():
 
 
 def test_AbjadIDE_new_02():
+    r'''Makes new score directory in preexisting empty directory.
+    '''
+
+    outer_score_directory = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'example_score',
+        )
+    inner_score_directory = os.path.join(
+        outer_score_directory, 
+        'example_score',
+        )
+    materials_directory = os.path.join(
+        inner_score_directory,
+        'materials',
+        )
+    segments_directory = os.path.join(
+        inner_score_directory,
+        'segments',
+        )
+    outer_directory_entries = [
+        'README.md',
+        'requirements.txt',
+        'setup.cfg',
+        'setup.py',
+        ]
+    inner_directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        'build',
+        'distribution',
+        'etc',
+        'makers',
+        'materials',
+        'segments',
+        'stylesheets',
+        'test',
+        ]
+    materials_directory_entries = [
+        '__abbreviations__.py',
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        ]
+    segments_directory_entries = [
+        '__init__.py',
+        '__metadata__.py',
+        '__views__.py',
+        ]
+
+    input_ = 'new y Example~Score q'
+
+    if os.path.exists(outer_score_directory):
+        os.remove(outer_score_directory)
+
+    with systemtools.FilesystemState(remove=[outer_score_directory]):
+        assert not os.path.exists(outer_score_directory)
+        os.mkdir(outer_score_directory)
+        git_directory = os.path.join(outer_score_directory, '.git')
+        os.mkdir(git_directory)
+        assert os.path.isdir(outer_score_directory)
+        assert os.path.isdir(git_directory)
+        abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+        assert os.path.exists(outer_score_directory)
+        session = ide.tools.idetools.Session(is_test=True)
+        io_manager = ide.tools.idetools.IOManager(session=session)
+        entries = os.listdir(inner_score_directory)
+        for entry in outer_directory_entries:
+            path = os.path.join(outer_score_directory, entry)
+            assert os.path.exists(path)
+        for entry in inner_directory_entries:
+            path = os.path.join(inner_score_directory, entry)
+            assert os.path.exists(path)
+        for entry in materials_directory_entries:
+            path = os.path.join(materials_directory, entry)
+            assert os.path.exists(path)
+        for entry in segments_directory_entries:
+            path = os.path.join(segments_directory, entry)
+            assert os.path.exists(path)
+
+    assert 'Found' in contents
+    assert 'Enter title]> Example Score' in contents
+
+
+def test_AbjadIDE_new_03():
     r'''Coerces score directory name.
     '''
 
@@ -111,7 +196,7 @@ def test_AbjadIDE_new_02():
         assert os.path.exists(score_package)
 
 
-def test_AbjadIDE_new_03():
+def test_AbjadIDE_new_04():
     r'''Makes new build file.
     '''
 
@@ -130,7 +215,7 @@ def test_AbjadIDE_new_03():
         assert os.path.exists(path)
 
 
-def test_AbjadIDE_new_04():
+def test_AbjadIDE_new_05():
     r'''Coerces build file name.
     '''
 
@@ -149,7 +234,7 @@ def test_AbjadIDE_new_04():
         assert os.path.exists(path)
 
 
-def test_AbjadIDE_new_05():
+def test_AbjadIDE_new_06():
     r'''Makes new maker file.
     '''
 
@@ -171,7 +256,7 @@ def test_AbjadIDE_new_05():
             assert 'class NewMaker(object)' in string
 
 
-def test_AbjadIDE_new_06():
+def test_AbjadIDE_new_07():
     r'''Coerces maker file name.
     '''
 
@@ -193,7 +278,7 @@ def test_AbjadIDE_new_06():
             assert 'class NewMaker(object)' in string
 
 
-def test_AbjadIDE_new_07():
+def test_AbjadIDE_new_08():
     r'''Makes new material directory.
     '''
 
@@ -223,7 +308,7 @@ def test_AbjadIDE_new_07():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_08():
+def test_AbjadIDE_new_09():
     r'''Coerces material directory name.
     '''
 
@@ -253,7 +338,7 @@ def test_AbjadIDE_new_08():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_09():
+def test_AbjadIDE_new_10():
     r'''Makes new segment directory.
     '''
 
@@ -283,7 +368,7 @@ def test_AbjadIDE_new_09():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_10():
+def test_AbjadIDE_new_11():
     r'''Coerces segment directory name.
     '''
 
@@ -313,7 +398,7 @@ def test_AbjadIDE_new_10():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_11():
+def test_AbjadIDE_new_12():
     r'''Makes new stylesheet.
     '''
 
@@ -332,7 +417,7 @@ def test_AbjadIDE_new_11():
         assert os.path.exists(path)
 
 
-def test_AbjadIDE_new_12():
+def test_AbjadIDE_new_13():
     r'''Coerces stylesheet new.
     '''
 

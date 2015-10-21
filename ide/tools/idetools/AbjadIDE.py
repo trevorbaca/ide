@@ -334,23 +334,27 @@ class AbjadIDE(object):
 
     def _find_empty_score_directories(self):
         empty_score_directories = []
-        scores_directory = configuration.composer_scores_directory
-        for entry in os.listdir(scores_directory):
-            if not entry[0].isalpha():
-                continue
-            if not entry[0].islower():
-                continue
-            score_directory = os.path.join(scores_directory, entry)
-            if not os.path.isdir(score_directory):
-                continue
-            for subentry in os.listdir(score_directory):
-                path = os.path.join(score_directory, subentry)
-                if not subentry[0].isalpha():
+        scores_directories = (
+            configuration.composer_scores_directory,
+            configuration.abjad_ide_example_scores_directory,
+            )
+        for scores_directory in scores_directories:
+            for entry in os.listdir(scores_directory):
+                if not entry[0].isalpha():
                     continue
-                if os.path.isdir(path):
-                    break
-            else:
-                empty_score_directories.append(score_directory)
+                if not entry[0].islower():
+                    continue
+                score_directory = os.path.join(scores_directory, entry)
+                if not os.path.isdir(score_directory):
+                    continue
+                for subentry in os.listdir(score_directory):
+                    path = os.path.join(score_directory, subentry)
+                    if not subentry[0].isalpha():
+                        continue
+                    if os.path.isdir(path):
+                        break
+                else:
+                    empty_score_directories.append(score_directory)
         return empty_score_directories
 
     def _format_messaging(self, inputs, outputs, verb='interpret'):
