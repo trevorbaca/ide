@@ -19,6 +19,8 @@ def test_AbjadIDE_go_to_score_package_wrapper_01():
         'Red Example Score (2013) - package wrapper',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'red_example_score' in contents
 
 
 def test_AbjadIDE_go_to_score_package_wrapper_02():

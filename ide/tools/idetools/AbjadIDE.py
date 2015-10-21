@@ -854,7 +854,7 @@ class AbjadIDE(object):
 
     @staticmethod
     def _is_outer_score_package_name(expr):
-        if expr == '.git':
+        if expr in ('.git', '.DS_Store'):
             return False
         return True
 
@@ -1119,6 +1119,8 @@ class AbjadIDE(object):
         asset_menu_entries = []
         paths = self._list_visible_paths(directory)
         strings = [self._to_menu_string(_) for _ in paths]
+        if self._is_score_directory(directory, 'outer'):
+            strings = [os.path.basename(_) for _ in paths]
         pairs = list(zip(strings, paths))
         if self._is_score_directory(directory, 'scores'):
             def sort_function(pair):
@@ -2174,7 +2176,8 @@ class AbjadIDE(object):
         directory = path 
         if os.path.isfile(directory):
             directory = os.path.dirname(directory)
-        if not self._is_score_directory(directory, ('makers', 'test')):
+        prototype = ('makers', 'outer', 'test')
+        if not self._is_score_directory(directory, prototype):
             if '_' in name:
                 name = stringtools.to_space_delimited_lowercase(name)
         if self._is_score_directory(path, 'segment'):
