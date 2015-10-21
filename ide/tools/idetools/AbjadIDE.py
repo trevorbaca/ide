@@ -835,6 +835,13 @@ class AbjadIDE(object):
             return False
         return True
 
+    def _is_maker_file_name(self, expr):
+        if self._is_classfile_name(expr):
+            return True
+        if self._is_module_file_name(expr):
+            return True
+        return False
+
     @staticmethod
     def _is_module_file_name(expr):
         if not isinstance(expr, str):
@@ -2163,8 +2170,9 @@ class AbjadIDE(object):
         directory = path 
         if os.path.isfile(directory):
             directory = os.path.dirname(directory)
-        if '_' in name and not self._is_score_directory(directory, 'test'):
-            name = stringtools.to_space_delimited_lowercase(name)
+        if not self._is_score_directory(directory, ('makers', 'test')):
+            if '_' in name:
+                name = stringtools.to_space_delimited_lowercase(name)
         if self._is_score_directory(path, 'segment'):
             return self._get_metadatum(path, 'name', name)
         else:
@@ -2194,7 +2202,7 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, ('score', 'inner')):
             return self._is_package_name
         elif self._is_score_directory(directory, 'makers'):
-            return self._is_classfile_name
+            return self._is_maker_file_name
         elif self._is_score_directory(directory, ('material', 'segment')):
             return self._is_lowercase_file_name
         elif self._is_score_directory(directory, 'stylesheets'):
