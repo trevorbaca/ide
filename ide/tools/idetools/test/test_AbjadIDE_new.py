@@ -27,6 +27,7 @@ def test_AbjadIDE_new_01():
         'segments',
         )
     outer_directory_entries = [
+        '.travis.yml',
         'README.md',
         'requirements.txt',
         'setup.cfg',
@@ -102,6 +103,7 @@ def test_AbjadIDE_new_02():
         'segments',
         )
     outer_directory_entries = [
+        '.travis.yml',
         'README.md',
         'requirements.txt',
         'setup.cfg',
