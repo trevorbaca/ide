@@ -46,8 +46,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
             '-*- coding: utf-8 -*-',
             '',
             'Abjad IDE configuration file created on {}.'.format(current_time),
-            "This file is interpreted by Python's ConfigParser ",
-            'and follows ini syntax.',
+            "This file is interpreted by ConfigParser and follows ini sytax.",
             ]
 
     ### PRIVATE METHODS ###
@@ -93,6 +92,14 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                     'Your last name.',
                     ],
                 'default': 'Name',
+                'validator': str,
+                },
+            'composer_library_package_name': {
+                'comment': [
+                    '',
+                    'Your library package name.',
+                    ],
+                'default': 'my_library',
                 'validator': str,
                 },
             'composer_scores_directory': {
@@ -310,7 +317,8 @@ class AbjadIDEConfiguration(AbjadConfiguration):
                 >>> configuration.composer_github_username
                 '...'
 
-        Aliases `composer_github_username` setting in Abjad IDE configuration file.
+        Aliases `composer_github_username` setting in Abjad IDE configuration
+        file.
 
         Returns string.
         '''
@@ -333,6 +341,24 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return self._settings['composer_last_name']
+
+    @property
+    def composer_library_package_name(self):
+        r'''Gets composer library packagename.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.composer_library_package_name
+                '...'
+
+        Aliases `composer_library_package_name` setting in Abjad IDE
+        configuration file.
+
+        Returns string.
+        '''
+        return self._settings['composer_library_package_name']
 
     @property
     def composer_scores_directory(self):

@@ -1414,6 +1414,7 @@ class AbjadIDE(object):
             configuration.composer_full_name,
             configuration.composer_email,
             configuration.composer_github_username,
+            configuration.composer_library_package_name,
             )
         self._clear_view(scores_directory)
         inner_score_directory = os.path.join(
