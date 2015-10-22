@@ -374,7 +374,7 @@ class AbjadIDE(object):
                     path_list = [path_list]
                 for path in path_list:
                     messages.append('{}{}'.format(
-                        input_label, 
+                        input_label,
                         self._trim_path(path),
                         ))
         else:
@@ -387,7 +387,7 @@ class AbjadIDE(object):
                         path_list = [path_list]
                     for path in path_list:
                         messages.append('{}{}'.format(
-                            input_label, 
+                            input_label,
                             self._trim_path(path),
                             ))
                 for path_list in outputs_:
@@ -395,7 +395,7 @@ class AbjadIDE(object):
                         path_list = [path_list]
                     for path in path_list:
                         messages.append('{}{}'.format(
-                            output_label, 
+                            output_label,
                             self._trim_path(path),
                             ))
                 messages.append('')
@@ -1161,7 +1161,7 @@ class AbjadIDE(object):
             '__make_material_ly__.py',
             )
         target_make_ly_file = os.path.join(
-            directory, 
+            directory,
             '__make_material_ly__.py',
             )
         temporary_files = (
@@ -1247,7 +1247,7 @@ class AbjadIDE(object):
             '__make_material_pdf__.py',
             )
         target_make_pdf_file = os.path.join(
-            directory, 
+            directory,
             '__make_material_pdf__.py',
             )
         temporary_files = (
@@ -1400,7 +1400,7 @@ class AbjadIDE(object):
             package_name = stringtools.strip_diacritics(title)
             package_name = stringtools.to_snake_case(package_name)
             outer_score_directory = os.path.join(
-                scores_directory, 
+                scores_directory,
                 package_name,
                 )
             if os.path.exists(outer_score_directory):
@@ -1420,7 +1420,7 @@ class AbjadIDE(object):
             )
         self._clear_view(scores_directory)
         inner_score_directory = os.path.join(
-            outer_score_directory, 
+            outer_score_directory,
             package_name,
             )
         self._manage_directory(inner_score_directory)
@@ -2035,13 +2035,19 @@ class AbjadIDE(object):
         paths = []
         for input_ in result:
             path = self._match_visible_path(
-                secondary_paths, 
+                secondary_paths,
                 visible_paths,
                 input_,
                 )
             if path:
                 paths.append(path)
         return paths
+
+    @classmethod
+    def _entry_point(cls):
+        input_ = ' '.join(sys.argv[1:])
+        abjad_ide = cls()
+        abjad_ide._start(input_=input_)
 
     def _start(self, input_=None):
         self._session._reinitialize()
@@ -2173,7 +2179,7 @@ class AbjadIDE(object):
                 annotation = os.path.basename(path)
             return annotation
         name = os.path.basename(path)
-        directory = path 
+        directory = path
         if os.path.isfile(directory):
             directory = os.path.dirname(directory)
         prototype = ('makers', 'outer', 'test')
@@ -2463,7 +2469,7 @@ class AbjadIDE(object):
                 message = message.format(self._trim_path(file_path))
                 self._io_manager._display(message)
                 self._io_manager.open_file(file_path)
-    
+
     @Command(
         'dfk',
         argument_name='current_directory',
@@ -2586,11 +2592,11 @@ class AbjadIDE(object):
         )
     def copy_segment_lys(self, directory, subroutine=False):
         r'''Copies segment lys.
-        
+
         Copies from egment directories to build directory.
 
         Trims top-level comments.
-        
+
         Preserves includes and directives from each ly.
 
         Trims header and paper block from each ly.
@@ -2648,7 +2654,7 @@ class AbjadIDE(object):
         pass
 
     @Command(
-        'als', 
+        'als',
         description='aliases - edit',
         section='global files',
         )
@@ -2736,7 +2742,7 @@ class AbjadIDE(object):
         self._io_manager.edit(illustrate_py_path)
 
     @Command(
-        'lxg', 
+        'lxg',
         description='latex log - edit',
         section='global files',
         )
@@ -2754,7 +2760,7 @@ class AbjadIDE(object):
             self._io_manager.open_file(configuration.latex_log_file_path)
 
     @Command(
-        'lpg', 
+        'lpg',
         description='lilypond log - edit',
         section='global files',
         )
@@ -2801,7 +2807,7 @@ class AbjadIDE(object):
             score_directory = self._to_score_directory(directory)
             replacements = {}
             catalog_number = self._get_metadatum(
-                score_directory, 
+                score_directory,
                 'catalog_number',
                 '',
                 )
@@ -2852,7 +2858,7 @@ class AbjadIDE(object):
             score_title = score_title.upper()
             replacements['score_title'] = score_title
             forces_tagline = self._get_metadatum(
-                score_directory, 
+                score_directory,
                 'forces_tagline',
                 '',
                 )
@@ -2904,7 +2910,7 @@ class AbjadIDE(object):
             ly_paths = self._list_visible_paths(segments_directory)
             if ly_paths:
                 view_name = self._get_metadatum(
-                    segments_directory, 
+                    segments_directory,
                     'view_name',
                     )
                 view_inventory = self._read_view_inventory(segments_directory)
@@ -3123,9 +3129,9 @@ class AbjadIDE(object):
         section='git',
         )
     def git_commit(
-        self, 
-        directory, 
-        commit_message=None, 
+        self,
+        directory,
+        commit_message=None,
         dry_run=False,
         interaction=True,
         ):
@@ -3198,7 +3204,7 @@ class AbjadIDE(object):
             directories_to_commit = []
             for directory in directories:
                 result = self.git_commit(
-                    directory, 
+                    directory,
                     dry_run=True,
                     interaction=False,
                     )
@@ -3214,7 +3220,7 @@ class AbjadIDE(object):
                 return
             for directory in directories_to_commit:
                 result = self.git_commit(
-                    directory, 
+                    directory,
                     commit_message=commit_message,
                     interaction=False,
                     )
@@ -3638,7 +3644,7 @@ class AbjadIDE(object):
         Makes illustration PDF.
 
         Returns a pair.
-        
+
         Pairs equals list of STDERR messages from LilyPond together
         with list of candidate messages.
         '''
@@ -4149,7 +4155,7 @@ class AbjadIDE(object):
             correct_inner_path = os.path.join(target_path, target_name)
             shutil.move(false_inner_path, correct_inner_path)
             self._add_metadatum(
-                correct_inner_path, 
+                correct_inner_path,
                 'title',
                 original_target_name,
                 )
@@ -4195,7 +4201,7 @@ class AbjadIDE(object):
             command = 'ajv replace {!r} {!r}'
             command = command.format(search_string, replace_string)
             if complete_words:
-                command += ' -Y'  
+                command += ' -Y'
             lines = self._io_manager.run_command(command)
             lines = [_.strip() for _ in lines if not _ == '']
             self._io_manager._display(lines, capitalize=False)
