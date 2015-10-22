@@ -144,14 +144,14 @@ def test_AbjadIDE_rename_05():
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'NewMaker.py',
         )
     new_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'RenamedMaker.py',
         )
 

@@ -19,8 +19,8 @@ class ScoreTemplate(abctools.AbjadObject):
 
         ..  container:: example
 
-            >>> from red_example_score import makers
-            >>> template = makers.ScoreTemplate()
+            >>> from red_example_score import tools
+            >>> template = tools.ScoreTemplate()
             >>> score = template()
 
         ::

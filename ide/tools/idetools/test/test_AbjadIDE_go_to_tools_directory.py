@@ -16,7 +16,7 @@ def test_AbjadIDE_go_to_tools_directory_01():
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
     contents = abjad_ide._io_manager._transcript.contents
@@ -35,7 +35,7 @@ def test_AbjadIDE_go_to_tools_directory_02():
         'Red Example Score (2013)',
         'Red Example Score (2013) - segments directory',
         'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -50,13 +50,13 @@ def test_AbjadIDE_go_to_tools_directory_03():
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_tools_directory_04():
-    r'''From build directory to makers directory.
+    r'''From build directory to tools directory.
     '''
 
     input_ = 'red~example~score bb oo q'
@@ -65,6 +65,6 @@ def test_AbjadIDE_go_to_tools_directory_04():
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - build directory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles

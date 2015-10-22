@@ -20,12 +20,12 @@ def test_AbjadIDE_run_doctest_01():
     assert '__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__views__.py \x1b[94mOK\x1b[0m' in contents
-    assert 'makers/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
+    assert 'tools/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
     assert '4 of 4 tests pass in 33 modules.'
 
 
 def test_AbjadIDE_run_doctest_02():
-    r'''In makers directory.
+    r'''In tools directory.
 
     Output paths listed from score directory.
     '''
@@ -38,5 +38,5 @@ def test_AbjadIDE_run_doctest_02():
     assert '__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__metadata__.py \x1b[94mOK\x1b[0m' in contents
     assert 'build/__views__.py \x1b[94mOK\x1b[0m' in contents
-    assert 'makers/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
+    assert 'tools/ScoreTemplate.py \x1b[94mOK\x1b[0m' in contents
     assert '4 of 4 tests pass in 33 modules.'

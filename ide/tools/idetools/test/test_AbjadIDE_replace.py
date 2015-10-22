@@ -14,7 +14,7 @@ def test_AbjadIDE_replace_01():
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'RhythmMaker.py',
         )
     

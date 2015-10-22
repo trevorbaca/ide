@@ -37,7 +37,7 @@ def test_IOManager_open_file_02():
 
 
 def test_IOManager_open_file_03():
-    r'''@-addressing to makers file.
+    r'''@-addressing to tools file.
     '''
 
     input_ = 'red~example~score @RM q'
@@ -53,7 +53,7 @@ def test_IOManager_open_file_03():
 
 
 def test_IOManager_open_file_04():
-    r'''@-addressing to makers file with line number
+    r'''@-addressing to tools file with line number
     '''
 
     input_ = 'red~example~score @RM+14 q'

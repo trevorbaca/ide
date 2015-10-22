@@ -39,7 +39,7 @@ def test_AbjadIDE_new_01():
         'build',
         'distribution',
         'etc',
-        'makers',
+        'tools',
         'materials',
         'segments',
         'stylesheets',
@@ -115,7 +115,7 @@ def test_AbjadIDE_new_02():
         'build',
         'distribution',
         'etc',
-        'makers',
+        'tools',
         'materials',
         'segments',
         'stylesheets',
@@ -244,7 +244,7 @@ def test_AbjadIDE_new_06():
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'NewMaker.py',
         )
 
@@ -266,7 +266,7 @@ def test_AbjadIDE_new_07():
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'NewMaker.py',
         )
 

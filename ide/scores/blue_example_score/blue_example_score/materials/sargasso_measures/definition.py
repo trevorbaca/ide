@@ -3,7 +3,7 @@ from abjad import *
 import blue_example_score
 
 
-sargasso_measures = blue_example_score.makers.SargassoMeasureMaker(
+sargasso_measures = blue_example_score.tools.SargassoMeasureMaker(
     measure_denominator=4,
     measure_numerator_talea=(2, 2, 2, 2, 1, 1, 4, 4),
     measure_division_denominator=16,

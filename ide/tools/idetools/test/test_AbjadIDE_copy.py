@@ -107,21 +107,21 @@ def test_AbjadIDE_copy_03():
 
 
 def test_AbjadIDE_copy_04():
-    r'''Into makers directory.
+    r'''Into tools directory.
     '''
 
     source_file = os.path.join(
         scores_directory,
         'red_example_score',
         'red_example_score',
-        'makers',
+        'tools',
         'ScoreTemplate.py',
         )
     target_file = os.path.join(
         scores_directory,
         'blue_example_score',
         'blue_example_score',
-        'makers',
+        'tools',
         'ScoreTemplate.py',
         )
     trimmed_source_file = abjad_ide._trim_path(source_file)
@@ -136,7 +136,7 @@ def test_AbjadIDE_copy_04():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Blue Example Score (2013) - makers directory - select:' in contents
+    assert 'Blue Example Score (2013) - tools directory - select:' in contents
 
 
 def test_AbjadIDE_copy_05():

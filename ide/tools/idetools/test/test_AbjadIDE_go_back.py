@@ -14,9 +14,9 @@ def test_AbjadIDE_go_back_01():
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         'Red Example Score (2013) - materials directory - tempo inventory',
-        'Red Example Score (2013) - makers directory',
+        'Red Example Score (2013) - tools directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 

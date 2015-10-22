@@ -223,11 +223,11 @@ def test_AbjadIDE_display_action_command_help_05():
 
 
 def test_AbjadIDE_display_action_command_help_06():
-    r'''In makers directory.
+    r'''In tools directory.
     '''
     
     lines = [
-        'Red Example Score (2013) - makers directory - action commands',
+        'Red Example Score (2013) - tools directory - action commands',
         '',
         '    edit every file (ff*)',
         '',

@@ -151,7 +151,7 @@ class AbjadIDE(object):
             name = self._to_package_name(name)
         elif self._is_score_directory(directory, dash_case_prototype):
             name = self._to_dash_case_file_name(name)
-        elif self._is_score_directory(directory, 'makers'):
+        elif self._is_score_directory(directory, 'tools'):
             name = self._to_classfile_name(name)
         elif self._is_score_directory(directory, 'outer'):
             pass
@@ -171,7 +171,7 @@ class AbjadIDE(object):
         names = (
             'segments',
             'materials',
-            'makers',
+            'tools',
             'stylesheets',
             'etc',
             'distribution',
@@ -922,7 +922,7 @@ class AbjadIDE(object):
             'build',
             'distribution',
             'etc',
-            'makers',
+            'tools',
             'material',
             'materials',
             'score',
@@ -1077,7 +1077,7 @@ class AbjadIDE(object):
             self._io_manager._acknowledge()
             return
         file_path = os.path.join(directory, file_name)
-        if self._is_score_directory(directory, 'makers'):
+        if self._is_score_directory(directory, 'tools'):
             source_file = os.path.join(
                 configuration.abjad_ide_boilerplate_directory,
                 'Maker.py',
@@ -2092,7 +2092,7 @@ class AbjadIDE(object):
             'build',
             'distribution',
             'etc',
-            'makers',
+            'tools',
             'material',
             'segment',
             'stylesheets',
@@ -2180,7 +2180,7 @@ class AbjadIDE(object):
         directory = path
         if os.path.isfile(directory):
             directory = os.path.dirname(directory)
-        prototype = ('makers', 'outer', 'test')
+        prototype = ('tools', 'outer', 'test')
         if not self._is_score_directory(directory, prototype):
             if '_' in name:
                 name = stringtools.to_space_delimited_lowercase(name)
@@ -2212,7 +2212,7 @@ class AbjadIDE(object):
             return self._is_outer_score_package_name
         elif self._is_score_directory(directory, ('score', 'inner')):
             return self._is_package_name
-        elif self._is_score_directory(directory, 'makers'):
+        elif self._is_score_directory(directory, 'tools'):
             return self._is_maker_file_name
         elif self._is_score_directory(directory, ('material', 'segment')):
             return self._is_lowercase_file_name
@@ -3544,7 +3544,7 @@ class AbjadIDE(object):
         Returns none.
         '''
         assert os.path.isdir(directory)
-        directory = self._to_score_directory(directory, 'makers')
+        directory = self._to_score_directory(directory, 'tools')
         self._manage_directory(directory)
 
     @Command(
