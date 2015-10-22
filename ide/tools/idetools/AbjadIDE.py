@@ -811,12 +811,10 @@ class AbjadIDE(object):
             return False
         if not os.path.exists(path):
             return False
-        git_status_lines = self._get_git_status_lines(path)
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('fatal:'):
-            return False
-        return True
+        path = self._to_score_directory(path, 'outer')
+        if '.git' in os.listdir(path):
+            return True
+        return False
 
     @staticmethod
     def _is_lowercase_file_name(expr):
