@@ -4,11 +4,11 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_go_to_makers_directory_01():
+def test_AbjadIDE_go_to_tools_directory_01():
     r'''From material directory.
     '''
 
-    input_ = 'red~example~score mm tempo~inventory kk q'
+    input_ = 'red~example~score mm tempo~inventory oo q'
     abjad_ide._start(input_=input_)
 
     titles = [
@@ -23,11 +23,11 @@ def test_AbjadIDE_go_to_makers_directory_01():
     assert 'adjust_spacing_sections.py' in contents
 
 
-def test_AbjadIDE_go_to_makers_directory_02():
+def test_AbjadIDE_go_to_tools_directory_02():
     r'''From segment directory.
     '''
 
-    input_ = 'red~example~score gg A kk q'
+    input_ = 'red~example~score gg A oo q'
     abjad_ide._start(input_=input_)
 
     titles = [
@@ -40,11 +40,11 @@ def test_AbjadIDE_go_to_makers_directory_02():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_makers_directory_03():
+def test_AbjadIDE_go_to_tools_directory_03():
     r'''From score directory.
     '''
 
-    input_ = 'red~example~score kk q'
+    input_ = 'red~example~score oo q'
     abjad_ide._start(input_=input_)
 
     titles = [
@@ -55,11 +55,11 @@ def test_AbjadIDE_go_to_makers_directory_03():
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
-def test_AbjadIDE_go_to_makers_directory_04():
+def test_AbjadIDE_go_to_tools_directory_04():
     r'''From build directory to makers directory.
     '''
 
-    input_ = 'red~example~score bb kk q'
+    input_ = 'red~example~score bb oo q'
     abjad_ide._start(input_=input_)
     titles = [
         'Abjad IDE - all score directories',

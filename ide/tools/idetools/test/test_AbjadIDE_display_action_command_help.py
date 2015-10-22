@@ -255,7 +255,7 @@ def test_AbjadIDE_display_action_command_help_06():
         '>',
         ]
 
-    input_ = 'red~example~score kk ? q'
+    input_ = 'red~example~score oo ? q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 

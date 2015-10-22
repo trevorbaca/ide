@@ -30,7 +30,7 @@ def test_AbjadIDE_run_doctest_02():
     Output paths listed from score directory.
     '''
 
-    input_ = 'red~example~score kk dt q'
+    input_ = 'red~example~score oo dt q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 

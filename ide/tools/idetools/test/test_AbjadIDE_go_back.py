@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 def test_AbjadIDE_go_back_01():
 
-    input_ = 'red~example~score mm tempo~inventory kk - - q'
+    input_ = 'red~example~score mm tempo~inventory oo - - q'
     abjad_ide._start(input_=input_)
 
     titles = [

@@ -129,7 +129,7 @@ def test_AbjadIDE_copy_04():
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score kk cp'
+        input_ = 'Blue~Example~Score oo cp'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)

@@ -248,7 +248,7 @@ def test_AbjadIDE_new_06():
         'NewMaker.py',
         )
 
-    input_ = 'red~example~score kk new NewMaker.py q'
+    input_ = 'red~example~score oo new NewMaker.py q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
@@ -270,7 +270,7 @@ def test_AbjadIDE_new_07():
         'NewMaker.py',
         )
 
-    input_ = 'red~example~score kk new new~maker q'
+    input_ = 'red~example~score oo new new~maker q'
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)

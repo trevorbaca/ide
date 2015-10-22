@@ -155,8 +155,8 @@ def test_AbjadIDE_rename_05():
         'RenamedMaker.py',
         )
 
-    new_input = 'red~example~score kk new NewMaker.py q'
-    rename_input = 'red~example~score kk ren NewMaker.py RenamedMaker.py y q'
+    new_input = 'red~example~score oo new NewMaker.py q'
+    rename_input = 'red~example~score oo ren NewMaker.py RenamedMaker.py y q'
 
     with systemtools.FilesystemState(remove=[path, new_path]):
         abjad_ide._start(input_=new_input)

@@ -3413,21 +3413,6 @@ class AbjadIDE(object):
         self._manage_directory(directory)
 
     @Command(
-        'kk',
-        argument_name='current_directory',
-        forbidden_directories=('scores',),
-        section='navigation',
-        )
-    def go_to_makers_directory(self, directory):
-        r'''Goes to makers directory.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory)
-        directory = self._to_score_directory(directory, 'makers')
-        self._manage_directory(directory)
-
-    @Command(
         'mm',
         argument_name='current_directory',
         forbidden_directories=('scores',),
@@ -3545,6 +3530,21 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory)
         directory = self._to_score_directory(directory, 'test')
+        self._manage_directory(directory)
+
+    @Command(
+        'oo',
+        argument_name='current_directory',
+        forbidden_directories=('scores',),
+        section='navigation',
+        )
+    def go_to_tools_directory(self, directory):
+        r'''Goes to tools directory.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory)
+        directory = self._to_score_directory(directory, 'makers')
         self._manage_directory(directory)
 
     @Command(

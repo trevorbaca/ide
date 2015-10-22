@@ -33,7 +33,7 @@ def test_AbjadIDE_git_commit_01():
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - commit (ci)' in contents
 
-    input_ = 'red~example~score kk ? q'
+    input_ = 'red~example~score oo ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - commit (ci)' in contents
