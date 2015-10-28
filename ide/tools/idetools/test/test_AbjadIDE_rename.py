@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import shutil
 from abjad import *
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
@@ -29,6 +30,18 @@ def test_AbjadIDE_rename_01():
         'example_score_101',
         )
 
+    paths = (
+        path_100_outer,
+        path_100_inner,
+        path_101_outer,
+        path_101_inner,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
     with systemtools.FilesystemState(remove=[path_100_outer, path_101_outer]):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
@@ -51,7 +64,7 @@ def test_AbjadIDE_rename_02():
     r'''Renames material directory in score.
     '''
 
-    path = os.path.join(
+    old_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -66,13 +79,23 @@ def test_AbjadIDE_rename_02():
         'new_test_material',
         )
 
-    with systemtools.FilesystemState(remove=[path, new_path]):
+    paths = (
+        old_path,
+        new_path,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    with systemtools.FilesystemState(remove=[old_path, new_path]):
         input_ = 'red~example~score mm new test~material q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
+        assert os.path.exists(old_path)
         input_ = 'red~example~score mm ren test~material new~test~material y q'
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(path)
+        assert not os.path.exists(old_path)
         assert os.path.exists(new_path)
 
 
@@ -80,7 +103,7 @@ def test_AbjadIDE_rename_03():
     r'''Renames segment directory inside score.
     '''
 
-    path = os.path.join(
+    old_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -98,11 +121,21 @@ def test_AbjadIDE_rename_03():
     new_input = 'red~example~score gg new segment~04 q'
     rename_input = 'red~example~score gg ren segment~04 renamed_segment_04 y q'
 
-    with systemtools.FilesystemState(remove=[path, new_path]):
+    paths = (
+        old_path,
+        new_path,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    with systemtools.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(path)
+        assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(path)
+        assert not os.path.exists(old_path)
         assert os.path.exists(new_path)
 
 
@@ -110,7 +143,7 @@ def test_AbjadIDE_rename_04():
     r'''Renames build file inside score.
     '''
 
-    path = os.path.join(
+    old_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -128,11 +161,21 @@ def test_AbjadIDE_rename_04():
     new_input = 'red~example~score bb new new-file.txt q'
     rename_input = 'red~example~score bb ren new-file.txt renamed-file.txt y q'
 
-    with systemtools.FilesystemState(remove=[path, new_path]):
+    paths = (
+        old_path,
+        new_path,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    with systemtools.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(path)
+        assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(path)
+        assert not os.path.exists(old_path)
         assert os.path.exists(new_path)
 
 
@@ -140,7 +183,7 @@ def test_AbjadIDE_rename_05():
     r'''Renames maker file inside score.
     '''
 
-    path = os.path.join(
+    old_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -158,11 +201,21 @@ def test_AbjadIDE_rename_05():
     new_input = 'red~example~score oo new NewMaker.py q'
     rename_input = 'red~example~score oo ren NewMaker.py RenamedMaker.py y q'
 
-    with systemtools.FilesystemState(remove=[path, new_path]):
+    paths = (
+        old_path,
+        new_path,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    with systemtools.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(path)
+        assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(path)
+        assert not os.path.exists(old_path)
         assert os.path.exists(new_path)
 
 
@@ -170,7 +223,7 @@ def test_AbjadIDE_rename_06():
     r'''Renames stylesheet inside score.
     '''
 
-    path = os.path.join(
+    old_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -189,9 +242,19 @@ def test_AbjadIDE_rename_06():
     rename_input = 'red~example~score yy ren new-stylesheet.ily'
     rename_input += ' renamed-stylesheet.ily y q'
 
-    with systemtools.FilesystemState(remove=[path, new_path]):
+    paths = (
+        old_path,
+        new_path,
+        )
+    for path in paths:
+        if os.path.isfile(path):
+            os.remove(path)
+        elif os.path.isdir(path):
+            shutil.rmtree(path)
+
+    with systemtools.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(path)
+        assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(path)
+        assert not os.path.exists(old_path)
         assert os.path.exists(new_path)
