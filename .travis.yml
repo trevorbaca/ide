@@ -12,8 +12,8 @@ before_install:
     - sudo apt-get install -y texlive-fonts-recommended
     - sudo apt-get install -y texlive-latex-extra 
     - sudo apt-get install -y texlive-latex-recommended 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.30-1.linux-64.sh
-    - sudo sh lilypond-2.19.30-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.32-1.linux-64.sh
+    - sudo sh lilypond-2.19.32-1.linux-64.sh --batch
     - pip install --upgrade pip
     - pip install coveralls
     - pip install coverage
