@@ -704,7 +704,7 @@ class AbjadIDE(object):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
             self._io_manager._display('')
-        elif result.startswith(('@', '%')):
+        elif result.startswith(('@', '#', '%')):
             directory = self._session.current_directory
             prefix = result[0]
             body = result[1:]
@@ -723,6 +723,12 @@ class AbjadIDE(object):
                     if self._is_score_directory(path, ('material', 'segment')):
                         path = os.path.join(path, 'definition.py')
                     self._io_manager.open_file(path, line_number=line_number)
+                elif prefix == '#':
+                    if self._is_score_directory(path, ('material', 'segment')):
+                        path = os.path.join(path, 'definition.py')
+                    directory = os.path.dirname(path)
+                    self._io_manager.open_file(path, line_number=line_number)
+                    self._manage_directory(directory)
                 elif prefix == '%':
                     self._manage_directory(path)
                 else:
