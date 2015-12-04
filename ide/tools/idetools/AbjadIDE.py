@@ -4176,6 +4176,20 @@ class AbjadIDE(object):
         self._session._pending_redraw = True
 
     @Command(
+        'rf',
+        argument_name='current_directory',
+        section='system',
+        )
+    def refresh(self, directory):
+        r'''Refreshes current screen.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+
+    @Command(
         'rp',
         argument_name='current_directory',
         section='system',

@@ -35,7 +35,6 @@ def test_AbjadIDE_display_navigation_command_help_01():
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
 
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
