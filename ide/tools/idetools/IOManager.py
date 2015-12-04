@@ -316,6 +316,11 @@ class IOManager(IOManager):
                 lines.append(line)
         return '\n'.join(lines)
 
+    def _trash_file(self, file_path):
+        if not os.path.isfile(file_path):
+            return
+        os.remove(file_path)
+
     ### PUBLIC METHODS ###
 
     def edit(self, path, line_number=None):

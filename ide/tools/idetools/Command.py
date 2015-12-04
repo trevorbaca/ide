@@ -21,6 +21,7 @@ class Command(object):
         'global files',
         'illustrate_file',
         'ly',
+        'ly & pdf',
         'pdf',
         'navigation',
         'sibling navigation',

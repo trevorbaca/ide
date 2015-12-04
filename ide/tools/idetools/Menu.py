@@ -54,6 +54,7 @@ class Menu(object):
         'illustrate_file',
         'ly',
         'pdf',
+        'ly & pdf',
         'build-preliminary',
         'build-generate',
         'build-interpret',

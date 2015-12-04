@@ -4306,3 +4306,27 @@ class AbjadIDE(object):
                 command = command.format(executable, search_string)
             lines = self._io_manager.run_command(command)
             self._io_manager._display(lines, capitalize=False)
+
+    @Command(
+        'trash',
+        argument_name='current_directory',
+        description='ly & pdf - trash',
+        directories=('material', 'segment',),
+        section='ly & pdf',
+        )
+    def trash_ly_and_pdf(self, directory):
+        r'''Trashes illustration LilyPond file and illustration PDF.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        ly_file_path = os.path.join(directory, 'illustration.ly')
+        pdf_file_path = os.path.join(directory, 'illustration.pdf')
+        messages = []
+        with self._io_manager._make_interaction():
+            if os.path.isfile(ly_file_path):
+                self._io_manager._trash_file(ly_file_path)
+            if os.path.isfile(pdf_file_path):
+                self._io_manager._trash_file(pdf_file_path)
+            self._session._pending_menu_rebuild = True
+            self._session._pending_redraw = True
