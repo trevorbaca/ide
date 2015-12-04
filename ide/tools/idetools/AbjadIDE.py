@@ -3974,23 +3974,24 @@ class AbjadIDE(object):
         file_name = 'score.pdf'
         directory = os.path.join(directory, 'distribution')
         path = self._get_file_path_ending_with(directory, file_name)
-        if not path:
-            directory = os.path.join(directory, 'build')
-            path = self._get_file_path_ending_with(
-                directory,
-                file_name,
-                )
-        if dry_run:
-            inputs, outputs = [], []
+        with self._io_manager._make_interaction():
+            if not path:
+                directory = os.path.join(directory, 'build')
+                path = self._get_file_path_ending_with(
+                    directory,
+                    file_name,
+                    )
+            if dry_run:
+                inputs, outputs = [], []
+                if path:
+                    inputs = [path]
+                return inputs, outputs
             if path:
-                inputs = [path]
-            return inputs, outputs
-        if path:
-            self._io_manager.open_file(path)
-        else:
-            message = "no score.pdf file found"
-            message += ' in either distribution/ or build/ directories.'
-            self._io_manager._display(message)
+                self._io_manager.open_file(path)
+            else:
+                message = "no score.pdf file found"
+                message += ' in either distribution/ or build/ directories.'
+                self._io_manager._display(message)
 
     @Command(
         'spp',
