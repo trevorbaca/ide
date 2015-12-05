@@ -3829,9 +3829,10 @@ class AbjadIDE(object):
             message = timer.total_time_message
             self._io_manager._display(message)
             after_redraw_messages.append(message)
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
-        self._session._after_redraw_messages = after_redraw_messages
+        if messages is not None:
+            self._session._pending_menu_rebuild = True
+            self._session._pending_redraw = True
+            self._session._after_redraw_messages = after_redraw_messages
 
     @Command(
         'new',
