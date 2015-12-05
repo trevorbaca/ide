@@ -1538,21 +1538,6 @@ class AbjadIDE(object):
             directory,
             '__illustrate__.py',
             )
-        candidate_ly_path = os.path.join(
-            directory,
-            'illustration.candidate.ly'
-            )
-        candidate_pdf_path = os.path.join(
-            directory,
-            'illustration.candidate.pdf'
-            )
-        temporary_files = (
-            candidate_ly_path,
-            candidate_pdf_path,
-            )
-        for path in temporary_files:
-            if os.path.exists(path):
-                os.remove(path)
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
         output_files = (ly_path, pdf_path)
@@ -1563,57 +1548,46 @@ class AbjadIDE(object):
                 self._io_manager._display(message)
                 after_redraw_messages.append(message)
                 os.remove(output_file)
-        with systemtools.FilesystemState(remove=temporary_files):
-            message = 'calling Python on {} ...'
-            message = message.format(self._trim_path(illustrate_file_path))
-            self._io_manager._display(message)
-            after_redraw_messages.append(message)
-            shutil.copyfile(boilerplate_path, illustrate_file_path)
-            previous_segment_directory = self._get_previous_segment_directory(
-                directory)
-            if previous_segment_directory is None:
-                statement = 'previous_segment_metadata = None'
-            else:
-                assert os.path.isdir(previous_segment_directory)
-                score_directory = self._to_score_directory(directory)
-                score_name = os.path.basename(score_directory)
-                previous_segment_name = previous_segment_directory
-                previous_segment_name = os.path.basename(
-                    previous_segment_directory,
-                    )
-                statement = 'from {}.segments.{}.__metadata__'
-                statement += ' import metadata as previous_segment_metadata'
-                statement = statement.format(score_name, previous_segment_name)
-            with open(illustrate_file_path, 'r') as file_pointer:
-                template = file_pointer.read()
-            completed_template = template.format(
-                previous_segment_metadata_import_statement=statement
+        message = 'calling Python on {} ...'
+        message = message.format(self._trim_path(illustrate_file_path))
+        self._io_manager._display(message)
+        after_redraw_messages.append(message)
+        shutil.copyfile(boilerplate_path, illustrate_file_path)
+        previous_segment_directory = self._get_previous_segment_directory(
+            directory)
+        if previous_segment_directory is None:
+            statement = 'previous_segment_metadata = None'
+        else:
+            assert os.path.isdir(previous_segment_directory)
+            score_directory = self._to_score_directory(directory)
+            score_name = os.path.basename(score_directory)
+            previous_segment_name = previous_segment_directory
+            previous_segment_name = os.path.basename(
+                previous_segment_directory,
                 )
-            with open(illustrate_file_path, 'w') as file_pointer:
-                file_pointer.write(completed_template)
-            result = self._io_manager.interpret_file(illustrate_file_path)
-            stdout_lines, stderr_lines = result
-            self._io_manager._display(stdout_lines)
-            if stderr_lines:
-                self._io_manager._display_errors(stderr_lines)
-                return
-            after_redraw_messages.extend(stdout_lines)
-            message = 'writing {} ...'
-            message = message.format(self._trim_path(ly_path))
-            self._io_manager._display(message)
-            after_redraw_messages.append(message)
-            shutil.move(candidate_ly_path, ly_path)
-            message = 'writing {} ...'
+            statement = 'from {}.segments.{}.__metadata__'
+            statement += ' import metadata as previous_segment_metadata'
+            statement = statement.format(score_name, previous_segment_name)
+        with open(illustrate_file_path, 'r') as file_pointer:
+            template = file_pointer.read()
+        completed_template = template.format(
+            previous_segment_metadata_import_statement=statement
+            )
+        with open(illustrate_file_path, 'w') as file_pointer:
+            file_pointer.write(completed_template)
+        result = self._io_manager.interpret_file(illustrate_file_path)
+        stdout_lines, stderr_lines = result
+        self._io_manager._display(stdout_lines)
+        if stderr_lines:
+            self._io_manager._display_errors(stderr_lines)
+            return
+        after_redraw_messages.extend(stdout_lines)
+        if os.path.isfile(pdf_path) and not subroutine:
+            message = 'opening {} ...'
             message = message.format(self._trim_path(pdf_path))
-            self._io_manager._display(message)
             after_redraw_messages.append(message)
-            shutil.move(candidate_pdf_path, pdf_path)
-            if os.path.isfile(pdf_path) and not subroutine:
-                message = 'opening {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                after_redraw_messages.append(message)
-                self._io_manager._display(message)
-                self._io_manager.open_file(pdf_path)
+            self._io_manager._display(message)
+            self._io_manager.open_file(pdf_path)
         return after_redraw_messages
 
     def _manage_directory(self, directory):

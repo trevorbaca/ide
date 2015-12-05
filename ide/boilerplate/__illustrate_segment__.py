@@ -9,7 +9,6 @@ from ide.tools import idetools
 
 
 if __name__ == '__main__':
-
     with systemtools.Timer() as timer:
         try:
             from definition import segment_maker
@@ -53,22 +52,30 @@ if __name__ == '__main__':
         identifier = stringtools.pluralize('second', total_time)
         message = message.format(total_time, identifier)
         print(message)
-
     try:
         current_directory = os.path.dirname(__file__)
-        candidate_path = os.path.join(
+        ly_path = os.path.join(
             current_directory,
-            'illustration.candidate.pdf',
+            'illustration.ly',
             )
+        pdf_path = os.path.join(
+            current_directory,
+            'illustration.pdf',
+            )
+        output_paths = (ly_path, pdf_path)
         with systemtools.Timer() as timer:
-            persist(lilypond_file).as_pdf(candidate_path)
+            persist(lilypond_file).as_pdf(pdf_path)
         message = 'LilyPond runtime {{}} {{}} ...'
         total_time = int(timer.elapsed_time)
         identifier = stringtools.pluralize('second', total_time)
         message = message.format(total_time, identifier)
         print(message)
+        for output_path in output_paths:
+            message = 'writing {{}} ...'
+            path = idetools.AbjadIDE._trim_path(output_path)
+            message = message.format(path)
+            print(message)
     except:
         traceback.print_exc()
         sys.exit(1)
-
     sys.exit(0)
