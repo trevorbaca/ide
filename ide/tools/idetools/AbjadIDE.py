@@ -1538,7 +1538,6 @@ class AbjadIDE(object):
             directory,
             '__illustrate__.py',
             )
-
         candidate_ly_path = os.path.join(
             directory,
             'illustration.candidate.ly'
@@ -1599,58 +1598,17 @@ class AbjadIDE(object):
                 self._io_manager._display_errors(stderr_lines)
                 return
             after_redraw_messages.extend(stdout_lines)
-            made_new_pdf = False
-            if (not os.path.exists(ly_path) and
-                os.path.isfile(candidate_ly_path)):
-                message = 'writing {} ...'
-                message = message.format(self._trim_path(ly_path))
-                self._io_manager._display(message)
-                after_redraw_messages.append(message)
-                shutil.move(candidate_ly_path, ly_path)
-                made_new_pdf = True
-            if (not os.path.exists(pdf_path) and
-                os.path.isfile(candidate_pdf_path)):
-                message = 'writing {} ...'
-                message = message.format(self._trim_path(pdf_path))
-                self._io_manager._display(message)
-                after_redraw_messages.append(message)
-                shutil.move(candidate_pdf_path, pdf_path)
-            if (os.path.exists(ly_path) and
-                os.path.isfile(candidate_ly_path)):
-                same = systemtools.TestManager.compare_files(
-                    candidate_ly_path,
-                    ly_path,
-                    )
-                if same:
-                    message = 'preserving {} ...'
-                    message = message.format(self._trim_path(ly_path))
-                    self._io_manager._display(message)
-                    after_redraw_messages.append(message)
-                else:
-                    message = 'overwriting {} ...'
-                    message = message.format(self._trim_path(ly_path))
-                    self._io_manager._display(message)
-                    after_redraw_messages.append(message)
-                    shutil.move(candidate_ly_path, ly_path)
-            if (os.path.exists(pdf_path) and
-                os.path.isfile(candidate_pdf_path)):
-                same = systemtools.TestManager.compare_files(
-                    candidate_pdf_path,
-                    pdf_path,
-                    )
-                if same:
-                    message = 'preserving {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    after_redraw_messages.append(message)
-                    self._io_manager._display(message)
-                else:
-                    message = 'overwriting {} ...'
-                    message = message.format(self._trim_path(pdf_path))
-                    self._io_manager._display(message)
-                    after_redraw_messages.append(message)
-                    shutil.move(candidate_pdf_path, pdf_path)
-                    made_new_pdf = True
-            if made_new_pdf and not subroutine:
+            message = 'writing {} ...'
+            message = message.format(self._trim_path(ly_path))
+            self._io_manager._display(message)
+            after_redraw_messages.append(message)
+            shutil.move(candidate_ly_path, ly_path)
+            message = 'writing {} ...'
+            message = message.format(self._trim_path(pdf_path))
+            self._io_manager._display(message)
+            after_redraw_messages.append(message)
+            shutil.move(candidate_pdf_path, pdf_path)
+            if os.path.isfile(pdf_path) and not subroutine:
                 message = 'opening {} ...'
                 message = message.format(self._trim_path(pdf_path))
                 after_redraw_messages.append(message)
