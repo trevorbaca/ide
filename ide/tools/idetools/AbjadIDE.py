@@ -1528,6 +1528,7 @@ class AbjadIDE(object):
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
             return
+        after_redraw_messages = []
         self._update_order_dependent_segment_metadata(directory)
         boilerplate_path = os.path.join(
             configuration.abjad_ide_boilerplate_directory,
@@ -1537,6 +1538,7 @@ class AbjadIDE(object):
             directory,
             '__illustrate__.py',
             )
+
         candidate_ly_path = os.path.join(
             directory,
             'illustration.candidate.ly'
@@ -1554,17 +1556,19 @@ class AbjadIDE(object):
                 os.remove(path)
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
-#        output_files = (ly_path, pdf_path)
-#        for output_file in output_files:
-#            if os.path.exists(output_file):
-#                message = 'removing {} ...'
-#                message = message.format(self._trim_path(output_file))
-#                self._io_manager._display(message)
-#                os.remove(output_file)
+        output_files = (ly_path, pdf_path)
+        for output_file in output_files:
+            if os.path.exists(output_file):
+                message = 'removing {} ...'
+                message = message.format(self._trim_path(output_file))
+                self._io_manager._display(message)
+                after_redraw_messages.append(message)
+                os.remove(output_file)
         with systemtools.FilesystemState(remove=temporary_files):
             message = 'calling Python on {} ...'
             message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
+            after_redraw_messages.append(message)
             shutil.copyfile(boilerplate_path, illustrate_file_path)
             previous_segment_directory = self._get_previous_segment_directory(
                 directory)
@@ -1594,12 +1598,14 @@ class AbjadIDE(object):
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
+            after_redraw_messages.extend(stdout_lines)
             made_new_pdf = False
             if (not os.path.exists(ly_path) and
                 os.path.isfile(candidate_ly_path)):
                 message = 'writing {} ...'
                 message = message.format(self._trim_path(ly_path))
                 self._io_manager._display(message)
+                after_redraw_messages.append(message)
                 shutil.move(candidate_ly_path, ly_path)
                 made_new_pdf = True
             if (not os.path.exists(pdf_path) and
@@ -1607,6 +1613,7 @@ class AbjadIDE(object):
                 message = 'writing {} ...'
                 message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
+                after_redraw_messages.append(message)
                 shutil.move(candidate_pdf_path, pdf_path)
             if (os.path.exists(ly_path) and
                 os.path.isfile(candidate_ly_path)):
@@ -1618,10 +1625,12 @@ class AbjadIDE(object):
                     message = 'preserving {} ...'
                     message = message.format(self._trim_path(ly_path))
                     self._io_manager._display(message)
+                    after_redraw_messages.append(message)
                 else:
                     message = 'overwriting {} ...'
                     message = message.format(self._trim_path(ly_path))
                     self._io_manager._display(message)
+                    after_redraw_messages.append(message)
                     shutil.move(candidate_ly_path, ly_path)
             if (os.path.exists(pdf_path) and
                 os.path.isfile(candidate_pdf_path)):
@@ -1632,18 +1641,22 @@ class AbjadIDE(object):
                 if same:
                     message = 'preserving {} ...'
                     message = message.format(self._trim_path(pdf_path))
+                    after_redraw_messages.append(message)
                     self._io_manager._display(message)
                 else:
                     message = 'overwriting {} ...'
                     message = message.format(self._trim_path(pdf_path))
                     self._io_manager._display(message)
+                    after_redraw_messages.append(message)
                     shutil.move(candidate_pdf_path, pdf_path)
                     made_new_pdf = True
             if made_new_pdf and not subroutine:
                 message = 'opening {} ...'
                 message = message.format(self._trim_path(pdf_path))
+                after_redraw_messages.append(message)
                 self._io_manager._display(message)
                 self._io_manager.open_file(pdf_path)
+        return after_redraw_messages
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
@@ -3865,20 +3878,28 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         interaction = self._io_manager._make_interaction(dry_run=subroutine)
         timer = systemtools.Timer()
+        after_redraw_messages = []
         with interaction, timer:
             if self._is_score_directory(directory, 'material'):
-                result = self._make_material_pdf(
+                messages = self._make_material_pdf(
                     directory,
                     subroutine=subroutine,
                     )
             elif self._is_score_directory(directory, 'segment'):
-                result = self._make_segment_pdf(
+                messages = self._make_segment_pdf(
                     directory,
                     subroutine=subroutine,
                     )
             else:
                 raise ValueError(directory)
-            self._io_manager._display(timer.total_time_message)
+            if messages:
+                after_redraw_messages.extend(messages)
+            message = timer.total_time_message
+            self._io_manager._display(message)
+            after_redraw_messages.append(message)
+        self._session._pending_menu_rebuild = True
+        self._session._pending_redraw = True
+        self._session._after_redraw_messages = after_redraw_messages
 
     @Command(
         'new',

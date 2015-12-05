@@ -135,107 +135,109 @@ def test_AbjadIDE_make_pdf_03():
     assert 'Total time ' in contents
 
 
-def test_AbjadIDE_make_pdf_04():
-    r'''In segment directory.
-    
-    Preserves existing PDF when candidate compares the same.
-    '''
+# TODO: candidacy is deprecated
+#def test_AbjadIDE_make_pdf_04():
+#    r'''In segment directory.
+#    
+#    Preserves existing PDF when candidate compares the same.
+#    '''
+#
+#    segment_directory = os.path.join(
+#        configuration.abjad_ide_example_scores_directory,
+#        'red_example_score',
+#        'red_example_score',
+#        'segments',
+#        'segment_01',
+#        )
+#    illustrate_file_path = os.path.join(
+#        segment_directory,
+#        '__illustrate__.py',
+#        )
+#    ly_path = os.path.join(segment_directory, 'illustration.ly')
+#    pdf_path = os.path.join(segment_directory, 'illustration.pdf')
+#    candidate_pdf_path = os.path.join(
+#        segment_directory,
+#        'illustration.candidate.pdf',
+#        )
+#
+#    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+#        # remove existing PDF
+#        os.remove(ly_path)
+#        os.remove(pdf_path)
+#        assert not os.path.exists(ly_path)
+#        assert not os.path.exists(pdf_path)
+#        # generate PDF first time
+#        input_ = 'red~example~score gg A pdfm q'
+#        abjad_ide._start(input_=input_)
+#        assert os.path.isfile(ly_path)
+#        assert os.path.isfile(pdf_path)
+#        # attempt to generate PDF second time (but blocked)
+#        input_ = 'red~example~score gg A pdfm q'
+#        abjad_ide._start(input_=input_)
+#        contents = abjad_ide._io_manager._transcript.contents
+#
+#    message = 'Calling Python on {} ...'
+#    message = message.format(abjad_ide._trim_path(illustrate_file_path))
+#    assert message in contents
+#    assert 'Abjad runtime' in contents
+#    assert 'LilyPond runtime' in contents
+#    message = 'Preserving {} ...'
+#    message = message.format(abjad_ide._trim_path(ly_path))
+#    assert message in contents
+#    message = 'Preserving {} ...'
+#    message = message.format(abjad_ide._trim_path(pdf_path))
+#    assert message in contents
+#    assert 'Total time ' in contents
 
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_01',
-        )
-    illustrate_file_path = os.path.join(
-        segment_directory,
-        '__illustrate__.py',
-        )
-    ly_path = os.path.join(segment_directory, 'illustration.ly')
-    pdf_path = os.path.join(segment_directory, 'illustration.pdf')
-    candidate_pdf_path = os.path.join(
-        segment_directory,
-        'illustration.candidate.pdf',
-        )
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
-        # remove existing PDF
-        os.remove(ly_path)
-        os.remove(pdf_path)
-        assert not os.path.exists(ly_path)
-        assert not os.path.exists(pdf_path)
-        # generate PDF first time
-        input_ = 'red~example~score gg A pdfm q'
-        abjad_ide._start(input_=input_)
-        assert os.path.isfile(ly_path)
-        assert os.path.isfile(pdf_path)
-        # attempt to generate PDF second time (but blocked)
-        input_ = 'red~example~score gg A pdfm q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    message = 'Calling Python on {} ...'
-    message = message.format(abjad_ide._trim_path(illustrate_file_path))
-    assert message in contents
-    assert 'Abjad runtime' in contents
-    assert 'LilyPond runtime' in contents
-    message = 'Preserving {} ...'
-    message = message.format(abjad_ide._trim_path(ly_path))
-    assert message in contents
-    message = 'Preserving {} ...'
-    message = message.format(abjad_ide._trim_path(pdf_path))
-    assert message in contents
-    assert 'Total time ' in contents
-
-
-def test_AbjadIDE_make_pdf_05():
-    r'''In segment directory.
-    
-    Overwrites existing PDF.
-    '''
-
-    segment_directory = os.path.join(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
-        'segments',
-        'segment_01',
-        )
-    illustrate_file_path = os.path.join(
-        segment_directory,
-        '__illustrate__.py',
-        )
-    ly_path = os.path.join(segment_directory, 'illustration.ly')
-    pdf_path = os.path.join(segment_directory, 'illustration.pdf')
-    candidate_pdf_path = os.path.join(
-        segment_directory,
-        'illustration.candidate.pdf',
-        )
-
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
-        with open(pdf_path, 'w') as file_pointer:
-            file_pointer.write('text')
-        input_ = 'red~example~score gg A pdfm q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.isfile(ly_path)
-        assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
-
-    message = 'Calling Python on {} ...'
-    message = message.format(abjad_ide._trim_path(illustrate_file_path))
-    assert message in contents
-    assert 'Abjad runtime' in contents
-    assert 'LilyPond runtime' in contents
-    message = 'Preserving {} ...'
-    message = message.format(abjad_ide._trim_path(ly_path))
-    assert message in contents
-    message = 'Overwriting {} ...'
-    message = message.format(abjad_ide._trim_path(pdf_path))
-    assert message in contents
-    message = 'Opening {} ...'
-    message = message.format(abjad_ide._trim_path(pdf_path))
-    assert message in contents
-    assert 'Total time ' in contents
+# TODO: candidacy is deprecated
+#def test_AbjadIDE_make_pdf_05():
+#    r'''In segment directory.
+#    
+#    Overwrites existing PDF.
+#    '''
+#
+#    segment_directory = os.path.join(
+#        configuration.abjad_ide_example_scores_directory,
+#        'red_example_score',
+#        'red_example_score',
+#        'segments',
+#        'segment_01',
+#        )
+#    illustrate_file_path = os.path.join(
+#        segment_directory,
+#        '__illustrate__.py',
+#        )
+#    ly_path = os.path.join(segment_directory, 'illustration.ly')
+#    pdf_path = os.path.join(segment_directory, 'illustration.pdf')
+#    candidate_pdf_path = os.path.join(
+#        segment_directory,
+#        'illustration.candidate.pdf',
+#        )
+#
+#    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+#        with open(pdf_path, 'w') as file_pointer:
+#            file_pointer.write('text')
+#        input_ = 'red~example~score gg A pdfm q'
+#        abjad_ide._start(input_=input_)
+#        contents = abjad_ide._io_manager._transcript.contents
+#        assert os.path.isfile(ly_path)
+#        assert os.path.isfile(pdf_path)
+#        assert systemtools.TestManager._compare_backup(ly_path)
+#        assert systemtools.TestManager._compare_backup(pdf_path)
+#
+#    message = 'Calling Python on {} ...'
+#    message = message.format(abjad_ide._trim_path(illustrate_file_path))
+#    assert message in contents
+#    assert 'Abjad runtime' in contents
+#    assert 'LilyPond runtime' in contents
+#    message = 'Preserving {} ...'
+#    message = message.format(abjad_ide._trim_path(ly_path))
+#    assert message in contents
+#    message = 'Overwriting {} ...'
+#    message = message.format(abjad_ide._trim_path(pdf_path))
+#    assert message in contents
+#    message = 'Opening {} ...'
+#    message = message.format(abjad_ide._trim_path(pdf_path))
+#    assert message in contents
+#    assert 'Total time ' in contents
