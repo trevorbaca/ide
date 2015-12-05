@@ -1546,7 +1546,6 @@ class AbjadIDE(object):
             'illustration.candidate.pdf'
             )
         temporary_files = (
-            #illustrate_file_path,
             candidate_ly_path,
             candidate_pdf_path,
             )
@@ -1555,6 +1554,13 @@ class AbjadIDE(object):
                 os.remove(path)
         ly_path = os.path.join(directory, 'illustration.ly')
         pdf_path = os.path.join(directory, 'illustration.pdf')
+#        output_files = (ly_path, pdf_path)
+#        for output_file in output_files:
+#            if os.path.exists(output_file):
+#                message = 'removing {} ...'
+#                message = message.format(self._trim_path(output_file))
+#                self._io_manager._display(message)
+#                os.remove(output_file)
         with systemtools.FilesystemState(remove=temporary_files):
             message = 'calling Python on {} ...'
             message = message.format(self._trim_path(illustrate_file_path))
@@ -3873,7 +3879,6 @@ class AbjadIDE(object):
             else:
                 raise ValueError(directory)
             self._io_manager._display(timer.total_time_message)
-            return result
 
     @Command(
         'new',
