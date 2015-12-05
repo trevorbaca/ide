@@ -1546,7 +1546,7 @@ class AbjadIDE(object):
             'illustration.candidate.pdf'
             )
         temporary_files = (
-            illustrate_file_path,
+            #illustrate_file_path,
             candidate_ly_path,
             candidate_pdf_path,
             )
