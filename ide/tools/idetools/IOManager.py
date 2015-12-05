@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import abc
 import os
+import platform
 import shutil
 import subprocess
 import sys
@@ -476,6 +477,30 @@ class IOManager(IOManager):
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
+        if (platform.system() == 'Darwin' and 
+            isinstance(path, str) and 
+            path.endswith('.pdf')):
+            source_path = os.path.join(
+                configuration.abjad_ide_boilerplate_directory,
+                '__close_preview_pdf__.scr',
+                )
+            with open(source_path, 'r') as file_pointer:
+                template = file_pointer.read()
+            completed_template = template.format(file_path=path)
+            script_path = os.path.join(
+                configuration.home_directory,
+                '__close_preview_pdf__.scr',
+                )
+            if os.path.exists(script_path):
+                os.remove(script_path)
+            with systemtools.FilesystemState(remove=[script_path]):
+                with open(script_path, 'w') as file_pointer:
+                    file_pointer.write(completed_template)
+                permissions_command = 'chmod 755 {}'
+                permissions_command = permissions_command.format(script_path)
+                self.spawn_subprocess(permissions_command)
+                close_command = script_path
+                self.spawn_subprocess(close_command)
         self.spawn_subprocess(command)
 
     def run_command(self, command):
