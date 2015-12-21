@@ -198,7 +198,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
 
         Returns string.
         '''
-        return os.path.join(self.abjad_configuration_directory, 'ide')
+        return os.path.join(self.configuration_directory_path, 'ide')
 
     @property
     def abjad_ide_configuration_file_path(self):
