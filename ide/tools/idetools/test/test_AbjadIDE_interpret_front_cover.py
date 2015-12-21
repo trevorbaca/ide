@@ -2,10 +2,15 @@
 from abjad import *
 import os
 import ide
+import pytest
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
+@pytest.mark.skipif(
+    os.environ["TRAVIS"] == 'true',
+    reason="Fails under containerized Travis-CI."
+    )
 def test_AbjadIDE_interpret_front_cover_01():
     r'''Makes front-cover.pdf when front-cover.pdf doesn't yet exist.
     '''
@@ -34,6 +39,10 @@ def test_AbjadIDE_interpret_front_cover_01():
         assert systemtools.TestManager._compare_backup(pdf_path)
 
 
+@pytest.mark.skipif(
+    os.environ["TRAVIS"] == 'true',
+    reason="Fails under containerized Travis-CI."
+    )
 def test_AbjadIDE_interpret_front_cover_02():
     r'''Preserves front-cover.pdf when front-cover.candidate.pdf 
     compares equal to front-cover.pdf.

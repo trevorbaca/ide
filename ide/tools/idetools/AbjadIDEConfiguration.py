@@ -3,10 +3,10 @@ from __future__ import print_function
 import collections
 import os
 import sys
-from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
+from abjad.tools.systemtools.Configuration import Configuration
 
 
-class AbjadIDEConfiguration(AbjadConfiguration):
+class AbjadIDEConfiguration(Configuration):
     r'''Abjad IDE configuration.
 
     ..  container:: example
@@ -32,7 +32,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     ### INITIALIZER ###
 
     def __init__(self):
-        AbjadConfiguration.__init__(self)
+        Configuration.__init__(self)
         self._read_aliases_file()
         self._composer_scores_directory_override = None
         self._make_missing_directories()
@@ -164,7 +164,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             '__aliases__.py',
             )
 
@@ -186,37 +186,30 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         return path
 
     @property
-    def abjad_ide_configuration_directory(self):
-        r'''Gets Abjad IDE configuration directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.abjad_ide_configuration_directory
-                '.../.abjad/ide'
+    def abjad_ide_directory(self):
+        r'''Gets Abjad IDE directory.
 
         Returns string.
         '''
-        return os.path.join(self.abjad_configuration_directory, 'ide')
+        try:
+            import ide
+            return ide.__path__[0]
+        except ImportError:
+            return None
 
     @property
-    def abjad_ide_configuration_file_path(self):
-        r'''Gets Abjad IDE configuration file path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.abjad_ide_configuration_file_path
-                '.../.abjad/ide/ide.cfg'
+    def abjad_ide_root_directory(self):
+        r'''Gets Abjad IDE root directory.
 
         Returns string.
         '''
-        return os.path.join(
-            self.abjad_ide_configuration_directory,
-            'ide.cfg',
-            )
+        try:
+            import ide
+            path = ide.__path__[0]
+            path, _ = os.path.split(path)
+            return path
+        except ImportError:
+            return None
 
     @property
     def abjad_ide_example_scores_directory(self):
@@ -251,7 +244,7 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         path = os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             'transcripts',
             )
         return path
@@ -419,38 +412,53 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         return self._settings['composer_website']
 
     @property
-    def configuration_directory(self):
-        r'''Gets configuration directory.
+    def configuration_directory_name(self):
+        r'''Gets configuration directory name.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.configuration_directory
-                '.../.abjad/ide'
-
-        Aliases `abjad_ide_configuration_directory`.
+                >>> configuration.configuration_directory_name
+                'ide'
 
         Returns string.
         '''
-        return self.abjad_ide_configuration_directory
+        return 'ide'
 
     @property
-    def configuration_file_path(self):
-        r'''Gets configuration file path.
+    def configuration_directory_path(self):
+        r'''Gets configuration directory path.
 
         ..  container:: example
 
             ::
 
-                >>> configuration.configuration_file_path
-                '.../.abjad/ide/ide.cfg'
-
-        Aliases `abjad_ide_configuration_file_path`.
+                >>> configuration.configuration_directory_path
+                '.../.abjad/ide'
 
         Returns string.
         '''
-        return self.abjad_ide_configuration_file_path
+        import abjad
+        return os.path.join(
+            abjad.abjad_configuration.configuration_directory_path,
+            self.configuration_directory_name,
+            )
+
+    @property
+    def configuration_file_name(self):
+        r'''Configuration file name.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.configuration_file_name
+                'ide.cfg'
+
+        Returns string.
+        '''
+        return 'ide.cfg'
 
     @property
     def latex_log_file_path(self):
@@ -466,6 +474,6 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             'latex.log',
             )
