@@ -3,10 +3,10 @@ from __future__ import print_function
 import collections
 import os
 import sys
-from abjad.tools.systemtools.AbjadConfiguration import AbjadConfiguration
+from abjad.tools.systemtools.Configuration import Configuration
 
 
-class AbjadIDEConfiguration(AbjadConfiguration):
+class AbjadIDEConfiguration(Configuration):
     r'''Abjad IDE configuration.
 
     ..  container:: example
@@ -27,12 +27,15 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     __slots__ = (
         '_aliases',
         '_composer_scores_directory_override',
+        '_abjad_configuration',
         )
 
     ### INITIALIZER ###
 
     def __init__(self):
-        AbjadConfiguration.__init__(self)
+        import abjad
+        Configuration.__init__(self)
+        self._abjad_configuration = abjad.abjad_configuration
         self._read_aliases_file()
         self._composer_scores_directory_override = None
         self._make_missing_directories()
@@ -151,6 +154,14 @@ class AbjadIDEConfiguration(AbjadConfiguration):
     ### PUBLIC PROPERTIES ###
 
     @property
+    def abjad_configuration(self):
+        r'''Abjad configuration.
+
+        Returns configuration.
+        '''
+        return self._abjad_configuration
+
+    @property
     def abjad_ide_aliases_file_path(self):
         r'''Gets Abjad IDE aliases file path.
 
@@ -199,6 +210,32 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         Returns string.
         '''
         return os.path.join(self.configuration_directory_path, 'ide')
+
+    @property
+    def abjad_ide_directory(self):
+        r'''Gets Abjad IDE directory.
+
+        Returns string.
+        '''
+        try:
+            import ide
+            return ide.__path__[0]
+        except ImportError:
+            return None
+
+    @property
+    def abjad_ide_root_directory(self):
+        r'''Gets Abjad IDE root directory.
+
+        Returns string.
+        '''
+        try:
+            import ide
+            path = ide.__path__[0]
+            path, _ = os.path.split(path)
+            return path
+        except ImportError:
+            return None
 
     @property
     def abjad_ide_configuration_file_path(self):
