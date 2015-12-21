@@ -27,15 +27,12 @@ class AbjadIDEConfiguration(Configuration):
     __slots__ = (
         '_aliases',
         '_composer_scores_directory_override',
-        '_abjad_configuration',
         )
 
     ### INITIALIZER ###
 
     def __init__(self):
-        import abjad
         Configuration.__init__(self)
-        self._abjad_configuration = abjad.abjad_configuration
         self._read_aliases_file()
         self._composer_scores_directory_override = None
         self._make_missing_directories()
@@ -152,14 +149,6 @@ class AbjadIDEConfiguration(Configuration):
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def abjad_configuration(self):
-        r'''Abjad configuration.
-
-        Returns configuration.
-        '''
-        return self._abjad_configuration
 
     @property
     def abjad_ide_aliases_file_path(self):
