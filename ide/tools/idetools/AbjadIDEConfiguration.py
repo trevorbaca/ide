@@ -175,7 +175,7 @@ class AbjadIDEConfiguration(Configuration):
         Returns string.
         '''
         return os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             '__aliases__.py',
             )
 
@@ -195,21 +195,6 @@ class AbjadIDEConfiguration(Configuration):
             'boilerplate',
             )
         return path
-
-    @property
-    def abjad_ide_configuration_directory(self):
-        r'''Gets Abjad IDE configuration directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.abjad_ide_configuration_directory
-                '.../.abjad/ide'
-
-        Returns string.
-        '''
-        return os.path.join(self.configuration_directory_path, 'ide')
 
     @property
     def abjad_ide_directory(self):
@@ -236,24 +221,6 @@ class AbjadIDEConfiguration(Configuration):
             return path
         except ImportError:
             return None
-
-    @property
-    def abjad_ide_configuration_file_path(self):
-        r'''Gets Abjad IDE configuration file path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.abjad_ide_configuration_file_path
-                '.../.abjad/ide/ide.cfg'
-
-        Returns string.
-        '''
-        return os.path.join(
-            self.abjad_ide_configuration_directory,
-            'ide.cfg',
-            )
 
     @property
     def abjad_ide_example_scores_directory(self):
@@ -288,7 +255,7 @@ class AbjadIDEConfiguration(Configuration):
         Returns string.
         '''
         path = os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             'transcripts',
             )
         return path
@@ -459,6 +426,13 @@ class AbjadIDEConfiguration(Configuration):
     def configuration_directory_name(self):
         r'''Gets configuration directory name.
 
+        ..  container:: example
+
+            ::
+
+                >>> configuration.configuration_directory_name
+                'ide'
+
         Returns string.
         '''
         return 'ide'
@@ -466,6 +440,13 @@ class AbjadIDEConfiguration(Configuration):
     @property
     def configuration_directory_path(self):
         r'''Gets configuration directory path.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.configuration_directory_path
+                '.../.abjad/ide'
 
         Returns string.
         '''
@@ -478,6 +459,13 @@ class AbjadIDEConfiguration(Configuration):
     @property
     def configuration_file_name(self):
         r'''Configuration file name.
+
+        ..  container:: example
+
+            ::
+
+                >>> configuration.configuration_file_name
+                'ide.cfg'
 
         Returns string.
         '''
@@ -497,6 +485,6 @@ class AbjadIDEConfiguration(Configuration):
         Returns string.
         '''
         return os.path.join(
-            self.abjad_ide_configuration_directory,
+            self.configuration_directory_path,
             'latex.log',
             )
