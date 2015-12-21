@@ -419,38 +419,32 @@ class AbjadIDEConfiguration(AbjadConfiguration):
         return self._settings['composer_website']
 
     @property
-    def configuration_directory(self):
-        r'''Gets configuration directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.configuration_directory
-                '.../.abjad/ide'
-
-        Aliases `abjad_ide_configuration_directory`.
+    def configuration_directory_name(self):
+        r'''Gets configuration directory name.
 
         Returns string.
         '''
-        return self.abjad_ide_configuration_directory
+        return 'ide'
 
     @property
-    def configuration_file_path(self):
-        r'''Gets configuration file path.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.configuration_file_path
-                '.../.abjad/ide/ide.cfg'
-
-        Aliases `abjad_ide_configuration_file_path`.
+    def configuration_directory_path(self):
+        r'''Gets configuration directory path.
 
         Returns string.
         '''
-        return self.abjad_ide_configuration_file_path
+        import abjad
+        return os.path.join(
+            abjad.abjad_configuration.configuration_directory_path,
+            self.configuration_directory_name,
+            )
+
+    @property
+    def configuration_file_name(self):
+        r'''Configuration file name.
+
+        Returns string.
+        '''
+        return 'ide.cfg'
 
     @property
     def latex_log_file_path(self):
