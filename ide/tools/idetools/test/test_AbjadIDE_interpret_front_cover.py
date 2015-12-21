@@ -9,7 +9,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 @pytest.mark.skipif(
     os.environ["TRAVIS"] == 'true',
-    "Fails under containerized Travis-CI."
+    reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_01():
     r'''Makes front-cover.pdf when front-cover.pdf doesn't yet exist.
@@ -41,7 +41,7 @@ def test_AbjadIDE_interpret_front_cover_01():
 
 @pytest.mark.skipif(
     os.environ["TRAVIS"] == 'true',
-    "Fails under containerized Travis-CI."
+    reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_02():
     r'''Preserves front-cover.pdf when front-cover.candidate.pdf 
