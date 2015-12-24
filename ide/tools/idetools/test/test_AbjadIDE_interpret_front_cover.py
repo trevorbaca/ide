@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 @pytest.mark.skipif(
-    os.environ["TRAVIS"] == 'true',
+    os.environ.get('TRAVIS') == 'true',
     reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_01():
@@ -40,7 +40,7 @@ def test_AbjadIDE_interpret_front_cover_01():
 
 
 @pytest.mark.skipif(
-    os.environ["TRAVIS"] == 'true',
+    os.environ.get('TRAVIS') == 'true',
     reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_02():
