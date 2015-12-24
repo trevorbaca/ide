@@ -1180,7 +1180,7 @@ class AbjadIDE(object):
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_ly_file, target_make_ly_file)
             result = self._io_manager.interpret_file(target_make_ly_file)
-            stdout_lines, stderr_lines = result
+            stdout_lines, stderr_lines, exit_code = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
@@ -1268,7 +1268,7 @@ class AbjadIDE(object):
             message = message.format(self._trim_path(target_make_pdf_file))
             self._io_manager._display(message)
             result = self._io_manager.interpret_file(target_make_pdf_file)
-            stdout_lines, stderr_lines = result
+            stdout_lines, stderr_lines, exit_code = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
@@ -1491,7 +1491,7 @@ class AbjadIDE(object):
             with open(illustrate_path, 'w') as file_pointer:
                 file_pointer.write(completed_template)
             result = self._io_manager.interpret_file(illustrate_path)
-            stdout_lines, stderr_lines = result
+            stdout_lines, stderr_lines, exit_code = result
             if stderr_lines:
                 self._io_manager._display_errors(stderr_lines)
                 return
@@ -1576,7 +1576,7 @@ class AbjadIDE(object):
         with open(illustrate_file_path, 'w') as file_pointer:
             file_pointer.write(completed_template)
         result = self._io_manager.interpret_file(illustrate_file_path)
-        stdout_lines, stderr_lines = result
+        stdout_lines, stderr_lines, exit_code = result
         self._io_manager._display(stdout_lines)
         if stderr_lines:
             self._io_manager._display_errors(stderr_lines)
@@ -2447,7 +2447,7 @@ class AbjadIDE(object):
                 return
             with systemtools.Timer() as timer:
                 result = self._io_manager.interpret_file(definition_path)
-            stdout_lines, stderr_lines = result
+            stdout_lines, stderr_lines, exit_code = result
             self._io_manager._display(stdout_lines)
             if stderr_lines:
                 messages = [definition_path + ' FAILED:']

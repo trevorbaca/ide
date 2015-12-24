@@ -433,9 +433,11 @@ class IOManager(IOManager):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 )
+            process.wait()
         stdout_lines = self._read_from_pipe(process.stdout).splitlines()
         stderr_lines = self._read_from_pipe(process.stderr).splitlines()
-        return stdout_lines, stderr_lines
+        exit_code = process.returncode
+        return stdout_lines, stderr_lines, exit_code
 
     def open_file(self, path, line_number=None):
         r'''Opens file `path`.
