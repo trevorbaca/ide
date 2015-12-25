@@ -1181,7 +1181,7 @@ class AbjadIDE(object):
             shutil.copyfile(source_make_ly_file, target_make_ly_file)
             result = self._io_manager.interpret_file(target_make_ly_file)
             stdout_lines, stderr_lines, exit_code = result
-            if stderr_lines:
+            if exit_code:
                 self._io_manager._display_errors(stderr_lines)
                 return
             if not os.path.isfile(candidate_ly_path):
@@ -1227,13 +1227,13 @@ class AbjadIDE(object):
             message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
-            return
+            return [], False
         illustrate_file_path = os.path.join(directory, '__illustrate__.py')
         if not os.path.isfile(illustrate_file_path):
             message = 'can not find {} ...'
             message = message.format(self._trim_path(illustrate_file_path))
             self._io_manager._display(message)
-            return
+            return [], False
         candidate_ly_path = os.path.join(
             directory,
             'illustration.candidate.ly'
@@ -1270,14 +1270,14 @@ class AbjadIDE(object):
             result = self._io_manager.interpret_file(target_make_pdf_file)
             stdout_lines, stderr_lines, exit_code = result
             self._io_manager._display(stdout_lines)
-            if stderr_lines:
+            if exit_code:
                 self._io_manager._display_errors(stderr_lines)
-                return
+                return [], False
             if not os.path.isfile(candidate_ly_path):
                 message = 'could not make {}.'
                 message = message.format(self._trim_path(candidate_ly_path))
                 self._io_manager._display(message)
-                return
+                return [], False
             if not ly_path_existed:
                 assert os.path.isfile(candidate_ly_path)
                 message = 'writing {} ...'
@@ -1298,7 +1298,7 @@ class AbjadIDE(object):
                     message = message.format(self._trim_path(pdf_path))
                     messages.append(message)
                     self._io_manager._display(messages)
-                    return
+                    return [], True
                 else:
                     message = 'overwriting {} ...'
                     message = message.format(self._trim_path(ly_path))
@@ -1308,7 +1308,7 @@ class AbjadIDE(object):
                 message = 'could not make {}.'
                 message = message.format(self._trim_path(candidate_pdf_path))
                 self._io_manager._display(message)
-                return
+                return [], False
             if not pdf_path_existed:
                 assert os.path.isfile(candidate_pdf_path)
                 message = 'writing {} ...'
@@ -1326,7 +1326,7 @@ class AbjadIDE(object):
                     message = message.format(self._trim_path(pdf_path))
                     messages.append(message)
                     self._io_manager._display(messages)
-                    return
+                    return [], True
                 else:
                     message = 'overwriting {} ...'
                     message = message.format(self._trim_path(pdf_path))
@@ -1337,6 +1337,7 @@ class AbjadIDE(object):
                 message = message.format(self._trim_path(pdf_path))
                 self._io_manager._display(message)
                 self._io_manager.open_file(pdf_path)
+            return [], True
 
     def _make_package(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -1492,7 +1493,7 @@ class AbjadIDE(object):
                 file_pointer.write(completed_template)
             result = self._io_manager.interpret_file(illustrate_path)
             stdout_lines, stderr_lines, exit_code = result
-            if stderr_lines:
+            if exit_code:
                 self._io_manager._display_errors(stderr_lines)
                 return
             if not os.path.isfile(candidate_ly_path):
@@ -1527,7 +1528,7 @@ class AbjadIDE(object):
             message = 'can not find {} ...'
             message = message.format(self._trim_path(definition_path))
             self._io_manager._display(message)
-            return
+            return [], False
         after_redraw_messages = []
         self._update_order_dependent_segment_metadata(directory)
         boilerplate_path = os.path.join(
@@ -1578,9 +1579,9 @@ class AbjadIDE(object):
         result = self._io_manager.interpret_file(illustrate_file_path)
         stdout_lines, stderr_lines, exit_code = result
         self._io_manager._display(stdout_lines)
-        if stderr_lines:
+        if exit_code:
             self._io_manager._display_errors(stderr_lines)
-            return
+            return stderr_lines, False
         after_redraw_messages.extend(stdout_lines)
         if os.path.isfile(pdf_path) and not subroutine:
             message = 'opening {} ...'
@@ -1588,7 +1589,7 @@ class AbjadIDE(object):
             after_redraw_messages.append(message)
             self._io_manager._display(message)
             self._io_manager.open_file(pdf_path)
-        return after_redraw_messages
+        return after_redraw_messages, True
 
     def _manage_directory(self, directory):
         if not os.path.exists(directory):
@@ -2449,7 +2450,7 @@ class AbjadIDE(object):
                 result = self._io_manager.interpret_file(definition_path)
             stdout_lines, stderr_lines, exit_code = result
             self._io_manager._display(stdout_lines)
-            if stderr_lines:
+            if exit_code:
                 messages = [definition_path + ' FAILED:']
                 messages.extend(stderr_lines)
                 self._io_manager._display(messages)
@@ -3813,12 +3814,12 @@ class AbjadIDE(object):
         after_redraw_messages = []
         with interaction, timer:
             if self._is_score_directory(directory, 'material'):
-                messages = self._make_material_pdf(
+                messages, success = self._make_material_pdf(
                     directory,
                     subroutine=subroutine,
                     )
             elif self._is_score_directory(directory, 'segment'):
-                messages = self._make_segment_pdf(
+                messages, success = self._make_segment_pdf(
                     directory,
                     subroutine=subroutine,
                     )
@@ -3833,6 +3834,7 @@ class AbjadIDE(object):
             self._session._pending_menu_rebuild = True
             self._session._pending_redraw = True
             self._session._after_redraw_messages = after_redraw_messages
+        return success
 
     @Command(
         'new',
