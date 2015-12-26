@@ -441,8 +441,8 @@ class IOManager(IOManager):
                 bufsize=1,
                 )
             for line in process.stdout:
-                if sys.version_info[0] == 3:
-                    line = line.decode('utf-8')
+                #if sys.version_info[0] == 3:
+                line = line.decode('utf-8')
                 print(line, end='')
                 string_buffer.write(line)
             process.wait()
