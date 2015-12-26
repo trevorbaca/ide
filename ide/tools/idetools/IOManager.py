@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function
 import abc
 import os
 import platform
-import shutil
 import subprocess
 import sys
 import traceback
-from abjad.tools import datastructuretools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from abjad.tools.systemtools.IOManager import IOManager
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+try:
+    from io import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+
 configuration = AbjadIDEConfiguration()
 
 
@@ -280,7 +285,7 @@ class IOManager(IOManager):
         elif self._session.pending_input.startswith('{{'):
             index = self._session.pending_input.find('}}')
             input_ = self._session.pending_input[2:index]
-            pending_input = self._session.pending_input[index+2:]
+            pending_input = self._session.pending_input[index + 2:]
             pending_input = pending_input.strip()
         else:
             input_parts = self._session.pending_input.split(' ')
@@ -288,8 +293,8 @@ class IOManager(IOManager):
             for i, part in enumerate(input_parts):
                 if part == '-' or not part.endswith((',', '-')):
                     break
-            first_parts = input_parts[:i+1]
-            rest_parts = input_parts[i+1:]
+            first_parts = input_parts[:i + 1]
+            rest_parts = input_parts[i + 1:]
             input_ = ' '.join(first_parts)
             pending_input = ' '.join(rest_parts)
         input_ = input_.replace('~', ' ')
@@ -427,15 +432,21 @@ class IOManager(IOManager):
         directory = os.path.dirname(path)
         directory = systemtools.TemporaryDirectoryChange(directory)
         with directory:
-            process = subprocess.Popen(
+            with subprocess.Popen(
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                )
-            process.wait()
-        stdout_lines = self._read_from_pipe(process.stdout).splitlines()
-        stderr_lines = self._read_from_pipe(process.stderr).splitlines()
+                bufsize=1,
+                ) as process, StringIO() as string_buffer:
+                for line in process.stdout:
+                    if sys.version_info[0] == 3:
+                        line = line.decode('utf-8')
+                    print(line, end='')
+                    string_buffer.write(line)
+                stdout_lines = string_buffer.getvalue().splitlines()
+                stderr_lines = self._read_from_pipe(process.stderr)
+                stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
         return stdout_lines, stderr_lines, exit_code
 
@@ -451,8 +462,7 @@ class IOManager(IOManager):
             line_number_string = ' +{}'.format(line_number)
         if not isinstance(path, list) and not os.path.isfile(path):
             return
-        if (isinstance(path, list) and
-            all(_.endswith('.pdf') for _ in path)):
+        if (isinstance(path, list) and all(_.endswith('.pdf') for _ in path)):
             paths = ' '.join(path)
             command = 'open {}'.format(paths)
         elif (isinstance(path, list) and
@@ -479,8 +489,8 @@ class IOManager(IOManager):
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
-        if (platform.system() == 'Darwin' and 
-            isinstance(path, str) and 
+        if (platform.system() == 'Darwin' and
+            isinstance(path, str) and
             path.endswith('.pdf')):
             source_path = os.path.join(
                 configuration.abjad_ide_boilerplate_directory,
