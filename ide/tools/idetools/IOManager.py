@@ -431,22 +431,24 @@ class IOManager(IOManager):
             raise Exception(message)
         directory = os.path.dirname(path)
         directory = systemtools.TemporaryDirectoryChange(directory)
-        with directory:
-            with subprocess.Popen(
+        string_buffer = StringIO()
+        with directory, string_buffer:
+            process = subprocess.Popen(
                 command,
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 bufsize=1,
-                ) as process, StringIO() as string_buffer:
-                for line in process.stdout:
-                    if sys.version_info[0] == 3:
-                        line = line.decode('utf-8')
-                    print(line, end='')
-                    string_buffer.write(line)
-                stdout_lines = string_buffer.getvalue().splitlines()
-                stderr_lines = self._read_from_pipe(process.stderr)
-                stderr_lines = stderr_lines.splitlines()
+                )
+            for line in process.stdout:
+                if sys.version_info[0] == 3:
+                    line = line.decode('utf-8')
+                print(line, end='')
+                string_buffer.write(line)
+            process.wait()
+            stdout_lines = string_buffer.getvalue().splitlines()
+            stderr_lines = self._read_from_pipe(process.stderr)
+            stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
         return stdout_lines, stderr_lines, exit_code
 
