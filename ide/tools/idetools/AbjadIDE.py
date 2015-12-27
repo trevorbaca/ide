@@ -8,11 +8,10 @@ import inspect
 import os
 import shutil
 import sys
-import time
+import traceback
 from abjad.tools import datastructuretools
 from abjad.tools import lilypondfiletools
 from abjad.tools import mathtools
-from abjad.tools import sequencetools
 from abjad.tools import stringtools
 from abjad.tools import systemtools
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
@@ -326,7 +325,7 @@ class AbjadIDE(object):
         for entry in sorted(os.listdir(directory)):
             if not entry.startswith('.'):
                 path = os.path.join(directory, entry)
-                if (os.path.isfile(path) and not '__init__.py' in path):
+                if (os.path.isfile(path) and '__init__.py' not in path):
                     return entry
 
     def _find_empty_score_directories(self):
@@ -402,7 +401,7 @@ class AbjadIDE(object):
         return messages
 
     def _gather_segment_lys(self, directory):
-        score_directory = self._to_score_directory(directory, 'inner')
+        # score_directory = self._to_score_directory(directory, 'inner')
         segments_directory = self._to_score_directory(directory, 'segments')
         build_directory = self._to_score_directory(directory, 'build')
         entries = sorted(os.listdir(segments_directory))
@@ -414,8 +413,8 @@ class AbjadIDE(object):
             source_ly_path = os.path.join(segment_directory, 'illustration.ly')
             if not os.path.isfile(source_ly_path):
                 continue
-            score_package = os.path.basename(score_directory)
-            score_name = score_package.replace('_', '-')
+            # score_package = os.path.basename(score_directory)
+            # score_name = score_package.replace('_', '-')
             entry = entry.replace('_', '-')
             target_ly_name = entry + '.ly'
             target_ly_path = os.path.join(build_directory, target_ly_name)
@@ -484,7 +483,7 @@ class AbjadIDE(object):
                     return path
 
     def _get_git_status_lines(self, path):
-        assert os.path.sep in path,repr(path)
+        assert os.path.sep in path, repr(path)
         command = 'git status --porcelain {}'
         command = command.format(path)
         directory = self._to_score_directory(path, 'outer')
@@ -530,7 +529,7 @@ class AbjadIDE(object):
             paths = self._list_visible_paths(materials_directory)
             index = paths.index(directory)
             paths = datastructuretools.CyclicTuple(paths)
-            path = paths[index+1]
+            path = paths[index + 1]
         elif self._is_score_directory(directory, 'materials'):
             paths = self._list_visible_paths(directory)
             path = paths[0]
@@ -539,7 +538,7 @@ class AbjadIDE(object):
             paths = self._list_visible_paths(segments_directory)
             index = paths.index(directory)
             paths = datastructuretools.CyclicTuple(paths)
-            path = paths[index+1]
+            path = paths[index + 1]
         elif self._is_score_directory(directory, 'segments'):
             paths = self._list_visible_paths(directory)
             path = paths[0]
@@ -554,7 +553,7 @@ class AbjadIDE(object):
             paths = self._list_visible_paths(materials_directory)
             index = paths.index(directory)
             paths = datastructuretools.CyclicTuple(paths)
-            path = paths[index-1]
+            path = paths[index - 1]
         elif self._is_score_directory(directory, 'materials'):
             paths = self._list_visible_paths(directory)
             path = paths[-1]
@@ -563,7 +562,7 @@ class AbjadIDE(object):
             paths = self._list_visible_paths(segments_directory)
             index = paths.index(directory)
             paths = datastructuretools.CyclicTuple(paths)
-            path = paths[index-1]
+            path = paths[index - 1]
         elif self._is_score_directory(directory, 'segments'):
             paths = self._list_visible_paths(directory)
             path = paths[-1]
@@ -711,7 +710,7 @@ class AbjadIDE(object):
             line_number = None
             if '+' in body:
                 index = body.find('+')
-                line_number = body[index+1:]
+                line_number = body[index + 1:]
                 if mathtools.is_integer_equivalent_expr(line_number):
                     line_number = int(line_number)
                 else:
@@ -832,7 +831,7 @@ class AbjadIDE(object):
         if not (stringtools.is_snake_case(file_name) or
             stringtools.is_dash_case(file_name)):
             return False
-        if not file_extension in ('.py', '.ly', '.pdf'):
+        if file_extension not in ('.py', '.ly', '.pdf'):
             return False
         return True
 
@@ -908,7 +907,7 @@ class AbjadIDE(object):
             if len(parts) == scores_directory_parts_count + 2:
                 if parts[-1] == parts[-2]:
                     return True
-        parent_directory = os.path.dirname(directory)
+        # parent_directory = os.path.dirname(directory)
         if 'material' in prototype and scores_directory:
             scores_directory_parts_count = len(
                 scores_directory.split(os.path.sep))
@@ -1049,7 +1048,7 @@ class AbjadIDE(object):
                 continue
             if (command.forbidden_directories and
                 self._is_score_directory(
-                directory, command.forbidden_directories)):
+                    directory, command.forbidden_directories)):
                 continue
             commands.append(command)
         command_groups = {}
@@ -1138,7 +1137,7 @@ class AbjadIDE(object):
             asset_menu_entries.append(asset_menu_entry)
         menu_entries.extend(asset_menu_entries)
         if menu_entries:
-            section = menu.make_asset_section(menu_entries=menu_entries)
+            menu.make_asset_section(menu_entries=menu_entries)
         self._make_command_menu_sections(directory, menu)
         return menu
 
@@ -1176,7 +1175,7 @@ class AbjadIDE(object):
             if os.path.exists(path):
                 os.remove(path)
         ly_path = os.path.join(directory, 'illustration.ly')
-        inputs, outputs = [], []
+        # inputs, outputs = [], []
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(source_make_ly_file, target_make_ly_file)
             result = self._io_manager.interpret_file(target_make_ly_file)
@@ -1390,7 +1389,7 @@ class AbjadIDE(object):
             message = message.format(self._trim_path(path))
             self._io_manager._display(message)
             message = 'populate {}/ with score contents?'
-            message =  message.format(self._trim_path(path))
+            message = message.format(self._trim_path(path))
             result = self._io_manager._confirm(message)
             if result:
                 outer_score_directory = path
@@ -1468,7 +1467,7 @@ class AbjadIDE(object):
         inputs, outputs = [], []
         if dry_run:
             inputs.append(definition_path)
-            outputs.append(illustration_source_path)
+            outputs.append(ly_path)
             return inputs, outputs
         with systemtools.FilesystemState(remove=temporary_files):
             shutil.copyfile(boilerplate_path, illustrate_path)
@@ -1695,7 +1694,7 @@ class AbjadIDE(object):
     def _match_metadata_view_pattern(self, pattern, entry):
         display_string, _, _, path = entry
         count = pattern.count('md:')
-        for _ in range(count+1):
+        for _ in range(count + 1):
             parts = pattern.split()
             for part in parts:
                 if part.startswith('md:'):
@@ -1807,7 +1806,6 @@ class AbjadIDE(object):
         return view_inventory.get(view_name)
 
     def _read_view_inventory(self, directory):
-        from ide.tools import idetools
         assert os.path.isdir(directory), repr(directory)
         views_py_path = os.path.join(directory, '__views__.py')
         result = self._io_manager.execute_file(
@@ -1845,7 +1843,7 @@ class AbjadIDE(object):
                 new_file_lines.append(line)
         new_file_contents = ''.join(new_file_lines)
         if sys.version_info[0] == 2:
-            new_file_contents = unicode(new_file_contents, 'utf-8')
+            new_file_contents = new_file_contents.decode('utf-8')
             with codecs.open(file_path, 'w', encoding='utf-8') as file_pointer:
                 file_pointer.write(new_file_contents)
         else:
@@ -1853,15 +1851,13 @@ class AbjadIDE(object):
                 file_pointer.write(new_file_contents)
 
     def _run_lilypond(self, ly_path):
-        if systemtools.IOManager.find_executable('lilypond'):
-            executable = 'lilypond'
-        else:
+        if not systemtools.IOManager.find_executable('lilypond'):
             message = 'cannot find LilyPond executable.'
             raise ValueError(message)
         directory = os.path.dirname(ly_path)
         file_name, file_extension = os.path.splitext(ly_path)
         pdf_path = file_name + '.pdf'
-        pdf_existed = os.path.exists(pdf_path)
+        # pdf_existed = os.path.exists(pdf_path)
         backup_file_name = '{}._backup.pdf'
         backup_file_name = backup_file_name.format(file_name)
         backup_pdf_path = os.path.join(directory, backup_file_name)
@@ -1941,7 +1937,7 @@ class AbjadIDE(object):
             message = message + '.'
             self._io_manager._display(message)
             return
-        paths = secondary_paths + visible_paths
+        # paths = secondary_paths + visible_paths
         asset_identifier = self._to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
         if infinitive_phrase:
@@ -1986,7 +1982,7 @@ class AbjadIDE(object):
                 if mathtools.is_integer_equivalent_expr(part):
                     part = int(part)
                 result.append(part)
-        elif isinstance(result, str) and not ',' in result:
+        elif isinstance(result, str) and ',' not in result:
             result = [result]
         paths = []
         for input_ in result:
@@ -2476,7 +2472,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction():
             paths = self._list_visible_paths(directory)
-            start_time = time.time()
+            # start_time = time.time()
             with systemtools.Timer() as timer:
                 for path in paths:
                     self.check_definition_file(path, subroutine=True)
@@ -3057,7 +3053,7 @@ class AbjadIDE(object):
             if self._session.is_test:
                 return
             inputs, outputs = [], []
-            method_name = '_git_add'
+            # method_name = '_git_add'
             for directory in directories:
                 inputs_, outputs_ = self._git_add(directory, dry_run=True)
                 inputs.extend(inputs_)
@@ -3295,7 +3291,7 @@ class AbjadIDE(object):
             directories = self._list_visible_paths(directory)
             self._session._attempted_method = 'git_update_every_package'
             for directory in directories:
-                messages = []
+                # messages = []
                 message = self._to_menu_string(directory)
                 if message.endswith(')'):
                     index = message.find('(')
@@ -3559,7 +3555,7 @@ class AbjadIDE(object):
             with systemtools.Timer() as timer:
                 for ly_file in ly_files:
                     directory = os.path.dirname(ly_file)
-                    result = self.interpret_ly(directory, subroutine=True)
+                    self.interpret_ly(directory, subroutine=True)
                 self._io_manager._display(timer.total_time_message)
 
     @Command(
@@ -4244,7 +4240,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction():
-            executable =  self._io_manager.find_executable('ack')
+            executable = self._io_manager.find_executable('ack')
             if not executable:
                 executable = self._io_manager.find_executable('grep')
             if not executable:
@@ -4284,7 +4280,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         ly_file_path = os.path.join(directory, 'illustration.ly')
         pdf_file_path = os.path.join(directory, 'illustration.pdf')
-        messages = []
+        # messages = []
         with self._io_manager._make_interaction():
             if os.path.isfile(ly_file_path):
                 self._io_manager._trash_file(ly_file_path)
