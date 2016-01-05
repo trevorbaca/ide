@@ -34,3 +34,13 @@ def test_AbjadIDE_open_pdf_03():
     assert not abjad_ide._session._attempted_to_open_file
     contents = abjad_ide._io_manager._transcript.contents
     assert 'File does not exist:' in contents
+
+
+def test_AbjadIDE_open_pdf_04():
+    r'''Allows asterisk addressing.
+    '''
+
+    input_ = 'red~example~score *pitch q'
+    abjad_ide._start(input_=input_)
+
+    assert abjad_ide._session._attempted_to_open_file
