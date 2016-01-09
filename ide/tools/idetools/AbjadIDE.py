@@ -4178,10 +4178,10 @@ class AbjadIDE(object):
             result = self._io_manager._confirm('complete words only?')
             if result:
                 complete_words = True
-            command = 'ajv replace {!r} {!r}'
+            command = 'ajv replace {!r} {!r} -Y'
             command = command.format(search_string, replace_string)
             if complete_words:
-                command += ' -Y'
+                command += ' -W'
             lines = self._io_manager.run_command(command)
             lines = [_.strip() for _ in lines if not _ == '']
             self._io_manager._display(lines, capitalize=False)
