@@ -1861,11 +1861,11 @@ class AbjadIDE(object):
         directory = os.path.dirname(ly_path)
         file_name, file_extension = os.path.splitext(ly_path)
         pdf_path = file_name + '.pdf'
-        # pdf_existed = os.path.exists(pdf_path)
         backup_file_name = '{}._backup.pdf'
         backup_file_name = backup_file_name.format(file_name)
         backup_pdf_path = os.path.join(directory, backup_file_name)
-        assert not os.path.exists(backup_pdf_path)
+        if os.path.exists(backup_pdf_path):
+            os.remove(backup_pdf_path)
         directory_change = systemtools.TemporaryDirectoryChange(directory)
         filesystem_state = systemtools.FilesystemState(
             remove=[backup_pdf_path]

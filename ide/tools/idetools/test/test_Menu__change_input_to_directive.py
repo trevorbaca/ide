@@ -53,10 +53,10 @@ def test_Menu__change_input_to_directive_04():
 
 
 def test_Menu__change_input_to_directive_05():
-    r'''Material that is list of numbers does not aliases numeric assets entry.
+    r'''Material that is list of numbers does not alias numeric assets entry.
 
     The '1' in the input below is correctly interpret as the __init__.py file,
-    assigned the number 1. in the menu section; this is not alises by the
+    assigned the number 1. in the menu section; this is not aliased by the
     presence of the number 1 in the series of magic numbers itself:
     1, 3, 4, 7, ....
     '''
