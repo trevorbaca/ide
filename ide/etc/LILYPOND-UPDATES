@@ -1,4 +1,23 @@
-SUMMARY. Run ...
+SUMMARY. Before starting the IDE, run ...
+
+    lilypond --version
+
+... and verify the version number. Then create test.ly with ...
+
+    \version "2.19.38"
+
+    \new Staff {
+        c'4
+        }
+
+... and call "lily test.ly". Make sure that LilyPond outputs the file test.pdf.
+
+NOTE: sometimes the first run of a new version of LilyPond make take up to 100
+seconds, probably to allow LilyPond to recache fonts. Interpreting a test file
+like this gives LilyPond a chance to do these things. The benefit is that the
+IDE steps listed below will not appear to stall.
+
+Then run ...
 
     example-abjad-ide
 
