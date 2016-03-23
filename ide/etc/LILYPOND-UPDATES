@@ -1,4 +1,23 @@
-SUMMARY. Run ...
+SUMMARY. Before starting the IDE, run ...
+
+    lilypond --version
+
+... and verify the version number. Then create test.ly with ...
+
+    \version "2.19.38"
+
+    \new Staff {
+        c'4
+        }
+
+... and call "lily test.ly". Make sure that LilyPond outputs the file test.pdf.
+
+NOTE: sometimes the first run of a new version of LilyPond make take up to 100
+seconds, probably to allow LilyPond to recache fonts. Interpreting a test file
+like this gives LilyPond a chance to do these things. The benefit is that the
+IDE steps listed below will not appear to stall.
+
+Then run ...
 
     example-abjad-ide
 
@@ -25,13 +44,13 @@ Calling "git st" will show the following modifications:
 Then update the IDE Travis configuration file by changing the old LilyPond
 version number...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.29-1.linux-64.sh
-    - sudo sh lilypond-2.19.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.38-1.linux-64.sh
+    - sudo sh lilypond-2.19.38-1.linux-64.sh --batch
 
 ... to the new LilyPond version number ...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.30-1.linux-64.sh
-    - sudo sh lilypond-2.29.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.38-1.linux-64.sh
+    - sudo sh lilypond-2.29.38-1.linux-64.sh --batch
 
 ... instead.
 
@@ -40,7 +59,7 @@ these 5 commands. These tests will pass again after commit:
 
     git add .
 
-    git commit "Rerendered test artifacts with LilyPond 2.19.30."
+    git commit "Rerendered test artifacts with LilyPond 2.19.38."
 
 Then run the battery and confirm that no tests fail.
 
