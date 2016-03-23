@@ -44,13 +44,13 @@ Calling "git st" will show the following modifications:
 Then update the IDE Travis configuration file by changing the old LilyPond
 version number...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.29-1.linux-64.sh
-    - sudo sh lilypond-2.19.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.38-1.linux-64.sh
+    - sudo sh lilypond-2.19.38-1.linux-64.sh --batch
 
 ... to the new LilyPond version number ...
 
-    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.30-1.linux-64.sh
-    - sudo sh lilypond-2.29.15-1.linux-64.sh --batch
+    - wget -q http://download.linuxaudio.org/lilypond/binaries/linux-64/lilypond-2.19.38-1.linux-64.sh
+    - sudo sh lilypond-2.29.38-1.linux-64.sh --batch
 
 ... instead.
 
@@ -59,7 +59,7 @@ these 5 commands. These tests will pass again after commit:
 
     git add .
 
-    git commit "Rerendered test artifacts with LilyPond 2.19.30."
+    git commit "Rerendered test artifacts with LilyPond 2.19.38."
 
 Then run the battery and confirm that no tests fail.
 
