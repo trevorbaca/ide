@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from abjad import *
 import ide
+from abjad.tools import systemtools
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -15,7 +15,7 @@ def test_AbjadIDE_new_01():
         'example_score',
         )
     inner_score_directory = os.path.join(
-        outer_score_directory, 
+        outer_score_directory,
         'example_score',
         )
     materials_directory = os.path.join(
@@ -46,15 +46,15 @@ def test_AbjadIDE_new_01():
         'test',
         ]
     materials_directory_entries = [
-        '__abbreviations__.py',
+        #'__abbreviations__.py',
         '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
+        #'__metadata__.py',
+        #'__views__.py',
         ]
     segments_directory_entries = [
         '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
+        #'__metadata__.py',
+        #'__views__.py',
         ]
 
     input_ = 'new Example~Score q'
@@ -63,9 +63,6 @@ def test_AbjadIDE_new_01():
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_score_directory)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
-        entries = os.listdir(inner_score_directory)
         for entry in outer_directory_entries:
             path = os.path.join(outer_score_directory, entry)
             assert os.path.exists(path)
@@ -91,7 +88,7 @@ def test_AbjadIDE_new_02():
         'example_score',
         )
     inner_score_directory = os.path.join(
-        outer_score_directory, 
+        outer_score_directory,
         'example_score',
         )
     materials_directory = os.path.join(
@@ -122,15 +119,15 @@ def test_AbjadIDE_new_02():
         'test',
         ]
     materials_directory_entries = [
-        '__abbreviations__.py',
+        #'__abbreviations__.py',
         '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
+        #'__metadata__.py',
+        #'__views__.py',
         ]
     segments_directory_entries = [
         '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
+        #'__metadata__.py',
+        #'__views__.py',
         ]
 
     input_ = 'new y Example~Score q'
@@ -148,9 +145,6 @@ def test_AbjadIDE_new_02():
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_score_directory)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
-        entries = os.listdir(inner_score_directory)
         for entry in outer_directory_entries:
             path = os.path.join(outer_score_directory, entry)
             assert os.path.exists(path)
@@ -284,7 +278,6 @@ def test_AbjadIDE_new_08():
     r'''Makes new material directory.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
@@ -303,8 +296,6 @@ def test_AbjadIDE_new_08():
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
         entries = os.listdir(path)
         for entry in directory_entries:
             assert entry in entries, repr(entry)
@@ -314,7 +305,6 @@ def test_AbjadIDE_new_09():
     r'''Coerces material directory name.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
     path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
@@ -333,8 +323,6 @@ def test_AbjadIDE_new_09():
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
         entries = os.listdir(path)
         for entry in directory_entries:
             assert entry in entries, repr(entry)
@@ -361,10 +349,7 @@ def test_AbjadIDE_new_10():
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
         entries = os.listdir(path)
         for entry in directory_entries:
             assert entry in entries, repr(entry)
@@ -391,10 +376,7 @@ def test_AbjadIDE_new_11():
 
     with systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(path)
-        session = ide.tools.idetools.Session(is_test=True)
-        io_manager = ide.tools.idetools.IOManager(session=session)
         entries = os.listdir(path)
         for entry in directory_entries:
             assert entry in entries, repr(entry)
