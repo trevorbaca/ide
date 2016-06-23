@@ -11,7 +11,7 @@ def make_lilypond_file():
     material_name = os.path.basename(material_directory_path)
     title = material_name.replace('_', ' ').capitalize()
     title = abjad.markuptools.Markup(title)
-    title = title.override('font-name', 'Palatino')
+    title = title.override(('font-name', 'Palatino'))
     material = getattr(definition, material_name)
     try:
         lilypond_file = material.__illustrate__(title=title)
