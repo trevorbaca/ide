@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+import abjad
+import ide
 import os
 import sys
 import traceback
-from abjad import persist
-from abjad.tools import systemtools
-from ide.tools import idetools
 
 
 if __name__ == '__main__':
@@ -28,7 +27,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        with systemtools.Timer() as timer:
+        with abjad.systemtools.Timer() as timer:
             result = segment_maker(
                 segment_metadata=segment_metadata,
                 previous_segment_metadata=previous_segment_metadata,
@@ -43,8 +42,8 @@ if __name__ == '__main__':
 
     try:
         current_directory = os.path.dirname(__file__)
-        dummy_session = idetools.Session()
-        abjad_ide = idetools.AbjadIDE(
+        dummy_session = ide.tools.idetools.Session()
+        abjad_ide = ide.tools.idetools.AbjadIDE(
             session=dummy_session, 
             )
         abjad_ide._write_metadata_py(
@@ -61,8 +60,8 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.ly',
             )
-        with systemtools.Timer() as timer:
-            persist(lilypond_file).as_ly(candidate_path)
+        with abjad.systemtools.Timer() as timer:
+            abjad.persist(lilypond_file).as_ly(candidate_path)
         message = 'LilyPond runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))
         print(message)
