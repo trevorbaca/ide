@@ -31,8 +31,6 @@ class AbjadIDE(object):
         '_session',
         )
 
-    _abjad_import_statement = 'from abjad import *'
-
     _secondary_names = (
         '__init__.py',
         '__illustrate__.py',
