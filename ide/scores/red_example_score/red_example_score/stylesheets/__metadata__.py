@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad.tools import datastructuretools
+import abjad
 
 
-metadata = datastructuretools.TypedOrderedDict([
+metadata = abjad.datastructuretools.TypedOrderedDict([
     ('view_name', '_test'),
     ])

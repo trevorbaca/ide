@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad.tools import datastructuretools
+import abjad
 
 
-metadata = datastructuretools.TypedOrderedDict([
+metadata = abjad.datastructuretools.TypedOrderedDict([
     ('catalog_number', '\\#165'),
     ('forces_tagline', 'for piano'),
     ('paper_dimensions', '8.5 x 11 in'),

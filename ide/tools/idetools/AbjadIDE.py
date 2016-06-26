@@ -509,6 +509,8 @@ class AbjadIDE(object):
                 message = 'can not interpret metadata py: {!r}.'
                 message = message.format(self._trim_path(metadata_py_path))
                 self._io_manager._display(message)
+            except NameError, e:
+                raise Exception(repr(metadata_py_path), e)
         metadata = metadata or datastructuretools.TypedOrderedDict()
         return metadata
 
@@ -2343,7 +2345,7 @@ class AbjadIDE(object):
         metadata_py_path = os.path.join(directory, '__metadata__.py')
         lines = []
         lines.append(self._unicode_directive)
-        lines.append('from abjad import *')
+        lines.append('import abjad')
         lines.append('')
         lines.append('')
         contents = '\n'.join(lines)

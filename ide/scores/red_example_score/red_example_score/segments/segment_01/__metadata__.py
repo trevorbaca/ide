@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-metadata = datastructuretools.TypedOrderedDict(
+metadata = abjad.datastructuretools.TypedOrderedDict(
     [
         ('first_bar_number', 1),
         ('name', 'A'),
