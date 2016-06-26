@@ -1,5 +1,6 @@
-from abjad import *
+# -*- coding: utf-8 -*-
+import abjad
 from ide.materials.articulation_handler.output import articulation_handler
 
 
-#illustration = lilypondfiletools.make_basic_lilypond_file(score)
+#illustration = abjad.lilypondfiletools.make_basic_lilypond_file(score)
