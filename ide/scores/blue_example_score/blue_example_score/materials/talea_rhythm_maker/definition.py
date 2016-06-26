@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker(
-    talea=rhythmmakertools.Talea(
+talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker(
+    talea=abjad.rhythmmakertools.Talea(
         counts=(2, 2, -3),
         denominator=8,
         ),

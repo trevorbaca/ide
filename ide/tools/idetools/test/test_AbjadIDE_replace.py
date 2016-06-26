@@ -22,7 +22,7 @@ def test_AbjadIDE_replace_01():
         input_ = 'red~example~score sr RhythmMaker q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert 'class RhythmMaker(rhythmmakertools.RhythmMaker):' in contents
+        assert 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):' in contents
         input_ = 'red~example~score rp RhythmMaker FooMaker y q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-from abjad.tools.abctools.AbjadObject import AbjadObject
+import abjad
 
 
-class SargassoMeasureMaker(AbjadObject):
+class SargassoMeasureMaker(abjad.abctools.AbjadObject):
     r'''Sargasso measure maker.
     '''
 
@@ -67,17 +66,17 @@ class SargassoMeasureMaker(AbjadObject):
         #print measures_are_split
         #print measures_are_shuffled
 
-        assert mathtools.is_nonnegative_integer_power_of_two(
+        assert abjad.mathtools.is_nonnegative_integer_power_of_two(
             measure_denominator)
-        assert mathtools.is_nonnegative_integer_power_of_two(
+        assert abjad.mathtools.is_nonnegative_integer_power_of_two(
             measure_division_denominator)
         assert measure_denominator <= measure_division_denominator
 
-        assert all(mathtools.is_positive_integer(x)
+        assert all(abjad.mathtools.is_positive_integer(x)
             for x in measure_numerator_talea)
-        assert all(mathtools.is_positive_integer(x)
+        assert all(abjad.mathtools.is_positive_integer(x)
             for x in measure_division_talea)
-        total_duration = durationtools.Duration(total_duration)
+        total_duration = abjad.durationtools.Duration(total_duration)
 
         weight = int(measure_denominator * total_duration)
         measure_numerators = sequencetools.repeat_sequence_to_weight(
@@ -85,7 +84,7 @@ class SargassoMeasureMaker(AbjadObject):
         #print measure_numerators
 
         weight = int(measure_division_denominator * total_duration)
-        measure_divisions = sequencetools.repeat_sequence_to_weight(
+        measure_divisions = abjad.sequencetools.repeat_sequence_to_weight(
             measure_division_talea, weight)
         #print measure_divisions
 
@@ -94,7 +93,7 @@ class SargassoMeasureMaker(AbjadObject):
             multiplier * x for x in measure_numerators]
         #print multiplied_measure_numerators
 
-        measure_divisions_by_measure = sequencetools.split_sequence(
+        measure_divisions_by_measure = abjad.sequencetools.split_sequence(
             measure_divisions,
             multiplied_measure_numerators,
             cyclic=True,
@@ -103,7 +102,8 @@ class SargassoMeasureMaker(AbjadObject):
         #print measure_divisions_by_measure
 
         meter_multipliers = [
-            Multiplier(1) for x in measure_divisions_by_measure
+            abjad.durationtools.Multiplier(1)
+            for x in measure_divisions_by_measure
             ]
 
         if measures_are_scaled:
@@ -123,19 +123,19 @@ class SargassoMeasureMaker(AbjadObject):
                 zip(meter_multipliers, multiplied_measure_numerators):
                 prolated_measure_numerator = \
                     multiplied_measure_numerator / meter_multiplier
-                assert mathtools.is_integer_equivalent_number(
+                assert abjad.mathtools.is_integer_equivalent_number(
                     prolated_measure_numerator)
                 prolated_measure_numerator = int(prolated_measure_numerator)
                 prolated_measure_numerators.append(prolated_measure_numerator)
             #print prolated_measure_numerators
 
             measure_divisions = \
-                sequencetools.repeat_sequence_to_weight(
+                abjad.sequencetools.repeat_sequence_to_weight(
                 measure_division_talea, sum(prolated_measure_numerators))
             #print measure_divisions
 
             measure_divisions_by_measure = \
-                sequencetools.split_sequence(
+                abjad.sequencetools.split_sequence(
                 measure_divisions,
                 prolated_measure_numerators,
                 cyclic=True,
@@ -153,7 +153,7 @@ class SargassoMeasureMaker(AbjadObject):
         divided_measure_tokens = []
         for meter_multiplier, measure_divisions in measure_tokens:
             division_lists = \
-                sequencetools.partition_sequence_by_ratio_of_lengths(
+                abjad.sequencetools.partition_sequence_by_ratio_of_lengths(
                     measure_divisions, ratio)
             for division_list in division_lists:
                 if division_list:
@@ -173,7 +173,8 @@ class SargassoMeasureMaker(AbjadObject):
                 min(measure_divisions), measure_division_denominator)
             meter_denominator = meter_base_unit.denominator
             meter_token = \
-                mathtools.NonreducedFraction(measure_duration).with_multiple_of_denominator(
+                abjad.mathtools.NonreducedFraction(
+                    measure_duration).with_multiple_of_denominator(
                 meter_denominator)
             meter_tokens.append(meter_token)
         #print meter_tokens
@@ -185,9 +186,9 @@ class SargassoMeasureMaker(AbjadObject):
 
         measures = []
         for meter_token, division_token in zip(meter_tokens, division_tokens):
-            leaves = scoretools.make_leaves_from_talea(
+            leaves = abjad.scoretools.make_leaves_from_talea(
                 division_token, measure_division_denominator)
-            measure = scoretools.Measure(
+            measure = abjad.scoretools.Measure(
                 meter_token,
                 leaves,
                 implicit_scaling=True,
@@ -195,7 +196,7 @@ class SargassoMeasureMaker(AbjadObject):
             measures.append(measure)
         #print measures
 
-        selection = selectiontools.ContiguousSelection(measures)
+        selection = abjad.selectiontools.ContiguousSelection(measures)
 
         #return measures
         return selection
@@ -207,14 +208,13 @@ class SargassoMeasureMaker(AbjadObject):
 
         Returns true or false.
         '''
-        from abjad.tools import systemtools
-        return systemtools.StorageFormatManager.compare(self, expr)
+        return abjad.systemtools.StorageFormatManager.compare(self, expr)
 
     def __hash__(self):
         r'''Hashes sargasso measure-maker.
         '''
-        from abjad.tools import systemtools
-        hash_values = systemtools.StorageFormatManager.get_hash_values(self)
+        hash_values = abjad.systemtools.StorageFormatManager.get_hash_values(
+            self)
         return hash(hash_values)
 
     def __illustrate__(self, **kwargs):
@@ -223,13 +223,13 @@ class SargassoMeasureMaker(AbjadObject):
         Returns LilyPond file.
         '''
         measures = self()
-        staff = scoretools.Staff(measures)
+        staff = abjad.scoretools.Staff(measures)
         staff.context_name = 'RhythmicStaff'
-        score = scoretools.Score([staff])
-        illustration = lilypondfiletools.make_basic_lilypond_file(score)
-        measures = score._get_components(scoretools.Measure)
+        score = abjad.scoretools.Score([staff])
+        illustration = abjad.lilypondfiletools.make_basic_lilypond_file(score)
+        measures = score._get_components(abjad.scoretools.Measure)
         for measure in measures:
-            beam = spannertools.Beam()
+            beam = abjad.spannertools.Beam()
             attach(beam, [measure])
         score.add_final_bar_line()
         return illustration
@@ -244,7 +244,7 @@ class SargassoMeasureMaker(AbjadObject):
             ('measure_division_denominator', 16),
             ('measure_division_talea',
                 [1, 1, 2, 3, 1, 2, 3, 4, 1, 1, 1, 1, 4]),
-            ('total_duration', durationtools.Duration(44, 8)),
+            ('total_duration', abjad.durationtools.Duration(44, 8)),
             ('measures_are_scaled', True),
             ('measures_are_split', True),
             ('measures_are_shuffled', True),
@@ -267,21 +267,21 @@ class SargassoMeasureMaker(AbjadObject):
         lines.append('{} = ['.format(self._package_name))
         for measure in output_material[:-1]:
             line = measure._one_line_input_string
-            line = 'scoretools.' + line
+            line = 'abjad.scoretools.' + line
             lines.append('\t{},'.format(line))
         line = output_material[-1]._one_line_input_string
-        lines.append('\tscoretools.{}]'.format(line))
+        lines.append('\tabjad.scoretools.{}]'.format(line))
         lines = [line + '\n' for line in lines]
         return lines
 
     def _permute_divided_measure_tokens(self, divided_measure_tokens):
         modulus_of_permutation = 5
         len_divided_measure_tokens = len(divided_measure_tokens)
-        assert mathtools.are_relatively_prime(
+        assert abjad.mathtools.are_relatively_prime(
             [modulus_of_permutation, len_divided_measure_tokens])
         permutation = [(5 * x) % len_divided_measure_tokens
             for x in range(len_divided_measure_tokens)]
-        divided_measure_tokens = sequencetools.permute_sequence(
+        divided_measure_tokens = abjad.sequencetools.permute_sequence(
                 divided_measure_tokens, permutation)
         return divided_measure_tokens
 
@@ -291,7 +291,7 @@ class SargassoMeasureMaker(AbjadObject):
         measure_index,
         ):
         possible_meter_multipliers = \
-            datastructuretools.CyclicTuple(possible_meter_multipliers)
+            abjad.datastructuretools.CyclicTuple(possible_meter_multipliers)
         meter_multiplier = possible_meter_multipliers[5 * measure_index]
         return meter_multiplier
 

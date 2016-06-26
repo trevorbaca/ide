@@ -1,188 +1,188 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-performer_inventory = instrumenttools.PerformerInventory(
+performer_inventory = abjad.instrumenttools.PerformerInventory(
     [
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='hornist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 [
-                    instrumenttools.FrenchHorn(
+                    abjad.instrumenttools.FrenchHorn(
                         instrument_name='horn',
                         short_instrument_name='hn.',
-                        instrument_name_markup=markuptools.Markup(
+                        instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Horn',),
                             ),
-                        short_instrument_name_markup=markuptools.Markup(
+                        short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Hn.',),
                             ),
-                        allowable_clefs=indicatortools.ClefInventory(
+                        allowable_clefs=abjad.indicatortools.ClefInventory(
                             [
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='bass',
                                     ),
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='treble',
                                     ),
                                 ]
                             ),
-                        pitch_range=pitchtools.PitchRange(
+                        pitch_range=abjad.pitchtools.PitchRange(
                             range_string='[B1, F5]',
                             ),
-                        sounding_pitch_of_written_middle_c=pitchtools.NamedPitch('f'),
+                        sounding_pitch_of_written_middle_c=abjad.pitchtools.NamedPitch('f'),
                         ),
                     ]
                 ),
             ),
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='trombonist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 [
-                    instrumenttools.TenorTrombone(
+                    abjad.instrumenttools.TenorTrombone(
                         instrument_name='tenor trombone',
                         short_instrument_name='ten. trb.',
-                        instrument_name_markup=markuptools.Markup(
+                        instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Tenor trombone',),
                             ),
-                        short_instrument_name_markup=markuptools.Markup(
+                        short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Ten. trb.',),
                             ),
-                        allowable_clefs=indicatortools.ClefInventory(
+                        allowable_clefs=abjad.indicatortools.ClefInventory(
                             [
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='tenor',
                                     ),
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='bass',
                                     ),
                                 ]
                             ),
-                        pitch_range=pitchtools.PitchRange(
+                        pitch_range=abjad.pitchtools.PitchRange(
                             range_string='[E2, Eb5]',
                             ),
-                        sounding_pitch_of_written_middle_c=pitchtools.NamedPitch("c'"),
+                        sounding_pitch_of_written_middle_c=abjad.pitchtools.NamedPitch("c'"),
                         ),
                     ]
                 ),
             ),
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='pianist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 [
-                    instrumenttools.Piano(
+                    abjad.instrumenttools.Piano(
                         instrument_name='piano',
                         short_instrument_name='pf.',
-                        instrument_name_markup=markuptools.Markup(
+                        instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Piano',),
                             ),
-                        short_instrument_name_markup=markuptools.Markup(
+                        short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Pf.',),
                             ),
-                        allowable_clefs=indicatortools.ClefInventory(
+                        allowable_clefs=abjad.indicatortools.ClefInventory(
                             [
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='treble',
                                     ),
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='bass',
                                     ),
                                 ]
                             ),
-                        pitch_range=pitchtools.PitchRange(
+                        pitch_range=abjad.pitchtools.PitchRange(
                             range_string='[A0, C8]',
                             ),
-                        sounding_pitch_of_written_middle_c=pitchtools.NamedPitch("c'"),
+                        sounding_pitch_of_written_middle_c=abjad.pitchtools.NamedPitch("c'"),
                         ),
                     ]
                 ),
             ),
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='percussionist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 []
                 ),
             ),
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='violinist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 [
-                    instrumenttools.Violin(
+                    abjad.instrumenttools.Violin(
                         instrument_name='violin',
                         short_instrument_name='vn.',
-                        instrument_name_markup=markuptools.Markup(
+                        instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Violin',),
                             ),
-                        short_instrument_name_markup=markuptools.Markup(
+                        short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Vn.',),
                             ),
-                        allowable_clefs=indicatortools.ClefInventory(
+                        allowable_clefs=abjad.indicatortools.ClefInventory(
                             [
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='treble',
                                     ),
                                 ]
                             ),
-                        default_tuning=indicatortools.Tuning(
-                            pitches=pitchtools.PitchSegment(
+                        default_tuning=abjad.indicatortools.Tuning(
+                            pitches=abjad.pitchtools.PitchSegment(
                                 (
-                                    pitchtools.NamedPitch('g'),
-                                    pitchtools.NamedPitch("d'"),
-                                    pitchtools.NamedPitch("a'"),
-                                    pitchtools.NamedPitch("e''"),
+                                    abjad.pitchtools.NamedPitch('g'),
+                                    abjad.pitchtools.NamedPitch("d'"),
+                                    abjad.pitchtools.NamedPitch("a'"),
+                                    abjad.pitchtools.NamedPitch("e''"),
                                     ),
-                                item_class=pitchtools.NamedPitch,
+                                item_class=abjad.pitchtools.NamedPitch,
                                 ),
                             ),
-                        pitch_range=pitchtools.PitchRange(
+                        pitch_range=abjad.pitchtools.PitchRange(
                             range_string='[G3, G7]',
                             ),
-                        sounding_pitch_of_written_middle_c=pitchtools.NamedPitch("c'"),
+                        sounding_pitch_of_written_middle_c=abjad.pitchtools.NamedPitch("c'"),
                         ),
                     ]
                 ),
             ),
-        instrumenttools.Performer(
+        abjad.instrumenttools.Performer(
             name='cellist',
-            instruments=instrumenttools.InstrumentInventory(
+            instruments=abjad.instrumenttools.InstrumentInventory(
                 [
-                    instrumenttools.Cello(
+                    abjad.instrumenttools.Cello(
                         instrument_name='cello',
                         short_instrument_name='vcl.',
-                        instrument_name_markup=markuptools.Markup(
+                        instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Cello',),
                             ),
-                        short_instrument_name_markup=markuptools.Markup(
+                        short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Vc.',),
                             ),
-                        allowable_clefs=indicatortools.ClefInventory(
+                        allowable_clefs=abjad.indicatortools.ClefInventory(
                             [
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='bass',
                                     ),
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='tenor',
                                     ),
-                                indicatortools.Clef(
+                                abjad.indicatortools.Clef(
                                     name='treble',
                                     ),
                                 ]
                             ),
-                        default_tuning=indicatortools.Tuning(
-                            pitches=pitchtools.PitchSegment(
+                        default_tuning=abjad.indicatortools.Tuning(
+                            pitches=abjad.pitchtools.PitchSegment(
                                 (
-                                    pitchtools.NamedPitch('c,'),
-                                    pitchtools.NamedPitch('g,'),
-                                    pitchtools.NamedPitch('d'),
-                                    pitchtools.NamedPitch('a'),
+                                    abjad.pitchtools.NamedPitch('c,'),
+                                    abjad.pitchtools.NamedPitch('g,'),
+                                    abjad.pitchtools.NamedPitch('d'),
+                                    abjad.pitchtools.NamedPitch('a'),
                                     ),
-                                item_class=pitchtools.NamedPitch,
+                                item_class=abjad.pitchtools.NamedPitch,
                                 ),
                             ),
-                        pitch_range=pitchtools.PitchRange(
+                        pitch_range=abjad.pitchtools.PitchRange(
                             range_string='[C2, G5]',
                             ),
-                        sounding_pitch_of_written_middle_c=pitchtools.NamedPitch("c'"),
+                        sounding_pitch_of_written_middle_c=abjad.pitchtools.NamedPitch("c'"),
                         ),
                     ]
                 ),
