@@ -2,7 +2,7 @@
 import abjad
 
 
-class {class_name}(object):
+class {class_name}(abjad.abctools.AbjadObject):
     r'''
     '''
 
