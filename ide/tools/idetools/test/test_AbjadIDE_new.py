@@ -249,7 +249,7 @@ def test_AbjadIDE_new_06():
         assert os.path.exists(path)
         with open(path, 'r') as file_pointer:
             string = file_pointer.read()
-            assert 'class NewMaker(object)' in string
+            assert 'class NewMaker(abjad.abctools.AbjadObject)' in string
 
 
 def test_AbjadIDE_new_07():
@@ -271,7 +271,7 @@ def test_AbjadIDE_new_07():
         assert os.path.exists(path)
         with open(path, 'r') as file_pointer:
             string = file_pointer.read()
-            assert 'class NewMaker(object)' in string
+            assert 'class NewMaker(abjad.abctools.AbjadObject)' in string
 
 
 def test_AbjadIDE_new_08():
