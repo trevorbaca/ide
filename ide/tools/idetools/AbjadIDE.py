@@ -287,6 +287,12 @@ class AbjadIDE(object):
                 shutil.copyfile(candidate_path, destination_path)
             return messages
 
+    @classmethod
+    def _entry_point(class_):
+        input_ = ' '.join(sys.argv[1:])
+        abjad_ide = class_()
+        abjad_ide._start(input_=input_)
+
     def _filter_by_view(self, directory, entries):
         assert os.path.isdir(directory), repr(directory)
         view = self._read_view(directory)
@@ -1998,12 +2004,6 @@ class AbjadIDE(object):
                 paths.append(path)
         return paths
 
-    @classmethod
-    def _entry_point(cls):
-        input_ = ' '.join(sys.argv[1:])
-        abjad_ide = cls()
-        abjad_ide._start(input_=input_)
-
     def _start(self, input_=None):
         self._session._reinitialize()
         type(self).__init__(self, session=self._session)
@@ -2780,7 +2780,7 @@ class AbjadIDE(object):
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'back-cover.tex',
-                os.path.join(score_directory, 'build'),
+                directory,
                 replacements=replacements,
                 )
             if messages[0].startswith('writing'):
@@ -2831,7 +2831,7 @@ class AbjadIDE(object):
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 file_name,
-                os.path.join(score_directory, 'build'),
+                directory,
                 replacements=replacements,
                 )
             if messages[0].startswith('writing'):
@@ -2996,7 +2996,7 @@ class AbjadIDE(object):
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'preface.tex',
-                os.path.join(score_directory, 'build'),
+                directory,
                 replacements=replacements,
                 )
             if messages[0].startswith('writing'):
@@ -3030,7 +3030,7 @@ class AbjadIDE(object):
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'score.tex',
-                os.path.join(score_directory, 'build'),
+                directory,
                 replacements=replacements,
                 )
             if messages[0].startswith('writing') and not subroutine:
@@ -3721,6 +3721,65 @@ class AbjadIDE(object):
                 )
             statement = statement.strip()
             self._io_manager._invoke_shell(statement)
+
+    @Command(
+        'enew',
+        argument_name='current_directory',
+        description='edition - new',
+        directories=('build'),
+        section='build-preliminary',
+        )
+    def make_edition(self, directory):
+        r'''Makes edition.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        getter = self._io_manager._make_getter()
+        getter.append_string('edition name')
+        edition_name = getter._run(io_manager=self._io_manager)
+        if not edition_name:
+            return
+        edition_name = edition_name.lower()
+        edition_name = edition_name.replace(' ', '-')
+        edition_name = edition_name.replace('_', '-')
+        edition_directory = os.path.join(
+            directory,
+            edition_name,
+            )
+        # uncomment after testing
+        #if os.path.exists(edition_directory):
+        #    message = 'path already exists: {!r}.'
+        #    message = message.format(self._trim_path(edition_directory))
+        #    self._io_manager._display(message)
+        #    return
+        file_names = (
+            'back-cover.tex',
+            'front-cover.tex',
+            'music.ly',
+            'preface.tex',
+            'score.tex',
+            )
+        file_paths = [os.path.join(edition_directory, _) for _ in file_names]
+        messages = []
+        messages.append('will create ...')
+        message = '   {}'.format(self._trim_path(edition_directory))
+        messages.append(message)
+        for file_path in file_paths:
+            message = '   {}'.format(self._trim_path(file_path))
+            messages.append(message)
+        self._io_manager._display(messages)
+        if not self._io_manager._confirm():
+            return
+        if os.path.exists(edition_directory):
+            shutil.rmtree(edition_directory)
+        os.mkdir(edition_directory)
+        self.generate_back_cover_source(edition_directory)
+        self.generate_front_cover_source(edition_directory)
+        self.generate_music_ly(edition_directory)
+        self.generate_preface_source(edition_directory)
+        self.generate_score_source(edition_directory)
+
 
     @Command(
         'pdfm*',

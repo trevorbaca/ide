@@ -148,6 +148,7 @@ def test_AbjadIDE_display_action_command_help_04():
         '    doctest - run (dt)',
         '    pytest - run (pt)',
         '',
+        '    edition - new (enew)',
         '    segment lys - copy (lyc)',
         '',
         '    back cover - generate (bcg)',
