@@ -233,6 +233,22 @@ class AbjadIDE(object):
                         continue
                     directories.append(directory_)
             return directories
+        if self._is_build_subdirectory(directory):
+            directories = []
+            build_directory = os.path.dirname(directory)
+            build_directories = self._collect_similar_directories(
+                build_directory,
+                example_scores=example_scores,
+                )
+            for build_directory in build_directories:
+                for name in os.listdir(build_directory):
+                    if not name[0].isalnum():
+                        continue
+                    directory_ = os.path.join(build_directory, name)
+                    if not os.path.isdir(directory_):
+                        continue
+                    directories.append(directory_)
+            return directories
         base_name = os.path.basename(directory)
         for score_directory in score_directories:
             directory_ = os.path.join(score_directory, base_name)
@@ -796,6 +812,10 @@ class AbjadIDE(object):
             return True
         return False
 
+    def _is_build_subdirectory(self, directory):
+        parent_directory = os.path.dirname(directory)
+        return self._is_score_directory(parent_directory, 'build')
+
     @staticmethod
     def _is_classfile_name(expr):
         if not isinstance(expr, str):
@@ -909,7 +929,7 @@ class AbjadIDE(object):
             if directory.startswith(scores_directory):
                 return True
         assert all(isinstance(_, str) for _ in prototype)
-        if 'scores'in prototype:
+        if 'scores' in prototype:
             if directory == configuration.composer_scores_directory:
                 return True
             if directory == configuration.abjad_ide_example_scores_directory:
@@ -2175,6 +2195,8 @@ class AbjadIDE(object):
         package_prototype = ('materials', 'segments', 'scores')
         if self._is_score_directory(directory, 'build'):
             return self._is_build_directory_name
+        elif self._is_build_subdirectory(directory):
+            return self._is_dash_case_file_name
         elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
         elif self._is_score_directory(directory, package_prototype):
