@@ -782,6 +782,20 @@ class AbjadIDE(object):
             if 'Changes to be committed:' in line:
                 return True
 
+    @classmethod
+    def _is_build_directory_name(class_, name):
+        if not isinstance(name, str):
+            return False
+        if not name == name.lower():
+            return False
+        if os.path.sep in name:
+            return False
+        if abjad.stringtools.is_dash_case(name):
+            return True
+        if class_._is_dash_case_file_name(name):
+            return True
+        return False
+
     @staticmethod
     def _is_classfile_name(expr):
         if not isinstance(expr, str):
@@ -2157,9 +2171,11 @@ class AbjadIDE(object):
         return name
 
     def _to_name_predicate(self, directory):
-        file_prototype = ('build', 'distribution', 'etc')
+        file_prototype = ('distribution', 'etc')
         package_prototype = ('materials', 'segments', 'scores')
-        if self._is_score_directory(directory, file_prototype):
+        if self._is_score_directory(directory, 'build'):
+            return self._is_build_directory_name
+        elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
         elif self._is_score_directory(directory, package_prototype):
             return self._is_package_name
