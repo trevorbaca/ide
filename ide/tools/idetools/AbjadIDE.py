@@ -1826,9 +1826,9 @@ class AbjadIDE(object):
         self._io_manager._display(messages)
         self._io_manager.open_file(paths)
 
-    def _parse_paper_dimensions(self, directory):
+    def _parse_paper_size(self, directory):
         score_directory = self._to_score_directory(directory)
-        string = self._get_metadatum(score_directory, 'paper_dimensions')
+        string = self._get_metadatum(score_directory, 'paper_size')
         string = string or '8.5 x 11 in'
         parts = string.split()
         assert len(parts) == 4
@@ -2791,7 +2791,7 @@ class AbjadIDE(object):
         directories=('build'),
         section='build-generate',
         )
-    def generate_back_cover_source(self, directory):
+    def generate_back_cover_source(self, directory, paper_size=None):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
@@ -2812,7 +2812,11 @@ class AbjadIDE(object):
             replacements['composer_website'] = composer_website
             price = self._get_metadatum(score_directory, 'price')
             replacements['price'] = price
-            width, height, unit = self._parse_paper_dimensions(score_directory)
+            if paper_size is not None:
+                width, height, unit = paper_size
+            else:
+                width, height, unit = self._parse_paper_size(
+                    score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -2863,7 +2867,7 @@ class AbjadIDE(object):
             if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
             replacements['composer'] = str(composer)
-            width, height, unit = self._parse_paper_dimensions(score_directory)
+            width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3028,7 +3032,7 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            width, height, unit = self._parse_paper_dimensions(score_directory)
+            width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3062,7 +3066,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            width, height, unit = self._parse_paper_dimensions(score_directory)
+            width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3791,6 +3795,8 @@ class AbjadIDE(object):
         #    message = message.format(self._trim_path(edition_directory))
         #    self._io_manager._display(message)
         #    return
+
+        # HERE
         file_names = (
             'back-cover.tex',
             'front-cover.tex',
