@@ -10,11 +10,12 @@ def test_AbjadIDE_collect_segment_lys_01():
     r'''Build directory contains no LilyPond files.
     '''
 
-    build_directory = os.path.join(
+    _segments_directory = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
+        '_segments',
         )
 
     ly_names, ly_paths = [], []
@@ -22,7 +23,7 @@ def test_AbjadIDE_collect_segment_lys_01():
         ly_name = 'segment-{}.ly'
         ly_name = ly_name.format(number)
         ly_names.append(ly_name)
-        ly_path = os.path.join(build_directory, ly_name)
+        ly_path = os.path.join(_segments_directory, ly_name)
         ly_paths.append(ly_path)
 
     with systemtools.FilesystemState(keep=ly_paths):
@@ -44,11 +45,12 @@ def test_AbjadIDE_collect_segment_lys_02():
     r'''Build directory contains LilyPond files.
     '''
 
-    build_directory = os.path.join(
+    _segments_directory = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
+        '_segments',
         )
 
     ly_names, ly_paths = [], []
@@ -56,7 +58,7 @@ def test_AbjadIDE_collect_segment_lys_02():
         ly_name = 'segment-{}.ly'
         ly_name = ly_name.format(number)
         ly_names.append(ly_name)
-        ly_path = os.path.join(build_directory, ly_name)
+        ly_path = os.path.join(_segments_directory, ly_name)
         ly_paths.append(ly_path)
 
     with systemtools.FilesystemState(keep=ly_paths):

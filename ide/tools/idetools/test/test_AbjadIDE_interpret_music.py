@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import pytest
+pytest.skip('reactivate me after creating letter-portrait build subdirectory')
 from abjad import *
 import os
 import ide

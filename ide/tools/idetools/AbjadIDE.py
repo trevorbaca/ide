@@ -28,11 +28,12 @@ class AbjadIDE(object):
         )
 
     _secondary_names = (
-        '__init__.py',
+        '__abbreviations__.py',
         '__illustrate__.py',
+        '__init__.py',
         '__metadata__.py',
         '__views__.py',
-        '__abbreviations__.py',
+        '_segments',
         )
 
     _tab = 4 * ' '
@@ -183,6 +184,33 @@ class AbjadIDE(object):
                 strings.append(file_name)
         assert len(strings) == len(paths), repr((len(strings), len(paths)))
         return strings, paths
+
+    def _collect_segment_lys(self, directory):
+        # score_directory = self._to_score_directory(directory, 'inner')
+        segments_directory = self._to_score_directory(directory, 'segments')
+        build_directory = self._to_score_directory(directory, 'build')
+        _segments_directory = os.path.join(build_directory, '_segments')
+        entries = sorted(os.listdir(segments_directory))
+        source_ly_paths, target_ly_paths = [], []
+        for entry in entries:
+            segment_directory = os.path.join(segments_directory, entry)
+            if not os.path.isdir(segment_directory):
+                continue
+            source_ly_path = os.path.join(segment_directory, 'illustration.ly')
+            if not os.path.isfile(source_ly_path):
+                continue
+            # score_package = os.path.basename(score_directory)
+            # score_name = score_package.replace('_', '-')
+            entry = entry.replace('_', '-')
+            target_ly_name = entry + '.ly'
+            #target_ly_path = os.path.join(build_directory, target_ly_name)
+            target_ly_path = os.path.join(_segments_directory, target_ly_name)
+            source_ly_paths.append(source_ly_path)
+            target_ly_paths.append(target_ly_path)
+        if not os.path.exists(build_directory):
+            os.mkdir(build_directory)
+        pairs = zip(source_ly_paths, target_ly_paths)
+        return pairs
 
     def _collect_similar_directories(self, directory, example_scores=False):
         assert os.path.isdir(directory), repr(directory)
@@ -415,31 +443,6 @@ class AbjadIDE(object):
                             ))
                 messages.append('')
         return messages
-
-    def _gather_segment_lys(self, directory):
-        # score_directory = self._to_score_directory(directory, 'inner')
-        segments_directory = self._to_score_directory(directory, 'segments')
-        build_directory = self._to_score_directory(directory, 'build')
-        entries = sorted(os.listdir(segments_directory))
-        source_ly_paths, target_ly_paths = [], []
-        for entry in entries:
-            segment_directory = os.path.join(segments_directory, entry)
-            if not os.path.isdir(segment_directory):
-                continue
-            source_ly_path = os.path.join(segment_directory, 'illustration.ly')
-            if not os.path.isfile(source_ly_path):
-                continue
-            # score_package = os.path.basename(score_directory)
-            # score_name = score_package.replace('_', '-')
-            entry = entry.replace('_', '-')
-            target_ly_name = entry + '.ly'
-            target_ly_path = os.path.join(build_directory, target_ly_name)
-            source_ly_paths.append(source_ly_path)
-            target_ly_paths.append(target_ly_path)
-        if not os.path.exists(build_directory):
-            os.mkdir(build_directory)
-        pairs = zip(source_ly_paths, target_ly_paths)
-        return pairs
 
     def _get_added_asset_paths(self, path):
         paths = []
@@ -806,11 +809,11 @@ class AbjadIDE(object):
             return False
         if os.path.sep in name:
             return False
-        if abjad.stringtools.is_dash_case(name):
-            return True
-        if class_._is_dash_case_file_name(name):
-            return True
-        return False
+        if name[0] == '.':
+            return False
+        if name[0] == '_':
+            return False
+        return True
 
     @staticmethod
     def _is_classfile_name(expr):
@@ -2548,11 +2551,15 @@ class AbjadIDE(object):
             message = 'copying segment LilyPond files into build directory ...'
             self._io_manager._display(message)
             directory = self._to_score_directory(directory)
-            pairs = self._gather_segment_lys(directory)
+            pairs = self._collect_segment_lys(directory)
             if not pairs:
                 message = 'no segment lys found.'
                 self._io_manager._display(message)
                 return
+            build_directory = self._to_score_directory(directory, 'build')
+            _segments_directory = os.path.join(build_directory, '_segments')
+            if not os.path.isdir(_segments_directory):
+                os.mkdir(_segments_directory)
             messages = []
             for source_ly_path, target_ly_path in pairs:
                 candidate_ly_path = target_ly_path.replace(
