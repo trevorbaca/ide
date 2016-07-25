@@ -9,15 +9,16 @@ scores_directory = configuration.abjad_ide_example_scores_directory
 
 
 def test_AbjadIDE_copy_01():
-    r'''Into build directory.
+    r'''Into build subdirectory.
     '''
-    pytest.skip('reactivate me after build subdirectory integration')
+    pytest.skip('unskip after build subdirectory integration')
 
     source_file = os.path.join(
         scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
+        'letter-portrait',
         'front-cover.tex',
         )
     target_file = os.path.join(
@@ -25,6 +26,7 @@ def test_AbjadIDE_copy_01():
         'blue_example_score',
         'blue_example_score',
         'build',
+        'letter-portrait',
         'front-cover.tex',
         )
     trimmed_source_file = abjad_ide._trim_path(source_file)
@@ -32,7 +34,7 @@ def test_AbjadIDE_copy_01():
 
     with systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score bb cp'
+        input_ = 'Blue~Example~Score bb letter-portrait cp'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)

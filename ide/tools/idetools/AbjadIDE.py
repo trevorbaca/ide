@@ -2085,6 +2085,7 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         file_prototype = (
             'build',
+            'build subdirectory',
             'distribution',
             'etc',
             'tools',
