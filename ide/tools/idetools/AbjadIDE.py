@@ -948,7 +948,13 @@ class AbjadIDE(object):
             if len(parts) == scores_directory_parts_count + 2:
                 if parts[-1] == parts[-2]:
                     return True
-        # parent_directory = os.path.dirname(directory)
+        if 'build subdirectory' in prototype and scores_directory:
+            scores_directory_parts_count = len(
+                scores_directory.split(os.path.sep))
+            parts = directory.split(os.path.sep)
+            if len(parts) == scores_directory_parts_count + 4:
+                if parts[-2] == 'build':
+                    return True
         if 'material' in prototype and scores_directory:
             scores_directory_parts_count = len(
                 scores_directory.split(os.path.sep))
@@ -2402,7 +2408,7 @@ class AbjadIDE(object):
         'bld',
         argument_name='current_directory',
         description='score pdf - build',
-        directories=('build',),
+        directories=('build', 'build subdirectory',),
         section='build',
         )
     def build_score(self, directory):
@@ -2788,7 +2794,7 @@ class AbjadIDE(object):
         'bcg',
         argument_name='current_directory',
         description='back cover - generate',
-        directories=('build'),
+        directories=('build', 'build subdirectory'),
         section='build-generate',
         )
     def generate_back_cover_source(self, directory, paper_size=None):
@@ -2836,7 +2842,7 @@ class AbjadIDE(object):
         'fcg',
         argument_name='current_directory',
         description='front cover - generate',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-generate',
         )
     def generate_front_cover_source(self, directory):
@@ -2887,7 +2893,7 @@ class AbjadIDE(object):
         'mg',
         argument_name='current_directory',
         description='music - generate',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-generate',
         )
     def generate_music_ly(self, directory, subroutine=False):
@@ -3020,7 +3026,7 @@ class AbjadIDE(object):
         'pg',
         argument_name='current_directory',
         description='preface - generate',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-generate',
         )
     def generate_preface_source(self, directory):
@@ -3052,7 +3058,7 @@ class AbjadIDE(object):
         'sg',
         argument_name='current_directory',
         description='score - generate',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-generate',
         )
     def generate_score_source(self, directory, subroutine=False):
@@ -3556,7 +3562,7 @@ class AbjadIDE(object):
         'bci',
         argument_name='current_directory',
         description='back cover - interpret',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-interpret',
         )
     def interpret_back_cover(self, directory, subroutine=False):
@@ -3613,7 +3619,7 @@ class AbjadIDE(object):
         'fci',
         argument_name='current_directory',
         description='front cover - interpret',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-interpret',
         )
     def interpret_front_cover(self, directory, subroutine=False):
@@ -3669,7 +3675,7 @@ class AbjadIDE(object):
         'mi',
         argument_name='current_directory',
         description='music - interpret',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-interpret',
         )
     def interpret_music(self, directory, subroutine=False):
@@ -3702,7 +3708,7 @@ class AbjadIDE(object):
         'pi',
         argument_name='current_directory',
         description='preface - interpret',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-interpret',
         )
     def interpret_preface(self, directory, subroutine=False):
@@ -3727,7 +3733,7 @@ class AbjadIDE(object):
         'si',
         argument_name='current_directory',
         description='score - interpret',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-interpret',
         )
     def interpret_score(self, directory, subroutine=False):
