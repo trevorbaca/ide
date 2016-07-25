@@ -2417,7 +2417,7 @@ class AbjadIDE(object):
         message = 'building score ...'
         self._io_manager._display(message)
         with self._io_manager._make_interaction():
-            self.copy_segment_lys(directory, subroutine=True)
+            self.collect_segment_lys(directory, subroutine=True)
             self.generate_music_ly(directory, subroutine=True)
             self.interpret_music(directory, subroutine=True)
             tex_file_path = os.path.join(build_directory, 'front-cover.tex')
@@ -2522,6 +2522,61 @@ class AbjadIDE(object):
             self._io_manager._display(timer.total_time_message)
 
     @Command(
+        'lyc',
+        argument_name='current_directory',
+        description='segment lys - collect',
+        directories=('build'),
+        section='build-preliminary',
+        )
+    def collect_segment_lys(self, directory, subroutine=False):
+        r'''Collects segment lys.
+
+        Copies from segment directories to build/_segments directory.
+
+        Trims top-level comments.
+
+        Preserves includes and directives from each ly.
+
+        Trims header and paper block from each ly.
+
+        Preserves score block in each ly.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction(dry_run=subroutine):
+            message = 'copying segment LilyPond files into build directory ...'
+            self._io_manager._display(message)
+            directory = self._to_score_directory(directory)
+            pairs = self._gather_segment_lys(directory)
+            if not pairs:
+                message = 'no segment lys found.'
+                self._io_manager._display(message)
+                return
+            messages = []
+            for source_ly_path, target_ly_path in pairs:
+                candidate_ly_path = target_ly_path.replace(
+                    '.ly',
+                    '.candidate.ly',
+                    )
+                with abjad.systemtools.FilesystemState(
+                    remove=[candidate_ly_path]):
+                    shutil.copyfile(source_ly_path, candidate_ly_path)
+                    self._trim_ly(candidate_ly_path)
+                    messages_ = self._handle_candidate(
+                        candidate_ly_path,
+                        target_ly_path,
+                        )
+                    messages.extend(messages_)
+            for message in messages:
+                if message[0].startswith('writing') and not subroutine:
+                    self._session._pending_menu_rebuild = True
+                    self._session._pending_redraw = True
+                    self._session._after_redraw_messages = messages
+                    return
+            self._io_manager._display(messages)
+
+    @Command(
         'cp',
         argument_name='current_directory',
         forbidden_directories=('inner',),
@@ -2577,61 +2632,6 @@ class AbjadIDE(object):
                 raise ValueError(source_path)
             self._session._pending_menu_rebuild = True
             self._session._pending_redraw = True
-
-    @Command(
-        'lyc',
-        argument_name='current_directory',
-        description='segment lys - copy',
-        directories=('build'),
-        section='build-preliminary',
-        )
-    def copy_segment_lys(self, directory, subroutine=False):
-        r'''Copies segment lys.
-
-        Copies from egment directories to build directory.
-
-        Trims top-level comments.
-
-        Preserves includes and directives from each ly.
-
-        Trims header and paper block from each ly.
-
-        Preserves score block in each ly.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            message = 'copying segment LilyPond files into build directory ...'
-            self._io_manager._display(message)
-            directory = self._to_score_directory(directory)
-            pairs = self._gather_segment_lys(directory)
-            if not pairs:
-                message = 'no segment lys found.'
-                self._io_manager._display(message)
-                return
-            messages = []
-            for source_ly_path, target_ly_path in pairs:
-                candidate_ly_path = target_ly_path.replace(
-                    '.ly',
-                    '.candidate.ly',
-                    )
-                with abjad.systemtools.FilesystemState(
-                    remove=[candidate_ly_path]):
-                    shutil.copyfile(source_ly_path, candidate_ly_path)
-                    self._trim_ly(candidate_ly_path)
-                    messages_ = self._handle_candidate(
-                        candidate_ly_path,
-                        target_ly_path,
-                        )
-                    messages.extend(messages_)
-            for message in messages:
-                if message[0].startswith('writing') and not subroutine:
-                    self._session._pending_menu_rebuild = True
-                    self._session._pending_redraw = True
-                    self._session._after_redraw_messages = messages
-                    return
-            self._io_manager._display(messages)
 
     @Command('?', section='system')
     def display_action_command_help(self):

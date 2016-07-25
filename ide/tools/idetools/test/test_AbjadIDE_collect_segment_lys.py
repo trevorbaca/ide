@@ -6,7 +6,7 @@ abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
-def test_AbjadIDE_copy_segment_lys_01():
+def test_AbjadIDE_collect_segment_lys_01():
     r'''Build directory contains no LilyPond files.
     '''
 
@@ -40,7 +40,7 @@ def test_AbjadIDE_copy_segment_lys_01():
         assert message in contents
 
 
-def test_AbjadIDE_copy_segment_lys_02():
+def test_AbjadIDE_collect_segment_lys_02():
     r'''Build directory contains LilyPond files.
     '''
 
