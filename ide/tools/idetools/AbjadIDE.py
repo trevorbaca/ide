@@ -1116,7 +1116,7 @@ class AbjadIDE(object):
         getter = self._io_manager._make_getter()
         getter.append_string('file name')
         file_name = getter._run(io_manager=self._io_manager)
-        if file_name is None:
+        if file_name in (None, ''):
             return
         file_name = self._coerce_name(directory, file_name)
         name_predicate = self._to_name_predicate(directory)
