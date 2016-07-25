@@ -233,7 +233,7 @@ class AbjadIDE(object):
                         continue
                     directories.append(directory_)
             return directories
-        if self._is_build_subdirectory(directory):
+        if self._is_score_directory(directory, 'build subdirectory'):
             directories = []
             build_directory = os.path.dirname(directory)
             build_directories = self._collect_similar_directories(
@@ -811,10 +811,6 @@ class AbjadIDE(object):
         if class_._is_dash_case_file_name(name):
             return True
         return False
-
-    def _is_build_subdirectory(self, directory):
-        parent_directory = os.path.dirname(directory)
-        return self._is_score_directory(parent_directory, 'build')
 
     @staticmethod
     def _is_classfile_name(expr):
@@ -2201,7 +2197,7 @@ class AbjadIDE(object):
         package_prototype = ('materials', 'segments', 'scores')
         if self._is_score_directory(directory, 'build'):
             return self._is_build_directory_name
-        elif self._is_build_subdirectory(directory):
+        elif self._is_score_directory(directory, 'build subdirectory'):
             return self._is_dash_case_file_name
         elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
@@ -2944,23 +2940,15 @@ class AbjadIDE(object):
                 configuration.abjad_ide_boilerplate_directory,
                 'music.ly',
                 )
-            destination_path = os.path.join(
-                score_directory,
-                'build',
-                'music.ly',
-                )
-            candidate_path = os.path.join(
-                score_directory,
-                'build',
-                'music.candidate.ly',
-                )
+            destination_path = os.path.join(directory, 'music.ly')
+            candidate_path = os.path.join(directory, 'music.candidate.ly')
             with abjad.systemtools.FilesystemState(remove=[candidate_path]):
                 shutil.copyfile(source_path, candidate_path)
                 lines = []
                 segment_include_statements = ''
                 for i, lilypond_name in enumerate(lilypond_names):
                     file_name = lilypond_name + '.ly'
-                    line = r'\include "{}"'
+                    line = r'\include "../{}"'
                     if 0 < i:
                         line = self._tab + line
                     line = line.format(file_name)
@@ -2975,7 +2963,13 @@ class AbjadIDE(object):
                     )
                 stylesheet_include_statement = ''
                 if stylesheet_path:
-                    line = r'\include "../stylesheets/stylesheet.ily"'
+                    if self._is_score_directory(directory, 'build'):
+                        line = r'\include "../stylesheets/stylesheet.ily"'
+                    elif self._is_score_directory(
+                        directory,
+                        'build subdirectory',
+                        ):
+                        line = r'\include "../../stylesheets/stylesheet.ily"'
                     stylesheet_include_statement = line
                 language_token = \
                     abjad.lilypondfiletools.LilyPondLanguageToken()
@@ -3685,9 +3679,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            score_directory = self._to_score_directory(directory)
-            build_directory = os.path.join(score_directory, 'build')
-            ly_path = os.path.join(build_directory, 'music.ly')
+            ly_path = os.path.join(directory, 'music.ly')
             if not ly_path:
                 message = 'can not find {} ...'
                 message = message.format(self._trim_path(ly_path))
