@@ -2800,7 +2800,13 @@ class AbjadIDE(object):
         directories=('build subdirectory'),
         section='build-generate',
         )
-    def generate_back_cover_source(self, directory, paper_size=None):
+    def generate_back_cover_source(
+        self,
+        directory,
+        catalog_number_suffix=None,
+        paper_size=None,
+        price=None,
+        ):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
@@ -2814,12 +2820,14 @@ class AbjadIDE(object):
                 'catalog_number',
                 '',
                 )
+            if catalog_number_suffix:
+                catalog_number += ' ({})'.format(catalog_number_suffix)
             replacements['catalog_number'] = catalog_number
             composer_website = configuration.composer_website or ''
             if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
             replacements['composer_website'] = composer_website
-            price = self._get_metadatum(score_directory, 'price')
+            price = price or self._get_metadatum(score_directory, 'price')
             replacements['price'] = price
             if paper_size is not None:
                 width, height, unit = paper_size
@@ -2848,7 +2856,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_front_cover_source(self, directory):
+    def generate_front_cover_source(self, directory, paper_size=None):
         r'''Generates ``front-cover.tex``.
 
         Returns none.
@@ -2876,7 +2884,10 @@ class AbjadIDE(object):
             if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
             replacements['composer'] = str(composer)
-            width, height, unit = self._parse_paper_size(score_directory)
+            if paper_size is not None:
+                width, height, unit = paper_size
+            else:
+                width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3030,7 +3041,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_preface_source(self, directory):
+    def generate_preface_source(self, directory, paper_size=None):
         r'''Generates ``preface.tex``.
 
         Returns none.
@@ -3039,7 +3050,10 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            width, height, unit = self._parse_paper_size(score_directory)
+            if paper_size is not None:
+                width, height, unit = paper_size
+            else:
+                width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3062,7 +3076,12 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_score_source(self, directory, subroutine=False):
+    def generate_score_source(
+        self,
+        directory,
+        paper_size=None,
+        subroutine=False,
+        ):
         r'''Generates ``score.tex``.
 
         Returns none.
@@ -3073,7 +3092,10 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            width, height, unit = self._parse_paper_size(score_directory)
+            if paper_size is not None:
+                width, height, unit = paper_size
+            else:
+                width, height, unit = self._parse_paper_size(score_directory)
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3786,14 +3808,29 @@ class AbjadIDE(object):
             directory,
             edition_name,
             )
-        # uncomment after testing
-        #if os.path.exists(edition_directory):
-        #    message = 'path already exists: {!r}.'
-        #    message = message.format(self._trim_path(edition_directory))
-        #    self._io_manager._display(message)
-        #    return
-
-        # HERE
+        if os.path.exists(edition_directory):
+            message = 'path already exists: {!r}.'
+            message = message.format(self._trim_path(edition_directory))
+            self._io_manager._display(message)
+            return
+        getter = self._io_manager._make_getter()
+        message = 'paper size (ex: 11 x 17 in)'
+        getter.append_string(message)
+        paper_size = getter._run(io_manager=self._io_manager)
+        if paper_size is None:
+            return
+        paper_size = paper_size.replace(' x ', ' ')
+        paper_size = paper_size.split()
+        getter = self._io_manager._make_getter()
+        message = r'price (ex: \$80 / \euro 72)'
+        getter.append_string(message)
+        price = getter._run(io_manager=self._io_manager)
+        if price is None:
+            return
+        getter = self._io_manager._make_getter()
+        message = 'catalog number suffix (ex: 11x17)'
+        getter.append_string(message)
+        catalog_number_suffix = getter._run(io_manager=self._io_manager)
         file_names = (
             'back-cover.tex',
             'front-cover.tex',
@@ -3815,12 +3852,25 @@ class AbjadIDE(object):
         if os.path.exists(edition_directory):
             shutil.rmtree(edition_directory)
         os.mkdir(edition_directory)
-        self.generate_back_cover_source(edition_directory)
-        self.generate_front_cover_source(edition_directory)
+        self.generate_back_cover_source(
+            edition_directory,
+            catalog_number_suffix=catalog_number_suffix,
+            paper_size=paper_size,
+            price=price,
+            )
+        self.generate_front_cover_source(
+            edition_directory,
+            paper_size=paper_size,
+            )
         self.generate_music_ly(edition_directory)
-        self.generate_preface_source(edition_directory)
-        self.generate_score_source(edition_directory)
-
+        self.generate_preface_source(
+            edition_directory,
+            paper_size=paper_size,
+            )
+        self.generate_score_source(
+            edition_directory,
+            paper_size=paper_size
+            )
 
     @Command(
         'pdfm*',
