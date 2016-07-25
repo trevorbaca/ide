@@ -186,7 +186,6 @@ class AbjadIDE(object):
         return strings, paths
 
     def _collect_segment_lys(self, directory):
-        # score_directory = self._to_score_directory(directory, 'inner')
         segments_directory = self._to_score_directory(directory, 'segments')
         build_directory = self._to_score_directory(directory, 'build')
         _segments_directory = os.path.join(build_directory, '_segments')
@@ -2407,7 +2406,7 @@ class AbjadIDE(object):
         'bld',
         argument_name='current_directory',
         description='score pdf - build',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build',
         )
     def build_score(self, directory):
@@ -2797,7 +2796,7 @@ class AbjadIDE(object):
         'bcg',
         argument_name='current_directory',
         description='back cover - generate',
-        directories=('build', 'build subdirectory'),
+        directories=('build subdirectory'),
         section='build-generate',
         )
     def generate_back_cover_source(self, directory, paper_size=None):
@@ -2845,7 +2844,7 @@ class AbjadIDE(object):
         'fcg',
         argument_name='current_directory',
         description='front cover - generate',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-generate',
         )
     def generate_front_cover_source(self, directory):
@@ -2896,7 +2895,7 @@ class AbjadIDE(object):
         'mg',
         argument_name='current_directory',
         description='music - generate',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-generate',
         )
     def generate_music_ly(self, directory, subroutine=False):
@@ -3027,7 +3026,7 @@ class AbjadIDE(object):
         'pg',
         argument_name='current_directory',
         description='preface - generate',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-generate',
         )
     def generate_preface_source(self, directory):
@@ -3059,7 +3058,7 @@ class AbjadIDE(object):
         'sg',
         argument_name='current_directory',
         description='score - generate',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-generate',
         )
     def generate_score_source(self, directory, subroutine=False):
@@ -3563,7 +3562,7 @@ class AbjadIDE(object):
         'bci',
         argument_name='current_directory',
         description='back cover - interpret',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-interpret',
         )
     def interpret_back_cover(self, directory, subroutine=False):
@@ -3573,9 +3572,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            score_directory = self._to_score_directory(directory)
-            build_directory = os.path.join(score_directory, 'build')
-            file_path = os.path.join(build_directory, 'back-cover.tex')
+            file_path = os.path.join(directory, 'back-cover.tex')
             messages = self._call_latex_on_file(file_path)
             if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
@@ -3620,7 +3617,7 @@ class AbjadIDE(object):
         'fci',
         argument_name='current_directory',
         description='front cover - interpret',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-interpret',
         )
     def interpret_front_cover(self, directory, subroutine=False):
@@ -3630,9 +3627,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            score_directory = self._to_score_directory(directory)
-            build_directory = os.path.join(score_directory, 'build')
-            file_path = os.path.join(build_directory, 'front-cover.tex')
+            file_path = os.path.join(directory, 'front-cover.tex')
             messages = self._call_latex_on_file(file_path)
             if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
@@ -3676,7 +3671,7 @@ class AbjadIDE(object):
         'mi',
         argument_name='current_directory',
         description='music - interpret',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-interpret',
         )
     def interpret_music(self, directory, subroutine=False):
@@ -3707,7 +3702,7 @@ class AbjadIDE(object):
         'pi',
         argument_name='current_directory',
         description='preface - interpret',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-interpret',
         )
     def interpret_preface(self, directory, subroutine=False):
@@ -3717,9 +3712,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            score_directory = self._to_score_directory(directory)
-            build_directory = os.path.join(score_directory, 'build')
-            file_path = os.path.join(build_directory, 'preface.tex')
+            file_path = os.path.join(directory, 'preface.tex')
             messages = self._call_latex_on_file(file_path)
             if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
@@ -3732,7 +3725,7 @@ class AbjadIDE(object):
         'si',
         argument_name='current_directory',
         description='score - interpret',
-        directories=('build', 'build subdirectory',),
+        directories=('build subdirectory',),
         section='build-interpret',
         )
     def interpret_score(self, directory, subroutine=False):
@@ -3742,9 +3735,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction(dry_run=subroutine):
-            score_directory = self._to_score_directory(directory)
-            build_directory = os.path.join(score_directory, 'build')
-            file_path = os.path.join(build_directory, 'score.tex')
+            file_path = os.path.join(directory, 'score.tex')
             messages = self._call_latex_on_file(file_path)
             if messages[0].startswith('writing') and not subroutine:
                 self._session._pending_menu_rebuild = True
@@ -4071,7 +4062,7 @@ class AbjadIDE(object):
         'spp',
         argument_name='current_directory',
         description='score pdf - publish',
-        directories=('build'),
+        directories=('build subdirectory',),
         section='build',
         )
     def publish_score_pdf(self, directory):
@@ -4081,8 +4072,7 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         score_directory = self._to_score_directory(directory)
-        path = os.path.join(score_directory, 'build')
-        build_score_path = os.path.join(path, 'score.pdf')
+        build_score_path = os.path.join(directory, 'score.pdf')
         if not os.path.exists(build_score_path):
             message = 'does not exist: {!r}.'
             message = message.format(self._trim_path(build_score_path))

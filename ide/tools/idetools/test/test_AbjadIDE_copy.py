@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
-from abjad import *
 import ide
+import os
+import pytest
+from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 scores_directory = configuration.abjad_ide_example_scores_directory
@@ -10,6 +11,7 @@ scores_directory = configuration.abjad_ide_example_scores_directory
 def test_AbjadIDE_copy_01():
     r'''Into build directory.
     '''
+    pytest.skip('reactivate me after build subdirectory integration')
 
     source_file = os.path.join(
         scores_directory,
