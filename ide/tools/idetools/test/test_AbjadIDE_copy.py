@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import ide
 import os
-import pytest
 from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
@@ -11,7 +10,6 @@ scores_directory = configuration.abjad_ide_example_scores_directory
 def test_AbjadIDE_copy_01():
     r'''Into build subdirectory.
     '''
-    pytest.skip('unskip after build subdirectory integration')
 
     source_file = os.path.join(
         scores_directory,
@@ -21,6 +19,7 @@ def test_AbjadIDE_copy_01():
         'letter-portrait',
         'front-cover.tex',
         )
+    assert os.path.isfile(source_file)
     target_file = os.path.join(
         scores_directory,
         'blue_example_score',
@@ -29,11 +28,11 @@ def test_AbjadIDE_copy_01():
         'letter-portrait',
         'front-cover.tex',
         )
+    assert not os.path.exists(target_file)
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with systemtools.FilesystemState(keep=[scores_directory]):
-        assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score bb letter-portrait cp'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
@@ -41,7 +40,9 @@ def test_AbjadIDE_copy_01():
         assert os.path.exists(target_file)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert 'Blue Example Score (2013) - build directory - select:' in contents
+    header = 'Blue Example Score (2013) - build directory'
+    header += ' - letter-portrait - select:'
+    assert header in contents
 
 
 def test_AbjadIDE_copy_02():
