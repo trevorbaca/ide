@@ -2955,7 +2955,7 @@ class AbjadIDE(object):
                 segment_include_statements = ''
                 for i, lilypond_name in enumerate(lilypond_names):
                     file_name = lilypond_name + '.ly'
-                    line = r'\include "../{}"'
+                    line = r'\include "../_segments/{}"'
                     if 0 < i:
                         line = self._tab + line
                     line = line.format(file_name)
