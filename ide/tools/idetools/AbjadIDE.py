@@ -304,6 +304,7 @@ class AbjadIDE(object):
         self,
         source_file_name,
         destination_directory,
+        destination_file_name=None,
         replacements=None,
         ):
         replacements = replacements or {}
@@ -311,9 +312,10 @@ class AbjadIDE(object):
             configuration.abjad_ide_boilerplate_directory,
             source_file_name,
             )
+        destination_file_name = destination_file_name or source_file_name
         destination_path = os.path.join(
             destination_directory,
-            source_file_name,
+            destination_file_name,
             )
         base_name, file_extension = os.path.splitext(source_file_name)
         candidate_name = base_name + '.candidate' + file_extension
@@ -1134,6 +1136,7 @@ class AbjadIDE(object):
             'music.ly',
             'preface.tex',
             'score.tex',
+            'stylesheet.ily',
             )
         file_paths = [os.path.join(build_subdirectory, _) for _ in file_names]
         messages = []
@@ -1178,6 +1181,10 @@ class AbjadIDE(object):
         self.generate_score_source(
             build_subdirectory,
             paper_size=paper_size
+            )
+        self.generate_build_subdirectory_stylesheet(
+            build_subdirectory,
+            paper_size=paper_size,
             )
 
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
@@ -2971,6 +2978,46 @@ class AbjadIDE(object):
                 self._io_manager._display(messages)
 
     @Command(
+        'stg',
+        argument_name='current_directory',
+        description='stylesheet - generate',
+        directories=('build subdirectory',),
+        section='build-generate',
+        )
+    def generate_build_subdirectory_stylesheet(
+        self,
+        directory,
+        paper_size=None,
+        ):
+        r'''Generates build subdirectory ``stylsheet.ily``.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        with self._io_manager._make_interaction():
+            replacements = {}
+            width, height, unit = paper_size
+            lilypond_paper_size = '{}x{}'.format(width, height)
+            replacements['lilypond_paper_size'] = lilypond_paper_size
+            if width < height:
+                orientation = 'portrait'
+            else:
+                orientation = 'landscape'
+            replacements['orientation'] = orientation
+            messages = self._copy_boilerplate(
+                'build-subdirectory-stylesheet.ily',
+                directory,
+                destination_file_name='stylesheet.ily',
+                replacements=replacements,
+                )
+            if messages[0].startswith('writing'):
+                self._session._pending_menu_rebuild = True
+                self._session._pending_redraw = True
+                self._session._after_redraw_messages = messages
+            else:
+                self._io_manager._display(messages)
+
+    @Command(
         'fcg',
         argument_name='current_directory',
         description='front cover - generate',
@@ -3108,7 +3155,7 @@ class AbjadIDE(object):
                         directory,
                         'build subdirectory',
                         ):
-                        line = r'\include "../../stylesheets/stylesheet.ily"'
+                        line = r'\include "stylesheet.ily"'
                     stylesheet_include_statement = line
                 language_token = \
                     abjad.lilypondfiletools.LilyPondLanguageToken()

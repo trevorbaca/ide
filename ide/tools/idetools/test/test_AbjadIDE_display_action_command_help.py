@@ -168,9 +168,67 @@ def test_AbjadIDE_display_action_command_help_04():
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
-        
+
 
 def test_AbjadIDE_display_action_command_help_05():
+    r'''In build subdirectory.
+    '''
+    
+    lines = [
+        'Red Example Score (2013) - build directory - letter-portrait - action commands',
+        '',
+        '    edit every file (ff*)',
+        '',
+        '    display action command help (?)',
+        '    invoke shell (!)',
+        '    refresh (rf)',
+        '    replace (rp)',
+        '    search (sr)',
+        '',
+        '    aliases - edit (als)',
+        '    latex log - edit (lxg)',
+        '    lilypond log - edit (lpg)',
+        '',
+        '    doctest - run (dt)',
+        '    pytest - run (pt)',
+        '',
+        '    back cover - generate (bcg)',
+        '    front cover - generate (fcg)',
+        '    music - generate (mg)',
+        '    preface - generate (pg)',
+        '    score - generate (sg)',
+        '    stylesheet - generate (stg)',
+        '',
+        '    back cover - interpret (bci)',
+        '    front cover - interpret (fci)',
+        '    music - interpret (mi)',
+        '    preface - interpret (pi)',
+        '    score - interpret (si)',
+        '',
+        '    score pdf - build (bld)',
+        '    score pdf - publish (spp)',
+        '',
+        '    copy (cp)',
+        '    new (new)',
+        '    remove (rm)',
+        '    rename (ren)',
+        '',
+        '    git - commit (ci)',
+        '    git - status (st)',
+        '    git - update (up)',
+        '',
+        '>',
+        ]
+
+    input_ = 'red~example~score bb letter-portrait ? q'
+    abjad_ide._start(input_=input_)
+    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
+
+    for line, actual_line in zip(lines, transcript_entry.lines):
+        assert line == actual_line
+        
+
+def test_AbjadIDE_display_action_command_help_06():
     r'''In distribution directory.
     '''
     
@@ -212,7 +270,7 @@ def test_AbjadIDE_display_action_command_help_05():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_06():
+def test_AbjadIDE_display_action_command_help_07():
     r'''In tools directory.
     '''
     
@@ -254,7 +312,7 @@ def test_AbjadIDE_display_action_command_help_06():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_07():
+def test_AbjadIDE_display_action_command_help_08():
     r'''In materials directory.
     '''
 
@@ -301,7 +359,7 @@ def test_AbjadIDE_display_action_command_help_07():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_08():
+def test_AbjadIDE_display_action_command_help_09():
     r'''In material directory.
     '''
 
@@ -359,7 +417,7 @@ def test_AbjadIDE_display_action_command_help_08():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_09():
+def test_AbjadIDE_display_action_command_help_10():
     r'''In segments directory.
     '''
 
@@ -406,7 +464,7 @@ def test_AbjadIDE_display_action_command_help_09():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_10():
+def test_AbjadIDE_display_action_command_help_11():
     r'''In segment directory.
     '''
 
@@ -461,7 +519,7 @@ def test_AbjadIDE_display_action_command_help_10():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_11():
+def test_AbjadIDE_display_action_command_help_12():
     r'''In stylesheets directory.
     '''
 
@@ -503,7 +561,7 @@ def test_AbjadIDE_display_action_command_help_11():
         assert line == actual_line
 
 
-def test_AbjadIDE_display_action_command_help_12():
+def test_AbjadIDE_display_action_command_help_13():
     r'''In test directory.
     '''
 
