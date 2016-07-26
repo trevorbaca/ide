@@ -139,10 +139,12 @@ class AbjadIDE(object):
         self._add_metadatum(directory, 'view_name', None)
 
     def _coerce_name(self, directory, name):
-        dash_case_prototype = ('build', 'distribution', 'etc')
+        dash_case_prototype = ('build subdirectory', 'distribution', 'etc')
         package_prototype = ('scores', 'materials', 'segments')
         if self._is_score_directory(directory, 'scores'):
             name = self._to_package_name(name)
+        elif self._is_score_directory(directory, 'build'):
+            name = self._to_build_subdirectory_name(name)
         elif self._is_score_directory(directory, dash_case_prototype):
             name = self._to_dash_case_file_name(name)
         elif self._is_score_directory(directory, 'tools'):
@@ -1111,6 +1113,92 @@ class AbjadIDE(object):
                 name=menu_section_name,
                 )
 
+#    @Command(
+#        'enew',
+#        argument_name='current_directory',
+#        description='edition - new',
+#        directories=('build'),
+#        section='build-preliminary',
+#        )
+    def _make_edition(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        getter = self._io_manager._make_getter()
+        getter.append_string('edition name')
+        edition_name = getter._run(io_manager=self._io_manager)
+        if not edition_name:
+            return
+        edition_name = edition_name.lower()
+        edition_name = edition_name.replace(' ', '-')
+        edition_name = edition_name.replace('_', '-')
+        edition_directory = os.path.join(
+            directory,
+            edition_name,
+            )
+        if os.path.exists(edition_directory):
+            message = 'path already exists: {!r}.'
+            message = message.format(self._trim_path(edition_directory))
+            self._io_manager._display(message)
+            return
+        getter = self._io_manager._make_getter()
+        message = 'paper size (ex: 11 x 17 in)'
+        getter.append_string(message)
+        paper_size = getter._run(io_manager=self._io_manager)
+        if paper_size is None:
+            return
+        paper_size = paper_size.replace(' x ', ' ')
+        paper_size = paper_size.split()
+        getter = self._io_manager._make_getter()
+        message = r'price (ex: \$80 / \euro 72)'
+        getter.append_string(message)
+        price = getter._run(io_manager=self._io_manager)
+        if price is None:
+            return
+        getter = self._io_manager._make_getter()
+        message = 'catalog number suffix (ex: 11x17)'
+        getter.append_string(message)
+        catalog_number_suffix = getter._run(io_manager=self._io_manager)
+        file_names = (
+            'back-cover.tex',
+            'front-cover.tex',
+            'music.ly',
+            'preface.tex',
+            'score.tex',
+            )
+        file_paths = [os.path.join(edition_directory, _) for _ in file_names]
+        messages = []
+        messages.append('will create ...')
+        message = '   {}'.format(self._trim_path(edition_directory))
+        messages.append(message)
+        for file_path in file_paths:
+            message = '   {}'.format(self._trim_path(file_path))
+            messages.append(message)
+        self._io_manager._display(messages)
+        if not self._io_manager._confirm():
+            return
+        if os.path.exists(edition_directory):
+            shutil.rmtree(edition_directory)
+        os.mkdir(edition_directory)
+        self.generate_back_cover_source(
+            edition_directory,
+            catalog_number_suffix=catalog_number_suffix,
+            paper_size=paper_size,
+            price=price,
+            )
+        self.generate_front_cover_source(
+            edition_directory,
+            paper_size=paper_size,
+            )
+        self.generate_music_ly(edition_directory)
+        self.generate_preface_source(
+            edition_directory,
+            paper_size=paper_size,
+            )
+        self.generate_score_source(
+            edition_directory,
+            paper_size=paper_size
+            )
+
+
     def _make_file(self, directory):
         assert os.path.isdir(directory), repr(directory)
         getter = self._io_manager._make_getter()
@@ -1780,7 +1868,7 @@ class AbjadIDE(object):
             path_index = path_number - 1
             path = paths[path_index]
             if path in secondary_paths:
-                message = 'can not rename secondary asset {}.'
+                message = 'can not modify secondary asset {}.'
                 message = message.format(self._trim_path(path))
                 self._io_manager._display(message)
                 return
@@ -2105,6 +2193,14 @@ class AbjadIDE(object):
             return 'file'
         else:
             raise ValueError(directory)
+
+    @staticmethod
+    def _to_build_subdirectory_name(name):
+        assert isinstance(name, str), repr(name)
+        name = name.lower()
+        name = name.replace(' ', '-')
+        name = name.replace('_', '-')
+        return name
 
     def _to_classfile_name(self, name):
         assert isinstance(name, str), repr(name)
@@ -2829,7 +2925,7 @@ class AbjadIDE(object):
             replacements['composer_website'] = composer_website
             price = price or self._get_metadatum(score_directory, 'price')
             replacements['price'] = price
-            if paper_size is not None:
+            if paper_size:
                 width, height, unit = paper_size
             else:
                 width, height, unit = self._parse_paper_size(
@@ -2884,7 +2980,7 @@ class AbjadIDE(object):
             if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
             replacements['composer'] = str(composer)
-            if paper_size is not None:
+            if paper_size:
                 width, height, unit = paper_size
             else:
                 width, height, unit = self._parse_paper_size(score_directory)
@@ -3050,7 +3146,7 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            if paper_size is not None:
+            if paper_size:
                 width, height, unit = paper_size
             else:
                 width, height, unit = self._parse_paper_size(score_directory)
@@ -3092,7 +3188,7 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            if paper_size is not None:
+            if paper_size:
                 width, height, unit = paper_size
             else:
                 width, height, unit = self._parse_paper_size(score_directory)
@@ -3784,95 +3880,6 @@ class AbjadIDE(object):
             self._io_manager._invoke_shell(statement)
 
     @Command(
-        'enew',
-        argument_name='current_directory',
-        description='edition - new',
-        directories=('build'),
-        section='build-preliminary',
-        )
-    def make_edition(self, directory):
-        r'''Makes edition.
-
-        Returns none.
-        '''
-        assert os.path.isdir(directory), repr(directory)
-        getter = self._io_manager._make_getter()
-        getter.append_string('edition name')
-        edition_name = getter._run(io_manager=self._io_manager)
-        if not edition_name:
-            return
-        edition_name = edition_name.lower()
-        edition_name = edition_name.replace(' ', '-')
-        edition_name = edition_name.replace('_', '-')
-        edition_directory = os.path.join(
-            directory,
-            edition_name,
-            )
-        if os.path.exists(edition_directory):
-            message = 'path already exists: {!r}.'
-            message = message.format(self._trim_path(edition_directory))
-            self._io_manager._display(message)
-            return
-        getter = self._io_manager._make_getter()
-        message = 'paper size (ex: 11 x 17 in)'
-        getter.append_string(message)
-        paper_size = getter._run(io_manager=self._io_manager)
-        if paper_size is None:
-            return
-        paper_size = paper_size.replace(' x ', ' ')
-        paper_size = paper_size.split()
-        getter = self._io_manager._make_getter()
-        message = r'price (ex: \$80 / \euro 72)'
-        getter.append_string(message)
-        price = getter._run(io_manager=self._io_manager)
-        if price is None:
-            return
-        getter = self._io_manager._make_getter()
-        message = 'catalog number suffix (ex: 11x17)'
-        getter.append_string(message)
-        catalog_number_suffix = getter._run(io_manager=self._io_manager)
-        file_names = (
-            'back-cover.tex',
-            'front-cover.tex',
-            'music.ly',
-            'preface.tex',
-            'score.tex',
-            )
-        file_paths = [os.path.join(edition_directory, _) for _ in file_names]
-        messages = []
-        messages.append('will create ...')
-        message = '   {}'.format(self._trim_path(edition_directory))
-        messages.append(message)
-        for file_path in file_paths:
-            message = '   {}'.format(self._trim_path(file_path))
-            messages.append(message)
-        self._io_manager._display(messages)
-        if not self._io_manager._confirm():
-            return
-        if os.path.exists(edition_directory):
-            shutil.rmtree(edition_directory)
-        os.mkdir(edition_directory)
-        self.generate_back_cover_source(
-            edition_directory,
-            catalog_number_suffix=catalog_number_suffix,
-            paper_size=paper_size,
-            price=price,
-            )
-        self.generate_front_cover_source(
-            edition_directory,
-            paper_size=paper_size,
-            )
-        self.generate_music_ly(edition_directory)
-        self.generate_preface_source(
-            edition_directory,
-            paper_size=paper_size,
-            )
-        self.generate_score_source(
-            edition_directory,
-            paper_size=paper_size
-            )
-
-    @Command(
         'pdfm*',
         argument_name='current_directory',
         description='every pdf - make',
@@ -4007,6 +4014,8 @@ class AbjadIDE(object):
             self._make_score_package()
         elif self._is_score_directory(directory, ('materials', 'segments')):
             self._make_package(directory)
+        elif self._is_score_directory(directory, 'build'):
+            self._make_edition(directory)
         else:
             self._make_file(directory)
         self._session._pending_menu_rebuild = True

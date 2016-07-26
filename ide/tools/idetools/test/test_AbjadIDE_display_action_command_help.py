@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from abjad import *
 import ide
+from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
@@ -148,7 +148,6 @@ def test_AbjadIDE_display_action_command_help_04():
         '    doctest - run (dt)',
         '    pytest - run (pt)',
         '',
-        '    edition - new (enew)',
         '    segment lys - collect (lyc)',
         '',
         '    copy (cp)',
