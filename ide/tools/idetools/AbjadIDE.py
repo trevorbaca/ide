@@ -1090,6 +1090,96 @@ class AbjadIDE(object):
         paths = [_[-1] for _ in entries]
         return paths
 
+    def _make_build_subdirectory(self, directory):
+        assert os.path.isdir(directory), repr(directory)
+        getter = self._io_manager._make_getter()
+        getter.append_string('subdirectory name')
+        subdirectory_name = getter._run(io_manager=self._io_manager)
+        if not subdirectory_name:
+            return
+        subdirectory_name = subdirectory_name.lower()
+        subdirectory_name = subdirectory_name.replace(' ', '-')
+        subdirectory_name = subdirectory_name.replace('_', '-')
+        build_subdirectory = os.path.join(
+            directory,
+            subdirectory_name,
+            )
+        if os.path.exists(build_subdirectory):
+            message = 'path already exists: {!r}.'
+            message = message.format(self._trim_path(build_subdirectory))
+            self._io_manager._display(message)
+            return
+        getter = self._io_manager._make_getter()
+        message = 'paper size (ex: 11 x 17 in)'
+        getter.append_string(message)
+        paper_size = getter._run(io_manager=self._io_manager)
+        if not paper_size:
+            return
+        unparsed_paper_size = paper_size
+        paper_size = paper_size.replace(' x ', ' ')
+        paper_size = paper_size.split()
+        getter = self._io_manager._make_getter()
+        message = r'price (ex: \$80 / \euro 72)'
+        getter.append_string(message)
+        price = getter._run(io_manager=self._io_manager)
+        if price is None:
+            return
+        getter = self._io_manager._make_getter()
+        message = 'catalog number suffix (ex: 11x17)'
+        getter.append_string(message)
+        catalog_number_suffix = getter._run(io_manager=self._io_manager)
+        file_names = (
+            'back-cover.tex',
+            'front-cover.tex',
+            'music.ly',
+            'preface.tex',
+            'score.tex',
+            )
+        file_paths = [os.path.join(build_subdirectory, _) for _ in file_names]
+        messages = []
+        messages.append('will create ...')
+        message = '   {}'.format(self._trim_path(build_subdirectory))
+        messages.append(message)
+        for file_path in file_paths:
+            message = '   {}'.format(self._trim_path(file_path))
+            messages.append(message)
+        self._io_manager._display(messages)
+        if not self._io_manager._confirm():
+            return
+        if os.path.exists(build_subdirectory):
+            shutil.rmtree(build_subdirectory)
+        os.mkdir(build_subdirectory)
+        self._add_metadatum(
+            build_subdirectory,
+            'paper_size',
+            unparsed_paper_size,
+            )
+        self._add_metadatum(build_subdirectory, 'price', price)
+        self._add_metadatum(
+            build_subdirectory,
+            'catalog_number_suffix',
+            catalog_number_suffix,
+            )
+        self.generate_back_cover_source(
+            build_subdirectory,
+            catalog_number_suffix=catalog_number_suffix,
+            paper_size=paper_size,
+            price=price,
+            )
+        self.generate_front_cover_source(
+            build_subdirectory,
+            paper_size=paper_size,
+            )
+        self.generate_music_ly(build_subdirectory)
+        self.generate_preface_source(
+            build_subdirectory,
+            paper_size=paper_size,
+            )
+        self.generate_score_source(
+            build_subdirectory,
+            paper_size=paper_size
+            )
+
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []
         messages.append('the files ...')
@@ -1128,92 +1218,6 @@ class AbjadIDE(object):
                 commands=command_group,
                 name=menu_section_name,
                 )
-
-#    @Command(
-#        'enew',
-#        argument_name='current_directory',
-#        description='edition - new',
-#        directories=('build'),
-#        section='build-preliminary',
-#        )
-    def _make_edition(self, directory):
-        assert os.path.isdir(directory), repr(directory)
-        getter = self._io_manager._make_getter()
-        getter.append_string('edition name')
-        edition_name = getter._run(io_manager=self._io_manager)
-        if not edition_name:
-            return
-        edition_name = edition_name.lower()
-        edition_name = edition_name.replace(' ', '-')
-        edition_name = edition_name.replace('_', '-')
-        edition_directory = os.path.join(
-            directory,
-            edition_name,
-            )
-        if os.path.exists(edition_directory):
-            message = 'path already exists: {!r}.'
-            message = message.format(self._trim_path(edition_directory))
-            self._io_manager._display(message)
-            return
-        getter = self._io_manager._make_getter()
-        message = 'paper size (ex: 11 x 17 in)'
-        getter.append_string(message)
-        paper_size = getter._run(io_manager=self._io_manager)
-        if paper_size is None:
-            return
-        paper_size = paper_size.replace(' x ', ' ')
-        paper_size = paper_size.split()
-        getter = self._io_manager._make_getter()
-        message = r'price (ex: \$80 / \euro 72)'
-        getter.append_string(message)
-        price = getter._run(io_manager=self._io_manager)
-        if price is None:
-            return
-        getter = self._io_manager._make_getter()
-        message = 'catalog number suffix (ex: 11x17)'
-        getter.append_string(message)
-        catalog_number_suffix = getter._run(io_manager=self._io_manager)
-        file_names = (
-            'back-cover.tex',
-            'front-cover.tex',
-            'music.ly',
-            'preface.tex',
-            'score.tex',
-            )
-        file_paths = [os.path.join(edition_directory, _) for _ in file_names]
-        messages = []
-        messages.append('will create ...')
-        message = '   {}'.format(self._trim_path(edition_directory))
-        messages.append(message)
-        for file_path in file_paths:
-            message = '   {}'.format(self._trim_path(file_path))
-            messages.append(message)
-        self._io_manager._display(messages)
-        if not self._io_manager._confirm():
-            return
-        if os.path.exists(edition_directory):
-            shutil.rmtree(edition_directory)
-        os.mkdir(edition_directory)
-        self.generate_back_cover_source(
-            edition_directory,
-            catalog_number_suffix=catalog_number_suffix,
-            paper_size=paper_size,
-            price=price,
-            )
-        self.generate_front_cover_source(
-            edition_directory,
-            paper_size=paper_size,
-            )
-        self.generate_music_ly(edition_directory)
-        self.generate_preface_source(
-            edition_directory,
-            paper_size=paper_size,
-            )
-        self.generate_score_source(
-            edition_directory,
-            paper_size=paper_size
-            )
-
 
     def _make_file(self, directory):
         assert os.path.isdir(directory), repr(directory)
@@ -4036,7 +4040,7 @@ class AbjadIDE(object):
         elif self._is_score_directory(directory, ('materials', 'segments')):
             self._make_package(directory)
         elif self._is_score_directory(directory, 'build'):
-            self._make_edition(directory)
+            self._make_build_subdirectory(directory)
         else:
             self._make_file(directory)
         self._session._pending_menu_rebuild = True
