@@ -2263,7 +2263,10 @@ class AbjadIDE(object):
             directory_part = directory_part + ' directory'
             header_parts.append(directory_part)
         if package_part:
-            package_part = package_part.replace('_', ' ')
+            if package_part == '_segments':
+                package_part = 'segments'
+            else:
+                package_part = package_part.replace('_', ' ')
             package_part = self._get_metadatum(directory, 'name', package_part)
             header_parts.append(package_part)
         header = ' - '.join(header_parts)
