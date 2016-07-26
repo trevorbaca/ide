@@ -204,7 +204,6 @@ class AbjadIDE(object):
             # score_name = score_package.replace('_', '-')
             entry = entry.replace('_', '-')
             target_ly_name = entry + '.ly'
-            #target_ly_path = os.path.join(build_directory, target_ly_name)
             target_ly_path = os.path.join(_segments_directory, target_ly_name)
             source_ly_paths.append(source_ly_path)
             target_ly_paths.append(target_ly_path)
@@ -272,6 +271,22 @@ class AbjadIDE(object):
             for build_directory in build_directories:
                 for name in os.listdir(build_directory):
                     if not name[0].isalnum():
+                        continue
+                    directory_ = os.path.join(build_directory, name)
+                    if not os.path.isdir(directory_):
+                        continue
+                    directories.append(directory_)
+            return directories
+        if self._is_score_directory(directory, '_segments'):
+            directories = []
+            build_directory = os.path.dirname(directory)
+            build_directories = self._collect_similar_directories(
+                build_directory,
+                example_scores=example_scores,
+                )
+            for build_directory in build_directories:
+                for name in os.listdir(build_directory):
+                    if not name == '_segments':
                         continue
                     directory_ = os.path.join(build_directory, name)
                     if not os.path.isdir(directory_):
@@ -953,7 +968,7 @@ class AbjadIDE(object):
                 scores_directory.split(os.path.sep))
             parts = directory.split(os.path.sep)
             if len(parts) == scores_directory_parts_count + 4:
-                if parts[-2] == 'build':
+                if parts[-2] == 'build' and not parts[-1] == '_segments':
                     return True
         if 'material' in prototype and scores_directory:
             scores_directory_parts_count = len(
@@ -971,6 +986,7 @@ class AbjadIDE(object):
                     return True
         base_name = os.path.basename(directory)
         if base_name not in (
+            '_segments',
             'build',
             'distribution',
             'etc',
@@ -2297,6 +2313,8 @@ class AbjadIDE(object):
         if self._is_score_directory(directory, 'build'):
             return self._is_build_directory_name
         elif self._is_score_directory(directory, 'build subdirectory'):
+            return self._is_dash_case_file_name
+        elif self._is_score_directory(directory, '_segments'):
             return self._is_dash_case_file_name
         elif self._is_score_directory(directory, file_prototype):
             return self._is_dash_case_file_name
