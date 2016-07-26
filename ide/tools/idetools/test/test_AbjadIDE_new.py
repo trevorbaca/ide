@@ -201,10 +201,10 @@ def test_AbjadIDE_new_04():
         'red_example_score',
         'red_example_score',
         'build',
-        '9x12-portrait',
+        'arch-a',
         )
 
-    input_ = 'red~example~score bb new 9x12-portrait 9~x~12~in $80 9x12 y q'
+    input_ = 'red~example~score bb new arch-a arch~a $80 ARCH-A y q'
 
     with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
@@ -220,10 +220,10 @@ def test_AbjadIDE_new_05():
         'red_example_score',
         'red_example_score',
         'build',
-        '9x12-portrait',
+        'arch-a',
         )
 
-    input_ = 'red~example~score bb new 9x12_portrait 9~x~12~in $80 9x12 y q'
+    input_ = 'red~example~score bb new arch_a arch~a $80 ARCH-A y q'
 
     with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)

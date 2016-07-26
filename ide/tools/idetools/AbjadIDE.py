@@ -27,6 +27,21 @@ class AbjadIDE(object):
         '_session',
         )
 
+    # taken from http://lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
+    _paper_size_to_paper_dimensions = {
+        'a3': '297 x 420 mm',
+        'a4': '210 x 297 mm',
+        'arch a': '9 x 12 in',
+        'arch b': '12 x 18 in',
+        'arch c': '18 x 24 in',
+        'arch d': '24 x 36 in',
+        'arch e': '36 x 48 in',
+        'legal': '8.5 x 14 in',
+        'ledger': '17 x 11 in',
+        'letter': '8.5 x 11 in',
+        'tabloid': '11 x 17 in',
+        }
+
     _secondary_names = (
         '__abbreviations__.py',
         '__illustrate__.py',
@@ -1112,14 +1127,19 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             return
         getter = self._io_manager._make_getter()
-        message = 'paper size (ex: 11 x 17 in)'
+        message = 'paper size (ex: letter or letter landscape)'
         getter.append_string(message)
         paper_size = getter._run(io_manager=self._io_manager)
         if not paper_size:
             return
-        unparsed_paper_size = paper_size
-        paper_size = paper_size.replace(' x ', ' ')
-        paper_size = paper_size.split()
+        orientation = 'portrait'
+        if paper_size.endswith(' landscape'):
+            orientation = 'landscape'
+            length = len(' landscape')
+            paper_size = paper_size[:-length]
+        elif paper_size.endswith(' portrait'):
+            length = len(' portrait')
+            paper_size = paper_size[:-length]
         getter = self._io_manager._make_getter()
         message = r'price (ex: \$80 / \euro 72)'
         getter.append_string(message)
@@ -1127,7 +1147,7 @@ class AbjadIDE(object):
         if price is None:
             return
         getter = self._io_manager._make_getter()
-        message = 'catalog number suffix (ex: 11x17)'
+        message = 'catalog number suffix (ex: ann.)'
         getter.append_string(message)
         catalog_number_suffix = getter._run(io_manager=self._io_manager)
         file_names = (
@@ -1152,40 +1172,21 @@ class AbjadIDE(object):
         if os.path.exists(build_subdirectory):
             shutil.rmtree(build_subdirectory)
         os.mkdir(build_subdirectory)
-        self._add_metadatum(
-            build_subdirectory,
-            'paper_size',
-            unparsed_paper_size,
-            )
+        self._add_metadatum(build_subdirectory, 'paper_size', paper_size)
+        if not orientation == 'portrait':
+            self._add_metadatum(build_subdirectory, 'orientation', orientation)
         self._add_metadatum(build_subdirectory, 'price', price)
         self._add_metadatum(
             build_subdirectory,
             'catalog_number_suffix',
             catalog_number_suffix,
             )
-        self.generate_back_cover_source(
-            build_subdirectory,
-            catalog_number_suffix=catalog_number_suffix,
-            paper_size=paper_size,
-            price=price,
-            )
-        self.generate_front_cover_source(
-            build_subdirectory,
-            paper_size=paper_size,
-            )
+        self.generate_back_cover_source(build_subdirectory)
+        self.generate_front_cover_source(build_subdirectory)
         self.generate_music_ly(build_subdirectory)
-        self.generate_preface_source(
-            build_subdirectory,
-            paper_size=paper_size,
-            )
-        self.generate_score_source(
-            build_subdirectory,
-            paper_size=paper_size
-            )
-        self.generate_build_subdirectory_stylesheet(
-            build_subdirectory,
-            paper_size=paper_size,
-            )
+        self.generate_preface_source(build_subdirectory)
+        self.generate_score_source(build_subdirectory)
+        self.generate_build_subdirectory_stylesheet(build_subdirectory)
 
     def _make_candidate_messages(self, result, candidate_path, incumbent_path):
         messages = []
@@ -2928,13 +2929,7 @@ class AbjadIDE(object):
         directories=('build subdirectory'),
         section='build-generate',
         )
-    def generate_back_cover_source(
-        self,
-        directory,
-        catalog_number_suffix=None,
-        paper_size=None,
-        price=None,
-        ):
+    def generate_back_cover_source(self, directory):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
@@ -2948,6 +2943,10 @@ class AbjadIDE(object):
                 'catalog_number',
                 '',
                 )
+            catalog_number_suffix = self._get_metadatum(
+                directory,
+                'catalog_number_suffix',
+                )
             if catalog_number_suffix:
                 catalog_number += ' ({})'.format(catalog_number_suffix)
             replacements['catalog_number'] = catalog_number
@@ -2955,13 +2954,12 @@ class AbjadIDE(object):
             if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
             replacements['composer_website'] = composer_website
-            price = price or self._get_metadatum(score_directory, 'price')
+            price = self._get_metadatum(directory, 'price')
             replacements['price'] = price
-            if paper_size:
-                width, height, unit = paper_size
-            else:
-                width, height, unit = self._parse_paper_size(
-                    score_directory)
+            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
+            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = self._to_paper_dimensions(paper_size, orientation)
+            width, height, unit = paper_size
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -2984,11 +2982,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_build_subdirectory_stylesheet(
-        self,
-        directory,
-        paper_size=None,
-        ):
+    def generate_build_subdirectory_stylesheet(self, directory):
         r'''Generates build subdirectory ``stylsheet.ily``.
 
         Returns none.
@@ -2996,14 +2990,14 @@ class AbjadIDE(object):
         assert os.path.isdir(directory), repr(directory)
         with self._io_manager._make_interaction():
             replacements = {}
-            width, height, unit = paper_size
-            lilypond_paper_size = '{}x{}'.format(width, height)
-            replacements['lilypond_paper_size'] = lilypond_paper_size
-            if width < height:
-                orientation = 'portrait'
+            paper_size = self._get_metadatum(directory, 'paper_size')
+            orientation = self._get_metadatum(directory, 'orientation')
+            replacements['paper_size'] = paper_size
+            if orientation:
+                orientation_ = " '{}".format(orientation)
             else:
-                orientation = 'landscape'
-            replacements['orientation'] = orientation
+                orientation_ = ''
+            replacements['orientation'] = orientation_
             messages = self._copy_boilerplate(
                 'build-subdirectory-stylesheet.ily',
                 directory,
@@ -3024,7 +3018,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_front_cover_source(self, directory, paper_size=None):
+    def generate_front_cover_source(self, directory):
         r'''Generates ``front-cover.tex``.
 
         Returns none.
@@ -3052,10 +3046,10 @@ class AbjadIDE(object):
             if self._session.is_test or self._session.is_example:
                 composer = 'EXAMPLE COMPOSER NAME'
             replacements['composer'] = str(composer)
-            if paper_size:
-                width, height, unit = paper_size
-            else:
-                width, height, unit = self._parse_paper_size(score_directory)
+            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
+            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = self._to_paper_dimensions(paper_size, orientation)
+            width, height, unit = paper_size
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3070,6 +3064,19 @@ class AbjadIDE(object):
                 self._session._after_redraw_messages = messages
             else:
                 self._io_manager._display(messages)
+
+    def _to_paper_dimensions(self, paper_size, orientation='portrait'):
+        prototype = ('landscape', 'portrait', None)
+        assert orientation in prototype, repr(orientation)
+        paper_dimensions = self._paper_size_to_paper_dimensions[paper_size]
+        paper_dimensions = paper_dimensions.replace(' x ', ' ')
+        width, height, unit = paper_dimensions.split()
+        if orientation == 'landscape':
+            height_ = width
+            width_ = height
+            height = height_
+            width = width_
+        return width, height, unit
 
     @Command(
         'mg',
@@ -3209,7 +3216,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_preface_source(self, directory, paper_size=None):
+    def generate_preface_source(self, directory):
         r'''Generates ``preface.tex``.
 
         Returns none.
@@ -3218,10 +3225,10 @@ class AbjadIDE(object):
         with self._io_manager._make_interaction():
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            if paper_size:
-                width, height, unit = paper_size
-            else:
-                width, height, unit = self._parse_paper_size(score_directory)
+            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
+            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = self._to_paper_dimensions(paper_size, orientation)
+            width, height, unit = paper_size
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
@@ -3244,12 +3251,7 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_score_source(
-        self,
-        directory,
-        paper_size=None,
-        subroutine=False,
-        ):
+    def generate_score_source(self, directory, subroutine=False):
         r'''Generates ``score.tex``.
 
         Returns none.
@@ -3260,10 +3262,10 @@ class AbjadIDE(object):
             self._io_manager._display(message)
             score_directory = self._to_score_directory(directory)
             replacements = {}
-            if paper_size:
-                width, height, unit = paper_size
-            else:
-                width, height, unit = self._parse_paper_size(score_directory)
+            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
+            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = self._to_paper_dimensions(paper_size, orientation)
+            width, height, unit = paper_size
             paper_size = '{{{}{}, {}{}}}'
             paper_size = paper_size.format(width, unit, height, unit)
             replacements['paper_size'] = paper_size
