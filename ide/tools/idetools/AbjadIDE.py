@@ -2948,7 +2948,7 @@ class AbjadIDE(object):
                 'catalog_number_suffix',
                 )
             if catalog_number_suffix:
-                catalog_number += ' ({})'.format(catalog_number_suffix)
+                catalog_number += ' / {}'.format(catalog_number_suffix)
             replacements['catalog_number'] = catalog_number
             composer_website = configuration.composer_website or ''
             if self._session.is_test or self._session.is_example:
