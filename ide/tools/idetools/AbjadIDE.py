@@ -2803,6 +2803,22 @@ class AbjadIDE(object):
         configuration._read_aliases_file()
 
     @Command(
+        'bce',
+        argument_name='current_directory',
+        description='back cover - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_back_cover_source(self, directory):
+        r'''Edits ``back-cover.tex`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'back-cover.tex')
+        self._io_manager.open_file(file_path)
+
+    @Command(
         'df',
         argument_name='current_directory',
         description='definition file - edit',
@@ -2856,6 +2872,22 @@ class AbjadIDE(object):
             command = command.format(directory, name)
             paths = self._io_manager.run_command(command)
             self._io_manager.open_file(paths)
+
+    @Command(
+        'fce',
+        argument_name='current_directory',
+        description='front cover - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_front_cover_source(self, directory):
+        r'''Edits ``front-cover.tex`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'front-cover.tex')
+        self._io_manager.open_file(file_path)
 
     @Command(
         'ill',
@@ -2920,6 +2952,70 @@ class AbjadIDE(object):
         '''
         assert os.path.isdir(directory), repr(directory)
         file_path = os.path.join(directory, 'illustration.ly')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        'me',
+        argument_name='current_directory',
+        description='music - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_music_source(self, directory):
+        r'''Edits ``music.ly`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'music.ly')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        'pe',
+        argument_name='current_directory',
+        description='preface - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_preface_source(self, directory):
+        r'''Edits ``preface.tex`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'preface.tex')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        'se',
+        argument_name='current_directory',
+        description='score - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_score_source(self, directory):
+        r'''Edits ``score.tex`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'score.tex')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        'ste',
+        argument_name='current_directory',
+        description='stylesheet - edit',
+        directories=('build subdirectory'),
+        section='build-edit',
+        )
+    def edit_stylesheet(self, directory):
+        r'''Edits ``stylesheet.ily`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'stylesheet.ily')
         self._io_manager.open_file(file_path)
 
     @Command(
@@ -4096,6 +4192,22 @@ class AbjadIDE(object):
         self._session._pending_redraw = True
 
     @Command(
+        'bc',
+        argument_name='current_directory',
+        description='back cover - open',
+        directories=('build subdirectory'),
+        section='build-open',
+        )
+    def open_back_cover_pdf(self, directory):
+        r'''Opens ``back-cover.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'back-cover.pdf')
+        self._io_manager.open_file(file_path)
+
+    @Command(
         'pdf*',
         argument_name='current_directory',
         description='every pdf - open',
@@ -4138,6 +4250,38 @@ class AbjadIDE(object):
                 self._io_manager.open_file(paths)
 
     @Command(
+        'fc',
+        argument_name='current_directory',
+        description='front cover - open',
+        directories=('build subdirectory'),
+        section='build-open',
+        )
+    def open_front_cover_pdf(self, directory):
+        r'''Opens ``front-cover.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'front-cover.pdf')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        'm',
+        argument_name='current_directory',
+        description='music - open',
+        directories=('build subdirectory'),
+        section='build-open',
+        )
+    def open_music_pdf(self, directory):
+        r'''Opens ``music.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'music.pdf')
+        self._io_manager.open_file(file_path)
+
+    @Command(
         'pdf',
         argument_name='current_directory',
         description='pdf - open',
@@ -4157,6 +4301,38 @@ class AbjadIDE(object):
             self._io_manager._display([message, ''])
         else:
             self._io_manager.open_file(file_path)
+
+    @Command(
+        'p',
+        argument_name='current_directory',
+        description='preface - open',
+        directories=('build subdirectory'),
+        section='build-open',
+        )
+    def open_preface_pdf(self, directory):
+        r'''Opens ``preface.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'preface.pdf')
+        self._io_manager.open_file(file_path)
+
+    @Command(
+        's',
+        argument_name='current_directory',
+        description='score - open',
+        directories=('build subdirectory'),
+        section='build-open',
+        )
+    def open_score_pdf_in_build_directory(self, directory):
+        r'''Opens ``score.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert os.path.isdir(directory), repr(directory)
+        file_path = os.path.join(directory, 'score.pdf')
+        self._io_manager.open_file(file_path)
 
     @Command(
         'so',
