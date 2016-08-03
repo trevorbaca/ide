@@ -382,9 +382,8 @@ class AbjadIDE(object):
         abjad_ide = class_()
         abjad_ide._start(input_=input_)
 
-    def _filter_by_view(self, directory, entries):
+    def _filter_by_view(self, directory, entries, view):
         assert os.path.isdir(directory), repr(directory)
-        view = self._read_view(directory)
         if view is None:
             return entries
         entries = entries[:]
@@ -1110,14 +1109,15 @@ class AbjadIDE(object):
         for string, path in pairs:
             entry = (string, None, None, path)
             entries.append(entry)
-        entries = self._filter_by_view(directory, entries)
+        view = self._read_view(directory)
+        entries = self._filter_by_view(directory, entries, view)
         if self._is_score_directory(directory, 'scores'):
             if self._session.is_test or self._session.is_example:
                 entries = [_ for _ in entries if 'Example Score' in _[0]]
             else:
                 entries = [_ for _ in entries if 'Example Score' not in _[0]]
         paths = [_[-1] for _ in entries]
-        if self._is_score_directory(directory, 'scores'):
+        if view is None and self._is_score_directory(directory, 'scores'):
             paths = self._alphabetize_by_score_title(paths)
         return paths
 
