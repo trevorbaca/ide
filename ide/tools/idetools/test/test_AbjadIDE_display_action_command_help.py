@@ -192,6 +192,8 @@ def test_AbjadIDE_display_action_command_help_05():
         '    doctest - run (dt)',
         '    pytest - run (pt)',
         '',
+        '    segment lys - collect (lyc)',
+        '',
         '    back cover - generate (bcg)',
         '    front cover - generate (fcg)',
         '    music - generate (mg)',

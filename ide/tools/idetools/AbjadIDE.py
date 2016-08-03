@@ -2657,7 +2657,7 @@ class AbjadIDE(object):
         'lyc',
         argument_name='current_directory',
         description='segment lys - collect',
-        directories=('build'),
+        directories=('build', 'build subdirectory',),
         section='build-preliminary',
         )
     def collect_segment_lys(self, directory, subroutine=False):
