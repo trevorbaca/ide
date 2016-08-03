@@ -96,18 +96,6 @@ class AbjadIDE(object):
         metadata[metadatum_name] = metadatum_value
         self._write_metadata_py(directory, metadata)
 
-    def _alphabetize_by_score_title(self, paths):
-        strings = [self._to_menu_string(_) for _ in paths]
-        pairs = list(zip(strings, paths))
-        def sort_function(pair):
-            string = pair[0]
-            string = abjad.stringtools.strip_diacritics(string)
-            string = string.replace("'", '')
-            return string
-        pairs.sort(key=lambda _: sort_function(_))
-        paths = [_[-1] for _ in pairs]
-        return paths
-
     def _call_latex_on_file(self, file_path):
         r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
@@ -394,9 +382,19 @@ class AbjadIDE(object):
                     if self._match_display_string_view_pattern(pattern, entry):
                         filtered_entries.append(entry)
             elif 'md:' in pattern:
+                pairs = []
                 for entry in entries:
-                    if self._match_metadata_view_pattern(pattern, entry):
-                        filtered_entries.append(entry)
+                    metadatum =  self._match_metadata_view_pattern(
+                        pattern,
+                        entry,
+                        )
+                    if metadatum is not None:
+                        pair = (metadatum, entry)
+                        pairs.append(pair)
+                pairs.sort(key=lambda _: _[0])
+                pairs.reverse()
+                entries_ = [_[-1] for _ in pairs]
+                filtered_entries.extend(entries_)
             elif ':path:' in pattern:
                 for entry in entries:
                     if self._match_path_view_pattern(pattern, entry):
@@ -1118,7 +1116,7 @@ class AbjadIDE(object):
                 entries = [_ for _ in entries if 'Example Score' not in _[0]]
         paths = [_[-1] for _ in entries]
         if view is None and self._is_score_directory(directory, 'scores'):
-            paths = self._alphabetize_by_score_title(paths)
+            paths = self._sort_by_menu_string(paths)
         return paths
 
     def _make_build_subdirectory(self, directory):
@@ -2159,6 +2157,18 @@ class AbjadIDE(object):
                 )
             if path:
                 paths.append(path)
+        return paths
+
+    def _sort_by_menu_string(self, paths):
+        strings = [self._to_menu_string(_) for _ in paths]
+        pairs = list(zip(strings, paths))
+        def sort_function(pair):
+            string = pair[0]
+            string = abjad.stringtools.strip_diacritics(string)
+            string = string.replace("'", '')
+            return string
+        pairs.sort(key=lambda _: sort_function(_))
+        paths = [_[-1] for _ in pairs]
         return paths
 
     def _start(self, input_=None):
