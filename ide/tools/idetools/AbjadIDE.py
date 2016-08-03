@@ -96,6 +96,18 @@ class AbjadIDE(object):
         metadata[metadatum_name] = metadatum_value
         self._write_metadata_py(directory, metadata)
 
+    def _alphabetize_by_score_title(self, paths):
+        strings = [self._to_menu_string(_) for _ in paths]
+        pairs = list(zip(strings, paths))
+        def sort_function(pair):
+            string = pair[0]
+            string = abjad.stringtools.strip_diacritics(string)
+            string = string.replace("'", '')
+            return string
+        pairs.sort(key=lambda _: sort_function(_))
+        paths = [_[-1] for _ in pairs]
+        return paths
+
     def _call_latex_on_file(self, file_path):
         r'''Interprets TeX file.
         Calls ``pdflatex`` on file TWICE.
@@ -1105,6 +1117,8 @@ class AbjadIDE(object):
             else:
                 entries = [_ for _ in entries if 'Example Score' not in _[0]]
         paths = [_[-1] for _ in entries]
+        if self._is_score_directory(directory, 'scores'):
+            paths = self._alphabetize_by_score_title(paths)
         return paths
 
     def _make_build_subdirectory(self, directory):
@@ -1287,13 +1301,6 @@ class AbjadIDE(object):
         if self._is_score_directory(directory, 'outer'):
             strings = [os.path.basename(_) for _ in paths]
         pairs = list(zip(strings, paths))
-        if self._is_score_directory(directory, 'scores'):
-            def sort_function(pair):
-                string = pair[0]
-                string = abjad.stringtools.strip_diacritics(string)
-                string = string.replace("'", '')
-                return string
-            pairs.sort(key=lambda _: sort_function(_))
         for string, path in pairs:
             asset_menu_entry = (string, None, None, path)
             asset_menu_entries.append(asset_menu_entry)
@@ -1861,11 +1868,7 @@ class AbjadIDE(object):
             for part in parts:
                 if part.startswith('md:'):
                     metadatum_name = part[3:]
-                    metadatum = self._get_metadatum(
-                        path,
-                        metadatum_name,
-                        include_score=True,
-                        )
+                    metadatum = self._get_metadatum(path, metadatum_name)
                     metadatum = repr(metadatum)
                     pattern = pattern.replace(part, metadatum)
         try:
