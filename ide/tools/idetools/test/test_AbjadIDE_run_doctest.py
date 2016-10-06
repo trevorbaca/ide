@@ -3,7 +3,7 @@ from abjad import *
 import os
 import ide
 import pytest
-pytest.skip('FIX: make doctest include the build/ directory in output.')
+pytest.mark.skip('FIX: make doctest include the build/ directory in output.')
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 

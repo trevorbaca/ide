@@ -5,7 +5,7 @@ import ide
 import pytest
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
-pytest.skip('make this work on Travis by pre-generating all artifacts.')
+pytest.mark.skip('make this work on Travis by pre-generating all artifacts.')
 
 
 def test_AbjadIDE_build_score_01():
