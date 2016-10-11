@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-markup_inventory = markuptools.MarkupInventory(
+markup_inventory = abjad.markuptools.MarkupInventory(
     [
-        markuptools.Markup(
+        abjad.markuptools.Markup(
             contents=(
-                markuptools.MarkupCommand(
+                abjad.markuptools.MarkupCommand(
                     'bold',
                     ['staccatissimo', 'luminoso']
                     ),
                 ),
             ),
-        markuptools.Markup(
+        abjad.markuptools.Markup(
             contents=(
-                markuptools.MarkupCommand(
+                abjad.markuptools.MarkupCommand(
                     'italic',
                     ['serenamente']
                     ),

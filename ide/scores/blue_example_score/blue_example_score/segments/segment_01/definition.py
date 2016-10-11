@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import abjad
 import os
-from abjad import *
-systemtools.IOManager.spawn_subprocess('clear')
+abjad.systemtools.IOManager.spawn_subprocess('clear')
 
 
 ### CONTEXT SHORTCUTS (TO EXTERNALIZE LATER) ###

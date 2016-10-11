@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-class {class_name}(object):
+class {class_name}(abjad.abctools.AbjadObject):
     r'''
     '''
 

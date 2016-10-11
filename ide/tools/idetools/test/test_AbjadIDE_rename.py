@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import ide
 import os
 import shutil
 from abjad import *
-import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -140,7 +140,7 @@ def test_AbjadIDE_rename_03():
 
 
 def test_AbjadIDE_rename_04():
-    r'''Renames build file inside score.
+    r'''Renames build subdirectory inside score.
     '''
 
     old_path = os.path.join(
@@ -148,31 +148,23 @@ def test_AbjadIDE_rename_04():
         'red_example_score',
         'red_example_score',
         'build',
-        'new-file.txt',
+        'letter-portrait',
         )
+    assert os.path.isdir(old_path)
     new_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
-        'renamed-file.txt',
+        'standard-size',
         )
 
-    new_input = 'red~example~score bb new new-file.txt q'
-    rename_input = 'red~example~score bb ren new-file.txt renamed-file.txt y q'
+    rename_input = 'red~example~score bb ren letter-portrait standard-size y q'
 
-    paths = (
-        old_path,
-        new_path,
-        )
-    for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+    if os.path.exists(new_path):
+        shutil.rmtree(new_path)
 
-    with systemtools.FilesystemState(remove=[old_path, new_path]):
-        abjad_ide._start(input_=new_input)
+    with systemtools.FilesystemState(keep=[old_path], remove=[new_path]):
         assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
         assert not os.path.exists(old_path)

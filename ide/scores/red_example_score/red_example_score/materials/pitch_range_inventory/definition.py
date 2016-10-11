@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-pitch_range_inventory = pitchtools.PitchRangeInventory(
+pitch_range_inventory = abjad.pitchtools.PitchRangeInventory(
     [
-        pitchtools.PitchRange(
+        abjad.pitchtools.PitchRange(
             '[A0, C4)'
             ),
-        pitchtools.PitchRange(
+        abjad.pitchtools.PitchRange(
             '[C4, C8]'
             ),
         ]

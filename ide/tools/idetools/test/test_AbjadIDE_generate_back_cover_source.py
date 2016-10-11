@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import ide
 import os
 from abjad import *
-import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -22,6 +22,7 @@ def test_AbjadIDE_generate_back_cover_source_01():
         'blue_example_score',
         'blue_example_score',
         'build',
+        'letter-portrait',
         'back-cover.tex',
         )
 
@@ -32,7 +33,7 @@ def test_AbjadIDE_generate_back_cover_source_01():
 
     with systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
-        input_ = 'blue~example~score bb bcg q'
+        input_ = 'blue~example~score bb letter-portrait bcg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(destination_path)
         with open(destination_path) as file_pointer:
@@ -58,6 +59,7 @@ def test_AbjadIDE_generate_back_cover_source_02():
         'red_example_score',
         'red_example_score',
         'build',
+        'letter-portrait',
         'back-cover.tex',
         )
 
@@ -69,10 +71,10 @@ def test_AbjadIDE_generate_back_cover_source_02():
     with systemtools.FilesystemState(keep=[source_path, destination_path]):
         os.remove(destination_path)
         # generate first time
-        input_ = 'red~example~score bb bcg q'
+        input_ = 'red~example~score bb letter-portrait bcg q'
         abjad_ide._start(input_=input_)
         # attempt to generate second time
-        input_ = 'red~example~score bb bcg q'
+        input_ = 'red~example~score bb letter-portrait bcg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(destination_path)
 

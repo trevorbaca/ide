@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import re
+import abjad
 import functools
 import numbers
-from abjad import *
+import re
 
 
 class Getter(object):
@@ -125,7 +125,7 @@ class Getter(object):
     def _load_message(self):
         message = self._current_prompt.message
         if self.capitalize_prompts:
-            message = stringtools.capitalize_start(message)
+            message = abjad.stringtools.capitalize_start(message)
         self._messages.append(message)
 
     def _make_prompt(

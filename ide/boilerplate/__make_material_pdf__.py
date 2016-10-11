@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
+import abjad
 import os
 import sys
 import traceback
-from abjad.tools import stringtools
-from abjad.tools import systemtools
-from abjad.tools.topleveltools import persist
 
 
 if __name__ == '__main__':
     
     try:
-        with systemtools.Timer() as timer:
+        with abjad.systemtools.Timer() as timer:
             from __illustrate__ import lilypond_file
         message = 'Abjad runtime {} {} ...'
         total_time = int(timer.elapsed_time)
-        identifier = stringtools.pluralize('second', total_time)
+        identifier = abjad.stringtools.pluralize('second', total_time)
         message = message.format(total_time, identifier)
         print(message)
     except ImportError:
@@ -27,11 +25,11 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.pdf',
             )
-        with systemtools.Timer() as timer:
-            persist(lilypond_file).as_pdf(candidate_path)
+        with abjad.systemtools.Timer() as timer:
+            abjad.persist(lilypond_file).as_pdf(candidate_path)
         message = 'LilyPond runtime {} {} ...'
         total_time = int(timer.elapsed_time)
-        identifier = stringtools.pluralize('second', total_time)
+        identifier = abjad.stringtools.pluralize('second', total_time)
         message = message.format(total_time, identifier)
         print(message)
     except:

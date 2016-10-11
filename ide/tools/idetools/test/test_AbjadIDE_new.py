@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
+import abjad
 import ide
-from abjad.tools import systemtools
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -59,7 +59,7 @@ def test_AbjadIDE_new_01():
 
     input_ = 'new Example~Score q'
 
-    with systemtools.FilesystemState(remove=[outer_score_directory]):
+    with abjad.systemtools.FilesystemState(remove=[outer_score_directory]):
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.exists(outer_score_directory)
@@ -135,7 +135,7 @@ def test_AbjadIDE_new_02():
     if os.path.exists(outer_score_directory):
         os.remove(outer_score_directory)
 
-    with systemtools.FilesystemState(remove=[outer_score_directory]):
+    with abjad.systemtools.FilesystemState(remove=[outer_score_directory]):
         assert not os.path.exists(outer_score_directory)
         os.mkdir(outer_score_directory)
         git_directory = os.path.join(outer_score_directory, '.git')
@@ -171,29 +171,29 @@ def test_AbjadIDE_new_03():
         'example_score_1',
         )
 
-    with systemtools.FilesystemState(remove=[score_package]):
+    with abjad.systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new ExampleScore1 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
-    with systemtools.FilesystemState(remove=[score_package]):
+    with abjad.systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new exampleScore1 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
-    with systemtools.FilesystemState(remove=[score_package]):
+    with abjad.systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new EXAMPLE_SCORE_1 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
-    with systemtools.FilesystemState(remove=[score_package]):
+    with abjad.systemtools.FilesystemState(remove=[score_package]):
         input_ = 'new example_score_1 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(score_package)
 
 
 def test_AbjadIDE_new_04():
-    r'''Makes new build file.
+    r'''Makes new build subdirectory.
     '''
 
     path = os.path.join(
@@ -201,18 +201,18 @@ def test_AbjadIDE_new_04():
         'red_example_score',
         'red_example_score',
         'build',
-        'test-file.txt',
+        'arch-a',
         )
 
-    input_ = 'red~example~score bb new test-file.txt q'
+    input_ = 'red~example~score bb new arch-a arch~a $80 ARCH-A y q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
 
 
 def test_AbjadIDE_new_05():
-    r'''Coerces build file name.
+    r'''Coerces build subdirectory name.
     '''
 
     path = os.path.join(
@@ -220,12 +220,12 @@ def test_AbjadIDE_new_05():
         'red_example_score',
         'red_example_score',
         'build',
-        'test-file.txt',
+        'arch-a',
         )
 
-    input_ = 'red~example~score bb new test_file.txt q'
+    input_ = 'red~example~score bb new arch_a arch~a $80 ARCH-A y q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
 
@@ -244,12 +244,12 @@ def test_AbjadIDE_new_06():
 
     input_ = 'red~example~score oo new NewMaker.py q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         with open(path, 'r') as file_pointer:
             string = file_pointer.read()
-            assert 'class NewMaker(object)' in string
+            assert 'class NewMaker(abjad.abctools.AbjadObject)' in string
 
 
 def test_AbjadIDE_new_07():
@@ -266,12 +266,12 @@ def test_AbjadIDE_new_07():
 
     input_ = 'red~example~score oo new new~maker q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         with open(path, 'r') as file_pointer:
             string = file_pointer.read()
-            assert 'class NewMaker(object)' in string
+            assert 'class NewMaker(abjad.abctools.AbjadObject)' in string
 
 
 def test_AbjadIDE_new_08():
@@ -293,7 +293,7 @@ def test_AbjadIDE_new_08():
 
     input_ = 'Red~Example~Score mm new test_notes q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         entries = os.listdir(path)
@@ -320,7 +320,7 @@ def test_AbjadIDE_new_09():
 
     input_ = 'Red~Example~Score mm new test~notes q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         entries = os.listdir(path)
@@ -347,7 +347,7 @@ def test_AbjadIDE_new_10():
 
     input_ = 'red~example~score gg new segment_04 q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         entries = os.listdir(path)
@@ -374,7 +374,7 @@ def test_AbjadIDE_new_11():
 
     input_ = 'red~example~score gg new segment~04 q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
         entries = os.listdir(path)
@@ -396,7 +396,7 @@ def test_AbjadIDE_new_12():
 
     input_ = 'red~example~score yy new new-stylesheet.ily q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)
 
@@ -415,6 +415,6 @@ def test_AbjadIDE_new_13():
 
     input_ = 'red~example~score yy new new~stylesheet q'
 
-    with systemtools.FilesystemState(remove=[path]):
+    with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
         assert os.path.exists(path)

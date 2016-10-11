@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import abjad
 import os
 import sys
 import traceback
-from abjad.tools.topleveltools import persist
 
 
 if __name__ == '__main__':
@@ -19,7 +19,7 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.ly',
             )
-        persist(lilypond_file).as_ly(candidate_path)
+        abjad.persist(lilypond_file).as_ly(candidate_path)
     except:
         traceback.print_exc()
         sys.exit(1)

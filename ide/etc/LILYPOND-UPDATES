@@ -27,8 +27,8 @@ version of LilyPond:
 
     (red~example~score mm lyi* q)
     (red~example~score gg lyi* q)
-    (red~example~score bb mi q)
-    (red~example~score bb si q)
+    (red~example~score bb letter-portrait mi q)
+    (red~example~score bb letter-portrait si q)
 
 Calling "git st" will show the following modifications:
 

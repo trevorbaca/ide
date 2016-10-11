@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import ide
 import os
 from abjad import *
-import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -17,17 +17,18 @@ def test_AbjadIDE_generate_front_cover_source_01():
         'red_example_score',
         'red_example_score',
         'build',
+        'letter-portrait',
         'front-cover.tex',
         )
 
     with systemtools.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         # generate first time
-        input_ = 'red~example~score bb fcg q'
+        input_ = 'red~example~score bb letter-portrait fcg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(cover_path)
         # attempt to generate second time
-        input_ = 'red~example~score bb fcg q'
+        input_ = 'red~example~score bb letter-portrait fcg q'
         abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
@@ -45,13 +46,14 @@ def test_AbjadIDE_generate_front_cover_source_02():
         'red_example_score',
         'red_example_score',
         'build',
+        'letter-portrait',
         'front-cover.tex',
         )
 
     with systemtools.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         assert not os.path.exists(cover_path)
-        input_ = 'red~example~score bb fcg q'
+        input_ = 'red~example~score bb letter-portrait fcg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(cover_path)
 

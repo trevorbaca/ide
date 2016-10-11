@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 
 
-testnotes = scoretools.make_notes(6 * [2, 4, 5, 7], [(1, 16)])
+testnotes = abjad.scoretools.make_notes(6 * [2, 4, 5, 7], [(1, 16)])

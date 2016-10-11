@@ -1,5 +1,6 @@
-from abjad import *
+# -*- coding: utf-8 -*-
+import abjad
 from ide.materials.dynamic_handler.output import dynamic_handler
 
 
-#illustration = lilypondfiletools.make_basic_lilypond_file(score)
+#illustration = abjad.lilypondfiletools.make_basic_lilypond_file(score)
