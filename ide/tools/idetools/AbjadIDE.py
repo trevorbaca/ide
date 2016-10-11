@@ -572,7 +572,7 @@ class AbjadIDE(object):
                 message = 'can not interpret metadata py: {!r}.'
                 message = message.format(self._trim_path(metadata_py_path))
                 self._io_manager._display(message)
-            except NameError, e:
+            except(NameError, e):
                 raise Exception(repr(metadata_py_path), e)
         metadata = metadata or abjad.datastructuretools.TypedOrderedDict()
         return metadata
