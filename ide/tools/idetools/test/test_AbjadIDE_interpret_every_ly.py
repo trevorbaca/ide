@@ -29,17 +29,16 @@ def test_AbjadIDE_interpret_every_ly_01():
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
-    paths = ly_paths + pdf_paths
 
-    with systemtools.FilesystemState(keep=paths):
+    with systemtools.FilesystemState(keep=ly_paths):
         for path in pdf_paths:
-            os.remove(path)
+            if os.path.isfile(path):
+                os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score mm lyi* q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert all(os.path.isfile(_) for _ in pdf_paths)
-        assert systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
         message = 'Calling LilyPond on {} ...'
@@ -124,17 +123,16 @@ def test_AbjadIDE_interpret_every_ly_03():
         for _ in package_names
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
-    paths = ly_paths + pdf_paths
 
-    with systemtools.FilesystemState(keep=paths):
+    with systemtools.FilesystemState(keep=ly_paths):
         for path in pdf_paths:
-            os.remove(path)
+            if os.path.isfile(path):
+                os.remove(path)
         assert not any(os.path.exists(_) for _ in pdf_paths)
         input_ = 'red~example~score gg lyi* q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert all(os.path.isfile(_) for _ in pdf_paths)
-        assert systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
         message = 'Calling LilyPond on {} ...'
