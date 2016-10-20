@@ -49,3 +49,6 @@ nosetests.xml
 
 # IPython
 .ipynb_checkpoints
+
+# Abjad IDE
+illustration.pdf
