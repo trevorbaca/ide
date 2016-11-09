@@ -139,13 +139,15 @@ class AbjadIDEConfiguration(Configuration):
                 os.makedirs(directory)
 
     def _read_aliases_file(self):
-        aliases = None
+        import abjad
+        globals_ = globals()
         file_path = self.abjad_ide_aliases_file_path
         if os.path.isfile(file_path):
             with open(file_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
-            exec(file_contents_string)
-        aliases = aliases or collections.OrderedDict()
+            exec(file_contents_string, globals_)
+        aliases = globals_.get('aliases') or \
+            abjad.datastructuretools.TypedOrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
@@ -258,7 +260,7 @@ class AbjadIDEConfiguration(Configuration):
             ::
 
                 >>> configuration.aliases
-                OrderedDict(...)
+                TypedOrderedDict(...)
 
         Returns ordered dictionary.
         '''
