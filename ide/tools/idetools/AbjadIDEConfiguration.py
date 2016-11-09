@@ -146,7 +146,8 @@ class AbjadIDEConfiguration(Configuration):
             with open(file_path, 'r') as file_pointer:
                 file_contents_string = file_pointer.read()
             exec(file_contents_string, globals_)
-        aliases = globals_.get('aliases')
+        aliases = globals_.get('aliases') or \
+            abjad.datastructuretools.TypedOrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
