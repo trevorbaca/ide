@@ -176,24 +176,23 @@ class Getter(object):
                 self.display_help()
                 continue
             assert isinstance(input_, str), repr(input_)
-            directive = input_
-            if directive is None:
+            if input_ is None:
                 continue
-            elif directive == '<return>':
+            elif input_ == '<return>':
                 self._current_prompt_is_done = True
                 self._all_prompts_are_done = True
                 self._io_manager._session._pending_redraw = True
-            elif directive is None:
+            elif input_ is None:
                 break
-            elif directive == 'help':
+            elif input_ == 'help':
                 self.display_help()
-            elif directive == 'previous':
+            elif input_ == 'previous':
                 self._move_to_previous_prompt()
                 break
-            elif directive == 'skip':
+            elif input_ == 'skip':
                 break
-            elif isinstance(directive, str):
-                self._evaluate_input(directive, namespace)
+            elif isinstance(input_, str):
+                self._evaluate_input(input_, namespace)
             else:
                 raise ValueError
 
