@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 import ide
 
 
-def test_GetterPrompt___format___01():
+def test_Prompt___format___01():
 
     getter = ide.tools.idetools.Getter()
     getter.append_string('value')
@@ -13,7 +13,7 @@ def test_GetterPrompt___format___01():
     modified_format = prompt_format[:index]
     modified_format = modified_format + ')'
 
-    assert systemtools.TestManager.compare(
+    assert abjad.systemtools.TestManager.compare(
         modified_format,
         r'''
         idetools.Prompt(
@@ -21,6 +21,7 @@ def test_GetterPrompt___format___01():
             help_template='value must be string.',
             help_template_arguments=[],
             include_chevron=True,
+            is_string=True,
             message='value',
             setup_statements=[],
             )

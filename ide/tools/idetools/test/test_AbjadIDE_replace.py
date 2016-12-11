@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-import os
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_replace_01():
         'RhythmMaker.py',
         )
     
-    with systemtools.FilesystemState(keep=[path]):
+    with abjad.systemtools.FilesystemState(keep=[path]):
         input_ = 'red~example~score sr RhythmMaker q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents

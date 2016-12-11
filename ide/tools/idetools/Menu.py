@@ -37,7 +37,7 @@ class Menu(object):
 
     __slots__ = (
         '_asset_section',
-        '_explicit_header',
+        '_header',
         '_io_manager',
         '_menu_sections',
         '_name',
@@ -79,12 +79,12 @@ class Menu(object):
 
     def __init__(
         self,
-        explicit_header=None,
+        header=None,
         name=None,
         subtitle=None,
         title=None,
         ):
-        self._explicit_header = explicit_header
+        self._header = header
         self._io_manager = None
         self._menu_sections = []
         self._name = name
@@ -416,7 +416,7 @@ class Menu(object):
             lines, 
             break_only_at_blank_lines=True,
             )
-        title = self.explicit_header
+        title = self.header
         if command_type == 'action':
             title = title + ' - action commands'
         elif command_type == 'navigation':
@@ -483,8 +483,8 @@ class Menu(object):
 
     def _make_title_lines(self):
         result = []
-        if self.explicit_header is not None:
-            title = self.explicit_header
+        if self.header is not None:
+            title = self.header
         elif self.title is not None:
             title = self.title
         else:
@@ -600,12 +600,12 @@ class Menu(object):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def explicit_header(self):
+    def header(self):
         r'''Gets explicit title.
 
         Returns string or none.
         '''
-        return self._explicit_header
+        return self._header
 
     @property
     def menu_sections(self):

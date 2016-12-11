@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
-from abjad import *
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -20,7 +20,7 @@ def test_AbjadIDE_remove_01():
         'example_score_100',
         )
 
-    with systemtools.FilesystemState(remove=[outer_path, inner_path]):
+    with abjad.systemtools.FilesystemState(remove=[outer_path, inner_path]):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(outer_path)
@@ -61,7 +61,7 @@ def test_AbjadIDE_remove_02():
         )
     paths = [path_100_outer, path_100_inner, path_101_outer, path_101_inner]
 
-    with systemtools.FilesystemState(remove=paths):
+    with abjad.systemtools.FilesystemState(remove=paths):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(path_100_outer)

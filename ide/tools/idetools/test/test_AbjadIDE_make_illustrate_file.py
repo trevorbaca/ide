@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import abjad
 import filecmp
-import os
-from abjad import *
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_make_illustrate_file_01():
         '__illustrate__.py',
         )
 
-    with systemtools.FilesystemState(keep=[path]):
+    with abjad.systemtools.FilesystemState(keep=[path]):
         assert os.path.isfile(path)
         os.remove(path)
         assert not os.path.isfile(path)

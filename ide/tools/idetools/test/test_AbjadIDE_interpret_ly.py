@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
-from abjad import *
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -29,14 +29,14 @@ def test_AbjadIDE_interpret_ly_01():
         'illustration.pdf',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score mm tempo~inventory lyi q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
 
     message = 'Calling LilyPond on {} ...'
     message = message.format(abjad_ide._trim_path(ly_path))
@@ -68,14 +68,14 @@ def test_AbjadIDE_interpret_ly_02():
         'illustration.pdf',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score gg A lyi q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
 
     message = 'Calling LilyPond on {} ...'
     message = message.format(abjad_ide._trim_path(ly_path))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-import os
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -21,12 +21,12 @@ def test_AbjadIDE_make_ly_01():
         )
     ly_path = os.path.join(material_directory, 'illustration.ly')
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         os.remove(ly_path)
         input_ = 'red~example~score mm magic~numbers lym q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Overwriting' in contents
@@ -52,7 +52,7 @@ def test_AbjadIDE_make_ly_02():
         'illustration.candidate.ly',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         # remove existing ly
         os.remove(ly_path)
         assert not os.path.exists(ly_path)
@@ -91,13 +91,13 @@ def test_AbjadIDE_make_ly_03():
         'illustration.candidate.ly',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         with open(ly_path, 'w') as file_pointer:
             file_pointer.write('text')
         input_ = 'red~example~score mm magic~numbers lym q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents
@@ -121,12 +121,12 @@ def test_AbjadIDE_make_ly_04():
         )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         os.remove(ly_path)
         input_ = 'red~example~score gg A lym q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Wrote' in contents
@@ -152,7 +152,7 @@ def test_AbjadIDE_make_ly_05():
         'illustration.candidate.ly',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         # remove existing ly
         os.remove(ly_path)
         assert not os.path.exists(ly_path)
@@ -191,13 +191,13 @@ def test_AbjadIDE_make_ly_06():
         'illustration.candidate.ly',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         with open(ly_path, 'w') as file_pointer:
             file_pointer.write('text')
         input_ = 'red~example~score gg A lym q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'The files ...' in contents

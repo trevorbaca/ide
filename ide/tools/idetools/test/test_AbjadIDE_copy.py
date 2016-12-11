@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import abjad
 import ide
 import os
-from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 scores_directory = configuration.abjad_ide_example_scores_directory
@@ -32,7 +32,7 @@ def test_AbjadIDE_copy_01():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         input_ = 'Blue~Example~Score bb letter-portrait cp'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
@@ -66,7 +66,7 @@ def test_AbjadIDE_copy_02():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score dd cp'
         input_ += ' {}'.format(trimmed_source_file)
@@ -99,7 +99,7 @@ def test_AbjadIDE_copy_03():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score ee cp'
         input_ += ' {}'.format(trimmed_source_file)
@@ -132,7 +132,7 @@ def test_AbjadIDE_copy_04():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score oo cp'
         input_ += ' {}'.format(trimmed_source_file)
@@ -167,7 +167,7 @@ def test_AbjadIDE_copy_05():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score mm articulation~handler cp'
@@ -202,7 +202,7 @@ def test_AbjadIDE_copy_06():
     trimmed_source_package = abjad_ide._trim_path(source_package)
     trimmed_target_package = abjad_ide._trim_path(target_package)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
         input_ = 'Blue~Example~Score mm cp'
@@ -238,7 +238,7 @@ def test_AbjadIDE_copy_07():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score gg segment~01 cp'
@@ -273,7 +273,7 @@ def test_AbjadIDE_copy_08():
     trimmed_source_package = abjad_ide._trim_path(source_package)
     trimmed_target_package = abjad_ide._trim_path(target_package)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
         input_ = 'Blue~Example~Score gg cp'
@@ -307,7 +307,7 @@ def test_AbjadIDE_copy_09():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score yy cp'
         input_ += ' {}'.format(trimmed_source_file)
@@ -340,7 +340,7 @@ def test_AbjadIDE_copy_10():
     trimmed_source_file = abjad_ide._trim_path(source_file)
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
-    with systemtools.FilesystemState(keep=[scores_directory]):
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
         input_ = 'Blue~Example~Score tt cp'
         input_ += ' {}'.format(trimmed_source_file)

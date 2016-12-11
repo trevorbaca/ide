@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import pytest
-from abjad import *
+import abjad
 import ide
+import pytest
 
 
 def test_MenuSection_default_index_01():

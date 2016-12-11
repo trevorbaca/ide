@@ -229,6 +229,8 @@ class AbjadIDE(object):
 
     def _collect_similar_directories(self, directory, example_scores=False):
         assert os.path.isdir(directory), repr(directory)
+        if not self._is_score_directory(directory):
+            return [directory]
         directories = []
         scores_directories = [configuration.composer_scores_directory]
         if example_scores:
@@ -955,6 +957,19 @@ class AbjadIDE(object):
             return False
         return True
 
+    @staticmethod
+    def _is_public_python_file_name(expr):
+        if not isinstance(expr, str):
+            return False
+        if os.path.sep in expr:
+            return False
+        file_name, file_extension = os.path.splitext(expr)
+        if file_name.startswith('_'):
+            return False
+        if not file_extension == '.py':
+            return False
+        return True
+        
     def _is_score_directory(self, directory, prototype=()):
         if not isinstance(directory, str):
             return False
@@ -970,6 +985,11 @@ class AbjadIDE(object):
             if directory.startswith(scores_directory):
                 return True
         assert all(isinstance(_, str) for _ in prototype)
+        directory_1 = configuration.composer_scores_directory
+        directory_2 = configuration.abjad_ide_example_scores_directory
+        if not (directory.startswith(directory_1) or
+            directory.startswith(directory_2)):
+            return False
         if 'scores' in prototype:
             if directory == configuration.composer_scores_directory:
                 return True
@@ -1078,6 +1098,8 @@ class AbjadIDE(object):
                 continue
             name_predicate = self._to_name_predicate(directory)
             entries = sorted(os.listdir(directory))
+#            if 'baca/baca' in directory_:
+#                raise Exception(name_predicate)
             for entry in entries:
                 if not name_predicate(entry):
                     continue
@@ -1087,6 +1109,8 @@ class AbjadIDE(object):
                 if not path.startswith(directory_):
                     continue
                 paths.append(path)
+#        if 'baca/baca' in directory:
+#            raise Exception(paths)
         return paths
 
     def _list_secondary_paths(self, directory):
@@ -1101,6 +1125,8 @@ class AbjadIDE(object):
     def _list_visible_paths(self, directory):
         assert os.path.isdir(directory), repr(directory)
         paths = self._list_paths(directory)
+#        if 'baca/baca' in directory:
+#            raise Exception(paths)
         strings = [self._to_menu_string(_) for _ in paths]
         entries = []
         pairs = list(zip(strings, paths))
@@ -1224,6 +1250,8 @@ class AbjadIDE(object):
                     directory, command.forbidden_directories)):
                 continue
             commands.append(command)
+        if 'baca/baca' in directory:
+            raise Exception(repr(commands))
         command_groups = {}
         for command in commands:
             if command.section not in command_groups:
@@ -1275,13 +1303,13 @@ class AbjadIDE(object):
             self._io_manager.write(file_path, contents)
         self._io_manager.edit(file_path)
 
-    def _make_main_menu(self, directory, explicit_header):
+    def _make_main_menu(self, directory, header):
         assert os.path.isdir(directory), repr(directory)
-        assert isinstance(explicit_header, str), repr(explicit_header)
-        name = abjad.stringtools.to_space_delimited_lowercase(
-            type(self).__name__)
+        assert isinstance(header, str), repr(header)
+        name = type(self).__name__
+        name = abjad.stringtools.to_space_delimited_lowercase(name)
         menu = self._io_manager._make_menu(
-            explicit_header=explicit_header,
+            header=header,
             name=name,
             )
         menu_entries = []
@@ -1305,6 +1333,7 @@ class AbjadIDE(object):
         menu_entries.extend(asset_menu_entries)
         if menu_entries:
             menu.make_asset_section(menu_entries=menu_entries)
+        # HERE
         self._make_command_menu_sections(directory, menu)
         return menu
 
@@ -1770,6 +1799,8 @@ class AbjadIDE(object):
             self._session._current_directory = directory
         menu_header = self._to_menu_header(directory)
         menu = self._make_main_menu(directory, menu_header)
+        #if 'trevorbaca' in menu_header:
+        #    raise Exception(menu.menu_sections)
         while True:
             if not self._session.current_directory == directory:
                 self._session._previous_directory = \
@@ -1792,6 +1823,8 @@ class AbjadIDE(object):
                         names = ('material', 'segment')
                         if self._is_score_directory(parent_directory, names):
                             self._manage_directory(parent_directory)
+                    elif os.path.isdir(path):
+                        self._manage_directory(path)
                     else:
                         message = 'file does not exist: {}.'
                         message = message.format(self._trim_path(path))
@@ -2269,6 +2302,10 @@ class AbjadIDE(object):
         if self._is_score_directory(directory, 'scores'):
             return 'Abjad IDE - all score directories'
         score_directory = self._to_score_directory(directory)
+        if score_directory is None:
+            header = 'Abjad IDE - {}'
+            header = header.format(directory)
+            return header
         score_part = self._get_title_metadatum(score_directory)
         header_parts.append(score_part)
         if self._is_score_directory(directory, 'outer'):
@@ -2317,7 +2354,9 @@ class AbjadIDE(object):
         if os.path.isfile(directory):
             directory = os.path.dirname(directory)
         prototype = ('tools', 'outer', 'test')
-        if not self._is_score_directory(directory, prototype):
+        if not self._is_score_directory(directory):
+            pass
+        elif not self._is_score_directory(directory, prototype):
             if '_' in name:
                 name = abjad.stringtools.to_space_delimited_lowercase(name)
         if self._is_score_directory(path, 'segment'):
@@ -2338,7 +2377,9 @@ class AbjadIDE(object):
     def _to_name_predicate(self, directory):
         file_prototype = ('distribution', 'etc')
         package_prototype = ('materials', 'segments', 'scores')
-        if self._is_score_directory(directory, 'build'):
+        if not self._is_score_directory(directory):
+            return self._is_public_python_file_name
+        elif self._is_score_directory(directory, 'build'):
             return self._is_build_directory_name
         elif self._is_score_directory(directory, 'build subdirectory'):
             return self._is_dash_case_file_name

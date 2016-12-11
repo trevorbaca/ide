@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import abjad
 import ide
 import os
-from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -31,7 +31,7 @@ def test_AbjadIDE_generate_preface_source_01():
     assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
-    with systemtools.FilesystemState(
+    with abjad.systemtools.FilesystemState(
         keep=[source_path], remove=[destination_path]):
         input_ = 'blue~example~score bb letter-portrait pg q'
         abjad_ide._start(input_=input_)
@@ -68,7 +68,7 @@ def test_AbjadIDE_generate_preface_source_02():
     assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
-    with systemtools.FilesystemState(keep=[source_path, destination_path]):
+    with abjad.systemtools.FilesystemState(keep=[source_path, destination_path]):
         input_ = 'red~example~score bb letter-portrait pg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(destination_path)

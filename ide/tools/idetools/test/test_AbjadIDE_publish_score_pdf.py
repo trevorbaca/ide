@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import abjad
 import ide
 import os
 import shutil
-from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_publish_score_pdf_01():
 
     assert os.path.exists(score_pdf_path)
 
-    with systemtools.FilesystemState(keep=[score_pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[score_pdf_path]):
         os.remove(score_pdf_path)
         input_ = 'red~example~score bb letter-portrait spp q'
         abjad_ide._start(input_=input_)

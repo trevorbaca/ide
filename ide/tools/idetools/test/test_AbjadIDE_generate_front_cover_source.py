@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import abjad
 import ide
 import os
-from abjad import *
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -21,7 +21,7 @@ def test_AbjadIDE_generate_front_cover_source_01():
         'front-cover.tex',
         )
 
-    with systemtools.FilesystemState(keep=[cover_path]):
+    with abjad.systemtools.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         # generate first time
         input_ = 'red~example~score bb letter-portrait fcg q'
@@ -50,7 +50,7 @@ def test_AbjadIDE_generate_front_cover_source_02():
         'front-cover.tex',
         )
 
-    with systemtools.FilesystemState(keep=[cover_path]):
+    with abjad.systemtools.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         assert not os.path.exists(cover_path)
         input_ = 'red~example~score bb letter-portrait fcg q'

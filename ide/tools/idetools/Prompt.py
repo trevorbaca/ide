@@ -13,6 +13,7 @@ class Prompt(AbjadObject):
         '_help_template',
         '_help_template_arguments',
         '_include_chevron',
+        '_is_string',
         '_message',
         '_setup_statements',
         '_validation_function',
@@ -26,6 +27,7 @@ class Prompt(AbjadObject):
         help_template=None,
         help_template_arguments=None,
         include_chevron=True,
+        is_string=None,
         message=None,
         setup_statements=None,
         validation_function=None,
@@ -37,6 +39,7 @@ class Prompt(AbjadObject):
         self._help_template = help_template
         self._help_template_arguments = help_template_arguments or []
         self._include_chevron = include_chevron
+        self._is_string = is_string
         self._message = message
         self._setup_statements = setup_statements or []
         self._validation_function = validation_function
@@ -86,6 +89,16 @@ class Prompt(AbjadObject):
         Returns true or false.
         '''
         return self._include_chevron
+
+    @property
+    def is_string(self):
+        r'''Is true when prompt is string. Otherwise false.
+
+        Defaults to none.
+
+        Returns true, false or none.
+        '''
+        return self._is_string
 
     @property
     def message(self):

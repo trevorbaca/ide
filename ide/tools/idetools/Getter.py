@@ -85,8 +85,12 @@ class Getter(object):
         setup_statements = self._current_prompt.setup_statements
         if 'evaluated_input' in namespace:
             del(namespace['evaluated_input'])
+        #if 'map' in input_:
+        #    raise Exception(repr(input_))
         if self.allow_none and input_ in ('', 'None'):
             namespace['evaluated_input'] = None
+        elif self._current_prompt._is_string:
+            namespace['evaluated_input'] = input_
         elif setup_statements:
             for setup_statement in self._current_prompt.setup_statements:
                 try:
@@ -102,10 +106,10 @@ class Getter(object):
                     self.display_help()
         else:
             try:
-                namespace['evaluated_input'] = eval(
-                    input_, namespace, namespace)
-            except (NameError, SyntaxError):
-                namespace['evaluated_input'] = input_
+                input_ = eval(input_, namespace, namespace)
+            except (AttributeError, NameError, SyntaxError):
+                pass
+            namespace['evaluated_input'] = input_
         if not 'evaluated_input' in namespace:
             return
         if not self._validate_evaluated_input(namespace['evaluated_input']):
@@ -135,6 +139,7 @@ class Getter(object):
         help_template=None,
         help_template_arguments=None,
         include_chevron=True,
+        is_string=None,
         setup_statements=None,
         validation_function=None,
         ):
@@ -144,6 +149,7 @@ class Getter(object):
             help_template=help_template,
             help_template_arguments=help_template_arguments,
             include_chevron=include_chevron,
+            is_string=is_string,
             message=spaced_attribute_name,
             setup_statements=setup_statements,
             validation_function=validation_function,
@@ -386,10 +392,12 @@ class Getter(object):
             help_template = 'value must be nonempty string.'
         self._make_prompt(
             spaced_attribute_name,
-            validation_function=validation_function,
+            is_string=True,
             help_template=help_template,
+            validation_function=validation_function,
             )
 
+    # TODO: see if this can be removed?
     def append_string_or_integer(
         self,
         spaced_attribute_name,
@@ -403,21 +411,6 @@ class Getter(object):
         self._make_prompt(
             spaced_attribute_name,
             validation_function=validation_function,
-            help_template=help_template,
-            )
-
-    def append_string_or_none(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends string or none.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be string or none.'
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=Getter.is_string_or_none,
             help_template=help_template,
             )
 

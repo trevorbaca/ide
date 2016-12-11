@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 import ide
 
 
@@ -19,7 +19,7 @@ def test_MenuEntry___format___01():
         name='test',
         )
 
-    assert systemtools.TestManager.compare(
+    assert abjad.systemtools.TestManager.compare(
         format(section[0]),
         r'''
         idetools.MenuEntry(

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import os
-from abjad import *
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -36,7 +36,7 @@ def test_AbjadIDE_refresh_01():
         '>',
         ]
 
-    with systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path]):
         assert os.path.isfile(ly_path)
         input_ = 'red~example~score mm magic~numbers !rm~illustration.ly rf q'
         abjad_ide._start(input_=input_)

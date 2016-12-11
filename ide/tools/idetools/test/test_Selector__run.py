@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abjad import *
+import abjad
 import ide
 session = ide.tools.idetools.Session(is_test=True)
 io_manager = ide.tools.idetools.IOManager(session=session)

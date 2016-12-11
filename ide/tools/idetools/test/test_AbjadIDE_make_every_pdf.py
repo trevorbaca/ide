@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-import os
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -30,7 +30,7 @@ def test_AbjadIDE_make_every_pdf_01():
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
-    with systemtools.FilesystemState(keep=paths):
+    with abjad.systemtools.FilesystemState(keep=paths):
         for path in paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in paths)
@@ -38,7 +38,7 @@ def test_AbjadIDE_make_every_pdf_01():
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert all(os.path.isfile(_) for _ in paths)
-        assert systemtools.TestManager._compare_backup(pdf_paths)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
         message = 'Writing {} ...'
@@ -77,7 +77,7 @@ def test_AbjadIDE_make_every_pdf_02():
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
-    with systemtools.FilesystemState(keep=paths):
+    with abjad.systemtools.FilesystemState(keep=paths):
         for path in paths:
             os.remove(path)
         assert not any(os.path.exists(_) for _ in paths)
@@ -85,7 +85,7 @@ def test_AbjadIDE_make_every_pdf_02():
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
         assert all(os.path.isfile(_) for _ in paths)
-        assert systemtools.TestManager._compare_backup(pdf_paths)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
         message = 'Writing {} ...'

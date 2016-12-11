@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from abjad import *
-import os
+import abjad
 import ide
+import os
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -22,15 +22,15 @@ def test_AbjadIDE_make_pdf_01():
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(ly_path)
         os.remove(pdf_path)
         input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Calling Python on' in contents
@@ -62,7 +62,7 @@ def test_AbjadIDE_make_pdf_02():
         'illustration.candidate.pdf',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         # remove existing PDF
         os.remove(ly_path)
         os.remove(pdf_path)
@@ -107,7 +107,7 @@ def test_AbjadIDE_make_pdf_03():
         '__illustrate__.py',
         )
 
-    with systemtools.FilesystemState(keep=[ly_path, pdf_path]):
+    with abjad.systemtools.FilesystemState(keep=[ly_path, pdf_path]):
         os.remove(ly_path)
         os.remove(pdf_path)
         input_ = 'red~example~score gg A pdfm q'
@@ -115,8 +115,8 @@ def test_AbjadIDE_make_pdf_03():
         contents = abjad_ide._io_manager._transcript.contents
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
-        assert systemtools.TestManager._compare_backup(ly_path)
-        assert systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.systemtools.TestManager._compare_backup(ly_path)
+        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
 
     message = 'Calling Python on {} ...'
     message = message.format(abjad_ide._trim_path(illustrate_file_path))
