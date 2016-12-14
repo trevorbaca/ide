@@ -100,7 +100,7 @@ def test_AbjadIDE_rename_02():
 
 
 def test_AbjadIDE_rename_03():
-    r'''Renames segment directory inside score.
+    r'''Renames segment directory.
     '''
 
     old_path = os.path.join(
@@ -140,7 +140,35 @@ def test_AbjadIDE_rename_03():
 
 
 def test_AbjadIDE_rename_04():
-    r'''Renames build subdirectory inside score.
+    r'''Renames segment directory with name metadatum.
+    '''
+
+    old_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_03',
+        )
+    new_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'renamed_segment_03',
+        )
+
+    input_ = 'red~example~score gg ren C renamed_segment_03 y q'
+
+    with abjad.systemtools.FilesystemState(keep=[old_path], remove=[new_path]):
+        assert os.path.exists(old_path)
+        abjad_ide._start(input_=input_)
+        assert not os.path.exists(old_path)
+        assert os.path.exists(new_path)
+
+
+def test_AbjadIDE_rename_05():
+    r'''Renames build subdirectory.
     '''
 
     old_path = os.path.join(
@@ -171,8 +199,8 @@ def test_AbjadIDE_rename_04():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_05():
-    r'''Renames maker file inside score.
+def test_AbjadIDE_rename_06():
+    r'''Renames maker file.
     '''
 
     old_path = os.path.join(
@@ -211,8 +239,8 @@ def test_AbjadIDE_rename_05():
         assert os.path.exists(new_path)
 
 
-def test_AbjadIDE_rename_06():
-    r'''Renames stylesheet inside score.
+def test_AbjadIDE_rename_07():
+    r'''Renames stylesheet.
     '''
 
     old_path = os.path.join(

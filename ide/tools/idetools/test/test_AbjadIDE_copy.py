@@ -33,7 +33,7 @@ def test_AbjadIDE_copy_01():
     trimmed_target_file = abjad_ide._trim_path(target_file)
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
-        input_ = 'Blue~Example~Score bb letter-portrait cp'
+        input_ = 'Blue~Example~Score bb letter-portrait cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -68,7 +68,7 @@ def test_AbjadIDE_copy_02():
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score dd cp'
+        input_ = 'Blue~Example~Score dd cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -101,7 +101,7 @@ def test_AbjadIDE_copy_03():
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score ee cp'
+        input_ = 'Blue~Example~Score ee cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -134,7 +134,7 @@ def test_AbjadIDE_copy_04():
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score oo cp'
+        input_ = 'Blue~Example~Score oo cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -170,7 +170,7 @@ def test_AbjadIDE_copy_05():
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score mm articulation~handler cp'
+        input_ = 'Blue~Example~Score mm articulation~handler cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -205,7 +205,7 @@ def test_AbjadIDE_copy_06():
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
-        input_ = 'Blue~Example~Score mm cp'
+        input_ = 'Blue~Example~Score mm cp more'
         input_ += ' {}'.format(trimmed_source_package)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -241,7 +241,7 @@ def test_AbjadIDE_copy_07():
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         os.remove(target_file)
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score gg segment~01 cp'
+        input_ = 'Blue~Example~Score gg segment~01 cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -276,7 +276,7 @@ def test_AbjadIDE_copy_08():
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert os.path.isdir(source_package)
         assert not os.path.exists(target_package)
-        input_ = 'Blue~Example~Score gg cp'
+        input_ = 'Blue~Example~Score gg cp more'
         input_ += ' {}'.format(trimmed_source_package)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -287,6 +287,31 @@ def test_AbjadIDE_copy_08():
 
 
 def test_AbjadIDE_copy_09():
+    r'''Preexisting segment directory doesn't break IDE.
+    '''
+
+    source_package = os.path.join(
+        scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'segments',
+        'segment_03',
+        )
+    source_package = os.path.normpath(source_package)
+    trimmed_source_package = abjad_ide._trim_path(source_package)
+
+    with abjad.systemtools.FilesystemState(keep=[scores_directory]):
+        assert os.path.isdir(source_package)
+        input_ = 'Red~Example~Score gg cp more'
+        input_ += ' {}'.format(trimmed_source_package)
+        input_ += ' q'
+        abjad_ide._start(input_=input_)
+
+    contents = abjad_ide._io_manager._transcript.contents
+    assert 'already exists' in contents
+
+
+def test_AbjadIDE_copy_10():
     r'''Into stylesheets directory.
     '''
 
@@ -309,7 +334,7 @@ def test_AbjadIDE_copy_09():
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score yy cp'
+        input_ = 'Blue~Example~Score yy cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)
@@ -319,7 +344,7 @@ def test_AbjadIDE_copy_09():
     assert 'Blue Example Score (2013) - stylesheets directory - select:' in contents
 
 
-def test_AbjadIDE_copy_10():
+def test_AbjadIDE_copy_11():
     r'''Into test directory.
     '''
 
@@ -342,7 +367,7 @@ def test_AbjadIDE_copy_10():
 
     with abjad.systemtools.FilesystemState(keep=[scores_directory]):
         assert not os.path.exists(target_file)
-        input_ = 'Blue~Example~Score tt cp'
+        input_ = 'Blue~Example~Score tt cp more'
         input_ += ' {}'.format(trimmed_source_file)
         input_ += ' y q'
         abjad_ide._start(input_=input_)

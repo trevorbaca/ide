@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
+import abjad
 import os
 import re
 import shlex
-from abjad.tools import sequencetools
-from abjad.tools import stringtools
 
 
 class Menu(object):
@@ -138,8 +137,8 @@ class Menu(object):
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
-        input_ = stringtools.strip_diacritics(input_)
-        if input_.startswith(('@', '#', '%', '*')):
+        input_ = abjad.stringtools.strip_diacritics(input_)
+        if input_.startswith(('@', '%', '*', '+')):
             return input_
         if input_.startswith('!') and self._has_command('!'):
             return input_
@@ -266,7 +265,7 @@ class Menu(object):
 
     @staticmethod
     def _left_justify(string, width):
-        start_width = len(stringtools.strip_diacritics(string))
+        start_width = len(abjad.stringtools.strip_diacritics(string))
         if start_width < width:
             needed = width - start_width
             suffix = needed * ' '
@@ -351,7 +350,7 @@ class Menu(object):
         left_margin = left_margin_width * ' '
         gutter = gutter_width * ' '
         conjoined_lines = []
-        for _ in sequencetools.zip_sequences(
+        for _ in abjad.sequencetools.zip_sequences(
             [left_lines, right_lines],
             truncate=False,
             ):
@@ -423,7 +422,7 @@ class Menu(object):
             title = title + ' - navigation commands'
         else:
             raise ValueError(repr(command_type))
-        title = stringtools.capitalize_start(title)
+        title = abjad.stringtools.capitalize_start(title)
         lines[0:0] = [title, '']
         lines.append('')
         return lines
@@ -489,7 +488,7 @@ class Menu(object):
             title = self.title
         else:
             title = ''
-        result.append(stringtools.capitalize_start(title))
+        result.append(abjad.stringtools.capitalize_start(title))
         if self.subtitle is not None:
             line = '  ' + self.subtitle
             result.append('')

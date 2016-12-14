@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import abc
+import abjad
 import os
 import platform
 import subprocess
 import sys
 import traceback
-from abjad.tools import stringtools
-from abjad.tools import systemtools
-from abjad.tools.systemtools.IOManager import IOManager
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 try:
     from io import StringIO
@@ -19,7 +17,7 @@ except ImportError:
 configuration = AbjadIDEConfiguration()
 
 
-class IOManager(IOManager):
+class IOManager(abjad.systemtools.IOManager):
     r'''IO manager.
 
     ..  container:: example
@@ -112,7 +110,7 @@ class IOManager(IOManager):
         if isinstance(lines, str):
             lines = [lines]
         if capitalize:
-            lines = [stringtools.capitalize_start(_) for _ in lines]
+            lines = [abjad.stringtools.capitalize_start(_) for _ in lines]
         if lines:
             self._transcript._append_entry(lines, is_menu=is_menu)
         for line in lines:
@@ -163,7 +161,7 @@ class IOManager(IOManager):
         '''
         found_default_token = False
         if capitalize_prompt:
-            message = stringtools.capitalize_start(message)
+            message = abjad.stringtools.capitalize_start(message)
         if include_chevron:
             message = message + prompt_character + ' '
         else:
@@ -241,7 +239,7 @@ class IOManager(IOManager):
     def _make_interaction(self, dry_run=False):
         from ide.tools import idetools
         if dry_run:
-            interaction = systemtools.NullContextManager()
+            interaction = abjad.systemtools.NullContextManager()
         else:
             interaction = idetools.Interaction(io_manager=self)
         return interaction
@@ -329,7 +327,7 @@ class IOManager(IOManager):
 
     ### PUBLIC METHODS ###
 
-    def edit(self, path, line_number=None):
+    def edit(self, path, allow_missing=False, line_number=None):
         r'''Edits file `path`.
 
         Opens at `line_number` when `line_number` is set.
@@ -338,7 +336,7 @@ class IOManager(IOManager):
 
         Returns none.
         '''
-        if not os.path.isfile(path):
+        if not allow_missing and not os.path.isfile(path):
             message = 'can not find {} ...'
             message = message.format(path)
             self._display(message)
@@ -430,7 +428,7 @@ class IOManager(IOManager):
             message = 'can not interpret {}.'.format(path)
             raise Exception(message)
         directory = os.path.dirname(path)
-        directory = systemtools.TemporaryDirectoryChange(directory)
+        directory = abjad.systemtools.TemporaryDirectoryChange(directory)
         string_buffer = StringIO()
         with directory, string_buffer:
             process = subprocess.Popen(
@@ -507,7 +505,7 @@ class IOManager(IOManager):
                 )
             if os.path.exists(script_path):
                 os.remove(script_path)
-            with systemtools.FilesystemState(remove=[script_path]):
+            with abjad.systemtools.FilesystemState(remove=[script_path]):
                 with open(script_path, 'w') as file_pointer:
                     file_pointer.write(completed_template)
                 permissions_command = 'chmod 755 {}'

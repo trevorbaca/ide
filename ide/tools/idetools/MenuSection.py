@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
+import abjad
 import types
-from abjad.tools import stringtools
-from abjad.tools.abctools.AbjadObject import AbjadObject
 
 
-class MenuSection(AbjadObject):
+class MenuSection(abjad.abctools.AbjadObject):
     r'''Menu section.
 
     ..  container:: example
@@ -72,7 +71,7 @@ class MenuSection(AbjadObject):
         return_value_attribute='display_string',
         title=None,
         ):
-        AbjadObject.__init__(self)
+        abjad.abctools.AbjadObject.__init__(self)
         assert menu_entries, repr(name)
         assert name, repr(name)
         assert return_value_attribute in self.return_value_attributes
@@ -259,7 +258,7 @@ class MenuSection(AbjadObject):
     def _make_title_lines(self):
         menu_lines = []
         if isinstance(self.title, str):
-            title_lines = [stringtools.capitalize_start(self.title)]
+            title_lines = [abjad.stringtools.capitalize_start(self.title)]
         elif isinstance(self.title, list):
             title_lines = self.title
         else:

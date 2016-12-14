@@ -231,7 +231,7 @@ def test_AbjadIDE_new_05():
 
 
 def test_AbjadIDE_new_06():
-    r'''Makes new maker file.
+    r'''Makes new maker classfile.
     '''
 
     path = os.path.join(
@@ -253,7 +253,7 @@ def test_AbjadIDE_new_06():
 
 
 def test_AbjadIDE_new_07():
-    r'''Coerces maker file name.
+    r'''Coerces maker classfile name.
     '''
 
     path = os.path.join(
@@ -264,7 +264,7 @@ def test_AbjadIDE_new_07():
         'NewMaker.py',
         )
 
-    input_ = 'red~example~score oo new new~maker q'
+    input_ = 'red~example~score oo new New~Maker q'
 
     with abjad.systemtools.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
@@ -275,6 +275,50 @@ def test_AbjadIDE_new_07():
 
 
 def test_AbjadIDE_new_08():
+    r'''Makes new maker functionfile.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'tools',
+        'make_material.py',
+        )
+
+    input_ = 'red~example~score oo new make_material.py q'
+
+    with abjad.systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+        with open(path, 'r') as file_pointer:
+            string = file_pointer.read()
+            assert 'def make_material():' in string
+
+
+def test_AbjadIDE_new_09():
+    r'''Coerces maker functionfile name.
+    '''
+
+    path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'tools',
+        'make_material.py',
+        )
+
+    input_ = 'red~example~score oo new make~material q'
+
+    with abjad.systemtools.FilesystemState(remove=[path]):
+        abjad_ide._start(input_=input_)
+        assert os.path.exists(path)
+        with open(path, 'r') as file_pointer:
+            string = file_pointer.read()
+            assert 'def make_material():' in string
+
+
+def test_AbjadIDE_new_10():
     r'''Makes new material directory.
     '''
 
@@ -301,7 +345,7 @@ def test_AbjadIDE_new_08():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_09():
+def test_AbjadIDE_new_11():
     r'''Coerces material directory name.
     '''
 
@@ -328,7 +372,7 @@ def test_AbjadIDE_new_09():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_10():
+def test_AbjadIDE_new_12():
     r'''Makes new segment directory.
     '''
 
@@ -355,7 +399,7 @@ def test_AbjadIDE_new_10():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_11():
+def test_AbjadIDE_new_13():
     r'''Coerces segment directory name.
     '''
 
@@ -382,7 +426,7 @@ def test_AbjadIDE_new_11():
             assert entry in entries, repr(entry)
 
 
-def test_AbjadIDE_new_12():
+def test_AbjadIDE_new_14():
     r'''Makes new stylesheet.
     '''
 
@@ -401,7 +445,7 @@ def test_AbjadIDE_new_12():
         assert os.path.exists(path)
 
 
-def test_AbjadIDE_new_13():
+def test_AbjadIDE_new_15():
     r'''Coerces stylesheet new.
     '''
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from abjad.tools import stringtools
+import abjad
 
 
 class Selector(object):
@@ -67,7 +67,8 @@ class Selector(object):
             )
 
     def _make_main_menu(self):
-        name = stringtools.to_space_delimited_lowercase(type(self).__name__)
+        name = type(self).__name__
+        name = abjad.stringtools.to_space_delimited_lowercase(name)
         menu = self._io_manager._make_menu(
             header=self.menu_header,
             name=name, 
@@ -93,12 +94,13 @@ class Selector(object):
         self._io_manager._session._pending_redraw = True
         while True:
             menu = self._make_main_menu()
-            print(menu.menu_sections)
             result = menu._run(io_manager=self._io_manager)
             if result is None:
                 self._io_manager = None
                 return
             elif result:
+                if result == ('q',):
+                    self._io_manager._session._is_quitting = True
                 self._io_manager = None
                 return result
         self._io_manager = None

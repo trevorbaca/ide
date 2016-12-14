@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
+import abjad
 import datetime
 import os
 import time
-from abjad.tools.abctools.AbjadObject import AbjadObject
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 configuration = AbjadIDEConfiguration()
 
 
-class Transcript(AbjadObject):
+class Transcript(abjad.abctools.AbjadObject):
     r'''Transcript.
     '''
 

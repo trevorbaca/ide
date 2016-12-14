@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad.tools.abctools import ContextManager
+import abjad
 
 
-class Interaction(ContextManager):
+class Interaction(abjad.abctools.ContextManager):
     r'''Interaction context manager.
     '''
 

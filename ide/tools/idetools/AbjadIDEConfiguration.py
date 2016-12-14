@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-import collections
+import abjad
 import os
 import sys
-from abjad.tools.systemtools.Configuration import Configuration
 
 
-class AbjadIDEConfiguration(Configuration):
+class AbjadIDEConfiguration(abjad.systemtools.Configuration):
     r'''Abjad IDE configuration.
 
     ..  container:: example
@@ -32,7 +31,7 @@ class AbjadIDEConfiguration(Configuration):
     ### INITIALIZER ###
 
     def __init__(self):
-        Configuration.__init__(self)
+        abjad.systemtools.Configuration.__init__(self)
         self._read_aliases_file()
         self._composer_scores_directory_override = None
         self._make_missing_directories()

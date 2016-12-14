@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import collections
+import abjad
 
 
-view_inventory = collections.OrderedDict()
+view_inventory = abjad.datastructuretools.TypedOrderedDict()

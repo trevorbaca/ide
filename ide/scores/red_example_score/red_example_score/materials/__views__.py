@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import collections
+import abjad
 
 
-view_inventory = collections.OrderedDict([
+view_inventory = abjad.datastructuretools.TypedOrderedDict([
     (
         'inventories first',
         ["'inventory' in :ds:", "'inventory' not in :ds:"],

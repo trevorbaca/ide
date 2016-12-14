@@ -66,3 +66,25 @@ def test_AbjadIDE_open_every_pdf_02():
         message = 'Opening {} ...'
         message = message.format(abjad_ide._trim_path(path))
         assert message in contents
+
+
+def test_AbjadIDE_open_every_pdf_03():
+    r'''In scores directory.
+    '''
+
+    red_score_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'distribution',
+        'red-example-score-score.pdf',
+        )
+
+    input_ = 'pdf* q'
+    abjad_ide._start(input_=input_)
+    contents = abjad_ide._io_manager._transcript.contents
+
+    assert abjad_ide._session._attempted_to_open_file
+    message = 'Opening {} ...'
+    message = message.format(abjad_ide._trim_path(red_score_path))
+    assert message in contents

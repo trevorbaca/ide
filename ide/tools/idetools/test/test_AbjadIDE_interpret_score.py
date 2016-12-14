@@ -70,3 +70,27 @@ def test_AbjadIDE_interpret_score_02():
         contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Preserving' in contents
+
+
+def test_AbjadIDE_interpret_score_03():
+    r'''LaTeX error does not freeze IDE.
+    '''
+
+    pdf_path = os.path.join(
+        configuration.abjad_ide_example_scores_directory,
+        'red_example_score',
+        'red_example_score',
+        'build',
+        'letter-portrait',
+        'preface.pdf',
+        )
+
+    with abjad.systemtools.FilesystemState(keep=[pdf_path]):
+        # remove existing pdf
+        os.remove(pdf_path)
+        # attempt unsuccessfully to call pdflatex
+        input_ = 'red~example~score bb letter-portrait si q'
+        abjad_ide._start(input_=input_)
+        contents = abjad_ide._io_manager._transcript.contents
+
+    assert 'ERROR in LaTeX log file ...' in contents

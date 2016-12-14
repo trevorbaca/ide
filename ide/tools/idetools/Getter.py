@@ -221,6 +221,9 @@ class Getter(object):
             result = self._evaluated_input[:]
         if result == []:
             result = None
+        if result == 'q':
+            self._io_manager._session._is_quitting = True
+            result = None
         self._io_manager = None
         return result
 

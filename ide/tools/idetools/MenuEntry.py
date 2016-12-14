@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from abjad.tools import stringtools
-from abjad.tools.abctools.AbjadObject import AbjadObject
+import abjad
 
 
-class MenuEntry(AbjadObject):
+class MenuEntry(abjad.abctools.AbjadObject):
     r'''Menu entry.
 
     ..  container:: example
@@ -81,17 +80,15 @@ class MenuEntry(AbjadObject):
 
     ### PRIVATE PROPERTIES ###
 
-    @property
-    def _storage_format_specification(self):
-        from abjad.tools import systemtools
-        positional_argument_values = ()
+    def _get_storage_format_specification(self):
         keyword_argument_names = (
             'display_string',
             'explicit_return_value',
             'key',
             'prepopulated_value',
             )
-        return systemtools.StorageFormatSpecification(
+        positional_argument_values = ()
+        return abjad.systemtools.StorageFormatSpecification(
             self,
             keyword_argument_names=keyword_argument_names,
             positional_argument_values=positional_argument_values,
@@ -211,7 +208,7 @@ class MenuEntry(AbjadObject):
 
         Returns true or false.
         '''
-        normalized_display_string = stringtools.strip_diacritics(
+        normalized_display_string = abjad.stringtools.strip_diacritics(
             self.display_string)
         normalized_display_string = normalized_display_string.lower()
         display_capital_letters = [

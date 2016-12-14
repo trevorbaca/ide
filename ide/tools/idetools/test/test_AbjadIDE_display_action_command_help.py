@@ -11,8 +11,8 @@ def test_AbjadIDE_display_action_command_help_01():
     lines = [
         'Abjad IDE - all score directories - action commands',
         '',
-        '    edit every file (ff*)',
-        '    open every score pdf (so*)',
+        '    every file - edit (ff*)',
+        '    every pdf - open (pdf*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -52,7 +52,7 @@ def test_AbjadIDE_display_action_command_help_02():
     lines = [
         'Red Example Score (2013) - package wrapper - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -94,7 +94,7 @@ def test_AbjadIDE_display_action_command_help_03():
     lines = [
         'Red Example Score (2013) - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -133,7 +133,7 @@ def test_AbjadIDE_display_action_command_help_04():
     lines = [
         'Red Example Score (2013) - build directory - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -177,7 +177,7 @@ def test_AbjadIDE_display_action_command_help_05():
     lines = [
         'Red Example Score (2013) - build directory - letter-portrait - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -250,7 +250,7 @@ def test_AbjadIDE_display_action_command_help_06():
     lines = [
         'Red Example Score (2013) - distribution directory - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -292,7 +292,7 @@ def test_AbjadIDE_display_action_command_help_07():
     lines = [
         'Red Example Score (2013) - tools directory - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -334,9 +334,9 @@ def test_AbjadIDE_display_action_command_help_08():
     lines = [
         'Red Example Score (2013) - materials directory - action commands',
         '',
-        '    edit every file (ff*)',
         '    every definition file - check (dfk*)',
         '    every definition file - edit (df*)',
+        '    every file - edit (ff*)',
         '    every ly - interpret (lyi*)',
         '    every pdf - make (pdfm*)',
         '    every pdf - open (pdf*)',
@@ -381,7 +381,7 @@ def test_AbjadIDE_display_action_command_help_09():
     lines = [
         'Red Example Score (2013) - materials directory - magic numbers - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -439,9 +439,9 @@ def test_AbjadIDE_display_action_command_help_10():
     lines = [
         'Red Example Score (2013) - segments directory - action commands',
         '',
-        '    edit every file (ff*)',
         '    every definition file - check (dfk*)',
         '    every definition file - edit (df*)',
+        '    every file - edit (ff*)',
         '    every ly - interpret (lyi*)',
         '    every pdf - make (pdfm*)',
         '    every pdf - open (pdf*)',
@@ -486,7 +486,7 @@ def test_AbjadIDE_display_action_command_help_11():
     lines = [
         'Red Example Score (2013) - segments directory - A - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -541,7 +541,7 @@ def test_AbjadIDE_display_action_command_help_12():
     lines = [
         'Red Example Score (2013) - stylesheets directory - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
@@ -583,7 +583,7 @@ def test_AbjadIDE_display_action_command_help_13():
     lines = [
         'Red Example Score (2013) - test directory - action commands',
         '',
-        '    edit every file (ff*)',
+        '    every file - edit (ff*)',
         '',
         '    display action command help (?)',
         '    invoke shell (!)',
