@@ -37,8 +37,7 @@ def test_AbjadIDE_interpret_back_cover_01():
 
 
 def test_AbjadIDE_interpret_back_cover_02():
-    r'''Preserves back-cover.pdf when back-cover.candidate.pdf compares
-    the same.
+    r'''Works when back-cover.pdf already exists.
     '''
 
     tex_path = os.path.join(
@@ -59,14 +58,7 @@ def test_AbjadIDE_interpret_back_cover_02():
         )
 
     with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
-        # remove PDF
-        os.remove(pdf_path)
-        # generate PDF first time
+        assert os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait bci q'
         abjad_ide._start(input_=input_)
-        # attempt (but fail) to generate identical PDF
-        input_ = 'red~example~score bb letter-portrait bci q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    assert 'Preserving' in contents
+        assert os.path.exists(pdf_path)

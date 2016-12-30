@@ -76,10 +76,10 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             for x in measure_numerator_talea)
         assert all(abjad.mathtools.is_positive_integer(x)
             for x in measure_division_talea)
-        total_duration = abjad.durationtools.Duration(total_duration)
+        total_duration = abjad.Duration(total_duration)
 
         weight = int(measure_denominator * total_duration)
-        measure_numerators = sequencetools.repeat_sequence_to_weight(
+        measure_numerators = abjad.sequencetools.repeat_sequence_to_weight(
             measure_numerator_talea, weight)
         #print measure_numerators
 
@@ -102,7 +102,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         #print measure_divisions_by_measure
 
         meter_multipliers = [
-            abjad.durationtools.Multiplier(1)
+            abjad.Multiplier(1)
             for x in measure_divisions_by_measure
             ]
 
@@ -167,9 +167,9 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
 
         meter_tokens = []
         for meter_multiplier, measure_divisions in divided_measure_tokens:
-            measure_duration = meter_multiplier * Multiplier(
+            measure_duration = meter_multiplier * abjad.Multiplier(
                 sum(measure_divisions), measure_division_denominator)
-            meter_base_unit = meter_multiplier * Multiplier(
+            meter_base_unit = meter_multiplier * abjad.Multiplier(
                 min(measure_divisions), measure_division_denominator)
             meter_denominator = meter_base_unit.denominator
             meter_token = \
@@ -188,7 +188,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         for meter_token, division_token in zip(meter_tokens, division_tokens):
             leaves = abjad.scoretools.make_leaves_from_talea(
                 division_token, measure_division_denominator)
-            measure = abjad.scoretools.Measure(
+            measure = abjad.Measure(
                 meter_token,
                 leaves,
                 implicit_scaling=True,
@@ -196,7 +196,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             measures.append(measure)
         #print measures
 
-        selection = abjad.selectiontools.ContiguousSelection(measures)
+        selection = abjad.select(measures)
 
         #return measures
         return selection
@@ -223,14 +223,14 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         Returns LilyPond file.
         '''
         measures = self()
-        staff = abjad.scoretools.Staff(measures)
+        staff = abjad.Staff(measures)
         staff.context_name = 'RhythmicStaff'
-        score = abjad.scoretools.Score([staff])
+        score = abjad.Score([staff])
         illustration = abjad.lilypondfiletools.make_basic_lilypond_file(score)
-        measures = score._get_components(abjad.scoretools.Measure)
+        measures = score._get_components(abjad.Measure)
         for measure in measures:
-            beam = abjad.spannertools.Beam()
-            attach(beam, [measure])
+            beam = abjad.Beam()
+            abjad.attach(beam, [measure])
         score.add_final_bar_line()
         return illustration
 
@@ -244,7 +244,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             ('measure_division_denominator', 16),
             ('measure_division_talea',
                 [1, 1, 2, 3, 1, 2, 3, 4, 1, 1, 1, 1, 4]),
-            ('total_duration', abjad.durationtools.Duration(44, 8)),
+            ('total_duration', abjad.Duration(44, 8)),
             ('measures_are_scaled', True),
             ('measures_are_split', True),
             ('measures_are_shuffled', True),
@@ -254,11 +254,13 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
 
     def _get_possible_meter_multipliers(self, multiplied_measure_numerator):
         possible_meter_multipliers = []
-        for denominator in range(
-                multiplied_measure_numerator,
-                2 * multiplied_measure_numerator):
-            possible_meter_multiplier = \
-                Multiplier(multiplied_measure_numerator, denominator)
+        assert int(multiplied_measure_numerator) == \
+            multiplied_measure_numerator
+        multiplied_measure_numerator = int(multiplied_measure_numerator)
+        stop_value = 2 * multiplied_measure_numerator
+        for denominator in range(multiplied_measure_numerator, stop_value):
+            pair = (multiplied_measure_numerator, denominator)
+            possible_meter_multiplier = abjad.Multiplier(pair)
             possible_meter_multipliers.append(possible_meter_multiplier)
         return possible_meter_multipliers
 

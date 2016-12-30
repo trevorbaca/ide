@@ -17,7 +17,7 @@ performer_inventory = abjad.instrumenttools.PerformerInventory(
                         short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Hn.',),
                             ),
-                        allowable_clefs=abjad.indicatortools.ClefInventory(
+                        allowable_clefs=abjad.datastructuretools.TypedList(
                             [
                                 abjad.indicatortools.Clef(
                                     name='bass',
@@ -48,7 +48,7 @@ performer_inventory = abjad.instrumenttools.PerformerInventory(
                         short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Ten. trb.',),
                             ),
-                        allowable_clefs=abjad.indicatortools.ClefInventory(
+                        allowable_clefs=abjad.datastructuretools.TypedList(
                             [
                                 abjad.indicatortools.Clef(
                                     name='tenor',
@@ -79,7 +79,7 @@ performer_inventory = abjad.instrumenttools.PerformerInventory(
                         short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Pf.',),
                             ),
-                        allowable_clefs=abjad.indicatortools.ClefInventory(
+                        allowable_clefs=abjad.datastructuretools.TypedList(
                             [
                                 abjad.indicatortools.Clef(
                                     name='treble',
@@ -116,7 +116,7 @@ performer_inventory = abjad.instrumenttools.PerformerInventory(
                         short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Vn.',),
                             ),
-                        allowable_clefs=abjad.indicatortools.ClefInventory(
+                        allowable_clefs=abjad.datastructuretools.TypedList(
                             [
                                 abjad.indicatortools.Clef(
                                     name='treble',
@@ -155,7 +155,7 @@ performer_inventory = abjad.instrumenttools.PerformerInventory(
                         short_instrument_name_markup=abjad.markuptools.Markup(
                             contents=('Vc.',),
                             ),
-                        allowable_clefs=abjad.indicatortools.ClefInventory(
+                        allowable_clefs=abjad.datastructuretools.TypedList(
                             [
                                 abjad.indicatortools.Clef(
                                     name='bass',

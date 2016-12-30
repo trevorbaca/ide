@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import abjad
+from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+configuration = AbjadIDEConfiguration()
 
 
 class MenuEntry(abjad.abctools.AbjadObject):
@@ -208,6 +210,9 @@ class MenuEntry(abjad.abctools.AbjadObject):
 
         Returns true or false.
         '''
+        # aliases take priority over menu entry matches
+        if input_ in configuration.aliases:
+            return False
         normalized_display_string = abjad.stringtools.strip_diacritics(
             self.display_string)
         normalized_display_string = normalized_display_string.lower()

@@ -12,7 +12,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
     reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_01():
-    r'''Makes front-cover.pdf when front-cover.pdf doesn't yet exist.
+    r'''Works when front-cover.pdf doesn't exist yet.
     '''
 
     tex_path = os.path.join(
@@ -46,8 +46,7 @@ def test_AbjadIDE_interpret_front_cover_01():
     reason="Fails under containerized Travis-CI."
     )
 def test_AbjadIDE_interpret_front_cover_02():
-    r'''Preserves front-cover.pdf when front-cover.candidate.pdf 
-    compares equal to front-cover.pdf.
+    r'''Works when front-cover.pdf already exists.
     '''
 
     tex_path = os.path.join(
@@ -68,14 +67,7 @@ def test_AbjadIDE_interpret_front_cover_02():
         )
 
     with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
-        # remove existing PDF
-        os.remove(pdf_path)
-        # generate PDF first time
+        assert os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait fci q'
         abjad_ide._start(input_=input_)
-        # attempt (but fail) to generate PDF a second time
-        input_ = 'red~example~score bb letter-portrait fci q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    assert 'Preserving' in contents
+        assert os.path.exists(pdf_path)

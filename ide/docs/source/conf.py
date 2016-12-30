@@ -14,7 +14,7 @@ PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 ### CORE ###
 add_function_parentheses = True
-copyright = u'2008-2015, Trevor Bača & Josiah Wolf Oberholtzer'
+copyright = u'2008-2017, Trevor Bača & Josiah Wolf Oberholtzer'
 exclude_patterns = []
 extensions = [
     'sphinx.ext.autodoc',
@@ -67,7 +67,7 @@ latex_documents = [
         'manual',
         ),
     ]
-latex_use_parts = True
+#latex_use_parts = True
 latex_domain_indices = False
 ### MAN ###
 man_pages = [

@@ -32,14 +32,14 @@ version of LilyPond:
 
 Calling "git st" will show the following modifications:
 
-	modified:   scores/red_example_score/red_example_score/build/music.pdf
-	modified:   scores/red_example_score/red_example_score/build/score.pdf
-	modified:   scores/red_example_score/red_example_score/materials/magic_numbers/illustration.pdf
-	modified:   scores/red_example_score/red_example_score/materials/pitch_range_inventory/illustration.pdf
-	modified:   scores/red_example_score/red_example_score/materials/tempo_inventory/illustration.pdf
-	modified:   scores/red_example_score/red_example_score/segments/segment_01/illustration.pdf
-	modified:   scores/red_example_score/red_example_score/segments/segment_02/illustration.pdf
-	modified:   scores/red_example_score/red_example_score/segments/segment_03/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/build/music.pdf
+    modified:   scores/red_example_score/red_example_score/build/score.pdf
+    modified:   scores/red_example_score/red_example_score/materials/magic_numbers/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/materials/pitch_range_inventory/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/materials/tempo_inventory/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/segments/segment_01/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/segments/segment_02/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/segments/segment_03/illustration.pdf
 
 Then update the IDE Travis configuration file by changing the old LilyPond
 version number...

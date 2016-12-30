@@ -7,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 
 def test_AbjadIDE_interpret_preface_01():
-    r'''Makes preface.pdf when preface.pdf doesn't yet exist.
+    r'''Works when preface.pdf doesn't yet exist.
     '''
 
     tex_path = os.path.join(
@@ -37,8 +37,7 @@ def test_AbjadIDE_interpret_preface_01():
 
 
 def test_AbjadIDE_interpret_preface_02():
-    r'''Preserves preface.pdf when preface.candidate.pdf compares
-    equal to preface.pdf.
+    r'''Works when preface.pdf already exists.
     '''
 
     tex_path = os.path.join(
@@ -59,14 +58,7 @@ def test_AbjadIDE_interpret_preface_02():
         )
 
     with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
-        # remove existing PDF
-        os.remove(pdf_path)
-        # generate PDF a first time
+        assert os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait pi q'
         abjad_ide._start(input_=input_)
-        # attempt (but fail) to generate PDF a second time
-        input_ = 'red~example~score bb letter-portrait pi q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-
-    assert 'Preserving' in contents
+        assert os.path.exists(pdf_path)
