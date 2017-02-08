@@ -15,9 +15,9 @@ def test_AbjadIDE_go_to_next_package_01():
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - performer inventory',
-        'Red Example Score (2013) - materials directory - pitch range inventory',
-        'Red Example Score (2013) - materials directory - tempo inventory',
+        'Red Example Score (2013) - materials directory - magic numbers',
+        'Red Example Score (2013) - materials directory - performers',
+        'Red Example Score (2013) - materials directory - ranges',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -26,16 +26,16 @@ def test_AbjadIDE_go_to_next_package_02():
     r'''In material directory.
     '''
 
-    input_ = 'red~example~score mm performer~inventory > > q'
+    input_ = 'red~example~score mm performers > > q'
     abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - performer inventory',
-        'Red Example Score (2013) - materials directory - pitch range inventory',
-        'Red Example Score (2013) - materials directory - tempo inventory',
+        'Red Example Score (2013) - materials directory - performers',
+        'Red Example Score (2013) - materials directory - ranges',
+        'Red Example Score (2013) - materials directory - tempi',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 

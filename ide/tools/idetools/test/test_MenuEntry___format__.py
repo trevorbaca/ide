@@ -19,7 +19,7 @@ def test_MenuEntry___format___01():
         name='test',
         )
 
-    assert abjad.systemtools.TestManager.compare(
+    assert abjad.TestManager.compare(
         format(section[0]),
         r'''
         idetools.MenuEntry(

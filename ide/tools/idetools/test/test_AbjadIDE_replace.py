@@ -18,7 +18,7 @@ def test_AbjadIDE_replace_01():
         'RhythmMaker.py',
         )
     
-    with abjad.systemtools.FilesystemState(keep=[path]):
+    with abjad.FilesystemState(keep=[path]):
         input_ = 'red~example~score sr RhythmMaker q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents

@@ -63,15 +63,15 @@ class MenuEntry(abjad.abctools.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __lt__(self, expr):
-        r'''Is true when `expr` is a menu entry with a display string greater
+    def __lt__(self, argument):
+        r'''Is true when `argument` is a menu entry with a display string greater
         than that of this menu entry. Otherwise false.
 
         Returns true or false.
         '''
-        if not isinstance(expr, type(self)):
-            raise TypeError(expr)
-        return self.display_string < expr.display_string
+        if not isinstance(argument, type(self)):
+            raise TypeError(argument)
+        return self.display_string < argument.display_string
 
     def __repr__(self):
         r'''Gets interpreter representation of menu entry.
@@ -90,7 +90,7 @@ class MenuEntry(abjad.abctools.AbjadObject):
             'prepopulated_value',
             )
         positional_argument_values = ()
-        return abjad.systemtools.StorageFormatSpecification(
+        return abjad.StorageFormatSpecification(
             self,
             keyword_argument_names=keyword_argument_names,
             positional_argument_values=positional_argument_values,
@@ -213,8 +213,8 @@ class MenuEntry(abjad.abctools.AbjadObject):
         # aliases take priority over menu entry matches
         if input_ in configuration.aliases:
             return False
-        normalized_display_string = abjad.stringtools.strip_diacritics(
-            self.display_string)
+        normalized_display_string = abjad.String(
+            self.display_string).strip_diacritics()
         normalized_display_string = normalized_display_string.lower()
         display_capital_letters = [
             _ for _ in self.display_string

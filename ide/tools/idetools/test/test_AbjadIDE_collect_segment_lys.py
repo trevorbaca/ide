@@ -26,7 +26,7 @@ def test_AbjadIDE_collect_segment_lys_01():
         ly_path = os.path.join(_segments_directory, ly_name)
         ly_paths.append(ly_path)
 
-    with abjad.systemtools.FilesystemState(keep=ly_paths):
+    with abjad.FilesystemState(keep=ly_paths):
         for ly_path in ly_paths:
             os.remove(ly_path)
         input_ = 'red~example~score bb lyc q'
@@ -61,7 +61,7 @@ def test_AbjadIDE_collect_segment_lys_02():
         ly_path = os.path.join(_segments_directory, ly_name)
         ly_paths.append(ly_path)
 
-    with abjad.systemtools.FilesystemState(keep=ly_paths):
+    with abjad.FilesystemState(keep=ly_paths):
         input_ = 'red~example~score bb lyc y q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents

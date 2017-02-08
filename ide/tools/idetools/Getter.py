@@ -129,7 +129,7 @@ class Getter(object):
     def _load_message(self):
         message = self._current_prompt.message
         if self.capitalize_prompts:
-            message = abjad.stringtools.capitalize_start(message)
+            message = abjad.String(message).capitalize_start()
         self._messages.append(message)
 
     def _make_prompt(
@@ -366,10 +366,10 @@ class Getter(object):
         Returns prompt.
         '''
         help_template = 'value must be integer or tuple of integers.'
-        def helper(expr):
-            if isinstance(expr, int):
+        def helper(argument):
+            if isinstance(argument, int):
                 return True
-            if all(isinstance(_, int) for _ in expr):
+            if all(isinstance(_, int) for _ in argument):
                 return True
             return False
         self._make_prompt(
@@ -445,71 +445,71 @@ class Getter(object):
         self._io_manager._display(lines)
 
     @staticmethod
-    def is_boolean(expr):
+    def is_boolean(argument):
         r'''Predicate.
         '''
-        return isinstance(expr, bool)
+        return isinstance(argument, bool)
 
     @staticmethod
-    def is_integer(expr):
+    def is_integer(argument):
         r'''Predicate.
         '''
-        return isinstance(expr, int)
+        return isinstance(argument, int)
 
     @staticmethod
-    def is_integer_in_range(expr, start=None, stop=None, allow_none=False):
+    def is_integer_in_range(argument, start=None, stop=None, allow_none=False):
         r'''Predicate.
         '''
-        if expr is None and allow_none:
+        if argument is None and allow_none:
             return True
-        if Getter.is_integer(expr) and \
-            (start is None or start <= expr) and \
-            (stop is None or expr <= stop):
-            return True
-        return False
-
-    @staticmethod
-    def is_integer_or_none(expr):
-        r'''Predicate.
-        '''
-        return expr is None or is_integer(expr)
-
-    @staticmethod
-    def is_list(expr):
-        r'''Predicate.
-        '''
-        return isinstance(expr, list)
-
-    @staticmethod
-    def is_nonempty_string(expr):
-        r'''Predicate.
-        '''
-        return isinstance(expr, str) and bool(expr)
-
-    @staticmethod
-    def is_string(expr):
-        r'''Predicate.
-        '''
-        return isinstance(expr, str)
-
-    @staticmethod
-    def is_string_or_integer(expr):
-        r'''Predicate.
-        '''
-        if isinstance(expr, str):
-            return True
-        if isinstance(expr, int):
+        if Getter.is_integer(argument) and \
+            (start is None or start <= argument) and \
+            (stop is None or argument <= stop):
             return True
         return False
 
     @staticmethod
-    def is_string_or_none(expr):
+    def is_integer_or_none(argument):
         r'''Predicate.
         '''
-        return isinstance(expr, (str, type(None)))
+        return argument is None or is_integer(argument)
 
     @staticmethod
-    def is_yes_no_string(expr):
+    def is_list(argument):
         r'''Predicate.
         '''
-        return 'yes'.startswith(expr.lower()) or 'no'.startswith(expr.lower())
+        return isinstance(argument, list)
+
+    @staticmethod
+    def is_nonempty_string(argument):
+        r'''Predicate.
+        '''
+        return isinstance(argument, str) and bool(argument)
+
+    @staticmethod
+    def is_string(argument):
+        r'''Predicate.
+        '''
+        return isinstance(argument, str)
+
+    @staticmethod
+    def is_string_or_integer(argument):
+        r'''Predicate.
+        '''
+        if isinstance(argument, str):
+            return True
+        if isinstance(argument, int):
+            return True
+        return False
+
+    @staticmethod
+    def is_string_or_none(argument):
+        r'''Predicate.
+        '''
+        return isinstance(argument, (str, type(None)))
+
+    @staticmethod
+    def is_yes_no_string(argument):
+        r'''Predicate.
+        '''
+        return 'yes'.startswith(argument.lower()) or 'no'.startswith(argument.lower())

@@ -8,7 +8,7 @@ def test_AbjadIDE_quit_01():
     r'''In material directory.
     '''
     
-    input_ = 'red~example~score mm tempo~inventory q'
+    input_ = 'red~example~score mm tempi q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 

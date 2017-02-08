@@ -20,7 +20,7 @@ def test_AbjadIDE_generate_score_source_01():
         'score.tex',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[path]):
+    with abjad.FilesystemState(keep=[path]):
         input_ = 'red~example~score bb letter-portrait sg q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(path)

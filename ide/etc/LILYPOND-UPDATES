@@ -35,8 +35,8 @@ Calling "git st" will show the following modifications:
     modified:   scores/red_example_score/red_example_score/build/music.pdf
     modified:   scores/red_example_score/red_example_score/build/score.pdf
     modified:   scores/red_example_score/red_example_score/materials/magic_numbers/illustration.pdf
-    modified:   scores/red_example_score/red_example_score/materials/pitch_range_inventory/illustration.pdf
-    modified:   scores/red_example_score/red_example_score/materials/tempo_inventory/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/materials/ranges/illustration.pdf
+    modified:   scores/red_example_score/red_example_score/materials/tempi/illustration.pdf
     modified:   scores/red_example_score/red_example_score/segments/segment_01/illustration.pdf
     modified:   scores/red_example_score/red_example_score/segments/segment_02/illustration.pdf
     modified:   scores/red_example_score/red_example_score/segments/segment_03/illustration.pdf
@@ -174,8 +174,8 @@ test_MaterialPackageWrangler_interpret_every_illustration_source_02 ... by
 running (red~example~score mm ii* y q). This does indeed fix the test. This also
 causes the files ...
 scores/red_example_score/materials/magic_numbers/illustration.pdf
-scores/red_example_score/materials/pitch_range_inventory/illustration.pdf
-scores/red_example_score/materials/tempo_inventory/illustration.pdf ... to
+scores/red_example_score/materials/ranges/illustration.pdf
+scores/red_example_score/materials/tempi/illustration.pdf ... to
 change.
 
 What output do we get if we now rerun the battery?

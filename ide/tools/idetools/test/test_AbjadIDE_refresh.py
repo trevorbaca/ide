@@ -36,7 +36,7 @@ def test_AbjadIDE_refresh_01():
         '>',
         ]
 
-    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.FilesystemState(keep=[ly_path]):
         assert os.path.isfile(ly_path)
         input_ = 'red~example~score mm magic~numbers !rm~illustration.ly rf q'
         abjad_ide._start(input_=input_)

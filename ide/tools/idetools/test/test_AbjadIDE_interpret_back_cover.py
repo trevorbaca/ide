@@ -27,13 +27,13 @@ def test_AbjadIDE_interpret_back_cover_01():
         'back-cover.pdf',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait bci q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(pdf_path)
-        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.TestManager._compare_backup(pdf_path)
 
 
 def test_AbjadIDE_interpret_back_cover_02():
@@ -57,7 +57,7 @@ def test_AbjadIDE_interpret_back_cover_02():
         'back-cover.pdf',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
         assert os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait bci q'
         abjad_ide._start(input_=input_)

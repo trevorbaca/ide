@@ -92,12 +92,12 @@ class MenuSection(abjad.abctools.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, expr):
-        r'''Gets menu entry indexed by `expr`.
+    def __getitem__(self, argument):
+        r'''Gets menu entry indexed by `argument`.
 
         Returns menu entry.
         '''
-        return self.menu_entries.__getitem__(expr)
+        return self.menu_entries.__getitem__(argument)
 
     def __len__(self):
         r'''Number of menu entries in menu section.
@@ -258,7 +258,7 @@ class MenuSection(abjad.abctools.AbjadObject):
     def _make_title_lines(self):
         menu_lines = []
         if isinstance(self.title, str):
-            title_lines = [abjad.stringtools.capitalize_start(self.title)]
+            title_lines = [abjad.String(self.title).capitalize_start()]
         elif isinstance(self.title, list):
             title_lines = self.title
         else:
@@ -382,27 +382,26 @@ class MenuSection(abjad.abctools.AbjadObject):
 
     ### PUBLIC METHODS ###
 
-    def _append(self, expr):
+    def _append(self, argument):
         from ide.tools import idetools
-        if isinstance(expr, idetools.MenuEntry):
-            new_expr = (
-                expr.display_string,
-                expr.key,
-                expr.prepopulated_value,
-                expr.explicit_return_value,
+        if isinstance(argument, idetools.MenuEntry):
+            argument = (
+                argument.display_string,
+                argument.key,
+                argument.prepopulated_value,
+                argument.explicit_return_value,
                 )
-            expr = new_expr
         prototype = (str, tuple, types.MethodType)
-        assert isinstance(expr, prototype), repr(expr)
+        assert isinstance(argument, prototype), repr(argument)
         number = None
         method = None
-        if isinstance(expr, str):
-            expr = (expr, )
-        elif isinstance(expr, types.MethodType):
-            method = expr
-            expr = (
-                expr.description,
-                expr.command_name,
+        if isinstance(argument, str):
+            argument = (argument, )
+        elif isinstance(argument, types.MethodType):
+            method = argument
+            argument = (
+                argument.description,
+                argument.command_name,
                 )
         keys = (
             'display_string',
@@ -410,11 +409,11 @@ class MenuSection(abjad.abctools.AbjadObject):
             'prepopulated_value',
             'explicit_return_value',
             )
-        kwargs = dict(zip(keys, expr))
-        kwargs['menu_section'] = self
+        keywords = dict(zip(keys, argument))
+        keywords['menu_section'] = self
         if method is not None and method.is_navigation:
-            kwargs['is_navigation'] = True
-        menu_entry = idetools.MenuEntry(**kwargs)
+            keywords['is_navigation'] = True
+        menu_entry = idetools.MenuEntry(**keywords)
         self.menu_entries.append(menu_entry)
         if self.is_command_section:
             self.menu_entries.sort()

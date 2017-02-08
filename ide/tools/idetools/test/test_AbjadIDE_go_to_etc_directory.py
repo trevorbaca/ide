@@ -8,14 +8,14 @@ def test_AbjadIDE_go_to_etc_directory_01():
     r'''From material directory.
     '''
 
-    input_ = 'red~example~score mm tempo~inventory ee q'
+    input_ = 'red~example~score mm tempi ee q'
     abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - tempo inventory',
+        'Red Example Score (2013) - materials directory - tempi',
         'Red Example Score (2013) - etc directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles

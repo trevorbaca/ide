@@ -92,20 +92,20 @@ class Menu(object):
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, expr):
-        r'''Gets menu section indexed by `expr`.
+    def __getitem__(self, argument):
+        r'''Gets menu section indexed by `argument`.
 
-        Returns menu section with name equal to `expr` when `expr` is a string.
+        Returns menu section with name equal to `argument` when `argument` is a string.
 
-        Returns menu section at index `expr` when `expr` is an integer.
+        Returns menu section at index `argument` when `argument` is an integer.
         '''
-        if isinstance(expr, str):
+        if isinstance(argument, str):
             for section in self.menu_sections:
-                if section.name == expr:
+                if section.name == argument:
                     return section
-            raise KeyError(expr)
+            raise KeyError(argument)
         else:
-            return self.menu_sections.__getitem__(expr)
+            return self.menu_sections.__getitem__(argument)
 
     def __len__(self):
         r'''Gets number of menu sections in menu.
@@ -137,7 +137,7 @@ class Menu(object):
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
-        input_ = abjad.stringtools.strip_diacritics(input_)
+        input_ = abjad.String(input_).strip_diacritics()
         if input_.startswith(('@', '%', '^', '*', '+')):
             return input_
         if input_.startswith('!') and self._has_command('!'):
@@ -175,11 +175,11 @@ class Menu(object):
             return self._handle_argument_range_input(input_)
         return (input_,)
 
-    def _enclose_in_list(self, expr):
+    def _enclose_in_list(self, argument):
         if self._has_ranged_section():
-            return [expr]
+            return [argument]
         else:
-            return expr
+            return argument
 
     def _get_first_nonhidden_return_value_in_menu(self):
         for section in self.menu_sections:
@@ -265,7 +265,7 @@ class Menu(object):
 
     @staticmethod
     def _left_justify(string, width):
-        start_width = len(abjad.stringtools.strip_diacritics(string))
+        start_width = len(abjad.String(string).strip_diacritics())
         if start_width < width:
             needed = width - start_width
             suffix = needed * ' '
@@ -422,7 +422,7 @@ class Menu(object):
             title = title + ' - navigation commands'
         else:
             raise ValueError(repr(command_type))
-        title = abjad.stringtools.capitalize_start(title)
+        title = abjad.String(title).capitalize_start()
         lines[0:0] = [title, '']
         lines.append('')
         return lines
@@ -488,7 +488,7 @@ class Menu(object):
             title = self.title
         else:
             title = ''
-        result.append(abjad.stringtools.capitalize_start(title))
+        result.append(abjad.String(title).capitalize_start())
         if self.subtitle is not None:
             line = '  ' + self.subtitle
             result.append('')
@@ -565,20 +565,20 @@ class Menu(object):
         return ordered_menu_sections
 
     @staticmethod
-    def _strip_default_notice_from_strings(expr):
-        if isinstance(expr, list):
+    def _strip_default_notice_from_strings(argument):
+        if isinstance(argument, list):
             cleaned_list = []
-            for element in expr:
+            for element in argument:
                 if element.endswith(' (default)'):
                     element = element.replace(' (default)', '')
                 cleaned_list.append(element)
             return cleaned_list
-        elif isinstance(expr, str):
-            if expr.endswith(' (default)'):
-                expr = expr.replace(' (default)', '')
-            return expr
+        elif isinstance(argument, str):
+            if argument.endswith(' (default)'):
+                argument = argument.replace(' (default)', '')
+            return argument
         else:
-            return expr
+            return argument
 
     @staticmethod
     def _user_enters_argument_range(input_):

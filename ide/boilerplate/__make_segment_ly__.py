@@ -27,7 +27,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        with abjad.systemtools.Timer() as timer:
+        with abjad.Timer() as timer:
             result = segment_maker(
                 segment_metadata=segment_metadata,
                 previous_segment_metadata=previous_segment_metadata,
@@ -60,7 +60,7 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.ly',
             )
-        with abjad.systemtools.Timer() as timer:
+        with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_ly(candidate_path)
         message = 'LilyPond runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))

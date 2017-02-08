@@ -40,7 +40,7 @@ def test_AbjadIDE_open_pdf_04():
     r'''Allows *-addressing.
     '''
 
-    input_ = 'red~example~score *pitch q'
+    input_ = 'red~example~score *ranges q'
     abjad_ide._start(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

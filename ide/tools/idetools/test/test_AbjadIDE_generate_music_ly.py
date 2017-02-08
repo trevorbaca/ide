@@ -23,7 +23,7 @@ def test_AbjadIDE_generate_music_ly_01():
         'music.ly',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[music_path]):
+    with abjad.FilesystemState(keep=[music_path]):
         os.remove(music_path)
         input_ = 'red~example~score bb letter-portrait mg q'
         abjad_ide._start(input_=input_)
@@ -49,7 +49,7 @@ def test_AbjadIDE_generate_music_ly_02():
         'music.ly',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[music_path]):
+    with abjad.FilesystemState(keep=[music_path]):
         os.remove(music_path)
         # generate first time
         input_ = 'red~example~score bb letter-portrait mg q'
@@ -75,7 +75,7 @@ def test_AbjadIDE_generate_music_ly_03():
         'music.ly',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[music_path]):
+    with abjad.FilesystemState(keep=[music_path]):
         input_ = 'red~example~score bb letter-portrait mg q'
         abjad_ide._start(input_=input_)
 

@@ -1,6 +1,6 @@
-% 2017-01-07 10:07
+% 2017-07-13 09:54
 
-\version "2.19.54"
+\version "2.19.63"
 \language "english"
 
 \header {
@@ -15,17 +15,17 @@
         \override TimeSignature.stencil = ##f
     } <<
         \new PianoStaff <<
-            \context Staff = "treble" {
+            \context Staff = "Treble Staff" {
                 \clef "treble"
                 s1 * 1/4
                 s1 * 1/4
                 c'1 * 1/4 \glissando
                 c'''''1 * 1/4
             }
-            \context Staff = "bass" {
+            \context Staff = "Bass Staff" {
                 \clef "bass"
                 a,,,1 * 1/4 \glissando
-                \change Staff = treble
+                \change Staff = "Treble Staff"
                 c'1 * 1/4
                 s1 * 1/4
                 s1 * 1/4

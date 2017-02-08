@@ -21,7 +21,7 @@ def test_AbjadIDE_generate_front_cover_source_01():
         'front-cover.tex',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[cover_path]):
+    with abjad.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         # generate first time
         input_ = 'red~example~score bb letter-portrait fcg q'
@@ -50,7 +50,7 @@ def test_AbjadIDE_generate_front_cover_source_02():
         'front-cover.tex',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[cover_path]):
+    with abjad.FilesystemState(keep=[cover_path]):
         os.remove(cover_path)
         assert not os.path.exists(cover_path)
         input_ = 'red~example~score bb letter-portrait fcg q'

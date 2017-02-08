@@ -25,7 +25,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 #        )
 #    paths = (music_pdf, score_pdf)
 #
-#    with abjad.systemtools.FilesystemState(keep=paths):
+#    with abjad.FilesystemState(keep=paths):
 #        input_ = 'red~example~score bb bld q'
 #        abjad_ide._start(input_=input_)
 #        contents = abjad_ide._io_manager._transcript.contents

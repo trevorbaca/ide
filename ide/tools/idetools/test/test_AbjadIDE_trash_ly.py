@@ -19,7 +19,7 @@ def test_AbjadIDE_trash_ly_01():
         )
     ly_path = os.path.join(material_directory, 'illustration.ly')
 
-    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.FilesystemState(keep=[ly_path]):
         assert os.path.isfile(ly_path)
         input_ = 'red~example~score mm magic~numbers lyt q'
         abjad_ide._start(input_=input_)
@@ -39,7 +39,7 @@ def test_AbjadIDE_trash_ly_02():
         )
     ly_path = os.path.join(material_directory, 'illustration.ly')
 
-    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.FilesystemState(keep=[ly_path]):
         assert os.path.isfile(ly_path)
         input_ = 'red~example~score gg A lyt q'
         abjad_ide._start(input_=input_)

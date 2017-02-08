@@ -201,23 +201,23 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         #return measures
         return selection
 
-    def __eq__(self, expr):
-        r'''Is true when `expr` is a sargasso measure-maker with type and 
+    def __eq__(self, argument):
+        r'''Is true when `argument` is a sargasso measure-maker with type and 
         public properties equal to those of this sargasso measure-maker.
         Otherwise false.
 
         Returns true or false.
         '''
-        return abjad.systemtools.StorageFormatManager.compare(self, expr)
+        return abjad.StorageFormatManager.compare(self, argument)
 
     def __hash__(self):
         r'''Hashes sargasso measure-maker.
         '''
-        hash_values = abjad.systemtools.StorageFormatManager.get_hash_values(
+        hash_values = abjad.StorageFormatManager.get_hash_values(
             self)
         return hash(hash_values)
 
-    def __illustrate__(self, **kwargs):
+    def __illustrate__(self, **keywords):
         r'''Illustrates sargasso measure maker.
 
         Returns LilyPond file.
@@ -264,11 +264,25 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             possible_meter_multipliers.append(possible_meter_multiplier)
         return possible_meter_multipliers
 
+    @staticmethod
+    def _make_measure_string(measure):
+        time_signature = measure.time_signature
+        pair = (time_signature.numerator, time_signature.denominator)
+        contents_string = ' '.join([str(x) for x in measure])
+        result = '{}({}, {!r}, implicit_scaling={})'
+        result = result.format(
+            type(measure).__name__,
+            pair,
+            contents_string,
+            measure.implicit_scaling,
+            )
+        return result
+
     def _make_output_material_lines(self, output_material):
         lines = []
         lines.append('{} = ['.format(self._package_name))
         for measure in output_material[:-1]:
-            line = measure._one_line_input_string
+            line = self._make_measure_string(measure)
             line = 'abjad.scoretools.' + line
             lines.append('\t{},'.format(line))
         line = output_material[-1]._one_line_input_string

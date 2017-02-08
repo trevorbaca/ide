@@ -13,7 +13,7 @@ def test_Prompt___format___01():
     modified_format = prompt_format[:index]
     modified_format = modified_format + ')'
 
-    assert abjad.systemtools.TestManager.compare(
+    assert abjad.TestManager.compare(
         modified_format,
         r'''
         idetools.Prompt(

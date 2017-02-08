@@ -31,7 +31,7 @@ def test_AbjadIDE_generate_back_cover_source_01():
     assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
-    with abjad.systemtools.FilesystemState(
+    with abjad.FilesystemState(
         keep=[source_path], remove=[destination_path]):
         input_ = 'blue~example~score bb letter-portrait bcg q'
         abjad_ide._start(input_=input_)
@@ -68,7 +68,7 @@ def test_AbjadIDE_generate_back_cover_source_02():
     assert 'paper_size' in source_contents
     assert '{8.5in, 11in}' not in source_contents
 
-    with abjad.systemtools.FilesystemState(keep=[source_path, destination_path]):
+    with abjad.FilesystemState(keep=[source_path, destination_path]):
         os.remove(destination_path)
         # generate first time
         input_ = 'red~example~score bb letter-portrait bcg q'

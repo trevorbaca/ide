@@ -17,7 +17,7 @@ except ImportError:
 configuration = AbjadIDEConfiguration()
 
 
-class IOManager(abjad.systemtools.IOManager):
+class IOManager(abjad.IOManager):
     r'''IO manager.
 
     ..  container:: example
@@ -110,7 +110,7 @@ class IOManager(abjad.systemtools.IOManager):
         if isinstance(lines, str):
             lines = [lines]
         if capitalize:
-            lines = [abjad.stringtools.capitalize_start(_) for _ in lines]
+            lines = [abjad.String(_).capitalize_start() for _ in lines]
         if lines:
             self._transcript._append_entry(lines, is_menu=is_menu)
         for line in lines:
@@ -136,15 +136,13 @@ class IOManager(abjad.systemtools.IOManager):
         return greatest_number
 
     @staticmethod
-    def _get_one_line_menu_summary(expr):
-        if isinstance(expr, (type, abc.ABCMeta)):
-            return expr.__name__
-        elif getattr(expr, '_one_line_menu_summary', None):
-            return expr._one_line_menu_summary
-        elif isinstance(expr, str):
-            return expr
+    def _get_one_line_menu_summary(argument):
+        if isinstance(argument, (type, abc.ABCMeta)):
+            return argument.__name__
+        elif isinstance(argument, str):
+            return argument
         else:
-            return repr(expr)
+            return repr(argument)
 
     def _handle_input(
         self,
@@ -161,7 +159,7 @@ class IOManager(abjad.systemtools.IOManager):
         '''
         found_default_token = False
         if capitalize_prompt:
-            message = abjad.stringtools.capitalize_start(message)
+            message = abjad.String(message).capitalize_start()
         if include_chevron:
             message = message + prompt_character + ' '
         else:
@@ -239,7 +237,7 @@ class IOManager(abjad.systemtools.IOManager):
     def _make_interaction(self, dry_run=False):
         from ide.tools import idetools
         if dry_run:
-            interaction = abjad.systemtools.NullContextManager()
+            interaction = abjad.NullContextManager()
         else:
             interaction = idetools.Interaction(io_manager=self)
         return interaction
@@ -428,7 +426,7 @@ class IOManager(abjad.systemtools.IOManager):
             message = 'can not interpret {}.'.format(path)
             raise Exception(message)
         directory = os.path.dirname(path)
-        directory = abjad.systemtools.TemporaryDirectoryChange(directory)
+        directory = abjad.TemporaryDirectoryChange(directory)
         string_buffer = StringIO()
         with directory, string_buffer:
             process = subprocess.Popen(
@@ -505,7 +503,7 @@ class IOManager(abjad.systemtools.IOManager):
                 )
             if os.path.exists(script_path):
                 os.remove(script_path)
-            with abjad.systemtools.FilesystemState(remove=[script_path]):
+            with abjad.FilesystemState(remove=[script_path]):
                 with open(script_path, 'w') as file_pointer:
                     file_pointer.write(completed_template)
                 permissions_command = 'chmod 755 {}'

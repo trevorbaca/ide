@@ -18,7 +18,7 @@ def test_AbjadIDE_make_illustrate_file_01():
         '__illustrate__.py',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[path]):
+    with abjad.FilesystemState(keep=[path]):
         assert os.path.isfile(path)
         os.remove(path)
         assert not os.path.isfile(path)
@@ -43,7 +43,7 @@ def test_AbjadIDE_make_illustrate_file_02():
         '__illustrate__.py',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[path]):
+    with abjad.FilesystemState(keep=[path]):
         assert os.path.isfile(path)
         input_ = 'red~example~score mm magic~numbers illm q'
         abjad_ide._start(input_=input_)

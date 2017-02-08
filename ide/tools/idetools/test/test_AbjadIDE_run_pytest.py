@@ -13,7 +13,4 @@ def test_AbjadIDE_run_pytest_01():
     contents = abjad_ide._io_manager._transcript.contents
 
     assert 'Running pytest on' in contents
-    assert ' test session starts ' in contents
-    assert 'collected 1 items' in contents
-    assert 'test/test_import.py .' in contents
-    assert ' 1 passed in ' in contents
+    assert abjad_ide._io_manager._session._attempted_method == '_run_pytest'

@@ -21,8 +21,8 @@ def test_AbjadIDE_interpret_every_ly_01():
         )
     package_names = (
         'magic_numbers',
-        'pitch_range_inventory',
-        'tempo_inventory',
+        'ranges',
+        'tempi',
         )
     ly_paths = [
         os.path.join(path, _, 'illustration.ly')
@@ -30,7 +30,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
 
-    with abjad.systemtools.FilesystemState(keep=ly_paths):
+    with abjad.FilesystemState(keep=ly_paths):
         for path in pdf_paths:
             if os.path.isfile(path):
                 os.remove(path)
@@ -67,8 +67,8 @@ def test_AbjadIDE_interpret_every_ly_02():
         )
     package_names = (
         'magic_numbers',
-        'pitch_range_inventory',
-        'tempo_inventory',
+        'ranges',
+        'tempi',
         )
     ly_paths = [
         os.path.join(path, _, 'illustration.ly')
@@ -77,7 +77,7 @@ def test_AbjadIDE_interpret_every_ly_02():
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
-    with abjad.systemtools.FilesystemState(keep=paths):
+    with abjad.FilesystemState(keep=paths):
         # remove existing PDFs
         for pdf_path in pdf_paths:
             os.remove(pdf_path)
@@ -124,7 +124,7 @@ def test_AbjadIDE_interpret_every_ly_03():
         ]
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
 
-    with abjad.systemtools.FilesystemState(keep=ly_paths):
+    with abjad.FilesystemState(keep=ly_paths):
         for path in pdf_paths:
             if os.path.isfile(path):
                 os.remove(path)
@@ -171,7 +171,7 @@ def test_AbjadIDE_interpret_every_ly_04():
     pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
-    with abjad.systemtools.FilesystemState(keep=paths):
+    with abjad.FilesystemState(keep=paths):
         # remove existing PDFs
         for pdf_path in pdf_paths:
             os.remove(pdf_path)

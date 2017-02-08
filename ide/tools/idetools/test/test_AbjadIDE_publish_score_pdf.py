@@ -19,7 +19,7 @@ def test_AbjadIDE_publish_score_pdf_01():
 
     assert os.path.exists(score_pdf_path)
 
-    with abjad.systemtools.FilesystemState(keep=[score_pdf_path]):
+    with abjad.FilesystemState(keep=[score_pdf_path]):
         os.remove(score_pdf_path)
         input_ = 'red~example~score bb letter-portrait spp q'
         abjad_ide._start(input_=input_)

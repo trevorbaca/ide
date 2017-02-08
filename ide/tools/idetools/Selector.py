@@ -68,7 +68,7 @@ class Selector(object):
 
     def _make_main_menu(self):
         name = type(self).__name__
-        name = abjad.stringtools.to_space_delimited_lowercase(name)
+        name = abjad.String(name).to_space_delimited_lowercase()
         menu = self._io_manager._make_menu(
             header=self.menu_header,
             name=name, 

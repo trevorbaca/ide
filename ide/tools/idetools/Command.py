@@ -91,10 +91,10 @@ class Command(object):
     ### PRIVATE METHODS ###
 
     @staticmethod
-    def _is_valid_command_name(expr):
-        if not isinstance(expr, str):
+    def _is_valid_command_name(argument):
+        if not isinstance(argument, str):
             return False
-        for character in expr:
+        for character in argument:
             if character.islower():
                 continue
             if character in string.punctuation:

@@ -42,7 +42,7 @@ def test_AbjadIDE_trash_pdf_02():
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
 
-    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.FilesystemState(keep=[ly_path]):
         input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(pdf_path)

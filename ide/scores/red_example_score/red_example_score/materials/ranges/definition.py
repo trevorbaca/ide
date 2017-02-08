@@ -2,7 +2,7 @@
 import abjad
 
 
-pitch_range_inventory = abjad.pitchtools.PitchRangeInventory(
+ranges = abjad.pitchtools.PitchRangeList(
     [
         abjad.pitchtools.PitchRange(
             '[A0, C4)'

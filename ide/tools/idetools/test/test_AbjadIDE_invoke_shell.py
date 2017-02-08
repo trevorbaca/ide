@@ -8,7 +8,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_invoke_shell_01():
 
-    input_ = 'red~example~score mm tempo~inventory !pwd q'
+    input_ = 'red~example~score mm tempi !pwd q'
     abjad_ide._start(input_=input_)
 
     path = os.path.join(
@@ -16,7 +16,7 @@ def test_AbjadIDE_invoke_shell_01():
         'red_example_score',
         'red_example_score',
         'materials',
-        'tempo_inventory',
+        'tempi',
         )
     string = '\n{}\n'.format(path)
     assert string in abjad_ide._io_manager._transcript.contents

@@ -27,12 +27,12 @@ class Transcript(abjad.abctools.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, expr):
-        r'''Gets transcript entry matching `expr`.
+    def __getitem__(self, argument):
+        r'''Gets transcript entry matching `argument`.
 
         Returns transcript entry.
         '''
-        return self.entries.__getitem__(expr)
+        return self.entries.__getitem__(argument)
 
     ### PRIVATE METHODS ###
 

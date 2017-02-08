@@ -10,14 +10,14 @@ def test_AbjadIDE_go_to_test_directory_01():
     r'''From material directory.
     '''
 
-    input_ = 'red~example~score mm tempo~inventory tt q'
+    input_ = 'red~example~score mm tempi tt q'
     abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - all score directories',
         'Red Example Score (2013)',
         'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - tempo inventory',
+        'Red Example Score (2013) - materials directory - tempi',
         'Red Example Score (2013) - test directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
@@ -66,7 +66,7 @@ def test_AbjadIDE_go_to_test_directory_04():
         'test',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[test_directory]):
+    with abjad.FilesystemState(keep=[test_directory]):
         command = 'rm -rf {}'
         command = command.format(test_directory)
         os.system(command)
@@ -85,4 +85,4 @@ def test_AbjadIDE_go_to_test_directory_05():
     abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert '1: test_import.py' in contents
+    assert '1: test_dummy.py' in contents

@@ -42,7 +42,7 @@ def test_AbjadIDE_rename_01():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-    with abjad.systemtools.FilesystemState(remove=[path_100_outer, path_101_outer]):
+    with abjad.FilesystemState(remove=[path_100_outer, path_101_outer]):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(path_100_outer)
@@ -89,7 +89,7 @@ def test_AbjadIDE_rename_02():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-    with abjad.systemtools.FilesystemState(remove=[old_path, new_path]):
+    with abjad.FilesystemState(remove=[old_path, new_path]):
         input_ = 'red~example~score mm new test~material q'
         abjad_ide._start(input_=input_)
         assert os.path.exists(old_path)
@@ -131,7 +131,7 @@ def test_AbjadIDE_rename_03():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-    with abjad.systemtools.FilesystemState(remove=[old_path, new_path]):
+    with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
         assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
@@ -160,7 +160,7 @@ def test_AbjadIDE_rename_04():
 
     input_ = 'red~example~score gg ren C renamed_segment_03 y q'
 
-    with abjad.systemtools.FilesystemState(keep=[old_path], remove=[new_path]):
+    with abjad.FilesystemState(keep=[old_path], remove=[new_path]):
         assert os.path.exists(old_path)
         abjad_ide._start(input_=input_)
         assert not os.path.exists(old_path)
@@ -192,7 +192,7 @@ def test_AbjadIDE_rename_05():
     if os.path.exists(new_path):
         shutil.rmtree(new_path)
 
-    with abjad.systemtools.FilesystemState(keep=[old_path], remove=[new_path]):
+    with abjad.FilesystemState(keep=[old_path], remove=[new_path]):
         assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
         assert not os.path.exists(old_path)
@@ -231,7 +231,7 @@ def test_AbjadIDE_rename_06():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-    with abjad.systemtools.FilesystemState(remove=[old_path, new_path]):
+    with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
         assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)
@@ -272,7 +272,7 @@ def test_AbjadIDE_rename_07():
         elif os.path.isdir(path):
             shutil.rmtree(path)
 
-    with abjad.systemtools.FilesystemState(remove=[old_path, new_path]):
+    with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
         assert os.path.exists(old_path)
         abjad_ide._start(input_=rename_input)

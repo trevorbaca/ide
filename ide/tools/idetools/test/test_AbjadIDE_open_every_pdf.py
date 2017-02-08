@@ -12,8 +12,8 @@ def test_AbjadIDE_open_every_pdf_01():
 
     # only these three packages have PDFs
     package_names = (
-        'pitch_range_inventory',
-        'tempo_inventory',
+        'ranges',
+        'tempi',
         'magic_numbers',
         )
     paths = []

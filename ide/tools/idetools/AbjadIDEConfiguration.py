@@ -5,7 +5,7 @@ import os
 import sys
 
 
-class AbjadIDEConfiguration(abjad.systemtools.Configuration):
+class AbjadIDEConfiguration(abjad.Configuration):
     r'''Abjad IDE configuration.
 
     ..  container:: example
@@ -31,7 +31,7 @@ class AbjadIDEConfiguration(abjad.systemtools.Configuration):
     ### INITIALIZER ###
 
     def __init__(self):
-        abjad.systemtools.Configuration.__init__(self)
+        abjad.Configuration.__init__(self)
         self._read_aliases_file()
         self._composer_scores_directory_override = None
         self._make_missing_directories()

@@ -27,8 +27,8 @@ def test_AbjadIDE_go_to_materials_directory_02():
     abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
-    assert '5: performer inventory' in contents
-    assert '6: pitch range inventory' in contents
-    assert '7: tempo inventory' in contents
-    assert '8: magic numbers' in contents
+    assert '5: magic numbers' in contents
+    assert '6: performers' in contents
+    assert '7: ranges' in contents
+    assert '8: tempi' in contents
     assert '9: time signatures' in contents

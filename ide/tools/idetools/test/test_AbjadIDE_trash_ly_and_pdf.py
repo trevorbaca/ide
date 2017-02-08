@@ -21,7 +21,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 #    ly_path = os.path.join(material_directory, 'illustration.ly')
 #    pdf_path = os.path.join(material_directory, 'illustration.pdf')
 #
-#    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+#    with abjad.FilesystemState(keep=[ly_path]):
 #        assert os.path.isfile(ly_path)
 #        #assert os.path.isfile(pdf_path)
 #        input_ = 'red~example~score mm magic~numbers pdfm q'
@@ -47,7 +47,7 @@ def test_AbjadIDE_trash_ly_and_pdf_02():
     ly_path = os.path.join(material_directory, 'illustration.ly')
     pdf_path = os.path.join(material_directory, 'illustration.pdf')
 
-    with abjad.systemtools.FilesystemState(keep=[ly_path]):
+    with abjad.FilesystemState(keep=[ly_path]):
         assert os.path.isfile(ly_path)
         input_ = 'red~example~score gg A pdfm q'
         abjad_ide._start(input_=input_)

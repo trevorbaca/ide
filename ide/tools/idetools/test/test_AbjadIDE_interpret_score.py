@@ -27,13 +27,13 @@ def test_AbjadIDE_interpret_score_01():
         'score.pdf',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
         os.remove(pdf_path)
         assert not os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait si q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(pdf_path)
-        assert abjad.systemtools.TestManager._compare_backup(pdf_path)
+        assert abjad.TestManager._compare_backup(pdf_path)
 
 
 def test_AbjadIDE_interpret_score_02():
@@ -57,7 +57,7 @@ def test_AbjadIDE_interpret_score_02():
         'score.pdf',
         )
 
-    with abjad.systemtools.FilesystemState(keep=[tex_path, pdf_path]):
+    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
         assert os.path.exists(pdf_path)
         input_ = 'red~example~score bb letter-portrait si q'
         abjad_ide._start(input_=input_)
@@ -86,7 +86,7 @@ def test_AbjadIDE_interpret_score_03():
         )
     paths = [preface_pdf_path, score_pdf_path]
 
-    with abjad.systemtools.FilesystemState(keep=paths):
+    with abjad.FilesystemState(keep=paths):
         os.remove(preface_pdf_path)
         input_ = 'red~example~score bb letter-portrait si q'
         abjad_ide._start(input_=input_)

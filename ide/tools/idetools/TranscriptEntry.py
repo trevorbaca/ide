@@ -26,12 +26,12 @@ class TranscriptEntry(abjad.abctools.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, expr):
+    def __getitem__(self, argument):
         r'''Gets line in transcript entry.
 
         Returns line.
         '''
-        return self.lines.__getitem__(expr)
+        return self.lines.__getitem__(argument)
 
     ### PRIVATE METHODS ###
 

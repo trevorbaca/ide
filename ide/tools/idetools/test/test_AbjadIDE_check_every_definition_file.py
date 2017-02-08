@@ -16,9 +16,9 @@ def test_AbjadIDE_check_every_definition_file_01():
 
     package_names = [
         'magic_numbers',
-        'performer_inventory',
-        'pitch_range_inventory',
-        'tempo_inventory',
+        'performers',
+        'ranges',
+        'tempi',
         'time_signatures',
         ]
     paths = []

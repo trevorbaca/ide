@@ -8,7 +8,7 @@ import traceback
 
 
 if __name__ == '__main__':
-    with abjad.systemtools.Timer() as timer:
+    with abjad.Timer() as timer:
         try:
             from definition import segment_maker
         except ImportError:
@@ -46,11 +46,11 @@ if __name__ == '__main__':
         except:
             traceback.print_exc()
             sys.exit(1)
-        message = 'Abjad runtime {} {} ...'
-        total_time = int(timer.elapsed_time)
-        identifier = abjad.stringtools.pluralize('second', total_time)
-        message = message.format(total_time, identifier)
-        print(message)
+        #message = 'Abjad runtime {} {} ...'
+        #total_time = int(timer.elapsed_time)
+        #identifier = abjad.String('second').pluralize(total_time)
+        #message = message.format(total_time, identifier)
+        #print(message)
     try:
         current_directory = os.path.dirname(__file__)
         ly_path = os.path.join(
@@ -62,18 +62,18 @@ if __name__ == '__main__':
             'illustration.pdf',
             )
         output_paths = (ly_path, pdf_path)
-        with abjad.systemtools.Timer() as timer:
+        with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(pdf_path)
-        message = 'LilyPond runtime {} {} ...'
-        total_time = int(timer.elapsed_time)
-        identifier = abjad.stringtools.pluralize('second', total_time)
-        message = message.format(total_time, identifier)
-        print(message)
-        for output_path in output_paths:
-            message = 'writing {} ...'
-            path = ide.tools.idetools.AbjadIDE._trim_path(output_path)
-            message = message.format(path)
-            print(message)
+        #message = 'LilyPond runtime {} {} ...'
+        #total_time = int(timer.elapsed_time)
+        #identifier = abjad.String('second').pluralize(total_time)
+        #message = message.format(total_time, identifier)
+        #print(message)
+        #for output_path in output_paths:
+        #    message = 'writing {} ...'
+        #    path = ide.tools.idetools.AbjadIDE._trim_path(output_path)
+        #    message = message.format(path)
+        #    print(message)
     except:
         traceback.print_exc()
         sys.exit(1)

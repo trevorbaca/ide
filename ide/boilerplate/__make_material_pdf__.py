@@ -8,11 +8,11 @@ import traceback
 if __name__ == '__main__':
     
     try:
-        with abjad.systemtools.Timer() as timer:
+        with abjad.Timer() as timer:
             from __illustrate__ import lilypond_file
         message = 'Abjad runtime {} {} ...'
         total_time = int(timer.elapsed_time)
-        identifier = abjad.stringtools.pluralize('second', total_time)
+        identifier = abjad.String('second').pluralize(total_time)
         message = message.format(total_time, identifier)
         print(message)
     except ImportError:
@@ -25,11 +25,11 @@ if __name__ == '__main__':
             current_directory,
             'illustration.candidate.pdf',
             )
-        with abjad.systemtools.Timer() as timer:
+        with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(candidate_path)
         message = 'LilyPond runtime {} {} ...'
         total_time = int(timer.elapsed_time)
-        identifier = abjad.stringtools.pluralize('second', total_time)
+        identifier = abjad.String('second').pluralize(total_time)
         message = message.format(total_time, identifier)
         print(message)
     except:
