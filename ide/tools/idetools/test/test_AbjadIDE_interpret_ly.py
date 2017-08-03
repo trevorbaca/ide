@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
@@ -8,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_interpret_ly_01():
     r'''In material directory.
-    
+
     LilyPond file exists but PDF does not exist.
     '''
 

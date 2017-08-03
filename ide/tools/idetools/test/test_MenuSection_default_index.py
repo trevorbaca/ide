@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
-import pytest
 
 
 def test_MenuSection_default_index_01():
@@ -13,7 +10,7 @@ def test_MenuSection_default_index_01():
     commands.append('cherry')
     section = menu._make_section(
         menu_entries=commands,
-        name='test', 
+        name='test',
         title='section',
         )
 

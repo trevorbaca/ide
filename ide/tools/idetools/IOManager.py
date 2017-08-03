@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import print_function
 import abc
 import abjad
@@ -167,7 +166,7 @@ class IOManager(abjad.IOManager):
         if not self._session.pending_input:
             was_pending_input = False
             if sys.version_info[0] == 2:
-                input_ = raw_input(message)
+                input_ = input(message)
             else:
                 input_ = input(message)
             if include_newline:
@@ -314,7 +313,10 @@ class IOManager(abjad.IOManager):
                 lines.append(line)
         else:
             for line in string.splitlines():
-                line = line.decode('utf-8')
+                try:
+                    line = line.decode('utf-8')
+                except UnicodeDecodeError:
+                    continue
                 lines.append(line)
         return '\n'.join(lines)
 

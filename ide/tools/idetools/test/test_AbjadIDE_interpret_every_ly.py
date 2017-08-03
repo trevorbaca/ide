@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
@@ -8,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_interpret_every_ly_01():
     r'''In materials directory.
-    
+
     LilyPond files exist but PDFs do not exist.
     '''
 
@@ -48,7 +47,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         message = message.format(abjad_ide._trim_path(pdf_path))
         assert message in contents
 
-    assert not 'Preserving' in contents
+    assert 'Preserving' not in contents
     assert 'Total time ' in contents
 
 
@@ -102,7 +101,7 @@ def test_AbjadIDE_interpret_every_ly_02():
 
 def test_AbjadIDE_interpret_every_ly_03():
     r'''In segments directory.
-    
+
     LilyPond files exist but PDFs do not exist.
     '''
 
@@ -142,7 +141,7 @@ def test_AbjadIDE_interpret_every_ly_03():
         message = message.format(abjad_ide._trim_path(pdf_path))
         assert message in contents
 
-    assert not 'Preserving' in contents
+    assert 'Preserving' not in contents
     assert 'Total time ' in contents
 
 

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
-import shutil
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 

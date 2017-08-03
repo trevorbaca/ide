@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
@@ -8,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_make_every_pdf_01():
     r'''In materials directory.
-    
+
     Neither LilyPond files nor PDFs exist.
     '''
 
@@ -31,9 +30,6 @@ def test_AbjadIDE_make_every_pdf_01():
     paths = ly_paths + pdf_paths
 
     with abjad.FilesystemState(keep=paths):
-        for path in paths:
-            os.remove(path)
-        assert not any(os.path.exists(_) for _ in paths)
         input_ = 'red~example~score mm pdfm* q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
@@ -41,20 +37,20 @@ def test_AbjadIDE_make_every_pdf_01():
         assert abjad.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Writing {} ...'
+        message = 'Removing {} ...'
         message = message.format(abjad_ide._trim_path(ly_path))
         assert message in contents
-        message = 'Writing {} ...'
+        message = 'Removing {} ...'
         message = message.format(abjad_ide._trim_path(pdf_path))
         assert message in contents
 
-    assert not 'Opening' in contents
+    assert 'Opening' not in contents
     assert 'Total time ' in contents
 
 
 def test_AbjadIDE_make_every_pdf_02():
     r'''In segments directory.
-    
+
     Neither LilyPond files nor PDFs exist.
     '''
 
@@ -95,5 +91,5 @@ def test_AbjadIDE_make_every_pdf_02():
 #        message = message.format(abjad_ide._trim_path(pdf_path))
 #        assert message in contents
 
-    assert not 'Opening' in contents
+    assert 'Opening' not in contents
     assert 'Total time ' in contents

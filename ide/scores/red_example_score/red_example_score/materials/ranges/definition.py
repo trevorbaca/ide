@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-ranges = abjad.pitchtools.PitchRangeList(
+ranges = abjad.PitchRangeList(
     [
-        abjad.pitchtools.PitchRange(
+        abjad.PitchRange(
             '[A0, C4)'
             ),
-        abjad.pitchtools.PitchRange(
+        abjad.PitchRange(
             '[C4, C8]'
             ),
         ]

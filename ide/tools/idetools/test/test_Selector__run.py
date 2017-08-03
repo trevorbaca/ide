@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 session = ide.tools.idetools.Session(is_test=True)
 io_manager = ide.tools.idetools.IOManager(session=session)
@@ -7,7 +5,7 @@ io_manager = ide.tools.idetools.IOManager(session=session)
 
 def test_Selector__run_01():
 
-    items=['apple', 'banana', 'cherry']
+    items = ['apple', 'banana', 'cherry']
     selector = ide.tools.idetools.Selector(items=items)
     io_manager._session._is_test = True
 

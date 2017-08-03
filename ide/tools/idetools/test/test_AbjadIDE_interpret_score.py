@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
+import shutil
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -68,13 +68,18 @@ def test_AbjadIDE_interpret_score_03():
     r'''LaTeX error does not freeze IDE.
     '''
 
-    preface_pdf_path = os.path.join(
+    bad_score_tex_path = os.path.join(
+        configuration.abjad_ide_directory,
+        'boilerplate',
+        'bad-score.tex',
+        )
+    score_tex_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'letter-portrait',
-        'preface.pdf',
+        'score.tex',
         )
     score_pdf_path = os.path.join(
         configuration.abjad_ide_example_scores_directory,
@@ -84,10 +89,10 @@ def test_AbjadIDE_interpret_score_03():
         'letter-portrait',
         'score.pdf',
         )
-    paths = [preface_pdf_path, score_pdf_path]
+    paths = [score_tex_path, score_pdf_path]
 
     with abjad.FilesystemState(keep=paths):
-        os.remove(preface_pdf_path)
+        shutil.copyfile(bad_score_tex_path, score_tex_path)
         input_ = 'red~example~score bb letter-portrait si q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents

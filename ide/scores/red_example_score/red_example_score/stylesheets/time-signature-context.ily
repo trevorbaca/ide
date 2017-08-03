@@ -1,7 +1,7 @@
 \layout {
     \context {
         \type Engraver_group
-        \name TimeSignatureContext
+        \name GlobalContext
         \consists Axis_group_engraver
         \consists Bar_number_engraver
         \consists Mark_engraver
@@ -42,7 +42,7 @@
     }
     \context {
         \Score
-        \accepts TimeSignatureContext
+        \accepts GlobalContext
         \remove Bar_number_engraver
         \remove Mark_engraver
         \remove Metronome_mark_engraver

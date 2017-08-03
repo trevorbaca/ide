@@ -1,16 +1,15 @@
 \documentclass[11pt]{{report}}
-\usepackage[papersize={paper_size}, margin=1in]{{geometry}}
-\usepackage[utf8]{{inputenc}}
 \usepackage[T1]{{fontenc}}
-\usepackage{{palatino}}
+\usepackage[papersize={paper_size}, margin=1in]{{geometry}}
+\usepackage{{graphicx}}
 \usepackage{{tikz}}
+\usepackage{{xltxtra,fontspec,xunicode}}
 \usetikzlibrary{{calc}}
-% uncomment for use with xelatex
-%\usepackage{{xltxtra,fontspec,xunicode}}
-%\defaultfontfeatures{{Scale=MatchLowercase}}
-%\setromanfont[Numbers=Uppercase]{{Didot}}
+\defaultfontfeatures{{Scale=MatchLowercase}}
 \newlength{{\drop}}
+\pagenumbering{{gobble}}
 \parindent=0pt
+\setmainfont{{Palatino}}
 
 \begin{{document}}
     \begin{{titlepage}}
@@ -29,9 +28,11 @@
         % must leave blank line below for vspace to work
 
         {{\vspace{{0.2in}}}}
+
         {{\fontsize{{4.5cm}}{{2em}}\selectfont {score_title}}}
-        \\
+
         \vspace{{1.5 in}}
+
         {{
             \Huge
             \textit{{{forces_tagline}}}
@@ -39,8 +40,10 @@
             \\
             \textit{{({year})}}
         }}
-        \\
-        \vspace{{2.8 in}}
+
+        \vfill
+
         {{\fontsize{{4.5cm}}{{2em}}\selectfont {composer}}}
+
     \end{{titlepage}}
 \end{{document}}

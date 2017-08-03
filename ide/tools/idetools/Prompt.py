@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-class Prompt(abjad.abctools.AbjadObject):
+class Prompt(abjad.AbjadObject):
     r'''Prompt.
     '''
 
@@ -32,7 +31,7 @@ class Prompt(abjad.abctools.AbjadObject):
         setup_statements=None,
         validation_function=None,
         ):
-        abjad.abctools.AbjadObject.__init__(self)
+        abjad.AbjadObject.__init__(self)
         assert isinstance(message, str)
         assert isinstance(help_template, str)
         self._disallow_range = disallow_range

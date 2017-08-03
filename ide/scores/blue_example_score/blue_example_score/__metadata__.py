@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-metadata = abjad.datastructuretools.TypedOrderedDict([
+metadata = abjad.TypedOrderedDict([
     ('title', 'Blue Example Score'),
     ('year', 2013),
     ])

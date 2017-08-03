@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
@@ -94,7 +92,7 @@ def test_AbjadIDE_display_action_command_help_02():
 def test_AbjadIDE_display_action_command_help_03():
     r'''In inner score directory.
     '''
-    
+
     lines = [
         'Red Example Score (2013) - action commands',
         '',
@@ -136,7 +134,7 @@ def test_AbjadIDE_display_action_command_help_03():
 def test_AbjadIDE_display_action_command_help_04():
     r'''In build directory.
     '''
-    
+
     lines = [
         'Red Example Score (2013) - build directory - action commands',
         '',
@@ -183,7 +181,7 @@ def test_AbjadIDE_display_action_command_help_04():
 def test_AbjadIDE_display_action_command_help_05():
     r'''In build subdirectory.
     '''
-    
+
     lines = [
         'Red Example Score (2013) - build directory - letter-portrait - action commands',
         '',
@@ -254,12 +252,12 @@ def test_AbjadIDE_display_action_command_help_05():
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
-        
+
 
 def test_AbjadIDE_display_action_command_help_06():
     r'''In distribution directory.
     '''
-    
+
     lines = [
         'Red Example Score (2013) - distribution directory - action commands',
         '',
@@ -304,7 +302,7 @@ def test_AbjadIDE_display_action_command_help_06():
 def test_AbjadIDE_display_action_command_help_07():
     r'''In tools directory.
     '''
-    
+
     lines = [
         'Red Example Score (2013) - tools directory - action commands',
         '',
@@ -425,6 +423,7 @@ def test_AbjadIDE_display_action_command_help_09():
         '',
         '    illustrate file - edit (ill)',
         '    illustrate file - make (illm)',
+        '    illustrate file - trash (illt)',
         '',
         '    ly - edit (ly)',
         '    ly - interpret (lyi)',
@@ -453,7 +452,6 @@ def test_AbjadIDE_display_action_command_help_09():
     input_ = 'red~example~score mm magic~numbers ? q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
@@ -563,7 +561,6 @@ def test_AbjadIDE_display_action_command_help_11():
     input_ = 'red~example~score gg A ? q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
 
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line

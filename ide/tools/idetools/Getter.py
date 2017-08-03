@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 import abjad
 import functools
-import numbers
-import re
 
 
 class Getter(object):
@@ -110,7 +107,7 @@ class Getter(object):
             except (AttributeError, NameError, SyntaxError):
                 pass
             namespace['evaluated_input'] = input_
-        if not 'evaluated_input' in namespace:
+        if 'evaluated_input' not in namespace:
             return
         if not self._validate_evaluated_input(namespace['evaluated_input']):
             self.display_help()
@@ -200,7 +197,9 @@ class Getter(object):
             elif isinstance(input_, str):
                 self._evaluate_input(input_, namespace)
             else:
-                raise ValueError
+                message = 'invalid input: {!r}.'
+                message = message.format(input_)
+                raise ValueError(message)
 
     def _present_prompts(self, include_chevron=True):
         self._prompt_index = 0
@@ -310,7 +309,9 @@ class Getter(object):
         Returns prompt.
         '''
         help_template = 'value may be anything.'
-        validation_function = lambda x: True
+
+        def validation_function(x):
+            return True
         self._make_prompt(
             spaced_attribute_name,
             help_template=help_template,
@@ -366,6 +367,7 @@ class Getter(object):
         Returns prompt.
         '''
         help_template = 'value must be integer or tuple of integers.'
+
         def helper(argument):
             if isinstance(argument, int):
                 return True
@@ -472,7 +474,7 @@ class Getter(object):
     def is_integer_or_none(argument):
         r'''Predicate.
         '''
-        return argument is None or is_integer(argument)
+        return argument is None
 
     @staticmethod
     def is_list(argument):

@@ -13,7 +13,7 @@
     indent = #0
     ragged-right = ##t
     \context {
-        \name TimeSignatureContext
+        \name GlobalContext
         \type Engraver_group
         \consists Axis_group_engraver
         \consists Time_signature_engraver
@@ -29,7 +29,7 @@
     \context {
         \Score
         \remove Bar_number_engraver
-        \accepts TimeSignatureContext
+        \accepts GlobalContext
         \override Beam.breakable = ##t
         \override SpacingSpanner.strict-grace-spacing = ##t
         \override SpacingSpanner.strict-note-spacing = ##t
@@ -63,7 +63,7 @@
 
 \score {
     \new Score <<
-        \new TimeSignatureContext {
+        \new GlobalContext {
             {
                 \time 3/8
                 s1 * 3/8

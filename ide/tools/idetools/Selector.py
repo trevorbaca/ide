@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
@@ -71,7 +70,7 @@ class Selector(object):
         name = abjad.String(name).to_space_delimited_lowercase()
         menu = self._io_manager._make_menu(
             header=self.menu_header,
-            name=name, 
+            name=name,
             )
         self._make_asset_menu_section(menu)
         return menu

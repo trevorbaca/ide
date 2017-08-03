@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 
@@ -22,7 +21,7 @@ def test_MenuEntry___format___01():
     assert abjad.TestManager.compare(
         format(section[0]),
         r'''
-        idetools.MenuEntry(
+        ide.idetools.MenuEntry(
             display_string='foo - add',
             key='add',
             )

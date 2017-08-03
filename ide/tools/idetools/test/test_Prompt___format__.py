@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 
@@ -16,7 +15,7 @@ def test_Prompt___format___01():
     assert abjad.TestManager.compare(
         modified_format,
         r'''
-        idetools.Prompt(
+        ide.idetools.Prompt(
             disallow_range=False,
             help_template='value must be string.',
             help_template_arguments=[],

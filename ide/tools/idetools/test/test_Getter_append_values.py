@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 session = ide.tools.idetools.Session()
 io_manager = ide.tools.idetools.IOManager(session=session)

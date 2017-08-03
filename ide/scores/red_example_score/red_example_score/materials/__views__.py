@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-view_inventory = abjad.datastructuretools.TypedOrderedDict([
+view_inventory = abjad.TypedOrderedDict([
     (
         'inventories first',
         ["'inventory' in :ds:", "'inventory' not in :ds:"],

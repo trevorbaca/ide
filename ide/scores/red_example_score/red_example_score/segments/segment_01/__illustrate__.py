@@ -1,8 +1,7 @@
 #! /usr/bin/env python
-# -*- coding: utf-8 -*-
 import abjad
 import ide
-import os
+import pathlib
 import sys
 import traceback
 
@@ -15,33 +14,33 @@ if __name__ == '__main__':
             traceback.print_exc()
             sys.exit(1)
         try:
-            from __metadata__ import metadata as segment_metadata
+            from __metadata__ import metadata as metadata
         except ImportError:
             traceback.print_exc()
             sys.exit(1)
         try:
-            previous_segment_metadata = None
+            previous_metadata = None
         except ImportError:
             traceback.print_exc()
             sys.exit(1)
         try:
             result = segment_maker(
-                segment_metadata=segment_metadata,
-                previous_segment_metadata=previous_segment_metadata,
+                metadata=metadata,
+                previous_metadata=previous_metadata,
                 )
-            lilypond_file, segment_metadata = result
+            lilypond_file, metadata = result
         except:
             traceback.print_exc()
             sys.exit(1)
         try:
-            current_directory = os.path.dirname(__file__)
+            current_directory = pathlib.Path(__file__).parent
             dummy_session = ide.tools.idetools.Session()
             abjad_ide = ide.tools.idetools.AbjadIDE(
-                session=dummy_session, 
+                session=dummy_session,
                 )
             abjad_ide._write_metadata_py(
                 current_directory,
-                segment_metadata, 
+                metadata,
                 )
         except:
             traceback.print_exc()
@@ -52,15 +51,9 @@ if __name__ == '__main__':
         #message = message.format(total_time, identifier)
         #print(message)
     try:
-        current_directory = os.path.dirname(__file__)
-        ly_path = os.path.join(
-            current_directory,
-            'illustration.ly',
-            )
-        pdf_path = os.path.join(
-            current_directory,
-            'illustration.pdf',
-            )
+        current_directory = pathlib.Path(__file__).parent
+        ly_path = current_directory.joinpath('illustration.ly')
+        pdf_path = current_directory.joinpath('illustration.pdf')
         output_paths = (ly_path, pdf_path)
         with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(pdf_path)

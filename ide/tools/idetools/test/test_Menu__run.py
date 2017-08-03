@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 
 
@@ -14,9 +12,9 @@ def test_Menu__run_01():
     commands.append('apple')
     commands.append('banana')
     commands.append('cherry')
-    section = menu._make_section(
+    menu._make_section(
         menu_entries=commands,
-        name='test', 
+        name='test',
         title='section',
         )
 
@@ -57,7 +55,7 @@ def test_Menu__run_02():
     commands.append('apple')
     commands.append('banana')
     commands.append('cherry')
-    section = menu._make_section(
+    menu._make_section(
         is_hidden=True,
         menu_entries=commands,
         name='test',
@@ -101,7 +99,7 @@ def test_Menu__run_03():
     commands.append('apple')
     commands.append('banana')
     commands.append('cherry')
-    section = menu._make_section(
+    menu._make_section(
         is_numbered=True,
         menu_entries=commands,
         name='test',
@@ -145,7 +143,7 @@ def test_Menu__run_04():
     commands.append('apple')
     commands.append('banana')
     commands.append('cherry')
-    section = menu._make_section(
+    menu._make_section(
         is_ranged=True,
         menu_entries=commands,
         name='test',
@@ -189,7 +187,7 @@ def test_Menu__run_05():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         menu_entries=commands,
         name='test',
         title='section',
@@ -245,7 +243,7 @@ def test_Menu__run_06():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         menu_entries=commands,
         name='test',
         )
@@ -299,7 +297,7 @@ def test_Menu__run_07():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         is_hidden=True,
         menu_entries=commands,
         name='test',
@@ -356,7 +354,7 @@ def test_Menu__run_08():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         is_hidden=True,
         menu_entries=commands,
         name='test',
@@ -412,7 +410,7 @@ def test_Menu__run_09():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         is_numbered=True,
         menu_entries=commands,
         name='test',
@@ -469,7 +467,7 @@ def test_Menu__run_10():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         is_ranged=True,
         menu_entries=commands,
         name='test',
@@ -526,7 +524,7 @@ def test_Menu__run_11():
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
     commands.append(('third command', 'mod'))
-    section = menu._make_section(
+    menu._make_section(
         is_ranged=True,
         menu_entries=commands,
         name='test',

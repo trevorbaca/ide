@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 import abjad
 import os
-import re
 import shlex
 
 
@@ -131,7 +129,7 @@ class Menu(object):
 
     def _change_input_to_directive(self, input_):
         r'''Match order:
-        
+
             1. all command sections
             2. assets section, if it exists
 
@@ -207,7 +205,7 @@ class Menu(object):
 
     def _handle_user_input(self):
         input_ = self._io_manager._handle_input(
-            '', 
+            '',
             prompt_character=self.prompt_character,
             )
         if input_ == '<return>':
@@ -242,7 +240,7 @@ class Menu(object):
             message = message.format(input_)
             self._io_manager._display([message, ''])
             result = None
-            if (self._io_manager._session.is_test and 
+            if (self._io_manager._session.is_test and
                 not self._io_manager._session._allow_unknown_command_during_test):
                 message = 'tests should contain no unknown commands.'
                 raise Exception(message)
@@ -288,8 +286,8 @@ class Menu(object):
         return lines
 
     def _make_bicolumnar(
-        self, 
-        lines, 
+        self,
+        lines,
         break_only_at_blank_lines=False,
         strip=True,
         ):
@@ -333,7 +331,7 @@ class Menu(object):
             assert len(left_lines) + len(right_lines) == len(lines) - 1
         else:
             right_lines = lines[midpoint:]
-        left_count, right_count = len(left_lines), len(right_lines)
+        #left_count, right_count = len(left_lines), len(right_lines)
         #assert right_count <= left_count, repr((left_count, right_count))
         if strip:
             left_width = max(len(_.strip()) for _ in left_lines)
@@ -344,16 +342,13 @@ class Menu(object):
         left_lines = [self._left_justify(_, left_width) for _ in left_lines]
         right_lines = [self._left_justify(_, right_width) for _ in right_lines]
         if strip:
-            left_margin_width, gutter_width = 4, 4 
+            left_margin_width, gutter_width = 4, 4
         else:
-            left_margin_width, gutter_width = 0, 4 
+            left_margin_width, gutter_width = 0, 4
         left_margin = left_margin_width * ' '
         gutter = gutter_width * ' '
         conjoined_lines = []
-        for _ in abjad.sequencetools.zip_sequences(
-            [left_lines, right_lines],
-            truncate=False,
-            ):
+        for _ in abjad.sequence([left_lines, right_lines]).zip(truncate=False):
             if len(_) == 1:
                 left_line = _[0]
                 conjoined_line = left_margin + left_line
@@ -412,7 +407,7 @@ class Menu(object):
         if lines:
             lines.pop()
         lines = self._make_bicolumnar(
-            lines, 
+            lines,
             break_only_at_blank_lines=True,
             )
         title = self.header
@@ -504,8 +499,8 @@ class Menu(object):
         else:
             lines = self._make_lines()
         self._io_manager._display(
-            lines, 
-            capitalize=False, 
+            lines,
+            capitalize=False,
             is_menu=True,
             )
 

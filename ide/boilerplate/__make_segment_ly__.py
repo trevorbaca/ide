@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
-import os
+import pathlib
 import sys
 import traceback
 
@@ -15,7 +14,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        from __metadata__ import metadata as segment_metadata
+        from __metadata__ import metadata as metadata
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
@@ -29,10 +28,10 @@ if __name__ == '__main__':
     try:
         with abjad.Timer() as timer:
             result = segment_maker(
-                segment_metadata=segment_metadata,
-                previous_segment_metadata=previous_segment_metadata,
+                metadata=metadata,
+                previous_metadata=previous_metadata,
                 )
-            lilypond_file, segment_metadata = result
+            lilypond_file, metadata = result
         message = 'Abjad runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))
         print(message)
@@ -41,27 +40,24 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        current_directory = os.path.dirname(__file__)
+        current_directory = pathlib.Path(__file__).parent
         dummy_session = ide.tools.idetools.Session()
         abjad_ide = ide.tools.idetools.AbjadIDE(
-            session=dummy_session, 
+            session=dummy_session,
             )
         abjad_ide._write_metadata_py(
             current_directory,
-            segment_metadata, 
+            metadata,
             )
     except:
         traceback.print_exc()
         sys.exit(1)
 
     try:
-        current_directory = os.path.dirname(__file__)
-        candidate_path = os.path.join(
-            current_directory,
-            'illustration.candidate.ly',
-            )
+        current_directory = pathlib.Path(__file__).parent
+        ly_path = current_directory / 'illustration.ly'
         with abjad.Timer() as timer:
-            abjad.persist(lilypond_file).as_ly(candidate_path)
+            abjad.persist(lilypond_file).as_ly(ly_path)
         message = 'LilyPond runtime: {{}} sec.'
         message = message.format(int(timer.elapsed_time))
         print(message)

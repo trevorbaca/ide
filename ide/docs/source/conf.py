@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sphinx_rtd_theme
 from sphinx.highlighting import PygmentsBridge
 from pygments.formatters.latex import LatexFormatter
@@ -41,7 +40,6 @@ html_theme = "sphinx_rtd_theme"
 html_theme_options = {}
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_use_index = False
-html_use_smartypants = True
 ### HTML HELP ###
 htmlhelp_basename = 'AbjadAbjadIDEdoc'
 ### LATEX ###

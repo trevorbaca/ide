@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 '''Abjad IDE installation.
 
 To install the Abjad IDE:
@@ -66,7 +65,6 @@ the Abjad IDE.
 
 You're ready to use the Abjad IDE when the docs build and all tests pass.
 '''
-
 from ide.tools import idetools
 configuration = idetools.AbjadIDEConfiguration()
 configuration._add_example_score_to_sys_path()

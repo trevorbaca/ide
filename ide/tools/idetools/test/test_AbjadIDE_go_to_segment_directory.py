@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
@@ -32,7 +30,7 @@ def test_AbjadIDE_go_to_segment_directory_02():
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert "Matches no display string: '%X'." in contents 
+    assert "Matches no display string: '%X'." in contents
 
 
 def test_AbjadIDE_go_to_segment_directory_03():
@@ -49,4 +47,4 @@ def test_AbjadIDE_go_to_segment_directory_03():
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert "Matches no display string: '%a'." in contents 
+    assert "Matches no display string: '%a'." in contents

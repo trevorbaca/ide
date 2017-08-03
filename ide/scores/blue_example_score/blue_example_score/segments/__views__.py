@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-view_inventory = abjad.datastructuretools.TypedOrderedDict([
+view_inventory = abjad.TypedOrderedDict([
     (
         'reverse',
         ['segment 02', 'segment 01'],

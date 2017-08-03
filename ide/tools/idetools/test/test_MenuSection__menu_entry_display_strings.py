@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 
 
@@ -16,7 +14,7 @@ def test_MenuSection__menu_entry_display_strings_01():
     commands.append('cherry')
     section = menu._make_section(
         menu_entries=commands,
-        name='test', 
+        name='test',
         title='section',
         )
     assert not section.is_numbered
@@ -52,7 +50,7 @@ def test_MenuSection__menu_entry_display_strings_02():
     commands.append(('modify something', 'mod'))
     section = menu._make_section(
         menu_entries=commands,
-        name='test', 
+        name='test',
         title='section title',
         )
     assert not section.is_numbered

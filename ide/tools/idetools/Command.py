@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import string
 
 
@@ -43,10 +42,10 @@ class Command(object):
     ### INITIALIZER ###
 
     def __init__(
-        self, 
-        command_name, 
+        self,
+        command_name,
         argument_name=None,
-        description=None, 
+        description=None,
         directories=None,
         forbidden_directories=(),
         is_hidden=True,

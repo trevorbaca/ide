@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-aliases = abjad.datastructuretools.TypedOrderedDict([
+aliases = abjad.TypedOrderedDict([
     ('todo', 'etc/to-do.md'),
     ])

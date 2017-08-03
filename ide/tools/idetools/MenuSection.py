@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import abjad
 import types
 
 
-class MenuSection(abjad.abctools.AbjadObject):
+class MenuSection(abjad.AbjadObject):
     r'''Menu section.
 
     ..  container:: example
@@ -71,7 +70,7 @@ class MenuSection(abjad.abctools.AbjadObject):
         return_value_attribute='display_string',
         title=None,
         ):
-        abjad.abctools.AbjadObject.__init__(self)
+        abjad.AbjadObject.__init__(self)
         assert menu_entries, repr(name)
         assert name, repr(name)
         assert return_value_attribute in self.return_value_attributes
@@ -393,7 +392,6 @@ class MenuSection(abjad.abctools.AbjadObject):
                 )
         prototype = (str, tuple, types.MethodType)
         assert isinstance(argument, prototype), repr(argument)
-        number = None
         method = None
         if isinstance(argument, str):
             argument = (argument, )

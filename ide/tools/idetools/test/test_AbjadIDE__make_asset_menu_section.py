@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 session = ide.tools.idetools.Session()

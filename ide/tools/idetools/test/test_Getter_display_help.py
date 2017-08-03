@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
@@ -12,7 +10,7 @@ def test_Getter_display_help_01():
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
-    string  = 'Value must be string.'
+    string = 'Value must be string.'
     assert string in contents
 
 

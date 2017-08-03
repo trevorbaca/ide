@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
@@ -8,7 +7,7 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
 def test_AbjadIDE_make_pdf_01():
     r'''In material directory.
-    
+
     Creates PDF and LilyPond files when none exists.
     '''
 
@@ -34,9 +33,6 @@ def test_AbjadIDE_make_pdf_01():
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Calling Python on' in contents
-    assert 'Writing' in contents
-    assert abjad_ide._trim_path(ly_path) in contents
-    assert abjad_ide._trim_path(pdf_path) in contents
     assert 'Abjad runtime ' in contents
     assert 'LilyPond runtime ' in contents
     assert 'Total time ' in contents
@@ -44,8 +40,8 @@ def test_AbjadIDE_make_pdf_01():
 
 def test_AbjadIDE_make_pdf_02():
     r'''In material directory.
-    
-    Preserves existing PDF when candidate compares the same.
+
+    Removes .ly and .pdf files when they already exist.
     '''
 
     segment_directory = os.path.join(
@@ -57,29 +53,18 @@ def test_AbjadIDE_make_pdf_02():
         )
     ly_path = os.path.join(segment_directory, 'illustration.ly')
     pdf_path = os.path.join(segment_directory, 'illustration.pdf')
-    candidate_pdf_path = os.path.join(
-        segment_directory,
-        'illustration.candidate.pdf',
-        )
 
     with abjad.FilesystemState(keep=[ly_path, pdf_path]):
-        # remove existing PDF
-        os.remove(ly_path)
-        os.remove(pdf_path)
-        assert not os.path.exists(ly_path)
-        assert not os.path.exists(pdf_path)
-        # generate PDF first time
+        assert os.path.exists(ly_path)
+        assert os.path.exists(pdf_path)
         input_ = 'red~example~score mm magic~numbers pdfm q'
         abjad_ide._start(input_=input_)
         assert os.path.isfile(ly_path)
         assert os.path.isfile(pdf_path)
-        # attempt to generate PDF second time (but blocked)
-        input_ = 'red~example~score mm magic~numbers pdfm q'
-        abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents
     assert 'Calling Python on' in contents
-    assert 'Preserving' in contents
+    assert 'Removing' in contents
     assert abjad_ide._trim_path(ly_path) in contents
     assert abjad_ide._trim_path(pdf_path) in contents
     assert 'Abjad runtime ' in contents
@@ -121,14 +106,6 @@ def test_AbjadIDE_make_pdf_03():
     message = 'Calling Python on {} ...'
     message = message.format(abjad_ide._trim_path(illustrate_file_path))
     assert message in contents
-#    assert 'Abjad runtime' in contents
-#    assert 'LilyPond runtime' in contents
-#    message = 'Writing {} ...'
-#    message = message.format(abjad_ide._trim_path(ly_path))
-#    assert message in contents
-#    message = 'Writing {} ...'
-#    message = message.format(abjad_ide._trim_path(pdf_path))
-#    assert message in contents
     message = 'Opening {} ...'
     message = message.format(abjad_ide._trim_path(pdf_path))
     assert message in contents

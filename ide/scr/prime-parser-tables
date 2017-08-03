@@ -12,9 +12,9 @@ thereby causing PLY to create and persist the appropriate parser tables.
 '''
 
 for class_ in abjad.documentationtools.list_all_abjad_classes():
-    if not issubclass(class_, abjad.abctools.Parser):
+    if not issubclass(class_, abjad.Parser):
         continue
-    if class_ is abjad.abctools.Parser:
+    if class_ is abjad.Parser:
         continue
     print('Priming {} parser tables.'.format(class_.__name__))
     class_()

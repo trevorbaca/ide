@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import ide
 import os
@@ -17,7 +16,7 @@ def test_AbjadIDE_replace_01():
         'tools',
         'RhythmMaker.py',
         )
-    
+
     with abjad.FilesystemState(keep=[path]):
         input_ = 'red~example~score sr RhythmMaker q'
         abjad_ide._start(input_=input_)

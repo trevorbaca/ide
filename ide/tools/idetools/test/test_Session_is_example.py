@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-import abjad
 import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_example=True)
 

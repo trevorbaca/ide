@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
 import abjad
 import inspect
 import pytest
 
 
 classes = abjad.documentationtools.list_all_ide_classes()
+
+
 @pytest.mark.parametrize('obj', classes)
 def test_idetools___doc___01(obj):
     r'''All classes have a docstring. All class methods have a docstring.

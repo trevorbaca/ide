@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import print_function
 import abjad
 import os
@@ -146,7 +145,7 @@ class AbjadIDEConfiguration(abjad.Configuration):
                 file_contents_string = file_pointer.read()
             exec(file_contents_string, globals_)
         aliases = globals_.get('aliases') or \
-            abjad.datastructuretools.TypedOrderedDict()
+            abjad.TypedOrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###

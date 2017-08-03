@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-class ScoreTemplate(abjad.abctools.AbjadObject):
+class ScoreTemplate(abjad.AbjadObject):
     r'''Score template.
     '''
 
     ### INITIALIZER ###
 
     def __init__(self):
-        dictionary = abjad.datastructuretools.TypedOrderedDict()
+        dictionary = abjad.TypedOrderedDict()
         self.context_name_abbreviations = dictionary
 
     ### SPECIAL METHODS ###
@@ -41,32 +40,32 @@ class ScoreTemplate(abjad.abctools.AbjadObject):
 
         Returns score.
         '''
-        rh_voice = abjad.scoretools.Voice(
+        rh_voice = abjad.Voice(
             context_name='RHVoice',
             name='RH Voice',
             )
-        rh_staff = abjad.scoretools.Staff(
+        rh_staff = abjad.Staff(
             [rh_voice],
             context_name='RHStaff',
             name='RH Staff',
             )
-        lh_voice = abjad.scoretools.Voice(
+        lh_voice = abjad.Voice(
             context_name='LHVoice',
             name='LH Voice',
             )
-        lh_staff = abjad.scoretools.Staff(
+        lh_staff = abjad.Staff(
             [lh_voice],
             context_name='LHStaff',
             name='LH Staff',
             )
-        piano_staff_group = abjad.scoretools.StaffGroup(
+        piano_staff_group = abjad.StaffGroup(
             [
                 rh_staff,
                 lh_staff,
                 ],
             name='Piano Staff Group',
             )
-        score = abjad.scoretools.Score(
+        score = abjad.Score(
             [
                 piano_staff_group,
             ],

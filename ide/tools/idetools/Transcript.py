@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import abjad
 import datetime
 import os
@@ -7,7 +6,7 @@ from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 configuration = AbjadIDEConfiguration()
 
 
-class Transcript(abjad.abctools.AbjadObject):
+class Transcript(abjad.AbjadObject):
     r'''Transcript.
     '''
 

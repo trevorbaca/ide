@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import abjad
 from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
 configuration = AbjadIDEConfiguration()
 
 
-class MenuEntry(abjad.abctools.AbjadObject):
+class MenuEntry(abjad.AbjadObject):
     r'''Menu entry.
 
     ..  container:: example
@@ -229,7 +228,7 @@ class MenuEntry(abjad.abctools.AbjadObject):
             return True
         if self.menu_section.is_numbered and input_ == str(self.number):
             return True
-        if (self.menu_section.match_on_display_string and 
+        if (self.menu_section.match_on_display_string and
             3 <= len(input_)):
             if normalized_display_string.startswith(input_.lower()):
                 return True

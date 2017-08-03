@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
 import abjad
 
 
-class SargassoMeasureMaker(abjad.abctools.AbjadObject):
+class SargassoMeasureMaker(abjad.AbjadObject):
     r'''Sargasso measure maker.
     '''
 
@@ -79,13 +78,13 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         total_duration = abjad.Duration(total_duration)
 
         weight = int(measure_denominator * total_duration)
-        measure_numerators = abjad.sequencetools.repeat_sequence_to_weight(
-            measure_numerator_talea, weight)
+        measure_numerators = abjad.sequence(
+            measure_numerator_talea).repeat_to_weight(weight)
         #print measure_numerators
 
         weight = int(measure_division_denominator * total_duration)
-        measure_divisions = abjad.sequencetools.repeat_sequence_to_weight(
-            measure_division_talea, weight)
+        measure_divisions = abjad.sequence(
+            measure_division_talea).repeat_to_weight(weight)
         #print measure_divisions
 
         multiplier = measure_division_denominator / measure_denominator
@@ -93,8 +92,8 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             multiplier * x for x in measure_numerators]
         #print multiplied_measure_numerators
 
-        measure_divisions_by_measure = abjad.sequencetools.split_sequence(
-            measure_divisions,
+        measure_divisions_by_measure = abjad.sequence(
+            measure_divisions).split(
             multiplied_measure_numerators,
             cyclic=True,
             overhang=True,
@@ -129,17 +128,18 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
                 prolated_measure_numerators.append(prolated_measure_numerator)
             #print prolated_measure_numerators
 
-            measure_divisions = \
-                abjad.sequencetools.repeat_sequence_to_weight(
-                measure_division_talea, sum(prolated_measure_numerators))
+            measure_divisions = abjad.sequence(
+                measure_division_talea).repeat_to_weight(
+                sum(prolated_measure_numerators)
+                )
             #print measure_divisions
 
-            measure_divisions_by_measure = \
-                abjad.sequencetools.split_sequence(
-                measure_divisions,
+            measure_divisions_by_measure = abjad.sequence(
+                measure_divisions).split(
                 prolated_measure_numerators,
                 cyclic=True,
-                overhang=True)
+                overhang=True,
+                )
             #print measure_divisions_by_measure
 
         measure_tokens = zip(meter_multipliers, measure_divisions_by_measure)
@@ -152,9 +152,8 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
 
         divided_measure_tokens = []
         for meter_multiplier, measure_divisions in measure_tokens:
-            division_lists = \
-                abjad.sequencetools.partition_sequence_by_ratio_of_lengths(
-                    measure_divisions, ratio)
+            division_lists = abjad.sequence(
+                measure_divisions).partition_by_ratio_of_lengths(ratio)
             for division_list in division_lists:
                 if division_list:
                     token = (meter_multiplier, division_list)
@@ -172,9 +171,8 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             meter_base_unit = meter_multiplier * abjad.Multiplier(
                 min(measure_divisions), measure_division_denominator)
             meter_denominator = meter_base_unit.denominator
-            meter_token = \
-                abjad.mathtools.NonreducedFraction(
-                    measure_duration).with_multiple_of_denominator(
+            meter_token = abjad.NonreducedFraction(
+                measure_duration).with_multiple_of_denominator(
                 meter_denominator)
             meter_tokens.append(meter_token)
         #print meter_tokens
@@ -186,7 +184,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
 
         measures = []
         for meter_token, division_token in zip(meter_tokens, division_tokens):
-            leaves = abjad.scoretools.make_leaves_from_talea(
+            leaves = abjad.make_leaves_from_talea(
                 division_token, measure_division_denominator)
             measure = abjad.Measure(
                 meter_token,
@@ -202,7 +200,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         return selection
 
     def __eq__(self, argument):
-        r'''Is true when `argument` is a sargasso measure-maker with type and 
+        r'''Is true when `argument` is a sargasso measure-maker with type and
         public properties equal to those of this sargasso measure-maker.
         Otherwise false.
 
@@ -226,7 +224,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         staff = abjad.Staff(measures)
         staff.context_name = 'RhythmicStaff'
         score = abjad.Score([staff])
-        illustration = abjad.lilypondfiletools.make_basic_lilypond_file(score)
+        illustration = abjad.make_basic_lilypond_file(score)
         measures = score._get_components(abjad.Measure)
         for measure in measures:
             beam = abjad.Beam()
@@ -283,7 +281,7 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
         lines.append('{} = ['.format(self._package_name))
         for measure in output_material[:-1]:
             line = self._make_measure_string(measure)
-            line = 'abjad.scoretools.' + line
+            line = 'abjad.' + line
             lines.append('\t{},'.format(line))
         line = output_material[-1]._one_line_input_string
         lines.append('\tabjad.scoretools.{}]'.format(line))
@@ -297,17 +295,17 @@ class SargassoMeasureMaker(abjad.abctools.AbjadObject):
             [modulus_of_permutation, len_divided_measure_tokens])
         permutation = [(5 * x) % len_divided_measure_tokens
             for x in range(len_divided_measure_tokens)]
-        divided_measure_tokens = abjad.sequencetools.permute_sequence(
-                divided_measure_tokens, permutation)
+        divided_measure_tokens = abjad.sequence(
+            divided_measure_tokens).permute(permutation)
         return divided_measure_tokens
 
     def _select_meter_multiplier(
-        self, 
-        possible_meter_multipliers, 
+        self,
+        possible_meter_multipliers,
         measure_index,
         ):
         possible_meter_multipliers = \
-            abjad.datastructuretools.CyclicTuple(possible_meter_multipliers)
+            abjad.CyclicTuple(possible_meter_multipliers)
         meter_multiplier = possible_meter_multipliers[5 * measure_index]
         return meter_multiplier
 

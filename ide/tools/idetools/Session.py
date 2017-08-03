@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 class Session(object):
     r'''Session.
 
@@ -35,7 +32,6 @@ class Session(object):
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_example=False, is_test=False):
-        from ide.tools import idetools
         self._after_redraw_messages = None
         self._allow_unknown_command_during_test = False
         self._attempted_method = None
@@ -77,11 +73,10 @@ class Session(object):
     ### PRIVATE METHODS ###
 
     def _reinitialize(self):
-        is_test = self._is_test
         allow_unknown = self._allow_unknown_command_during_test
         type(self).__init__(
-            self, 
-            is_example=self.is_example, 
+            self,
+            is_example=self.is_example,
             is_test=self.is_test,
             )
         self._allow_unknown_command_during_test = allow_unknown

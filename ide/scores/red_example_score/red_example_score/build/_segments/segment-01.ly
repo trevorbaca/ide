@@ -1,5 +1,5 @@
     \context Score = "Two-Staff Piano Score" <<
-        \context TimeSignatureContext = "Time Signature Context" {
+        \context GlobalContext = "Global Context" {
             {
                 \time 15/8
                 s1 * 15/8
@@ -10,10 +10,7 @@
             }
         }
         \context PianoStaff = "Piano Staff" <<
-            \set PianoStaff.instrumentName = \markup { Piano }
-            \set PianoStaff.shortInstrumentName = \markup { Pf. }
             \context Staff = "RH Staff" {
-                \clef "treble"
                 \context Voice = "RH Voice" {
                     g''4.
                     bf''4.
@@ -38,7 +35,6 @@
                 }
             }
             \context Staff = "LH Staff" {
-                \clef "bass"
                 \context Voice = "LH Voice" {
                     fs4 ~
                     fs16

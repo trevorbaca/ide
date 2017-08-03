@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 import abjad
 import datetime
 import time
 
 
-class TranscriptEntry(abjad.abctools.AbjadObject):
+class TranscriptEntry(abjad.AbjadObject):
     r'''Transcript entry.
     '''
 
