@@ -63,8 +63,8 @@ class MenuEntry(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __lt__(self, argument):
-        r'''Is true when `argument` is a menu entry with a display string greater
-        than that of this menu entry. Otherwise false.
+        r'''Is true when `argument` is a menu entry with a display string
+        greater than that of this menu entry. Otherwise false.
 
         Returns true or false.
         '''
@@ -79,7 +79,7 @@ class MenuEntry(abjad.AbjadObject):
         '''
         return '<{}: {!r}>'.format(type(self).__name__, self.display_string)
 
-    ### PRIVATE PROPERTIES ###
+    ### PRIVATE METHODS ###
 
     def _get_storage_format_specification(self):
         keyword_argument_names = (
@@ -94,8 +94,6 @@ class MenuEntry(abjad.AbjadObject):
             keyword_argument_names=keyword_argument_names,
             positional_argument_values=positional_argument_values,
             )
-
-    ### PRIVATE METHODS ###
 
     @staticmethod
     def _is_valid_key(key):

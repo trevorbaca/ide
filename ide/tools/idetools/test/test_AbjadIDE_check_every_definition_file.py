@@ -1,5 +1,5 @@
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -21,7 +21,7 @@ def test_AbjadIDE_check_every_definition_file_01():
         ]
     paths = []
     for package_name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -32,8 +32,8 @@ def test_AbjadIDE_check_every_definition_file_01():
         paths.append(path)
 
     for path in paths:
-        message = '{} ... OK'
-        message = message.format(abjad_ide._trim_path(path))
+        message = '{!s} ... OK'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents
     assert 'Total time ' in contents
 
@@ -53,7 +53,7 @@ def test_AbjadIDE_check_every_definition_file_02():
         ]
     paths = []
     for package_name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -64,7 +64,7 @@ def test_AbjadIDE_check_every_definition_file_02():
         paths.append(path)
 
     for path in paths:
-        message = '{} ... OK'
-        message = message.format(abjad_ide._trim_path(path))
+        message = '{!s} ... OK'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents
     assert 'Total time ' in contents

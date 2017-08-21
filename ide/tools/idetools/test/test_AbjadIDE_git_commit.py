@@ -6,12 +6,12 @@ def test_AbjadIDE_git_commit_01():
     r'''Available in all directories except scores directory.
     '''
 
-    input_ = 'st ? q'
+    input_ = '? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - commit (ci)' not in contents
 
-    input_ = 'red~example~score st ? q'
+    input_ = 'red~example~score ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - commit (ci)' in contents

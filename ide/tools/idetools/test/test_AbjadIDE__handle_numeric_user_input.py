@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE__handler_numeric_user_input_01():
+def test_AbjadIDE__handle_numeric_user_input_01():
 
     input_ = 'red~example~score dd 1 q'
     abjad_ide._start(input_=input_)

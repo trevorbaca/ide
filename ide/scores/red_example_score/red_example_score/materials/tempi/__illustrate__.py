@@ -1,13 +1,13 @@
 import abjad
-import os
+import pathlib
 
 
 def make_lilypond_file():
     r'''Reimplement for material-specific illustration logic.
     '''
     import definition
-    material_directory_path = os.path.dirname(os.path.abspath(__file__))
-    material_name = os.path.basename(material_directory_path)
+    material_directory_path = pathlib.Path(__file__).parent
+    material_name = material_directory_path.name
     title = material_name.replace('_', ' ').capitalize()
     title = abjad.Markup(title)
     title = title.override(('font-name', 'Palatino'))

@@ -1,6 +1,6 @@
 import abjad
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -9,11 +9,11 @@ def test_AbjadIDE_remove_01():
     r'''Removes one score directory.
     '''
 
-    outer_path = os.path.join(
+    outer_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         )
-    inner_path = os.path.join(
+    inner_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         'example_score_100',
@@ -22,7 +22,7 @@ def test_AbjadIDE_remove_01():
     with abjad.FilesystemState(remove=[outer_path, inner_path]):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(outer_path)
+        assert outer_path.is_dir()
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
             inner_path,
@@ -31,29 +31,29 @@ def test_AbjadIDE_remove_01():
             )
         input_ = 'rm Example~Score~100 remove q'
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(outer_path)
+        assert not outer_path.exists()
 
 
 def test_AbjadIDE_remove_02():
     r'''Removes range of score directorys.
     '''
 
-    path_100_outer = os.path.join(
+    path_100_outer = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         'example_score_100',
         )
-    path_100_inner = os.path.join(
+    path_100_inner = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         'example_score_100',
         )
-    path_101_outer = os.path.join(
+    path_101_outer = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         'example_score_101',
         )
-    path_101_inner = os.path.join(
+    path_101_inner = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         'example_score_101',
@@ -63,10 +63,10 @@ def test_AbjadIDE_remove_02():
     with abjad.FilesystemState(remove=paths):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path_100_outer)
+        assert path_100_outer.is_dir()
         input_ = 'new example~score~101 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path_101_outer)
+        assert path_101_outer.is_dir()
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
             path_100_inner,
@@ -81,5 +81,5 @@ def test_AbjadIDE_remove_02():
             )
         input_ = 'rm Example~Score~100,~Example~Score~101 remove~2 q'
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(path_100_outer)
-        assert not os.path.exists(path_101_outer)
+        assert not path_100_outer.exists()
+        assert not path_101_outer.exists()

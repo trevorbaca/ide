@@ -1,4 +1,5 @@
 import ide
+#import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -6,14 +7,14 @@ configuration = ide.tools.idetools.AbjadIDEConfiguration()
 # TODO: update to to format-specific build directories
 #def test_AbjadIDE_build_score_01():
 #
-#    music_pdf = os.path.join(
+#    music_pdf = pathlib.Path(
 #        configuration.abjad_ide_example_scores_directory,
 #        'red_example_score',
 #        'red_example_score',
 #        'build',
 #        'music.pdf',
 #        )
-#    score_pdf = os.path.join(
+#    score_pdf = pathlib.Path(
 #        configuration.abjad_ide_example_scores_directory,
 #        'red_example_score',
 #        'red_example_score',

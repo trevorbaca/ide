@@ -1,6 +1,6 @@
 import abjad
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -9,19 +9,19 @@ def test_AbjadIDE_new_01():
     r'''Makes new score directory.
     '''
 
-    outer_score_directory = os.path.join(
+    outer_score_directory = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score',
         )
-    inner_score_directory = os.path.join(
+    inner_score_directory = pathlib.Path(
         outer_score_directory,
         'example_score',
         )
-    materials_directory = os.path.join(
+    materials_directory = pathlib.Path(
         inner_score_directory,
         'materials',
         )
-    segments_directory = os.path.join(
+    segments_directory = pathlib.Path(
         inner_score_directory,
         'segments',
         )
@@ -61,19 +61,19 @@ def test_AbjadIDE_new_01():
     with abjad.FilesystemState(remove=[outer_score_directory]):
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(outer_score_directory)
+        assert outer_score_directory.is_dir()
         for entry in outer_directory_entries:
-            path = os.path.join(outer_score_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(outer_score_directory, entry)
+            assert path.exists()
         for entry in inner_directory_entries:
-            path = os.path.join(inner_score_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(inner_score_directory, entry)
+            assert path.exists()
         for entry in materials_directory_entries:
-            path = os.path.join(materials_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(materials_directory, entry)
+            assert path.exists()
         for entry in segments_directory_entries:
-            path = os.path.join(segments_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(segments_directory, entry)
+            assert path.exists()
 
     assert 'Enter title]> Example Score' in contents
 
@@ -82,19 +82,19 @@ def test_AbjadIDE_new_02():
     r'''Makes new score directory in preexisting empty directory.
     '''
 
-    outer_score_directory = os.path.join(
+    outer_score_directory = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score',
         )
-    inner_score_directory = os.path.join(
+    inner_score_directory = pathlib.Path(
         outer_score_directory,
         'example_score',
         )
-    materials_directory = os.path.join(
+    materials_directory = pathlib.Path(
         inner_score_directory,
         'materials',
         )
-    segments_directory = os.path.join(
+    segments_directory = pathlib.Path(
         inner_score_directory,
         'segments',
         )
@@ -131,31 +131,31 @@ def test_AbjadIDE_new_02():
 
     input_ = 'new y Example~Score q'
 
-    if os.path.exists(outer_score_directory):
-        os.remove(outer_score_directory)
+    if outer_score_directory.exists():
+        outer_score_directory.rmdir()
 
     with abjad.FilesystemState(remove=[outer_score_directory]):
-        assert not os.path.exists(outer_score_directory)
-        os.mkdir(outer_score_directory)
-        git_directory = os.path.join(outer_score_directory, '.git')
-        os.mkdir(git_directory)
-        assert os.path.isdir(outer_score_directory)
-        assert os.path.isdir(git_directory)
+        assert not outer_score_directory.exists()
+        outer_score_directory.mkdir()
+        git_directory = pathlib.Path(outer_score_directory, '.git')
+        git_directory.mkdir()
+        assert outer_score_directory.is_dir()
+        assert git_directory.is_dir()
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert os.path.exists(outer_score_directory)
+        assert outer_score_directory.exists()
         for entry in outer_directory_entries:
-            path = os.path.join(outer_score_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(outer_score_directory, entry)
+            assert path.exists()
         for entry in inner_directory_entries:
-            path = os.path.join(inner_score_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(inner_score_directory, entry)
+            assert path.exists()
         for entry in materials_directory_entries:
-            path = os.path.join(materials_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(materials_directory, entry)
+            assert path.exists()
         for entry in segments_directory_entries:
-            path = os.path.join(segments_directory, entry)
-            assert os.path.exists(path)
+            path = pathlib.Path(segments_directory, entry)
+            assert path.exists()
 
     assert 'Found' in contents
     assert 'Enter title]> Example Score' in contents
@@ -165,7 +165,7 @@ def test_AbjadIDE_new_03():
     r'''Coerces score directory name.
     '''
 
-    score_package = os.path.join(
+    score_package = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_1',
         )
@@ -173,29 +173,29 @@ def test_AbjadIDE_new_03():
     with abjad.FilesystemState(remove=[score_package]):
         input_ = 'new ExampleScore1 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(score_package)
+        assert score_package.exists()
 
     with abjad.FilesystemState(remove=[score_package]):
         input_ = 'new exampleScore1 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(score_package)
+        assert score_package.exists()
 
     with abjad.FilesystemState(remove=[score_package]):
         input_ = 'new EXAMPLE_SCORE_1 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(score_package)
+        assert score_package.exists()
 
     with abjad.FilesystemState(remove=[score_package]):
         input_ = 'new example_score_1 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(score_package)
+        assert score_package.exists()
 
 
 def test_AbjadIDE_new_04():
     r'''Makes new build subdirectory.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -207,14 +207,14 @@ def test_AbjadIDE_new_04():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
+        assert path.exists()
 
 
 def test_AbjadIDE_new_05():
     r'''Coerces build subdirectory name.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -226,14 +226,14 @@ def test_AbjadIDE_new_05():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
+        assert path.exists()
 
 
 def test_AbjadIDE_new_06():
     r'''Makes new maker classfile.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -245,8 +245,8 @@ def test_AbjadIDE_new_06():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        with open(path, 'r') as file_pointer:
+        assert path.exists()
+        with path.open() as file_pointer:
             string = file_pointer.read()
             assert 'class NewMaker(abjad.AbjadObject)' in string
 
@@ -255,7 +255,7 @@ def test_AbjadIDE_new_07():
     r'''Coerces maker classfile name.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -267,8 +267,8 @@ def test_AbjadIDE_new_07():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        with open(path, 'r') as file_pointer:
+        assert path.exists()
+        with path.open() as file_pointer:
             string = file_pointer.read()
             assert 'class NewMaker(abjad.AbjadObject)' in string
 
@@ -277,7 +277,7 @@ def test_AbjadIDE_new_08():
     r'''Makes new maker functionfile.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -289,8 +289,8 @@ def test_AbjadIDE_new_08():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        with open(path, 'r') as file_pointer:
+        assert path.exists()
+        with path.open() as file_pointer:
             string = file_pointer.read()
             assert 'def make_material():' in string
 
@@ -299,7 +299,7 @@ def test_AbjadIDE_new_09():
     r'''Coerces maker functionfile name.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -311,8 +311,8 @@ def test_AbjadIDE_new_09():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        with open(path, 'r') as file_pointer:
+        assert path.exists()
+        with path.open() as file_pointer:
             string = file_pointer.read()
             assert 'def make_material():' in string
 
@@ -321,7 +321,7 @@ def test_AbjadIDE_new_10():
     r'''Makes new material directory.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -338,17 +338,17 @@ def test_AbjadIDE_new_10():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        entries = os.listdir(path)
+        assert path.exists()
+        entries = list(path.glob('*'))
         for entry in directory_entries:
-            assert entry in entries, repr(entry)
+            assert path / entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_11():
     r'''Coerces material directory name.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -365,17 +365,17 @@ def test_AbjadIDE_new_11():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        entries = os.listdir(path)
+        assert path.exists()
+        entries = list(path.glob('*'))
         for entry in directory_entries:
-            assert entry in entries, repr(entry)
+            assert path / entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_12():
     r'''Makes new segment directory.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -392,17 +392,17 @@ def test_AbjadIDE_new_12():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        entries = os.listdir(path)
+        assert path.exists()
+        entries = list(path.glob('*'))
         for entry in directory_entries:
-            assert entry in entries, repr(entry)
+            assert path / entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_13():
     r'''Coerces segment directory name.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -419,17 +419,17 @@ def test_AbjadIDE_new_13():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
-        entries = os.listdir(path)
+        assert path.exists()
+        entries = list(path.glob('*'))
         for entry in directory_entries:
-            assert entry in entries, repr(entry)
+            assert path / entry in entries, repr(entry)
 
 
 def test_AbjadIDE_new_14():
     r'''Makes new stylesheet.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -441,14 +441,14 @@ def test_AbjadIDE_new_14():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
+        assert path.exists()
 
 
 def test_AbjadIDE_new_15():
     r'''Coerces stylesheet new.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -460,4 +460,4 @@ def test_AbjadIDE_new_15():
 
     with abjad.FilesystemState(remove=[path]):
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path)
+        assert path.exists()

@@ -64,7 +64,7 @@ if __name__ == '__main__':
         #print(message)
         #for output_path in output_paths:
         #    message = 'writing {} ...'
-        #    path = ide.tools.idetools.AbjadIDE._trim_path(output_path)
+        #    path = ide.tools.idetools.AbjadIDE._trim(output_path)
         #    message = message.format(path)
         #    print(message)
     except:

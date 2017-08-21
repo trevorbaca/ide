@@ -1,6 +1,6 @@
 import abjad
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -9,7 +9,7 @@ def test_AbjadIDE_replace_01():
     r'''In score directory.
     '''
 
-    path = os.path.join(
+    path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',

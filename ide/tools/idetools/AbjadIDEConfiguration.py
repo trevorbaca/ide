@@ -1,6 +1,6 @@
 from __future__ import print_function
 import abjad
-import os
+import pathlib
 import sys
 
 
@@ -24,6 +24,9 @@ class AbjadIDEConfiguration(abjad.Configuration):
 
     __slots__ = (
         '_aliases',
+        '_abjad_ide_directory',
+        '_abjad_ide_example_scores_directory',
+        '_composer_scores_directory',
         '_composer_scores_directory_override',
         )
 
@@ -31,8 +34,9 @@ class AbjadIDEConfiguration(abjad.Configuration):
 
     def __init__(self):
         abjad.Configuration.__init__(self)
-        self._read_aliases_file()
         self._composer_scores_directory_override = None
+        self._cache_paths()
+        self._read_aliases_file()
         self._make_missing_directories()
 
     ### PRIVATE PROPERTIES ###
@@ -50,13 +54,22 @@ class AbjadIDEConfiguration(abjad.Configuration):
     ### PRIVATE METHODS ###
 
     def _add_example_score_to_sys_path(self):
-        from ide.tools import idetools
-        configuration = idetools.AbjadIDEConfiguration()
+        import ide
+        configuration = ide.tools.idetools.AbjadIDEConfiguration()
         directory = configuration.abjad_ide_example_scores_directory
-        for name in os.listdir(directory):
-            path = os.path.join(directory, name)
-            if os.path.isdir(path):
-                sys.path.insert(0, path)
+        for path in directory.glob('*'):
+            if path.is_dir():
+                sys.path.insert(0, str(path))
+
+    def _cache_paths(self):
+        import ide
+        abjad_ide_directory = pathlib.Path(ide.__path__[0])
+        self._abjad_ide_directory = abjad_ide_directory
+        self._abjad_ide_example_scores_directory = \
+            abjad_ide_directory / 'scores'
+        directory = self._settings['composer_scores_directory']
+        directory = pathlib.Path(directory).expanduser()
+        self._composer_scores_directory = directory
 
     def _get_option_definitions(self):
         options = {
@@ -105,7 +118,7 @@ class AbjadIDEConfiguration(abjad.Configuration):
                     '',
                     'Your scores directory. Defaults to $HOME/scores/.',
                     ],
-                'default': os.path.join(self.home_directory, 'scores'),
+                'default': pathlib.Path(self.home_directory) / 'scores',
                 'validator': str,
                 },
             'composer_uppercase_name': {
@@ -133,19 +146,17 @@ class AbjadIDEConfiguration(abjad.Configuration):
             self.abjad_ide_transcripts_directory,
             )
         for directory in directories:
-            if not os.path.exists(directory):
-                os.makedirs(directory)
+            if not directory.exists():
+                directory.mkdir()
 
     def _read_aliases_file(self):
-        import abjad
         globals_ = globals()
         file_path = self.abjad_ide_aliases_file_path
-        if os.path.isfile(file_path):
-            with open(file_path, 'r') as file_pointer:
+        if file_path.is_file():
+            with file_path.open() as file_pointer:
                 file_contents_string = file_pointer.read()
             exec(file_contents_string, globals_)
-        aliases = globals_.get('aliases') or \
-            abjad.TypedOrderedDict()
+        aliases = globals_.get('aliases') or abjad.TypedOrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
@@ -159,11 +170,11 @@ class AbjadIDEConfiguration(abjad.Configuration):
             ::
 
                 >>> configuration.abjad_ide_aliases_file_path
-                '.../.abjad/ide/__aliases__.py'
+                PosixPath('.../.abjad/ide/__aliases__.py')
 
         Returns string.
         '''
-        return os.path.join(
+        return pathlib.Path(
             self.configuration_directory_path,
             '__aliases__.py',
             )
@@ -175,15 +186,11 @@ class AbjadIDEConfiguration(abjad.Configuration):
         ..  container:: example
 
             >>> configuration.abjad_ide_boilerplate_directory
-            '.../ide/boilerplate'
+            PosixPath('.../ide/boilerplate')
 
-        Returns string.
+        Returns path.
         '''
-        path = os.path.join(
-            self.abjad_ide_directory,
-            'boilerplate',
-            )
-        return path
+        return self.abjad_ide_directory / 'boilerplate'
 
     @property
     def abjad_ide_directory(self):
@@ -191,25 +198,7 @@ class AbjadIDEConfiguration(abjad.Configuration):
 
         Returns string.
         '''
-        try:
-            import ide
-            return ide.__path__[0]
-        except ImportError:
-            return None
-
-    @property
-    def abjad_ide_root_directory(self):
-        r'''Gets Abjad IDE root directory.
-
-        Returns string.
-        '''
-        try:
-            import ide
-            path = ide.__path__[0]
-            path, _ = os.path.split(path)
-            return path
-        except ImportError:
-            return None
+        return self._abjad_ide_directory
 
     @property
     def abjad_ide_example_scores_directory(self):
@@ -220,15 +209,11 @@ class AbjadIDEConfiguration(abjad.Configuration):
             ::
 
                 >>> configuration.abjad_ide_example_scores_directory
-                '.../ide/scores'
+                PosixPath('.../ide/scores')
 
-        Returns string.
+        Returns path.
         '''
-        path = os.path.join(
-            self.abjad_ide_directory,
-            'scores',
-            )
-        return path
+        return self._abjad_ide_example_scores_directory
 
     @property
     def abjad_ide_transcripts_directory(self):
@@ -239,15 +224,11 @@ class AbjadIDEConfiguration(abjad.Configuration):
             ::
 
                 >>> configuration.abjad_ide_transcripts_directory
-                '.../.abjad/ide/transcripts'
+                PosixPath('.../.abjad/ide/transcripts')
 
         Returns string.
         '''
-        path = os.path.join(
-            self.configuration_directory_path,
-            'transcripts',
-            )
-        return path
+        return pathlib.Path(self.configuration_directory_path, 'transcripts')
 
     @property
     def aliases(self):
@@ -362,18 +343,16 @@ class AbjadIDEConfiguration(abjad.Configuration):
             ::
 
                 >>> configuration.composer_scores_directory
-                '...'
+                PosixPath('...')
 
         Aliases `composer_scores_directory` setting in Abjad IDE configuration
         file.
 
-        Returns string.
+        Returns path.
         '''
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
-        path = self._settings['composer_scores_directory']
-        path = os.path.expanduser(path)
-        return path
+        return self._composer_scores_directory
 
     @property
     def composer_uppercase_name(self):
@@ -439,11 +418,11 @@ class AbjadIDEConfiguration(abjad.Configuration):
 
         Returns string.
         '''
-        import abjad
-        return os.path.join(
+        path = pathlib.Path(
             abjad.abjad_configuration.configuration_directory_path,
             self.configuration_directory_name,
             )
+        return str(path)
 
     @property
     def configuration_file_name(self):
@@ -469,11 +448,8 @@ class AbjadIDEConfiguration(abjad.Configuration):
             ::
 
                 >>> configuration.latex_log_file_path
-                '.../.abjad/ide/latex.log'
+                PosixPath('.../.abjad/ide/latex.log')
 
         Returns string.
         '''
-        return os.path.join(
-            self.configuration_directory_path,
-            'latex.log',
-            )
+        return pathlib.Path(self.configuration_directory_path, 'latex.log')

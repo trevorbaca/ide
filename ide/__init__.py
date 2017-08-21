@@ -65,7 +65,16 @@ the Abjad IDE.
 
 You're ready to use the Abjad IDE when the docs build and all tests pass.
 '''
+import distutils.version
+import platform
 from ide.tools import idetools
+if not (
+    distutils.version.LooseVersion('3.5') <
+    distutils.version.LooseVersion(platform.python_version())
+    ):
+    raise ImportError('Requires Python 3.5.')
+del distutils
+del platform
 configuration = idetools.AbjadIDEConfiguration()
 configuration._add_example_score_to_sys_path()
 del(configuration)

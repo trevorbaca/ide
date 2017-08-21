@@ -19,7 +19,7 @@ if __name__ == '__main__':
             traceback.print_exc()
             sys.exit(1)
         try:
-            {previous_segment_metadata_import_statement}
+            from blue_example_score.segments.segment_02.__metadata__ import metadata as previous_metadata
         except ImportError:
             traceback.print_exc()
             sys.exit(1)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         except:
             traceback.print_exc()
             sys.exit(1)
-        #message = 'Abjad runtime {{}} {{}} ...'
+        #message = 'Abjad runtime {} {} ...'
         #total_time = int(timer.elapsed_time)
         #identifier = abjad.String('second').pluralize(total_time)
         #message = message.format(total_time, identifier)
@@ -57,13 +57,13 @@ if __name__ == '__main__':
         output_paths = (ly_path, pdf_path)
         with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(pdf_path)
-        #message = 'LilyPond runtime {{}} {{}} ...'
+        #message = 'LilyPond runtime {} {} ...'
         #total_time = int(timer.elapsed_time)
         #identifier = abjad.String('second').pluralize(total_time)
         #message = message.format(total_time, identifier)
         #print(message)
         #for output_path in output_paths:
-        #    message = 'writing {{}} ...'
+        #    message = 'writing {} ...'
         #    path = ide.tools.idetools.AbjadIDE._trim(output_path)
         #    message = message.format(path)
         #    print(message)

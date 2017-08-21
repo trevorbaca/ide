@@ -18,6 +18,17 @@ class SargassoMeasureMaker(abjad.AbjadObject):
         '_measures_are_shuffled',
         )
 
+    _input_demo_values = [
+        ('measure_denominator', 4),
+        ('measure_numerator_talea', [2, 2, 2, 2, 1, 1, 4, 4]),
+        ('measure_division_denominator', 16),
+        ('measure_division_talea', [1, 1, 2, 3, 1, 2, 3, 4, 1, 1, 1, 1, 4]),
+        ('total_duration', abjad.Duration(44, 8)),
+        ('measures_are_scaled', True),
+        ('measures_are_split', True),
+        ('measures_are_shuffled', True),
+        ]
+
     ### INITIALIZER ###
 
     def __init__(
@@ -231,22 +242,6 @@ class SargassoMeasureMaker(abjad.AbjadObject):
             abjad.attach(beam, [measure])
         score.add_final_bar_line()
         return illustration
-
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _input_demo_values(self):
-        return [
-            ('measure_denominator', 4),
-            ('measure_numerator_talea', [2, 2, 2, 2, 1, 1, 4, 4]),
-            ('measure_division_denominator', 16),
-            ('measure_division_talea',
-                [1, 1, 2, 3, 1, 2, 3, 4, 1, 1, 1, 1, 4]),
-            ('total_duration', abjad.Duration(44, 8)),
-            ('measures_are_scaled', True),
-            ('measures_are_split', True),
-            ('measures_are_shuffled', True),
-        ]
 
     ### PRIVATE METHODS ###
 

@@ -1,7 +1,8 @@
 from __future__ import print_function
 import abc
 import abjad
-import os
+import codecs
+import pathlib
 import platform
 import subprocess
 import sys
@@ -35,6 +36,8 @@ class IOManager(abjad.IOManager):
         '_transcript',
         )
 
+    _tab = 4 * ' '
+
     ### INITIALIZER ###
 
     def __init__(self, session=None):
@@ -59,12 +62,6 @@ class IOManager(abjad.IOManager):
         '''
         return '{}()'.format(type(self).__name__)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _tab(self):
-        return 4 * ' '
-
     ### PRIVATE METHODS ###
 
     def _acknowledge(self):
@@ -79,7 +76,7 @@ class IOManager(abjad.IOManager):
         if self._session.is_test:
             return
         transcripts_directory = configuration.abjad_ide_transcripts_directory
-        transcripts = sorted(os.listdir(transcripts_directory))
+        transcripts = sorted(transcripts_directory.glob('*'))
         count = len(transcripts)
         if 9000 <= count:
             messages = []
@@ -120,14 +117,14 @@ class IOManager(abjad.IOManager):
 
     @staticmethod
     def _get_greatest_version_number(version_directory):
-        if not os.path.isdir(version_directory):
+        version_directory = pathlib.Path(version_directory)
+        if not version_directory.is_dir():
             return 0
         greatest_number = 0
-        for entry in sorted(os.listdir(version_directory)):
-            base_name, file_extension = os.path.splitext(entry)
+        for entry in sorted(version_directory.glob('*')):
             number = 0
             try:
-                number = int(base_name[-4:])
+                number = int(entry.stem[-4:])
             except ValueError:
                 pass
             if greatest_number < number:
@@ -321,9 +318,10 @@ class IOManager(abjad.IOManager):
         return '\n'.join(lines)
 
     def _trash_file(self, file_path):
-        if not os.path.isfile(file_path):
+        file_path = pathlib.Path(file_path)
+        if not file_path.is_file():
             return
-        os.remove(file_path)
+        file_path.unlink()
 
     ### PUBLIC METHODS ###
 
@@ -336,15 +334,16 @@ class IOManager(abjad.IOManager):
 
         Returns none.
         '''
-        if not allow_missing and not os.path.isfile(path):
+        path = pathlib.Path(path)
+        if not allow_missing and not path.is_file():
             message = 'can not find {} ...'
             message = message.format(path)
             self._display(message)
             return
         if line_number is None:
-            command = 'vim {}'.format(path)
+            command = 'vim {!s}'.format(path)
         else:
-            command = 'vim +{} {}'.format(line_number, path)
+            command = 'vim +{} {!s}'.format(line_number, path)
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
@@ -357,9 +356,10 @@ class IOManager(abjad.IOManager):
         '''
         assert path is not None
         assert isinstance(attribute_names, tuple)
-        if not os.path.isfile(path):
+        path = pathlib.Path(path)
+        if not path.is_file():
             return
-        with open(path, 'r') as file_pointer:
+        with path.open() as file_pointer:
             file_contents_string = file_pointer.read()
         try:
             result = self.execute_string(file_contents_string, attribute_names)
@@ -415,19 +415,19 @@ class IOManager(abjad.IOManager):
         This makes it possible to execute in silent context
         and then display stderr lines after execution.
         '''
-        if not os.path.exists(path):
-            message = 'can not find {} ...'.format(path)
+        path = pathlib.Path(path)
+        if not path.exists():
+            message = 'can not find {!s} ...'.format(path)
             self._display(message)
             return False
-        _, file_extension = os.path.splitext(path)
-        if file_extension == '.py':
+        if path.suffix == '.py':
             command = 'python {}'.format(path)
-        elif file_extension == '.ly':
+        elif path.suffix == '.ly':
             command = 'lilypond -dno-point-and-click {}'.format(path)
         else:
             message = 'can not interpret {}.'.format(path)
             raise Exception(message)
-        directory = os.path.dirname(path)
+        directory = path.parent
         directory = abjad.TemporaryDirectoryChange(directory)
         string_buffer = StringIO()
         with directory, string_buffer:
@@ -460,58 +460,64 @@ class IOManager(abjad.IOManager):
         line_number_string = ''
         if line_number is not None:
             line_number_string = ' +{}'.format(line_number)
-        if not isinstance(path, list) and not os.path.isfile(path):
+        if isinstance(path, str):
+            path = pathlib.Path(path)
+        if isinstance(path, list):
+            path = [pathlib.Path(_) for _ in path]
+        if not isinstance(path, list) and not path.is_file():
             return
-        if (isinstance(path, list) and all(_.endswith('.pdf') for _ in path)):
-            paths = ' '.join(path)
+        if (isinstance(path, list) and all(_.suffix == '.pdf' for _ in path)):
+            paths = ' '.join([str(_) for _ in path])
             command = 'open {}'.format(paths)
         elif (isinstance(path, list) and
-            all(_.endswith('.mp3') for _ in path)):
-            paths = ' '.join(path)
+            all(_.suffix == '.mp3' for _ in path)):
+            paths = ' '.join([str(_) for _ in path])
             command = 'open {}'.format(paths)
         elif (isinstance(path, list) and
-            all(_.endswith('.aif') for _ in path)):
-            paths = ' '.join(path)
+            all(_.suffix == '.aif' for _ in path)):
+            paths = ' '.join([str(_) for _ in path])
             command = 'open {}'.format(paths)
         elif isinstance(path, list):
             paths = path
-            paths = ' '.join(paths)
+            paths = ' '.join([str(_) for _ in paths])
             command = 'vim {}'.format(paths)
-        elif path.endswith('.pdf'):
-            command = 'open {}'.format(path)
-        elif path.endswith('.mp3'):
-            command = 'open {}'.format(path)
-        elif path.endswith('.aif'):
-            command = 'open {}'.format(path)
+        elif path.suffix == '.pdf':
+            command = 'open {!s}'.format(path)
+        elif path.suffix == '.mp3':
+            command = 'open {!s}'.format(path)
+        elif path.suffix == '.aif':
+            command = 'open {!s}'.format(path)
         else:
-            command = 'vim {}'.format(path)
+            command = 'vim {!s}'.format(path)
         command = command + line_number_string
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
-        if (platform.system() == 'Darwin' and
-            isinstance(path, str) and
-            path.endswith('.pdf')):
-            source_path = os.path.join(
+        if isinstance(path, list):
+            path_suffix = path[0].suffix
+        else:
+            path_suffix = path.suffix
+        if (platform.system() == 'Darwin' and path_suffix == '.pdf'):
+            source_path = pathlib.Path(
                 configuration.abjad_ide_boilerplate_directory,
                 '__close_preview_pdf__.scr',
                 )
-            with open(source_path, 'r') as file_pointer:
+            with source_path.open() as file_pointer:
                 template = file_pointer.read()
             completed_template = template.format(file_path=path)
-            script_path = os.path.join(
+            script_path = pathlib.Path(
                 configuration.home_directory,
                 '__close_preview_pdf__.scr',
                 )
-            if os.path.exists(script_path):
-                os.remove(script_path)
+            if script_path.exists():
+                script_path.unlink()
             with abjad.FilesystemState(remove=[script_path]):
-                with open(script_path, 'w') as file_pointer:
+                with script_path.open('w') as file_pointer:
                     file_pointer.write(completed_template)
                 permissions_command = 'chmod 755 {}'
                 permissions_command = permissions_command.format(script_path)
                 self.spawn_subprocess(permissions_command)
-                close_command = script_path
+                close_command = str(script_path)
                 self.spawn_subprocess(close_command)
         self.spawn_subprocess(command)
 
@@ -534,14 +540,13 @@ class IOManager(abjad.IOManager):
 
         Returns none.
         '''
-        import codecs
-        import sys
-        directory_path = os.path.dirname(path)
-        if not os.path.exists(directory_path):
-            os.makedirs(directory_path)
+        path = pathlib.Path(path)
+        directory_path = path.parent
+        if not directory_path.exists():
+            directory_path.mkdir()
         if sys.version_info[0] == 2:
-            with codecs.open(path, 'w', encoding='utf-8') as file_pointer:
+            with codecs.open(str(path), 'w', encoding='utf-8') as file_pointer:
                 file_pointer.write(string)
         else:
-            with open(path, 'w') as file_pointer:
+            with path.open('w') as file_pointer:
                 file_pointer.write(string)

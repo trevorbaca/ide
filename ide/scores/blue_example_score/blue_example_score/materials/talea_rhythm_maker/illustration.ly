@@ -1,10 +1,8 @@
-% 2017-01-07 10:04
-
-\version "2.19.54"
+\version "2.19.65"
 \language "english"
 
 #(set-default-paper-size "letter" 'portrait)
-#(set-global-staff-size 12)
+#(set-global-staff-size 16)
 
 \header {}
 

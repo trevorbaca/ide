@@ -1,6 +1,7 @@
 import abjad
 import ide
 import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -58,7 +59,7 @@ def test_AbjadIDE_go_to_test_directory_04():
     r'''No explosions if test directory is missing.
     '''
 
-    test_directory = os.path.join(
+    test_directory = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',

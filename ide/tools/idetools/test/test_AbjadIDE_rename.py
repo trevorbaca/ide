@@ -1,6 +1,6 @@
 import abjad
 import ide
-import os
+import pathlib
 import shutil
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
@@ -10,20 +10,20 @@ def test_AbjadIDE_rename_01():
     r'''Renames score directory.
     '''
 
-    path_100_outer = os.path.join(
+    path_100_outer = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         )
-    path_100_inner = os.path.join(
+    path_100_inner = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_100',
         'example_score_100',
         )
-    path_101_outer = os.path.join(
+    path_101_outer = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         )
-    path_101_inner = os.path.join(
+    path_101_inner = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'example_score_101',
         'example_score_101',
@@ -36,16 +36,16 @@ def test_AbjadIDE_rename_01():
         path_101_inner,
         )
     for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(str(path))
 
     with abjad.FilesystemState(remove=[path_100_outer, path_101_outer]):
         input_ = 'new example~score~100 q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(path_100_outer)
-        assert os.path.exists(path_100_inner)
+        assert path_100_outer.is_dir()
+        assert path_100_inner.is_dir()
         title = 'Example Score 100'
         abjad_ide._add_metadatum(
             path_100_inner,
@@ -54,23 +54,23 @@ def test_AbjadIDE_rename_01():
             )
         input_ = 'ren Example~Score~100 example_score_101 y q'
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(path_100_outer)
-        assert os.path.exists(path_101_outer)
-        assert os.path.exists(path_101_inner)
+        assert not path_100_outer.exists()
+        assert path_101_outer.is_dir()
+        assert path_101_inner.is_dir()
 
 
 def test_AbjadIDE_rename_02():
     r'''Renames material directory in score.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'materials',
         'test_material',
         )
-    new_path = os.path.join(
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -83,33 +83,33 @@ def test_AbjadIDE_rename_02():
         new_path,
         )
     for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(str(path))
 
     with abjad.FilesystemState(remove=[old_path, new_path]):
         input_ = 'red~example~score mm new test~material q'
         abjad_ide._start(input_=input_)
-        assert os.path.exists(old_path)
+        assert old_path.is_dir()
         input_ = 'red~example~score mm ren test~material new~test~material y q'
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_dir()
 
 
 def test_AbjadIDE_rename_03():
     r'''Renames segment directory.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
         'segment_04',
         )
-    new_path = os.path.join(
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -125,31 +125,31 @@ def test_AbjadIDE_rename_03():
         new_path,
         )
     for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(str(path))
 
     with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(old_path)
+        assert old_path.is_dir()
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_dir()
 
 
 def test_AbjadIDE_rename_04():
     r'''Renames segment directory with name metadatum.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'segments',
         'segment_03',
         )
-    new_path = os.path.join(
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -160,25 +160,25 @@ def test_AbjadIDE_rename_04():
     input_ = 'red~example~score gg ren C renamed_segment_03 y q'
 
     with abjad.FilesystemState(keep=[old_path], remove=[new_path]):
-        assert os.path.exists(old_path)
+        assert old_path.is_dir()
         abjad_ide._start(input_=input_)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_dir()
 
 
 def test_AbjadIDE_rename_05():
     r'''Renames build subdirectory.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'build',
         'letter-portrait',
         )
-    assert os.path.isdir(old_path)
-    new_path = os.path.join(
+    assert old_path.is_dir()
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -188,28 +188,28 @@ def test_AbjadIDE_rename_05():
 
     rename_input = 'red~example~score bb ren letter-portrait standard-size y q'
 
-    if os.path.exists(new_path):
-        shutil.rmtree(new_path)
+    if new_path.exists():
+        shutil.rmtree(str(new_path))
 
     with abjad.FilesystemState(keep=[old_path], remove=[new_path]):
-        assert os.path.exists(old_path)
+        assert old_path.is_dir()
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_dir()
 
 
 def test_AbjadIDE_rename_06():
     r'''Renames maker file.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'tools',
         'NewMaker.py',
         )
-    new_path = os.path.join(
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -225,31 +225,31 @@ def test_AbjadIDE_rename_06():
         new_path,
         )
     for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(str(path))
 
     with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(old_path)
+        assert old_path.is_file()
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_file()
 
 
 def test_AbjadIDE_rename_07():
     r'''Renames stylesheet.
     '''
 
-    old_path = os.path.join(
+    old_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
         'stylesheets',
         'new-stylesheet.ily',
         )
-    new_path = os.path.join(
+    new_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -266,14 +266,14 @@ def test_AbjadIDE_rename_07():
         new_path,
         )
     for path in paths:
-        if os.path.isfile(path):
-            os.remove(path)
-        elif os.path.isdir(path):
-            shutil.rmtree(path)
+        if path.is_file():
+            path.unlink()
+        elif path.is_dir():
+            shutil.rmtree(str(path))
 
     with abjad.FilesystemState(remove=[old_path, new_path]):
         abjad_ide._start(input_=new_input)
-        assert os.path.exists(old_path)
+        assert old_path.is_file()
         abjad_ide._start(input_=rename_input)
-        assert not os.path.exists(old_path)
-        assert os.path.exists(new_path)
+        assert not old_path.exists()
+        assert new_path.is_file()

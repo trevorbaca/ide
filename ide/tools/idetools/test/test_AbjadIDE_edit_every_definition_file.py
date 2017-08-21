@@ -1,5 +1,5 @@
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -21,7 +21,7 @@ def test_AbjadIDE_edit_every_definition_file_01():
         ]
     paths = []
     for package_name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -33,8 +33,8 @@ def test_AbjadIDE_edit_every_definition_file_01():
 
     assert abjad_ide._session._attempted_to_open_file
     for path in paths:
-        message = 'Opening {} ...'
-        message = message.format(abjad_ide._trim_path(path))
+        message = 'Opening {!s} ...'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents
 
 
@@ -53,7 +53,7 @@ def test_AbjadIDE_edit_every_definition_file_02():
         ]
     paths = []
     for package_name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -65,6 +65,6 @@ def test_AbjadIDE_edit_every_definition_file_02():
 
     assert abjad_ide._session._attempted_to_open_file
     for path in paths:
-        message = 'Opening {} ...'
-        message = message.format(abjad_ide._trim_path(path))
+        message = 'Opening {!s} ...'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents

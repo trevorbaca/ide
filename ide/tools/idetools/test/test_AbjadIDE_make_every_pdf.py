@@ -1,6 +1,6 @@
 import abjad
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -12,7 +12,7 @@ def test_AbjadIDE_make_every_pdf_01():
     '''
 
     path = configuration.abjad_ide_example_scores_directory
-    path = os.path.join(
+    path = pathlib.Path(
         path,
         'red_example_score',
         'red_example_score',
@@ -23,25 +23,25 @@ def test_AbjadIDE_make_every_pdf_01():
         'magic_numbers',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly')
+        pathlib.Path(path, _, 'illustration.ly')
         for _ in package_names
         ]
-    pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
+    pdf_paths = [_.with_suffix('.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
     with abjad.FilesystemState(keep=paths):
         input_ = 'red~example~score mm pdfm* q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert all(os.path.isfile(_) for _ in paths)
+        assert all(_.is_file() for _ in paths)
         assert abjad.TestManager._compare_backup(pdf_paths)
 
     for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-        message = 'Removing {} ...'
-        message = message.format(abjad_ide._trim_path(ly_path))
+        message = 'Removing {!s} ...'
+        message = message.format(abjad_ide._trim(ly_path))
         assert message in contents
-        message = 'Removing {} ...'
-        message = message.format(abjad_ide._trim_path(pdf_path))
+        message = 'Removing {!s} ...'
+        message = message.format(abjad_ide._trim(pdf_path))
         assert message in contents
 
     assert 'Opening' not in contents
@@ -55,7 +55,7 @@ def test_AbjadIDE_make_every_pdf_02():
     '''
 
     path = configuration.abjad_ide_example_scores_directory
-    path = os.path.join(
+    path = pathlib.Path(
         path,
         'red_example_score',
         'red_example_score',
@@ -67,28 +67,28 @@ def test_AbjadIDE_make_every_pdf_02():
         'segment_03',
         )
     ly_paths = [
-        os.path.join(path, _, 'illustration.ly')
+        pathlib.Path(path, _, 'illustration.ly')
         for _ in package_names
         ]
-    pdf_paths = [_.replace('.ly', '.pdf') for _ in ly_paths]
+    pdf_paths = [_.with_suffix('.pdf') for _ in ly_paths]
     paths = ly_paths + pdf_paths
 
     with abjad.FilesystemState(keep=paths):
         for path in paths:
-            os.remove(path)
-        assert not any(os.path.exists(_) for _ in paths)
+            path.unlink()
+        assert not any(_.exists() for _ in paths)
         input_ = 'red~example~score gg pdfm* q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
-        assert all(os.path.isfile(_) for _ in paths)
+        assert all(_.is_file() for _ in paths)
         assert abjad.TestManager._compare_backup(pdf_paths)
 
 #    for ly_path, pdf_path in zip(ly_paths, pdf_paths):
-#        message = 'Writing {} ...'
-#        message = message.format(abjad_ide._trim_path(ly_path))
+#        message = 'Writing {!s} ...'
+#        message = message.format(abjad_ide._trim(ly_path))
 #        assert message in contents
-#        message = 'Writing {} ...'
-#        message = message.format(abjad_ide._trim_path(pdf_path))
+#        message = 'Writing {!s} ...'
+#        message = message.format(abjad_ide._trim(pdf_path))
 #        assert message in contents
 
     assert 'Opening' not in contents

@@ -1,5 +1,5 @@
 import ide
-import os
+import pathlib
 abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
 configuration = ide.tools.idetools.AbjadIDEConfiguration()
 
@@ -16,7 +16,7 @@ def test_AbjadIDE_open_every_pdf_01():
         )
     paths = []
     for name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -32,8 +32,8 @@ def test_AbjadIDE_open_every_pdf_01():
 
     assert abjad_ide._session._attempted_to_open_file
     for path in paths:
-        message = 'Opening {} ...'
-        message = message.format(abjad_ide._trim_path(path))
+        message = 'Opening {!s} ...'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents
 
 
@@ -44,7 +44,7 @@ def test_AbjadIDE_open_every_pdf_02():
     package_names = ('segment_01', 'segment_02', 'segment_03')
     paths = []
     for name in package_names:
-        path = os.path.join(
+        path = pathlib.Path(
             configuration.abjad_ide_example_scores_directory,
             'red_example_score',
             'red_example_score',
@@ -61,8 +61,8 @@ def test_AbjadIDE_open_every_pdf_02():
     assert abjad_ide._session._attempted_to_open_file
     assert abjad_ide._session._attempted_to_open_file
     for path in paths:
-        message = 'Opening {} ...'
-        message = message.format(abjad_ide._trim_path(path))
+        message = 'Opening {!s} ...'
+        message = message.format(abjad_ide._trim(path))
         assert message in contents
 
 
@@ -70,7 +70,7 @@ def test_AbjadIDE_open_every_pdf_03():
     r'''In scores directory.
     '''
 
-    red_score_path = os.path.join(
+    red_score_path = pathlib.Path(
         configuration.abjad_ide_example_scores_directory,
         'red_example_score',
         'red_example_score',
@@ -83,6 +83,6 @@ def test_AbjadIDE_open_every_pdf_03():
     contents = abjad_ide._io_manager._transcript.contents
 
     assert abjad_ide._session._attempted_to_open_file
-    message = 'Opening {} ...'
-    message = message.format(abjad_ide._trim_path(red_score_path))
+    message = 'Opening {!s} ...'
+    message = message.format(abjad_ide._trim(red_score_path))
     assert message in contents

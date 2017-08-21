@@ -70,26 +70,18 @@ class Getter(object):
         '''
         return repr(self)
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _current_prompt(self):
-        return self.prompts[self._prompt_index]
-
     ### PRIVATE METHODS ###
 
     def _evaluate_input(self, input_, namespace):
-        setup_statements = self._current_prompt.setup_statements
+        setup_statements = self._get_current_prompt().setup_statements
         if 'evaluated_input' in namespace:
             del(namespace['evaluated_input'])
-        #if 'map' in input_:
-        #    raise Exception(repr(input_))
         if self.allow_none and input_ in ('', 'None'):
             namespace['evaluated_input'] = None
-        elif self._current_prompt._is_string:
+        elif self._get_current_prompt()._is_string:
             namespace['evaluated_input'] = input_
         elif setup_statements:
-            for setup_statement in self._current_prompt.setup_statements:
+            for setup_statement in self._get_current_prompt().setup_statements:
                 try:
                     command = setup_statement.format(input_)
                     exec(command, namespace, namespace)
@@ -116,6 +108,9 @@ class Getter(object):
         self._prompt_index += 1
         self._current_prompt_is_done = True
 
+    def _get_current_prompt(self):
+        return self.prompts[self._prompt_index]
+
     def _indent_and_number_message(self, message):
         if self.number_prompts:
             prompt_number = self._prompt_index + 1
@@ -124,7 +119,7 @@ class Getter(object):
         return message
 
     def _load_message(self):
-        message = self._current_prompt.message
+        message = self._get_current_prompt().message
         if self.capitalize_prompts:
             message = abjad.String(message).capitalize_start()
         self._messages.append(message)
@@ -164,7 +159,7 @@ class Getter(object):
         while not self._current_prompt_is_done:
             message = self._messages[-1]
             message = self._indent_and_number_message(message)
-            include_chevron = self._current_prompt.include_chevron
+            include_chevron = self._get_current_prompt().include_chevron
             input_ = self._io_manager._handle_input(
                 message,
                 include_chevron=include_chevron,
@@ -229,7 +224,7 @@ class Getter(object):
     def _validate_evaluated_input(self, evaluated_input):
         if evaluated_input is None and self.allow_none:
             return True
-        validation_function = self._current_prompt.validation_function
+        validation_function = self._get_current_prompt().validation_function
         try:
             return validation_function(evaluated_input)
         except TypeError:
@@ -442,7 +437,7 @@ class Getter(object):
         Returns none.
         '''
         lines = []
-        lines.append(self._current_prompt.help_string)
+        lines.append(self._get_current_prompt().help_string)
         lines.append('')
         self._io_manager._display(lines)
 
