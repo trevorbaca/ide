@@ -1,11 +1,11 @@
 import ide
-session = ide.tools.idetools.Session()
-io_manager = ide.tools.idetools.IOManager(session=session)
+session = ide.Session()
+io_manager = ide.IOManager(session=session)
 
 
 def test_Getter_append_values_01():
 
-    getter = ide.tools.idetools.Getter()
+    getter = ide.Getter()
     getter.append_integer('attribute')
     input_ = 'foo -99'
     io_manager._session._pending_input = input_
@@ -14,7 +14,7 @@ def test_Getter_append_values_01():
 
 def test_Getter_append_values_02():
 
-    getter = ide.tools.idetools.Getter()
+    getter = ide.Getter()
     getter.append_integer_in_range('attribute', 1, 10)
     input_ = 'foo -99 99 7'
     io_manager._session._pending_input = input_
@@ -23,7 +23,7 @@ def test_Getter_append_values_02():
 
 def test_Getter_append_values_03():
 
-    getter = ide.tools.idetools.Getter()
+    getter = ide.Getter()
     getter.append_string('attribute')
     input_ = '-99 99 1-4 foo'
     io_manager._session._pending_input = input_
@@ -35,7 +35,7 @@ def test_Getter_append_values_04():
     r'''Evaluation allows for strings of reserved words like 'map'.
     '''
 
-    getter = ide.tools.idetools.Getter()
+    getter = ide.Getter()
     getter.append_string('attribute')
     input_ = 'map'
     io_manager._session._pending_input = input_

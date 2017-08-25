@@ -5,8 +5,8 @@ To install the Abjad IDE:
     1. clone the Abjad IDE from GitHub
     2. verify the Abjad IDE directories.
     3. add Abjad IDE scr/ directory to your PATH.
-    4. create a scores/ directory.
-    5. add the scores/ directory to your Abjad configuration file
+    4. create a Scores/ directory.
+    5. add the Scores/ directory to your Abjad configuration file
     6. start and stop the Abjad IDE.
     7. run doctest.
     8. run pytest.
@@ -67,15 +67,14 @@ You're ready to use the Abjad IDE when the docs build and all tests pass.
 '''
 import distutils.version
 import platform
-from ide.tools import idetools
+from ide.tools.idetools import *
 if not (
-    distutils.version.LooseVersion('3.5') <
+    distutils.version.LooseVersion('3.6') <
     distutils.version.LooseVersion(platform.python_version())
     ):
-    raise ImportError('Requires Python 3.5.')
+    raise ImportError('Requires Python 3.6.')
 del distutils
 del platform
-configuration = idetools.AbjadIDEConfiguration()
+configuration = Configuration()
 configuration._add_example_score_to_sys_path()
 del(configuration)
-del(idetools)

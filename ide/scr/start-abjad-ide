@@ -14,5 +14,5 @@ except ImportError:
     pass
 
 input_ = ' '.join(sys.argv[1:])
-abjad_ide = ide.tools.idetools.AbjadIDE()
+abjad_ide = ide.AbjadIDE()
 abjad_ide._start(input_=input_)

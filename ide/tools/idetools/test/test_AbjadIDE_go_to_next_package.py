@@ -1,21 +1,21 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_next_package_01():
     r'''In materials directory.
     '''
 
-    input_ = 'red~example~score mm > > > q'
+    input_ = 'red~score mm > > > q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - magic numbers',
-        'Red Example Score (2013) - materials directory - performers',
-        'Red Example Score (2013) - materials directory - ranges',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - materials directory',
+        'Red Score (2017) - materials directory - magic numbers',
+        'Red Score (2017) - materials directory - performers',
+        'Red Score (2017) - materials directory - ranges',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -24,16 +24,16 @@ def test_AbjadIDE_go_to_next_package_02():
     r'''In material directory.
     '''
 
-    input_ = 'red~example~score mm performers > > q'
+    input_ = 'red~score mm performers > > q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - performers',
-        'Red Example Score (2013) - materials directory - ranges',
-        'Red Example Score (2013) - materials directory - tempi',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - materials directory',
+        'Red Score (2017) - materials directory - performers',
+        'Red Score (2017) - materials directory - ranges',
+        'Red Score (2017) - materials directory - tempi',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -42,16 +42,16 @@ def test_AbjadIDE_go_to_next_package_03():
     r'''In segments directory.
     '''
 
-    input_ = 'red~example~score gg > > > q'
+    input_ = 'red~score gg > > > q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory',
-        'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - segments directory - B',
-        'Red Example Score (2013) - segments directory - C',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - segments directory',
+        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) - segments directory - B',
+        'Red Score (2017) - segments directory - C',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -60,15 +60,15 @@ def test_AbjadIDE_go_to_next_package_04():
     r'''In segment directory.
     '''
 
-    input_ = 'red~example~score gg A > > q'
+    input_ = 'red~score gg A > > q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory',
-        'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - segments directory - B',
-        'Red Example Score (2013) - segments directory - C',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - segments directory',
+        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) - segments directory - B',
+        'Red Score (2017) - segments directory - C',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles

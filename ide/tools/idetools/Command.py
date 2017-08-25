@@ -25,6 +25,7 @@ class Command(object):
         'ly & pdf',
         'pdf',
         'navigation',
+        'scores',
         'sibling navigation',
         'star',
         'system',
@@ -36,6 +37,7 @@ class Command(object):
         'display navigation',
         'comparison',
         'navigation',
+        'scores',
         'sibling navigation',
         )
 

@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_display_navigation_command_help_01():
@@ -7,32 +7,32 @@ def test_AbjadIDE_display_navigation_command_help_01():
     '''
 
     lines = [
-        'Red Example Score (2013) - navigation commands',
+        'Red Score (2017) - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',
+        '    back (-)',
+        '    quit (q)',
         '',
         '>',
         ]
 
-    input_ = 'red~example~score ; q'
+    input_ = 'red~score ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -42,35 +42,35 @@ def test_AbjadIDE_display_navigation_command_help_02():
     '''
 
     lines = [
-        'Red Example Score (2013) - materials directory - magic numbers - navigation commands',
+        'Red Score (2017) - materials directory - magic numbers - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
         '',
         '    go to next package (>)',
         '    go to previous package (<)',
         '',
+        '    back (-)',
+        '    quit (q)',
+        '',
         '>',
     ]
 
-    input_ = 'red~example~score mm magic~numbers ; q'
+    input_ = 'red~score mm magic~numbers ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -80,35 +80,35 @@ def test_AbjadIDE_display_navigation_command_help_03():
     '''
 
     lines = [
-        'Red Example Score (2013) - segments directory - A - navigation commands',
+        'Red Score (2017) - segments directory - A - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
         '',
         '    go to next package (>)',
         '    go to previous package (<)',
         '',
+        '    back (-)',
+        '    quit (q)',
+        '',
         '>',
     ]
 
-    input_ = 'red~example~score gg A ; q'
+    input_ = 'red~score gg A ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -118,12 +118,13 @@ def test_AbjadIDE_display_navigation_command_help_04():
     '''
 
     lines = [
-        'Abjad IDE - all score directories - navigation commands',
+        'Abjad IDE - scores directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to scores directory (ss)',
+        '',
         '    back (-)',
-        '    home (h)',
         '    quit (q)',
         '',
         '>',
@@ -132,7 +133,6 @@ def test_AbjadIDE_display_navigation_command_help_04():
     input_ = '; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -142,35 +142,35 @@ def test_AbjadIDE_display_navigation_command_help_05():
     '''
 
     lines = [
-        'Red Example Score (2013) - materials directory - navigation commands',
+        'Red Score (2017) - materials directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
         '',
         '    go to next package (>)',
         '    go to previous package (<)',
         '',
+        '    back (-)',
+        '    quit (q)',
+        '',
         '>',
         ]
 
-    input_ = 'red~example~score mm ; q'
+    input_ = 'red~score mm ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -180,35 +180,35 @@ def test_AbjadIDE_display_navigation_command_help_06():
     '''
 
     lines = [
-        'Red Example Score (2013) - segments directory - navigation commands',
+        'Red Score (2017) - segments directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
         '',
         '    go to next package (>)',
         '    go to previous package (<)',
         '',
+        '    back (-)',
+        '    quit (q)',
+        '',
         '>',
         ]
 
-    input_ = 'red~example~score gg ; q'
+    input_ = 'red~score gg ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line
 
@@ -218,31 +218,31 @@ def test_AbjadIDE_display_navigation_command_help_07():
     '''
 
     lines = [
-        'Red Example Score (2013) - stylesheets directory - navigation commands',
+        'Red Score (2017) - stylesheets directory - navigation commands',
         '',
         '    display navigation command help (;)',
         '',
-        '    back (-)',
-        '    home (h)',
-        '    quit (q)',
+        '    go to scores directory (ss)',
         '',
         '    go to build directory (bb)',
+        '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
         '    go to materials directory (mm)',
-        '    go to score directory (ss)',
-        '    go to score package wrapper (ww)',
         '    go to segments directory (gg)',
         '    go to stylesheets directory (yy)',
         '    go to test directory (tt)',
         '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',
+        '    back (-)',
+        '    quit (q)',
         '',
         '>',
         ]
 
-    input_ = 'red~example~score yy ; q'
+    input_ = 'red~score yy ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-
     for line, actual_line in zip(lines, transcript_entry.lines):
         assert line == actual_line

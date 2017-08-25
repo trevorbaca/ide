@@ -14,8 +14,8 @@ if __name__ == '__main__':
 
     try:
         current_directory = pathlib.Path(__file__).parent
-        candidate_path = current_directory / 'illustration.candidate.ly'
-        abjad.persist(lilypond_file).as_ly(candidate_path)
+        ly_path = current_directory / 'illustration.ly'
+        abjad.persist(lilypond_file).as_ly(ly_path)
     except:
         traceback.print_exc()
         sys.exit(1)

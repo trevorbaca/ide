@@ -34,8 +34,8 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             current_directory = pathlib.Path(__file__).parent
-            dummy_session = ide.tools.idetools.Session()
-            abjad_ide = ide.tools.idetools.AbjadIDE(
+            dummy_session = ide.Session()
+            abjad_ide = ide.AbjadIDE(
                 session=dummy_session,
                 )
             abjad_ide._write_metadata_py(
@@ -64,7 +64,7 @@ if __name__ == '__main__':
         #print(message)
         #for output_path in output_paths:
         #    message = 'writing {{}} ...'
-        #    path = ide.tools.idetools.AbjadIDE._trim(output_path)
+        #    path = ide.AbjadIDE._trim(output_path)
         #    message = message.format(path)
         #    print(message)
     except:

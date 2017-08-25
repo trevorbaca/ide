@@ -1,6 +1,5 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_run_doctest_01():
@@ -9,7 +8,7 @@ def test_AbjadIDE_run_doctest_01():
     Output paths listed from score directory.
     '''
 
-    input_ = 'red~example~score dt q'
+    input_ = 'red~score dt q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._session._attempted_method == '_run_doctest'
 
@@ -20,7 +19,7 @@ def test_AbjadIDE_run_doctest_02():
     Output paths listed from score directory.
     '''
 
-    input_ = 'red~example~score oo dt q'
+    input_ = 'red~score oo dt q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._session._attempted_method == '_run_doctest'
 
@@ -31,6 +30,6 @@ def test_AbjadIDE_run_doctest_03():
     Output paths listed from score directory.
     '''
 
-    input_ = 'red~example~score ^ST q'
+    input_ = 'red~score ^ST q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._session._attempted_method == '_run_doctest'

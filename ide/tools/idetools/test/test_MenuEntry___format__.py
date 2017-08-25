@@ -6,7 +6,7 @@ def test_MenuEntry___format___01():
     r'''Formats menu section without raising exception.
     '''
 
-    menu = ide.tools.idetools.Menu()
+    menu = ide.Menu()
 
     commands = []
     commands.append(('foo - add', 'add'))
@@ -21,7 +21,7 @@ def test_MenuEntry___format___01():
     assert abjad.TestManager.compare(
         format(section[0]),
         r'''
-        ide.idetools.MenuEntry(
+        ide.MenuEntry(
             display_string='foo - add',
             key='add',
             )

@@ -3,7 +3,7 @@ class Session(object):
 
         ::
 
-            >>> session = ide.tools.idetools.Session()
+            >>> session = ide.Session()
             >>> session
             Session()
 

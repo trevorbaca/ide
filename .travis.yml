@@ -3,7 +3,7 @@ language: python
 sudo: false
 
 python:
-    - 3.5
+    - 3.6
 
 addons:
     apt:
@@ -38,8 +38,8 @@ before_script:
     - ide/scr/prime-parser-tables
 
 script:
-    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/blue_example_score:$PYTHONPATH
-    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/red_example_score:$PYTHONPATH
+    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/blue_score:$PYTHONPATH
+    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/red_score:$PYTHONPATH
     - echo $PYTHONPATH
     # Travis can not find the ide/scr directory
     #- start-abjad-ide q

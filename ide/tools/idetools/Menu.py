@@ -10,7 +10,7 @@ class Menu(object):
 
         ::
 
-            >>> menu = ide.tools.idetools.Menu()
+            >>> menu = ide.Menu()
 
         ::
 
@@ -64,10 +64,11 @@ class Menu(object):
 
     _navigation_command_section_order = (
         'display navigation',
-        'back-home-quit',
+        'scores',
         'comparison',
         'navigation',
         'sibling navigation',
+        'back-home-quit',
         )
 
     _tab = 4 * ' '
@@ -216,8 +217,8 @@ class Menu(object):
         length = len(parts)
         for i in range(len(parts)):
             count = length - i
-            candidate = ' '.join(parts[:count])
-            directive = self._change_input_to_directive(candidate)
+            directive = ' '.join(parts[:count])
+            directive = self._change_input_to_directive(directive)
             if directive is not None:
                 if count < length:
                     remaining_count = length - count

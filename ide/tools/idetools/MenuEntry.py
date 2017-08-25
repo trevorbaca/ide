@@ -1,6 +1,6 @@
 import abjad
-from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
-configuration = AbjadIDEConfiguration()
+from ide.tools.idetools.Configuration import Configuration
+configuration = Configuration()
 
 
 class MenuEntry(abjad.AbjadObject):
@@ -10,7 +10,7 @@ class MenuEntry(abjad.AbjadObject):
 
         ::
 
-            >>> menu = ide.tools.idetools.Menu()
+            >>> menu = ide.Menu()
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))

@@ -1,4 +1,0 @@
-1.  Fix zagged pitch-class illustration to remove LilyPond warnings like ...
-        illustration.ly:89:75: warning: conflicting note group events
-    ... and related.
-    Make a test zagged pitch class material package and illustrate to test.

@@ -1,81 +1,66 @@
 import ide
 import pathlib
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_open_every_pdf_01():
     r'''In materials directory.
     '''
 
-    # only these three packages have PDFs
-    package_names = (
-        'ranges',
-        'tempi',
+    path = pathlib.Path(
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
+        'materials',
         'magic_numbers',
+        'illustration.pdf',
         )
-    paths = []
-    for name in package_names:
-        path = pathlib.Path(
-            configuration.abjad_ide_example_scores_directory,
-            'red_example_score',
-            'red_example_score',
-            'materials',
-            name,
-            'illustration.pdf',
-            )
-        paths.append(path)
 
-    input_ = 'red~example~score mm pdf* q'
-    abjad_ide._start(input_=input_)
+    input_ = 'red~score mm magic~numbers pdfm mm pdf* q'
+
+    with ide.Test():
+        abjad_ide._start(input_=input_)
+
     contents = abjad_ide._io_manager._transcript.contents
-
     assert abjad_ide._session._attempted_to_open_file
-    for path in paths:
-        message = 'Opening {!s} ...'
-        message = message.format(abjad_ide._trim(path))
-        assert message in contents
+    message = f'Opening {abjad_ide._trim(path)} ...'
+    assert message in contents
 
 
 def test_AbjadIDE_open_every_pdf_02():
     r'''In segments directory.
     '''
 
-    package_names = ('segment_01', 'segment_02', 'segment_03')
-    paths = []
-    for name in package_names:
-        path = pathlib.Path(
-            configuration.abjad_ide_example_scores_directory,
-            'red_example_score',
-            'red_example_score',
-            'segments',
-            name,
-            'illustration.pdf',
-            )
-        paths.append(path)
+    path = pathlib.Path(
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
+        'segments',
+        'segment_01',
+        'illustration.pdf',
+        )
 
-    input_ = 'red~example~score gg pdf* q'
-    abjad_ide._start(input_=input_)
+    input_ = 'red~score %A pdfm gg pdf* q'
+
+    with ide.Test():
+        abjad_ide._start(input_=input_)
+
     contents = abjad_ide._io_manager._transcript.contents
-
     assert abjad_ide._session._attempted_to_open_file
-    assert abjad_ide._session._attempted_to_open_file
-    for path in paths:
-        message = 'Opening {!s} ...'
-        message = message.format(abjad_ide._trim(path))
-        assert message in contents
+    message = f'Opening {abjad_ide._trim(path)} ...'
+    assert message in contents
 
 
 def test_AbjadIDE_open_every_pdf_03():
     r'''In scores directory.
     '''
 
-    red_score_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+    path = pathlib.Path(
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'distribution',
-        'red-example-score-score.pdf',
+        'red-score-score.pdf',
         )
 
     input_ = 'pdf* q'
@@ -83,6 +68,5 @@ def test_AbjadIDE_open_every_pdf_03():
     contents = abjad_ide._io_manager._transcript.contents
 
     assert abjad_ide._session._attempted_to_open_file
-    message = 'Opening {!s} ...'
-    message = message.format(abjad_ide._trim(red_score_path))
+    message = f'Opening {abjad_ide._trim(path)} ...'
     assert message in contents

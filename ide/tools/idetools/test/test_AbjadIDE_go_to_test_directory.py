@@ -1,24 +1,22 @@
-import abjad
 import ide
 import os
 import pathlib
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_test_directory_01():
     r'''From material directory.
     '''
 
-    input_ = 'red~example~score mm tempi tt q'
+    input_ = 'red~score mm tempi tt q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - tempi',
-        'Red Example Score (2013) - test directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - materials directory',
+        'Red Score (2017) - materials directory - tempi',
+        'Red Score (2017) - test directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -27,15 +25,15 @@ def test_AbjadIDE_go_to_test_directory_02():
     r'''From segment directory.
     '''
 
-    input_ = 'red~example~score gg A tt q'
+    input_ = 'red~score gg A tt q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory',
-        'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - test directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - segments directory',
+        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) - test directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -44,13 +42,13 @@ def test_AbjadIDE_go_to_test_directory_03():
     r'''From build directory to test directory.
     '''
 
-    input_ = 'red~example~score bb tt q'
+    input_ = 'red~score bb tt q'
     abjad_ide._start(input_=input_)
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - build directory',
-        'Red Example Score (2013) - test directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - build directory',
+        'Red Score (2017) - test directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -60,17 +58,17 @@ def test_AbjadIDE_go_to_test_directory_04():
     '''
 
     test_directory = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'test',
         )
 
-    with abjad.FilesystemState(keep=[test_directory]):
+    with ide.Test():
         command = 'rm -rf {}'
         command = command.format(test_directory)
         os.system(command)
-        input_ = 'red~example~score tt q'
+        input_ = 'red~score tt q'
         abjad_ide._start(input_=input_)
 
     string = 'Directory does not exist:'
@@ -81,7 +79,7 @@ def test_AbjadIDE_go_to_test_directory_05():
     r'''Filenames appear correctly.
     '''
 
-    input_ = 'red~example~score tt q'
+    input_ = 'red~score tt q'
     abjad_ide._start(input_=input_)
 
     contents = abjad_ide._io_manager._transcript.contents

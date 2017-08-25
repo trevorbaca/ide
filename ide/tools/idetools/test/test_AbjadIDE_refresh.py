@@ -1,8 +1,7 @@
 import abjad
 import ide
 import pathlib
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_refresh_01():
@@ -10,22 +9,21 @@ def test_AbjadIDE_refresh_01():
     '''
 
     material_directory = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'materials',
         'magic_numbers',
         )
     ly_path = pathlib.Path(material_directory, 'illustration.ly')
 
     lines = [
-        'Red Example Score (2013) - materials directory - magic numbers',
+        'Red Score (2017) - materials directory - magic numbers',
         '',
         '   1: __illustrate__.py',
         '   2: __init__.py',
         '   3: __metadata__.py',
         '   4: definition.py',
-        '   5: illustration.pdf',
         '',
         '      copy (cp)',
         '      new (new)',
@@ -35,9 +33,9 @@ def test_AbjadIDE_refresh_01():
         '>',
         ]
 
-    with abjad.FilesystemState(keep=[ly_path]):
+    with ide.Test():
         assert ly_path.is_file()
-        input_ = 'red~example~score mm magic~numbers !rm~illustration.ly rf q'
+        input_ = 'red~score mm magic~numbers !rm~illustration.ly rf q'
         abjad_ide._start(input_=input_)
         assert not ly_path.exists()
 

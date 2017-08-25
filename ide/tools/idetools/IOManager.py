@@ -7,14 +7,14 @@ import platform
 import subprocess
 import sys
 import traceback
-from ide.tools.idetools.AbjadIDEConfiguration import AbjadIDEConfiguration
+from ide.tools.idetools.Configuration import Configuration
 try:
     from io import StringIO
 except ImportError:
     from StringIO import StringIO
 
 
-configuration = AbjadIDEConfiguration()
+configuration = Configuration()
 
 
 class IOManager(abjad.IOManager):
@@ -24,12 +24,14 @@ class IOManager(abjad.IOManager):
 
         ::
 
-            >>> abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+            >>> abjad_ide = ide.AbjadIDE(is_test=True)
             >>> io_manager = abjad_ide._io_manager
 
     '''
 
     ### CLASS VARAIBLES ###
+
+    __documentation_section__ = 'Classes'
 
     __slots__ = (
         '_session',
@@ -41,10 +43,11 @@ class IOManager(abjad.IOManager):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        from ide.tools import idetools
+        #from ide.tools import idetools
+        from ide.tools.idetools.Transcript import Transcript
         assert session is not None
         self._session = session
-        self._transcript = idetools.Transcript()
+        self._transcript = Transcript()
 
     ### SPECIAL METHODS ###
 
@@ -75,7 +78,7 @@ class IOManager(abjad.IOManager):
             self.clear_terminal()
         if self._session.is_test:
             return
-        transcripts_directory = configuration.abjad_ide_transcripts_directory
+        transcripts_directory = configuration.transcripts_directory
         transcripts = sorted(transcripts_directory.glob('*'))
         count = len(transcripts)
         if 9000 <= count:
@@ -359,8 +362,7 @@ class IOManager(abjad.IOManager):
         path = pathlib.Path(path)
         if not path.is_file():
             return
-        with path.open() as file_pointer:
-            file_contents_string = file_pointer.read()
+        file_contents_string = path.read_text()
         try:
             result = self.execute_string(file_contents_string, attribute_names)
         except:
@@ -499,11 +501,10 @@ class IOManager(abjad.IOManager):
             path_suffix = path.suffix
         if (platform.system() == 'Darwin' and path_suffix == '.pdf'):
             source_path = pathlib.Path(
-                configuration.abjad_ide_boilerplate_directory,
+                configuration.boilerplate_directory,
                 '__close_preview_pdf__.scr',
                 )
-            with source_path.open() as file_pointer:
-                template = file_pointer.read()
+            template = source_path.read_text()
             completed_template = template.format(file_path=path)
             script_path = pathlib.Path(
                 configuration.home_directory,
@@ -512,8 +513,7 @@ class IOManager(abjad.IOManager):
             if script_path.exists():
                 script_path.unlink()
             with abjad.FilesystemState(remove=[script_path]):
-                with script_path.open('w') as file_pointer:
-                    file_pointer.write(completed_template)
+                script_path.write_text(completed_template)
                 permissions_command = 'chmod 755 {}'
                 permissions_command = permissions_command.format(script_path)
                 self.spawn_subprocess(permissions_command)
@@ -541,12 +541,7 @@ class IOManager(abjad.IOManager):
         Returns none.
         '''
         path = pathlib.Path(path)
-        directory_path = path.parent
-        if not directory_path.exists():
-            directory_path.mkdir()
-        if sys.version_info[0] == 2:
-            with codecs.open(str(path), 'w', encoding='utf-8') as file_pointer:
-                file_pointer.write(string)
-        else:
-            with path.open('w') as file_pointer:
-                file_pointer.write(string)
+        directory = path.parent
+        if not directory.exists():
+            directory.mkdir()
+        path.write_text(string)

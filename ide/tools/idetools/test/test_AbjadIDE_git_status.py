@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_git_status_01():
@@ -11,57 +11,57 @@ def test_AbjadIDE_git_status_01():
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' not in contents
 
-    input_ = 'red~example~score st ? q'
+    input_ = 'red~score st ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score bb ? q'
+    input_ = 'red~score bb ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score dd ? q'
+    input_ = 'red~score dd ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score ee ? q'
+    input_ = 'red~score ee ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score oo ? q'
+    input_ = 'red~score oo ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score mm ? q'
+    input_ = 'red~score mm ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score mm magic~numbers ? q'
+    input_ = 'red~score mm magic~numbers ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score gg ? q'
+    input_ = 'red~score gg ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score gg A ? q'
+    input_ = 'red~score gg A ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score yy ? q'
+    input_ = 'red~score yy ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents
 
-    input_ = 'red~example~score tt ? q'
+    input_ = 'red~score tt ? q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
     assert 'git - status (st)' in contents

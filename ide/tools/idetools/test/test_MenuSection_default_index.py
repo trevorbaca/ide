@@ -3,7 +3,7 @@ import ide
 
 def test_MenuSection_default_index_01():
 
-    menu = ide.tools.idetools.Menu()
+    menu = ide.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -19,7 +19,7 @@ def test_MenuSection_default_index_01():
 
 def test_MenuSection_default_index_02():
 
-    menu = ide.tools.idetools.Menu()
+    menu = ide.Menu()
     commands = []
     commands.append('apple')
     commands.append('banana')

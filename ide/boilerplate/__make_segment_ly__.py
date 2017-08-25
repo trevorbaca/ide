@@ -41,8 +41,8 @@ if __name__ == '__main__':
 
     try:
         current_directory = pathlib.Path(__file__).parent
-        dummy_session = ide.tools.idetools.Session()
-        abjad_ide = ide.tools.idetools.AbjadIDE(
+        dummy_session = ide.Session()
+        abjad_ide = ide.AbjadIDE(
             session=dummy_session,
             )
         abjad_ide._write_metadata_py(

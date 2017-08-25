@@ -5,9 +5,9 @@ def test_Menu__run_01():
     r'''String menu entry defaults.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -48,9 +48,9 @@ def test_Menu__run_02():
     r'''Hidden menu section.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -92,9 +92,9 @@ def test_Menu__run_03():
     r'''Numbered menu section.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -136,9 +136,9 @@ def test_Menu__run_04():
     r'''Menu section with range selection turned on.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append('apple')
     commands.append('banana')
@@ -180,9 +180,9 @@ def test_Menu__run_05():
     r'''Keyed menu section with key returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -236,9 +236,9 @@ def test_Menu__run_06():
     r'''Keyed menu section with display string returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -290,9 +290,9 @@ def test_Menu__run_07():
     r'''Hidden keyed menu section with key returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -347,9 +347,9 @@ def test_Menu__run_08():
     r'''Hidden keyed menu section with display string returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -403,9 +403,9 @@ def test_Menu__run_09():
     r'''Numbered keyed menu section with key returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -460,9 +460,9 @@ def test_Menu__run_10():
     r'''Ranged keyed menu section with with key returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))
@@ -517,9 +517,9 @@ def test_Menu__run_11():
     r'''RK menu section with display string returned.
     '''
 
-    session = ide.tools.idetools.Session(is_test=True)
-    io_manager = ide.tools.idetools.IOManager(session=session)
-    menu = ide.tools.idetools.Menu(name='test')
+    session = ide.Session(is_test=True)
+    io_manager = ide.IOManager(session=session)
+    menu = ide.Menu(name='test')
     commands = []
     commands.append(('first command', 'add'))
     commands.append(('second command', 'rm'))

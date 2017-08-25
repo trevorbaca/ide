@@ -9,7 +9,7 @@ class MenuSection(abjad.AbjadObject):
 
         ::
 
-            >>> menu = ide.tools.idetools.Menu()
+            >>> menu = ide.Menu()
             >>> commands = []
             >>> commands.append(('foo - add', 'add'))
             >>> commands.append(('foo - delete', 'delete'))

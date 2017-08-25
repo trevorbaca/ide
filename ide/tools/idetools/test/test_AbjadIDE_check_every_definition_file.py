@@ -1,14 +1,12 @@
 import ide
-import pathlib
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_check_every_definition_file_01():
     r'''In materials directory.
     '''
 
-    input_ = 'red~example~score mm dfk* q'
+    input_ = 'red~score mm dfk* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -21,19 +19,12 @@ def test_AbjadIDE_check_every_definition_file_01():
         ]
     paths = []
     for package_name in package_names:
-        path = pathlib.Path(
-            configuration.abjad_ide_example_scores_directory,
-            'red_example_score',
-            'red_example_score',
-            'materials',
-            package_name,
-            'definition.py',
-            )
+        path = ide.Path('red_score')
+        path = path / 'materials' / package_name / 'definition.py'
         paths.append(path)
 
     for path in paths:
-        message = '{!s} ... OK'
-        message = message.format(abjad_ide._trim(path))
+        message = f'{abjad_ide._trim(path)} ... OK'
         assert message in contents
     assert 'Total time ' in contents
 
@@ -42,7 +33,7 @@ def test_AbjadIDE_check_every_definition_file_02():
     r'''In segments directory.
     '''
 
-    input_ = 'red~example~score gg dfk* q'
+    input_ = 'red~score gg dfk* q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
@@ -53,18 +44,11 @@ def test_AbjadIDE_check_every_definition_file_02():
         ]
     paths = []
     for package_name in package_names:
-        path = pathlib.Path(
-            configuration.abjad_ide_example_scores_directory,
-            'red_example_score',
-            'red_example_score',
-            'segments',
-            package_name,
-            'definition.py',
-            )
+        path = ide.Path('red_score')
+        path = path / 'segments' / package_name / 'definition.py'
         paths.append(path)
 
     for path in paths:
-        message = '{!s} ... OK'
-        message = message.format(abjad_ide._trim(path))
+        message = f'{abjad_ide._trim(path)} ... OK'
         assert message in contents
     assert 'Total time ' in contents

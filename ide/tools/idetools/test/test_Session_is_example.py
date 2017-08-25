@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_example=True)
+abjad_ide = ide.AbjadIDE(is_example=True)
 
 
 def test_Session_is_example_01():
@@ -7,11 +7,11 @@ def test_Session_is_example_01():
     '''
 
     lines = [
-        'Abjad IDE - all score directories',
+        'Abjad IDE - scores directory',
         '',
         '   1: __metadata__.py',
-        '   2: Blue Example Score (2013)',
-        '   3: Red Example Score (2013)',
+        '   2: Blue Score (2017)',
+        '   3: Red Score (2017)',
         '',
         '      copy (cp)',
         '      new (new)',

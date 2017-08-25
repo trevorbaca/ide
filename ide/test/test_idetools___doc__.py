@@ -14,6 +14,7 @@ def test_idetools___doc___01(obj):
     ignored_names = (
         '__dict__',
         '__init__',
+        '__new__',
         )
 
     ignored_classes = (

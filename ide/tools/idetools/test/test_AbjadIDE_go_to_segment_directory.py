@@ -1,17 +1,17 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_segment_directory_01():
     r'''%-navigation.
     '''
 
-    input_ = 'red~example~score %A q'
+    input_ = 'red~score %A q'
     abjad_ide._start(input_=input_)
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory - A',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - segments directory - A',
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles
@@ -20,13 +20,13 @@ def test_AbjadIDE_go_to_segment_directory_01():
 
 def test_AbjadIDE_go_to_segment_directory_02():
 
-    input_ = 'red~example~score %X q'
+    input_ = 'red~score %X q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles
@@ -37,13 +37,13 @@ def test_AbjadIDE_go_to_segment_directory_03():
     r'''The %a should not catch tools/adjust_spacing_sections.py.
     '''
 
-    input_ = 'red~example~score %a q'
+    input_ = 'red~score %a q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles

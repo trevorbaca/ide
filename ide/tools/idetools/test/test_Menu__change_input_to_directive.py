@@ -1,16 +1,16 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_Menu__change_input_to_directive_01():
     r'''Works with mixed case.
     '''
 
-    input_ = 'Red~example~score q'
+    input_ = 'Red~score q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
-    string = 'Red Example Score (2013)'
+    string = 'Red Score (2017)'
     assert string in contents
 
 
@@ -18,11 +18,11 @@ def test_Menu__change_input_to_directive_02():
     r'''Works with mixed case.
     '''
 
-    input_ = 'red~Example~score q'
+    input_ = 'red~Score q'
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
-    string = 'Red Example Score (2013)'
+    string = 'Red Score (2017)'
     assert string in contents
 
 
@@ -34,7 +34,7 @@ def test_Menu__change_input_to_directive_03():
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
-    string = 'Red Example Score (2013)'
+    string = 'Red Score (2017)'
     assert string in contents
 
 
@@ -46,7 +46,7 @@ def test_Menu__change_input_to_directive_04():
     abjad_ide._start(input_=input_)
     contents = abjad_ide._io_manager._transcript.contents
 
-    string = 'Red Example Score (2013)'
+    string = 'Red Score (2017)'
     assert string in contents
 
 
@@ -59,7 +59,7 @@ def test_Menu__change_input_to_directive_05():
     1, 3, 4, 7, ....
     '''
 
-    input_ = 'red~example~score mm magic~numbers 1 q'
+    input_ = 'red~score mm magic~numbers 1 q'
     abjad_ide._start(input_=input_)
 
     assert abjad_ide._session._attempted_to_open_file

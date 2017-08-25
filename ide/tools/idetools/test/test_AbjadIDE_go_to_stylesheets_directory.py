@@ -1,20 +1,20 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_stylesheets_directory_01():
     r'''From material directory.
     '''
 
-    input_ = 'red~example~score mm tempi yy q'
+    input_ = 'red~score mm tempi yy q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory',
-        'Red Example Score (2013) - materials directory - tempi',
-        'Red Example Score (2013) - stylesheets directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - materials directory',
+        'Red Score (2017) - materials directory - tempi',
+        'Red Score (2017) - stylesheets directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -23,15 +23,15 @@ def test_AbjadIDE_go_to_stylesheets_directory_02():
     r'''From segment directory.
     '''
 
-    input_ = 'red~example~score gg A yy q'
+    input_ = 'red~score gg A yy q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - segments directory',
-        'Red Example Score (2013) - segments directory - A',
-        'Red Example Score (2013) - stylesheets directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - segments directory',
+        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) - stylesheets directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -40,13 +40,13 @@ def test_AbjadIDE_go_to_stylesheets_directory_03():
     r'''From score directory.
     '''
 
-    input_ = 'red~example~score yy q'
+    input_ = 'red~score yy q'
     abjad_ide._start(input_=input_)
 
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - stylesheets directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - stylesheets directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles
 
@@ -55,12 +55,12 @@ def test_AbjadIDE_go_to_stylesheets_directory_04():
     r'''Goes from build directory to stylesheets directory.
     '''
 
-    input_ = 'red~example~score bb yy q'
+    input_ = 'red~score bb yy q'
     abjad_ide._start(input_=input_)
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - build directory',
-        'Red Example Score (2013) - stylesheets directory',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - build directory',
+        'Red Score (2017) - stylesheets directory',
         ]
     assert abjad_ide._io_manager._transcript.titles == titles

@@ -1,12 +1,12 @@
 import ide
-session = ide.tools.idetools.Session(is_test=True)
-io_manager = ide.tools.idetools.IOManager(session=session)
+session = ide.Session(is_test=True)
+io_manager = ide.IOManager(session=session)
 
 
 def test_Selector__run_01():
 
     items = ['apple', 'banana', 'cherry']
-    selector = ide.tools.idetools.Selector(items=items)
+    selector = ide.Selector(items=items)
     io_manager._session._is_test = True
 
     io_manager._session._pending_input = 'apple'

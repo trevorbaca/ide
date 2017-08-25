@@ -4,5 +4,5 @@ import ide
 
 
 input_ = ' '.join(sys.argv[1:])
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 abjad_ide._start(input_=input_)

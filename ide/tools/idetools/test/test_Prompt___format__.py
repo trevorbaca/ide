@@ -4,7 +4,7 @@ import ide
 
 def test_Prompt___format___01():
 
-    getter = ide.tools.idetools.Getter()
+    getter = ide.Getter()
     getter.append_string('value')
     prompt = getter.prompts[0]
     prompt_format = format(prompt)
@@ -15,7 +15,7 @@ def test_Prompt___format___01():
     assert abjad.TestManager.compare(
         modified_format,
         r'''
-        ide.idetools.Prompt(
+        ide.Prompt(
             disallow_range=False,
             help_template='value must be string.',
             help_template_arguments=[],

@@ -1,15 +1,15 @@
 import ide
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_go_to_material_directory_01():
 
-    input_ = 'red~example~score %magic q'
+    input_ = 'red~score %magic q'
     abjad_ide._start(input_=input_)
     titles = [
-        'Abjad IDE - all score directories',
-        'Red Example Score (2013)',
-        'Red Example Score (2013) - materials directory - magic numbers',
+        'Abjad IDE - scores directory',
+        'Red Score (2017)',
+        'Red Score (2017) - materials directory - magic numbers',
         ]
 
     assert abjad_ide._io_manager._transcript.titles == titles

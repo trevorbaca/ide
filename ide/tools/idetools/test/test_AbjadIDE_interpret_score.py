@@ -1,9 +1,7 @@
-import abjad
 import ide
 import pathlib
 import shutil
-abjad_ide = ide.tools.idetools.AbjadIDE(is_test=True)
-configuration = ide.tools.idetools.AbjadIDEConfiguration()
+abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_interpret_score_01():
@@ -11,29 +9,29 @@ def test_AbjadIDE_interpret_score_01():
     '''
 
     tex_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.tex',
         )
     pdf_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.pdf',
         )
 
-    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
-        pdf_path.unlink()
+    with ide.Test():
+        if pdf_path.exists():
+            pdf_path.unlink()
         assert not pdf_path.exists()
-        input_ = 'red~example~score bb letter-portrait si q'
+        input_ = 'red~score bb letter si q'
         abjad_ide._start(input_=input_)
         assert pdf_path.is_file()
-        assert abjad.TestManager._compare_backup(pdf_path)
 
 
 def test_AbjadIDE_interpret_score_02():
@@ -41,25 +39,25 @@ def test_AbjadIDE_interpret_score_02():
     '''
 
     tex_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.tex',
         )
     pdf_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.pdf',
         )
 
-    with abjad.FilesystemState(keep=[tex_path, pdf_path]):
+    with ide.Test():
         assert pdf_path.exists()
-        input_ = 'red~example~score bb letter-portrait si q'
+        input_ = 'red~score bb letter si q'
         abjad_ide._start(input_=input_)
         assert pdf_path.exists()
 
@@ -69,31 +67,30 @@ def test_AbjadIDE_interpret_score_03():
     '''
 
     bad_score_tex_path = pathlib.Path(
-        configuration.abjad_ide_directory,
-        'boilerplate',
+        abjad_ide.configuration.boilerplate_directory,
         'bad-score.tex',
         )
     score_tex_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.tex',
         )
     score_pdf_path = pathlib.Path(
-        configuration.abjad_ide_example_scores_directory,
-        'red_example_score',
-        'red_example_score',
+        abjad_ide.configuration.example_scores_directory,
+        'red_score',
+        'red_score',
         'build',
-        'letter-portrait',
+        'letter',
         'score.pdf',
         )
     paths = [score_tex_path, score_pdf_path]
 
-    with abjad.FilesystemState(keep=paths):
+    with ide.Test():
         shutil.copyfile(str(bad_score_tex_path), str(score_tex_path))
-        input_ = 'red~example~score bb letter-portrait si q'
+        input_ = 'red~score bb letter si q'
         abjad_ide._start(input_=input_)
         contents = abjad_ide._io_manager._transcript.contents
 
