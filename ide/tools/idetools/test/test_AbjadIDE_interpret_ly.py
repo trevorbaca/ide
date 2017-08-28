@@ -1,5 +1,4 @@
 import ide
-import pathlib
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
@@ -7,71 +6,58 @@ def test_AbjadIDE_interpret_ly_01():
     r'''In material directory.
     '''
 
-    ly_path = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'materials',
-        'tempi',
-        'illustration.ly',
-        )
-    pdf_path = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'materials',
-        'tempi',
-        'illustration.pdf',
-        )
-
     with ide.Test():
-        if pdf_path.exists():
-            pdf_path.unlink()
-        assert not pdf_path.exists()
-        input_ = 'red~score mm tempi lyi q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert pdf_path.is_file()
+        source = ide.Path('red_score').materials / 'tempi' / 'illustration.ly'
+        target = source.with_suffix('.pdf')
+        target.remove()
 
-    message = 'Calling LilyPond on {} ...'
-    message = message.format(abjad_ide._trim(ly_path))
-    message = 'Writing {} ...'
-    message = message.format(abjad_ide._trim(pdf_path))
-    assert message in contents
+        input_ = 'red~score %tempi lyi q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting ly ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()
+
+        input_ = 'red~score %tempi lyi q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting ly ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()
 
 
 def test_AbjadIDE_interpret_ly_02():
     r'''In segment directory.
     '''
 
-    ly_path = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'segments',
-        'segment_01',
-        'illustration.ly',
-        )
-    pdf_path = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'segments',
-        'segment_01',
-        'illustration.pdf',
-        )
-
     with ide.Test():
-        if pdf_path.exists():
-            pdf_path.unlink()
-        assert not pdf_path.exists()
-        input_ = 'red~score gg A lyi q'
-        abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert pdf_path.is_file()
+        source = ide.Path('red_score').segments
+        source = source / 'segment_01' / 'illustration.ly'
+        target = source.with_suffix('.pdf')
+        target.remove()
 
-    message = 'Calling LilyPond on {} ...'
-    message = message.format(abjad_ide._trim(ly_path))
-    message = 'Writing {} ...'
-    message = message.format(abjad_ide._trim(pdf_path))
-    assert message in contents
+        input_ = 'red~score %A lyi q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting ly ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()
+
+        input_ = 'red~score %A lyi q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting ly ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()

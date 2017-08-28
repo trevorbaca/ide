@@ -29,7 +29,6 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '',
         '>',
         ]
-
     input_ = 'red~score ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -66,8 +65,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    quit (q)',
         '',
         '>',
-    ]
-
+        ]
     input_ = 'red~score mm magic~numbers ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -104,8 +102,7 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    quit (q)',
         '',
         '>',
-    ]
-
+        ]
     input_ = 'red~score gg A ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -129,7 +126,6 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '',
         '>',
         ]
-
     input_ = '; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -167,7 +163,6 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '',
         '>',
         ]
-
     input_ = 'red~score mm ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -205,7 +200,6 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '',
         '>',
         ]
-
     input_ = 'red~score gg ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
@@ -240,7 +234,6 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '',
         '>',
         ]
-
     input_ = 'red~score yy ; q'
     abjad_ide._start(input_=input_)
     transcript_entry = abjad_ide._io_manager._transcript.entries[-3]

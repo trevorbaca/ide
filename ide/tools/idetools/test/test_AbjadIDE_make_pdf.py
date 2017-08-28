@@ -1,6 +1,5 @@
 import abjad
 import ide
-import pathlib
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
@@ -8,98 +7,75 @@ def test_AbjadIDE_make_pdf_01():
     r'''In material directory.
     '''
 
-    segment_directory = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'materials',
-        'magic_numbers',
-        )
-    ly_path = pathlib.Path(segment_directory, 'illustration.ly')
-    pdf_path = pathlib.Path(segment_directory, 'illustration.pdf')
+    source = ide.Path('red_score').materials / 'magic_numbers'
+    source /= 'illustration.ly'
+    with ide.Test(keep=[source]):
+        illustrate = source.with_name('__illustrate__.py')
+        target = source.with_suffix('.pdf')
+        source.remove()
+        target.remove()
 
-    with ide.Test(keep=[ly_path]):
-        ly_path.unlink()
-        if pdf_path.exists():
-            pdf_path.unlink()
-        input_ = 'red~score mm magic~numbers pdfm q'
+        input_ = 'red~score %magic~numbers pdfm q'
         abjad_ide._start(input_=input_)
-        assert ly_path.is_file()
-        assert pdf_path.is_file()
-        assert abjad.TestManager._compare_backup(ly_path)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making PDF ...'in transcript
+        assert f'Removing {abjad_ide._trim(source)} ...' not in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert source.is_file()
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(source)
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Calling Python on' in contents
-    assert 'Abjad runtime ' in contents
-    assert 'LilyPond runtime ' in contents
-    assert 'Total time ' in contents
+        input_ = 'red~score %magic~numbers pdfm q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making PDF ...'in transcript
+        assert f'Removing {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert source.is_file()
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(source)
 
 
 def test_AbjadIDE_make_pdf_02():
-    r'''In material directory.
-    '''
-
-    segment_directory = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'materials',
-        'magic_numbers',
-        )
-    ly_path = pathlib.Path(segment_directory, 'illustration.ly')
-    pdf_path = pathlib.Path(segment_directory, 'illustration.pdf')
-
-    with ide.Test(keep=[ly_path]):
-        assert ly_path.is_file()
-        input_ = 'red~score mm magic~numbers pdfm q'
-        abjad_ide._start(input_=input_)
-        assert ly_path.is_file()
-        assert abjad.TestManager._compare_backup(ly_path)
-        assert pdf_path.is_file()
-
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Calling Python on' in contents
-    assert 'Removing' in contents
-    assert abjad_ide._trim(ly_path) in contents
-    #assert abjad_ide._trim(pdf_path) in contents
-    assert 'Abjad runtime ' in contents
-    assert 'LilyPond runtime ' in contents
-    assert 'Total time ' in contents
-
-
-def test_AbjadIDE_make_pdf_03():
     r'''In segment directory.
     '''
 
-    segment_directory = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'segments',
-        'segment_01',
-        )
-    ly_path = pathlib.Path(segment_directory, 'illustration.ly')
-    pdf_path = pathlib.Path(segment_directory, 'illustration.pdf')
-    illustrate_file_path = pathlib.Path(
-        segment_directory,
-        '__illustrate__.py',
-        )
+    source = ide.Path('red_score').segments / 'segment_01'
+    source /= 'illustration.ly'
+    with ide.Test(keep=[source]):
+        illustrate = source.with_name('__illustrate__.py')
+        target = source.with_suffix('.pdf')
+        source.remove()
+        target.remove()
 
-    with ide.Test(keep=[ly_path]):
-        ly_path.unlink()
-        if pdf_path.exists():
-            pdf_path.unlink()
-        input_ = 'red~score gg A pdfm q'
+        input_ = 'red~score %A pdfm q'
         abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert ly_path.is_file()
-        assert pdf_path.is_file()
-        assert abjad.TestManager._compare_backup(ly_path)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making PDF ...'in transcript
+        assert f'Removing {abjad_ide._trim(source)} ...' not in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Removing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert source.is_file()
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(source)
 
-    message = 'Calling Python on {} ...'
-    message = message.format(abjad_ide._trim(illustrate_file_path))
-    assert message in contents
-    message = 'Opening {} ...'
-    message = message.format(abjad_ide._trim(pdf_path))
-    assert message in contents
-    assert 'Total time ' in contents
+        input_ = 'red~score %A pdfm q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making PDF ...'in transcript
+        assert f'Removing {abjad_ide._trim(source)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert source.is_file()
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(source)

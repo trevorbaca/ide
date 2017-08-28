@@ -43,7 +43,6 @@ class IOManager(abjad.IOManager):
     ### INITIALIZER ###
 
     def __init__(self, session=None):
-        #from ide.tools import idetools
         from ide.tools.idetools.Transcript import Transcript
         assert session is not None
         self._session = session
@@ -99,6 +98,8 @@ class IOManager(abjad.IOManager):
             )
         result = getter._run(io_manager=self)
         if isinstance(result, str):
+            if result == '':
+                return False
             if 'yes'.startswith(result.lower()):
                 return True
             if 'no'.startswith(result.lower()):
@@ -225,21 +226,17 @@ class IOManager(abjad.IOManager):
         include_chevron=True,
         include_newlines=False,
         ):
-        from ide.tools import idetools
-        getter = idetools.Getter(
+        import ide
+        getter = ide.Getter(
             allow_none=allow_none,
             include_chevron=include_chevron,
             include_newlines=include_newlines,
             )
         return getter
 
-    def _make_interaction(self, dry_run=False):
-        from ide.tools import idetools
-        if dry_run:
-            interaction = abjad.NullContextManager()
-        else:
-            interaction = idetools.Interaction(io_manager=self)
-        return interaction
+    def _make_interaction(self):
+        import ide
+        return ide.Interaction(io_manager=self)
 
     def _make_menu(
         self,
@@ -247,8 +244,8 @@ class IOManager(abjad.IOManager):
         name=None,
         subtitle=None,
         ):
-        from ide.tools import idetools
-        return idetools.Menu(
+        import ide
+        return ide.Menu(
             header=header,
             name=name,
             subtitle=subtitle,
@@ -262,8 +259,8 @@ class IOManager(abjad.IOManager):
         menu_header=None,
         target_name=None,
         ):
-        from ide.tools import idetools
-        return idetools.Selector(
+        import ide
+        return ide.Selector(
             is_ranged=is_ranged,
             items=items,
             menu_entries=menu_entries,
@@ -467,7 +464,7 @@ class IOManager(abjad.IOManager):
         if isinstance(path, list):
             path = [pathlib.Path(_) for _ in path]
         if not isinstance(path, list) and not path.is_file():
-            return
+            pass
         if (isinstance(path, list) and all(_.suffix == '.pdf' for _ in path)):
             paths = ' '.join([str(_) for _ in path])
             command = 'open {}'.format(paths)

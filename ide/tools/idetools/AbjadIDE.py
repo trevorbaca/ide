@@ -7,9 +7,7 @@ import pathlib
 import shutil
 import sys
 import traceback
-from ide.tools.idetools.Configuration import Configuration
 from ide.tools.idetools.Command import Command
-configuration = Configuration()
 
 
 class AbjadIDE(object):
@@ -62,18 +60,16 @@ class AbjadIDE(object):
     ### INITIALIZER ###
 
     def __init__(self, session=None, is_example=False, is_test=False):
-        #from ide.tools import idetools
+        from ide.tools.idetools.Configuration import Configuration
         from ide.tools.idetools.IOManager import IOManager
         from ide.tools.idetools.Session import Session
-        self._configuration = configuration
+        self._configuration = Configuration()
         if session is None:
-            #session = idetools.Session()
             session = Session()
             session._is_example = is_example
             session._is_test = is_test
         self._session = session
-        io_manager = IOManager(session=session)
-        self._io_manager = io_manager
+        self._io_manager = IOManager(session=session)
 
     ### SPECIAL METHODS ###
 
@@ -85,94 +81,6 @@ class AbjadIDE(object):
         return f'{type(self).__name__}()'
 
     ### PRIVATE METHODS ###
-
-    def _add_metadatum(self, directory, metadatum_name, metadatum_value):
-        assert directory.is_dir()
-        assert ' ' not in metadatum_name, repr(metadatum_name)
-        metadata = self._get_metadata(directory)
-        metadata[metadatum_name] = metadatum_value
-        self._write_metadata_py(directory, metadata)
-
-    def _call_latex_on_file(self, tex_path):
-        r'''Interprets TeX file.
-        Calls xelatex (or pdflatex) on file TWICE.
-        Some LaTeX packages (like tikz) require two passes.
-        '''
-        if not tex_path.is_file():
-            message = f'can not find {self._trim(tex_path)} ...'
-            self._io_manager._display(message)
-            return
-        executables = self._io_manager.find_executable('xelatex')
-        executables = [pathlib.Path(_) for _ in executables]
-        if not executables:
-            executable_name = 'pdflatex'
-            fancy_executable_name = 'LaTeX'
-        else:
-            executable_name = 'xelatex'
-            fancy_executable_name = 'XeTeX'
-        pdf_path = tex_path.parent / (str(tex_path.stem) + '.pdf')
-        if pdf_path.exists():
-            message = 'removing {} ...'
-            message = message.format(self._trim(pdf_path))
-            self._io_manager._display(message)
-            pdf_path.unlink()
-        message = f'interpreting {self._trim(tex_path)} ...'
-        self._io_manager._display(message)
-        command = 'date > {};'
-        command += ' {} -halt-on-error'
-        command += ' --jobname={} -output-directory={} {}'
-        command += ' >> {!s} 2>&1'
-        command = command.format(
-            configuration.latex_log_file_path,
-            executable_name,
-            tex_path.stem,
-            tex_path.parent,
-            tex_path,
-            configuration.latex_log_file_path,
-            )
-        command_called_twice = '{}; {}'.format(command, command)
-        with abjad.TemporaryDirectoryChange(tex_path.parent):
-            self._io_manager.spawn_subprocess(command_called_twice)
-            for path in tex_path.parent.glob('*.aux'):
-                path.unlink()
-            for path in tex_path.parent.glob('*.log'):
-                path.unlink()
-            messages = []
-            if pdf_path.is_file():
-                message = f'writing {self._trim(pdf_path)} ...'
-            else:
-                message = 'ERROR IN LATEX LOG FILE ...'
-            messages.append(message)
-            return messages
-
-    def _clear_view(self, directory):
-        assert directory.is_dir()
-        self._add_metadatum(directory, 'view_name', None)
-
-    def _coerce_name(self, directory, name):
-        assert directory.is_dir()
-        dash_case_prototype = ('build subdirectory', 'distribution', 'etc')
-        package_prototype = ('scores', 'materials', 'segments')
-        if self._is_score_directory(directory, 'scores'):
-            name = self._to_package_name(name)
-        elif self._is_score_directory(directory, 'build'):
-            name = self._to_build_subdirectory_name(name)
-        elif self._is_score_directory(directory, dash_case_prototype):
-            name = self._to_dash_case_file_name(name)
-        elif self._is_score_directory(directory, 'tools'):
-            if name[0].isupper():
-                name = self._to_classfile_name(name)
-            else:
-                name = self._to_snake_case_file_name(name)
-        elif self._is_score_directory(directory, 'wrapper'):
-            pass
-        elif self._is_score_directory(directory, package_prototype):
-            name = self._to_package_name(name)
-        elif self._is_score_directory(directory, 'stylesheets'):
-            name = self._to_stylesheet_name(name)
-        elif self._is_score_directory(directory, 'test'):
-            name = self._to_test_file_name(name)
-        return name
 
     def _collect_all_display_strings(self, directory):
         assert directory.is_dir()
@@ -234,13 +142,14 @@ class AbjadIDE(object):
         return pairs
 
     def _collect_similar_directories(self, directory, example_scores=False):
+        assert isinstance(directory, self.Path), repr(directory)
         assert directory.is_dir()
         if not self._is_score_directory(directory):
             return [directory]
         directories = []
-        scores_directories = [configuration.composer_scores_directory]
+        scores_directories = [self._configuration.composer_scores_directory]
         if example_scores:
-            scores_directory = configuration.example_scores_directory
+            scores_directory = self._configuration.example_scores_directory
             scores_directories.append(scores_directory)
         if self._is_score_directory(directory, 'scores'):
             return scores_directories
@@ -357,6 +266,13 @@ class AbjadIDE(object):
         target_path.write_text(template)
         return messages
 
+    def _display(self, lines, capitalize=True, is_menu=False):
+        self._io_manager._display(
+            lines,
+            capitalize=capitalize,
+            is_menu=is_menu,
+            )
+
     @classmethod
     def _entry_point(class_):
         input_ = ' '.join(sys.argv[1:])
@@ -402,8 +318,8 @@ class AbjadIDE(object):
     def _find_empty_score_directories(self):
         empty_score_directories = []
         scores_directories = (
-            configuration.composer_scores_directory,
-            configuration.example_scores_directory,
+            self._configuration.composer_scores_directory,
+            self._configuration.example_scores_directory,
             )
         for scores_directory in scores_directories:
             for path in scores_directory.glob('*'):
@@ -420,55 +336,9 @@ class AbjadIDE(object):
                     if path.is_dir():
                         break
                 else:
+                    score_directory = self.Path(score_directory)
                     empty_score_directories.append(score_directory)
         return empty_score_directories
-
-    def _format_messaging(self, inputs, outputs, verb='interpret'):
-        messages = []
-        if not inputs and not outputs:
-            message = 'no files to {}.'
-            message = message.format(verb)
-            messages.append(message)
-            return messages
-        message = 'will {} ...'.format(verb)
-        messages.append(message)
-        if outputs:
-            input_label = '  INPUT: '
-        else:
-            input_label = '    '
-        output_label = ' OUTPUT: '
-        if not outputs:
-            for path_list in inputs:
-                if isinstance(path_list, str):
-                    path_list = [path_list]
-                for path in path_list:
-                    messages.append('{}{}'.format(
-                        input_label,
-                        self._trim(path),
-                        ))
-        else:
-            for inputs_, outputs_ in zip(inputs, outputs):
-                if isinstance(inputs_, str):
-                    inputs_ = [inputs_]
-                assert isinstance(inputs_, (tuple, list)), repr(inputs_)
-                for path_list in inputs_:
-                    if isinstance(path_list, str):
-                        path_list = [path_list]
-                    for path in path_list:
-                        messages.append('{}{}'.format(
-                            input_label,
-                            self._trim(path),
-                            ))
-                for path_list in outputs_:
-                    if isinstance(path_list, str):
-                        path_list = [path_list]
-                    for path in path_list:
-                        messages.append('{}{}'.format(
-                            output_label,
-                            self._trim(path),
-                            ))
-                messages.append('')
-        return messages
 
     def _get_added_asset_paths(self, path):
         paths = []
@@ -504,7 +374,7 @@ class AbjadIDE(object):
             if path.exists():
                 line = 'path already exists: {!r}.'
                 line = line.format(path)
-                self._io_manager._display(line)
+                self._display(line)
             else:
                 return path
 
@@ -543,35 +413,6 @@ class AbjadIDE(object):
         with abjad.TemporaryDirectoryChange(directory=directory):
             lines = self._io_manager.run_command(command)
         return lines
-
-    def _get_metadata(self, directory):
-        assert directory.is_dir()
-        metadata_py_path = directory / '__metadata__.py'
-        metadata = None
-        if metadata_py_path.is_file():
-            file_contents_string = metadata_py_path.read_text()
-            try:
-                result = self._io_manager.execute_string(
-                    file_contents_string,
-                    attribute_names=('metadata',),
-                    )
-                metadata = result[0]
-            except SyntaxError:
-                message = 'can not interpret metadata py: {}.'
-                message = message.format(self._trim(metadata_py_path))
-                self._io_manager._display(message)
-            except NameError as e:
-                raise Exception(repr(metadata_py_path), e)
-        metadata = metadata or abjad.TypedOrderedDict()
-        return metadata
-
-    def _get_metadatum(self, directory, metadatum_name, default=None):
-        assert directory.is_dir()
-        metadata = self._get_metadata(directory)
-        metadatum = metadata.get(metadatum_name)
-        if not metadatum:
-            metadatum = default
-        return metadatum
 
     def _get_next_package(self, directory):
         assert directory.is_dir()
@@ -646,32 +487,45 @@ class AbjadIDE(object):
         with abjad.TemporaryDirectoryChange(directory=path):
             lines = self._io_manager.run_command(command)
             first_line = lines[0]
-            return pathlib.Path(first_line)
+            return self.Path(first_line)
+
+    def _get_score_pdf(self, directory):
+        directory = self.Path(directory)
+        path = self._get_file_path_ending_with(
+            directory.distribution,
+            'score.pdf',
+            )
+        if not path:
+            path = self._get_file_path_ending_with(
+                directory.build,
+                'score.pdf',
+                )
+        return path
 
     def _get_segment_metadata(self, directory):
         assert directory.is_dir()
         assert self._is_score_directory(directory, 'segment'), repr(directory)
         previous_directory = self._get_previous_directory(directory)
         assert self._is_score_directory(previous_directory, 'segment')
-        metadata = self._get_metadata(directory)
+        metadata = directory._get_metadata()
         segments_directory = self._to_score_directory(directory, 'segments')
         paths = self._list_visible_paths(segments_directory)
         if directory == paths[0]:
             return metadata
-        previous_metadata = self._get_metadata(previous_directory)
+        previous_metadata = previous_directory._get_metadata()
         return metadata, previous_metadata
 
     def _get_title_metadatum(self, score_directory, year=True):
         assert score_directory.is_dir()
-        if year and self._get_metadatum(score_directory, 'year'):
+        if year and score_directory._get_metadatum('year'):
             result = '{} ({})'
             result = result.format(
                 self._get_title_metadatum(score_directory, year=False),
-                self._get_metadatum(score_directory, 'year')
+                score_directory._get_metadatum('year')
                 )
             return result
         else:
-            result = self._get_metadatum(score_directory, 'title')
+            result = score_directory._get_metadatum('title')
             result = result or '(untitled score)'
             return result
 
@@ -695,35 +549,31 @@ class AbjadIDE(object):
         paths = [_ for _ in paths]
         return paths
 
-    def _git_add(self, directory, dry_run=False, interaction=True):
+    def _git_add(self, directory):
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'wrapper')
         change = abjad.TemporaryDirectoryChange(directory=directory)
-        do_it = interaction and not dry_run
-        interaction = self._io_manager._make_interaction(dry_run=not do_it)
+        interaction = self._interaction()
         with change, interaction:
+            self._display(f'git add {directory} ...')
             inputs = self._get_unadded_asset_paths(directory)
             outputs = []
-            nothing_message = '{} ... nothing to add.'
-            nothing_message = nothing_message.format(directory)
-            if dry_run:
-                return inputs, outputs
+            nothing_message = f'{directory} ... nothing to add.'
             if not inputs:
-                self._io_manager._display(nothing_message)
-                return
-            command = 'git add -A {!s}'
+                self._display(nothing_message)
+                return False
+            command = f'git add -A {directory}'
             for file_ in inputs:
-                command = command.format(directory)
                 self._io_manager.run_command(command)
             messages = []
             for file_ in inputs:
-                message = '{} ... added.'
-                message = message.format(self._trim(file_))
+                message = f'{self._trim(file_)} ... added.'
                 messages.append(message)
-            self._io_manager._display(messages, capitalize=False)
+            self._display(messages, capitalize=False)
+            return True
 
     def _handle_input(self, result):
-        prototype = (str, tuple, pathlib.Path)
+        prototype = (str, tuple, pathlib.Path, self.Path)
         assert isinstance(result, prototype), repr(result)
         if result == '<return>':
             return
@@ -733,11 +583,11 @@ class AbjadIDE(object):
             result = result[0]
             message = 'unknown command: {!r}.'
             message = message.format(result)
-            self._io_manager._display([message, ''])
+            self._display([message, ''])
         elif isinstance(result, str) and result.startswith('!'):
             statement = result[1:]
             self._io_manager._invoke_shell(statement)
-            self._io_manager._display('')
+            self._display('')
         elif isinstance(result, str) and result.startswith(
             ('@', '%', '^', '*', '+')):
             directory = self._session.current_directory
@@ -771,7 +621,7 @@ class AbjadIDE(object):
             if path is None:
                 path = self._match_display_string(directory, body)
             if path:
-                path = pathlib.Path(path)
+                path = self.Path(path)
                 if prefix == '@':
                     if self._is_score_directory(path, ('material', 'segment')):
                         path = path / 'definition.py'
@@ -782,23 +632,15 @@ class AbjadIDE(object):
                     else:
                         message = 'matches no display string: {!r}.'
                         message = message.format(result)
-                        self._io_manager._display([message, ''])
+                        self._display([message, ''])
                 elif prefix == '^':
-                    interaction = self._io_manager._make_interaction()
+                    interaction = self._interaction()
                     with interaction:
                         self._run_doctest(path)
                 elif prefix == '*':
                     if self._is_score_directory(path, ('material', 'segment')):
-                        path = path / 'illustration.pdf'
-                    if path.is_file():
-                        self._io_manager.open_file(
-                            path,
-                            line_number=line_number,
-                            )
-                    else:
-                        message = 'file does not exist: {}.'
-                        message = message.format(self._trim(path))
-                        self._io_manager._display([message, ''])
+                        pdf = path / 'illustration.pdf'
+                        self.open_pdf(path)
                 elif prefix == '+':
                     if self._is_score_directory(path, ('material', 'segment')):
                         path = path / 'definition.py'
@@ -808,9 +650,8 @@ class AbjadIDE(object):
                 else:
                     raise ValueError(prefix)
             else:
-                message = 'matches no display string: {!r}.'
-                message = message.format(result)
-                self._io_manager._display([message, ''])
+                message = f'matches no display string: {result!r}.'
+                self._display([message, ''])
         elif result in self._get_command_dictionary():
             command = self._get_command_dictionary()[result]
             if command.argument_name == 'current_directory':
@@ -822,7 +663,7 @@ class AbjadIDE(object):
             result[:-1] in self._get_command_dictionary()):
             result = result[:-1]
             self._get_command_dictionary()[result]()
-        elif pathlib.Path(result).is_file():
+        elif self.Path(result).is_file():
             self._io_manager.open_file(result)
         elif self._is_score_directory(result, package_prototype):
             self._manage_directory(result)
@@ -831,7 +672,7 @@ class AbjadIDE(object):
         else:
             message = 'unknown command: {!r}.'
             message = message.format(result)
-            self._io_manager._display([message, ''])
+            self._display([message, ''])
 
     def _has_pending_commit(self, directory):
         assert directory.is_dir()
@@ -849,6 +690,67 @@ class AbjadIDE(object):
                 return True
             if 'Changes to be committed:' in line:
                 return True
+
+    def _interaction(self):
+        return self._io_manager._make_interaction()
+
+    def _interpret_tex_file(self, tex_path):
+        r'''Interprets TeX file.
+        Calls xelatex (or pdflatex) on file TWICE.
+        Some LaTeX packages (like tikz) require two passes.
+        '''
+        if not tex_path.is_file():
+            message = f'can not find {self._trim(tex_path)} ...'
+            self._display(message)
+            return
+        executables = self._io_manager.find_executable('xelatex')
+        executables = [self.Path(_) for _ in executables]
+        if not executables:
+            executable_name = 'pdflatex'
+            fancy_executable_name = 'LaTeX'
+        else:
+            executable_name = 'xelatex'
+            fancy_executable_name = 'XeTeX'
+        pdf_path = tex_path.parent / (str(tex_path.stem) + '.pdf')
+        if pdf_path.exists():
+            message = 'removing {} ...'
+            message = message.format(self._trim(pdf_path))
+            self._display(message)
+            pdf_path.unlink()
+        message = f'interpreting {self._trim(tex_path)} ...'
+        self._display(message)
+        command = 'date > {};'
+        command += ' {} -halt-on-error'
+        command += ' --jobname={} -output-directory={} {}'
+        command += ' >> {!s} 2>&1'
+        command = command.format(
+            self._configuration.latex_log_file_path,
+            executable_name,
+            tex_path.stem,
+            tex_path.parent,
+            tex_path,
+            self._configuration.latex_log_file_path,
+            )
+        command_called_twice = '{}; {}'.format(command, command)
+        with abjad.TemporaryDirectoryChange(tex_path.parent):
+            self._io_manager.spawn_subprocess(command_called_twice)
+            for path in tex_path.parent.glob('*.aux'):
+                path.unlink()
+            for path in tex_path.parent.glob('*.log'):
+                path.unlink()
+            messages = []
+            if pdf_path.is_file():
+                error = False
+                message = f'writing {self._trim(pdf_path)} ...'
+            else:
+                error = True
+                message = 'ERROR IN LATEX LOG FILE ...'
+                log_file = self._configuration.latex_log_file_path
+                with log_file.open() as file_pointer:
+                    lines = file_pointer.readlines()
+                    messages.extend(lines)
+            messages.append(message)
+            return messages
 
     @classmethod
     def _is_build_directory_name(class_, name):
@@ -904,7 +806,7 @@ class AbjadIDE(object):
         if not path.exists():
             return False
         path = self._to_score_directory(path, 'wrapper')
-        path = pathlib.Path(path)
+        path = self.Path(path)
         for path_ in path.glob('*'):
             if path_.name == '.git':
                 return True
@@ -944,12 +846,6 @@ class AbjadIDE(object):
         return True
 
     @staticmethod
-    def _is_wrapper_directory_name(argument):
-        if argument in ('.git', '.DS_Store'):
-            return False
-        return True
-
-    @staticmethod
     def _is_package_name(argument):
         if not isinstance(argument, str):
             return False
@@ -980,9 +876,9 @@ class AbjadIDE(object):
         if not self._to_scores_directory(directory):
             return False
         if 'scores' in prototype:
-            if directory == configuration.composer_scores_directory:
+            if directory == self._configuration.composer_scores_directory:
                 return True
-            if directory == configuration.example_scores_directory:
+            if directory == self._configuration.example_scores_directory:
                 return True
         scores_directory = self._to_score_directory(directory, 'scores')
         if 'wrapper' in prototype and scores_directory:
@@ -1068,6 +964,12 @@ class AbjadIDE(object):
         first_line = git_status_lines[0]
         return first_line == ''
 
+    @staticmethod
+    def _is_wrapper_directory_name(argument):
+        if argument in ('.git', '.DS_Store'):
+            return False
+        return True
+
     def _list_paths(self, directory, example_scores=True):
         assert directory.is_dir()
         paths = []
@@ -1123,7 +1025,7 @@ class AbjadIDE(object):
         paths = [_[-1] for _ in entries]
         if view is None and self._is_score_directory(directory, 'scores'):
             paths = self._sort_by_menu_string(paths)
-        assert all(isinstance(_, pathlib.Path) for _ in paths), repr(paths)
+        assert all(isinstance(_, self.Path) for _ in paths), repr(paths)
         return paths
 
     def _make_build_subdirectory(self, directory):
@@ -1140,7 +1042,7 @@ class AbjadIDE(object):
         if build_subdirectory.exists():
             message = 'path already exists: {}.'
             message = message.format(self._trim(build_subdirectory))
-            self._io_manager._display(message)
+            self._display(message)
             return
         getter = self._io_manager._make_getter()
         message = 'paper size (ex: letter or letter landscape)'
@@ -1182,26 +1084,25 @@ class AbjadIDE(object):
         for file_path in file_paths:
             message = '   {}'.format(self._trim(file_path))
             messages.append(message)
-        self._io_manager._display(messages)
+        self._display(messages)
         if not self._io_manager._confirm():
             return
         if build_subdirectory.exists():
             shutil.rmtree(str(build_subdirectory))
         build_subdirectory.mkdir()
-        self._add_metadatum(build_subdirectory, 'paper_size', paper_size)
+        build_subdirectory._add_metadatum('paper_size', paper_size)
         if not orientation == 'portrait':
-            self._add_metadatum(build_subdirectory, 'orientation', orientation)
-        self._add_metadatum(build_subdirectory, 'price', price)
-        self._add_metadatum(
-            build_subdirectory,
+            build_directory._add_metadatum('orientation', orientation)
+        build_subdirectory._add_metadatum('price', price)
+        build_subdirectory._add_metadatum(
             'catalog_number_suffix',
             catalog_number_suffix,
             )
-        self.generate_back_cover_source(build_subdirectory)
-        self.generate_front_cover_source(build_subdirectory)
-        self.generate_music_ly(build_subdirectory)
-        self.generate_preface_source(build_subdirectory)
-        self.generate_score_source(build_subdirectory)
+        self.generate_back_cover(build_subdirectory)
+        self.generate_front_cover(build_subdirectory)
+        self.generate_music(build_subdirectory)
+        self.generate_preface(build_subdirectory)
+        self.generate_score(build_subdirectory)
         self.generate_build_subdirectory_stylesheet(build_subdirectory)
 
     def _make_command_menu_sections(self, directory, menu):
@@ -1252,16 +1153,17 @@ class AbjadIDE(object):
         file_name = getter._run(io_manager=self._io_manager)
         if file_name in (None, ''):
             return
-        file_name = self._coerce_name(directory, file_name)
+        #file_name = self._coerce_name(directory, file_name)
+        file_name = directory._coerce_name(file_name)
         name_predicate = self._to_name_predicate(directory)
         if not name_predicate(file_name):
             message = 'invalid file name: {!r}.'
             message = message.format(file_name)
-            self._io_manager._display(message)
+            self._display(message)
             self._io_manager._acknowledge()
             return
         file_path = directory / file_name
-        boilerplate_directory = configuration.boilerplate_directory
+        boilerplate_directory = self._configuration.boilerplate_directory
         if self._is_score_directory(directory, 'tools'):
             if self._is_classfile_name(file_name):
                 source_file = boilerplate_directory / 'Maker.py'
@@ -1319,97 +1221,77 @@ class AbjadIDE(object):
 
     def _make_material_ly(self, directory):
         assert directory.is_dir()
-        definition_path = directory / 'definition.py'
-        if not definition_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(definition_path))
-            self._io_manager._display(message)
+        directory = self.Path(directory)
+        assert directory.parent.name == 'materials'
+        definition = directory / 'definition.py'
+        if not definition.is_file():
+            message = f'can not find {self._trim(definition)} ...'
+            self._display(message)
             return
-        illustrate_file_path = directory / '__illustrate__.py'
-        if not illustrate_file_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(illustrate_file_path))
-            self._io_manager._display(message)
+        source = directory / '__illustrate__.py'
+        if not source.is_file():
+            message = f'can not find {self._trim(source)} ...'
+            self._display(message)
             return
-        boilerplate_directory = configuration.boilerplate_directory
-        source_make_ly_file = boilerplate_directory / '__make_material_ly__.py'
-        target_make_ly_file = directory / '__make_material_ly__.py'
-        if target_make_ly_file.exists():
-            target_make_ly_file.unlink()
-        ly_path = directory / 'illustration.ly'
-        if ly_path.exists():
-            self._io_manager._display(f'removing {self._trim(ly_path)} ...')
-        with abjad.FilesystemState(remove=[target_make_ly_file]):
-            shutil.copyfile(
-                str(source_make_ly_file),
-                str(target_make_ly_file),
-                )
-            self._io_manager._display(f'writing {self._trim(ly_path)} ...')
-            result = self._io_manager.interpret_file(str(target_make_ly_file))
+        target = directory / 'illustration.ly'
+        if target.exists():
+            self._display(f'removing {self._trim(target)} ...')
+        source_make = self.Path('boilerplate') / '__make_material_ly__.py'
+        target_make = directory / '__make_material_ly__.py'
+        with abjad.FilesystemState(remove=[target_make]):
+            target_make.remove()
+            shutil.copyfile(str(source_make), str(target_make))
+            self._display(f'interpreting {self._trim(source)} ...')
+            result = self._io_manager.interpret_file(str(target_make))
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self._io_manager._display_errors(stderr_lines)
+                self._display_errors(stderr_lines)
                 return
-            if not ly_path.is_file():
-                message = 'could not make {}.'
-                message = message.format(self._trim(ly_path))
-                self._io_manager._display(message)
+            if not target.is_file():
+                message = f'could not make {self._trim(target)}.'
+                self._display(message)
                 return
-            if not self._session.is_test:
-                message = 'opening {} ...'
-                message = message.format(self._trim(ly_path))
-                self._io_manager._display(message)
-                self._io_manager.open_file(str(ly_path))
+            self._display(f'writing {self._trim(target)} ...')
 
-    def _make_material_pdf(self, directory, subroutine=False):
+    def _make_material_pdf(self, directory, open_after=True):
         assert directory.is_dir()
-        definition_path = directory / 'definition.py'
-        if not definition_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(definition_path))
-            self._io_manager._display(message)
-            return [], False
-        illustrate_file_path = directory / '__illustrate__.py'
-        if not illustrate_file_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(illustrate_file_path))
-            self._io_manager._display(message)
+        directory = self.Path(directory)
+        assert directory.parent.name == 'materials'
+        illustrate = directory / '__illustrate__.py'
+        if not illustrate.is_file():
+            message = f'can not find {self._trim(illustrate)} ...'
+            self._display(message)
             return [], True
-        ly_path = directory / 'illustration.ly'
-        pdf_path = directory / 'illustration.pdf'
-        boilerplate_directory = configuration.boilerplate_directory
-        name_ = '__make_material_pdf__.py'
-        source_make_pdf_file = boilerplate_directory / name_
-        target_make_pdf_file = directory / name_
-        after_redraw_messages = []
-        output_files = (ly_path, pdf_path)
-        for output_file in output_files:
-            if output_file.exists():
-                message = 'removing {} ...'
-                message = message.format(self._trim(output_file))
-                self._io_manager._display(message)
-                after_redraw_messages.append(message)
-                output_file.unlink()
-        with abjad.FilesystemState(remove=[target_make_pdf_file]):
-            shutil.copyfile(
-                str(source_make_pdf_file),
-                str(target_make_pdf_file),
-                )
-            message = 'Calling Python on {} ...'
-            message = message.format(self._trim(target_make_pdf_file))
-            self._io_manager._display(message)
-            result = self._io_manager.interpret_file(str(target_make_pdf_file))
+        definition = directory / 'definition.py'
+        if not definition.is_file():
+            message = f'can not find {self._trim(definition)} ...'
+            self._display(message)
+            return [], False
+        self._display('making PDF ...')
+        source = directory / 'illustration.ly'
+        target = source.with_suffix('.pdf')
+        boilerplate = self.Path('boilerplate')
+        source_make = boilerplate / '__make_material_pdf__.py'
+        target_make = directory / '__make_material_pdf__.py'
+        with abjad.FilesystemState(remove=[target_make]):
+            for output_file in (source, target):
+                if output_file.exists():
+                    message = f'removing {self._trim(output_file)} ...'
+                    self._display(message)
+                    output_file.remove()
+            shutil.copyfile(str(source_make), str(target_make))
+            message = f'interpreting {self._trim(illustrate)} ...'
+            self._display(message)
+            result = self._io_manager.interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
-            self._io_manager._display(stdout_lines)
             if exit_code:
-                self._io_manager._display_errors(stderr_lines)
+                self._display_errors(stderr_lines)
                 return [], False
-            if not self._session.is_test and not subroutine:
-                message = 'opening {} ...'
-                message = message.format(self._trim(pdf_path))
-                self._io_manager._display(message)
-                self._io_manager.open_file(str(pdf_path))
-            return after_redraw_messages, True
+            if open_after:
+                message = f'opening {self._trim(target)} ...'
+                self._display(message)
+                self._io_manager.open_file(str(target))
+            return [], True
 
     def _make_package(self, directory):
         assert directory.is_dir()
@@ -1425,7 +1307,7 @@ class AbjadIDE(object):
             )
         for required_file in required_files:
             boilerplate_directory = \
-                configuration.boilerplate_directory
+                self._configuration.boilerplate_directory
             if required_file == '__init__.py':
                 source_path = boilerplate_directory / 'empty_unicode.py'
             elif required_file == '__metadata__.py':
@@ -1439,56 +1321,50 @@ class AbjadIDE(object):
         new_path = path
         paths = self._list_visible_paths(directory)
         if path not in paths:
-            self._clear_view(directory)
+            directory._clear_view()
         self._manage_directory(new_path)
 
     def _make_score_package(self):
-        scores_directory = configuration.composer_scores_directory
+        scores_directory = self._configuration.composer_scores_directory
         if self._session.is_test or self._session.is_example:
-            scores_directory = configuration.example_scores_directory
-        wrapper_directory = None
+            scores_directory = self._configuration.example_scores_directory
+        scores_directory = self.Path(scores_directory)
         package_name = None
-        empty_score_directories = self._find_empty_score_directories()
-        if empty_score_directories:
-            path = empty_score_directories[0]
-            message = 'found empty score directory {}/.'
-            message = message.format(self._trim(path))
-            self._io_manager._display(message)
-            message = 'populate {}/ with score contents?'
-            message = message.format(self._trim(path))
-            result = self._io_manager._confirm(message)
-            if result:
-                wrapper_directory = path
-                package_name = str(path)
-        message = 'enter title'
+        wrapper = None
+        directories = self._find_empty_score_directories()
+        if directories:
+            directory = directories[0]
+            self._display(f'found {directory}.')
+            if not self._io_manager._confirm(f'populate {directory}?'):
+                return
+            package_name = str(directory)
+            wrapper = directory
         getter = self._io_manager._make_getter()
-        getter.append_string(message)
+        getter.append_string('enter title')
         title = getter._run(io_manager=self._io_manager)
         if not title:
             return
-        if not wrapper_directory:
+        if not wrapper:
             package_name = abjad.String(title).strip_diacritics()
             package_name = abjad.String(package_name).to_snake_case()
-            wrapper_directory = scores_directory / package_name
-            if wrapper_directory.exists():
-                message = 'directory already exists: {}.'
-                message = message.format(wrapper_directory)
-                self._io_manager._display(message)
+            wrapper = scores_directory / package_name
+            if wrapper.exists():
+                self._display(f'directory already exists: {wrapper}.')
                 return
+        self._display(f'making {wrapper} ...')
         year = datetime.date.today().year
         abjad.IOManager._make_score_package(
-            score_package_path=str(wrapper_directory),
-            composer_email=configuration.composer_email,
-            composer_full_name=configuration.composer_full_name,
-            composer_github_username=configuration.composer_github_username,
-            composer_last_name=configuration.composer_last_name,
-            composer_library=configuration.composer_library,
+            score_package_path=str(wrapper),
+            composer_email=self._configuration.composer_email,
+            composer_full_name=self._configuration.composer_full_name,
+            composer_github_username=self._configuration.composer_github_username,
+            composer_last_name=self._configuration.composer_last_name,
+            composer_library=self._configuration.composer_library,
             score_title=title,
             year=year,
             )
-        self._clear_view(scores_directory)
-        contents_directory = wrapper_directory / package_name
-        self._manage_directory(contents_directory)
+        scores_directory._clear_view()
+        self._manage_directory(wrapper.contents)
 
     def _make_secondary_menu_entries(self, directory):
         assert directory.is_dir()
@@ -1499,33 +1375,26 @@ class AbjadIDE(object):
             menu_entries.append(menu_entry)
         return menu_entries
 
-    def _make_segment_ly(self, directory, dry_run=False):
+    def _make_segment_ly(self, directory):
         assert directory.is_dir()
-        assert self._is_score_directory(directory, 'segment')
-        definition_path = directory / 'definition.py'
-        if not definition_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(definition_path))
-            self._io_manager._display(message)
+        directory = self.Path(directory)
+        assert directory.parent.name == 'segments', repr(directory)
+        definition = directory / 'definition.py'
+        if not definition.is_file():
+            message = f'can not find {self._trim(definition)} ...'
+            self._display(message)
             return
         self._update_order_dependent_segment_metadata(directory)
-        boilerplate_directory = configuration.boilerplate_directory
-        boilerplate_path = boilerplate_directory / '__make_segment_ly__.py'
-        illustrate_path = directory / '__make_segment_ly__.py'
-        temporary_files = (
-            illustrate_path,
-            )
-        for path in temporary_files:
-            if path.exists():
-                path.unlink()
-        ly_path = directory / 'illustration.ly'
-        inputs, outputs = [], []
-        if dry_run:
-            inputs.append(definition_path)
-            outputs.append(ly_path)
-            return inputs, outputs
-        with abjad.FilesystemState(remove=temporary_files):
-            shutil.copyfile(str(boilerplate_path), str(illustrate_path))
+        boilerplate = self._configuration.boilerplate_directory
+        source_make = boilerplate / '__make_segment_ly__.py'
+        target_make = directory / '__make_segment_ly__.py'
+        target_make.remove()
+        with abjad.FilesystemState(remove=[target_make]):
+            illustrate = directory / '__illustrate__.py'
+            target = directory / 'illustration.ly'
+            if target.exists():
+                self._display(f'removing {self._trim(target)} ...')
+            shutil.copyfile(str(source_make), str(target_make))
             previous_segment_path = self._get_previous_segment_directory(
                 directory)
             if previous_segment_path is None:
@@ -1538,33 +1407,39 @@ class AbjadIDE(object):
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
                 statement = statement.format(score_name, previous_segment_name)
-            template = illustrate_path.read_text()
-            completed_template = template.format(
+            template = target_make.read_text()
+            template = template.format(
                 previous_segment_metadata_import_statement=statement
                 )
-            illustrate_path.write_text(completed_template)
-            result = self._io_manager.interpret_file(illustrate_path)
+            target_make.write_text(template)
+            illustrate = directory / '__illustrate__.py'
+            if illustrate.exists():
+                message = f'removing {self._trim(illustrate)} ...'
+                self._display(message)
+                message = f'writing {self._trim(illustrate)} ...'
+                self._display(message)
+            message = f'interpreting {self._trim(illustrate)} ...'
+            self._display(message)
+            result = self._io_manager.interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self._io_manager._display_errors(stderr_lines)
+                self._display_errors(stderr_lines)
                 return
-            message = 'wrote {}.'
-            message = message.format(self._trim(ly_path))
-            self._io_manager._display(message)
+            self._display(f'writing {self._trim(target)} ...')
 
-    def _make_segment_pdf(self, directory, subroutine=False):
+    def _make_segment_pdf(self, directory, open_after=True):
         assert directory.is_dir()
         definition_path = directory / 'definition.py'
         if not definition_path.is_file():
             message = 'can not find {} ...'
             message = message.format(self._trim(definition_path))
-            self._io_manager._display(message)
+            self._display(message)
             return [], False
-        after_redraw_messages = []
+        self._display('making PDF ...')
         self._update_order_dependent_segment_metadata(directory)
-        boilerplate_directory = configuration.boilerplate_directory
+        boilerplate_directory = self._configuration.boilerplate_directory
         boilerplate_path = boilerplate_directory / '__illustrate_segment__.py'
-        illustrate_file_path = directory / '__illustrate__.py'
+        illustrate = directory / '__illustrate__.py'
         ly_path = directory / 'illustration.ly'
         pdf_path = directory / 'illustration.pdf'
         output_files = (ly_path, pdf_path)
@@ -1572,14 +1447,16 @@ class AbjadIDE(object):
             if output_file.exists():
                 message = 'removing {} ...'
                 message = message.format(self._trim(output_file))
-                self._io_manager._display(message)
-                after_redraw_messages.append(message)
+                self._display(message)
                 output_file.unlink()
-        message = 'calling Python on {} ...'
-        message = message.format(self._trim(illustrate_file_path))
-        self._io_manager._display(message)
-        after_redraw_messages.append(message)
-        shutil.copyfile(str(boilerplate_path), str(illustrate_file_path))
+        if illustrate.exists():
+            self._display(f'removing {self._trim(illustrate)} ...')
+            illustrate.unlink()
+        self._display(f'writing {self._trim(illustrate)} ...')
+        message = 'interpreting {} ...'
+        message = message.format(self._trim(illustrate))
+        self._display(message)
+        shutil.copyfile(str(boilerplate_path), str(illustrate))
         previous_segment_directory = self._get_previous_segment_directory(
             directory)
         if previous_segment_directory is None:
@@ -1593,20 +1470,18 @@ class AbjadIDE(object):
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
             statement = statement.format(score_name, previous_segment_name)
-        template = illustrate_file_path.read_text()
+        template = illustrate.read_text()
         completed_template = template.format(
             previous_segment_metadata_import_statement=statement
             )
-        illustrate_file_path.write_text(completed_template)
-        result = self._io_manager.interpret_file(illustrate_file_path)
+        illustrate.write_text(completed_template)
+        result = self._io_manager.interpret_file(illustrate)
         stdout_lines, stderr_lines, exit_code = result
-        self._io_manager._display(stdout_lines)
         if exit_code:
-            self._io_manager._display_errors(stderr_lines)
-            return stderr_lines, False
-        after_redraw_messages.extend(stdout_lines)
+            self._display_errors(stderr_lines)
+            return [], False
         log_file_path = abjad.abjad_configuration.lilypond_log_file_path
-        log_file_path = pathlib.Path(log_file_path)
+        log_file_path = self.Path(log_file_path)
         with log_file_path.open() as file_pointer:
             lines = file_pointer.readlines()
         for line in lines:
@@ -1614,21 +1489,19 @@ class AbjadIDE(object):
                 ('error' in line and 'programming error' not in line) or
                 'failed' in line):
                 message = 'ERROR IN LILYPOND LOG FILE ...'
-                after_redraw_messages.append(message)
+                self._display(message)
                 break
-        if pdf_path.is_file() and not subroutine:
-            message = 'opening {} ...'
-            message = message.format(self._trim(pdf_path))
-            after_redraw_messages.append(message)
-            self._io_manager._display(message)
+        if pdf_path.is_file() and open_after:
+            message = f'opening {self._trim(pdf_path)} ...'
+            self._display(message)
             self._io_manager.open_file(pdf_path)
-        return after_redraw_messages, True
+        return [], True
 
     def _manage_directory(self, directory):
+        directory = self.Path(directory)
         if not directory.exists():
-            message = 'directory does not exist: {}.'
-            message = message.format(directory)
-            self._io_manager._display(message)
+            message = f'directory does not exist: {self._trim(directory)}.'
+            self._display(message)
             return
         self._session._pending_redraw = True
         if not self._session.current_directory == directory:
@@ -1653,7 +1526,7 @@ class AbjadIDE(object):
                 result_ = self._match_alias(directory, unknown_string)
                 is_executable, path = result_
                 if is_executable:
-                    with self._io_manager._make_interaction():
+                    with self._interaction():
                         self._io_manager.spawn_subprocess(str(path))
                 elif path and not path.exists():
                     if path.suffix:
@@ -1670,10 +1543,10 @@ class AbjadIDE(object):
                     else:
                         message = 'file does not exist: {}.'
                         message = message.format(self._trim(path))
-                        self._io_manager._display([message, ''])
+                        self._display([message, ''])
                 if path:
                     result = None
-            prototype = (str, tuple, type(None), pathlib.Path)
+            prototype = (str, tuple, type(None), self.Path)
             assert isinstance(result, prototype), repr(result)
             if self._session.is_quitting:
                 return
@@ -1681,6 +1554,9 @@ class AbjadIDE(object):
                 self._session._pending_menu_rebuild = True
                 self._session._pending_redraw = True
                 continue
+            if (isinstance(result, pathlib.Path) and
+                not isinstance(result, self.Path)):
+                result = self.Path(result)
             self._handle_input(result)
             if self._session.is_quitting:
                 return
@@ -1688,16 +1564,16 @@ class AbjadIDE(object):
     def _match_alias(self, directory, string):
         assert directory.is_dir()
         is_executable = False
-        aliases = configuration.aliases
+        aliases = self._configuration.aliases
         if not aliases:
             return is_executable, None
-        value = configuration.aliases.get(string)
+        value = self._configuration.aliases.get(string)
         if not value:
             return is_executable, None
         if value.startswith('!'):
             is_executable = True
             value = value[1:]
-        path = pathlib.Path(value)
+        path = self.Path(value)
         if path.exists():
             return is_executable, path
         if (self._is_score_directory(directory) and
@@ -1722,7 +1598,7 @@ class AbjadIDE(object):
         initial_strings = []
         initial_paths = []
         for string, path in zip(strings, paths):
-            string = pathlib.Path(string).stem
+            string = self.Path(string).stem
             words = abjad.String(string).delimit_words()
             initial_letters = [_[0] for _ in words]
             if not initial_letters:
@@ -1756,7 +1632,7 @@ class AbjadIDE(object):
             for part in parts:
                 if part.startswith('md:'):
                     metadatum_name = part[3:]
-                    metadatum = self._get_metadatum(path, metadatum_name)
+                    metadatum = path._get_metadatum(metadatum_name)
                     metadatum = repr(metadatum)
                     pattern = pattern.replace(part, metadatum)
         try:
@@ -1789,7 +1665,7 @@ class AbjadIDE(object):
             if path in secondary_paths:
                 message = 'can not modify secondary asset {}.'
                 message = message.format(self._trim(path))
-                self._io_manager._display(message)
+                self._display(message)
                 return
             return path
         elif isinstance(input_, str):
@@ -1805,46 +1681,33 @@ class AbjadIDE(object):
                     return path
                 if not path.is_dir():
                     continue
-                title = self._get_metadatum(path, 'title')
+                title = path._get_metadatum('title')
                 if title:
                     title = title.lower()
                     if title.startswith(name):
                         return path
-                name_ = self._get_metadatum(path, 'name')
+                name_ = path._get_metadatum('name')
                 if name_:
                     if name_ == input_:
                         return path
             message = 'does not match visible path: {!r}.'
             message = message.format(name)
-            self._io_manager._display(message)
+            self._display(message)
             return
         else:
             raise ValueError(repr(input_))
 
-    def _open_in_every_package(self, directories, file_name, verb='open'):
-        assert [_.is_dir() for _ in directories]
-        paths = []
-        for path in directories:
-            path = path / file_name
-            if path.is_file():
-                paths.append(path)
-        if not paths:
-            message = 'no {} files found.'
-            message = message.format(file_name)
-            self._io_manager._display(message)
-            return
-        messages = []
+    def _open_every_file(self, paths):
         for path in paths:
-            message = 'opening {} ...'
-            message = message.format(self._trim(path))
-            messages.append(message)
-        self._io_manager._display(messages)
-        self._io_manager.open_file(paths)
+            message = f'opening {self._trim(path)} ...'
+            self._display(message)
+        if paths:
+            self._io_manager.open_file(paths)
 
     def _parse_paper_size(self, directory):
         assert directory.is_dir()
         score_directory = self._to_score_directory(directory)
-        string = self._get_metadatum(score_directory, 'paper_size')
+        string = score_directory._get_metadatum('paper_size')
         string = string or '8.5 x 11 in'
         parts = string.split()
         assert len(parts) == 4
@@ -1855,7 +1718,7 @@ class AbjadIDE(object):
 
     def _read_view(self, directory):
         assert directory.is_dir()
-        view_name = self._get_metadatum(directory, 'view_name')
+        view_name = directory._get_metadatum('view_name')
         if not view_name:
             return
         view_inventory = self._read_view_inventory(directory)
@@ -1878,7 +1741,7 @@ class AbjadIDE(object):
             messages.append('')
             message = '    {}'.format(views_py_path)
             messages.append(message)
-            self._io_manager._display(messages)
+            self._display(messages)
             return
         if not result:
             return
@@ -1905,13 +1768,9 @@ class AbjadIDE(object):
 
     def _run_doctest(self, path):
         assert path.exists()
-        message = 'running doctest on {} ...'
-        message = message.format(self._trim(path))
-        self._io_manager._display(message)
-        command = 'ajv doctest -x {!s}'
-        command = command.format(path)
+        self._display(f'running doctest on {self._trim(path)} ...')
+        command = f'ajv doctest -x {path}'
         self._io_manager.spawn_subprocess(command)
-        self._io_manager._session._attempted_method = '_run_doctest'
 
     def _run_lilypond(self, ly_path):
         assert ly_path.exists()
@@ -1927,30 +1786,31 @@ class AbjadIDE(object):
         filesystem_state = abjad.FilesystemState(remove=[backup_pdf_path])
         with directory_change, filesystem_state:
             messages = []
-            if not pdf_path.exists():
-                backup_pdf_path = None
-            else:
+            if pdf_path.exists():
+                message = f'removing {self._trim(pdf_path)} ...'
+                messages.append(message)
                 shutil.move(str(pdf_path), str(backup_pdf_path))
                 assert not pdf_path.exists()
+            else:
+                backup_pdf_path = None
+            messages.append(f'interpreting {self._trim(ly_path)} ...')
             abjad.IOManager.run_lilypond(str(ly_path))
             if not pdf_path.is_file():
                 message = 'can not produce {} ...'
                 message = message.format(self._trim(pdf_path))
                 messages.append(message)
                 if backup_pdf_path:
+                    message = f'restoring {self._trim(backup_pdf_path)} ...'
+                    messages.append(message)
                     shutil.move(str(backup_pdf_path), str(pdf_path))
             messages.append(f'writing {self._trim(pdf_path)} ...')
             return messages
 
     def _run_pytest(self, path):
         assert path.exists()
-        message = 'running pytest on {} ...'
-        message = message.format(self._trim(path))
-        self._io_manager._display(message)
-        command = 'py.test -xrf {!s}'
-        command = command.format(path)
+        self._display(f'running pytest on {self._trim(path)} ...')
+        command = f'py.test -xrf {path}'
         self._io_manager.spawn_subprocess(command)
-        self._io_manager._session._attempted_method = '_run_pytest'
 
     def _segment_number_to_path(self, directory, segment_number):
         assert directory.is_dir()
@@ -1995,28 +1855,28 @@ class AbjadIDE(object):
             items=trimmed_paths,
             menu_header=menu_header,
             )
-        trimmed_source_path = selector._run(io_manager=self._io_manager)
-        if (trimmed_source_path != ('more',) and
-            trimmed_source_path != ('less',) and
-            trimmed_source_path not in trimmed_paths):
+        trimmed_source = selector._run(io_manager=self._io_manager)
+        if (trimmed_source != ('more',) and
+            trimmed_source != ('less',) and
+            trimmed_source not in trimmed_paths):
             return
-        elif trimmed_source_path == ('more',):
-            trimmed_source_path = self._select_path_to_copy(
+        elif trimmed_source == ('more',):
+            trimmed_source = self._select_path_to_copy(
                 directory,
                 more=True,
                 )
-        elif trimmed_source_path == ('less',):
-            trimmed_source_path = self._select_path_to_copy(directory)
-        if not trimmed_source_path:
+        elif trimmed_source == ('less',):
+            trimmed_source = self._select_path_to_copy(directory)
+        if not trimmed_source:
             return
-        return trimmed_source_path
+        return trimmed_source
 
     def _select_view(self, directory, is_ranged=False):
         assert directory.is_dir()
         view_inventory = self._read_view_inventory(directory)
         if view_inventory is None:
             message = 'no views found.'
-            self._io_manager._display(message)
+            self._display(message)
             return
         view_names = list(view_inventory.keys())
         view_names.append('none')
@@ -2046,7 +1906,7 @@ class AbjadIDE(object):
             if infinitive_phrase is not None:
                 message = message + ' ' + infinitive_phrase
             message = message + '.'
-            self._io_manager._display(message)
+            self._display(message)
             return
         asset_identifier = self._to_asset_identifier(directory)
         message = 'enter {}'.format(asset_identifier)
@@ -2069,7 +1929,7 @@ class AbjadIDE(object):
             if infinitive_phrase is not None:
                 message = message + ' ' + infinitive_phrase
             message = message + '.'
-            self._io_manager._display(message)
+            self._display(message)
             return
         paths = secondary_paths + visible_paths
         asset_identifier = self._to_asset_identifier(directory)
@@ -2124,9 +1984,9 @@ class AbjadIDE(object):
         if input_:
             self._session._pending_input = input_
         self._session._pending_redraw = True
-        directory = configuration.composer_scores_directory
+        directory = self._configuration.composer_scores_directory
         if self._session.is_test or self._session.is_example:
-            directory = configuration.example_scores_directory
+            directory = self._configuration.example_scores_directory
         while True:
             self._manage_directory(directory)
             if self._session.is_quitting:
@@ -2159,35 +2019,6 @@ class AbjadIDE(object):
         else:
             raise ValueError(directory)
 
-    @staticmethod
-    def _to_build_subdirectory_name(name):
-        assert isinstance(name, str), repr(name)
-        name = name.lower()
-        name = name.replace(' ', '-')
-        name = name.replace('_', '-')
-        return name
-
-    def _to_classfile_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = pathlib.Path(name).stem
-        name = abjad.String(name).to_upper_camel_case()
-        name = name + '.py'
-        assert self._is_classfile_name(name), repr(name)
-        return name
-
-    def _to_dash_case_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = pathlib.Path(name).stem
-        suffix = pathlib.Path(name).suffix
-        name = abjad.String(name).to_dash_case()
-        suffix = suffix or '.txt'
-        name = name + suffix
-        assert self._is_dash_case_file_name(name), repr(name)
-        return name
-
     def _to_menu_header(self, directory):
         assert directory.is_dir()
         header_parts = []
@@ -2201,20 +2032,21 @@ class AbjadIDE(object):
         score_part = self._get_title_metadatum(score_directory)
         header_parts.append(score_part)
         if self._is_score_directory(directory, 'wrapper'):
-            header_parts.append('package wrapper')
+            header_parts.append('wrapper directory')
         trimmed_path = self._trim(directory)
-        path_parts = pathlib.Path(trimmed_path).parts
+        path_parts = self.Path(trimmed_path).parts
         path_parts = path_parts[1:]
         if not path_parts:
+            directory_part, package_part = None, None
+        elif self._is_score_directory(directory, ('contents', 'wrapper')):
             directory_part, package_part = None, None
         elif len(path_parts) == 1:
             directory_part, package_part = path_parts[0], None
         elif len(path_parts) == 2:
             directory_part, package_part = path_parts
         else:
-            message = 'can not classify directory: {!r}.'
-            message = message.format(directory)
-            raise ValueError(directory)
+            message = f'can not classify {directory!r}.'
+            raise ValueError(message, path_parts)
         if directory_part:
             directory_part = directory_part + ' directory'
             header_parts.append(directory_part)
@@ -2223,16 +2055,16 @@ class AbjadIDE(object):
                 package_part = 'segments'
             else:
                 package_part = package_part.replace('_', ' ')
-            package_part = self._get_metadatum(directory, 'name', package_part)
+            package_part = directory._get_metadatum('name', package_part)
             header_parts.append(package_part)
         header = ' - '.join(header_parts)
         return header
 
     def _to_menu_string(self, path):
-        assert isinstance(path, pathlib.Path), repr(path)
+        assert isinstance(path, self.Path), repr(path)
         if self._is_score_directory(path, 'contents'):
             annotation = None
-            metadata = self._get_metadata(path)
+            metadata = path._get_metadata()
             if metadata:
                 year = metadata.get('year')
                 title = metadata.get('title')
@@ -2244,7 +2076,7 @@ class AbjadIDE(object):
                 annotation = path.name
             return annotation
         if self._is_score_directory(path, 'segment'):
-            name = self._get_metadatum(path, 'name')
+            name = path._get_metadatum('name')
             if name is not None:
                 return name
         prototype = ('tools', 'wrapper', 'test')
@@ -2258,7 +2090,7 @@ class AbjadIDE(object):
         assert isinstance(name, str), repr(name)
         name = abjad.String(name).strip_diacritics()
         name = name.lower()
-        name = pathlib.Path(name).stem
+        name = self.Path(name).stem
         name = abjad.String(name).to_snake_case()
         name = name + '.py'
         assert self._is_module_file_name(name), repr(name)
@@ -2297,15 +2129,6 @@ class AbjadIDE(object):
         else:
             raise ValueError(directory)
 
-    def _to_package_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = pathlib.Path(name).name
-        name = abjad.String(name).to_snake_case()
-        assert self._is_package_name(name), repr(name)
-        return name
-
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
         prototype = ('landscape', 'portrait', None)
         assert orientation in prototype, repr(orientation)
@@ -2329,7 +2152,6 @@ class AbjadIDE(object):
         if not parts:
             return
         score_name = parts[0]
-        score_name = pathlib.Path(score_name)
         score_directory = scores_directory / score_name / score_name
         if name in ('contents', 'score'):
             pass
@@ -2342,53 +2164,22 @@ class AbjadIDE(object):
     def _to_scores_directory(self, path):
         string = str(path)
         for scores_directory in (
-            configuration.composer_scores_directory,
-            configuration.example_scores_directory):
+            self._configuration.composer_scores_directory,
+            self._configuration.example_scores_directory):
             if string.startswith(str(scores_directory)):
                 return scores_directory
 
-    def _to_snake_case_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = pathlib.Path(name).stem
-        name = abjad.String(name).to_snake_case()
-        name = name + '.py'
-        assert self._is_public_python_file_name(name), repr(name)
-        return name
-
-    def _to_stylesheet_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = pathlib.Path(name).stem
-        name = abjad.String(name).to_dash_case()
-        name = name + '.ily'
-        assert self._is_stylesheet_name(name), repr(name)
-        return name
-
-    def _to_test_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = pathlib.Path(name).stem
-        name = abjad.String(name).to_snake_case()
-        if not name.startswith('test_'):
-            name = 'test_' + name
-        name = name + '.py'
-        assert self._is_test_file_name(name), repr(name)
-        return name
-
     def _trim(self, path):
-        assert isinstance(path, pathlib.Path), repr(path)
+        assert isinstance(path, self.Path), repr(path)
         scores_directory = self._to_scores_directory(path)
         if scores_directory is None:
+            return str(path)
+        if self._is_score_directory(path, ('wrapper', 'contents')):
             return str(path)
         count = len(scores_directory.parts) + 1
         parts = path.parts
         parts = parts[count:]
-        path = pathlib.Path(*parts)
-        return str(path)
+        return str(pathlib.Path(*parts))
 
     @staticmethod
     def _trim_ly(ly_path):
@@ -2435,36 +2226,20 @@ class AbjadIDE(object):
         # update segment numbers and segment count
         for segment_index, path in enumerate(paths):
             segment_number = segment_index + 1
-            self._add_metadatum(
-                path,
-                'segment_number',
-                segment_number,
-                )
-            self._add_metadatum(
-                path,
-                'segment_count',
-                segment_count,
-                )
+            path._add_metadatum('segment_number', segment_number)
+            path._add_metadatum('segment_count', segment_count)
         # update first bar numbers and measure counts
         path = paths[0]
         first_bar_number = 1
-        self._add_metadatum(
-            path,
-            'first_bar_number',
-            first_bar_number,
-            )
-        measure_count = self._get_metadatum(path, 'measure_count')
+        path._add_metadatum('first_bar_number', first_bar_number)
+        measure_count = path._get_metadatum('measure_count')
         if not measure_count:
             return
         next_bar_number = first_bar_number + measure_count
         for path in paths[1:]:
             first_bar_number = next_bar_number
-            self._add_metadatum(
-                path,
-                'first_bar_number',
-                next_bar_number,
-                )
-            measure_count = self._get_metadatum(path, 'measure_count')
+            path._add_metadatum('first_bar_number', next_bar_number)
+            measure_count = path._get_metadatum('measure_count')
             if not measure_count:
                 return
             next_bar_number = first_bar_number + measure_count
@@ -2486,23 +2261,6 @@ class AbjadIDE(object):
         contents = contents + '\n' + metadata_lines + '\n'
         metadata_py_path.write_text(contents)
 
-    ### PUBLIC PROPERTIES ###
-
-    @property
-    def configuration(self):
-        r'''Gets Abjad IDE configuration.
-
-        ..  container:: example
-
-            ::
-
-                >>> abjad_ide.configuration
-                Configuration()
-
-        Returns configuration.
-        '''
-        return self._configuration
-
     ### PUBLIC METHODS ###
 
     @Command(
@@ -2517,57 +2275,49 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        build_directory = self._to_score_directory(directory, 'build')
-        message = 'building score ...'
-        self._io_manager._display(message)
-        with self._io_manager._make_interaction():
-            self.collect_segment_lys(directory, subroutine=True)
-            self.generate_music_ly(directory, subroutine=True)
-            self.interpret_music(directory, subroutine=True)
-            tex_file_path = build_directory / 'front-cover.tex'
-            pdf_path = build_directory / 'front-cover.pdf'
+        with self._interaction():
+            self._display('building score ...')
+            self.collect_segment_lys(directory.contents)
+            self.generate_music(directory)
+            self.interpret_music(directory)
+            tex_file_path = directory.build / 'front-cover.tex'
+            pdf_path = directory.build / 'front-cover.pdf'
             if tex_file_path:
-                self.interpret_front_cover(directory, subroutine=True)
+                self.interpret_front_cover(directory)
             elif pdf_path:
-                message = 'using existing {} ...'
-                message = message.format(self._trim(pdf_path))
-                self._io_manager._display(message)
+                message = f'using existing {self._trim(pdf_path)} ...'
+                self._display(message)
             else:
-                message = 'can make front cover ...'
-                self._io_manager._display(message)
+                self._display('can make front cover ...')
                 return
-            tex_file_path = build_directory / 'preface.tex'
-            pdf_path = build_directory / 'preface.pdf'
+            tex_file_path = directory.build / 'preface.tex'
+            pdf_path = directory.build / 'preface.pdf'
             if tex_file_path:
-                self.interpret_preface(directory, subroutine=True)
+                self.interpret_preface(directory)
             elif pdf_path:
-                message = 'using existing {} ...'
-                message = message.format(self._trim(pdf_path))
-                self._io_manager._display(message)
+                message = f'using existing {self._trim(pdf_path)} ...'
+                self._display(message)
             else:
-                message = 'can make front cover ...'
-                self._io_manager._display(message)
+                self._display('can make front cover ...')
                 return
-            tex_file_path = build_directory / 'back-cover.tex'
-            pdf_path = build_directory / 'back-cover.pdf'
+            tex_file_path = directory.build / 'back-cover.tex'
+            pdf_path = directory.build / 'back-cover.pdf'
             if tex_file_path:
-                self.interpret_back_cover(directory, subroutine=True)
+                self.interpret_back_cover(directory)
             elif pdf_path:
-                message = 'using existing {} ...'
-                message = message.format(self._trim(pdf_path))
-                self._io_manager._display(message)
+                message = f'using existing {self._trim(pdf_path)} ...'
+                self._display(message)
             else:
-                message = 'can make front cover ...'
-                self._io_manager._display(message)
+                self._display('can make front covert ...')
                 return
-            self.generate_score_source(directory, subroutine=True)
-            messages = self.interpret_score(directory, subroutine=True)
-            file_path = build_directory / 'score.pdf'
-            message = 'opening {} ...'
-            message = message.format(self._trim(file_path))
-            self._io_manager._display(message)
-            self._io_manager.open_file(file_path)
+            self.generate_score(directory)
+            messages = self.interpret_score(directory)
+            target = directory / 'score.pdf'
+            message = f'opening {self._trim(target)} ...'
+            self._display(message)
+            self._io_manager.open_file(target)
 
     @Command(
         'dfk',
@@ -2576,33 +2326,33 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='definition_file',
         )
-    def check_definition_file(self, directory, subroutine=False):
+    def check_definition_file(self, directory):
         r'''Checks definition file.
 
         Returns exit code 1 on failure.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            definition_path = directory / 'definition.py'
-            if not definition_path.is_file():
-                message = 'can not find {} ...'
-                message = message.format(self._trim(definition_path))
-                self._io_manager._display(message)
+        with self._interaction():
+            self._display('checking definition file ...')
+            definition = directory / 'definition.py'
+            if not definition.is_file():
+                message = f'can not find {self._trim(definition)} ...'
+                message = message.format(self._trim(definition))
+                self._display(message)
                 return
             with abjad.Timer() as timer:
-                result = self._io_manager.interpret_file(definition_path)
+                result = self._io_manager.interpret_file(definition)
             stdout_lines, stderr_lines, exit_code = result
-            self._io_manager._display(stdout_lines)
+            self._display(stdout_lines)
             if exit_code:
-                messages = [str(definition_path) + ' FAILED:']
+                messages = [str(definition) + ' FAILED:']
                 messages.extend(stderr_lines)
-                self._io_manager._display(messages)
+                self._display(messages)
             else:
-                message = '{} ... OK'
-                message = message.format(self._trim(definition_path))
-                self._io_manager._display(message, capitalize=False)
-            if not subroutine:
-                self._io_manager._display(timer.total_time_message)
+                message = f'{self._trim(definition)} ... OK'
+                self._display(message, capitalize=False)
+            self._display(timer.total_time_message)
             return exit_code
 
     @Command(
@@ -2617,13 +2367,11 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            paths = self._list_visible_paths(directory)
-            with abjad.Timer() as timer:
-                for path in paths:
-                    self.check_definition_file(path, subroutine=True)
-            self._io_manager._display(timer.total_time_message)
+        paths = self._list_visible_paths(directory)
+        for path in paths:
+            self.check_definition_file(path)
 
     @Command(
         'lyc',
@@ -2632,7 +2380,7 @@ class AbjadIDE(object):
         directories=('build', 'build subdirectory',),
         section='build-preliminary',
         )
-    def collect_segment_lys(self, directory, subroutine=False):
+    def collect_segment_lys(self, directory):
         r'''Collects segment lys.
 
         Copies from segment directories to build/_segments directory.
@@ -2647,15 +2395,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            message = 'copying segment LilyPond files into build directory ...'
-            self._io_manager._display(message)
+        with self._interaction():
+            self._display('collecting segment lys ...')
             directory = self._to_score_directory(directory)
             pairs = self._collect_segment_lys(directory)
             if not pairs:
                 message = '... no segment lys found.'
-                self._io_manager._display(message)
+                self._display(message)
                 return
             build_directory = self._to_score_directory(directory, 'build')
             _segments_directory = build_directory / '_segments'
@@ -2663,15 +2411,13 @@ class AbjadIDE(object):
                 _segments_directory.mkdir()
             messages = []
             for source_ly_path, target_ly_path in pairs:
-                messages.append(f'writing {self._trim(target_ly_path)} ...')
-                #shutil.copyfile(str(source_ly_path), str(target_ly_path))
-#                with source_ly_path.open() as source_file_pointer:
-#                    lines = source_file_pointer.readlines()
-#                    if lines[0].startswith('    '):
-#                        lines = [_[4:] for _ in lines]
+                if target_ly_path.exists():
+                    message = f'removing {self._trim(target_ly_path)} ...'
+                    self._display(message)
+                message = f'writing {self._trim(target_ly_path)} ...'
+                self._display(message)
                 text = self._trim_ly(source_ly_path)
                 target_ly_path.write_text(text)
-            self._io_manager._display(messages)
 
     @Command(
         'cp',
@@ -2684,24 +2430,24 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            trimmed_source_path = self._select_path_to_copy(directory)
-            if not trimmed_source_path:
+        with self._interaction():
+            trimmed_source = self._select_path_to_copy(directory)
+            if not trimmed_source:
                 return
-            trimmed_source_path = pathlib.Path(trimmed_source_path)
-            scores_directory = configuration.composer_scores_directory
+            trimmed_source = self.Path(trimmed_source)
+            scores_directory = self._configuration.composer_scores_directory
             if self._session.is_test or self._session.is_example:
-                scores_directory = \
-                    configuration.example_scores_directory
-            score_name = trimmed_source_path.parts[0]
-            source_path = scores_directory / score_name / trimmed_source_path
+                scores_directory = self._configuration.example_scores_directory
+            score_name = trimmed_source.parts[0]
+            source_path = scores_directory / score_name / trimmed_source
             asset_name = source_path.name
             target_path = directory / asset_name
             if source_path == target_path:
                 message = '{} already exists.'
                 message = message.format(self._trim(target_path))
-                self._io_manager._display(message, capitalize=False)
+                self._display(message, capitalize=False)
                 getter = self._io_manager._make_getter()
                 getter.append_string('enter new name')
                 name = getter._run(io_manager=self._io_manager)
@@ -2717,8 +2463,7 @@ class AbjadIDE(object):
                 shutil.copytree(str(source_path), str(target_path))
             else:
                 raise ValueError(source_path)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
+            self._display(f'writing {self._trim(target_path)} ...')
 
     @Command('?', section='system')
     def display_action_command_help(self):
@@ -2749,9 +2494,9 @@ class AbjadIDE(object):
         self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
-        path = configuration.aliases_file_path
+        path = self._configuration.aliases_file_path
         self._io_manager.edit(path)
-        configuration._read_aliases_file()
+        self._configuration._read_aliases_file()
 
     @Command(
         'bce',
@@ -2765,6 +2510,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'back-cover.tex'
         self._io_manager.open_file(file_path)
@@ -2781,6 +2527,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         definition_path = directory / 'definition.py'
         self._io_manager.edit(definition_path)
@@ -2796,8 +2543,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
             getter = self._io_manager._make_getter()
             getter.append_string('enter search string')
             search_string = getter._run(io_manager=self._io_manager)
@@ -2825,10 +2573,12 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            paths = self._list_visible_paths(directory)
-            self._open_in_every_package(paths, 'definition.py')
+        with self._interaction():
+            directories = self._list_visible_paths(directory)
+            paths = [_ / 'definition.py' for _ in directories]
+            self._open_every_file(paths)
 
     @Command(
         'ff*',
@@ -2841,8 +2591,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
             getter = self._io_manager._make_getter()
             getter.append_string('enter filename')
             name = getter._run(io_manager=self._io_manager)
@@ -2865,6 +2616,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'front-cover.tex'
         self._io_manager.open_file(file_path)
@@ -2881,6 +2633,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         illustrate_py_path = directory / '__illustrate__.py'
         self._io_manager.edit(illustrate_py_path)
@@ -2896,12 +2649,13 @@ class AbjadIDE(object):
         Returns none.
         '''
         self._session._attempted_to_open_file = True
-        if not configuration.latex_log_file_path.is_file():
-            message = 'can not find {!s}.'
-            message = message.format(configuration.latex_log_file_path)
-            self._io_manager._display([message, ''])
-        else:
-            self._io_manager.open_file(configuration.latex_log_file_path)
+        with self._interaction():
+            target = self._configuration.latex_log_file_path
+            if not target.is_file():
+                self._display(f'missing {target} ...')
+            else:
+                self._display(f'opening {target} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'lpg',
@@ -2930,6 +2684,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'illustration.ly'
         self._io_manager.open_file(file_path)
@@ -2946,6 +2701,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'music.ly'
         self._io_manager.open_file(file_path)
@@ -2962,6 +2718,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'preface.tex'
         self._io_manager.open_file(file_path)
@@ -2978,6 +2735,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'score.tex'
         self._io_manager.open_file(file_path)
@@ -2994,6 +2752,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'stylesheet.ily'
         self._io_manager.open_file(file_path)
@@ -3005,14 +2764,16 @@ class AbjadIDE(object):
         directories=('build subdirectory'),
         section='build-generate',
         )
-    def generate_back_cover_source(self, directory):
+    def generate_back_cover(self, directory):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        contents = self.Path(directory)
-        with self._io_manager._make_interaction():
+        contents = directory.contents
+        with self._interaction():
+            self._display('generating back cover ...')
             replacements = {}
             catalog_number = contents._get_metadatum('catalog_number')
             name = 'catalog_number_suffix'
@@ -3020,7 +2781,7 @@ class AbjadIDE(object):
             if catalog_number_suffix:
                 catalog_number += f' / {catalog_number_suffix}'
             replacements['catalog_number'] = catalog_number
-            composer_website = configuration.composer_website or ''
+            composer_website = self._configuration.composer_website or ''
             if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
             replacements['composer_website'] = composer_website
@@ -3037,7 +2798,7 @@ class AbjadIDE(object):
                 directory,
                 replacements=replacements,
                 )
-            self._io_manager._display(messages)
+            self._display(messages)
 
     @Command(
         'stg',
@@ -3051,11 +2812,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
+            self._display('generating subdirectory stylesheet ...')
             replacements = {}
-            paper_size = self._get_metadatum(directory, 'paper_size')
-            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = directory._get_metadatum('paper_size')
+            orientation = directory._get_metadatum('orientation')
             replacements['paper_size'] = paper_size
             if orientation:
                 orientation_ = " '{}".format(orientation)
@@ -3068,12 +2831,7 @@ class AbjadIDE(object):
                 target_file_name='stylesheet.ily',
                 replacements=replacements,
                 )
-            if messages[0].startswith('writing'):
-                self._session._pending_menu_rebuild = True
-                self._session._pending_redraw = True
-                self._session._after_redraw_messages = messages
-            else:
-                self._io_manager._display(messages)
+            self._display(messages)
 
     @Command(
         'fcg',
@@ -3082,14 +2840,16 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_front_cover_source(self, directory):
+    def generate_front_cover(self, directory):
         r'''Generates ``front-cover.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        contents = self.Path(directory)
-        with self._io_manager._make_interaction():
+        with self._interaction():
+            contents = directory.contents
+            self._display('generating front cover ...')
             file_name = 'front-cover.tex'
             replacements = {}
             score_title = contents._get_title_metadatum(year=False)
@@ -3099,9 +2859,9 @@ class AbjadIDE(object):
             replacements['forces_tagline'] = forces_tagline
             year = contents._get_metadatum('year', '')
             replacements['year'] = str(year)
-            composer = configuration.composer_uppercase_name
+            composer = self._configuration.composer_uppercase_name
             if self._session.is_test or self._session.is_example:
-                composer = 'EXAMPLE COMPOSER NAME'
+                composer = 'COMPOSER'
             replacements['composer'] = str(composer)
             paper_size = contents._get_metadatum('paper_size', 'letter')
             orientation = contents._get_metadatum('orientation')
@@ -3114,7 +2874,7 @@ class AbjadIDE(object):
                 directory,
                 replacements=replacements,
                 )
-            self._io_manager._display(messages)
+            self._display(messages)
 
     @Command(
         'mg',
@@ -3123,55 +2883,49 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_music_ly(self, directory, subroutine=False):
+    def generate_music(self, directory):
         r'''Generates ``music.ly``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            target_path = directory / 'music.ly'
-            if target_path.exists():
-                message = f'removing {self._trim(target_path)} ...'
-                self._io_manager._display(message)
-                target_path.unlink()
+        contents = directory.contents
+        with self._interaction():
+            self._display('generating music ...')
+            target = directory / 'music.ly'
+            if target.exists():
+                message = f'removing {self._trim(target)} ...'
+                self._display(message)
+                target.unlink()
             messages = []
-            score_directory = self.Path(directory)
-            ly_paths = self._list_visible_paths(score_directory.segments)
+            ly_paths = self._list_visible_paths(contents.segments)
             if ly_paths:
-                view_name = self._get_metadatum(
-                    score_directory.segments,
-                    'view_name',
-                    )
-                views = self._read_view_inventory(score_directory.segments)
+                view_name = contents.segments._get_metadatum('view_name')
+                views = self._read_view_inventory(contents.segments)
                 if not views or view_name not in views:
                     view_name = None
                 if view_name:
-                    message = 'examining segments in {!r} order ...'
-                    message = message.format(view_name)
+                    message = f'examining segments in {view_name!r} order ...'
                     messages.append(message)
                 else:
                     message = 'examining segments in alphabetical order ...'
                     messages.append(message)
             else:
-                message = 'no segments found ...'
-                messages.append(message)
+                messages.append('no segments found ...')
             for ly_path in ly_paths:
-                message = 'examining {} ...'
-                message = message.format(self._trim(ly_path))
-                messages.append(message)
-            self._io_manager._display(messages)
+                messages.append(f'examining {self._trim(ly_path)} ...')
+            self._display(messages)
             segment_names = []
             for ly_path in ly_paths:
                 segment_name = ly_path.stem
                 segment_names.append(segment_name)
             lilypond_names = [_.replace('_', '-') for _ in segment_names]
-            source_path = configuration.boilerplate_directory
-            source_path = source_path / 'music.ly'
-            target_path = directory / 'music.ly'
-            message = f'writing {self._trim(target_path)} ...'
-            self._io_manager._display(message)
-            shutil.copyfile(str(source_path), str(target_path))
+            source_path = self.Path('boilerplate') / 'music.ly'
+            target = directory / 'music.ly'
+            message = f'writing {self._trim(target)} ...'
+            self._display(message)
+            shutil.copyfile(str(source_path), str(target))
             lines = []
             segment_include_statements = ''
             for i, lilypond_name in enumerate(lilypond_names):
@@ -3197,24 +2951,14 @@ class AbjadIDE(object):
             lilypond_language_directive = format(language_token)
             version_token = abjad.LilyPondVersionToken()
             lilypond_version_directive = format(version_token)
-            annotated_title = self._get_title_metadatum(
-                score_directory,
-                year=True,
-                )
+            annotated_title = contents._get_title_metadatum(year=True)
             if annotated_title:
                 score_title = annotated_title
             else:
-                score_title = self._get_title_metadatum(
-                    score_directory,
-                    year=False,
-                    )
-            forces_tagline = self._get_metadatum(
-                score_directory,
-                'forces_tagline',
-                ''
-                )
-            template = target_path.read_text()
-            completed_template = template.format(
+                score_title = contents._get_title_metadatum(year=False)
+            forces_tagline = contents._get_metadatum('forces_tagline', '')
+            template = target.read_text()
+            template = template.format(
                 forces_tagline=forces_tagline,
                 lilypond_language_directive=lilypond_language_directive,
                 lilypond_version_directive=lilypond_version_directive,
@@ -3222,7 +2966,7 @@ class AbjadIDE(object):
                 segment_include_statements=segment_include_statements,
                 stylesheet_include_statement=stylesheet_include_statement,
                 )
-            target_path.write_text(completed_template)
+            target.write_text(template)
 
     @Command(
         'pg',
@@ -3231,32 +2975,30 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_preface_source(self, directory):
+    def generate_preface(self, directory):
         r'''Generates ``preface.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        subdirectory = directory
+        assert subdirectory.is_build_subdirectory, repr(subdirectory)
+        with self._interaction():
+            self._display('generating preface ...')
             replacements = {}
-            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
-            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = subdirectory._get_metadatum('paper_size', 'letter')
+            orientation = subdirectory._get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
-            paper_size = '{{{}{}, {}{}}}'
-            paper_size = paper_size.format(width, unit, height, unit)
+            paper_size = f'{{{width}{unit}, {height}{unit}}}'
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'preface.tex',
-                directory,
+                subdirectory,
                 replacements=replacements,
                 )
-            if messages[0].startswith('writing'):
-                self._session._pending_menu_rebuild = True
-                self._session._pending_redraw = True
-                self._session._after_redraw_messages = messages
-            else:
-                self._io_manager._display(messages)
+            self._display(messages)
 
     @Command(
         'sg',
@@ -3265,34 +3007,30 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-generate',
         )
-    def generate_score_source(self, directory, subroutine=False):
+    def generate_score(self, directory):
         r'''Generates ``score.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            message = 'generating score LaTeX file ...'
-            self._io_manager._display(message)
+        subdirectory = directory
+        assert subdirectory.is_build_subdirectory, repr(subdirectory)
+        with self._interaction():
+            self._display('generating score ...')
             replacements = {}
-            paper_size = self._get_metadatum(directory, 'paper_size', 'letter')
-            orientation = self._get_metadatum(directory, 'orientation')
+            paper_size = subdirectory._get_metadatum('paper_size', 'letter')
+            orientation = subdirectory._get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
-            paper_size = '{{{}{}, {}{}}}'
-            paper_size = paper_size.format(width, unit, height, unit)
+            paper_size = f'{{{width}{unit}, {height}{unit}}}'
             replacements['paper_size'] = paper_size
             messages = self._copy_boilerplate(
                 'score.tex',
                 directory,
                 replacements=replacements,
                 )
-            if messages[0].startswith('writing') and not subroutine:
-                self._session._pending_menu_rebuild = True
-                self._session._pending_redraw = True
-                self._session._after_redraw_messages = messages
-            else:
-                self._io_manager._display(messages)
+            self._display(messages)
 
     @Command(
         'add*',
@@ -3305,31 +3043,14 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            directories = self._list_visible_paths(directory)
-            self._session._attempted_method = 'git_add_every_package'
-            if self._session.is_test:
-                return
-            inputs, outputs = [], []
-            for directory in directories:
-                inputs_, outputs_ = self._git_add(directory, dry_run=True)
-                inputs.extend(inputs_)
-                outputs.extend(outputs_)
-            if inputs:
-                messages = self._format_messaging(inputs, outputs, verb='add')
-                self._io_manager._display(messages)
-                result = self._io_manager._confirm()
-                if not result:
-                    return
-            for directory in directories:
-                self._git_add(directory, interaction=False)
-            if inputs:
-                count = len(inputs)
-                identifier = abjad.String('file').pluralize(count)
-                message = 'added {} {} to repository.'
-                message = message.format(count, identifier)
-                self._io_manager._display(message)
+        self._session._attempted_method = 'git_add_every_package'
+        if self._session.is_test:
+            return
+        directories = self._list_visible_paths(directory)
+        for directory in directories:
+            self._git_add(directory)
 
     @Command(
         'ci',
@@ -3338,59 +3059,47 @@ class AbjadIDE(object):
         forbidden_directories=('scores',),
         section='git',
         )
-    def git_commit(
-        self,
-        directory,
-        commit_message=None,
-        dry_run=False,
-        interaction=True,
-        ):
+    def git_commit(self, directory, commit_message=None):
         r'''Commits working copy of current score package to repository.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         self._io_manager._session._attempted_method = 'git_commit'
+        self._display(f'git commit {directory} ...')
         if self._io_manager._session.is_test:
             return
-        self._git_add(directory, interaction=False)
-        self.git_status(directory, subroutine=True)
+        if not self._git_add(directory):
+            return
         directory = self._to_score_directory(directory, 'wrapper')
         change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._io_manager._make_interaction(
-            dry_run=not interaction)
+        interaction = self._interaction()
         with change, interaction:
             pending_commit = self._has_pending_commit(directory)
             if pending_commit:
-                if dry_run:
-                    message = '{!s} ... PENDING COMMIT.'
-                    message = message.format(directory)
-                    messages = [message]
-                    self._io_manager._display(messages)
-                    return True
+                self._display(pending_commit)
             else:
-                message = '{!s} ... nothing to commit.'
-                message = message.format(directory)
+                message = f'{directory} ... nothing to commit.'
                 messages = [message]
-                self._io_manager._display(messages)
+                self._display(messages)
                 return
             if commit_message is None:
-                self._io_manager._display('')
+                self._display('')
                 getter = self._io_manager._make_getter()
                 getter.append_string('commit message')
                 commit_message = getter._run(io_manager=self._io_manager)
                 if not commit_message:
                     return
             message = str(directory)
-            scores_directory = configuration.example_scores_directory
+            scores_directory = self._configuration.example_scores_directory
             message = message.replace(str(scores_directory), '')
-            scores_directory = configuration.composer_scores_directory
+            scores_directory = self._configuration.composer_scores_directory
             message = message.replace(str(scores_directory), '')
             message = message + ' ...'
-            command = 'git commit -m "{}" {!s}; git push'
-            command = command.format(commit_message, directory)
+            command = f'git commit -m "{commit_message}" {directory}; git push'
             lines = self._io_manager.run_command(command)
-            self._io_manager._display(lines, capitalize=False)
+            self._display(lines, capitalize=False)
 
     @Command(
         'ci*',
@@ -3403,36 +3112,18 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         assert self._is_score_directory(directory, 'scores'), repr(directory)
         self._session._attempted_method = 'git_commit_every_package'
-        if self._session.is_test:
+        getter = self._io_manager._make_getter()
+        getter.append_string('commit message')
+        commit_message = getter._run(io_manager=self._io_manager)
+        if not commit_message:
             return
-        with self._io_manager._make_interaction():
-            directories = self._list_visible_paths(directory)
-            directories_to_commit = []
-            for directory in directories:
-                result = self.git_commit(
-                    directory,
-                    dry_run=True,
-                    interaction=False,
-                    )
-                if result:
-                    directories_to_commit.append(directory)
-            if not directories_to_commit:
-                return
-            self._io_manager._display('')
-            getter = self._io_manager._make_getter()
-            getter.append_string('commit message')
-            commit_message = getter._run(io_manager=self._io_manager)
-            if not commit_message:
-                return
-            for directory in directories_to_commit:
-                result = self.git_commit(
-                    directory,
-                    commit_message=commit_message,
-                    interaction=False,
-                    )
+        directories = self._list_visible_paths(directory)
+        for directory in directories:
+            self.git_commit(directory, commit_message=commit_message)
 
     @Command(
         'diff',
@@ -3446,6 +3137,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         with abjad.TemporaryDirectoryChange(directory=directory):
             command = 'git diff {!s}'.format(directory)
@@ -3454,28 +3146,82 @@ class AbjadIDE(object):
                 self._io_manager.spawn_subprocess(command)
 
     @Command(
+        'pull',
+        argument_name='current_directory',
+        description='git - pull',
+        forbidden_directories=('scores',),
+        section='git',
+        )
+    def git_pull(self, directory):
+        r'''Updates working copy of current score package.
+
+        Returns none.
+        '''
+        assert isinstance(directory, self.Path)
+        assert directory.is_dir()
+        self._session._attempted_method = 'git_pull'
+        directory = self._to_score_directory(directory, 'wrapper')
+        change = abjad.TemporaryDirectoryChange(directory=directory)
+        interaction = self._interaction()
+        with change, interaction:
+            self._display(f'git pull {directory} ...')
+            if self._io_manager._session.is_test:
+                return
+            root_directory = self._get_repository_root_directory(directory)
+            command = f'git pull {root_directory}'
+            lines = self._io_manager.run_command(command)
+            if lines and 'Already up-to-date' in lines[-1]:
+                lines = lines[-1:]
+            self._display(lines)
+
+    @Command(
+        'pull*',
+        argument_name='current_directory',
+        directories=('scores',),
+        section='git',
+        )
+    def git_pull_every_package(self, directory):
+        r'''Updates every asset from repository.
+
+        Returns none.
+        '''
+        assert isinstance(directory, self.Path)
+        assert directory.is_dir()
+        self._session._attempted_method = 'git_pull_every_package'
+        directories = self._list_visible_paths(directory)
+        for directory in directories:
+            message = self._to_menu_string(directory)
+            if message.endswith(')'):
+                index = message.find('(')
+                message = message[:index]
+                message = message.strip()
+            message = message + ':'
+            self.git_pull(directory)
+
+    @Command(
         'st',
         argument_name='current_directory',
         description='git - status',
         forbidden_directories=('scores',),
         section='git',
         )
-    def git_status(self, directory, subroutine=False):
+    def git_status(self, directory):
         r'''Displays Git status of current score package.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'wrapper')
+        self._io_manager._session._attempted_method = 'git_status'
+        directory = self.Path(directory)
+        directory = directory.wrapper
         change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._io_manager._make_interaction()
+        interaction = self._interaction()
         with change, interaction:
-            if subroutine:
-                message = '{!s} ...'.format(directory)
-                self._io_manager._display(message, capitalize=False)
-            command = 'git status {!s}'.format(directory)
+            message = f'git status {directory} ...'
+            self._display(message)
+            command = f'git status {directory}'
             self._io_manager.spawn_subprocess(command)
-            self._io_manager._session._attempted_method = 'git_status'
 
     @Command(
         'st*',
@@ -3488,69 +3234,18 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            directories = self._list_visible_paths(directory)
-            self._session._attempted_method = 'git_status_every_package'
-            for directory in directories:
-                self.git_status(directory, subroutine=True)
+        self._session._attempted_method = 'git_status_every_package'
+        directories = self._list_visible_paths(directory)
+        for directory in directories:
+            self.git_status(directory)
 
     @Command(
-        'up',
-        argument_name='current_directory',
-        description='git - update',
-        forbidden_directories=('scores',),
-        section='git',
+        '-',
+        description='back',
+        section='back-home-quit',
         )
-    def git_update(self, directory, interaction=True):
-        r'''Updates working copy of current score package.
-
-        Returns none.
-        '''
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'wrapper')
-        messages = []
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        dry_run = not interaction
-        interaction = self._io_manager._make_interaction(dry_run=dry_run)
-        with change, interaction:
-            if self._io_manager._session.is_test:
-                return messages
-            root_directory = self._get_repository_root_directory(directory)
-            command = 'git pull {!s}'
-            command = command.format(root_directory)
-            lines = self._io_manager.run_command(command)
-            if lines and 'Already up-to-date' in lines[-1]:
-                line = '{!s} ... already up-to-date.'
-                line = line.format(directory)
-                lines = [line]
-            self._io_manager._display(lines)
-
-    @Command(
-        'up*',
-        argument_name='current_directory',
-        directories=('scores',),
-        section='git',
-        )
-    def git_update_every_package(self, directory):
-        r'''Updates every asset from repository.
-
-        Returns none.
-        '''
-        assert directory.is_dir()
-        with self._io_manager._make_interaction():
-            directories = self._list_visible_paths(directory)
-            self._session._attempted_method = 'git_update_every_package'
-            for directory in directories:
-                message = self._to_menu_string(directory)
-                if message.endswith(')'):
-                    index = message.find('(')
-                    message = message[:index]
-                    message = message.strip()
-                message = message + ':'
-                self.git_update(directory, interaction=False)
-
-    @Command('-', description='back', section='back-home-quit')
     def go_back(self):
         r'''Goes back.
 
@@ -3571,6 +3266,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'build')
         self._manage_directory(directory)
@@ -3586,6 +3282,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory)
         self._manage_directory(directory)
@@ -3601,6 +3298,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'distribution')
         self._manage_directory(directory)
@@ -3616,6 +3314,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'etc')
         self._manage_directory(directory)
@@ -3631,6 +3330,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'materials')
         self._manage_directory(directory)
@@ -3646,6 +3346,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._get_next_package(directory)
         self._manage_directory(directory)
@@ -3661,19 +3362,23 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._get_previous_package(directory)
         self._manage_directory(directory)
 
-    @Command('ss', section='scores')
+    @Command(
+        'ss',
+        section='scores',
+        )
     def go_to_scores_directory(self):
         r'''Goes to scores directory.
 
         Returns none.
         '''
-        directory = configuration.composer_scores_directory
+        directory = self._configuration.composer_scores_directory
         if self._session.is_test or self._session.is_example:
-            directory = configuration.example_scores_directory
+            directory = self._configuration.example_scores_directory
         self._manage_directory(directory)
 
     @Command(
@@ -3687,6 +3392,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'segments')
         self._manage_directory(directory)
@@ -3702,6 +3408,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'stylesheets')
         self._manage_directory(directory)
@@ -3717,6 +3424,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'test')
         self._manage_directory(directory)
@@ -3732,6 +3440,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'tools')
         self._manage_directory(directory)
@@ -3747,6 +3456,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'wrapper')
         self._manage_directory(directory)
@@ -3758,16 +3468,22 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-interpret',
         )
-    def interpret_back_cover(self, directory, subroutine=False):
+    def interpret_back_cover(self, directory):
         r'''Interprets ``back-cover.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            file_path = directory / 'back-cover.tex'
-            messages = self._call_latex_on_file(file_path)
-            self._io_manager._display(messages)
+        with self._interaction():
+            self._display('interpreting back cover ...')
+            source = directory / 'back-cover.tex'
+            target = source.with_suffix('.pdf')
+            messages = self._interpret_tex_file(source)
+            self._display(messages)
+            if target.is_file():
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'lyi*',
@@ -3783,23 +3499,24 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
+            self._display('interpreting every ly ...')
             directories = self._list_visible_paths(directory)
-            ly_files = []
+            sources = []
             for directory in directories:
-                ly_file = directory / 'illustration.ly'
-                if ly_file.is_file():
-                    ly_files.append(ly_file)
-            if not ly_files:
+                source = directory / 'illustration.ly'
+                if source.is_file():
+                    sources.append(source)
+            if not sources:
                 message = 'no LilyPond files found.'
                 message._io_manager._display(message)
                 return
             with abjad.Timer() as timer:
-                for ly_file in ly_files:
-                    directory = ly_file.parent
-                    self.interpret_ly(directory, subroutine=True)
-                self._io_manager._display(timer.total_time_message)
+                for source in sources:
+                    self.interpret_ly(source.parent, open_after=False)
+                self._display(timer.total_time_message)
 
     @Command(
         'fci',
@@ -3808,16 +3525,22 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-interpret',
         )
-    def interpret_front_cover(self, directory, subroutine=False):
+    def interpret_front_cover(self, directory):
         r'''Interprets ``front-cover.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            file_path = directory / 'front-cover.tex'
-            messages = self._call_latex_on_file(file_path)
-            self._io_manager._display(messages)
+        with self._interaction():
+            self._display('interpreting front cover ...')
+            source = directory / 'front-cover.tex'
+            target = source.with_suffix('.pdf')
+            messages = self._interpret_tex_file(source)
+            self._display(messages)
+            if target.is_file():
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'lyi',
@@ -3826,31 +3549,28 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='ly',
         )
-    def interpret_ly(self, directory, subroutine=False):
+    def interpret_ly(self, directory, open_after=True):
         r'''Interprets illustration ly in `directory`.
 
         Makes illustration PDF.
 
-        Returns a pair.
-
-        Pairs equals list of STDERR messages from LilyPond together with list
-        of other messages.
+        Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            ly_path = directory / 'illustration.ly'
-            if not ly_path.is_file():
-                message = 'the file {} does not exist.'
-                message = message.format(self._trim(ly_path))
-                self._io_manager._display(message)
-                return
-            message = 'calling LilyPond on {} ...'
-            message = message.format(self._trim(ly_path))
-            self._io_manager._display(message)
-            messages = self._run_lilypond(ly_path)
-            self._io_manager._display(messages)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
+        with self._interaction():
+            self._display('interpreting ly ...')
+            source = directory / 'illustration.ly'
+            target = source.with_suffix('.pdf')
+            if source.is_file():
+                messages = self._run_lilypond(source)
+                self._display(messages)
+            else:
+                message = f'the file {self._trim(source)} does not exist.'
+                self._display(message)
+            if target.is_file() and open_after:
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'mi',
@@ -3859,24 +3579,26 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-interpret',
         )
-    def interpret_music(self, directory, subroutine=False):
+    def interpret_music(self, directory):
         r'''Interprets ``music.ly``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            ly_path = directory / 'music.ly'
-            if not ly_path:
-                message = 'can not find {} ...'
-                message = message.format(self._trim(ly_path))
-                self._io_manager._display(message)
+        with self._interaction():
+            self._display('interpreting music ...')
+            source = directory / 'music.ly'
+            target = source.with_suffix('.pdf')
+            if not source.is_file():
+                message = f'can not find {self._trim(source)} ...'
+                self._display(message)
                 return
-            message = 'calling LilyPond on {} ...'
-            message = message.format(self._trim(ly_path))
-            self._io_manager._display(message)
-            messages = self._run_lilypond(ly_path)
-            self._io_manager._display(messages)
+            messages = self._run_lilypond(source)
+            self._display(messages)
+            if target.is_file():
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'pi',
@@ -3885,16 +3607,22 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-interpret',
         )
-    def interpret_preface(self, directory, subroutine=False):
+    def interpret_preface(self, directory):
         r'''Interprets ``preface.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            file_path = directory / 'preface.tex'
-            messages = self._call_latex_on_file(file_path)
-            self._io_manager._display(messages)
+        with self._interaction():
+            self._display('interpreting preface ...')
+            source = directory / 'preface.tex'
+            target = source.with_suffix('.pdf')
+            messages = self._interpret_tex_file(source)
+            self._display(messages)
+            if target.is_file():
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'si',
@@ -3903,25 +3631,33 @@ class AbjadIDE(object):
         directories=('build subdirectory',),
         section='build-interpret',
         )
-    def interpret_score(self, directory, subroutine=False):
+    def interpret_score(self, directory):
         r'''Interprets ``score.tex``.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction(dry_run=subroutine):
-            file_path = directory / 'score.tex'
-            messages = self._call_latex_on_file(file_path)
-            self._io_manager._display(messages)
-            return messages
+        with self._interaction():
+            self._display('interpreting score ...')
+            source = directory / 'score.tex'
+            target = source.with_suffix('.pdf')
+            messages = self._interpret_tex_file(source)
+            self._display(messages)
+            if target.is_file():
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
-    @Command('!', section='system')
+    @Command(
+        '!',
+        section='system',
+        )
     def invoke_shell(self):
         r'''Invokes shell.
 
         Returns none.
         '''
-        with self._io_manager._make_interaction():
+        with self._interaction():
             statement = self._io_manager._handle_input(
                 '$',
                 include_chevron=False,
@@ -3942,17 +3678,12 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         assert self._is_score_directory(directory, ('materials', 'segments'))
-        with self._io_manager._make_interaction():
-            directories = self._list_visible_paths(directory)
-            valid_directories = directories[:]
-            with abjad.Timer() as timer:
-                for directory in valid_directories:
-                    self.make_pdf(directory, subroutine=True)
-                    self._io_manager._display('')
-                message = timer.total_time_message
-                self._session._after_redraw_messages = [message]
+        directories = self._list_visible_paths(directory)
+        for directory in directories:
+            self.make_pdf(directory, open_after=False)
 
     @Command(
         'illm',
@@ -3966,27 +3697,28 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        score_directory = self._to_score_directory(directory)
-        score_package_name = score_directory.name
-        material_package_name = directory.name
-        name_ = '__illustrate_material__.py'
-        source_path = configuration.boilerplate_directory / name_
-        target_path = directory / '__illustrate__.py'
-        if target_path.is_file():
-            message = 'file already exists: {}.'
-            message = message.format(self._trim(target_path))
-            self._io_manager._display([message, ''])
-            return
-        shutil.copyfile(str(source_path), str(target_path))
-        template = target_path.read_text()
-        completed_template = template.format(
-            score_package_name=score_package_name,
-            material_package_name=material_package_name,
-            )
-        target_path.write_text(completed_template)
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
+        assert directory.parent.name == 'materials'
+        with self._interaction():
+            contents = directory.contents
+            score_package_name = contents.name
+            material_package_name = directory.name
+            source = self.Path('boilerplate') / '__illustrate_material__.py'
+            target = directory / '__illustrate__.py'
+            if target.is_file():
+                message = f'preserving {self._trim(target)} ...'
+                self._display(message)
+                return
+            message = f'writing {self._trim(target)} ...'
+            self._display(message)
+            shutil.copyfile(str(source), str(target))
+            template = target.read_text()
+            completed_template = template.format(
+                score_package_name=score_package_name,
+                material_package_name=material_package_name,
+                )
+            target.write_text(completed_template)
 
     @Command(
         'lym',
@@ -3995,13 +3727,15 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='ly',
         )
-    def make_ly(self, directory, dry_run=False):
+    def make_ly(self, directory):
         r'''Makes illustration ly.
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
+            self._display('making ly ...')
             if self._is_score_directory(directory, 'material'):
                 self._make_material_ly(directory)
             elif self._is_score_directory(directory, 'segment'):
@@ -4016,37 +3750,27 @@ class AbjadIDE(object):
         directories=('material', 'segment',),
         section='pdf',
         )
-    def make_pdf(self, directory, subroutine=False):
+    def make_pdf(self, directory, open_after=True):
         r'''Makes illustration PDF.
 
         Returns exit code 1 on failure.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        interaction = self._io_manager._make_interaction(dry_run=subroutine)
-        timer = abjad.Timer()
-        after_redraw_messages = []
-        with interaction, timer:
+        with self._interaction():
             if self._is_score_directory(directory, 'material'):
                 messages, success = self._make_material_pdf(
                     directory,
-                    subroutine=subroutine,
+                    open_after=open_after,
                     )
             elif self._is_score_directory(directory, 'segment'):
                 messages, success = self._make_segment_pdf(
                     directory,
-                    subroutine=subroutine,
+                    open_after=open_after
                     )
             else:
                 raise ValueError(directory)
-            if messages:
-                after_redraw_messages.extend(messages)
-            message = timer.total_time_message
-            self._io_manager._display(message)
-            after_redraw_messages.append(message)
-        if messages is not None:
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
-            self._session._after_redraw_messages = after_redraw_messages
+            assert messages == [], repr(messages)
         exit_code = not success
         return exit_code
 
@@ -4061,17 +3785,18 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        if self._is_score_directory(directory, 'scores'):
-            self._make_score_package()
-        elif self._is_score_directory(directory, ('materials', 'segments')):
-            self._make_package(directory)
-        elif self._is_score_directory(directory, 'build'):
-            self._make_build_subdirectory(directory)
-        else:
-            self._make_file(directory)
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
+        with self._interaction():
+            package_prototype = ('materials', 'segments')
+            if self._is_score_directory(directory, 'scores'):
+                self._make_score_package()
+            elif self._is_score_directory(directory, package_prototype):
+                self._make_package(directory)
+            elif self._is_score_directory(directory, 'build'):
+                self._make_build_subdirectory(directory)
+            else:
+                self._make_file(directory)
 
     @Command(
         'bc',
@@ -4085,6 +3810,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'back-cover.pdf'
         self._io_manager.open_file(file_path)
@@ -4093,7 +3819,7 @@ class AbjadIDE(object):
         'pdf*',
         argument_name='current_directory',
         description='every pdf - open',
-        directories=('materials', 'scores', 'segments'),
+        directories=('build subdirectory', 'materials', 'scores', 'segments'),
         section='star',
         )
     def open_every_pdf(self, directory):
@@ -4101,27 +3827,26 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        if self._is_score_directory(directory, 'scores'):
-            with self._io_manager._make_interaction():
+        with self._interaction():
+            pdfs = []
+            if self._is_score_directory(directory, 'scores'):
                 directories = self._list_visible_paths(directory)
-                paths = []
                 for directory in directories:
-                    inputs, outputs = self.open_score_pdf(
-                        directory,
-                        dry_run=True,
-                        )
-                    paths.extend(inputs)
+                    pdf = self._get_score_pdf(directory)
+                    if pdf is None:
+                        continue
+                    pdfs.append(pdf)
+            else:
+                paths = self._list_visible_paths(directory)
                 for path in paths:
-                    message = 'opening {} ...'
-                    message = message.format(self._trim(path))
-                    self._io_manager._display(message)
-                if paths:
-                    self._io_manager.open_file(paths)
-        else:
-            with self._io_manager._make_interaction():
-                directories = self._list_visible_paths(directory)
-                self._open_in_every_package(directories, 'illustration.pdf')
+                    if str(path).endswith('.pdf'):
+                        pdfs.append(path)
+                    elif path.is_dir():
+                        for pdf_ in path.glob('*.pdf'):
+                            pdfs.append(pdf_)
+            self._open_every_file(pdfs)
 
     @Command(
         'fc',
@@ -4135,6 +3860,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'front-cover.pdf'
         self._io_manager.open_file(file_path)
@@ -4151,6 +3877,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'music.pdf'
         self._io_manager.open_file(file_path)
@@ -4167,14 +3894,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        file_path = directory / 'illustration.pdf'
-        if not file_path.is_file():
-            message = 'file does not exist: {}.'
-            message = message.format(self._trim(file_path))
-            self._io_manager._display([message, ''])
-        else:
-            self._io_manager.open_file(file_path)
+        with self._interaction():
+            target = directory / 'illustration.pdf'
+            if not target.is_file():
+                self._display(f'missing {self._trim(target)} ...')
+            else:
+                self._display(f'opening {self._trim(target)} ...')
+                self._io_manager.open_file(target)
 
     @Command(
         'p',
@@ -4188,6 +3916,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'preface.pdf'
         self._io_manager.open_file(file_path)
@@ -4199,30 +3928,25 @@ class AbjadIDE(object):
         directories=('contents',),
         section='pdf',
         )
-    def open_score_pdf(self, directory, dry_run=False):
+    def open_score_pdf(self, directory):
         r'''Opens ``score.pdf``.
 
-        Returns none.
+        Returns score PDF path.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_name = 'score.pdf'
         directory = directory / 'distribution'
-        path = self._get_file_path_ending_with(directory, file_name)
-        with self._io_manager._make_interaction():
-            if not path:
-                directory = directory / 'build'
-                path = self._get_file_path_ending_with(directory, file_name)
-            if dry_run:
-                inputs, outputs = [], []
-                if path:
-                    inputs = [path]
-                return inputs, outputs
+        with self._interaction():
+            path = self._get_score_pdf(directory)
             if path:
+                message = f'opening {self._trim(path)} ...'
+                self._display(message)
                 self._io_manager.open_file(path)
             else:
-                message = "no score.pdf file found"
-                message += ' in either distribution/ or build/ directories.'
-                self._io_manager._display(message)
+                message = 'missing score PDF'
+                message += ' in distribution and build directories ...'
+                self._display(message)
 
     @Command(
         's',
@@ -4236,17 +3960,19 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         file_path = directory / 'score.pdf'
         self._io_manager.open_file(file_path)
 
-    def Path(self, argument):
-        r'''Change `argument` into path.
+    @property
+    def Path(self):
+        r'''Gets IDE path class.
 
-        Returns IDE path.
+        Returns IDE path class.
         '''
         import ide
-        return ide.Path(argument)
+        return ide.Path
 
     @Command(
         'spp',
@@ -4260,49 +3986,37 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        score_directory = self._to_score_directory(directory)
-        build_score_path = directory / 'score.pdf'
-        if not build_score_path.exists():
-            message = 'does not exist: {!r}.'
-            message = message.format(self._trim(build_score_path))
-            self._io_manager._display(message)
-            return
-        score_package_name = score_directory.name
-        score_package_name = score_package_name.replace('_', '-')
-        distribution_file_name = '{}-score.pdf'.format(score_package_name)
-        distribution_directory = score_directory / 'distribution'
-        distribution_score_path = distribution_directory / distribution_file_name
-        shutil.copyfile(str(build_score_path), str(distribution_score_path))
-        messages = []
-        messages.append('Copied')
-        message = ' FROM: {}'.format(build_score_path)
-        messages.append(message)
-        message = '   TO: {}'.format(distribution_score_path)
-        messages.append(message)
-        self._io_manager._display(messages)
+        assert directory.parent.name == 'build', repr(directory)
+        with self._interaction():
+            self._display('publishing score PDF ...')
+            source = directory / 'score.pdf'
+            if not source.exists():
+                self._display(f'missing {self._trim(source)} ...')
+                return
+            package_name = directory.contents.name
+            package_name = package_name.replace('_', '-')
+            if package_name.endswith('-score'):
+                target_name = f'{package_name}.pdf'
+            else:
+                target_name = f'{package_name}-score.pdf'
+            target = directory.distribution / target_name
+            self._display(f' FROM: {self._trim(source)}')
+            self._display(f'   TO: {self._trim(target)}')
+            shutil.copyfile(str(source), str(target))
 
-    @Command('q', description='quit', section='back-home-quit')
+    @Command(
+        'q',
+        description='quit',
+        section='back-home-quit',
+        )
     def quit_abjad_ide(self):
         r'''Quits Abjad IDE.
 
         Returns none.
         '''
         self._session._is_quitting = True
-
-    @Command(
-        'rf',
-        argument_name='current_directory',
-        section='system',
-        )
-    def refresh(self, directory):
-        r'''Refreshes current screen.
-
-        Returns none.
-        '''
-        assert directory.is_dir()
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
 
     @Command(
         'rm',
@@ -4315,59 +4029,58 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        paths = self._select_visible_paths(directory, 'to remove')
-        if not paths:
-            return
-        count = len(paths)
-        messages = []
-        if count == 1:
-            message = 'will remove {!s}'.format(paths[0])
-            messages.append(message)
-        else:
-            messages.append('will remove ...')
-            for path in paths:
-                message = '    {!s}'.format(path)
+        with self._interaction():
+            paths = self._select_visible_paths(directory, 'to remove')
+            if not paths:
+                return
+            count = len(paths)
+            messages = []
+            if count == 1:
+                message = f'will remove {self._trim(paths[0])}'
                 messages.append(message)
-        self._io_manager._display(messages)
-        if count == 1:
-            confirmation_string = 'remove'
-        else:
-            confirmation_string = 'remove {}'
-            confirmation_string = confirmation_string.format(count)
-        message = "type {!r} to proceed"
-        message = message.format(confirmation_string)
-        getter = self._io_manager._make_getter()
-        getter.append_string(message)
-        result = getter._run(io_manager=self._io_manager)
-        if result is None:
-            return
-        if not result == confirmation_string:
-            return
-        for path in paths:
-            if self._is_score_directory(path, 'contents'):
-                path = self._to_score_directory(path, 'wrapper')
-            if self._is_in_git_repository(path):
-                if self._is_git_unknown(path):
-                    command = 'rm -rf {!s}'
+            else:
+                messages.append('will remove ...')
+                for path in paths:
+                    message = f'    {self._trim(path)}'
+                    messages.append(message)
+            self._display(messages)
+            if count == 1:
+                confirmation_string = 'remove'
+            else:
+                confirmation_string = f'remove {count}'
+            message = f"type {confirmation_string!r} to proceed"
+            getter = self._io_manager._make_getter()
+            getter.append_string(message)
+            result = getter._run(io_manager=self._io_manager)
+            if result is None:
+                return
+            if not result == confirmation_string:
+                return
+            for path in paths:
+                if self._is_score_directory(path, 'contents'):
+                    path = self._to_score_directory(path, 'wrapper')
+                if self._is_in_git_repository(path):
+                    if self._is_git_unknown(path):
+                        command = f'rm -rf {path}'
+                    else:
+                        command = f'git rm --force -r {path}'
                 else:
-                    command = 'git rm --force -r {!s}'
-            else:
-                command = 'rm -rf {!s}'
-            command = command.format(path)
-            with abjad.TemporaryDirectoryChange(directory=path):
-                self._io_manager.run_command(command)
-            executables = self._io_manager.find_executable('trash')
-            executables = [pathlib.Path(_) for _ in executables]
-            if executables and executables[0].is_file():
-                executable = executables[0]
-                cleanup_command = str(executable) + ' {}'
-            else:
-                cleanup_command = 'rm -rf {!s}'
-            cleanup_command = cleanup_command.format(path)
-            self._io_manager.run_command(cleanup_command)
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
+                    command = f'rm -rf {path}'
+                with abjad.TemporaryDirectoryChange(directory=path.parent):
+                    message = f'removing {self._trim(path)} ...'
+                    self._display(message)
+                    self._io_manager.run_command(command)
+                executables = self._io_manager.find_executable('trash')
+                executables = [self.Path(_) for _ in executables]
+                if executables and executables[0].is_file():
+                    executable = executables[0]
+                    cleanup_command = str(executable) + f' {path}'
+                else:
+                    cleanup_command = f'rm -rf {path}'
+                cleanup_command = cleanup_command.format(path)
+                self._io_manager.run_command(cleanup_command)
 
     @Command(
         'ren',
@@ -4380,66 +4093,66 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        source_path = self._select_visible_path(directory, 'to rename')
-        if self._is_score_directory(source_path, 'contents'):
-            source_path = source_path.parent
-        if not source_path:
-            return
-        message = 'Will rename]> {}'
-        message = message.format(self._trim(source_path))
-        self._io_manager._display(message)
-        getter = self._io_manager._make_getter()
-        getter.append_string('new name or return to cancel')
-        original_target_name = getter._run(io_manager=self._io_manager)
-        if not original_target_name:
-            return
-        target_name = self._coerce_name(directory, original_target_name)
-        source_name = source_path.name
-        target_path = source_path.parent / target_name
-        if target_path.exists():
-            message = 'path already exists: {!r}.'
-            message = message.format(self._trim(target_path))
-            self._io_manager._display(message)
-            return
-        messages = []
-        messages.append('will rename ...')
-        message = ' FROM: {}'.format(self._trim(source_path))
-        messages.append(message)
-        message = '   TO: {}'.format(self._trim(target_path))
-        messages.append(message)
-        self._io_manager._display(messages)
-        if not self._io_manager._confirm():
-            return
-        shutil.move(str(source_path), str(target_path))
-        if target_path.is_dir():
-            for path in sorted(target_path.glob('*.py')):
-                self._replace_in_file(
-                    path,
-                    source_name,
-                    target_name,
+        with self._interaction():
+            source_path = self._select_visible_path(directory, 'to rename')
+            if self._is_score_directory(source_path, 'contents'):
+                source_path = source_path.parent
+            if not source_path:
+                return
+            message = 'Will rename]> {}'
+            message = message.format(self._trim(source_path))
+            self._display(message)
+            getter = self._io_manager._make_getter()
+            getter.append_string('new name or return to cancel')
+            original_target_name = getter._run(io_manager=self._io_manager)
+            if not original_target_name:
+                return
+            #target_name = self._coerce_name(directory, original_target_name)
+            target_name = directory._coerce_name(original_target_name)
+            source_name = source_path.name
+            target_path = source_path.parent / target_name
+            if target_path.exists():
+                message = 'path already exists: {!r}.'
+                message = message.format(self._trim(target_path))
+                self._display(message)
+                return
+            messages = []
+            messages.append('will rename ...')
+            message = ' FROM: {}'.format(self._trim(source_path))
+            messages.append(message)
+            message = '   TO: {}'.format(self._trim(target_path))
+            messages.append(message)
+            self._display(messages)
+            if not self._io_manager._confirm():
+                return
+            shutil.move(str(source_path), str(target_path))
+            if target_path.is_dir():
+                for path in sorted(target_path.glob('*.py')):
+                    self._replace_in_file(
+                        path,
+                        source_name,
+                        target_name,
+                        )
+            if self._is_score_directory(target_path, 'wrapper'):
+                false_contents_directory = target_path / source_name
+                assert false_contents_directory.exists()
+                true_contents_directory = target_path / target_name
+                shutil.move(
+                    str(false_contents_directory),
+                    str(true_contents_directory),
                     )
-        if self._is_score_directory(target_path, 'wrapper'):
-            false_contents_directory = target_path / source_name
-            assert false_contents_directory.exists()
-            true_conents_directory = target_path / target_name
-            shutil.move(
-                str(false_contents_directory),
-                str(true_conents_directory),
-                )
-            self._add_metadatum(
-                true_conents_directory,
-                'title',
-                original_target_name,
-                )
-            for path in sorted(true_conents_directory.glob('*.py')):
-                self._replace_in_file(
-                    path,
-                    source_name,
-                    target_name,
+                true_contents_directory._add_metadatum(
+                    'title',
+                    original_target_name,
                     )
-        self._session._pending_menu_rebuild = True
-        self._session._pending_redraw = True
+                for path in sorted(true_contents_directory.glob('*.py')):
+                    self._replace_in_file(
+                        path,
+                        source_name,
+                        target_name,
+                        )
 
     @Command(
         'rp',
@@ -4451,9 +4164,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         change = abjad.TemporaryDirectoryChange(directory)
-        with self._io_manager._make_interaction(), change:
+        with self._interaction(), change:
             getter = self._io_manager._make_getter()
             getter.append_string('enter search string')
             search_string = getter._run(io_manager=self._io_manager)
@@ -4480,7 +4194,7 @@ class AbjadIDE(object):
             with directory:
                 lines = self._io_manager.run_command(command)
             lines = [_.strip() for _ in lines if not _ == '']
-            self._io_manager._display(lines, capitalize=False)
+            self._display(lines, capitalize=False)
 
     @Command(
         'dt',
@@ -4494,9 +4208,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'contents')
-        interaction = self._io_manager._make_interaction()
+        interaction = self._interaction()
         change = abjad.TemporaryDirectoryChange(directory=directory)
         with interaction, change:
             self._run_doctest(directory)
@@ -4513,9 +4228,10 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         directory = self._to_score_directory(directory, 'contents')
-        interaction = self._io_manager._make_interaction()
+        interaction = self._interaction()
         change = abjad.TemporaryDirectoryChange(directory=directory)
         with interaction, change:
             self._run_pytest(directory)
@@ -4532,6 +4248,7 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         self.run_doctest(directory)
         self.run_pytest(directory)
@@ -4550,17 +4267,18 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
-        with self._io_manager._make_interaction():
+        with self._interaction():
             executables = self._io_manager.find_executable('ack')
             if not executables:
                 executables = self._io_manager.find_executable('grep')
-            executables = [pathlib.Path(_) for _ in executables]
+            executables = [self.Path(_) for _ in executables]
             if not executables:
                 messages = []
                 messages.append('can not find ack.')
                 messages.append('can not find grep.')
-                self._io_manager._display(messages)
+                self._display(messages)
                 return
             assert 1 <= len(executables)
             executable = None
@@ -4571,7 +4289,7 @@ class AbjadIDE(object):
                 messages = []
                 messages.append('can not find ack.')
                 messages.append('can not find grep.')
-                self._io_manager._display(messages)
+                self._display(messages)
                 return
             getter = self._io_manager._make_getter()
             getter.append_string('enter search string')
@@ -4584,16 +4302,16 @@ class AbjadIDE(object):
             elif executable.name == 'grep':
                 command = r'{!s} -r {!r} *'
                 command = command.format(executable, search_string)
-            if directory == configuration.composer_scores_directory:
+            if directory == self._configuration.composer_scores_directory:
                 pass
-            elif directory == configuration.example_scores_directory:
+            elif directory == self._configuration.example_scores_directory:
                 pass
             else:
                 directory = self._to_score_directory(directory, 'wrapper')
             directory = abjad.TemporaryDirectoryChange(directory)
             with directory:
                 lines = self._io_manager.run_command(command)
-            self._io_manager._display(lines, capitalize=False)
+            self._display(lines, capitalize=False)
 
     @Command(
         'illt',
@@ -4607,13 +4325,12 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         illustration_file_path = directory / '__illustrate__.py'
-        with self._io_manager._make_interaction():
+        with self._interaction():
             if illustration_file_path.is_file():
                 self._io_manager._trash_file(illustration_file_path)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
 
     @Command(
         'lyt',
@@ -4627,13 +4344,12 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         ly_file_path = directory / 'illustration.ly'
-        with self._io_manager._make_interaction():
+        with self._interaction():
             if ly_file_path.is_file():
                 self._io_manager._trash_file(ly_file_path)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
 
     @Command(
         'trash',
@@ -4647,16 +4363,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         ly_file_path = directory / 'illustration.ly'
         pdf_file_path = directory / 'illustration.pdf'
-        with self._io_manager._make_interaction():
+        with self._interaction():
             if ly_file_path.is_file():
                 self._io_manager._trash_file(ly_file_path)
             if pdf_file_path.is_file():
                 self._io_manager._trash_file(pdf_file_path)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True
 
     @Command(
         'pdft',
@@ -4670,10 +4385,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
+        assert isinstance(directory, self.Path)
         assert directory.is_dir()
         pdf_file_path = directory / 'illustration.pdf'
-        with self._io_manager._make_interaction():
+        with self._interaction():
             if pdf_file_path.is_file():
                 self._io_manager._trash_file(pdf_file_path)
-            self._session._pending_menu_rebuild = True
-            self._session._pending_redraw = True

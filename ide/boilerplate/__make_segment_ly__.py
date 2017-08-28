@@ -32,8 +32,10 @@ if __name__ == '__main__':
                 previous_metadata=previous_metadata,
                 )
             lilypond_file, metadata = result
-        message = 'Abjad runtime: {{}} sec.'
-        message = message.format(int(timer.elapsed_time))
+        message = 'Abjad runtime {{}} {{}} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = abjad.String('second').pluralize(total_time)
+        message = message.format(total_time, identifier)
         print(message)
     except:
         traceback.print_exc()
@@ -41,25 +43,22 @@ if __name__ == '__main__':
 
     try:
         current_directory = pathlib.Path(__file__).parent
-        dummy_session = ide.Session()
-        abjad_ide = ide.AbjadIDE(
-            session=dummy_session,
-            )
-        abjad_ide._write_metadata_py(
-            current_directory,
-            metadata,
-            )
+        current_directory = ide.Path(current_directory)
+        current_directory._write_metadata_py(metadata)
     except:
         traceback.print_exc()
         sys.exit(1)
 
     try:
         current_directory = pathlib.Path(__file__).parent
-        ly_path = current_directory / 'illustration.ly'
+        current_directory = ide.Path(current_directory)
+        target = current_directory / 'illustration.ly'
         with abjad.Timer() as timer:
-            abjad.persist(lilypond_file).as_ly(ly_path)
-        message = 'LilyPond runtime: {{}} sec.'
-        message = message.format(int(timer.elapsed_time))
+            abjad.persist(lilypond_file).as_ly(target)
+        message = 'LilyPond runtime {{}} {{}} ...'
+        total_time = int(timer.elapsed_time)
+        identifier = abjad.String('second').pluralize(total_time)
+        message = message.format(total_time, identifier)
         print(message)
     except:
         traceback.print_exc()

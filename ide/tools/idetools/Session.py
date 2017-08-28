@@ -13,7 +13,6 @@ class Session(object):
 
     __slots__ = (
         '_allow_unknown_command_during_test',
-        '_after_redraw_messages',
         '_attempted_method',
         '_attempted_to_open_file',
         '_clear_terminal_after_quit',
@@ -32,7 +31,6 @@ class Session(object):
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_example=False, is_test=False):
-        self._after_redraw_messages = None
         self._allow_unknown_command_during_test = False
         self._attempted_method = None
         self._attempted_to_open_file = False

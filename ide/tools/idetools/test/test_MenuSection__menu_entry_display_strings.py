@@ -18,8 +18,7 @@ def test_MenuSection__menu_entry_display_strings_01():
         title='section',
         )
     assert not section.is_numbered
-    assert section._menu_entry_display_strings == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_display_strings == ['apple', 'banana', 'cherry']
 
     menu = ide.Menu()
     commands = []
@@ -33,8 +32,7 @@ def test_MenuSection__menu_entry_display_strings_01():
         title='section',
         )
     assert section.is_numbered
-    assert section._menu_entry_display_strings == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_display_strings == ['apple', 'banana', 'cherry']
 
 
 def test_MenuSection__menu_entry_display_strings_02():

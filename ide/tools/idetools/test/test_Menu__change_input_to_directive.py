@@ -8,10 +8,9 @@ def test_Menu__change_input_to_directive_01():
 
     input_ = 'Red~score q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
+    transcript = abjad_ide._io_manager._transcript.contents
     string = 'Red Score (2017)'
-    assert string in contents
+    assert string in transcript
 
 
 def test_Menu__change_input_to_directive_02():
@@ -20,10 +19,9 @@ def test_Menu__change_input_to_directive_02():
 
     input_ = 'red~Score q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
+    transcript = abjad_ide._io_manager._transcript.contents
     string = 'Red Score (2017)'
-    assert string in contents
+    assert string in transcript
 
 
 def test_Menu__change_input_to_directive_03():
@@ -32,22 +30,20 @@ def test_Menu__change_input_to_directive_03():
 
     input_ = 'red~example~Score q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
+    transcript = abjad_ide._io_manager._transcript.contents
     string = 'Red Score (2017)'
-    assert string in contents
+    assert string in transcript
 
 
 def test_Menu__change_input_to_directive_04():
     r'''Works with mixed case.
     '''
 
-    input_ = 'RED~EXAMPLE~SCORE q'
+    input_ = 'RED~SCORE q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
+    transcript = abjad_ide._io_manager._transcript.contents
     string = 'Red Score (2017)'
-    assert string in contents
+    assert string in transcript
 
 
 def test_Menu__change_input_to_directive_05():
@@ -61,5 +57,4 @@ def test_Menu__change_input_to_directive_05():
 
     input_ = 'red~score mm magic~numbers 1 q'
     abjad_ide._start(input_=input_)
-
     assert abjad_ide._session._attempted_to_open_file

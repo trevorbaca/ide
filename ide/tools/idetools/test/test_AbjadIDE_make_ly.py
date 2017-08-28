@@ -1,6 +1,5 @@
 import abjad
 import ide
-import pathlib
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
@@ -8,46 +7,66 @@ def test_AbjadIDE_make_ly_01():
     r'''In material directory.
     '''
 
-    material_directory = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'materials',
-        'magic_numbers',
-        )
-    ly_path = pathlib.Path(material_directory, 'illustration.ly')
+    source = ide.Path('red_score').materials
+    source = source / 'magic_numbers' / '__illustrate__.py'
+    target = source.with_name('illustration.ly')
+    with ide.Test(keep=[target]):
+        target.remove()
 
-    with ide.Test(keep=[ly_path]):
-        input_ = 'red~score mm magic~numbers lym q'
+        input_ = 'red~score %magic~numbers lym q'
         abjad_ide._start(input_=input_)
-        assert ly_path.is_file()
-        assert abjad.TestManager._compare_backup(ly_path)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making ly ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' not in transcript
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(target)
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Removing' in contents
-    assert 'Writing' in contents
-    assert abjad_ide._trim(ly_path) in contents
+        input_ = 'red~score %magic~numbers lym q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making ly ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' not in transcript
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(target)
 
 
 def test_AbjadIDE_make_ly_02():
     r'''In segment directory.
     '''
 
-    segment_directory = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'segments',
-        'segment_01',
-        )
-    ly_path = pathlib.Path(segment_directory, 'illustration.ly')
+    target = ide.Path('red_score').segments / 'segment_01' / 'illustration.ly'
+    with ide.Test(keep=[target]):
+        illustrate = target.with_name('__illustrate__.py')
+        target.remove()
 
-    with ide.Test(keep=[ly_path]):
-        input_ = 'red~score gg A lym q'
+        input_ = 'red~score %A lym q'
         abjad_ide._start(input_=input_)
-        assert ly_path.is_file()
-        assert abjad.TestManager._compare_backup(ly_path)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making ly ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Removing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' not in transcript
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(target)
 
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'Wrote' in contents
-    assert abjad_ide._trim(ly_path) in contents
+        input_ = 'red~score %A lym q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Making ly ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Removing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(illustrate)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' not in transcript
+        assert target.is_file()
+        assert abjad.TestManager._compare_backup(target)

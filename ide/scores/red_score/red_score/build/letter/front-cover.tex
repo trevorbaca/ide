@@ -9,7 +9,6 @@
 \newlength{\drop}
 \pagenumbering{gobble}
 \parindent=0pt
-\setmainfont{Palatino}
 
 \begin{document}
     \begin{titlepage}
@@ -23,27 +22,27 @@
                 rectangle
                 ($(current page.south east) + (-1in,1in) + (-2.8pt,2.8pt)$);
         \end{tikzpicture}
+
         \drop=0.1\textheight
         \centering
-        % must leave blank line below for vspace to work
 
-        {\vspace{0.2in}}
+        {\vspace*{1\baselineskip}}
 
-        {\fontsize{4.5cm}{2em}\selectfont RED SCORE}
+        {\fontsize{2.75cm}{1em}\selectfont RED SCORE}
 
-        \vspace{1.5 in}
+        \vspace*{12\baselineskip}
 
-        {
-            \Huge
-            \textit{for piano}
-            \vspace*{0.5\baselineskip}
-            \\
-            \textit{(2017)}
-        }
+        {\fontsize{0.85cm}{1em}\selectfont \itshape for piano}
+        
+        \vspace*{1\baselineskip}
+
+        {\fontsize{0.85cm}{1em}\selectfont \itshape 2017}
 
         \vfill
 
-        {\fontsize{4.5cm}{2em}\selectfont EXAMPLE COMPOSER NAME}
+        {\fontsize{2.75cm}{1em}\selectfont COMPOSER}
+
+        \vspace*{1.25\baselineskip}
 
     \end{titlepage}
 \end{document}

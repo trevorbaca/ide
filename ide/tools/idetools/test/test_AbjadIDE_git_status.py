@@ -3,65 +3,76 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_git_status_01():
-    r'''Available in all directories except scores directory.
+    r'''Available everwhere except scores directory.
     '''
 
-    input_ = 'st ? q'
+    input_ = '? q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' not in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' not in transcript
 
-    input_ = 'red~score st ? q'
+    input_ = 'red~score ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score bb ? q'
+    input_ = 'red~score bb ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score dd ? q'
+    input_ = 'red~score dd ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score ee ? q'
+    input_ = 'red~score ee ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score oo ? q'
+    input_ = 'red~score gg ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score mm ? q'
+    input_ = 'red~score gg A ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score mm magic~numbers ? q'
+    input_ = 'red~score mm ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score gg ? q'
+    input_ = 'red~score mm magic~numbers ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score gg A ? q'
+    input_ = 'red~score oo ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score yy ? q'
+    input_ = 'red~score tt ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'
 
-    input_ = 'red~score tt ? q'
+    input_ = 'red~score yy ? st q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-    assert 'git - status (st)' in contents
+    transcript = abjad_ide._io_manager._transcript.contents
+    assert 'git - status (st)' in transcript
+    assert abjad_ide._session._attempted_method == 'git_status'

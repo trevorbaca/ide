@@ -9,7 +9,6 @@
 \newlength{{\drop}}
 \pagenumbering{{gobble}}
 \parindent=0pt
-\setmainfont{{Palatino}}
 
 \begin{{document}}
     \begin{{titlepage}}
@@ -23,27 +22,27 @@
                 rectangle
                 ($(current page.south east) + (-1in,1in) + (-2.8pt,2.8pt)$);
         \end{{tikzpicture}}
+
         \drop=0.1\textheight
         \centering
-        % must leave blank line below for vspace to work
 
-        {{\vspace{{0.2in}}}}
+        {{\vspace*{{1\baselineskip}}}}
 
-        {{\fontsize{{4.5cm}}{{2em}}\selectfont {score_title}}}
+        {{\fontsize{{2.75cm}}{{1em}}\selectfont {score_title}}}
 
-        \vspace{{1.5 in}}
+        \vspace*{{12\baselineskip}}
 
-        {{
-            \Huge
-            \textit{{{forces_tagline}}}
-            \vspace*{{0.5\baselineskip}}
-            \\
-            \textit{{({year})}}
-        }}
+        {{\fontsize{{0.85cm}}{{1em}}\selectfont \itshape {forces_tagline}}}
+        
+        \vspace*{{1\baselineskip}}
+
+        {{\fontsize{{0.85cm}}{{1em}}\selectfont \itshape {year}}}
 
         \vfill
 
-        {{\fontsize{{4.5cm}}{{2em}}\selectfont {composer}}}
+        {{\fontsize{{2.75cm}}{{1em}}\selectfont {composer}}}
+
+        \vspace*{{1.25\baselineskip}}
 
     \end{{titlepage}}
 \end{{document}}

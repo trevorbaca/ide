@@ -8,18 +8,19 @@ def test_AbjadIDE_search_01():
 
     input_ = 'sr RhythmMaker q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._io_manager._transcript.contents
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker('
     grep_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:'
     grep_line += 'talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker('
-    assert ack_line in contents or grep_line in contents
+    assert ack_line in transcript or grep_line in transcript
+
     ack_line = 'red_score/red_score/tools/RhythmMaker.py:4:'
     ack_line += 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
     grep_line = 'red_score/red_score/tools/RhythmMaker.py:'
     grep_line += 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
-    assert ack_line in contents or grep_line in contents
+    assert ack_line in transcript or grep_line in transcript
 
 
 def test_AbjadIDE_search_02():
@@ -28,15 +29,16 @@ def test_AbjadIDE_search_02():
 
     input_ = 'red~score sr RhythmMaker q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._io_manager._transcript.contents
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker('
     grep_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:'
     grep_line += 'talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker('
-    assert ack_line not in contents and grep_line not in contents
+    assert ack_line not in transcript and grep_line not in transcript
+
     ack_line = 'tools/RhythmMaker.py:4:'
     ack_line += 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
     grep_line = 'tools/RhythmMaker.py:'
     grep_line += 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
-    assert ack_line in contents or grep_line in contents
+    assert ack_line in transcript or grep_line in transcript

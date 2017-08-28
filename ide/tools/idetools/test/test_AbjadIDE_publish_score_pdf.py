@@ -1,28 +1,24 @@
-import abjad
 import ide
-import pathlib
+import os
+import pytest
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
+@pytest.mark.skipif(
+    os.environ.get('TRAVIS') == 'true',
+    reason="Travis-CI can not find fonts for XeTeX tests."
+    )
 def test_AbjadIDE_publish_score_pdf_01():
 
-    score_pdf_path = pathlib.Path(
-        abjad_ide.configuration.example_scores_directory,
-        'red_score',
-        'red_score',
-        'distribution',
-        'red-score-score.pdf',
-        )
-
-    assert score_pdf_path.exists()
-
     with ide.Test():
-        score_pdf_path.unlink()
-        input_ = 'red~score bb letter spp q'
-        abjad_ide._start(input_=input_)
-        assert score_pdf_path.exists()
-        contents = abjad_ide._io_manager._transcript.contents
+        source = ide.Path('red_score').build / 'letter' / 'score.pdf'
+        target = ide.Path('red_score').distribution / 'red-score.pdf'
+        target.remove()
 
-    assert 'Copied' in contents
-    assert 'FROM' in contents
-    assert 'TO' in contents
+        input_ = 'red~score bb letter fci pi mi bci si spp q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Publishing score PDF ...' in transcript
+        assert f'FROM: {abjad_ide._trim(source)}' in transcript
+        assert f'  TO: {abjad_ide._trim(target)}' in transcript
+        assert target.exists()

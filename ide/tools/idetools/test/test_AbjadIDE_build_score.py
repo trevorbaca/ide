@@ -1,58 +1,63 @@
 import ide
-#import pathlib
+import os
+import pytest
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-# TODO: update to to format-specific build directories
-#def test_AbjadIDE_build_score_01():
-#
-#    music_pdf = pathlib.Path(
-#        abjad_ide.configuration.example_scores_directory,
-#        'red_score',
-#        'red_score',
-#        'build',
-#        'music.pdf',
-#        )
-#    score_pdf = pathlib.Path(
-#        abjad_ide.configuration.example_scores_directory,
-#        'red_score',
-#        'red_score',
-#        'build',
-#        'score.pdf',
-#        )
-#    paths = (music_pdf, score_pdf)
-#
-#    with ide.Test():
-#        input_ = 'red~score bb bld q'
-#        abjad_ide._start(input_=input_)
-#        contents = abjad_ide._io_manager._transcript.contents
-#
-#    lines = [
-#        'Building score ...',
-#        'Copying segment LilyPond files into build directory ...',
-#        'Preserving red_score/red_score/build/segment-01.ly ...',
-#        'Preserving red_score/red_score/build/segment-02.ly ...',
-#        'Preserving red_score/red_score/build/segment-03.ly ...',
-#        'Generating music LilyPond file ...',
-#        'Examining segments in alphabetical order ...',
-#        'Examining red_score/red_score/segments/segment_01 ...',
-#        'Examining red_score/red_score/segments/segment_02 ...',
-#        'Examining red_score/red_score/segments/segment_03 ...',
-#        'Preserving red_score/red_score/build/music.ly ...',
-#        'Calling LilyPond on red_score/red_score/build/music.ly ...',
-#        'Preserving red_score/red_score/build/music.pdf ...',
-#        'Interpreting red_score/red_score/build/front-cover.tex ...',
-#        'Preserving red_score/red_score/build/front-cover.pdf ...',
-#        'Interpreting red_score/red_score/build/preface.tex ...',
-#        'Preserving red_score/red_score/build/preface.pdf ...',
-#        'Interpreting red_score/red_score/build/back-cover.tex ...',
-#        'Preserving red_score/red_score/build/back-cover.pdf ...',
-#        'Generating score LaTeX file ...',
-#        'Preserving red_score/red_score/build/score.tex ...',
-#        'Interpreting red_score/red_score/build/score.tex ...',
-#        'Overwriting red_score/red_score/build/score.pdf ...',
-#        'Opening red_score/red_score/build/score.pdf ...',
-#        ]
-#
-#    for line in lines:
-#        assert line in contents
+@pytest.mark.skipif(
+    os.environ.get('TRAVIS') == 'true',
+    reason="Travis-CI can not find fonts for XeTeX tests."
+    )
+def test_AbjadIDE_build_score_01():
+
+    with ide.Test():
+        input_ = 'red~score %letter bld q'
+        abjad_ide._start(input_=input_)
+        transcript = abjad_ide._io_manager._transcript.contents
+        lines = [
+            'Building score ...',
+            'Collecting segment lys ...',
+            'Removing red_score/build/_segments/segment-01.ly ...',
+            'Writing red_score/build/_segments/segment-01.ly ...',
+            'Removing red_score/build/_segments/segment-02.ly ...',
+            'Writing red_score/build/_segments/segment-02.ly ...',
+            'Removing red_score/build/_segments/segment-03.ly ...',
+            'Writing red_score/build/_segments/segment-03.ly ...',
+            '',
+            'Generating music ...',
+            'Removing red_score/build/letter/music.ly ...',
+            'Examining segments in alphabetical order ...',
+            'Examining red_score/segments/segment_01 ...',
+            'Examining red_score/segments/segment_02 ...',
+            'Examining red_score/segments/segment_03 ...',
+            'Writing red_score/build/letter/music.ly ...'
+            '',
+            'Interpreting music ...',
+            'Interpreting red_score/build/letter/music.ly ...',
+            'Writing red_score/build/letter/music.pdf ...',
+            '',
+            'Interpreting front cover ...',
+            'Interpreting red_score/build/letter/front-cover.tex ...',
+            'Writing red_score/build/letter/front-cover.pdf ...',
+            '',
+            'Interpreting preface ...',
+            'Interpreting red_score/build/letter/preface.tex ...',
+            'Writing red_score/build/letter/preface.pdf ...',
+            '',
+            'Interpreting back cover ...',
+            'Interpreting red_score/build/letter/back-cover.tex ...',
+            'Writing red_score/build/letter/back-cover.pdf ...',
+            '',
+            'Generating score ...',
+            'Removing red_score/build/letter/score.tex ...',
+            'Writing red_score/build/letter/score.tex ...',
+            '',
+            'Interpreting score ...',
+            'Interpreting red_score/build/letter/score.tex ...',
+            'Writing red_score/build/letter/score.pdf ...',
+            '',
+            'Opening red_score/build/letter/score.pdf ...',
+            '',
+            ]
+        for line in lines:
+            assert line in transcript

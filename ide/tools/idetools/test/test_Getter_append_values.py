@@ -27,7 +27,6 @@ def test_Getter_append_values_03():
     getter.append_string('attribute')
     input_ = '-99 99 1-4 foo'
     io_manager._session._pending_input = input_
-    #assert getter._run(io_manager=io_manager) == 'foo'
     assert getter._run(io_manager=io_manager) == '-99'
 
 

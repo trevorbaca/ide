@@ -1,24 +1,35 @@
 import ide
+import os
+import pytest
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
+@pytest.mark.skipif(
+    os.environ.get('TRAVIS') == 'true',
+    reason="Travis-CI can not find fonts for XeTeX tests."
+    )
 def test_AbjadIDE_interpret_back_cover_01():
 
     with ide.Test():
-        tex = ide.Path('red_score').build / 'letter' / 'back-cover.tex'
-        pdf = ide.Path('red_score').build / 'letter' / 'back-cover.pdf'
-        pdf.unlink()
-        assert not pdf.exists()
-        input_ = 'red~score bb letter bci q'
+        source = ide.Path('red_score').build / 'letter' / 'back-cover.tex'
+        target = source.with_suffix('.pdf')
+        target.remove()
+
+        input_ = 'red~score %letter bci q'
         abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert pdf.is_file()
-        assert f'Removing {abjad_ide._trim(pdf)} ...' not in contents
-        assert f'Interpreting {abjad_ide._trim(tex)} ...' in contents
-        assert f'Writing {abjad_ide._trim(pdf)} ...' in contents
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting back cover ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' not in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()
+
         abjad_ide._start(input_=input_)
-        contents = abjad_ide._io_manager._transcript.contents
-        assert pdf.is_file()
-        assert f'Removing {abjad_ide._trim(pdf)} ...' in contents
-        assert f'Interpreting {abjad_ide._trim(tex)} ...' in contents
-        assert f'Writing {abjad_ide._trim(pdf)} ...' in contents
+        transcript = abjad_ide._io_manager._transcript.contents
+        assert 'Interpreting back cover ...' in transcript
+        assert f'Removing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Interpreting {abjad_ide._trim(source)} ...' in transcript
+        assert f'Writing {abjad_ide._trim(target)} ...' in transcript
+        assert f'Opening {abjad_ide._trim(target)} ...' in transcript
+        assert target.is_file()

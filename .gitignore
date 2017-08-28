@@ -51,4 +51,9 @@ nosetests.xml
 .ipynb_checkpoints
 
 # Abjad IDE
+back-cover.pdf
+front-cover.pdf
 illustration.pdf
+music.pdf
+preface.pdf
+score.pdf

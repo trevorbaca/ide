@@ -6,9 +6,6 @@ def test_AbjadIDE_go_to_next_package_01():
     r'''In materials directory.
     '''
 
-    input_ = 'red~score mm > > > q'
-    abjad_ide._start(input_=input_)
-
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
@@ -17,15 +14,15 @@ def test_AbjadIDE_go_to_next_package_01():
         'Red Score (2017) - materials directory - performers',
         'Red Score (2017) - materials directory - ranges',
         ]
+
+    input_ = 'red~score mm > > > q'
+    abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_next_package_02():
     r'''In material directory.
     '''
-
-    input_ = 'red~score mm performers > > q'
-    abjad_ide._start(input_=input_)
 
     titles = [
         'Abjad IDE - scores directory',
@@ -35,6 +32,9 @@ def test_AbjadIDE_go_to_next_package_02():
         'Red Score (2017) - materials directory - ranges',
         'Red Score (2017) - materials directory - tempi',
         ]
+
+    input_ = 'red~score mm performers > > q'
+    abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
@@ -42,9 +42,6 @@ def test_AbjadIDE_go_to_next_package_03():
     r'''In segments directory.
     '''
 
-    input_ = 'red~score gg > > > q'
-    abjad_ide._start(input_=input_)
-
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
@@ -53,6 +50,9 @@ def test_AbjadIDE_go_to_next_package_03():
         'Red Score (2017) - segments directory - B',
         'Red Score (2017) - segments directory - C',
         ]
+
+    input_ = 'red~score gg > > > q'
+    abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
 
 
@@ -60,9 +60,6 @@ def test_AbjadIDE_go_to_next_package_04():
     r'''In segment directory.
     '''
 
-    input_ = 'red~score gg A > > q'
-    abjad_ide._start(input_=input_)
-
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
@@ -71,4 +68,7 @@ def test_AbjadIDE_go_to_next_package_04():
         'Red Score (2017) - segments directory - B',
         'Red Score (2017) - segments directory - C',
         ]
+
+    input_ = 'red~score gg A > > q'
+    abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles

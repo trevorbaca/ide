@@ -6,7 +6,6 @@ def test_AbjadIDE__make_asset_menu_section_01():
     r'''Behaves gracefully when no assets are found.
     '''
 
-    abjad_ide = ide.AbjadIDE(is_test=True)
     input_ = 'blue~score gg segment~01 q'
     abjad_ide._start(input_=input_)
     titles = [
@@ -22,14 +21,12 @@ def test_AbjadIDE__make_asset_menu_section_02():
     r'''Omits score annotation when listing segments in score.
     '''
 
-    abjad_ide = ide.AbjadIDE(is_test=True)
     input_ = 'red~score gg q'
     abjad_ide._start(input_=input_)
-    contents = abjad_ide._io_manager._transcript.contents
-
+    transcript = abjad_ide._io_manager._transcript.contents
     string = 'Red Score (2017) - segments'
-    assert string in contents
-    assert 'A\n' in contents
+    assert string in transcript
+    assert 'A\n' in transcript
 
 
 def test_AbjadIDE__make_asset_menu_section_03():
