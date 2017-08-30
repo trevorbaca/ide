@@ -2,5 +2,5 @@ import abjad
 
 
 metadata = abjad.TypedOrderedDict([
-    ('view_name', 'inventories first'),
+    ('view', ["'inventory' in :ds:", "'inventory' not in :ds:"]),
     ])

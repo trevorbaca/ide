@@ -8,7 +8,7 @@ def test_AbjadIDE_search_01():
 
     input_ = 'sr RhythmMaker q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker('
@@ -29,7 +29,7 @@ def test_AbjadIDE_search_02():
 
     input_ = 'red~score sr RhythmMaker q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker('

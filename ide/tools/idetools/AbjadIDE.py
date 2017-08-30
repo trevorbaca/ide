@@ -1,17 +1,18 @@
-from __future__ import print_function
 import abjad
 import datetime
+import importlib
 import inspect
-import os
 import pathlib
 import shutil
-import sys
-import traceback
 from ide.tools.idetools.Command import Command
 
 
 class AbjadIDE(object):
     r'''Abjad IDE.
+
+    ::
+
+        >>> import ide
 
     ..  container:: example
 
@@ -47,14 +48,6 @@ class AbjadIDE(object):
         'tabloid': '11 x 17 in',
         }
 
-    _secondary_names = (
-        '__illustrate__.py',
-        '__init__.py',
-        '__metadata__.py',
-        '__views__.py',
-        '_segments',
-        )
-
     _tab = 4 * ' '
 
     ### INITIALIZER ###
@@ -64,6 +57,7 @@ class AbjadIDE(object):
         from ide.tools.idetools.IOManager import IOManager
         from ide.tools.idetools.Session import Session
         self._configuration = Configuration()
+        self._check_test_scores_directory(is_example or is_test)
         if session is None:
             session = Session()
             session._is_example = is_example
@@ -80,303 +74,64 @@ class AbjadIDE(object):
         '''
         return f'{type(self).__name__}()'
 
+    ### PRIVATE PROPERTIES ###
+
+    @property
+    def _transcript(self):
+        return self._io_manager._transcript.contents
+
     ### PRIVATE METHODS ###
 
-    def _collect_all_display_strings(self, directory):
-        assert directory.is_dir()
-        strings, paths = [], []
-        # ordered by priority instead of alphabetically
-        names = (
-            'segments',
-            'materials',
-            'tools',
-            'build',
-            'stylesheets',
-            'etc',
-            'distribution',
-            'test',
-            )
-        if not self._is_score_directory(directory):
-            paths_ = self._list_visible_paths(directory)
-            paths.extend(paths_)
-            strings_ = [self._to_menu_string(_) for _ in paths_]
-            strings.extend(strings_)
-        directories = []
-        directories.append(directory)
-        for name in names:
-            directory_ = self._to_score_directory(directory, name)
-            if directory_:
-                directories.append(directory_)
-        for directory_ in directories:
-            paths_ = self._list_visible_paths(directory_)
-            paths.extend(paths_)
-            strings_ = [self._to_menu_string(_) for _ in paths_]
-            strings.extend(strings_)
-        paths = [str(_) for _ in paths]
-        assert len(strings) == len(paths), repr((len(strings), len(paths)))
-        return strings, paths
+    def _change(self, directory):
+        return abjad.TemporaryDirectoryChange(directory=directory)
 
-    def _collect_segment_lys(self, directory):
-        assert directory.is_dir()
-        segments_directory = self._to_score_directory(directory, 'segments')
-        build_directory = self._to_score_directory(directory, 'build')
-        _segments_directory = build_directory / '_segments'
-        entries = sorted(segments_directory.glob('*'))
-        entries = [_.name for _ in entries]
-        source_ly_paths, target_ly_paths = [], []
-        for entry in entries:
-            segment_directory = segments_directory / entry
-            if not segment_directory.is_dir():
-                continue
-            source_ly_path = segment_directory / 'illustration.ly'
-            if not source_ly_path.is_file():
-                continue
-            entry = entry.replace('_', '-')
-            target_ly_name = entry + '.ly'
-            target_ly_path = _segments_directory / target_ly_name
-            source_ly_paths.append(source_ly_path)
-            target_ly_paths.append(target_ly_path)
-        if not build_directory.is_dir():
-            build_directory.mkdir()
-        pairs = zip(source_ly_paths, target_ly_paths)
-        return pairs
+    def _check_test_scores_directory(self, check=False):
+        if not check:
+            return
+        directory = self._configuration.test_scores_directory
+        names = [_.name for _ in directory.iterdir()]
+        if 'red_score' not in names:
+            message = f'Empty test scores directory {directory} ...'
+            raise Exception(message)
 
-    def _collect_similar_directories(self, directory, example_scores=False):
-        assert isinstance(directory, self.Path), repr(directory)
-        assert directory.is_dir()
-        if not self._is_score_directory(directory):
-            return [directory]
-        directories = []
-        scores_directories = [self._configuration.composer_scores_directory]
-        if example_scores:
-            scores_directory = self._configuration.example_scores_directory
-            scores_directories.append(scores_directory)
-        if self._is_score_directory(directory, 'scores'):
-            return scores_directories
-        score_directories = []
-        for scores_directory in scores_directories:
-            for path in scores_directory.glob('*'):
-                if not path.name[0].isalpha():
-                    continue
-                score_directory = scores_directory / path.name
-                if not score_directory.is_dir():
-                    continue
-                score_directories.append(score_directory)
-        if self._is_score_directory(directory, 'wrapper'):
-            return score_directories
-        wrapper_directories = score_directories
-        score_directories = []
-        for wrapper_directory in wrapper_directories:
-            base_name = wrapper_directory.name
-            score_directory = wrapper_directory / base_name
-            if not score_directory.is_dir():
-                continue
-            score_directories.append(score_directory)
-        if self._is_score_directory(directory, ('contents', 'score')):
-            return score_directories
-        if self._is_score_directory(directory, ('material', 'segment')):
-            directories = []
-            parent_directory = directory.parent
-            parent_directories = self._collect_similar_directories(
-                parent_directory,
-                example_scores=example_scores,
-                )
-            for parent_directory in parent_directories:
-                for path in parent_directory.glob('*'):
-                    if not path.name[0].isalpha():
-                        continue
-                    directory_ = parent_directory / path.name
-                    if not directory_.is_dir():
-                        continue
-                    directories.append(directory_)
-            return directories
-        if self._is_score_directory(directory, 'build subdirectory'):
-            directories = []
-            build_directory = directory.parent
-            build_directories = self._collect_similar_directories(
-                build_directory,
-                example_scores=example_scores,
-                )
-            for build_directory in build_directories:
-                for path in build_directory.glob('*'):
-                    if not path.name[0].isalnum():
-                        continue
-                    directory_ = build_directory / path.name
-                    if not directory_.is_dir():
-                        continue
-                    directories.append(directory_)
-            return directories
-        if self._is_score_directory(directory, '_segments'):
-            directories = []
-            build_directory = directory.parent
-            build_directories = self._collect_similar_directories(
-                build_directory,
-                example_scores=example_scores,
-                )
-            for build_directory in build_directories:
-                for path in build_directory.glob('*'):
-                    if not path.name == '_segments':
-                        continue
-                    directory_ = build_directory / path.name
-                    if not directory_.is_dir():
-                        continue
-                    directories.append(directory_)
-            return directories
-        base_name = directory.name
-        for score_directory in score_directories:
-            directory_ = score_directory / base_name
-            if directory_.is_dir():
-                directories.append(directory_)
-        return directories
-
-    def _configure_travis_tests(self, file_path):
-        assert file_path.is_file()
-        test_directory = file_path.parent
-        contents_directory = test_directory.parent
-        wrapper_directory = contents_directory.parent
-        composer_scores_directory = wrapper_directory.parent
-        directory = composer_scores_directory
-        self._configuration._composer_scores_directory_override = directory
-        materials_directory = self._to_score_directory(file_path, 'materials')
-        material_directories = self._list_visible_paths(materials_directory)
-        segments_directory = self._to_score_directory(file_path, 'segments')
-        segment_directories = self._list_visible_paths(segments_directory)
-        return material_directories, segment_directories
+    def _cleanup(self, remove=None):
+        return abjad.FilesystemState(remove=remove)
 
     def _copy_boilerplate(
         self,
-        source_file_name,
-        target_directory,
-        target_file_name=None,
-        replacements=None,
+        directory,
+        source_name,
+        target_name=None,
+        values=None,
         ):
-        assert target_directory.is_dir()
-        replacements = replacements or {}
-        source_path = self.Path('boilerplate') / source_file_name
-        target_file_name = target_file_name or source_file_name
-        target_path = target_directory / target_file_name
-        suffix = source_path.suffix
-        messages = []
-        if target_path.exists():
-            messages.append(f'removing {self._trim(target_path)} ...')
-        shutil.copyfile(str(source_path), str(target_path))
-        template = target_path.read_text()
-        template = template.format(**replacements)
-        messages.append(f'writing {self._trim(target_path)} ...')
-        target_path.write_text(template)
-        return messages
+        target_name = target_name or source_name
+        target = directory / target_name
+        if target.exists():
+            self._display(f'removing {target.trim()} ...')
+        self._display(f'writing {target.trim()} ...')
+        directory.copy_boilerplate(
+            source_name=source_name,
+            target_name=target_name,
+            values=values,
+            )
 
-    def _display(self, lines, capitalize=True, is_menu=False):
+    def _display(self, lines, caps=True, is_menu=False):
         self._io_manager._display(
             lines,
-            capitalize=capitalize,
+            caps=caps,
             is_menu=is_menu,
             )
 
-    @classmethod
-    def _entry_point(class_):
-        input_ = ' '.join(sys.argv[1:])
-        abjad_ide = class_()
-        abjad_ide._start(input_=input_)
+    def _display_errors(self, lines):
+        self._io_manager._display_errors(lines)
 
-    def _filter_by_view(self, directory, entries, view):
-        assert directory.is_dir()
-        if view is None:
-            return entries
-        entries = entries[:]
-        filtered_entries = []
-        for pattern in view:
-            if ':ds:' in pattern:
-                for entry in entries:
-                    if self._match_display_string_view_pattern(pattern, entry):
-                        filtered_entries.append(entry)
-            elif 'md:' in pattern:
-                pairs = []
-                for entry in entries:
-                    metadatum = self._match_metadata_view_pattern(
-                        pattern,
-                        entry,
-                        )
-                    if metadatum is not None:
-                        pair = (metadatum, entry)
-                        pairs.append(pair)
-                pairs.sort(key=lambda _: _[0])
-                pairs.reverse()
-                entries_ = [_[-1] for _ in pairs]
-                filtered_entries.extend(entries_)
-            elif ':path:' in pattern:
-                for entry in entries:
-                    if self._match_path_view_pattern(pattern, entry):
-                        filtered_entries.append(entry)
-            else:
-                for entry in entries:
-                    display_string, _, _, path = entry
-                    if pattern == display_string:
-                        filtered_entries.append(entry)
-        return filtered_entries
-
-    def _find_empty_score_directories(self):
-        empty_score_directories = []
-        scores_directories = (
-            self._configuration.composer_scores_directory,
-            self._configuration.example_scores_directory,
-            )
-        for scores_directory in scores_directories:
-            for path in scores_directory.glob('*'):
-                if not path.name[0].isalpha():
-                    continue
-                if not path.name[0].islower():
-                    continue
-                score_directory = path
-                if not score_directory.is_dir():
-                    continue
-                for path in score_directory.glob('*'):
-                    if not path.name[0].isalpha():
-                        continue
-                    if path.is_dir():
-                        break
-                else:
-                    score_directory = self.Path(score_directory)
-                    empty_score_directories.append(score_directory)
-        return empty_score_directories
-
-    def _get_added_asset_paths(self, path):
-        paths = []
-        git_status_lines = self._get_git_status_lines(path)
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith('A'):
-                path = line.strip('A')
-                path = path.strip()
-                root_directory = self._get_repository_root_directory(path)
-                path = root_directory / path
-                paths.append(path)
-        return paths
-
-    def _get_available_path(self, directory):
-        assert directory.is_dir()
-        asset_identifier = self._to_asset_identifier(directory)
-        while True:
-            default_prompt = 'enter {} name'
-            default_prompt = default_prompt.format(asset_identifier)
-            getter = self._io_manager._make_getter()
-            getter.append_string(default_prompt)
-            name = getter._run(io_manager=self._io_manager)
-            if not name:
-                return
-            name = abjad.String(name).strip_diacritics()
-            words = abjad.String(name).delimit_words()
-            words = [_.lower() for _ in words]
-            name = '_'.join(words)
-            if not abjad.String(name).is_snake_case_package_name():
-                continue
-            path = directory / name
-            if path.exists():
-                line = 'path already exists: {!r}.'
-                line = line.format(path)
-                self._display(line)
-            else:
-                return path
+    def _edit_file(self, file_path):
+        if file_path.is_file():
+            self._display(f'editing {file_path.trim()} ...')
+            if not self._session.is_test:
+                self._io_manager.edit(file_path)
+        else:
+            self._display(f'missing {file_path.trim()} ...')
 
     def _get_command_dictionary(self):
         result = {}
@@ -390,7 +145,7 @@ class AbjadIDE(object):
         for name in dir(self):
             if name.startswith('_'):
                 continue
-            if name == 'Path':
+            if name == 'PackgePath':
                 continue
             command = getattr(self, name)
             if not inspect.ismethod(command):
@@ -398,201 +153,55 @@ class AbjadIDE(object):
             result.append(command)
         return result
 
-    def _get_file_path_ending_with(self, directory, string):
-        if not directory.is_dir():
+    def _get_composer_tools_package_path(self):
+        name = self._configuration.composer_library
+        if not name:
             return
-        glob = '*{}'.format(string)
-        for path in directory.glob(glob):
-            if path.is_file():
-                return path
-
-    def _get_git_status_lines(self, path):
-        command = 'git status --porcelain {!s}'
-        command = command.format(path)
-        directory = self._to_score_directory(path, 'wrapper')
-        with abjad.TemporaryDirectoryChange(directory=directory):
-            lines = self._io_manager.run_command(command)
-        return lines
-
-    def _get_next_package(self, directory):
-        assert directory.is_dir()
-        if self._is_score_directory(directory, 'material'):
-            materials_directory = directory.parent
-            paths = self._list_visible_paths(materials_directory)
-            index = paths.index(directory)
-            paths = abjad.CyclicTuple(paths)
-            path = paths[index + 1]
-        elif self._is_score_directory(directory, 'materials'):
-            paths = self._list_visible_paths(directory)
-            path = paths[0]
-        elif self._is_score_directory(directory, 'segment'):
-            segments_directory = directory.parent
-            paths = self._list_visible_paths(segments_directory)
-            index = paths.index(directory)
-            paths = abjad.CyclicTuple(paths)
-            path = paths[index + 1]
-        elif self._is_score_directory(directory, 'segments'):
-            paths = self._list_visible_paths(directory)
-            path = paths[0]
-        else:
-            raise ValueError(directory)
-        return path
-
-    def _get_previous_package(self, directory):
-        assert directory.is_dir()
-        if self._is_score_directory(directory, 'material'):
-            materials_directory = directory.parent
-            paths = self._list_visible_paths(materials_directory)
-            index = paths.index(directory)
-            paths = abjad.CyclicTuple(paths)
-            path = paths[index - 1]
-        elif self._is_score_directory(directory, 'materials'):
-            paths = self._list_visible_paths(directory)
-            path = paths[-1]
-        elif self._is_score_directory(directory, 'segment'):
-            segments_directory = directory.parent
-            paths = self._list_visible_paths(segments_directory)
-            index = paths.index(directory)
-            paths = abjad.CyclicTuple(paths)
-            path = paths[index - 1]
-        elif self._is_score_directory(directory, 'segments'):
-            paths = self._list_visible_paths(directory)
-            path = paths[-1]
-        else:
-            raise ValueError(directory)
-        return path
-
-    def _get_previous_segment_directory(self, directory):
-        assert directory.is_dir()
-        segments_directory = self._to_score_directory(
-            directory,
-            'segments',
-            )
-        paths = self._list_visible_paths(segments_directory)
-        for i, path in enumerate(paths):
-            if path == directory:
-                break
-        else:
-            message = 'can not find segment directory path.'
-            raise Exception(message)
-        current_path_index = i
-        if current_path_index == 0:
-            return
-        previous_path_index = current_path_index - 1
-        previous_path = paths[previous_path_index]
-        return previous_path
-
-    def _get_repository_root_directory(self, path):
-        command = 'git rev-parse --show-toplevel'
-        with abjad.TemporaryDirectoryChange(directory=path):
-            lines = self._io_manager.run_command(command)
-            first_line = lines[0]
-            return self.Path(first_line)
-
-    def _get_score_pdf(self, directory):
-        directory = self.Path(directory)
-        path = self._get_file_path_ending_with(
-            directory.distribution,
-            'score.pdf',
-            )
+        try:
+            path = importlib.import_module(name)
+        except ImportError:
+            path = None
         if not path:
-            path = self._get_file_path_ending_with(
-                directory.build,
-                'score.pdf',
-                )
+            return
+        path = self.PackagePath(path.__path__[0]) / 'tools'
         return path
 
-    def _get_segment_metadata(self, directory):
-        assert directory.is_dir()
-        assert self._is_score_directory(directory, 'segment'), repr(directory)
-        previous_directory = self._get_previous_directory(directory)
-        assert self._is_score_directory(previous_directory, 'segment')
-        metadata = directory._get_metadata()
-        segments_directory = self._to_score_directory(directory, 'segments')
-        paths = self._list_visible_paths(segments_directory)
-        if directory == paths[0]:
-            return metadata
-        previous_metadata = previous_directory._get_metadata()
-        return metadata, previous_metadata
+    def _get_scores_directory(self):
+        if self._session.is_test or self._session.is_example:
+            return self._configuration.test_scores_directory
+        return self._configuration.composer_scores_directory
 
-    def _get_title_metadatum(self, score_directory, year=True):
-        assert score_directory.is_dir()
-        if year and score_directory._get_metadatum('year'):
-            result = '{} ({})'
-            result = result.format(
-                self._get_title_metadatum(score_directory, year=False),
-                score_directory._get_metadatum('year')
-                )
-            return result
-        else:
-            result = score_directory._get_metadatum('title')
-            result = result or '(untitled score)'
-            return result
+    def _getter(self, string):
+        getter = self._io_manager._make_getter()
+        getter.append_string(string)
+        return getter._run()
 
-    def _get_unadded_asset_paths(self, directory):
-        assert directory.is_dir()
-        paths = []
-        root_directory = self._get_repository_root_directory(directory)
-        git_status_lines = self._get_git_status_lines(directory)
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith('?'):
-                path = line.strip('?')
-                path = path.strip()
-                path = root_directory / path
-                paths.append(path)
-            elif line.startswith('M'):
-                path = line.strip('M')
-                path = path.strip()
-                path = root_directory / path
-                paths.append(path)
-        paths = [_ for _ in paths]
-        return paths
-
-    def _git_add(self, directory):
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'wrapper')
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._interaction()
-        with change, interaction:
-            self._display(f'git add {directory} ...')
-            inputs = self._get_unadded_asset_paths(directory)
-            outputs = []
-            nothing_message = f'{directory} ... nothing to add.'
-            if not inputs:
-                self._display(nothing_message)
-                return False
-            command = f'git add -A {directory}'
-            for file_ in inputs:
-                self._io_manager.run_command(command)
-            messages = []
-            for file_ in inputs:
-                message = f'{self._trim(file_)} ... added.'
-                messages.append(message)
-            self._display(messages, capitalize=False)
-            return True
-
-    def _handle_input(self, result):
-        prototype = (str, tuple, pathlib.Path, self.Path)
+    def _handle_input(self, result, directory):
+        prototype = (str, tuple, pathlib.Path, self.PackagePath)
         assert isinstance(result, prototype), repr(result)
         if result == '<return>':
             return
         package_prototype = ('contents', 'material', 'segment')
+        addressing_characters = ('@', '%', '^', '*', '+')
         if isinstance(result, tuple):
             assert len(result) == 1, repr(result)
             result = result[0]
-            message = 'unknown command: {!r}.'
-            message = message.format(result)
-            self._display([message, ''])
+            self._display([f'unknown command {result!r} ...', ''])
+            if self._session.is_test:
+                raise Exception()
         elif isinstance(result, str) and result.startswith('!'):
             statement = result[1:]
-            self._io_manager._invoke_shell(statement)
-            self._display('')
-        elif isinstance(result, str) and result.startswith(
-            ('@', '%', '^', '*', '+')):
-            directory = self._session.current_directory
+            with self._change(directory):
+                self._io_manager._invoke_shell(statement)
+                self._display('')
+        elif isinstance(result, str) and result[0] in addressing_characters:
+            directory = self._session.directory
             prefix = result[0]
             body = result[1:]
+            if body == '':
+                message = f'matches no display string {result!r} ...'
+                self._display([message, ''])
+                return
             line_number = None
             if '+' in body:
                 index = body.find('+')
@@ -605,57 +214,54 @@ class AbjadIDE(object):
             path = None
             if body in ('<', '>'):
                 if body == '<':
-                    path = self._get_previous_package(directory)
+                    path = directory.get_previous_package(cyclic=True)
                 else:
-                    path = self._get_next_package(directory)
+                    path = directory.get_next_package(cyclic=True)
             if path is None:
                 try:
                     segment_number = int(body)
                 except ValueError:
                     segment_number = None
                 if segment_number:
-                    path = self._segment_number_to_path(
-                        directory,
-                        segment_number,
-                        )
+                    path = directory.segment_number_to_path(segment_number)
             if path is None:
-                path = self._match_display_string(directory, body)
+                path = directory._match_identifier(body)
             if path:
-                path = self.Path(path)
+                path = self.PackagePath(path)
                 if prefix == '@':
-                    if self._is_score_directory(path, ('material', 'segment')):
+                    if path.is_package_path(('material', 'segment')):
                         path = path / 'definition.py'
-                    self._io_manager.open_file(path, line_number=line_number)
+                    with self._interaction():
+                        self._edit_file(path)
                 elif prefix == '%':
                     if path.is_dir():
                         self._manage_directory(path)
                     else:
-                        message = 'matches no display string: {!r}.'
-                        message = message.format(result)
+                        message = f'matches no display string {result!r} ...'
                         self._display([message, ''])
                 elif prefix == '^':
                     interaction = self._interaction()
                     with interaction:
                         self._run_doctest(path)
                 elif prefix == '*':
-                    if self._is_score_directory(path, ('material', 'segment')):
+                    if path.is_package_path(('material', 'segment')):
                         pdf = path / 'illustration.pdf'
                         self.open_pdf(path)
                 elif prefix == '+':
-                    if self._is_score_directory(path, ('material', 'segment')):
+                    if path.is_package_path(('material', 'segment')):
                         path = path / 'definition.py'
-                    directory = path.parent
-                    self._io_manager.open_file(path, line_number=line_number)
-                    self._manage_directory(directory)
+                    with self._interaction():
+                        self._edit_file(path)
+                    self._manage_directory(path.parent)
                 else:
                     raise ValueError(prefix)
             else:
-                message = f'matches no display string: {result!r}.'
+                message = f'matches no display string {result!r} ...'
                 self._display([message, ''])
         elif result in self._get_command_dictionary():
             command = self._get_command_dictionary()[result]
-            if command.argument_name == 'current_directory':
-                command(self._session.current_directory)
+            if command.argument_name == 'directory':
+                command(self._session.directory)
             else:
                 command()
         elif (isinstance(result, str) and
@@ -663,391 +269,51 @@ class AbjadIDE(object):
             result[:-1] in self._get_command_dictionary()):
             result = result[:-1]
             self._get_command_dictionary()[result]()
-        elif self.Path(result).is_file():
+        elif result.is_file():
             self._io_manager.open_file(result)
-        elif self._is_score_directory(result, package_prototype):
+        elif result.is_package_path(package_prototype):
             self._manage_directory(result)
-        elif self._is_score_directory(result):
+        elif result.is_package_path():
             self._manage_directory(result)
         else:
-            message = 'unknown command: {!r}.'
-            message = message.format(result)
-            self._display([message, ''])
-
-    def _has_pending_commit(self, directory):
-        assert directory.is_dir()
-        command = 'git status {!s}'.format(directory)
-        with abjad.TemporaryDirectoryChange(directory=directory):
-            lines = self._io_manager.run_command(command)
-        clean_lines = []
-        for line in lines:
-            line = str(line)
-            clean_line = line.strip()
-            clean_line = clean_line.replace(str(directory), '')
-            clean_lines.append(clean_line)
-        for line in clean_lines:
-            if 'Changes not staged for commit:' in line:
-                return True
-            if 'Changes to be committed:' in line:
-                return True
+            self._display(f'unknown command {result!r} ...')
+            if self._session.is_test:
+                raise Exception()
 
     def _interaction(self):
         return self._io_manager._make_interaction()
 
-    def _interpret_tex_file(self, tex_path):
-        r'''Interprets TeX file.
-        Calls xelatex (or pdflatex) on file TWICE.
-        Some LaTeX packages (like tikz) require two passes.
-        '''
-        if not tex_path.is_file():
-            message = f'can not find {self._trim(tex_path)} ...'
-            self._display(message)
+    def _interpret_tex_file(self, tex):
+        if not tex.is_file():
+            self._display(f'can not find {tex.trim()} ...')
             return
-        executables = self._io_manager.find_executable('xelatex')
-        executables = [self.Path(_) for _ in executables]
-        if not executables:
-            executable_name = 'pdflatex'
-            fancy_executable_name = 'LaTeX'
+        pdf = tex.with_suffix('.pdf')
+        if pdf.exists():
+            self._display(f'removing {pdf.trim()} ...')
+            pdf.unlink()
+        self._display(f'interpreting {tex.trim()} ...')
+        self._io_manager.interpret_tex_file(tex)
+        if pdf.is_file():
+            self._display(f'writing {pdf.trim()} ...')
         else:
-            executable_name = 'xelatex'
-            fancy_executable_name = 'XeTeX'
-        pdf_path = tex_path.parent / (str(tex_path.stem) + '.pdf')
-        if pdf_path.exists():
-            message = 'removing {} ...'
-            message = message.format(self._trim(pdf_path))
-            self._display(message)
-            pdf_path.unlink()
-        message = f'interpreting {self._trim(tex_path)} ...'
-        self._display(message)
-        command = 'date > {};'
-        command += ' {} -halt-on-error'
-        command += ' --jobname={} -output-directory={} {}'
-        command += ' >> {!s} 2>&1'
-        command = command.format(
-            self._configuration.latex_log_file_path,
-            executable_name,
-            tex_path.stem,
-            tex_path.parent,
-            tex_path,
-            self._configuration.latex_log_file_path,
-            )
-        command_called_twice = '{}; {}'.format(command, command)
-        with abjad.TemporaryDirectoryChange(tex_path.parent):
-            self._io_manager.spawn_subprocess(command_called_twice)
-            for path in tex_path.parent.glob('*.aux'):
-                path.unlink()
-            for path in tex_path.parent.glob('*.log'):
-                path.unlink()
-            messages = []
-            if pdf_path.is_file():
-                error = False
-                message = f'writing {self._trim(pdf_path)} ...'
-            else:
-                error = True
-                message = 'ERROR IN LATEX LOG FILE ...'
-                log_file = self._configuration.latex_log_file_path
-                with log_file.open() as file_pointer:
-                    lines = file_pointer.readlines()
-                    messages.extend(lines)
-            messages.append(message)
-            return messages
+            self._display('ERROR IN LATEX LOG FILE ...')
+            log_file = self._configuration.latex_log_file_path
+            with log_file.open() as file_pointer:
+                lines = [_.strip('\n') for _ in file_pointer.readlines()]
+            self._display(lines)
 
-    @classmethod
-    def _is_build_directory_name(class_, name):
-        if not isinstance(name, str):
-            return False
-        if not name == name.lower():
-            return False
-        if name[0] == '.':
-            return False
-        if name[0] == '_':
-            return False
-        return True
-
-    @staticmethod
-    def _is_classfile_name(argument):
-        if not isinstance(argument, str):
-            return False
-        argument = pathlib.Path(argument)
-        if not abjad.String(argument.stem).is_upper_camel_case():
-            return False
-        if not argument.suffix == '.py':
-            return False
-        return True
-
-    @staticmethod
-    def _is_dash_case_file_name(argument):
-        if not isinstance(argument, str):
-            return False
-        argument = pathlib.Path(argument)
-        if not argument.name == argument.name.lower():
-            return False
-        if not abjad.String(argument.stem).is_dash_case():
-            return False
-        if not argument.suffix:
-            return False
-        return True
-
-    def _is_git_unknown(self, path):
-        if path is None:
-            return False
-        if not path.exists():
-            return False
-        git_status_lines = self._get_git_status_lines(path)
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        if first_line.startswith('?'):
-            return True
-        return False
-
-    def _is_in_git_repository(self, path):
-        if path is None:
-            return False
-        if not path.exists():
-            return False
-        path = self._to_score_directory(path, 'wrapper')
-        path = self.Path(path)
-        for path_ in path.glob('*'):
-            if path_.name == '.git':
-                return True
-        return False
-
-    @staticmethod
-    def _is_lowercase_file_name(argument):
-        if not isinstance(argument, str):
-            return False
-        if not argument == argument.lower():
-            return False
-        if not (abjad.String(pathlib.Path(argument).stem).is_snake_case() or
-            abjad.String(pathlib.Path(argument).stem).is_dash_case()):
-            return False
-        if pathlib.Path(argument).suffix not in ('.py', '.ly', '.pdf'):
-            return False
-        return True
-
-    def _is_maker_file_name(self, argument):
-        if self._is_classfile_name(argument):
-            return True
-        if self._is_module_file_name(argument):
-            return True
-        return False
-
-    @staticmethod
-    def _is_module_file_name(argument):
-        if not isinstance(argument, str):
-            return False
-        argument = pathlib.Path(argument)
-        if not argument.name == argument.name.lower():
-            return False
-        if not abjad.String(argument.stem).is_snake_case():
-            return False
-        if not argument.suffix == '.py':
-            return False
-        return True
-
-    @staticmethod
-    def _is_package_name(argument):
-        if not isinstance(argument, str):
-            return False
-        if not argument == argument.lower():
-            return False
-        if not abjad.String(argument).is_snake_case():
-            return False
-        return True
-
-    @staticmethod
-    def _is_public_python_file_name(argument):
-        if not isinstance(argument, str):
-            return False
-        if pathlib.Path(argument).stem.startswith('_'):
-            return False
-        if not pathlib.Path(argument).suffix == '.py':
-            return False
-        return True
-
-    def _is_score_directory(self, directory, prototype=()):
-        if not directory.is_dir():
-            return False
-        if isinstance(prototype, str):
-            prototype = (prototype,)
-        if not prototype and self._to_scores_directory(directory):
-            return True
-        assert all(isinstance(_, str) for _ in prototype)
-        if not self._to_scores_directory(directory):
-            return False
-        if 'scores' in prototype:
-            if directory == self._configuration.composer_scores_directory:
-                return True
-            if directory == self._configuration.example_scores_directory:
-                return True
-        scores_directory = self._to_score_directory(directory, 'scores')
-        if 'wrapper' in prototype and scores_directory:
-            scores_directory_parts_count = len(scores_directory.parts)
-            parts = directory.parts
-            if len(parts) == scores_directory_parts_count + 1:
-                return True
-        if 'contents' in prototype and scores_directory:
-            scores_directory_parts_count = len(scores_directory.parts)
-            parts = directory.parts
-            if len(parts) == scores_directory_parts_count + 2:
-                if parts[-1] == parts[-2]:
-                    return True
-        if 'build subdirectory' in prototype and scores_directory:
-            scores_directory_parts_count = len(scores_directory.parts)
-            parts = directory.parts
-            if len(parts) == scores_directory_parts_count + 4:
-                if parts[-2] == 'build' and not parts[-1] == '_segments':
-                    return True
-        if 'material' in prototype and scores_directory:
-            scores_directory_parts_count = len(scores_directory.parts)
-            parts = directory.parts
-            if len(parts) == scores_directory_parts_count + 4:
-                if parts[-2] == 'materials':
-                    return True
-        if 'segment' in prototype and scores_directory:
-            scores_directory_parts_count = len(scores_directory.parts)
-            parts = directory.parts
-            if len(parts) == scores_directory_parts_count + 4:
-                if parts[-2] == 'segments':
-                    return True
-        if directory.name not in (
-            '_segments',
-            'build',
-            'distribution',
-            'etc',
-            'tools',
-            'material',
-            'materials',
-            'score',
-            'scores',
-            'segment',
-            'segments',
-            'stylesheets',
-            'test',
-            ):
-            return False
-        if prototype is None:
-            return True
-        if directory.name in prototype:
-            return True
-        return False
-
-    @staticmethod
-    def _is_stylesheet_name(argument):
-        if not isinstance(argument, str):
-            return False
-        argument = pathlib.Path(argument)
-        if not argument.name == argument.name.lower():
-            return False
-        if not abjad.String(argument.stem).is_dash_case():
-            return False
-        if not argument.suffix == '.ily':
-            return False
-        return True
-
-    @staticmethod
-    def _is_test_file_name(argument):
-        if not isinstance(argument, str):
-            return False
-        argument = pathlib.Path(argument)
-        if not argument.name.startswith('test_'):
-            return False
-        if not abjad.String(argument.stem).is_snake_case():
-            return False
-        if not argument.suffix == '.py':
-            return False
-        return True
-
-    def _is_up_to_date(self, path):
-        git_status_lines = self._get_git_status_lines(path)
-        git_status_lines = git_status_lines or ['']
-        first_line = git_status_lines[0]
-        return first_line == ''
-
-    @staticmethod
-    def _is_wrapper_directory_name(argument):
-        if argument in ('.git', '.DS_Store'):
-            return False
-        return True
-
-    def _list_paths(self, directory, example_scores=True):
-        assert directory.is_dir()
-        paths = []
-        directories = self._collect_similar_directories(
-            directory,
-            example_scores=example_scores,
-            )
-        directory_ = directory
-        for directory in directories:
-            if not directory:
-                continue
-            if not directory.exists():
-                continue
-            name_predicate = self._to_name_predicate(directory)
-            entries = sorted([_.name for _ in directory.glob('*')])
-            for entry in entries:
-                if not name_predicate(entry):
-                    continue
-                path = directory / entry
-                if self._is_score_directory(directory, 'scores'):
-                    path = path / entry
-                try:
-                    path.relative_to(directory_)
-                except ValueError:
-                    continue
-                paths.append(path)
-        return paths
-
-    def _list_secondary_paths(self, directory):
-        assert directory.is_dir()
-        paths = []
-        for path in directory.glob('*'):
-            if path.name in sorted(self._secondary_names):
-                paths.append(path)
-        return paths
-
-    def _list_visible_paths(self, directory):
-        assert directory.is_dir()
-        paths = self._list_paths(directory)
-        strings = [self._to_menu_string(_) for _ in paths]
-        entries = []
-        pairs = list(zip(strings, paths))
-        for string, path in pairs:
-            entry = (string, None, None, path)
-            entries.append(entry)
-        view = self._read_view(directory)
-        entries = self._filter_by_view(directory, entries, view)
-        if self._is_score_directory(directory, 'scores'):
-            if self._session.is_test or self._session.is_example:
-                entries = [_ for _ in entries if 'Score' in _[0]]
-            else:
-                entries = [_ for _ in entries if 'Score' not in _[0]]
-        paths = [_[-1] for _ in entries]
-        if view is None and self._is_score_directory(directory, 'scores'):
-            paths = self._sort_by_menu_string(paths)
-        assert all(isinstance(_, self.Path) for _ in paths), repr(paths)
-        return paths
-
-    def _make_build_subdirectory(self, directory):
-        assert directory.is_dir()
-        getter = self._io_manager._make_getter()
-        getter.append_string('subdirectory name')
-        subdirectory_name = getter._run(io_manager=self._io_manager)
-        if not subdirectory_name:
+    def _make_build_directory(self, builds):
+        name = self._getter('build name')
+        if not name:
             return
-        subdirectory_name = subdirectory_name.lower()
-        subdirectory_name = subdirectory_name.replace(' ', '-')
-        subdirectory_name = subdirectory_name.replace('_', '-')
-        build_subdirectory = directory / subdirectory_name
-        if build_subdirectory.exists():
-            message = 'path already exists: {}.'
-            message = message.format(self._trim(build_subdirectory))
-            self._display(message)
+        name = name.lower()
+        name = name.replace(' ', '-')
+        name = name.replace('_', '-')
+        build = builds / name
+        if build.exists():
+            self._display(f'path already exists: {build.trim()}.')
             return
-        getter = self._io_manager._make_getter()
-        message = 'paper size (ex: letter or letter landscape)'
-        getter.append_string(message)
-        paper_size = getter._run(io_manager=self._io_manager)
+        paper_size = self._getter('paper size (ex: letter landscape)')
         if not paper_size:
             return
         orientation = 'portrait'
@@ -1058,16 +324,8 @@ class AbjadIDE(object):
         elif paper_size.endswith(' portrait'):
             length = len(' portrait')
             paper_size = paper_size[:-length]
-        getter = self._io_manager._make_getter()
-        message = r'price (ex: \$80 / \euro 72)'
-        getter.append_string(message)
-        price = getter._run(io_manager=self._io_manager)
-        if price is None:
-            return
-        getter = self._io_manager._make_getter()
-        message = 'catalog number suffix (ex: ann.)'
-        getter.append_string(message)
-        catalog_number_suffix = getter._run(io_manager=self._io_manager)
+        price = self._getter('price (ex: \$80 / \euro 72')
+        suffix = self._getter('catalog number suffix (ex: ann.)')
         file_names = (
             'back-cover.tex',
             'front-cover.tex',
@@ -1076,37 +334,32 @@ class AbjadIDE(object):
             'score.tex',
             'stylesheet.ily',
             )
-        file_paths = [build_subdirectory / _ for _ in file_names]
-        messages = []
-        messages.append('will create ...')
-        message = '   {}'.format(self._trim(build_subdirectory))
-        messages.append(message)
+        file_paths = [build / _ for _ in file_names]
+        self._display('making ...')
+        self._display(f'   {build.trim()}')
         for file_path in file_paths:
-            message = '   {}'.format(self._trim(file_path))
-            messages.append(message)
-        self._display(messages)
+            self._display(f'   {file_path.trim()}')
         if not self._io_manager._confirm():
             return
-        if build_subdirectory.exists():
-            shutil.rmtree(str(build_subdirectory))
-        build_subdirectory.mkdir()
-        build_subdirectory._add_metadatum('paper_size', paper_size)
+        if build.exists():
+            shutil.rmtree(str(build))
+        build.mkdir()
+        if bool(paper_size):
+            build.add_metadatum('paper_size', paper_size)
         if not orientation == 'portrait':
-            build_directory._add_metadatum('orientation', orientation)
-        build_subdirectory._add_metadatum('price', price)
-        build_subdirectory._add_metadatum(
-            'catalog_number_suffix',
-            catalog_number_suffix,
-            )
-        self.generate_back_cover(build_subdirectory)
-        self.generate_front_cover(build_subdirectory)
-        self.generate_music(build_subdirectory)
-        self.generate_preface(build_subdirectory)
-        self.generate_score(build_subdirectory)
-        self.generate_build_subdirectory_stylesheet(build_subdirectory)
+            build.add_metadatum('orientation', orientation)
+        if bool(price):
+            build.add_metadatum('price', price)
+        if bool(suffix):
+            build.add_metadatum('catalog_number_suffix', suffix)
+        self.generate_back_cover(build)
+        self.generate_front_cover(build)
+        self.generate_music(build)
+        self.generate_preface(build)
+        self.generate_score(build)
+        self.generate_build_stylesheet(build)
 
     def _make_command_menu_sections(self, directory, menu):
-        assert directory.is_dir()
         commands = []
         outside_score_sections = (
             'back-home-quit',
@@ -1121,13 +374,13 @@ class AbjadIDE(object):
             )
         for command in self._get_commands():
             forbidden_directories = command.forbidden_directories
-            if (not self._is_score_directory(directory) and
+            if (not directory.is_package_path() and
                 command.section in outside_score_sections):
                 commands.append(command)
-            elif not self._is_score_directory(directory, command.directories):
+            elif not directory.is_package_path(command.directories):
                 continue
             elif (command.forbidden_directories and
-                self._is_score_directory(directory, forbidden_directories)):
+                directory.is_package_path(forbidden_directories)):
                 continue
             else:
                 commands.append(command)
@@ -1148,24 +401,18 @@ class AbjadIDE(object):
 
     def _make_file(self, directory):
         assert directory.is_dir()
-        getter = self._io_manager._make_getter()
-        getter.append_string('file name')
-        file_name = getter._run(io_manager=self._io_manager)
+        file_name = self._getter('file name')
         if file_name in (None, ''):
             return
-        #file_name = self._coerce_name(directory, file_name)
-        file_name = directory._coerce_name(file_name)
-        name_predicate = self._to_name_predicate(directory)
-        if not name_predicate(file_name):
-            message = 'invalid file name: {!r}.'
-            message = message.format(file_name)
-            self._display(message)
-            self._io_manager._acknowledge()
+        file_name = directory._coerce_asset_name(file_name)
+        name_predicate = directory.get_name_predicate()
+        if not name_predicate(abjad.String(file_name)):
+            self._display(f'invalid file name: {file_name!r}.')
             return
         file_path = directory / file_name
         boilerplate_directory = self._configuration.boilerplate_directory
-        if self._is_score_directory(directory, 'tools'):
-            if self._is_classfile_name(file_name):
+        if directory.is_tools():
+            if abjad.String(file_name).is_classfile_name():
                 source_file = boilerplate_directory / 'Maker.py'
                 shutil.copyfile(str(source_file), str(file_path))
                 template = file_path.read_text()
@@ -1186,168 +433,94 @@ class AbjadIDE(object):
             self._io_manager.write(file_path, contents)
         self._io_manager.edit(file_path)
 
-    def _make_main_menu(self, directory, header):
-        assert directory.is_dir()
-        assert isinstance(header, str), repr(header)
+    def _make_main_menu(self, directory):
         name = type(self).__name__
         name = abjad.String(name).to_space_delimited_lowercase()
-        menu = self._io_manager._make_menu(
-            header=header,
-            name=name,
-            )
-        menu_entries = []
-        secondary_menu_entries = self._make_secondary_menu_entries(directory)
-        secondary_menu_entries = []
-        for path in self._list_secondary_paths(directory):
-            base_name = path.name
-            menu_entry = (base_name, None, None, path)
-            secondary_menu_entries.append(menu_entry)
-        secondary_menu_entries.sort(key=lambda _: _[0])
-        menu_entries.extend(secondary_menu_entries)
-        asset_menu_entries = []
-        paths = self._list_visible_paths(directory)
-        strings = [self._to_menu_string(_) for _ in paths]
-        if self._is_score_directory(directory, 'wrapper'):
-            strings = [_.name for _ in paths]
-        pairs = list(zip(strings, paths))
-        for string, path in pairs:
-            asset_menu_entry = (string, None, None, path)
-            asset_menu_entries.append(asset_menu_entry)
-        menu_entries.extend(asset_menu_entries)
-        if menu_entries:
-            menu.make_asset_section(menu_entries=menu_entries)
+        menu = directory.make_menu(name=name)
         self._make_command_menu_sections(directory, menu)
         return menu
 
     def _make_material_ly(self, directory):
         assert directory.is_dir()
-        directory = self.Path(directory)
+        directory = self.PackagePath(directory)
         assert directory.parent.name == 'materials'
         definition = directory / 'definition.py'
         if not definition.is_file():
-            message = f'can not find {self._trim(definition)} ...'
-            self._display(message)
+            self._display(f'can not find {definition.trim()} ...')
             return
         source = directory / '__illustrate__.py'
         if not source.is_file():
-            message = f'can not find {self._trim(source)} ...'
-            self._display(message)
+            self._display(f'can not find {source.trim()} ...')
             return
         target = directory / 'illustration.ly'
         if target.exists():
-            self._display(f'removing {self._trim(target)} ...')
-        source_make = self.Path('boilerplate') / '__make_material_ly__.py'
+            self._display(f'removing {target.trim()} ...')
+        source_make = self.PackagePath('boilerplate')
+        source_make /= '__make_material_ly__.py'
         target_make = directory / '__make_material_ly__.py'
-        with abjad.FilesystemState(remove=[target_make]):
+        with self._cleanup([target_make]):
             target_make.remove()
             shutil.copyfile(str(source_make), str(target_make))
-            self._display(f'interpreting {self._trim(source)} ...')
+            self._display(f'interpreting {source.trim()} ...')
             result = self._io_manager.interpret_file(str(target_make))
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self._display_errors(stderr_lines)
+                self.ndisplay_errors(stderr_lines)
                 return
             if not target.is_file():
-                message = f'could not make {self._trim(target)}.'
-                self._display(message)
+                self._display(f'could not make {target.trim()}.')
                 return
-            self._display(f'writing {self._trim(target)} ...')
+            self._display(f'writing {target.trim()} ...')
 
     def _make_material_pdf(self, directory, open_after=True):
-        assert directory.is_dir()
-        directory = self.Path(directory)
-        assert directory.parent.name == 'materials'
+        assert directory.is_material()
         illustrate = directory / '__illustrate__.py'
         if not illustrate.is_file():
-            message = f'can not find {self._trim(illustrate)} ...'
-            self._display(message)
-            return [], True
+            self._display(f'can not find {illustrate.trim()} ...')
+            return 0 
         definition = directory / 'definition.py'
         if not definition.is_file():
-            message = f'can not find {self._trim(definition)} ...'
-            self._display(message)
-            return [], False
+            self._display(f'can not find {definition.trim()} ...')
+            return 0 
         self._display('making PDF ...')
         source = directory / 'illustration.ly'
         target = source.with_suffix('.pdf')
-        boilerplate = self.Path('boilerplate')
+        boilerplate = self.PackagePath('boilerplate')
         source_make = boilerplate / '__make_material_pdf__.py'
         target_make = directory / '__make_material_pdf__.py'
-        with abjad.FilesystemState(remove=[target_make]):
-            for output_file in (source, target):
-                if output_file.exists():
-                    message = f'removing {self._trim(output_file)} ...'
-                    self._display(message)
-                    output_file.remove()
+        with self._cleanup([target_make]):
+            for path in (source, target):
+                if path.exists():
+                    self._display(f'removing {path.trim()} ...')
+                    path.remove()
             shutil.copyfile(str(source_make), str(target_make))
-            message = f'interpreting {self._trim(illustrate)} ...'
-            self._display(message)
+            self._display(f'interpreting {illustrate.trim()} ...')
             result = self._io_manager.interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
                 self._display_errors(stderr_lines)
-                return [], False
             if open_after:
-                message = f'opening {self._trim(target)} ...'
-                self._display(message)
+                self._display(f'opening {target.trim()} ...')
                 self._io_manager.open_file(str(target))
-            return [], True
-
-    def _make_package(self, directory):
-        assert directory.is_dir()
-        path = self._get_available_path(directory)
-        if not path:
-            return
-        assert not path.exists()
-        path.mkdir()
-        required_files = (
-            '__init__.py',
-            '__metadata__.py',
-            'definition.py',
-            )
-        for required_file in required_files:
-            boilerplate_directory = \
-                self._configuration.boilerplate_directory
-            if required_file == '__init__.py':
-                source_path = boilerplate_directory / 'empty_unicode.py'
-            elif required_file == '__metadata__.py':
-                source_path = boilerplate_directory / '__metadata__.py'
-            elif required_file == 'definition.py':
-                source_path = boilerplate_directory / 'definition.py'
-            else:
-                raise ValueError(required_file)
-            target_path = path / required_file
-            shutil.copyfile(str(source_path), str(target_path))
-        new_path = path
-        paths = self._list_visible_paths(directory)
-        if path not in paths:
-            directory._clear_view()
-        self._manage_directory(new_path)
+            return exit_code
 
     def _make_score_package(self):
-        scores_directory = self._configuration.composer_scores_directory
+        scores = self._configuration.composer_scores_directory
         if self._session.is_test or self._session.is_example:
-            scores_directory = self._configuration.example_scores_directory
-        scores_directory = self.Path(scores_directory)
-        package_name = None
+            scores = self._configuration.test_scores_directory
+        scores = self.PackagePath(scores)
         wrapper = None
-        directories = self._find_empty_score_directories()
-        if directories:
-            directory = directories[0]
-            self._display(f'found {directory}.')
-            if not self._io_manager._confirm(f'populate {directory}?'):
+        for wrapper in scores._find_empty_wrappers():
+            self._display(f'found {wrapper}.')
+            if not self._io_manager._confirm(f'populate {wrapper}?'):
                 return
-            package_name = str(directory)
-            wrapper = directory
-        getter = self._io_manager._make_getter()
-        getter.append_string('enter title')
-        title = getter._run(io_manager=self._io_manager)
+        title = self._getter('enter title')
         if not title:
             return
         if not wrapper:
-            package_name = abjad.String(title).strip_diacritics()
-            package_name = abjad.String(package_name).to_snake_case()
-            wrapper = scores_directory / package_name
+            name = abjad.String(title).strip_diacritics()
+            name = abjad.String(name).to_snake_case()
+            wrapper = scores / name
             if wrapper.exists():
                 self._display(f'directory already exists: {wrapper}.')
                 return
@@ -1363,113 +536,90 @@ class AbjadIDE(object):
             score_title=title,
             year=year,
             )
-        scores_directory._clear_view()
-        self._manage_directory(wrapper.contents)
-
-    def _make_secondary_menu_entries(self, directory):
-        assert directory.is_dir()
-        menu_entries = []
-        for path in self._list_secondary_paths(directory):
-            base_name = path.name
-            menu_entry = (base_name, None, None, path)
-            menu_entries.append(menu_entry)
-        return menu_entries
+        for path in wrapper.builds.iterdir():
+            if path.name == '.gitignore':
+                continue
+            path.remove()
+        scores.add_metadatum('view', None)
 
     def _make_segment_ly(self, directory):
-        assert directory.is_dir()
-        directory = self.Path(directory)
-        assert directory.parent.name == 'segments', repr(directory)
+        assert directory.is_segment()
         definition = directory / 'definition.py'
         if not definition.is_file():
-            message = f'can not find {self._trim(definition)} ...'
-            self._display(message)
+            self._display(f'can not find {definition.trim()} ...')
             return
-        self._update_order_dependent_segment_metadata(directory)
+        directory.update_order_dependent_segment_metadata()
         boilerplate = self._configuration.boilerplate_directory
         source_make = boilerplate / '__make_segment_ly__.py'
         target_make = directory / '__make_segment_ly__.py'
         target_make.remove()
-        with abjad.FilesystemState(remove=[target_make]):
-            illustrate = directory / '__illustrate__.py'
+        with self._cleanup([target_make]):
+            source = directory / '__illustrate__.py'
             target = directory / 'illustration.ly'
             if target.exists():
-                self._display(f'removing {self._trim(target)} ...')
+                self._display(f'removing {target.trim()} ...')
             shutil.copyfile(str(source_make), str(target_make))
-            previous_segment_path = self._get_previous_segment_directory(
-                directory)
-            if previous_segment_path is None:
+            previous_segment = directory.get_previous_package()
+            if previous_segment is None:
                 statement = 'previous_metadata = None'
             else:
-                score_directory = self._to_score_directory(directory)
-                score_name = score_directory.name
-                previous_segment_name = previous_segment_path
-                previous_segment_name = previous_segment_path.name
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
-                statement = statement.format(score_name, previous_segment_name)
+                statement = statement.format(
+                    diretory.contents.name,
+                    previous_segment.name,
+                    )
             template = target_make.read_text()
             template = template.format(
                 previous_segment_metadata_import_statement=statement
                 )
             target_make.write_text(template)
-            illustrate = directory / '__illustrate__.py'
-            if illustrate.exists():
-                message = f'removing {self._trim(illustrate)} ...'
-                self._display(message)
-                message = f'writing {self._trim(illustrate)} ...'
-                self._display(message)
-            message = f'interpreting {self._trim(illustrate)} ...'
-            self._display(message)
+            source = directory / '__illustrate__.py'
+            if source.exists():
+                self._display(f'removing {source.trim()} ...')
+                self._display(f'writing {source.trim()} ...')
+            self._display(f'interpreting {source.trim()} ...')
             result = self._io_manager.interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
                 self._display_errors(stderr_lines)
                 return
-            self._display(f'writing {self._trim(target)} ...')
+            self._display(f'writing {target.trim()} ...')
 
     def _make_segment_pdf(self, directory, open_after=True):
-        assert directory.is_dir()
+        assert directory.is_segment()
         definition_path = directory / 'definition.py'
         if not definition_path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(self._trim(definition_path))
-            self._display(message)
-            return [], False
+            self._display(f'can not find {definition_path.trim()} ...')
+            return -1
         self._display('making PDF ...')
-        self._update_order_dependent_segment_metadata(directory)
+        directory.update_order_dependent_segment_metadata()
         boilerplate_directory = self._configuration.boilerplate_directory
         boilerplate_path = boilerplate_directory / '__illustrate_segment__.py'
         illustrate = directory / '__illustrate__.py'
-        ly_path = directory / 'illustration.ly'
-        pdf_path = directory / 'illustration.pdf'
-        output_files = (ly_path, pdf_path)
-        for output_file in output_files:
-            if output_file.exists():
-                message = 'removing {} ...'
-                message = message.format(self._trim(output_file))
-                self._display(message)
-                output_file.unlink()
+        ly = directory / 'illustration.ly'
+        pdf = directory / 'illustration.pdf'
+        for path in (ly, pdf):
+            if path.exists():
+                self._display(f'removing {path.trim()} ...')
+                path.unlink()
         if illustrate.exists():
-            self._display(f'removing {self._trim(illustrate)} ...')
+            self._display(f'removing {illustrate.trim()} ...')
             illustrate.unlink()
-        self._display(f'writing {self._trim(illustrate)} ...')
-        message = 'interpreting {} ...'
-        message = message.format(self._trim(illustrate))
-        self._display(message)
+        self._display(f'writing {illustrate.trim()} ...')
+        self._display(f'interpreting {illustrate.trim()} ...')
         shutil.copyfile(str(boilerplate_path), str(illustrate))
-        previous_segment_directory = self._get_previous_segment_directory(
-            directory)
-        if previous_segment_directory is None:
+        #previous_segment = directory.get_previous_segment_directory()
+        previous_segment = directory.get_previous_package()
+        if previous_segment is None:
             statement = 'previous_metadata = None'
         else:
-            assert previous_segment_directory.is_dir()
-            score_directory = self._to_score_directory(directory)
-            score_name = score_directory.name
-            previous_segment_name = previous_segment_directory
-            previous_segment_name = previous_segment_directory.name
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
-            statement = statement.format(score_name, previous_segment_name)
+            statement = statement.format(
+                directory.contents.name,
+                previous_segment.name,
+                )
         template = illustrate.read_text()
         completed_template = template.format(
             previous_segment_metadata_import_statement=statement
@@ -1479,45 +629,36 @@ class AbjadIDE(object):
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
             self._display_errors(stderr_lines)
-            return [], False
-        log_file_path = abjad.abjad_configuration.lilypond_log_file_path
-        log_file_path = self.Path(log_file_path)
-        with log_file_path.open() as file_pointer:
+            return exit_code
+        log = abjad.abjad_configuration.lilypond_log_file_path
+        log = self.PackagePath(log)
+        with log.open() as file_pointer:
             lines = file_pointer.readlines()
         for line in lines:
             if ('fatal' in line or
                 ('error' in line and 'programming error' not in line) or
                 'failed' in line):
-                message = 'ERROR IN LILYPOND LOG FILE ...'
-                self._display(message)
+                self._display('ERROR IN LILYPOND LOG FILE ...')
                 break
-        if pdf_path.is_file() and open_after:
-            message = f'opening {self._trim(pdf_path)} ...'
-            self._display(message)
-            self._io_manager.open_file(pdf_path)
-        return [], True
+        if pdf.is_file() and open_after:
+            self._open_file(pdf)
+        return 0
 
     def _manage_directory(self, directory):
-        directory = self.Path(directory)
         if not directory.exists():
-            message = f'directory does not exist: {self._trim(directory)}.'
-            self._display(message)
+            self._display(f'missing {directory.trim()} ...')
             return
         self._session._pending_redraw = True
-        if not self._session.current_directory == directory:
-            self._session._previous_directory = \
-                self._session.current_directory
-            self._session._current_directory = directory
-        menu_header = self._to_menu_header(directory)
-        menu = self._make_main_menu(directory, menu_header)
+        if not self._session.directory == directory:
+            self._session._previous_directory = self._session.directory
+            self._session._directory = directory
+        menu = self._make_main_menu(directory)
         while True:
-            if not self._session.current_directory == directory:
-                self._session._previous_directory = \
-                    self._session.current_directory
-                self._session._current_directory = directory
-            os.chdir(str(directory))
+            if not self._session.directory == directory:
+                self._session._previous_directory = self._session.directory
+                self._session._directory = directory
             if self._session._pending_menu_rebuild:
-                menu = self._make_main_menu(directory, menu_header)
+                menu = self._make_main_menu(directory)
                 self._session._pending_menu_rebuild = False
             result = menu._run(io_manager=self._io_manager)
             if isinstance(result, tuple):
@@ -1536,17 +677,15 @@ class AbjadIDE(object):
                         self._io_manager.open_file(path)
                         parent_directory = path.parent
                         names = ('material', 'segment')
-                        if self._is_score_directory(parent_directory, names):
+                        if parent_directory.is_package_path(names):
                             self._manage_directory(parent_directory)
                     elif path.is_dir():
                         self._manage_directory(path)
                     else:
-                        message = 'file does not exist: {}.'
-                        message = message.format(self._trim(path))
-                        self._display([message, ''])
+                        self._display([f'missing {path.trim()} ...', ''])
                 if path:
                     result = None
-            prototype = (str, tuple, type(None), self.Path)
+            prototype = (str, tuple, type(None), self.PackagePath)
             assert isinstance(result, prototype), repr(result)
             if self._session.is_quitting:
                 return
@@ -1555,9 +694,9 @@ class AbjadIDE(object):
                 self._session._pending_redraw = True
                 continue
             if (isinstance(result, pathlib.Path) and
-                not isinstance(result, self.Path)):
-                result = self.Path(result)
-            self._handle_input(result)
+                not isinstance(result, self.PackagePath)):
+                result = self.PackagePath(result)
+            self._handle_input(result, directory)
             if self._session.is_quitting:
                 return
 
@@ -1573,105 +712,30 @@ class AbjadIDE(object):
         if value.startswith('!'):
             is_executable = True
             value = value[1:]
-        path = self.Path(value)
+        path = self.PackagePath(value)
         if path.exists():
             return is_executable, path
-        if (self._is_score_directory(directory) and
-            not self._is_score_directory(directory, 'scores')):
-            score_directory = self._to_score_directory(directory, 'contents')
+        if (directory.is_package_path() and not directory.is_scores()):
+            score_directory = directory.contents
             path = score_directory / value
             return is_executable, path
         return is_executable, None
 
-    def _match_display_string(self, directory, argument):
-        assert directory.is_dir()
-        strings, paths = self._collect_all_display_strings(directory)
-        for string, path in zip(strings, paths):
-            if string == argument:
-                return path
-        for string, path in zip(strings, paths):
-            if string.startswith(argument):
-                return path
-        for string, path in zip(strings, paths):
-            if argument in string:
-                return path
-        initial_strings = []
-        initial_paths = []
-        for string, path in zip(strings, paths):
-            string = self.Path(string).stem
-            words = abjad.String(string).delimit_words()
-            initial_letters = [_[0] for _ in words]
-            if not initial_letters:
-                continue
-            initial_string = ''.join(initial_letters)
-            initial_strings.append(initial_string)
-            initial_paths.append(path)
-        pairs = zip(initial_strings, initial_paths)
-        for initial_string, initial_path in pairs:
-            if initial_string == argument:
-                return initial_path
-
-    @staticmethod
-    def _match_display_string_view_pattern(pattern, entry):
-        display_string, _, _, path = entry
-        token = ':ds:'
-        assert token in pattern, repr(pattern)
-        pattern = pattern.replace(token, repr(display_string))
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            result = False
-        return result
-
-    def _match_metadata_view_pattern(self, pattern, entry):
-        display_string, _, _, path = entry
-        count = pattern.count('md:')
-        for _ in range(count + 1):
-            parts = pattern.split()
-            for part in parts:
-                if part.startswith('md:'):
-                    metadatum_name = part[3:]
-                    metadatum = path._get_metadatum(metadatum_name)
-                    metadatum = repr(metadatum)
-                    pattern = pattern.replace(part, metadatum)
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    @staticmethod
-    def _match_path_view_pattern(pattern, entry):
-        display_string, _, _, path = entry
-        token = ':path:'
-        assert token in pattern, repr(pattern)
-        pattern = pattern.replace(token, repr(path))
-        try:
-            result = eval(pattern)
-        except:
-            traceback.print_exc()
-            return False
-        return result
-
-    def _match_visible_path(self, secondary_paths, visible_paths, input_):
+    def _match_ordered_path(self, secondary_paths, ordered_paths, input_):
         assert isinstance(input_, (str, int)), repr(input_)
-        paths = secondary_paths + visible_paths
+        paths = secondary_paths + ordered_paths
         if isinstance(input_, int):
             path_number = input_
             path_index = path_number - 1
             path = paths[path_index]
             if path in secondary_paths:
-                message = 'can not modify secondary asset {}.'
-                message = message.format(self._trim(path))
-                self._display(message)
+                self._display(f'can not modify secondary asset {path.trim()}.')
                 return
             return path
         elif isinstance(input_, str):
             name = input_
             name = name.lower()
-            for path in visible_paths:
+            for path in ordered_paths:
                 base_name = path.name
                 base_name = base_name.lower()
                 if base_name.startswith(name):
@@ -1681,77 +745,40 @@ class AbjadIDE(object):
                     return path
                 if not path.is_dir():
                     continue
-                title = path._get_metadatum('title')
+                title = path.get_metadatum('title')
                 if title:
                     title = title.lower()
                     if title.startswith(name):
                         return path
-                name_ = path._get_metadatum('name')
+                name_ = path.get_metadatum('name')
                 if name_:
                     if name_ == input_:
                         return path
-            message = 'does not match visible path: {!r}.'
-            message = message.format(name)
-            self._display(message)
+            self._display(f'does not match ordered path: {name!r}.')
             return
         else:
             raise ValueError(repr(input_))
 
+    def _menu_entry(self, display_string, explicit_return_value):
+        from ide.tools.idetools.MenuEntry import MenuEntry
+        return MenuEntry(
+            display_string=display_string,
+            explicit_return_value=explicit_return_value,
+            )
+
     def _open_every_file(self, paths):
         for path in paths:
-            message = f'opening {self._trim(path)} ...'
-            self._display(message)
+            self._display(f'opening {path.trim()} ...')
         if paths:
             self._io_manager.open_file(paths)
 
-    def _parse_paper_size(self, directory):
-        assert directory.is_dir()
-        score_directory = self._to_score_directory(directory)
-        string = score_directory._get_metadatum('paper_size')
-        string = string or '8.5 x 11 in'
-        parts = string.split()
-        assert len(parts) == 4
-        width, _, height, units = parts
-        width = eval(width)
-        height = eval(height)
-        return width, height, units
-
-    def _read_view(self, directory):
-        assert directory.is_dir()
-        view_name = directory._get_metadatum('view_name')
-        if not view_name:
-            return
-        view_inventory = self._read_view_inventory(directory)
-        if not view_inventory:
-            return
-        return view_inventory.get(view_name)
-
-    def _read_view_inventory(self, directory):
-        assert directory.is_dir()
-        views_py_path = directory / '__views__.py'
-        result = self._io_manager.execute_file(
-            path=views_py_path,
-            attribute_names=('view_inventory',),
-            )
-        if result == 'corrupt':
-            messages = []
-            message = '{} __views.py__ is corrupt:'
-            message = message.format(self._trim(directory))
-            messages.append(message)
-            messages.append('')
-            message = '    {}'.format(views_py_path)
-            messages.append(message)
-            self._display(messages)
-            return
-        if not result:
-            return
-        assert len(result) == 1
-        view_inventory = result[0]
-        if view_inventory is None:
-            view_inventory = abjad.TypedOrderedDict()
-        items = list(view_inventory.items())
-        view_inventory = abjad.TypedOrderedDict(items)
-        return view_inventory
+    def _open_file(self, file_path):
+        if file_path.is_file():
+            self._display(f'opening {file_path.trim()} ...')
+            if not self._session.is_test:
+                self._io_manager.open_file(file_path)
+        else:
+            self._display(f'missing {file_path.trim()} ...')
 
     @staticmethod
     def _replace_in_file(file_path, old, new):
@@ -1768,178 +795,100 @@ class AbjadIDE(object):
 
     def _run_doctest(self, path):
         assert path.exists()
-        self._display(f'running doctest on {self._trim(path)} ...')
+        self._display(f'running doctest on {path.trim()} ...')
         command = f'ajv doctest -x {path}'
         self._io_manager.spawn_subprocess(command)
 
-    def _run_lilypond(self, ly_path):
-        assert ly_path.exists()
+    def _run_lilypond(self, ly):
+        assert ly.exists()
         if not abjad.IOManager.find_executable('lilypond'):
             message = 'cannot find LilyPond executable.'
             raise ValueError(message)
-        directory = ly_path.parent
-        pdf_path = ly_path.with_suffix('.pdf')
-        backup_pdf_path = ly_path.with_suffix('._backup.pdf')
-        if backup_pdf_path.exists():
-            backup_pdf_path.unlink()
-        directory_change = abjad.TemporaryDirectoryChange(directory)
-        filesystem_state = abjad.FilesystemState(remove=[backup_pdf_path])
-        with directory_change, filesystem_state:
-            messages = []
-            if pdf_path.exists():
-                message = f'removing {self._trim(pdf_path)} ...'
-                messages.append(message)
-                shutil.move(str(pdf_path), str(backup_pdf_path))
-                assert not pdf_path.exists()
+        directory = ly.parent
+        pdf = ly.with_suffix('.pdf')
+        backup_pdf = ly.with_suffix('._backup.pdf')
+        if backup_pdf.exists():
+            backup_pdf.unlink()
+        with self._change(directory), self._cleanup([backup_pdf]):
+            if pdf.exists():
+                self._display(f'removing {pdf.trim()} ...')
+                shutil.move(str(pdf), str(backup_pdf))
+                assert not pdf.exists()
             else:
-                backup_pdf_path = None
-            messages.append(f'interpreting {self._trim(ly_path)} ...')
-            abjad.IOManager.run_lilypond(str(ly_path))
-            if not pdf_path.is_file():
-                message = 'can not produce {} ...'
-                message = message.format(self._trim(pdf_path))
-                messages.append(message)
-                if backup_pdf_path:
-                    message = f'restoring {self._trim(backup_pdf_path)} ...'
-                    messages.append(message)
-                    shutil.move(str(backup_pdf_path), str(pdf_path))
-            messages.append(f'writing {self._trim(pdf_path)} ...')
-            return messages
+                backup_pdf = None
+            self._display(f'interpreting {ly.trim()} ...')
+            abjad.IOManager.run_lilypond(str(ly))
+            if not pdf.is_file():
+                self._display(f'can not produce {pdf.trim()} ...')
+                if backup_pdf:
+                    self._display(f'restoring {backup_pdf.trim()} ...')
+                    shutil.move(str(backup_pdf), str(pdf))
+            self._display(f'writing {pdf.trim()} ...')
 
     def _run_pytest(self, path):
         assert path.exists()
-        self._display(f'running pytest on {self._trim(path)} ...')
+        self._display(f'running pytest on {path.trim()} ...')
         command = f'py.test -xrf {path}'
         self._io_manager.spawn_subprocess(command)
 
-    def _segment_number_to_path(self, directory, segment_number):
+    def _select_available_path(self, directory):
         assert directory.is_dir()
-        segments_directory = self._to_score_directory(directory, 'segments')
-        for path in segments_directory.glob('*'):
-            if not path.is_dir():
+        asset_identifier = directory.get_asset_type()
+        while True:
+            default_prompt = f'enter {asset_identifier} name'
+            name = self._getter(default_prompt)
+            if not name:
+                return
+            name = abjad.String(name).strip_diacritics()
+            words = abjad.String(name).delimit_words()
+            words = [_.lower() for _ in words]
+            name = '_'.join(words)
+            if not abjad.String(name).is_snake_case_package_name():
                 continue
-            if not path.name.startswith('segment_'):
-                continue
-            body = path.name[8:]
-            try:
-                body = int(body)
-            except ValueError:
-                continue
-            if body == segment_number:
+            path = directory / name
+            if path.exists():
+                self._display(f'path already exists: {path!r}.')
+            else:
                 return path
 
-    def _select_path_to_copy(self, directory, more=False):
+    def _select_ordered_path(self, directory, infinitive_phrase=None):
         assert directory.is_dir()
-        example_scores = self._session.is_test or self._session.is_example
-        if more:
-            directories = self._collect_similar_directories(
-                directory,
-                example_scores=example_scores,
-                )
-        else:
-            directories = [directory]
-        paths = []
-        for directory_ in directories:
-            for path in directory_.glob('*'):
-                if path.name.endswith('.pyc'):
-                    continue
-                if path.name.startswith('.'):
-                    continue
-                if path.name == '__pycache__':
-                    continue
-                paths.append(path)
-        trimmed_paths = [str(self._trim(_)) for _ in paths]
-        menu_header = self._to_menu_header(directory)
-        menu_header = menu_header + ' - select:'
-        selector = self._io_manager._make_selector(
-            items=trimmed_paths,
-            menu_header=menu_header,
-            )
-        trimmed_source = selector._run(io_manager=self._io_manager)
-        if (trimmed_source != ('more',) and
-            trimmed_source != ('less',) and
-            trimmed_source not in trimmed_paths):
-            return
-        elif trimmed_source == ('more',):
-            trimmed_source = self._select_path_to_copy(
-                directory,
-                more=True,
-                )
-        elif trimmed_source == ('less',):
-            trimmed_source = self._select_path_to_copy(directory)
-        if not trimmed_source:
-            return
-        return trimmed_source
-
-    def _select_view(self, directory, is_ranged=False):
-        assert directory.is_dir()
-        view_inventory = self._read_view_inventory(directory)
-        if view_inventory is None:
-            message = 'no views found.'
-            self._display(message)
-            return
-        view_names = list(view_inventory.keys())
-        view_names.append('none')
-        if is_ranged:
-            target_name = 'view(s)'
-        else:
-            target_name = 'view'
-        target_name = '{} to apply'.format(target_name)
-        menu_header = self._to_menu_header(directory)
-        selector = self._io_manager._make_selector(
-            is_ranged=is_ranged,
-            items=view_names,
-            menu_header=menu_header,
-            target_name=target_name,
-            )
-        result = selector._run(io_manager=self._io_manager)
-        if result is None:
-            return
-        return result
-
-    def _select_visible_path(self, directory, infinitive_phrase=None):
-        assert directory.is_dir()
-        secondary_paths = self._list_secondary_paths(directory)
-        visible_paths = self._list_visible_paths(directory)
-        if not visible_paths:
-            message = 'no visible paths'
+        secondary_paths = directory.list_secondary_paths()
+        ordered_paths = directory.list_ordered_paths()
+        if not ordered_paths:
+            message = 'no paths'
             if infinitive_phrase is not None:
                 message = message + ' ' + infinitive_phrase
             message = message + '.'
             self._display(message)
             return
-        asset_identifier = self._to_asset_identifier(directory)
-        message = 'enter {}'.format(asset_identifier)
+        asset_identifier = directory.get_asset_type()
+        message = f'enter {asset_identifier}'
         if infinitive_phrase:
             message = message + ' ' + infinitive_phrase
-        getter = self._io_manager._make_getter()
-        getter.append_string_or_integer(message)
-        result = getter._run(io_manager=self._io_manager)
+        result = self._getter(message)
         if not result:
             return
-        path = self._match_visible_path(secondary_paths, visible_paths, result)
+        path = self._match_ordered_path(secondary_paths, ordered_paths, result)
         return path
 
-    def _select_visible_paths(self, directory, infinitive_phrase=None):
+    def _select_ordered_paths(self, directory, infinitive_phrase=None):
         assert directory.is_dir()
-        secondary_paths = self._list_secondary_paths(directory)
-        visible_paths = self._list_visible_paths(directory)
-        if not visible_paths:
-            message = 'no visible paths'
+        secondary_paths = directory.list_secondary_paths()
+        ordered_paths = directory.list_ordered_paths()
+        if not ordered_paths:
+            message = 'no ordered paths'
             if infinitive_phrase is not None:
                 message = message + ' ' + infinitive_phrase
             message = message + '.'
             self._display(message)
             return
-        paths = secondary_paths + visible_paths
-        asset_identifier = self._to_asset_identifier(directory)
-        message = 'enter {}(s)'
+        paths = secondary_paths + ordered_paths
+        asset_identifier = directory.get_asset_type()
+        message = f'enter {asset_identifier}(s)'
         if infinitive_phrase is not None:
             message += ' ' + infinitive_phrase
-        message = message.format(asset_identifier)
-        getter = self._io_manager._make_getter()
-        getter.append_anything(message)
-        result = getter._run(io_manager=self._io_manager)
+        result = self._getter(message)
         if not result:
             return
         if isinstance(result, int):
@@ -1956,27 +905,62 @@ class AbjadIDE(object):
             result = [result]
         paths = []
         for input_ in result:
-            path = self._match_visible_path(
+            path = self._match_ordered_path(
                 secondary_paths,
-                visible_paths,
+                ordered_paths,
                 input_,
                 )
             if path:
                 paths.append(path)
         return paths
 
-    def _sort_by_menu_string(self, paths):
-        strings = [self._to_menu_string(_) for _ in paths]
-        pairs = list(zip(strings, paths))
+    def _select_path_to_copy(self, directory, score=None):
+        directories = directory._collect_similar_directories()
+        if score:
+            filter_ = str(score.contents)
+        else:
+            filter_ = str(directory.contents)
+        directories = [_ for _ in directories if str(_).startswith(filter_)]
+        paths = []
+        for directory_ in directories:
+            for path in directory_.glob('*'):
+                if path.name[0].isalpha():
+                    paths.append(path.trim())
+        menu_header = directory.get_menu_header()
+        menu_header = menu_header + ' - select path to copy:'
+        selector = self._io_manager._make_selector(
+            items=paths,
+            menu_header=menu_header,
+            )
+        result = selector._run(io_manager=self._io_manager)
+        path = None
+        if result in paths:
+            path = result
+        elif isinstance(result, tuple):
+            scores = self._get_scores_directory()
+            for score in scores.iterdir():
+                if result[0] == score.name:
+                    path = self._select_path_to_copy(directory, score=score)
+        if not path:
+            return
+        path = type(directory)(path)
+        scores = self._get_scores_directory()
+        path = scores / path.parts[0] / path
+        return path
 
-        def sort_function(pair):
-            string = pair[0]
-            string = abjad.String(string).strip_diacritics()
-            string = string.replace("'", '')
-            return string
-        pairs.sort(key=lambda _: sort_function(_))
-        paths = [_[-1] for _ in pairs]
-        return paths
+    def _select_score_package(self):
+        scores = self._get_scores_directory()
+        entries = []
+        for path in scores.list_ordered_paths():
+            entry = self._menu_entry(path.name, path)
+            entries.append(entry)
+        entries.sort()
+        selector = self._io_manager._make_selector(
+            menu_entries=entries,
+            menu_header='select score package',
+            )
+        result = selector._run(io_manager=self._io_manager)
+        return result
 
     def _start(self, input_=None):
         self._session._reinitialize()
@@ -1984,155 +968,23 @@ class AbjadIDE(object):
         if input_:
             self._session._pending_input = input_
         self._session._pending_redraw = True
-        directory = self._configuration.composer_scores_directory
+        scores = self._configuration.composer_scores_directory
         if self._session.is_test or self._session.is_example:
-            directory = self._configuration.example_scores_directory
+            scores = self._configuration.test_scores_directory
         while True:
-            self._manage_directory(directory)
+            self._manage_directory(scores)
             if self._session.is_quitting:
                 break
         self._io_manager._clean_up()
         self._io_manager.clear_terminal()
 
-    def _to_asset_identifier(self, directory):
-        assert directory.is_dir()
-        file_prototype = (
-            'build',
-            'build subdirectory',
-            'distribution',
-            'etc',
-            'tools',
-            'material',
-            'segment',
-            'stylesheets',
-            'test',
-            )
-        package_prototype = (
-            'scores',
-            'materials',
-            'segments',
-            )
-        if self._is_score_directory(directory, package_prototype):
-            return 'package'
-        elif self._is_score_directory(directory, file_prototype):
-            return 'file'
-        else:
-            raise ValueError(directory)
-
-    def _to_menu_header(self, directory):
-        assert directory.is_dir()
-        header_parts = []
-        if self._is_score_directory(directory, 'scores'):
-            return 'Abjad IDE - scores directory'
-        score_directory = self._to_score_directory(directory)
-        if not self._is_score_directory(directory):
-            header = 'Abjad IDE - {}'
-            header = header.format(directory)
-            return header
-        score_part = self._get_title_metadatum(score_directory)
-        header_parts.append(score_part)
-        if self._is_score_directory(directory, 'wrapper'):
-            header_parts.append('wrapper directory')
-        trimmed_path = self._trim(directory)
-        path_parts = self.Path(trimmed_path).parts
-        path_parts = path_parts[1:]
-        if not path_parts:
-            directory_part, package_part = None, None
-        elif self._is_score_directory(directory, ('contents', 'wrapper')):
-            directory_part, package_part = None, None
-        elif len(path_parts) == 1:
-            directory_part, package_part = path_parts[0], None
-        elif len(path_parts) == 2:
-            directory_part, package_part = path_parts
-        else:
-            message = f'can not classify {directory!r}.'
-            raise ValueError(message, path_parts)
-        if directory_part:
-            directory_part = directory_part + ' directory'
-            header_parts.append(directory_part)
-        if package_part:
-            if package_part == '_segments':
-                package_part = 'segments'
-            else:
-                package_part = package_part.replace('_', ' ')
-            package_part = directory._get_metadatum('name', package_part)
-            header_parts.append(package_part)
-        header = ' - '.join(header_parts)
-        return header
-
-    def _to_menu_string(self, path):
-        assert isinstance(path, self.Path), repr(path)
-        if self._is_score_directory(path, 'contents'):
-            annotation = None
-            metadata = path._get_metadata()
-            if metadata:
-                year = metadata.get('year')
-                title = metadata.get('title')
-                if year:
-                    annotation = '{} ({})'.format(title, year)
-                else:
-                    annotation = str(title)
-            else:
-                annotation = path.name
-            return annotation
-        if self._is_score_directory(path, 'segment'):
-            name = path._get_metadatum('name')
-            if name is not None:
-                return name
-        prototype = ('tools', 'wrapper', 'test')
-        if ('_' in path.name and
-            self._is_score_directory(path) and
-            not self._is_score_directory(path, prototype)):
-            return abjad.String(path.name).to_space_delimited_lowercase()
-        return path.name
-
-    def _to_module_file_name(self, name):
-        assert isinstance(name, str), repr(name)
-        name = abjad.String(name).strip_diacritics()
-        name = name.lower()
-        name = self.Path(name).stem
-        name = abjad.String(name).to_snake_case()
-        name = name + '.py'
-        assert self._is_module_file_name(name), repr(name)
-        return name
-
-    def _to_name_predicate(self, directory):
-        assert directory.is_dir()
-        file_prototype = ('distribution', 'etc')
-        package_prototype = ('materials', 'segments', 'scores')
-        if not self._is_score_directory(directory):
-            return self._is_public_python_file_name
-        elif self._is_score_directory(directory, 'build'):
-            return self._is_build_directory_name
-        elif self._is_score_directory(directory, 'build subdirectory'):
-            return self._is_dash_case_file_name
-        elif self._is_score_directory(directory, '_segments'):
-            return self._is_dash_case_file_name
-        elif self._is_score_directory(directory, file_prototype):
-            return self._is_dash_case_file_name
-        elif self._is_score_directory(directory, package_prototype):
-            return self._is_package_name
-        elif self._is_score_directory(directory, 'scores'):
-            return self._is_package_name
-        elif self._is_score_directory(directory, 'wrapper'):
-            return self._is_wrapper_directory_name
-        elif self._is_score_directory(directory, ('score', 'contents')):
-            return self._is_package_name
-        elif self._is_score_directory(directory, 'tools'):
-            return self._is_maker_file_name
-        elif self._is_score_directory(directory, ('material', 'segment')):
-            return self._is_lowercase_file_name
-        elif self._is_score_directory(directory, 'stylesheets'):
-            return self._is_stylesheet_name
-        elif self._is_score_directory(directory, 'test'):
-            return self._is_module_file_name
-        else:
-            raise ValueError(directory)
-
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
         prototype = ('landscape', 'portrait', None)
         assert orientation in prototype, repr(orientation)
-        paper_dimensions = self._paper_size_to_paper_dimensions[paper_size]
+        try:
+            paper_dimensions = self._paper_size_to_paper_dimensions[paper_size]
+        except KeyError:
+            return 8.5, 11, 'in'
         paper_dimensions = paper_dimensions.replace(' x ', ' ')
         width, height, unit = paper_dimensions.split()
         if orientation == 'landscape':
@@ -2142,50 +994,18 @@ class AbjadIDE(object):
             width = width_
         return width, height, unit
 
-    def _to_score_directory(self, path, name=None):
-        if path.is_dir() and not self._is_score_directory(path):
-            return path
-        scores_directory = self._to_scores_directory(path)
-        if name == 'scores':
-            return scores_directory
-        parts = path.relative_to(scores_directory).parts
-        if not parts:
-            return
-        score_name = parts[0]
-        score_directory = scores_directory / score_name / score_name
-        if name in ('contents', 'score'):
-            pass
-        elif name == 'wrapper':
-            score_directory = score_directory.parent
-        elif name is not None:
-            score_directory = score_directory / name
-        return score_directory
-
-    def _to_scores_directory(self, path):
-        string = str(path)
-        for scores_directory in (
-            self._configuration.composer_scores_directory,
-            self._configuration.example_scores_directory):
-            if string.startswith(str(scores_directory)):
-                return scores_directory
-
-    def _trim(self, path):
-        assert isinstance(path, self.Path), repr(path)
-        scores_directory = self._to_scores_directory(path)
-        if scores_directory is None:
-            return str(path)
-        if self._is_score_directory(path, ('wrapper', 'contents')):
-            return str(path)
-        count = len(scores_directory.parts) + 1
-        parts = path.parts
-        parts = parts[count:]
-        return str(pathlib.Path(*parts))
+    def _trash_file(self, file_path):
+        if file_path.is_file():
+            self._display(f'trashing {file_path.trim()} ...')
+            self._io_manager._trash_file(file_path)
+        else:
+            self._display(f'missing {file_path.trim()} ...')
 
     @staticmethod
-    def _trim_ly(ly_path):
-        assert ly_path.is_file()
+    def _trim_ly(ly):
+        assert ly.is_file()
         lines = []
-        with ly_path.open() as file_pointer:
+        with ly.open() as file_pointer:
             found_score_block = False
             for line in file_pointer.readlines():
                 if line.startswith(r'\score'):
@@ -2204,124 +1024,58 @@ class AbjadIDE(object):
         lines = ''.join(lines)
         return lines
 
-    def _unadd_added_assets(self, path):
-        paths = []
-        paths.extend(self._get_added_asset_paths(path))
-        paths.extend(self._get_modified_asset_paths(path))
-        commands = []
-        for path in paths:
-            command = 'git reset -- {!s}'.format(path)
-            commands.append(command)
-        command = ' && '.join(commands)
-        with abjad.TemporaryDirectoryChange(directory=path):
-            self._io_manager.spawn_subprocess(command)
-
-    def _update_order_dependent_segment_metadata(self, directory):
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'segments')
-        paths = self._list_visible_paths(directory)
-        if not paths:
-            return
-        segment_count = len(paths)
-        # update segment numbers and segment count
-        for segment_index, path in enumerate(paths):
-            segment_number = segment_index + 1
-            path._add_metadatum('segment_number', segment_number)
-            path._add_metadatum('segment_count', segment_count)
-        # update first bar numbers and measure counts
-        path = paths[0]
-        first_bar_number = 1
-        path._add_metadatum('first_bar_number', first_bar_number)
-        measure_count = path._get_metadatum('measure_count')
-        if not measure_count:
-            return
-        next_bar_number = first_bar_number + measure_count
-        for path in paths[1:]:
-            first_bar_number = next_bar_number
-            path._add_metadatum('first_bar_number', next_bar_number)
-            measure_count = path._get_metadatum('measure_count')
-            if not measure_count:
-                return
-            next_bar_number = first_bar_number + measure_count
-
-    def _write_metadata_py(self, directory, metadata):
-        assert directory.is_dir()
-        metadata_py_path = directory / '__metadata__.py'
-        lines = []
-        lines.append('import abjad')
-        lines.append('')
-        lines.append('')
-        contents = '\n'.join(lines)
-        metadata = abjad.TypedOrderedDict(metadata)
-        items = list(metadata.items())
-        items.sort()
-        metadata = abjad.TypedOrderedDict(items)
-        metadata_lines = format(metadata, 'storage')
-        metadata_lines = 'metadata = {}'.format(metadata_lines)
-        contents = contents + '\n' + metadata_lines + '\n'
-        metadata_py_path.write_text(contents)
-
     ### PUBLIC METHODS ###
 
     @Command(
         'bld',
-        argument_name='current_directory',
+        argument_name='directory',
         description='score pdf - build',
-        directories=('build subdirectory',),
-        section='build',
+        directories=('build',),
+        section='builds',
         )
     def build_score(self, directory):
         r'''Builds score from the ground up.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        with self._interaction():
-            self._display('building score ...')
-            self.collect_segment_lys(directory.contents)
-            self.generate_music(directory)
-            self.interpret_music(directory)
-            tex_file_path = directory.build / 'front-cover.tex'
-            pdf_path = directory.build / 'front-cover.pdf'
-            if tex_file_path:
-                self.interpret_front_cover(directory)
-            elif pdf_path:
-                message = f'using existing {self._trim(pdf_path)} ...'
-                self._display(message)
-            else:
-                self._display('can make front cover ...')
-                return
-            tex_file_path = directory.build / 'preface.tex'
-            pdf_path = directory.build / 'preface.pdf'
-            if tex_file_path:
-                self.interpret_preface(directory)
-            elif pdf_path:
-                message = f'using existing {self._trim(pdf_path)} ...'
-                self._display(message)
-            else:
-                self._display('can make front cover ...')
-                return
-            tex_file_path = directory.build / 'back-cover.tex'
-            pdf_path = directory.build / 'back-cover.pdf'
-            if tex_file_path:
-                self.interpret_back_cover(directory)
-            elif pdf_path:
-                message = f'using existing {self._trim(pdf_path)} ...'
-                self._display(message)
-            else:
-                self._display('can make front covert ...')
-                return
-            self.generate_score(directory)
-            messages = self.interpret_score(directory)
-            target = directory / 'score.pdf'
-            message = f'opening {self._trim(target)} ...'
-            self._display(message)
-            self._io_manager.open_file(target)
+        assert directory.is_build()
+        self._display('building score ...')
+        self.collect_segment_lys(directory)
+        self.generate_music(directory)
+        self.interpret_music(directory, open_after=False)
+        tex = directory / 'front-cover.tex'
+        pdf = directory / 'front-cover.pdf'
+        if tex.is_file():
+            self.interpret_front_cover(directory, open_after=False)
+        elif pdf.is_file():
+            self._display(f'using existing {pdf.trim()} ...')
+        else:
+            self._display('missing front cover ...')
+            return
+        tex = directory / 'preface.tex'
+        pdf = directory / 'preface.pdf'
+        if tex.is_file():
+            self.interpret_preface(directory, open_after=False)
+        elif pdf:
+            self._display(f'using existing {pdf.trim()} ...')
+        else:
+            self._display('missing preface ...')
+            return
+        tex = directory / 'back-cover.tex'
+        pdf = directory / 'back-cover.pdf'
+        if tex.is_file():
+            self.interpret_back_cover(directory, open_after=False)
+        elif pdf.is_file():
+            self._display(f'using existing {pdf.trim()} ...')
+        else:
+            self._display('missing back cover ...')
+            return
+        self.generate_score(directory)
+        self.interpret_score(directory)
 
     @Command(
         'dfk',
-        argument_name='current_directory',
+        argument_name='directory',
         description='definition file - check',
         directories=('material', 'segment',),
         section='definition_file',
@@ -2329,35 +1083,29 @@ class AbjadIDE(object):
     def check_definition_file(self, directory):
         r'''Checks definition file.
 
-        Returns exit code 1 on failure.
+        Returns integer exit code for Travis tests.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
             self._display('checking definition file ...')
             definition = directory / 'definition.py'
             if not definition.is_file():
-                message = f'can not find {self._trim(definition)} ...'
-                message = message.format(self._trim(definition))
-                self._display(message)
+                self._display(f'can not find {definition.trim()} ...')
                 return
             with abjad.Timer() as timer:
                 result = self._io_manager.interpret_file(definition)
             stdout_lines, stderr_lines, exit_code = result
             self._display(stdout_lines)
             if exit_code:
-                messages = [str(definition) + ' FAILED:']
-                messages.extend(stderr_lines)
-                self._display(messages)
+                self._display([f'{definition.trim()} FAILED:'] + stderr_lines)
             else:
-                message = f'{self._trim(definition)} ... OK'
-                self._display(message, capitalize=False)
+                self._display(f'{definition.trim()} ... OK', caps=False)
             self._display(timer.total_time_message)
             return exit_code
 
     @Command(
         'dfk*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every definition file - check',
         directories=('materials', 'segments'),
         section='star',
@@ -2367,17 +1115,16 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        paths = self._list_visible_paths(directory)
+        assert directory.is_package_path(('materials', 'segments'))
+        paths = directory.list_ordered_paths()
         for path in paths:
             self.check_definition_file(path)
 
     @Command(
         'lyc',
-        argument_name='current_directory',
+        argument_name='directory',
         description='segment lys - collect',
-        directories=('build', 'build subdirectory',),
+        directories=('builds', 'build',),
         section='build-preliminary',
         )
     def collect_segment_lys(self, directory):
@@ -2395,33 +1142,25 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('builds', 'build'))
         with self._interaction():
             self._display('collecting segment lys ...')
-            directory = self._to_score_directory(directory)
-            pairs = self._collect_segment_lys(directory)
+            pairs = directory._collect_segment_lys()
             if not pairs:
-                message = '... no segment lys found.'
-                self._display(message)
+                self._display('... no segment lys found.')
                 return
-            build_directory = self._to_score_directory(directory, 'build')
-            _segments_directory = build_directory / '_segments'
-            if not _segments_directory.is_dir():
+            if not directory._segments.is_dir():
                 _segments_directory.mkdir()
-            messages = []
-            for source_ly_path, target_ly_path in pairs:
-                if target_ly_path.exists():
-                    message = f'removing {self._trim(target_ly_path)} ...'
-                    self._display(message)
-                message = f'writing {self._trim(target_ly_path)} ...'
-                self._display(message)
-                text = self._trim_ly(source_ly_path)
-                target_ly_path.write_text(text)
+            for source, target in pairs:
+                if target.exists():
+                    self._display(f'removing {target.trim()} ...')
+                self._display(f'writing {target.trim()} ...')
+                text = self._trim_ly(source)
+                target.write_text(text)
 
     @Command(
         'cp',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('contents',),
         section='basic',
         )
@@ -2430,44 +1169,31 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
-            trimmed_source = self._select_path_to_copy(directory)
-            if not trimmed_source:
+            source = self._select_path_to_copy(directory)
+            if not source:
                 return
-            trimmed_source = self.Path(trimmed_source)
-            scores_directory = self._configuration.composer_scores_directory
-            if self._session.is_test or self._session.is_example:
-                scores_directory = self._configuration.example_scores_directory
-            score_name = trimmed_source.parts[0]
-            source_path = scores_directory / score_name / trimmed_source
-            asset_name = source_path.name
-            target_path = directory / asset_name
-            if source_path == target_path:
-                message = '{} already exists.'
-                message = message.format(self._trim(target_path))
-                self._display(message, capitalize=False)
-                getter = self._io_manager._make_getter()
-                getter.append_string('enter new name')
-                name = getter._run(io_manager=self._io_manager)
+            target = directory / source.name
+            if source == target:
+                self._display(f'existing {target.trim()} ...')
+                name = self._getter('enter new name')
                 if not name:
                     return
-                directory_name = target_path.name
-                target_path = directory_name / name
-            if source_path == target_path:
+                target = target.with_name(name)
+            if source == target:
                 return
-            if source_path.is_file():
-                shutil.copyfile(str(source_path), str(target_path))
-            elif source_path.is_dir():
-                shutil.copytree(str(source_path), str(target_path))
+            if source.is_file():
+                shutil.copyfile(str(source), str(target))
+            elif source.is_dir():
+                shutil.copytree(str(source), str(target))
             else:
-                raise ValueError(source_path)
-            self._display(f'writing {self._trim(target_path)} ...')
+                raise ValueError(source)
+            self._display(f'writing {target.trim()} ...')
 
     @Command('?', section='system')
     def display_action_command_help(self):
-        r'''Displays action commands.
+        r'''Displays action command help.
 
         Returns none.
         '''
@@ -2475,7 +1201,7 @@ class AbjadIDE(object):
 
     @Command(';', section='display navigation')
     def display_navigation_command_help(self):
-        r'''Displays navigation commands.
+        r'''Displays navigation command help.
 
         Returns none.
         '''
@@ -2491,18 +1217,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_open_file = True
-        if self._session.is_test:
-            return
-        path = self._configuration.aliases_file_path
-        self._io_manager.edit(path)
-        self._configuration._read_aliases_file()
+        with self._interaction():
+            self._edit_file(self._configuration.aliases_file_path)
+            self._configuration._read_aliases_file()
 
     @Command(
         'bce',
-        argument_name='current_directory',
+        argument_name='directory',
         description='back cover - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_back_cover_source(self, directory):
@@ -2510,14 +1233,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'back-cover.tex'
-        self._io_manager.open_file(file_path)
+        directory.is_build()
+        with self._interaction():
+            self._edit_file(directory / 'back-cover.tex')
 
     @Command(
         'df',
-        argument_name='current_directory',
+        argument_name='directory',
         description='definition file - edit',
         directories=('material', 'segment',),
         section='definition_file',
@@ -2527,14 +1249,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        definition_path = directory / 'definition.py'
-        self._io_manager.edit(definition_path)
+        assert directory.is_package_path(('material', 'segment'))
+        with self._interaction():
+            self._edit_file(directory / 'definition.py')
 
     @Command(
         'ee*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every string - edit',
         section='star',
         )
@@ -2543,27 +1264,24 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
-            getter = self._io_manager._make_getter()
-            getter.append_string('enter search string')
-            search_string = getter._run(io_manager=self._io_manager)
+            search_string = self._getter('enter search string')
             if not search_string:
                 return
-            command = r'vim -c "grep {!s} --type=python"'
-            command = command.format(search_string)
-            if directory == self._to_scores_directory(directory):
-                pass
+            command = rf'vim -c "grep {search_string!s} --type=python"'
+            if directory.is_scores():
+                source = directory
             else:
-                directory = self._to_score_directory(directory, 'wrapper')
-            directory = abjad.TemporaryDirectoryChange(directory)
-            with directory:
+                source = directory.wrapper
+            if self._session.is_test:
+                return
+            with self._change(source):
                 self._io_manager.spawn_subprocess(command)
 
     @Command(
         'df*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every definition file - edit',
         directories=('materials', 'segments'),
         section='star',
@@ -2573,16 +1291,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('materials', 'segments'))
         with self._interaction():
-            directories = self._list_visible_paths(directory)
-            paths = [_ / 'definition.py' for _ in directories]
+            paths = directory.list_ordered_paths()
+            paths = [_ / 'definition.py' for _ in paths]
             self._open_every_file(paths)
 
     @Command(
         'ff*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every file - edit',
         section='star',
         )
@@ -2591,24 +1308,20 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
-            getter = self._io_manager._make_getter()
-            getter.append_string('enter filename')
-            name = getter._run(io_manager=self._io_manager)
+            name = self._getter('enter filename')
             if not name:
                 return
-            command = 'find {!s} -name {}'
-            command = command.format(directory, name)
+            command = f'find {directory!s} -name {name}'
             paths = self._io_manager.run_command(command)
             self._io_manager.open_file(paths)
 
     @Command(
         'fce',
-        argument_name='current_directory',
+        argument_name='directory',
         description='front cover - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_front_cover_source(self, directory):
@@ -2616,14 +1329,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'front-cover.tex'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._edit_file(directory / 'front-cover.tex')
 
     @Command(
         'ill',
-        argument_name='current_directory',
+        argument_name='directory',
         description='illustrate file - edit',
         directories=('material',),
         section='illustrate_file',
@@ -2633,10 +1345,9 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        illustrate_py_path = directory / '__illustrate__.py'
-        self._io_manager.edit(illustrate_py_path)
+        assert directory.is_material()
+        with self._interaction():
+            self._edit_file(directory / '__illustrate__.py')
 
     @Command(
         'lxg',
@@ -2648,14 +1359,8 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_open_file = True
         with self._interaction():
-            target = self._configuration.latex_log_file_path
-            if not target.is_file():
-                self._display(f'missing {target} ...')
-            else:
-                self._display(f'opening {target} ...')
-                self._io_manager.open_file(target)
+            self._edit_file(self._configuration.latex_log_file_path)
 
     @Command(
         'lpg',
@@ -2667,14 +1372,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        self._session._attempted_to_open_file = True
-        if self._session.is_test:
-            return
-        self._io_manager.open_last_log()
+        with self._interaction():
+            target = abjad.abjad_configuration.lilypond_log_file_path
+            self._edit_file(self.PackagePath(target))
 
     @Command(
         'ly',
-        argument_name='current_directory',
+        argument_name='directory',
         description='ly - edit',
         directories=('material', 'segment',),
         section='ly',
@@ -2684,16 +1388,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'illustration.ly'
-        self._io_manager.open_file(file_path)
+        assert directory.is_package_path(('material', 'segment'))
+        with self._interaction():
+            self._edit_file(directory / 'illustration.ly')
 
     @Command(
         'me',
-        argument_name='current_directory',
+        argument_name='directory',
         description='music - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_music_source(self, directory):
@@ -2701,16 +1404,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'music.ly'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._edit_file(directory / 'music.ly')
 
     @Command(
         'pe',
-        argument_name='current_directory',
+        argument_name='directory',
         description='preface - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_preface_source(self, directory):
@@ -2718,16 +1420,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'preface.tex'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._edit_file(directory / 'preface.tex')
 
     @Command(
         'se',
-        argument_name='current_directory',
+        argument_name='directory',
         description='score - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_score_source(self, directory):
@@ -2735,16 +1436,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'score.tex'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._edit_file(director / 'score.tex')
 
     @Command(
         'ste',
-        argument_name='current_directory',
+        argument_name='directory',
         description='stylesheet - edit',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-edit',
         )
     def edit_stylesheet(self, directory):
@@ -2752,16 +1452,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'stylesheet.ily'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._edit_file(directory / 'stylesheet.ily')
 
     @Command(
         'bcg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='back cover - generate',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-generate',
         )
     def generate_back_cover(self, directory):
@@ -2769,75 +1468,67 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        contents = directory.contents
+        assert directory.is_build()
         with self._interaction():
             self._display('generating back cover ...')
-            replacements = {}
-            catalog_number = contents._get_metadatum('catalog_number')
+            values = {}
+            contents = directory.contents
+            catalog_number = contents.get_metadatum('catalog_number')
             name = 'catalog_number_suffix'
-            catalog_number_suffix = contents._get_metadatum(name)
+            catalog_number_suffix = contents.get_metadatum(name)
             if catalog_number_suffix:
                 catalog_number += f' / {catalog_number_suffix}'
-            replacements['catalog_number'] = catalog_number
+            values['catalog_number'] = catalog_number
             composer_website = self._configuration.composer_website or ''
             if self._session.is_test or self._session.is_example:
                 composer_website = 'www.composer-website.com'
-            replacements['composer_website'] = composer_website
-            price = contents._get_metadatum('price', r'\null')
-            replacements['price'] = price
-            paper_size = contents._get_metadatum('paper_size', 'letter')
-            orientation = contents._get_metadatum('orientation')
+            values['composer_website'] = composer_website
+            price = contents.get_metadatum('price', r'\null')
+            values['price'] = price
+            paper_size = contents.get_metadatum('paper_size', 'letter')
+            orientation = contents.get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
             paper_size = f'{{{width}{unit}, {height}{unit}}}'
-            replacements['paper_size'] = paper_size
-            messages = self._copy_boilerplate(
-                'back-cover.tex',
-                directory,
-                replacements=replacements,
-                )
-            self._display(messages)
+            values['paper_size'] = paper_size
+            self._copy_boilerplate(directory, 'back-cover.tex', values=values)
 
     @Command(
         'stg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='stylesheet - generate',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-generate',
         )
-    def generate_build_subdirectory_stylesheet(self, directory):
-        r'''Generates build subdirectory ``stylsheet.ily``.
+    def generate_build_stylesheet(self, directory):
+        r'''Generates build directory ``stylsheet.ily``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('generating subdirectory stylesheet ...')
-            replacements = {}
-            paper_size = directory._get_metadatum('paper_size')
-            orientation = directory._get_metadatum('orientation')
-            replacements['paper_size'] = paper_size
+            values = {}
+            paper_size = directory.get_metadatum('paper_size')
+            values['paper_size'] = paper_size
+            orientation = directory.get_metadatum('orientation')
             if orientation:
-                orientation_ = " '{}".format(orientation)
+                orientation_ = f" '{orientation}"
             else:
                 orientation_ = ''
-            replacements['orientation'] = orientation_
-            messages = self._copy_boilerplate(
-                'build-subdirectory-stylesheet.ily',
+            values['orientation'] = orientation_
+            self._copy_boilerplate(
                 directory,
-                target_file_name='stylesheet.ily',
-                replacements=replacements,
+                'build-subdirectory-stylesheet.ily',
+                target_name='stylesheet.ily',
+                values=values,
                 )
-            self._display(messages)
 
     @Command(
         'fcg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='front cover - generate',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-generate',
         )
     def generate_front_cover(self, directory):
@@ -2845,42 +1536,36 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             contents = directory.contents
             self._display('generating front cover ...')
             file_name = 'front-cover.tex'
-            replacements = {}
+            values = {}
             score_title = contents._get_title_metadatum(year=False)
             score_title = score_title.upper()
-            replacements['score_title'] = score_title
-            forces_tagline = contents._get_metadatum('forces_tagline', '')
-            replacements['forces_tagline'] = forces_tagline
-            year = contents._get_metadatum('year', '')
-            replacements['year'] = str(year)
+            values['score_title'] = score_title
+            forces_tagline = contents.get_metadatum('forces_tagline', '')
+            values['forces_tagline'] = forces_tagline
+            year = contents.get_metadatum('year', '')
+            values['year'] = str(year)
             composer = self._configuration.composer_uppercase_name
             if self._session.is_test or self._session.is_example:
                 composer = 'COMPOSER'
-            replacements['composer'] = str(composer)
-            paper_size = contents._get_metadatum('paper_size', 'letter')
-            orientation = contents._get_metadatum('orientation')
+            values['composer'] = str(composer)
+            paper_size = contents.get_metadatum('paper_size', 'letter')
+            orientation = contents.get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
             paper_size = f'{{{width}{unit}, {height}{unit}}}'
-            replacements['paper_size'] = paper_size
-            messages = self._copy_boilerplate(
-                file_name,
-                directory,
-                replacements=replacements,
-                )
-            self._display(messages)
+            values['paper_size'] = paper_size
+            self._copy_boilerplate(directory, file_name, values=values)
 
     @Command(
         'mg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='music - generate',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-generate',
         )
     def generate_music(self, directory):
@@ -2888,63 +1573,48 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         contents = directory.contents
         with self._interaction():
             self._display('generating music ...')
             target = directory / 'music.ly'
             if target.exists():
-                message = f'removing {self._trim(target)} ...'
-                self._display(message)
+                self._display(f'removing {target.trim()} ...')
                 target.unlink()
-            messages = []
-            ly_paths = self._list_visible_paths(contents.segments)
-            if ly_paths:
-                view_name = contents.segments._get_metadatum('view_name')
-                views = self._read_view_inventory(contents.segments)
-                if not views or view_name not in views:
-                    view_name = None
-                if view_name:
-                    message = f'examining segments in {view_name!r} order ...'
-                    messages.append(message)
+            paths = contents.segments.list_ordered_paths()
+            if paths:
+                view = contents.segments.get_metadatum('view')
+                if bool(view):
+                    self._display(f'examining segments in view order ...')
                 else:
-                    message = 'examining segments in alphabetical order ...'
-                    messages.append(message)
+                    self._display('examining segments alphabetically ...')
             else:
-                messages.append('no segments found ...')
-            for ly_path in ly_paths:
-                messages.append(f'examining {self._trim(ly_path)} ...')
-            self._display(messages)
-            segment_names = []
-            for ly_path in ly_paths:
-                segment_name = ly_path.stem
-                segment_names.append(segment_name)
-            lilypond_names = [_.replace('_', '-') for _ in segment_names]
-            source_path = self.Path('boilerplate') / 'music.ly'
-            target = directory / 'music.ly'
-            message = f'writing {self._trim(target)} ...'
-            self._display(message)
-            shutil.copyfile(str(source_path), str(target))
+                self._display('no segments found ...')
+            for path in paths:
+                self._display(f'examining {path.trim()} ...')
+            names = [_.stem.replace('_', '-') for _ in paths]
+            source = self.PackagePath('boilerplate') / 'music.ly'
+            self._display(f'writing {target.trim()} ...')
+            shutil.copyfile(str(source), str(target))
             lines = []
             segment_include_statements = ''
-            for i, lilypond_name in enumerate(lilypond_names):
-                file_name = lilypond_name + '.ly'
-                line = r'\include "../_segments/{}"'
+            for i, name in enumerate(names):
+                name += '.ly'
+                path = directory._segments / name
+                if path.is_file():
+                    line = rf'\include "../_segments/{name}"'
+                else:
+                    line = rf'%\include "../_segments/{name}"'
                 if 0 < i:
                     line = self._tab + line
-                line = line.format(file_name)
                 lines.append(line)
             if lines:
                 new = '\n'.join(lines)
                 segment_include_statements = new
             stylesheet_include_statement = ''
-            if self._is_score_directory(directory, 'build'):
+            if directory.is_builds():
                 line = r'\include "../stylesheets/stylesheet.ily"'
-            elif self._is_score_directory(
-                directory,
-                'build subdirectory',
-                ):
+            elif directory.is_build():
                 line = r'\include "stylesheet.ily"'
             stylesheet_include_statement = line
             language_token = abjad.LilyPondLanguageToken()
@@ -2956,7 +1626,7 @@ class AbjadIDE(object):
                 score_title = annotated_title
             else:
                 score_title = contents._get_title_metadatum(year=False)
-            forces_tagline = contents._get_metadatum('forces_tagline', '')
+            forces_tagline = contents.get_metadatum('forces_tagline', '')
             template = target.read_text()
             template = template.format(
                 forces_tagline=forces_tagline,
@@ -2970,9 +1640,9 @@ class AbjadIDE(object):
 
     @Command(
         'pg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='preface - generate',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-generate',
         )
     def generate_preface(self, directory):
@@ -2980,31 +1650,23 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        subdirectory = directory
-        assert subdirectory.is_build_subdirectory, repr(subdirectory)
+        assert directory.is_build()
         with self._interaction():
             self._display('generating preface ...')
-            replacements = {}
-            paper_size = subdirectory._get_metadatum('paper_size', 'letter')
-            orientation = subdirectory._get_metadatum('orientation')
+            values = {}
+            paper_size = directory.get_metadatum('paper_size', 'letter')
+            orientation = directory.get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
             paper_size = f'{{{width}{unit}, {height}{unit}}}'
-            replacements['paper_size'] = paper_size
-            messages = self._copy_boilerplate(
-                'preface.tex',
-                subdirectory,
-                replacements=replacements,
-                )
-            self._display(messages)
+            values['paper_size'] = paper_size
+            self._copy_boilerplate(directory, 'preface.tex', values=values)
 
     @Command(
         'sg',
-        argument_name='current_directory',
+        argument_name='directory',
         description='score - generate',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-generate',
         )
     def generate_score(self, directory):
@@ -3012,234 +1674,201 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        subdirectory = directory
-        assert subdirectory.is_build_subdirectory, repr(subdirectory)
+        assert directory.is_build()
         with self._interaction():
             self._display('generating score ...')
-            replacements = {}
-            paper_size = subdirectory._get_metadatum('paper_size', 'letter')
-            orientation = subdirectory._get_metadatum('orientation')
+            values = {}
+            paper_size = directory.get_metadatum('paper_size', 'letter')
+            orientation = directory.get_metadatum('orientation')
             paper_size = self._to_paper_dimensions(paper_size, orientation)
             width, height, unit = paper_size
             paper_size = f'{{{width}{unit}, {height}{unit}}}'
-            replacements['paper_size'] = paper_size
-            messages = self._copy_boilerplate(
-                'score.tex',
-                directory,
-                replacements=replacements,
-                )
-            self._display(messages)
-
-    @Command(
-        'add*',
-        argument_name='current_directory',
-        directories=('scores',),
-        section='git',
-        )
-    def git_add_every_package(self, directory):
-        r'''Adds every asset to repository.
-
-        Returns none.
-        '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._session._attempted_method = 'git_add_every_package'
-        if self._session.is_test:
-            return
-        directories = self._list_visible_paths(directory)
-        for directory in directories:
-            self._git_add(directory)
+            values['paper_size'] = paper_size
+            self._copy_boilerplate(directory, 'score.tex', values=values)
 
     @Command(
         'ci',
-        argument_name='current_directory',
+        argument_name='directory',
         description='git - commit',
         forbidden_directories=('scores',),
         section='git',
         )
     def git_commit(self, directory, commit_message=None):
-        r'''Commits working copy of current score package to repository.
+        r'''Commits working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._io_manager._session._attempted_method = 'git_commit'
-        self._display(f'git commit {directory} ...')
-        if self._io_manager._session.is_test:
-            return
-        if not self._git_add(directory):
-            return
-        directory = self._to_score_directory(directory, 'wrapper')
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._interaction()
-        with change, interaction:
-            pending_commit = self._has_pending_commit(directory)
-            if pending_commit:
-                self._display(pending_commit)
-            else:
-                message = f'{directory} ... nothing to commit.'
-                messages = [message]
-                self._display(messages)
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory.wrapper):
+            self._display(f'git commit {directory.wrapper} ...')
+            if not directory.wrapper._has_pending_commit():
+                self._display(f'{directory.wrapper} ... nothing to commit.')
                 return
+            self._io_manager.spawn_subprocess('git status .')
+            if self._io_manager._session.is_test:
+                return
+            command = f'git add -A {directory.wrapper}'
+            lines = self._io_manager.run_command(command)
+            self._display(lines, caps=False)
             if commit_message is None:
-                self._display('')
-                getter = self._io_manager._make_getter()
-                getter.append_string('commit message')
-                commit_message = getter._run(io_manager=self._io_manager)
+                commit_message = self._getter('commit message')
                 if not commit_message:
                     return
-            message = str(directory)
-            scores_directory = self._configuration.example_scores_directory
-            message = message.replace(str(scores_directory), '')
-            scores_directory = self._configuration.composer_scores_directory
-            message = message.replace(str(scores_directory), '')
-            message = message + ' ...'
-            command = f'git commit -m "{commit_message}" {directory}; git push'
+            command = f'git commit -m "{commit_message}" {directory.wrapper}'
+            command += '; git push'
             lines = self._io_manager.run_command(command)
-            self._display(lines, capitalize=False)
+            self._display(lines, caps=False)
 
     @Command(
         'ci*',
-        argument_name='current_directory',
+        argument_name='directory',
+        description='every package - git commit',
         directories=('scores',),
         section='git',
         )
     def git_commit_every_package(self, directory):
-        r'''Commits every asset to repository.
+        r'''Commits every working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        assert self._is_score_directory(directory, 'scores'), repr(directory)
-        self._session._attempted_method = 'git_commit_every_package'
-        getter = self._io_manager._make_getter()
-        getter.append_string('commit message')
-        commit_message = getter._run(io_manager=self._io_manager)
+        assert directory.is_scores()
+        commit_message = self._getter('commit message')
         if not commit_message:
             return
-        directories = self._list_visible_paths(directory)
-        for directory in directories:
-            self.git_commit(directory, commit_message=commit_message)
+        paths = directory.list_ordered_paths()
+        for path in paths:
+            self.git_commit(path, commit_message=commit_message)
 
     @Command(
         'diff',
-        argument_name='current_directory',
+        argument_name='directory',
         description='git - diff',
         forbidden_directories=('scores',),
         section='git',
         )
     def git_diff(self, directory):
-        r'''Displays Git diff of files in current directory.
+        r'''Displays Git diff of working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        with abjad.TemporaryDirectoryChange(directory=directory):
-            command = 'git diff {!s}'.format(directory)
-            self._io_manager._session._attempted_method = 'git_diff'
-            with abjad.TemporaryDirectoryChange(directory=directory):
-                self._io_manager.spawn_subprocess(command)
+        assert directory.is_package_path()
+        with self._change(directory):
+            self._io_manager.spawn_subprocess(f'git diff {directory}')
 
     @Command(
         'pull',
-        argument_name='current_directory',
+        argument_name='directory',
         description='git - pull',
         forbidden_directories=('scores',),
         section='git',
         )
     def git_pull(self, directory):
-        r'''Updates working copy of current score package.
+        r'''Pulls working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._session._attempted_method = 'git_pull'
-        directory = self._to_score_directory(directory, 'wrapper')
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._interaction()
-        with change, interaction:
-            self._display(f'git pull {directory} ...')
-            if self._io_manager._session.is_test:
-                return
-            root_directory = self._get_repository_root_directory(directory)
-            command = f'git pull {root_directory}'
-            lines = self._io_manager.run_command(command)
-            if lines and 'Already up-to-date' in lines[-1]:
-                lines = lines[-1:]
-            self._display(lines)
+        assert directory.is_package_path()
+        with self._interaction():
+            with self._change(directory.wrapper):
+                self._display(f'git pull {directory.wrapper} ...')
+                if not self._io_manager._session.is_test:
+                    lines = self._io_manager.run_command('git pull .')
+                    if lines and 'Already up-to-date' in lines[-1]:
+                        lines = lines[-1:]
+                    self._display(lines)
+                    command = 'git submodule foreach git pull origin master'
+                    self._display(f'{command} ...')
+                    lines = self._io_manager.run_command(command)
+                    if lines and 'Already up-to-date' in lines[-1]:
+                        lines = lines[-1:]
+                    self._display(lines)
 
     @Command(
         'pull*',
-        argument_name='current_directory',
+        argument_name='directory',
+        description='every package - git pull',
         directories=('scores',),
         section='git',
         )
     def git_pull_every_package(self, directory):
-        r'''Updates every asset from repository.
+        r'''Pulls every working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._session._attempted_method = 'git_pull_every_package'
-        directories = self._list_visible_paths(directory)
-        for directory in directories:
-            message = self._to_menu_string(directory)
-            if message.endswith(')'):
-                index = message.find('(')
-                message = message[:index]
-                message = message.strip()
-            message = message + ':'
-            self.git_pull(directory)
+        assert directory.is_scores()
+        for path in directory.list_ordered_paths():
+            self.git_pull(path)
+
+    @Command(
+        'push',
+        argument_name='directory',
+        description='git - push',
+        forbidden_directories=('scores',),
+        section='git',
+        )
+    def git_push(self, directory):
+        r'''Pushes working copy.
+
+        Returns none.
+        '''
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory.wrapper):
+            self._display(f'git push {directory.wrapper} ...')
+            if not self._io_manager._session.is_test:
+                self._io_manager.spawn_subprocess('git push .')
+
+    @Command(
+        'push*',
+        argument_name='directory',
+        description='every package - git push',
+        directories=('scores',),
+        section='git',
+        )
+    def git_push_every_package(self, directory):
+        r'''Pushes every package.
+
+        Returns none.
+        '''
+        assert directory.is_scores()
+        for path in directory.list_ordered_paths():
+            self.git_push(path)
 
     @Command(
         'st',
-        argument_name='current_directory',
+        argument_name='directory',
         description='git - status',
         forbidden_directories=('scores',),
         section='git',
         )
     def git_status(self, directory):
-        r'''Displays Git status of current score package.
+        r'''Displays Git status of working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._io_manager._session._attempted_method = 'git_status'
-        directory = self.Path(directory)
-        directory = directory.wrapper
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        interaction = self._interaction()
-        with change, interaction:
-            message = f'git status {directory} ...'
-            self._display(message)
-            command = f'git status {directory}'
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory.wrapper):
+            self._display(f'git status {directory.wrapper} ...')
+            self._io_manager.spawn_subprocess('git status .')
+            self._display('')
+            command = 'git submodule foreach git fetch'
+            self._display(f'{command} ...')
             self._io_manager.spawn_subprocess(command)
 
     @Command(
         'st*',
-        argument_name='current_directory',
+        argument_name='directory',
+        description='every package - git status',
         directories=('scores',),
         section='git',
         )
     def git_status_every_package(self, directory):
-        r'''Displays Git status of every package.
+        r'''Displays Git status of every working copy.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        self._session._attempted_method = 'git_status_every_package'
-        directories = self._list_visible_paths(directory)
-        for directory in directories:
-            self.git_status(directory)
+        assert directory.is_scores()
+        for path in directory.list_ordered_paths():
+            self.git_status(path)
 
     @Command(
         '-',
@@ -3251,29 +1880,42 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        directory = self._session.previous_directory
-        if directory:
-            self._manage_directory(directory)
+        if self._session.previous_directory:
+            self._manage_directory(self._session.previous_directory)
 
     @Command(
         'bb',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
-    def go_to_build_directory(self, directory):
-        r'''Goes to build directory.
+    def go_to_builds_directory(self, directory):
+        r'''Goes to builds directory.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'build')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.builds)
+
+    @Command(
+        'nn',
+        argument_name='directory',
+        forbidden_directories=('scores',),
+        section='navigation',
+        )
+    def go_to_builds_directory_segments(self, directory):
+        r'''Goes to _segments directory.
+
+        Returns none.
+        '''
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory._segments)
 
     @Command(
         'cc',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3282,14 +1924,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory)
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.contents)
 
     @Command(
         'dd',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3298,14 +1939,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'distribution')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.distribution)
 
     @Command(
         'ee',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3314,14 +1954,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'etc')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.etc)
 
     @Command(
         'mm',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3330,14 +1969,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'materials')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.materials)
 
     @Command(
         '>',
-        argument_name='current_directory',
+        argument_name='directory',
         directories=('material', 'materials', 'segment', 'segments'),
         section='sibling navigation',
         )
@@ -3346,14 +1984,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._get_next_package(directory)
-        self._manage_directory(directory)
+        prototype = ('material', 'materials', 'segment', 'segments')
+        assert directory.is_package_path(prototype)
+        with self._interaction():
+            directory = directory.get_next_package(cyclic=True)
+            self._manage_directory(directory)
 
     @Command(
         '<',
-        argument_name='current_directory',
+        argument_name='directory',
         directories=('material', 'materials', 'segment', 'segments'),
         section='sibling navigation',
         )
@@ -3362,10 +2001,11 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._get_previous_package(directory)
-        self._manage_directory(directory)
+        prototype = ('material', 'materials', 'segment', 'segments')
+        assert directory.is_package_path(prototype)
+        with self._interaction():
+            directory = directory.get_previous_package(cyclic=True)
+            self._manage_directory(directory)
 
     @Command(
         'ss',
@@ -3376,14 +2016,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        directory = self._configuration.composer_scores_directory
-        if self._session.is_test or self._session.is_example:
-            directory = self._configuration.example_scores_directory
-        self._manage_directory(directory)
+        with self._interaction():
+            directory = self._configuration.composer_scores_directory
+            if self._session.is_test or self._session.is_example:
+                directory = self._configuration.test_scores_directory
+            self._manage_directory(directory)
 
     @Command(
         'gg',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3392,14 +2033,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'segments')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.segments)
 
     @Command(
         'yy',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3408,14 +2048,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'stylesheets')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.stylesheets)
 
     @Command(
         'tt',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3424,14 +2063,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'test')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.test)
 
     @Command(
         'oo',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3440,14 +2078,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'tools')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.tools)
 
     @Command(
         'ww',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('scores',),
         section='navigation',
         )
@@ -3456,38 +2093,34 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'wrapper')
-        self._manage_directory(directory)
+        assert directory.is_package_path()
+        with self._interaction():
+            self._manage_directory(directory.wrapper)
 
     @Command(
         'bci',
-        argument_name='current_directory',
+        argument_name='directory',
         description='back cover - interpret',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-interpret',
         )
-    def interpret_back_cover(self, directory):
+    def interpret_back_cover(self, directory, open_after=True):
         r'''Interprets ``back-cover.tex``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('interpreting back cover ...')
             source = directory / 'back-cover.tex'
             target = source.with_suffix('.pdf')
-            messages = self._interpret_tex_file(source)
-            self._display(messages)
-            if target.is_file():
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_file(target)
 
     @Command(
         'lyi*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every ly - interpret',
         directories=('materials', 'segments'),
         section='star',
@@ -3499,19 +2132,17 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('materials', 'segments'))
         with self._interaction():
             self._display('interpreting every ly ...')
-            directories = self._list_visible_paths(directory)
+            paths = directory.list_ordered_paths()
             sources = []
-            for directory in directories:
-                source = directory / 'illustration.ly'
+            for path in paths:
+                source = path / 'illustration.ly'
                 if source.is_file():
                     sources.append(source)
             if not sources:
-                message = 'no LilyPond files found.'
-                message._io_manager._display(message)
+                self._display('no LilyPond files found.')
                 return
             with abjad.Timer() as timer:
                 for source in sources:
@@ -3520,31 +2151,28 @@ class AbjadIDE(object):
 
     @Command(
         'fci',
-        argument_name='current_directory',
+        argument_name='directory',
         description='front cover - interpret',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-interpret',
         )
-    def interpret_front_cover(self, directory):
+    def interpret_front_cover(self, directory, open_after=True):
         r'''Interprets ``front-cover.tex``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('interpreting front cover ...')
             source = directory / 'front-cover.tex'
             target = source.with_suffix('.pdf')
-            messages = self._interpret_tex_file(source)
-            self._display(messages)
-            if target.is_file():
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_file(target)
 
     @Command(
         'lyi',
-        argument_name='current_directory',
+        argument_name='directory',
         description='ly - interpret',
         directories=('material', 'segment',),
         section='ly',
@@ -3556,119 +2184,130 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
             self._display('interpreting ly ...')
             source = directory / 'illustration.ly'
             target = source.with_suffix('.pdf')
             if source.is_file():
-                messages = self._run_lilypond(source)
-                self._display(messages)
+                self._run_lilypond(source)
             else:
-                message = f'the file {self._trim(source)} does not exist.'
-                self._display(message)
+                self._display(f'missing {source.trim()} ...')
             if target.is_file() and open_after:
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+                self._open_file(target)
 
     @Command(
         'mi',
-        argument_name='current_directory',
+        argument_name='directory',
         description='music - interpret',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-interpret',
         )
-    def interpret_music(self, directory):
+    def interpret_music(self, directory, open_after=True):
         r'''Interprets ``music.ly``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('interpreting music ...')
             source = directory / 'music.ly'
             target = source.with_suffix('.pdf')
             if not source.is_file():
-                message = f'can not find {self._trim(source)} ...'
-                self._display(message)
+                self._display(f'can not find {source.trim()} ...')
                 return
-            messages = self._run_lilypond(source)
-            self._display(messages)
-            if target.is_file():
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._run_lilypond(source)
+            if target.is_file() and open_after:
+                self._open_file(target)
 
     @Command(
         'pi',
-        argument_name='current_directory',
+        argument_name='directory',
         description='preface - interpret',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-interpret',
         )
-    def interpret_preface(self, directory):
+    def interpret_preface(self, directory, open_after=True):
         r'''Interprets ``preface.tex``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('interpreting preface ...')
             source = directory / 'preface.tex'
             target = source.with_suffix('.pdf')
-            messages = self._interpret_tex_file(source)
-            self._display(messages)
-            if target.is_file():
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_file(target)
 
     @Command(
         'si',
-        argument_name='current_directory',
+        argument_name='directory',
         description='score - interpret',
-        directories=('build subdirectory',),
+        directories=('build',),
         section='build-interpret',
         )
-    def interpret_score(self, directory):
+    def interpret_score(self, directory, open_after=True):
         r'''Interprets ``score.tex``.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_build()
         with self._interaction():
             self._display('interpreting score ...')
             source = directory / 'score.tex'
             target = source.with_suffix('.pdf')
-            messages = self._interpret_tex_file(source)
-            self._display(messages)
-            if target.is_file():
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_file(target)
 
     @Command(
         '!',
         section='system',
         )
-    def invoke_shell(self):
+    def invoke_shell(self, directory):
         r'''Invokes shell.
 
         Returns none.
         '''
+        pass
+
+    @Command(
+        'kp',
+        argument_name='directory',
+        directories=('tools',),
+        section='basic',
+        )
+    def keep(self, directory):
+        r'''Pushes tools file to composer library for safe-keeping.
+
+        Returns none.
+        '''
+        assert directory.is_package_path()
         with self._interaction():
-            statement = self._io_manager._handle_input(
-                '$',
-                include_chevron=False,
-                include_newline=False,
-                )
-            statement = statement.strip()
-            self._io_manager._invoke_shell(statement)
+            source = self._select_path_to_copy(directory)
+            if not source:
+                return
+            target = self._get_composer_tools_package_path()
+            if not target.is_dir():
+                self._display(f'missing {target} ...')
+                return
+            target = target / source.name
+            if target.exists():
+                self._display(f'existing {target.trim()} ...')
+                return
+            if source.is_file():
+                shutil.copyfile(str(source), str(target))
+            elif source.is_dir():
+                shutil.copytree(str(source), str(target))
+            else:
+                raise ValueError(source)
+            self._display(f'writing {target.trim()} ...')
 
     @Command(
         'pdfm*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every pdf - make',
         directories=('materials', 'segments'),
         section='star',
@@ -3678,16 +2317,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        assert self._is_score_directory(directory, ('materials', 'segments'))
-        directories = self._list_visible_paths(directory)
-        for directory in directories:
-            self.make_pdf(directory, open_after=False)
+        assert directory.is_package_path(('materials', 'segments'))
+        for path in directory.list_ordered_paths():
+            self.make_pdf(path, open_after=False)
 
     @Command(
         'illm',
-        argument_name='current_directory',
+        argument_name='directory',
         description='illustrate file - make',
         directories=('material',),
         section='illustrate_file',
@@ -3697,32 +2333,26 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        assert directory.parent.name == 'materials'
+        assert directory.is_material()
         with self._interaction():
-            contents = directory.contents
-            score_package_name = contents.name
-            material_package_name = directory.name
-            source = self.Path('boilerplate') / '__illustrate_material__.py'
+            source = self.PackagePath('boilerplate')
+            source /= '__illustrate_material__.py'
             target = directory / '__illustrate__.py'
             if target.is_file():
-                message = f'preserving {self._trim(target)} ...'
-                self._display(message)
+                self._display(f'preserving {target.trim()} ...')
                 return
-            message = f'writing {self._trim(target)} ...'
-            self._display(message)
+            self._display(f'writing {target.trim()} ...')
             shutil.copyfile(str(source), str(target))
             template = target.read_text()
-            completed_template = template.format(
-                score_package_name=score_package_name,
-                material_package_name=material_package_name,
+            template = template.format(
+                score_package_name=directory.contents.name,
+                material_package_name=directory.name,
                 )
-            target.write_text(completed_template)
+            target.write_text(template)
 
     @Command(
         'lym',
-        argument_name='current_directory',
+        argument_name='directory',
         description='ly - make',
         directories=('material', 'segment',),
         section='ly',
@@ -3732,20 +2362,19 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
             self._display('making ly ...')
-            if self._is_score_directory(directory, 'material'):
+            if directory.is_material():
                 self._make_material_ly(directory)
-            elif self._is_score_directory(directory, 'segment'):
+            elif directory.is_segment():
                 self._make_segment_ly(directory)
             else:
                 raise ValueError(directory)
 
     @Command(
         'pdfm',
-        argument_name='current_directory',
+        argument_name='directory',
         description='pdf - make',
         directories=('material', 'segment',),
         section='pdf',
@@ -3753,30 +2382,23 @@ class AbjadIDE(object):
     def make_pdf(self, directory, open_after=True):
         r'''Makes illustration PDF.
 
-        Returns exit code 1 on failure.
+        Returns integer exit code for Travis tests.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
-            if self._is_score_directory(directory, 'material'):
-                messages, success = self._make_material_pdf(
+            if directory.is_material():
+                return self._make_material_pdf(
                     directory,
                     open_after=open_after,
                     )
-            elif self._is_score_directory(directory, 'segment'):
-                messages, success = self._make_segment_pdf(
-                    directory,
-                    open_after=open_after
-                    )
+            elif directory.is_segment():
+                return self._make_segment_pdf(directory, open_after=open_after)
             else:
                 raise ValueError(directory)
-            assert messages == [], repr(messages)
-        exit_code = not success
-        return exit_code
 
     @Command(
         'new',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('contents',),
         section='basic',
         )
@@ -3785,24 +2407,23 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        with self._interaction():
-            package_prototype = ('materials', 'segments')
-            if self._is_score_directory(directory, 'scores'):
-                self._make_score_package()
-            elif self._is_score_directory(directory, package_prototype):
-                self._make_package(directory)
-            elif self._is_score_directory(directory, 'build'):
-                self._make_build_subdirectory(directory)
-            else:
-                self._make_file(directory)
+        assert directory.is_package_path()
+        if directory.is_scores():
+            self._make_score_package()
+        elif directory.is_package_path(('materials', 'segments')):
+            path = self._select_available_path(directory)
+            if path:
+                path._make_package()
+        elif directory.is_builds():
+            self._make_build_directory(directory)
+        else:
+            self._make_file(directory)
 
     @Command(
-        'bc',
-        argument_name='current_directory',
+        'bco',
+        argument_name='directory',
         description='back cover - open',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-open',
         )
     def open_back_cover_pdf(self, directory):
@@ -3810,16 +2431,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'back-cover.pdf'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._open_file(directory / 'back-cover.pdf')
 
     @Command(
         'pdf*',
-        argument_name='current_directory',
+        argument_name='directory',
         description='every pdf - open',
-        directories=('build subdirectory', 'materials', 'scores', 'segments'),
+        directories=('build', 'materials', 'scores', 'segments'),
         section='star',
         )
     def open_every_pdf(self, directory):
@@ -3827,20 +2447,17 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
             pdfs = []
-            if self._is_score_directory(directory, 'scores'):
-                directories = self._list_visible_paths(directory)
-                for directory in directories:
-                    pdf = self._get_score_pdf(directory)
+            if directory.is_scores():
+                for path in directory.list_ordered_paths():
+                    pdf = path._get_score_pdf()
                     if pdf is None:
                         continue
                     pdfs.append(pdf)
             else:
-                paths = self._list_visible_paths(directory)
-                for path in paths:
+                for path in directory.list_ordered_paths():
                     if str(path).endswith('.pdf'):
                         pdfs.append(path)
                     elif path.is_dir():
@@ -3849,10 +2466,10 @@ class AbjadIDE(object):
             self._open_every_file(pdfs)
 
     @Command(
-        'fc',
-        argument_name='current_directory',
+        'fco',
+        argument_name='directory',
         description='front cover - open',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-open',
         )
     def open_front_cover_pdf(self, directory):
@@ -3860,16 +2477,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'front-cover.pdf'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._open_file(directory / 'front-cover.pdf')
 
     @Command(
-        'm',
-        argument_name='current_directory',
+        'mo',
+        argument_name='directory',
         description='music - open',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-open',
         )
     def open_music_pdf(self, directory):
@@ -3877,14 +2493,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'music.pdf'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._open_file(directory / 'music.pdf')
 
     @Command(
-        'pdf',
-        argument_name='current_directory',
+        'pdfo',
+        argument_name='directory',
         description='pdf - open',
         directories=('material', 'segment',),
         section='pdf',
@@ -3894,21 +2509,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
-            target = directory / 'illustration.pdf'
-            if not target.is_file():
-                self._display(f'missing {self._trim(target)} ...')
-            else:
-                self._display(f'opening {self._trim(target)} ...')
-                self._io_manager.open_file(target)
+            self._open_file(directory / 'illustration.pdf')
 
     @Command(
-        'p',
-        argument_name='current_directory',
+        'po',
+        argument_name='directory',
         description='preface - open',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-open',
         )
     def open_preface_pdf(self, directory):
@@ -3916,16 +2525,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'preface.pdf'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._open_file(directory / 'preface.pdf')
 
     @Command(
-        'so',
-        argument_name='current_directory',
+        'spdfo',
+        argument_name='directory',
         description='score pdf - open',
-        directories=('contents',),
+        forbidden_directories=('scores',),
         section='pdf',
         )
     def open_score_pdf(self, directory):
@@ -3933,26 +2541,21 @@ class AbjadIDE(object):
 
         Returns score PDF path.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_name = 'score.pdf'
-        directory = directory / 'distribution'
+        assert directory.is_package_path()
         with self._interaction():
-            path = self._get_score_pdf(directory)
+            path = directory._get_score_pdf()
             if path:
-                message = f'opening {self._trim(path)} ...'
-                self._display(message)
-                self._io_manager.open_file(path)
+                self._open_file(path)
             else:
                 message = 'missing score PDF'
                 message += ' in distribution and build directories ...'
                 self._display(message)
 
     @Command(
-        's',
-        argument_name='current_directory',
+        'so',
+        argument_name='directory',
         description='score - open',
-        directories=('build subdirectory'),
+        directories=('build'),
         section='build-open',
         )
     def open_score_pdf_in_build_directory(self, directory):
@@ -3960,50 +2563,47 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        file_path = directory / 'score.pdf'
-        self._io_manager.open_file(file_path)
+        assert directory.is_build()
+        with self._interaction():
+            self._open_file(directory / 'score.pdf')
 
     @property
-    def Path(self):
+    def PackagePath(self):
         r'''Gets IDE path class.
 
         Returns IDE path class.
         '''
         import ide
-        return ide.Path
+        return ide.PackagePath
 
     @Command(
         'spp',
-        argument_name='current_directory',
+        argument_name='directory',
         description='score pdf - publish',
-        directories=('build subdirectory',),
-        section='build',
+        directories=('build',),
+        section='builds',
         )
     def publish_score_pdf(self, directory):
         r'''Publishes score PDF in distribution directory.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        assert directory.parent.name == 'build', repr(directory)
+        assert directory.is_build()
         with self._interaction():
             self._display('publishing score PDF ...')
             source = directory / 'score.pdf'
             if not source.exists():
-                self._display(f'missing {self._trim(source)} ...')
+                self._display(f'missing {source.trim()} ...')
                 return
-            package_name = directory.contents.name
-            package_name = package_name.replace('_', '-')
-            if package_name.endswith('-score'):
-                target_name = f'{package_name}.pdf'
+            name = directory.contents.name
+            name = name.replace('_', '-')
+            if name.endswith('-score'):
+                name = f'{name}.pdf'
             else:
-                target_name = f'{package_name}-score.pdf'
-            target = directory.distribution / target_name
-            self._display(f' FROM: {self._trim(source)}')
-            self._display(f'   TO: {self._trim(target)}')
+                name = f'{name}-score.pdf'
+            target = directory.distribution / name
+            self._display(f' FROM: {source.trim()}')
+            self._display(f'   TO: {target.trim()}')
             shutil.copyfile(str(source), str(target))
 
     @Command(
@@ -4020,7 +2620,7 @@ class AbjadIDE(object):
 
     @Command(
         'rm',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('contents',),
         section='basic',
         )
@@ -4029,62 +2629,58 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
-            paths = self._select_visible_paths(directory, 'to remove')
+            paths = self._select_ordered_paths(directory, 'to remove')
             if not paths:
                 return
             count = len(paths)
-            messages = []
             if count == 1:
-                message = f'will remove {self._trim(paths[0])}'
-                messages.append(message)
+                if paths[0].is_contents():
+                    path_ = paths[0].wrapper
+                else:
+                    path_ = paths[0]
+                self._display(f'confirming {path_.trim()} ...')
             else:
-                messages.append('will remove ...')
+                self._display('confirming ...')
                 for path in paths:
-                    message = f'    {self._trim(path)}'
-                    messages.append(message)
-            self._display(messages)
+                    if path.is_contents():
+                        path_ = path.wrapper
+                    self._display(f'    {path_.trim()}')
             if count == 1:
                 confirmation_string = 'remove'
             else:
                 confirmation_string = f'remove {count}'
-            message = f"type {confirmation_string!r} to proceed"
-            getter = self._io_manager._make_getter()
-            getter.append_string(message)
-            result = getter._run(io_manager=self._io_manager)
+            result = self._getter(f"type {confirmation_string!r} to proceed")
             if result is None:
                 return
             if not result == confirmation_string:
                 return
             for path in paths:
-                if self._is_score_directory(path, 'contents'):
-                    path = self._to_score_directory(path, 'wrapper')
-                if self._is_in_git_repository(path):
-                    if self._is_git_unknown(path):
+                if path.is_contents():
+                    path = path.wrapper
+                if path._is_in_git_repository():
+                    if path._is_git_unknown():
                         command = f'rm -rf {path}'
                     else:
                         command = f'git rm --force -r {path}'
                 else:
                     command = f'rm -rf {path}'
-                with abjad.TemporaryDirectoryChange(directory=path.parent):
-                    message = f'removing {self._trim(path)} ...'
-                    self._display(message)
+                with self._change(path.parent):
+                    self._display(f'removing {path.trim()} ...')
                     self._io_manager.run_command(command)
                 executables = self._io_manager.find_executable('trash')
-                executables = [self.Path(_) for _ in executables]
+                executables = [self.PackagePath(_) for _ in executables]
                 if executables and executables[0].is_file():
                     executable = executables[0]
                     cleanup_command = str(executable) + f' {path}'
                 else:
                     cleanup_command = f'rm -rf {path}'
-                cleanup_command = cleanup_command.format(path)
                 self._io_manager.run_command(cleanup_command)
 
     @Command(
         'ren',
-        argument_name='current_directory',
+        argument_name='directory',
         forbidden_directories=('contents',),
         section='basic',
         )
@@ -4093,70 +2689,50 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
-            source_path = self._select_visible_path(directory, 'to rename')
-            if self._is_score_directory(source_path, 'contents'):
-                source_path = source_path.parent
-            if not source_path:
+            source = self._select_ordered_path(directory, 'to rename')
+            if source.is_contents():
+                source = source.parent
+            if not source:
                 return
-            message = 'Will rename]> {}'
-            message = message.format(self._trim(source_path))
-            self._display(message)
-            getter = self._io_manager._make_getter()
-            getter.append_string('new name or return to cancel')
-            original_target_name = getter._run(io_manager=self._io_manager)
+            self._display(f'Renaming {source.trim()} ...')
+            original_target_name = self._getter('new name or return to cancel')
             if not original_target_name:
                 return
-            #target_name = self._coerce_name(directory, original_target_name)
-            target_name = directory._coerce_name(original_target_name)
-            source_name = source_path.name
-            target_path = source_path.parent / target_name
-            if target_path.exists():
-                message = 'path already exists: {!r}.'
-                message = message.format(self._trim(target_path))
-                self._display(message)
+            target_name = directory._coerce_asset_name(original_target_name)
+            source_name = source.name
+            target = source.parent / target_name
+            if target.exists():
+                self._display(f'existing {target.trim()!r} ...')
                 return
-            messages = []
-            messages.append('will rename ...')
-            message = ' FROM: {}'.format(self._trim(source_path))
-            messages.append(message)
-            message = '   TO: {}'.format(self._trim(target_path))
-            messages.append(message)
-            self._display(messages)
+            self._display('Renaming ...')
+            self._display(f' FROM: {source.trim()}')
+            self._display(f'   TO: {target.trim()}')
             if not self._io_manager._confirm():
                 return
-            shutil.move(str(source_path), str(target_path))
-            if target_path.is_dir():
-                for path in sorted(target_path.glob('*.py')):
-                    self._replace_in_file(
-                        path,
-                        source_name,
-                        target_name,
-                        )
-            if self._is_score_directory(target_path, 'wrapper'):
-                false_contents_directory = target_path / source_name
+            shutil.move(str(source), str(target))
+            if target.is_dir():
+                for path in sorted(target.glob('*.py')):
+                    self._replace_in_file(path, source_name, target_name)
+            if target.is_wrapper():
+                false_contents_directory = target / source_name
                 assert false_contents_directory.exists()
-                true_contents_directory = target_path / target_name
+                true_contents_directory = target / target_name
                 shutil.move(
                     str(false_contents_directory),
                     str(true_contents_directory),
                     )
-                true_contents_directory._add_metadatum(
+                true_contents_directory.add_metadatum(
                     'title',
                     original_target_name,
                     )
                 for path in sorted(true_contents_directory.glob('*.py')):
-                    self._replace_in_file(
-                        path,
-                        source_name,
-                        target_name,
-                        )
+                    self._replace_in_file(path, source_name, target_name)
 
     @Command(
         'rp',
-        argument_name='current_directory',
+        argument_name='directory',
         section='system',
         )
     def replace(self, directory):
@@ -4164,98 +2740,81 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        change = abjad.TemporaryDirectoryChange(directory)
-        with self._interaction(), change:
-            getter = self._io_manager._make_getter()
-            getter.append_string('enter search string')
-            search_string = getter._run(io_manager=self._io_manager)
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory):
+            search_string = self._getter('enter search string')
             if not search_string:
                 return
-            getter = self._io_manager._make_getter()
-            getter.append_string('enter replace string')
-            replace_string = getter._run(io_manager=self._io_manager)
+            replace_string = self._getter('enter replace string')
             if not replace_string:
                 return
             complete_words = False
             result = self._io_manager._confirm('complete words only?')
             if result:
                 complete_words = True
-            command = 'ajv replace {!r} {!r} -Y'
-            command = command.format(search_string, replace_string)
+            command = f'ajv replace {search_string!r} {replace_string!r} -Y'
             if complete_words:
                 command += ' -W'
-            if directory == self._to_scores_directory(directory):
+            if directory == directory.scores:
                 pass
             else:
-                directory = self._to_score_directory(directory, 'wrapper')
-            directory = abjad.TemporaryDirectoryChange(directory)
-            with directory:
+                directory = directory.wrapper
+            with self._change(directory):
                 lines = self._io_manager.run_command(command)
-            lines = [_.strip() for _ in lines if not _ == '']
-            self._display(lines, capitalize=False)
+                lines = [_.strip() for _ in lines if not _ == '']
+                self._display(lines, caps=False)
 
     @Command(
         'dt',
-        argument_name='current_directory',
+        argument_name='directory',
         description='doctest - run',
         forbidden_directories=('scores',),
         section='tests',
         )
     def run_doctest(self, directory):
-        r'''Runs doctest on entire score.
+        r'''Runs doctest from contents directory.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'contents')
-        interaction = self._interaction()
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        with interaction, change:
-            self._run_doctest(directory)
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory.contents):
+            self._run_doctest(directory.contents)
 
     @Command(
         'pt',
-        argument_name='current_directory',
+        argument_name='directory',
         description='pytest - run',
         forbidden_directories=('scores',),
         section='tests',
         )
     def run_pytest(self, directory):
-        r'''Runs pytest on entire score.
+        r'''Runs pytest from contents directory.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        directory = self._to_score_directory(directory, 'contents')
-        interaction = self._interaction()
-        change = abjad.TemporaryDirectoryChange(directory=directory)
-        with interaction, change:
+        assert directory.is_package_path()
+        with self._interaction(), self._change(directory.contents):
             self._run_pytest(directory)
 
     @Command(
         'tests',
-        argument_name='current_directory',
+        argument_name='directory',
         description='tests - run',
         forbidden_directories=('scores',),
         section='tests',
         )
     def run_tests(self, directory):
-        r'''Runs doctest and pytest on entire score.
+        r'''Runs doctest and pytest from contents directory.
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         self.run_doctest(directory)
         self.run_pytest(directory)
 
     @Command(
         'sr',
-        argument_name='current_directory',
+        argument_name='directory',
         section='system',
         )
     def search(self, directory):
@@ -4267,18 +2826,15 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
+        assert directory.is_package_path()
         with self._interaction():
             executables = self._io_manager.find_executable('ack')
             if not executables:
                 executables = self._io_manager.find_executable('grep')
-            executables = [self.Path(_) for _ in executables]
+            executables = [self.PackagePath(_) for _ in executables]
             if not executables:
-                messages = []
-                messages.append('can not find ack.')
-                messages.append('can not find grep.')
-                self._display(messages)
+                self._display('can not find ack.')
+                self._display('can not find grep.')
                 return
             assert 1 <= len(executables)
             executable = None
@@ -4286,36 +2842,30 @@ class AbjadIDE(object):
                 if path.is_file():
                     executable = path
             if executable is None:
-                messages = []
-                messages.append('can not find ack.')
-                messages.append('can not find grep.')
-                self._display(messages)
+                self._display('can not find ack.')
+                self._display('can not find grep.')
                 return
-            getter = self._io_manager._make_getter()
-            getter.append_string('enter search string')
-            search_string = getter._run(io_manager=self._io_manager)
+            search_string = self._getter('enter search string')
             if not search_string:
                 return
             if executable.name == 'ack':
                 command = r'{!s} --ignore-dir=_docs {} --type=python'
                 command = command.format(executable, search_string)
             elif executable.name == 'grep':
-                command = r'{!s} -r {!r} *'
-                command = command.format(executable, search_string)
+                command = rf'{executable!s} -r {search_string!r} *'
             if directory == self._configuration.composer_scores_directory:
                 pass
-            elif directory == self._configuration.example_scores_directory:
+            elif directory == self._configuration.test_scores_directory:
                 pass
             else:
-                directory = self._to_score_directory(directory, 'wrapper')
-            directory = abjad.TemporaryDirectoryChange(directory)
-            with directory:
+                directory = directory.wrapper
+            with self._change(directory):
                 lines = self._io_manager.run_command(command)
-            self._display(lines, capitalize=False)
+                self._display(lines, caps=False)
 
     @Command(
         'illt',
-        argument_name='current_directory',
+        argument_name='directory',
         description='illustrate file - trash',
         directories=('material',),
         section='illustrate_file',
@@ -4325,16 +2875,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        illustration_file_path = directory / '__illustrate__.py'
+        assert directory.is_material()
         with self._interaction():
-            if illustration_file_path.is_file():
-                self._io_manager._trash_file(illustration_file_path)
+            self._trash_file(directory / '__illustrate__.py')
 
     @Command(
         'lyt',
-        argument_name='current_directory',
+        argument_name='directory',
         description='ly - trash',
         directories=('material', 'segment',),
         section='ly',
@@ -4344,16 +2891,13 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        ly_file_path = directory / 'illustration.ly'
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
-            if ly_file_path.is_file():
-                self._io_manager._trash_file(ly_file_path)
+            self._trash_file(directory / 'illustration.ly')
 
     @Command(
         'trash',
-        argument_name='current_directory',
+        argument_name='directory',
         description='ly & pdf - trash',
         directories=('material', 'segment',),
         section='ly & pdf',
@@ -4363,19 +2907,14 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        ly_file_path = directory / 'illustration.ly'
-        pdf_file_path = directory / 'illustration.pdf'
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
-            if ly_file_path.is_file():
-                self._io_manager._trash_file(ly_file_path)
-            if pdf_file_path.is_file():
-                self._io_manager._trash_file(pdf_file_path)
+            self._trash_file(directory / 'illustration.ly')
+            self._trash_file(directory / 'illustration.pdf')
 
     @Command(
         'pdft',
-        argument_name='current_directory',
+        argument_name='directory',
         description='pdf - trash',
         directories=('material', 'segment',),
         section='pdf',
@@ -4385,9 +2924,6 @@ class AbjadIDE(object):
 
         Returns none.
         '''
-        assert isinstance(directory, self.Path)
-        assert directory.is_dir()
-        pdf_file_path = directory / 'illustration.pdf'
+        assert directory.is_package_path(('material', 'segment'))
         with self._interaction():
-            if pdf_file_path.is_file():
-                self._io_manager._trash_file(pdf_file_path)
+            self._trash_file(directory / 'illustration.pdf')

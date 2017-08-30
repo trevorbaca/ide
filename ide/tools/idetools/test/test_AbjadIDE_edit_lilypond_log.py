@@ -1,9 +1,18 @@
+import abjad
 import ide
+import os
+import pytest
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
+@pytest.mark.skipif(
+    os.environ.get('TRAVIS') == 'true',
+    reason='Travis-CI does create LilyPond log.'
+    )
 def test_AbjadIDE_edit_lilypond_log_01():
 
-    input_ = 'red~score mm tempi lpg q'
+    path = abjad.abjad_configuration.lilypond_log_file_path
+
+    input_ = 'lpg q'
     abjad_ide._start(input_=input_)
-    assert abjad_ide._session._attempted_to_open_file
+    assert f'Editing {path} ...' in abjad_ide._transcript

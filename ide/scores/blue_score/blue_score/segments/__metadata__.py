@@ -2,5 +2,5 @@ import abjad
 
 
 metadata = abjad.TypedOrderedDict([
-    ('view_name', 'reverse'),
+    ('view', ['segment 02', 'segment 01']),
     ])

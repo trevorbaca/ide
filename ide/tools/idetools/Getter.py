@@ -31,6 +31,7 @@ class Getter(object):
         capitalize_prompts=True,
         include_chevron=True,
         include_newlines=False,
+        io_manager=None,
         number_prompts=False,
         ):
         self._prompts = []
@@ -38,6 +39,7 @@ class Getter(object):
         self._capitalize_prompts = capitalize_prompts
         self._include_chevron = include_chevron
         self._include_newlines = include_newlines
+        self._io_manager = io_manager
         self._number_prompts = number_prompts
 
     ### SPECIAL METHODS ###
@@ -61,7 +63,7 @@ class Getter(object):
 
         Returns string.
         '''
-        return '<{} ({})>'.format(type(self).__name__, len(self))
+        return f'<{type(self).__name__} ({len(self)})>'
 
     def __str__(self):
         r'''Gets string representation of user input getter.
@@ -114,8 +116,7 @@ class Getter(object):
     def _indent_and_number_message(self, message):
         if self.number_prompts:
             prompt_number = self._prompt_index + 1
-            message = '({}/{}) {}'.format(
-                prompt_number, len(self), message)
+            message = f'({prompt_number}/{len(self)}) {message}'
         return message
 
     def _load_message(self):
@@ -192,8 +193,7 @@ class Getter(object):
             elif isinstance(input_, str):
                 self._evaluate_input(input_, namespace)
             else:
-                message = 'invalid input: {!r}.'
-                message = message.format(input_)
+                message = f'invalid input: {input_!r}.'
                 raise ValueError(message)
 
     def _present_prompts(self, include_chevron=True):
@@ -205,9 +205,7 @@ class Getter(object):
             not self._all_prompts_are_done):
             self._present_prompt(include_chevron=include_chevron)
 
-    def _run(self, io_manager, clear_terminal=False, title=False):
-        assert io_manager is not None
-        self._io_manager = io_manager
+    def _run(self, clear_terminal=False, title=False):
         self._present_prompts(include_chevron=self._include_chevron)
         if len(self._evaluated_input) == 1:
             result = self._evaluated_input[0]
@@ -218,7 +216,6 @@ class Getter(object):
         if result == 'q':
             self._io_manager._session._is_quitting = True
             result = None
-        self._io_manager = None
         return result
 
     def _validate_evaluated_input(self, evaluated_input):
@@ -295,123 +292,21 @@ class Getter(object):
 
     ### PUBLIC METHODS ###
 
-    def append_anything(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends anything.
-
-        Returns prompt.
-        '''
-        help_template = 'value may be anything.'
-
-        def validation_function(x):
-            return True
-        self._make_prompt(
-            spaced_attribute_name,
-            help_template=help_template,
-            validation_function=validation_function,
-            )
-
-    def append_integer(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends integer.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be integer.'
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=Getter.is_integer,
-            help_template=help_template,
-            )
-
-    def append_integer_in_range(
-        self,
-        spaced_attribute_name,
-        start=None,
-        stop=None,
-        allow_none=False,
-        ):
-        r'''Appends integer in range.
-
-        Returns prompt.
-        '''
-        validation_function = functools.partial(
-            Getter.is_integer_in_range,
-            start=start,
-            stop=stop,
-            allow_none=allow_none,
-            )
-        help_template = 'value must be integer between {} and {}, inclusive.'
-        self._make_prompt(
-            spaced_attribute_name,
-            help_template=help_template,
-            validation_function=validation_function,
-            help_template_arguments=(start, stop),
-            )
-
-    def append_integers(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends integers.
-
-        Returns prompt.
-        '''
-        help_template = 'value must be integer or tuple of integers.'
-
-        def helper(argument):
-            if isinstance(argument, int):
-                return True
-            if all(isinstance(_, int) for _ in argument):
-                return True
-            return False
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=helper,
-            help_template=help_template,
-            )
-
     def append_string(
         self,
         spaced_attribute_name,
-        allow_empty=True,
         ):
         r'''Appends string.
 
         Returns prompt.
         '''
-        if allow_empty:
-            validation_function = Getter.is_string
-            help_template = 'value must be string.'
-        else:
-            validation_function = Getter.is_nonempty_string
-            help_template = 'value must be nonempty string.'
+        validation_function = Getter.is_string
+        help_template = 'value must be string.'
         self._make_prompt(
             spaced_attribute_name,
             is_string=True,
             help_template=help_template,
             validation_function=validation_function,
-            )
-
-    # TODO: see if this can be removed?
-    def append_string_or_integer(
-        self,
-        spaced_attribute_name,
-        ):
-        r'''Appends string or integer.
-
-        Returns prompt.
-        '''
-        validation_function = Getter.is_string_or_integer
-        help_template = 'value must be string or integer.'
-        self._make_prompt(
-            spaced_attribute_name,
-            validation_function=validation_function,
-            help_template=help_template,
             )
 
     def append_yes_no_string(
@@ -442,68 +337,10 @@ class Getter(object):
         self._io_manager._display(lines)
 
     @staticmethod
-    def is_boolean(argument):
-        r'''Predicate.
-        '''
-        return isinstance(argument, bool)
-
-    @staticmethod
-    def is_integer(argument):
-        r'''Predicate.
-        '''
-        return isinstance(argument, int)
-
-    @staticmethod
-    def is_integer_in_range(argument, start=None, stop=None, allow_none=False):
-        r'''Predicate.
-        '''
-        if argument is None and allow_none:
-            return True
-        if Getter.is_integer(argument) and \
-            (start is None or start <= argument) and \
-            (stop is None or argument <= stop):
-            return True
-        return False
-
-    @staticmethod
-    def is_integer_or_none(argument):
-        r'''Predicate.
-        '''
-        return argument is None
-
-    @staticmethod
-    def is_list(argument):
-        r'''Predicate.
-        '''
-        return isinstance(argument, list)
-
-    @staticmethod
-    def is_nonempty_string(argument):
-        r'''Predicate.
-        '''
-        return isinstance(argument, str) and bool(argument)
-
-    @staticmethod
     def is_string(argument):
         r'''Predicate.
         '''
         return isinstance(argument, str)
-
-    @staticmethod
-    def is_string_or_integer(argument):
-        r'''Predicate.
-        '''
-        if isinstance(argument, str):
-            return True
-        if isinstance(argument, int):
-            return True
-        return False
-
-    @staticmethod
-    def is_string_or_none(argument):
-        r'''Predicate.
-        '''
-        return isinstance(argument, (str, type(None)))
 
     @staticmethod
     def is_yes_no_string(argument):

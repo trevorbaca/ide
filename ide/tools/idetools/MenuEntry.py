@@ -77,7 +77,7 @@ class MenuEntry(abjad.AbjadObject):
 
         Returns string.
         '''
-        return '<{}: {!r}>'.format(type(self).__name__, self.display_string)
+        return f'<{type(self).__name__}: {self.display_string!r}>'
 
     ### PRIVATE METHODS ###
 

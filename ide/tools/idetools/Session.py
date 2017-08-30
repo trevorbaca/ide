@@ -12,12 +12,7 @@ class Session(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_allow_unknown_command_during_test',
-        '_attempted_method',
-        '_attempted_to_open_file',
-        '_clear_terminal_after_quit',
-        '_confirm',
-        '_current_directory',
+        '_directory',
         '_is_example',
         '_is_quitting',
         '_is_test',
@@ -31,15 +26,10 @@ class Session(object):
     ### INITIALIZER ###
 
     def __init__(self, input_=None, is_example=False, is_test=False):
-        self._allow_unknown_command_during_test = False
-        self._attempted_method = None
-        self._attempted_to_open_file = False
-        self._clear_terminal_after_quit = False
-        self._confirm = True
         self._is_example = is_example
         self._is_quitting = False
         self._is_test = is_test
-        self._current_directory = None
+        self._directory = None
         self._pending_input = input_
         self._pending_menu_rebuild = False
         self._pending_redraw = True
@@ -62,32 +52,29 @@ class Session(object):
         '''
         summary = []
         if self.pending_input not in (None, ''):
-            string = 'input_={!r}'
-            string = string.format(self.pending_input)
+            string = f'input_={self.pending_input!r}'
             summary.append(string)
         summary = ', '.join(summary)
-        return '{}({})'.format(type(self).__name__, summary)
+        return f'{type(self).__name__}({summary})'
 
     ### PRIVATE METHODS ###
 
     def _reinitialize(self):
-        allow_unknown = self._allow_unknown_command_during_test
         type(self).__init__(
             self,
             is_example=self.is_example,
             is_test=self.is_test,
             )
-        self._allow_unknown_command_during_test = allow_unknown
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def current_directory(self):
+    def directory(self):
         r'''Gets manifest current directory.
 
         Returns string.
         '''
-        return self._current_directory
+        return self._directory
 
     @property
     def is_example(self):

@@ -15,7 +15,6 @@ def test_AbjadIDE_go_to_segment_directory_01():
     input_ = 'red~score %A q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
-    assert not abjad_ide._session._attempted_to_open_file
 
 
 def test_AbjadIDE_go_to_segment_directory_02():
@@ -28,8 +27,8 @@ def test_AbjadIDE_go_to_segment_directory_02():
     input_ = 'red~score %X q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
-    transcript = abjad_ide._io_manager._transcript.contents
-    assert "Matches no display string: '%X'." in transcript
+    transcript = abjad_ide._transcript
+    assert "Matches no display string '%X' ..." in transcript
 
 
 def test_AbjadIDE_go_to_segment_directory_03():
@@ -44,5 +43,5 @@ def test_AbjadIDE_go_to_segment_directory_03():
     input_ = 'red~score %a q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
-    transcript = abjad_ide._io_manager._transcript.contents
-    assert "Matches no display string: '%a'." in transcript
+    transcript = abjad_ide._transcript
+    assert "Matches no display string '%a' ..." in transcript

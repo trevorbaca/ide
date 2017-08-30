@@ -9,7 +9,6 @@ def test_IOManager_open_file_01():
     input_ = 'red~score @program-notes.txt q'
     abjad_ide._start(input_=input_)
 
-    assert abjad_ide._session._attempted_to_open_file
 
     titles = [
         'Abjad IDE - scores directory',
@@ -25,7 +24,6 @@ def test_IOManager_open_file_02():
     input_ = 'red~score @notes.txt q'
     abjad_ide._start(input_=input_)
 
-    assert abjad_ide._session._attempted_to_open_file
 
     titles = [
         'Abjad IDE - scores directory',
@@ -41,7 +39,6 @@ def test_IOManager_open_file_03():
     input_ = 'red~score @RM q'
     abjad_ide._start(input_=input_)
 
-    assert abjad_ide._session._attempted_to_open_file
 
     titles = [
         'Abjad IDE - scores directory',
@@ -57,7 +54,6 @@ def test_IOManager_open_file_04():
     input_ = 'red~score @RM+14 q'
     abjad_ide._start(input_=input_)
 
-    assert abjad_ide._session._attempted_to_open_file
 
     titles = [
         'Abjad IDE - scores directory',
@@ -73,7 +69,6 @@ def test_IOManager_open_file_05():
     input_ = 'red~score @gasso q'
     abjad_ide._start(input_=input_)
 
-    assert abjad_ide._session._attempted_to_open_file
 
     titles = [
         'Abjad IDE - scores directory',

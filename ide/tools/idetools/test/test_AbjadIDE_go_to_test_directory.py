@@ -38,13 +38,13 @@ def test_AbjadIDE_go_to_test_directory_02():
 
 
 def test_AbjadIDE_go_to_test_directory_03():
-    r'''From build directory to test directory.
+    r'''From builds directory to test directory.
     '''
 
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017) - test directory',
         ]
 
@@ -58,12 +58,12 @@ def test_AbjadIDE_go_to_test_directory_04():
     '''
 
     with ide.Test():
-        test_directory = ide.Path('red_score').test
+        test_directory = ide.PackagePath('red_score').test
         shutil.rmtree(str(test_directory))
         input_ = 'red~score tt q'
         abjad_ide._start(input_=input_)
-        string = f'Directory does not exist: {abjad_ide._trim(test_directory)}'
-        assert string in abjad_ide._io_manager._transcript.contents
+        string = f'Missing {test_directory.trim()} ...'
+        assert string in abjad_ide._transcript
 
 
 def test_AbjadIDE_go_to_test_directory_05():
@@ -72,5 +72,5 @@ def test_AbjadIDE_go_to_test_directory_05():
 
     input_ = 'red~score tt q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
     assert '1: test_dummy.py' in transcript

@@ -26,9 +26,9 @@ def test_AbjadIDE_go_back_02():
         'Red Score (2017)',
         'Red Score (2017) - segments directory',
         'Red Score (2017) - segments directory - A',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017) - segments directory - A',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         ]
 
     input_ = 'red~score gg A bb - - q'

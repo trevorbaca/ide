@@ -7,9 +7,9 @@ def test_AbjadIDE_rename_01():
     '''
 
     with ide.Test():
-        example_100_package = ide.Path('example_scores') / 'example_score_100'
+        example_100_package = ide.PackagePath('test_scores') / 'test_score_100'
         example_100_contents = example_100_package / example_100_package.name
-        example_101_package = ide.Path('example_scores') / 'example_score_101'
+        example_101_package = ide.PackagePath('test_scores') / 'test_score_101'
         example_101_contents = example_101_package / example_101_package.name
         paths = (
             example_100_package,
@@ -20,14 +20,14 @@ def test_AbjadIDE_rename_01():
         for path in paths:
             path.remove()
 
-        input_ = 'new example~score~100 q'
+        input_ = 'new test~score~100 q'
         abjad_ide._start(input_=input_)
         assert example_100_package.is_dir()
         assert example_100_contents.is_dir()
-        title = 'Example Score 100'
-        example_100_contents._add_metadatum('title', title)
+        title = 'Test Score 100'
+        example_100_contents.add_metadatum('title', title)
 
-        input_ = 'ren Example~Score~100 example_score_101 y q'
+        input_ = 'ren Test~Score~100 test_score_101 y q'
         abjad_ide._start(input_=input_)
         assert not example_100_package.exists()
         assert example_101_package.is_dir()
@@ -39,27 +39,27 @@ def test_AbjadIDE_rename_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials / 'test_material'
-        target = ide.Path('red_score').materials / 'new_test_material'
+        source = ide.PackagePath('red_score').materials / 'test_material'
+        target = ide.PackagePath('red_score').materials / 'new_test_material'
         paths = (source, target)
         for path in paths:
             path.remove()
 
         input_ = 'red~score mm new test~material q'
         abjad_ide._start(input_=input_)
-        transcript = abjad_ide._io_manager._transcript.contents
+        transcript = abjad_ide._transcript
         assert 'Enter package name]> test material' in transcript
         assert source.is_dir()
 
         input_ = 'red~score mm ren test~material new~test~material y q'
         abjad_ide._start(input_=input_)
-        transcript = abjad_ide._io_manager._transcript.contents
+        transcript = abjad_ide._transcript
         assert 'Enter package to rename]> test material' in transcript
-        assert 'Will rename]> red_score/materials/test_material' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name or return to cancel]> new test material' in transcript
-        assert 'Will rename ...' in transcript
-        assert ' FROM: red_score/materials/test_material' in transcript
-        assert '   TO: red_score/materials/new_test_material' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
         assert 'Ok?' in transcript
         assert not source.exists()
         assert target.is_dir()
@@ -70,7 +70,7 @@ def test_AbjadIDE_rename_03():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments / 'segment_04'
+        source = ide.PackagePath('red_score').segments / 'segment_04'
         target = source.with_name('renamed_segment_04')
         for path in [source, target]:
             path.remove()
@@ -90,7 +90,7 @@ def test_AbjadIDE_rename_04():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments / 'segment_03'
+        source = ide.PackagePath('red_score').segments / 'segment_03'
         target = source.with_name('renamed_segment_03')
         assert source.is_dir()
         assert not target.exists()
@@ -102,11 +102,11 @@ def test_AbjadIDE_rename_04():
 
 
 def test_AbjadIDE_rename_05():
-    r'''Renames build subdirectory.
+    r'''Renames build directory.
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').build / 'letter'
+        source = ide.PackagePath('red_score').builds / 'letter'
         target = source.with_name('standard-size')
         assert source.is_dir()
         target.remove()
@@ -122,7 +122,7 @@ def test_AbjadIDE_rename_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').tools / 'NewMaker.py'
+        source = ide.PackagePath('red_score').tools / 'NewMaker.py'
         target = source.with_name('RenamedMaker.py')
         for path in [source, target]:
             path.remove()
@@ -142,7 +142,8 @@ def test_AbjadIDE_rename_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets / 'new-stylesheet.ily'
+        source = ide.PackagePath('red_score').stylesheets
+        source /= 'new-stylesheet.ily'
         target = source.with_name('renamed-stylesheet.ily')
         for path in [source, target]:
             path.remove()

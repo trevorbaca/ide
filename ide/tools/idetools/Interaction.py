@@ -33,7 +33,7 @@ class Interaction(abjad.ContextManager):
 
         Returns string.
         '''
-        return '<{}()>'.format(type(self).__name__)
+        return f'<{type(self).__name__}()>'
 
     ### PUBLIC PROPERTIES ###
 

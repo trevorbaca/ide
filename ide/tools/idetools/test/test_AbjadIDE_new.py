@@ -8,7 +8,7 @@ def test_AbjadIDE_new_01():
     '''
 
     with ide.Test():
-        package = ide.Path('example_scores') / 'green_score'
+        package = ide.PackagePath('test_scores') / 'green_score'
         contents = package / package.name
         package_names = [
             '.gitignore',
@@ -22,7 +22,7 @@ def test_AbjadIDE_new_01():
         contents_names = [
             '__init__.py',
             '__metadata__.py',
-            'build',
+            'builds',
             'distribution',
             'etc',
             'materials',
@@ -36,7 +36,7 @@ def test_AbjadIDE_new_01():
 
         input_ = 'new Green~Score q'
         abjad_ide._start(input_=input_)
-        transcript = abjad_ide._io_manager._transcript.contents
+        transcript = abjad_ide._transcript
         assert package.is_dir()
         for name in package_names:
             path = package / name
@@ -59,7 +59,7 @@ def test_AbjadIDE_new_02():
     '''
 
     with ide.Test():
-        package = ide.Path('example_scores') / 'green_score'
+        package = ide.PackagePath('test_scores') / 'green_score'
         contents = package / package.name
         package_names = [
             '.travis.yml',
@@ -71,7 +71,7 @@ def test_AbjadIDE_new_02():
         contents_names = [
             '__init__.py',
             '__metadata__.py',
-            'build',
+            'builds',
             'distribution',
             'etc',
             'tools',
@@ -91,7 +91,7 @@ def test_AbjadIDE_new_02():
         assert package.is_dir()
         assert git.is_dir()
         abjad_ide._start(input_=input_)
-        transcript = abjad_ide._io_manager._transcript.contents
+        transcript = abjad_ide._transcript
         assert package.exists()
         for name in package_names:
             path = package / name
@@ -114,7 +114,7 @@ def test_AbjadIDE_new_03():
     r'''Coerces package name.
     '''
 
-    package = ide.Path('example_scores') / 'green_score'
+    package = ide.PackagePath('test_scores') / 'green_score'
 
     with ide.Test(remove=[package]):
         input_ = 'new GreenScore q'
@@ -137,34 +137,50 @@ def test_AbjadIDE_new_03():
         assert package.is_dir()
 
 
+# TODO: add transcript tests
 def test_AbjadIDE_new_04():
-    r'''Makes new build subdirectory.
+    r'''Makes new build directory.
     '''
 
-    path = ide.Path('red_score').build / 'arch-a'
+    path = ide.PackagePath('red_score').builds / 'arch-a'
     with ide.Test(remove=[path]):
         input_ = 'red~score bb new arch-a arch~a $80 ARCH-A y q'
         abjad_ide._start(input_=input_)
         assert path.is_dir()
+        assert path.get_metadatum('price') == '$80'
+        assert path.get_metadatum('catalog_number_suffix') == 'ARCH-A'
 
 
+# TODO: add transcript tests
 def test_AbjadIDE_new_05():
-    r'''Coerces build subdirectory name.
+    r'''Makes new build directory. Ignores empty metadata.
     '''
 
-    path = ide.Path('red_score').build / 'arch-a'
+    path = ide.PackagePath('red_score').builds / 'arch-a'
+    with ide.Test(remove=[path]):
+        input_ = 'red~score bb new arch-a arch~a <return> <return> y q'
+        abjad_ide._start(input_=input_)
+        assert path.is_dir()
+        assert path.get_metadatum('price') is None
+        assert path.get_metadatum('catalog_number_suffix') is None
+
+
+def test_AbjadIDE_new_06():
+    r'''Coerces build directory name.
+    '''
+
+    path = ide.PackagePath('red_score').builds / 'arch-a'
     with ide.Test(remove=[path]):
         input_ = 'red~score bb new arch_a arch~a $80 ARCH-A y q'
         abjad_ide._start(input_=input_)
         assert path.is_dir()
 
 
-def test_AbjadIDE_new_06():
+def test_AbjadIDE_new_07():
     r'''Makes new tools classfile.
     '''
 
-
-    path = ide.Path('red_score').tools / 'NewClass.py'
+    path = ide.PackagePath('red_score').tools / 'NewClass.py'
     with ide.Test(remove=[path]):
         input_ = 'red~score oo new NewClass.py q'
         abjad_ide._start(input_=input_)
@@ -173,11 +189,11 @@ def test_AbjadIDE_new_06():
         assert 'class NewClass(abjad.AbjadObject)' in text
 
 
-def test_AbjadIDE_new_07():
+def test_AbjadIDE_new_08():
     r'''Coerces tools classfile name.
     '''
 
-    path = ide.Path('red_score').tools / 'NewClass.py'
+    path = ide.PackagePath('red_score').tools / 'NewClass.py'
     with ide.Test(remove=[path]):
         input_ = 'red~score oo new New~Class q'
         abjad_ide._start(input_=input_)
@@ -186,11 +202,11 @@ def test_AbjadIDE_new_07():
         assert 'class NewClass(abjad.AbjadObject)' in text
 
 
-def test_AbjadIDE_new_08():
+def test_AbjadIDE_new_09():
     r'''Makes new tools functionfile.
     '''
 
-    path = ide.Path('red_score').tools / 'make_material.py'
+    path = ide.PackagePath('red_score').tools / 'make_material.py'
     with ide.Test(remove=[path]):
         input_ = 'red~score oo new make_material.py q'
         abjad_ide._start(input_=input_)
@@ -199,11 +215,11 @@ def test_AbjadIDE_new_08():
         assert 'def make_material():' in text
 
 
-def test_AbjadIDE_new_09():
+def test_AbjadIDE_new_10():
     r'''Coerces tools functionfile name.
     '''
 
-    path = ide.Path('red_score').tools / 'make_material.py'
+    path = ide.PackagePath('red_score').tools / 'make_material.py'
     with ide.Test(remove=[path]):
         input_ = 'red~score oo new make~material q'
         abjad_ide._start(input_=input_)
@@ -212,12 +228,11 @@ def test_AbjadIDE_new_09():
         assert 'def make_material():' in text
 
 
-def test_AbjadIDE_new_10():
+def test_AbjadIDE_new_11():
     r'''Makes new material directory.
     '''
 
-
-    path = ide.Path('red_score').materials / 'test_notes'
+    path = ide.PackagePath('red_score').materials / 'test_notes'
     with ide.Test(remove=[path]):
         directory_names = [
             '__init__.py',
@@ -233,11 +248,11 @@ def test_AbjadIDE_new_10():
             assert path / name in names, repr(name)
 
 
-def test_AbjadIDE_new_11():
+def test_AbjadIDE_new_12():
     r'''Coerces material directory name.
     '''
 
-    path = ide.Path('red_score').materials / 'test_notes'
+    path = ide.PackagePath('red_score').materials / 'test_notes'
     with ide.Test(remove=[path]):
         directory_names = [
             '__init__.py',
@@ -253,11 +268,11 @@ def test_AbjadIDE_new_11():
             assert path / name in names, repr(name)
 
 
-def test_AbjadIDE_new_12():
+def test_AbjadIDE_new_13():
     r'''Makes new segment directory.
     '''
 
-    path = ide.Path('red_score').segments / 'segment_04'
+    path = ide.PackagePath('red_score').segments / 'segment_04'
     with ide.Test(remove=[path]):
         directory_names = [
             '__init__.py',
@@ -273,11 +288,11 @@ def test_AbjadIDE_new_12():
             assert path / name in names, repr(name)
 
 
-def test_AbjadIDE_new_13():
+def test_AbjadIDE_new_14():
     r'''Coerces segment directory name.
     '''
 
-    path = ide.Path('red_score').segments / 'segment_04'
+    path = ide.PackagePath('red_score').segments / 'segment_04'
     with ide.Test(remove=[path]):
         directory_names = [
             '__init__.py',
@@ -293,22 +308,22 @@ def test_AbjadIDE_new_13():
             assert path / name in names, repr(name)
 
 
-def test_AbjadIDE_new_14():
+def test_AbjadIDE_new_15():
     r'''Makes new stylesheet.
     '''
 
-    path = ide.Path('red_score').stylesheets / 'new-stylesheet.ily'
+    path = ide.PackagePath('red_score').stylesheets / 'new-stylesheet.ily'
     with ide.Test(remove=[path]):
         input_ = 'red~score yy new new-stylesheet.ily q'
         abjad_ide._start(input_=input_)
         assert path.is_file()
 
 
-def test_AbjadIDE_new_15():
+def test_AbjadIDE_new_16():
     r'''Coerces stylesheet new.
     '''
 
-    path = ide.Path('red_score').stylesheets / 'new-stylesheet.ily'
+    path = ide.PackagePath('red_score').stylesheets / 'new-stylesheet.ily'
     with ide.Test(remove=[path]):
         input_ = 'red~score yy new new~stylesheet q'
         abjad_ide._start(input_=input_)

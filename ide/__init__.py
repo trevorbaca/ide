@@ -76,5 +76,5 @@ if not (
 del distutils
 del platform
 configuration = Configuration()
-configuration._add_example_score_to_sys_path()
+configuration._add_test_score_to_sys_path()
 del(configuration)

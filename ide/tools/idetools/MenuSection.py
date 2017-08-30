@@ -228,7 +228,7 @@ class MenuSection(abjad.AbjadObject):
             key = menu_entry.key
             prepopulated_value = menu_entry.prepopulated_value
             if self.is_numbered:
-                number_indicator = '{}: '.format(menu_entry.number)
+                number_indicator = f'{menu_entry.number}: '
                 tab = self._make_tab(1)
                 tab_width = len(tab)
                 number_width = len(str(number_indicator))
@@ -238,13 +238,13 @@ class MenuSection(abjad.AbjadObject):
             line += display_string
             if key:
                 if i == self.default_index:
-                    line += ' [{}]'.format(key)
+                    line += f' [{key}]'
                 else:
-                    line += ' ({})'.format(key)
+                    line += f' ({key})'
             if self.display_prepopulated_values:
                 line += ':'
                 if prepopulated_value not in (None, 'None'):
-                    line += ' {}'.format(prepopulated_value)
+                    line += f' {prepopulated_value}'
             lines.append(line)
         if self.menu_entries:
             lines.append('')
@@ -264,7 +264,7 @@ class MenuSection(abjad.AbjadObject):
             title_lines = []
         for title_line in title_lines:
             tab_string = self._make_tab(1)
-            line = '{}{}'.format(tab_string, title_line)
+            line = f'{tab_string}{title_line}'
             menu_lines.append(line)
         if menu_lines:
             menu_lines.append('')

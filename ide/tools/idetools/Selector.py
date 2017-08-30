@@ -47,7 +47,7 @@ class Selector(object):
 
         Returns string.
         '''
-        return '{}()'.format(type(self).__name__)
+        return '{type(self).__name__}()'
 
     ### PRIVATE METHODS ###
 
@@ -163,4 +163,4 @@ class Selector(object):
         if self._target_name is None:
             return 'select:'
         else:
-            return 'select {}:'.format(self._target_name)
+            return 'select {self._target_name}:'

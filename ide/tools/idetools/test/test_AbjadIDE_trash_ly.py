@@ -7,13 +7,14 @@ def test_AbjadIDE_trash_ly_01():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score')
-        path = path / 'materials' / 'magic_numbers' / 'illustration.ly'
-        assert path.is_file()
+        target = ide.PackagePath('red_score')
+        target = target / 'materials' / 'magic_numbers' / 'illustration.ly'
+        assert target.is_file()
 
         input_ = 'red~score %magic~numbers lyt q'
         abjad_ide._start(input_=input_)
-        assert not path.exists()
+        assert f'Trashing {target.trim()} ...' in abjad_ide._transcript
+        assert not target.exists()
 
 
 def test_AbjadIDE_trash_ly_02():
@@ -21,10 +22,11 @@ def test_AbjadIDE_trash_ly_02():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score')
-        path = path / 'segments' / 'segment_01' / 'illustration.ly'
-        assert path.is_file()
+        target = ide.PackagePath('red_score')
+        target = target / 'segments' / 'segment_01' / 'illustration.ly'
+        assert target.is_file()
 
         input_ = 'red~score %A lyt q'
         abjad_ide._start(input_=input_)
-        assert not path.exists()
+        assert f'Trashing {target.trim()} ...' in abjad_ide._transcript
+        assert not target.exists()

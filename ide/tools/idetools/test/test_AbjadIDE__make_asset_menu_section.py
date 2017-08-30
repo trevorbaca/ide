@@ -23,7 +23,7 @@ def test_AbjadIDE__make_asset_menu_section_02():
 
     input_ = 'red~score gg q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
     string = 'Red Score (2017) - segments'
     assert string in transcript
     assert 'A\n' in transcript
@@ -49,4 +49,4 @@ def test_AbjadIDE__make_asset_menu_section_04():
 
     input_ = 'red~score mm q'
     abjad_ide._start(input_=input_)
-    assert '(Red Score)' not in abjad_ide._io_manager._transcript.contents
+    assert '(Red Score)' not in abjad_ide._transcript

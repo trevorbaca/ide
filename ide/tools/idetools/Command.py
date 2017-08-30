@@ -10,7 +10,7 @@ class Command(object):
     _allowable_sections = (
         'back-home-quit',
         'basic',
-        'build',
+        'builds',
         'build-edit',
         'build-generate',
         'build-interpret',

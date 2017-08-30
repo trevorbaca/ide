@@ -8,7 +8,7 @@ def test_Getter_display_help_01():
 
     input_ = 'red~score mm new ? <return> q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
 
     string = 'Value must be string.'
     assert string in transcript
@@ -20,7 +20,7 @@ def test_Getter_display_help_02():
 
     input_ = 'red~score mm new help <return> q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
 
     string = 'Value must be string.'
     assert string in transcript

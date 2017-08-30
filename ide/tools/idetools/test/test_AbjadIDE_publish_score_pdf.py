@@ -11,14 +11,14 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_publish_score_pdf_01():
 
     with ide.Test():
-        source = ide.Path('red_score').build / 'letter' / 'score.pdf'
-        target = ide.Path('red_score').distribution / 'red-score.pdf'
+        source = ide.PackagePath('red_score').builds / 'letter' / 'score.pdf'
+        target = ide.PackagePath('red_score').distribution / 'red-score.pdf'
         target.remove()
 
         input_ = 'red~score bb letter fci pi mi bci si spp q'
         abjad_ide._start(input_=input_)
-        transcript = abjad_ide._io_manager._transcript.contents
+        transcript = abjad_ide._transcript
         assert 'Publishing score PDF ...' in transcript
-        assert f'FROM: {abjad_ide._trim(source)}' in transcript
-        assert f'  TO: {abjad_ide._trim(target)}' in transcript
+        assert f'FROM: {source.trim()}' in transcript
+        assert f'  TO: {target.trim()}' in transcript
         assert target.exists()

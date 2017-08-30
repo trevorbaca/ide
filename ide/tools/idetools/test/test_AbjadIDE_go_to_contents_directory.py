@@ -52,13 +52,13 @@ def test_AbjadIDE_go_to_contents_directory_03():
 
 
 def test_AbjadIDE_go_to_contents_directory_04():
-    r'''From build directory.
+    r'''From builds directory.
     '''
 
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017)',
         ]
 

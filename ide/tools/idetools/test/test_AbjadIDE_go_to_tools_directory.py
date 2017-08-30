@@ -17,7 +17,7 @@ def test_AbjadIDE_go_to_tools_directory_01():
     input_ = 'red~score mm tempi oo q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
-    transcript = abjad_ide._io_manager._transcript.contents
+    transcript = abjad_ide._transcript
     assert 'adjust_spacing_sections.py' in transcript
 
 
@@ -54,13 +54,13 @@ def test_AbjadIDE_go_to_tools_directory_03():
 
 
 def test_AbjadIDE_go_to_tools_directory_04():
-    r'''From build directory to tools directory.
+    r'''From builds directory to tools directory.
     '''
 
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017) - tools directory',
         ]
 

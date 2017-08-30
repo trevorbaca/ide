@@ -34,6 +34,7 @@ class Menu(object):
 
     __slots__ = (
         '_asset_section',
+        '_directory',
         '_header',
         '_io_manager',
         '_menu_sections',
@@ -57,7 +58,7 @@ class Menu(object):
         'build-edit',
         'build-interpret',
         'build-open',
-        'build',
+        'builds',
         'basic',
         'git',
         )
@@ -77,11 +78,13 @@ class Menu(object):
 
     def __init__(
         self,
+        directory=None,
         header=None,
         name=None,
         subtitle=None,
         title=None,
         ):
+        self._directory = directory
         self._header = header
         self._io_manager = None
         self._menu_sections = []
@@ -94,7 +97,8 @@ class Menu(object):
     def __getitem__(self, argument):
         r'''Gets menu section indexed by `argument`.
 
-        Returns menu section with name equal to `argument` when `argument` is a string.
+        Returns menu section with name equal to `argument` when `argument` is a
+        string.
 
         Returns menu section at index `argument` when `argument` is an integer.
         '''
@@ -119,11 +123,9 @@ class Menu(object):
         Returns string.
         '''
         if self.name:
-            string = '<{} {!r} ({})>'
-            string = string.format(type(self).__name__, self.name, len(self))
+            string = f'<{type(self).__name__} {self.name!r} ({len(self)})>'
         else:
-            string = '<{} ({})>'
-            string = string.format(type(self).__name__, len(self))
+            string = f'<{type(self).__name__} ({len(self)})>'
         return string
 
     ### PRIVATE METHODS ###
@@ -132,7 +134,7 @@ class Menu(object):
         r'''Match order:
 
             1. all command sections
-            2. assets section, if it exists
+            2. assets sections
 
         This avoids file name new-stylesheet.ily aliasing the (new) command.
         '''
@@ -142,8 +144,6 @@ class Menu(object):
         if input_.startswith('!') and self._has_command('!'):
             return input_
         ends_with_bang = input_.endswith('!')
-        if ends_with_bang and input_[:-1] == 'q':
-            self._io_manager._clear_terminal_after_quit = True
         input_ = input_.strip('!')
         if self._user_enters_nothing(input_):
             default_value = None
@@ -152,10 +152,8 @@ class Menu(object):
                     default_value = section._default_value
             if default_value is not None:
                 return self._enclose_in_list(default_value)
-        asset_section = None
         for section in self.menu_sections:
             if section.is_asset_section:
-                asset_section = section
                 continue
             for menu_entry in section:
                 if (menu_entry.matches(input_)):
@@ -163,7 +161,9 @@ class Menu(object):
                     if ends_with_bang:
                         return_value = return_value + '!'
                     return self._enclose_in_list(return_value)
-        if asset_section is not None:
+        for asset_section in self.menu_sections:
+            if not asset_section.is_asset_section:
+                continue
             for menu_entry in asset_section:
                 if (menu_entry.matches(input_)):
                     return_value = menu_entry.return_value
@@ -237,12 +237,10 @@ class Menu(object):
         if directive is None and user_entered_lone_return:
             result = '<return>'
         elif directive is None and not user_entered_lone_return:
-            message = 'unknown command: {!r}.'
-            message = message.format(input_)
+            message = f'unknown command: {input_!r}.'
             self._io_manager._display([message, ''])
             result = None
-            if (self._io_manager._session.is_test and
-                not self._io_manager._session._allow_unknown_command_during_test):
+            if self._io_manager._session.is_test:
                 message = 'tests should contain no unknown commands.'
                 raise Exception(message)
         else:
@@ -274,16 +272,13 @@ class Menu(object):
         return result
 
     def _make_asset_lines(self):
-        has_asset_section = False
+        lines = []
         for section in self:
-            if section.is_asset_section:
-                has_asset_section = True
-                break
-        if not has_asset_section:
-            return []
-        assert section.is_asset_section
-        lines = section._make_lines()
-        lines = self._make_bicolumnar(lines, strip=False)
+            if not section.is_asset_section:
+                continue
+            lines_ = section._make_lines()
+            lines_ = self._make_bicolumnar(lines_, strip=False)
+            lines.extend(lines_)
         return lines
 
     def _make_bicolumnar(
@@ -370,8 +365,7 @@ class Menu(object):
         section_names = []
         for section in self.menu_sections:
             if section.name in section_names:
-                message = '{!r} contains duplicate {!r}.'
-                message = message.format(self, section)
+                message = f'{self!r} contains duplicate {section!r}.'
                 raise Exception(message)
             else:
                 section_names.append(section.name)
@@ -401,7 +395,7 @@ class Menu(object):
                 key = menu_entry.key
                 display_string = menu_entry.display_string
                 menu_line = self._tab
-                menu_line += '{} ({})'.format(display_string, key)
+                menu_line += f'{display_string} ({key})'
                 lines.append(menu_line)
             if found_one:
                 lines.append('')
@@ -411,7 +405,11 @@ class Menu(object):
             lines,
             break_only_at_blank_lines=True,
             )
-        title = self.header
+        if self.directory is not None:
+            title = self.directory.get_menu_header()
+        else:
+            title = self.header
+        assert isinstance(title, str), repr(title)
         if command_type == 'action':
             title = title + ' - action commands'
         elif command_type == 'navigation':
@@ -465,10 +463,10 @@ class Menu(object):
             title=title,
             )
         self.menu_sections.append(section)
-        self.menu_sections.sort(key=lambda x: x.name)
+        self.menu_sections.sort(key=lambda _: _.name)
         noncommand_sections = [
-            x for x in self.menu_sections
-            if not x.is_command_section
+            _ for _ in self.menu_sections
+            if not _.is_command_section
             ]
         for noncommand_section in noncommand_sections:
             self.menu_sections.remove(noncommand_section)
@@ -478,7 +476,9 @@ class Menu(object):
 
     def _make_title_lines(self):
         result = []
-        if self.header is not None:
+        if self.directory is not None:
+            title = self.directory.get_menu_header()
+        elif self.header is not None:
             title = self.header
         elif self.title is not None:
             title = self.title
@@ -499,11 +499,7 @@ class Menu(object):
             lines = self._make_help_lines(command_type=command_type)
         else:
             lines = self._make_lines()
-        self._io_manager._display(
-            lines,
-            capitalize=False,
-            is_menu=True,
-            )
+        self._io_manager._display(lines, caps=False, is_menu=True)
 
     def _return_value_to_location_pair(self, return_value):
         for i, section in enumerate(self.menu_sections):
@@ -587,6 +583,14 @@ class Menu(object):
     ### PUBLIC PROPERTIES ###
 
     @property
+    def directory(self):
+        r'''Gets directory.
+
+        Returns path or none.
+        '''
+        return self._directory
+
+    @property
     def header(self):
         r'''Gets explicit title.
 
@@ -639,6 +643,7 @@ class Menu(object):
     def make_asset_section(
         self,
         menu_entries=None,
+        is_numbered=True,
         name='assets',
         ):
         r'''Makes asset section.
@@ -653,7 +658,7 @@ class Menu(object):
         '''
         section = self._make_section(
             is_asset_section=True,
-            is_numbered=True,
+            is_numbered=is_numbered,
             menu_entries=menu_entries,
             name=name,
             return_value_attribute='explicit',

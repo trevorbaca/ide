@@ -33,27 +33,25 @@ if __name__ == '__main__':
             traceback.print_exc()
             sys.exit(1)
         try:
-            current_directory = pathlib.Path(__file__).parent
-            current_directory = ide.Path(current_directory)
-            current_directory._write_metadata_py(metadata)
+            directory = pathlib.Path(__file__).parent
+            directory = ide.PackagePath(directory)
+            directory._write_metadata_py(metadata)
         except:
             traceback.print_exc()
             sys.exit(1)
-        message = 'Abjad runtime {} {} ...'
         total_time = int(timer.elapsed_time)
         identifier = abjad.String('second').pluralize(total_time)
-        message = message.format(total_time, identifier)
+        message = f'Abjad runtime {total_time} {identifier} ...'
         print(message)
     try:
-        current_directory = pathlib.Path(__file__).parent
-        current_directory = ide.Path(current_directory)
-        target = current_directory / 'illustration.pdf'
+        directory = pathlib.Path(__file__).parent
+        directory = ide.PackagePath(directory)
+        target = directory / 'illustration.pdf'
         with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(target)
-        message = 'LilyPond runtime {} {} ...'
         total_time = int(timer.elapsed_time)
         identifier = abjad.String('second').pluralize(total_time)
-        message = message.format(total_time, identifier)
+        message = f'LilyPond runtime {total_time} {identifier} ...'
         print(message)
     except:
         traceback.print_exc()

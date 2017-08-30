@@ -37,13 +37,13 @@ def test_AbjadIDE_go_to_etc_directory_02():
 
 
 def test_AbjadIDE_go_to_etc_directory_03():
-    r'''From build directory to etc directory.
+    r'''From builds directory to etc directory.
     '''
 
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017) - etc directory',
         ]
 

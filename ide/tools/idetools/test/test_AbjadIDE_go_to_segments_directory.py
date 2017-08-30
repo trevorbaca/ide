@@ -52,11 +52,11 @@ def test_AbjadIDE_go_to_segments_directory_03():
 
 
 def test_AbjadIDE_go_to_segments_directory_04():
-    r'''Makes sure 'reverse' view is in effect.
+    r'''Makes sure reverse-order view is in effect.
     '''
 
     input_ = 'blue~score gg q'
     abjad_ide._start(input_=input_)
-    transcript = abjad_ide._io_manager._transcript.contents
-    assert '4: segment 02' in transcript
-    assert '5: segment 01' in transcript
+    transcript = abjad_ide._transcript
+    assert '1: segment 02' in transcript
+    assert '2: segment 01' in transcript

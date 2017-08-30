@@ -21,7 +21,7 @@ class Test(abjad.FilesystemState):
 #        keep = keep or []
 #        assert isinstance(keep, collections.Iterable), repr(keep)
 #        keep = tuple([str(_) for _ in keep])
-#        keep = keep + (str(self._configuration.example_scores_directory),)
+#        keep = keep + (str(self._configuration.test_scores_directory),)
 #        self._keep = keep
 #        remove = remove or []
 #        assert isinstance(remove, collections.Iterable), repr(remove)
@@ -42,7 +42,7 @@ class Test(abjad.FilesystemState):
         for path in self.keep:
             assert os.path.exists(path), repr(path)
             assert os.path.isfile(path) or os.path.isdir(path), repr(path)
-        path = str(self._configuration.example_scores_directory)
+        path = str(self._configuration.test_scores_directory)
         backup_path = path + '.backup'
         shutil.copytree(path, backup_path)
         super(Test, self).__enter__()
@@ -53,7 +53,7 @@ class Test(abjad.FilesystemState):
         Returns none.
         '''
         super(Test, self).__exit__(exg_type, exc_value, traceback)
-        path = str(self._configuration.example_scores_directory)
+        path = str(self._configuration.test_scores_directory)
         backup_path = path + '.backup'
         assert os.path.exists(backup_path), repr(backup_path)
         if os.path.exists(path):

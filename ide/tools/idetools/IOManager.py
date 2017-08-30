@@ -62,41 +62,21 @@ class IOManager(abjad.IOManager):
 
         Returns string.
         '''
-        return '{}()'.format(type(self).__name__)
+        return f'{type(self).__name__}()'
 
     ### PRIVATE METHODS ###
-
-    def _acknowledge(self):
-        message = 'press any key to continue.'
-        self._confirm(message=message)
 
     def _clean_up(self):
         if not self._transcript[-1][-1] == '':
             self._display('')
-        if self._session._clear_terminal_after_quit:
-            self.clear_terminal()
+        self.clear_terminal()
         if self._session.is_test:
             return
-        transcripts_directory = configuration.transcripts_directory
-        transcripts = sorted(transcripts_directory.glob('*'))
-        count = len(transcripts)
-        if 9000 <= count:
-            messages = []
-            message = 'transcripts directory contains {} transcripts.'
-            message = message.format(count)
-            messages.append(message)
-            message = 'prune {} soon.'.format(transcripts_directory)
-            messages.append(message)
-            self._display(message)
-        self._transcript._write()
 
     def _confirm(self, message='ok?', include_chevron=False):
         getter = self._make_getter(include_newlines=False)
-        getter.append_yes_no_string(
-            message,
-            include_chevron=include_chevron,
-            )
-        result = getter._run(io_manager=self)
+        getter.append_yes_no_string(message, include_chevron=include_chevron)
+        result = getter._run()
         if isinstance(result, str):
             if result == '':
                 return False
@@ -105,11 +85,11 @@ class IOManager(abjad.IOManager):
             if 'no'.startswith(result.lower()):
                 return False
 
-    def _display(self, lines, capitalize=True, is_menu=False):
+    def _display(self, lines, caps=True, is_menu=False):
         assert isinstance(lines, (str, list)), repr(lines)
         if isinstance(lines, str):
             lines = [lines]
-        if capitalize:
+        if caps:
             lines = [abjad.String(_).capitalize_start() for _ in lines]
         if lines:
             self._transcript._append_entry(lines, is_menu=is_menu)
@@ -117,7 +97,7 @@ class IOManager(abjad.IOManager):
             print(line)
 
     def _display_errors(self, lines):
-        self._display(lines, capitalize=False)
+        self._display(lines, caps=False)
 
     @staticmethod
     def _get_greatest_version_number(version_directory):
@@ -166,10 +146,11 @@ class IOManager(abjad.IOManager):
             message = message + ' '
         if not self._session.pending_input:
             was_pending_input = False
-            if sys.version_info[0] == 2:
+            # try block only for pytest
+            try:
                 input_ = input(message)
-            else:
-                input_ = input(message)
+            except OSError:
+                input_ = 'q'
             if include_newline:
                 if not input_ == 'help':
                     print('')
@@ -197,7 +178,7 @@ class IOManager(abjad.IOManager):
                     print(string)
         else:
             menu_chunk = []
-            menu_chunk.append('{}{}'.format(message, input_))
+            menu_chunk.append(f'{message}{input_}')
             if include_newline:
                 if not input_ == 'help':
                     menu_chunk.append('')
@@ -218,7 +199,7 @@ class IOManager(abjad.IOManager):
         lines = self._read_from_pipe(process.stdout).splitlines()
         lines = lines or []
         lines = [_.strip() for _ in lines]
-        self._display(lines, capitalize=False)
+        self._display(lines, caps=False)
 
     def _make_getter(
         self,
@@ -231,6 +212,7 @@ class IOManager(abjad.IOManager):
             allow_none=allow_none,
             include_chevron=include_chevron,
             include_newlines=include_newlines,
+            io_manager=self,
             )
         return getter
 
@@ -240,12 +222,14 @@ class IOManager(abjad.IOManager):
 
     def _make_menu(
         self,
+        directory=None,
         header=None,
         name=None,
         subtitle=None,
         ):
         import ide
         return ide.Menu(
+            directory=directory,
             header=header,
             name=name,
             subtitle=subtitle,
@@ -293,31 +277,8 @@ class IOManager(abjad.IOManager):
         self._session._pending_input = pending_input
         return input_
 
-    def _print_transcript(self):
-        for entry in self.transcript:
-            print(entry)
-
-    def _print_transcript_titles(self):
-        for title in self.transcript.titles:
-            print(repr(title))
-
-    def _read_from_pipe(self, pipe):
-        lines = []
-        string = pipe.read()
-        if sys.version_info[0] == 2:
-            for line in string.splitlines():
-                line = str(line)
-                lines.append(line)
-        else:
-            for line in string.splitlines():
-                try:
-                    line = line.decode('utf-8')
-                except UnicodeDecodeError:
-                    continue
-                lines.append(line)
-        return '\n'.join(lines)
-
-    def _trash_file(self, file_path):
+    @staticmethod
+    def _trash_file(file_path):
         file_path = pathlib.Path(file_path)
         if not file_path.is_file():
             return
@@ -336,74 +297,16 @@ class IOManager(abjad.IOManager):
         '''
         path = pathlib.Path(path)
         if not allow_missing and not path.is_file():
-            message = 'can not find {} ...'
-            message = message.format(path)
+            message = f'missing {path} ...'
             self._display(message)
             return
         if line_number is None:
-            command = 'vim {!s}'.format(path)
+            command = f'vim {path}'
         else:
-            command = 'vim +{} {!s}'.format(line_number, path)
-        self._session._attempted_to_open_file = True
+            command = f'vim +{line_number} {path}'
         if self._session.is_test:
             return
         self.spawn_subprocess(command)
-
-    def execute_file(self, path=None, attribute_names=None):
-        r'''Executes file `path`.
-
-        Returns `attribute_names` from file.
-        '''
-        assert path is not None
-        assert isinstance(attribute_names, tuple)
-        path = pathlib.Path(path)
-        if not path.is_file():
-            return
-        file_contents_string = path.read_text()
-        try:
-            result = self.execute_string(file_contents_string, attribute_names)
-        except:
-            message = 'Exception raised in {}.'
-            message = message.format(path)
-            # use print instead of display
-            # to force to terminal even when called in silent context
-            print(message)
-            traceback.print_exc()
-            return 'corrupt'
-        return result
-
-    def execute_string(
-        self,
-        string,
-        attribute_names=None,
-        local_namespace=None,
-        ):
-        r'''Executes `string`.
-
-        ::
-
-            >>> string = 'foo = 23'
-            >>> attribute_names = ('foo', 'bar')
-            >>> io_manager.execute_string(string, attribute_names)
-            (23, None)
-
-        Returns `attribute_names` from executed string.
-        '''
-        assert isinstance(string, str)
-        assert isinstance(attribute_names, tuple)
-        if local_namespace is None:
-            local_namespace = {}
-        assert isinstance(local_namespace, dict)
-        local_namespace = {}
-        exec(string, local_namespace, local_namespace)
-        result = []
-        for name in attribute_names:
-            if name in local_namespace:
-                result.append(local_namespace[name])
-            else:
-                result.append(None)
-        result = tuple(result)
-        return result
 
     def interpret_file(self, path):
         r'''Invokes Python or LilyPond on `path`.
@@ -416,15 +319,15 @@ class IOManager(abjad.IOManager):
         '''
         path = pathlib.Path(path)
         if not path.exists():
-            message = 'can not find {!s} ...'.format(path)
+            message = f'missing {path} ...'
             self._display(message)
             return False
         if path.suffix == '.py':
-            command = 'python {}'.format(path)
+            command = f'python {path}'
         elif path.suffix == '.ly':
-            command = 'lilypond -dno-point-and-click {}'.format(path)
+            command = f'lilypond -dno-point-and-click {path}'
         else:
-            message = 'can not interpret {}.'.format(path)
+            message = f'can not interpret {path}.'
             raise Exception(message)
         directory = path.parent
         directory = abjad.TemporaryDirectoryChange(directory)
@@ -449,6 +352,40 @@ class IOManager(abjad.IOManager):
         exit_code = process.returncode
         return stdout_lines, stderr_lines, exit_code
 
+    def interpret_tex_file(self, tex):
+        r'''Interprets TeX file.
+
+        Calls xelatex (or pdflatex) on file TWICE.
+
+        Some LaTeX packages (like tikz) require two passes.
+
+        Returns none.
+        '''
+        import ide
+        if not tex.is_file():
+            return
+        executables = self.find_executable('xelatex')
+        executables = [ide.PackagePath(_) for _ in executables]
+        if not executables:
+            executable_name = 'pdflatex'
+            fancy_executable_name = 'LaTeX'
+        else:
+            executable_name = 'xelatex'
+            fancy_executable_name = 'XeTeX'
+        pdf_path = tex.parent / (str(tex.stem) + '.pdf')
+        command = f'date > {configuration.latex_log_file_path};'
+        command += f' {executable_name} -halt-on-error'
+        command += f' --jobname={tex.stem}'
+        command += f' -output-directory={tex.parent} {tex}'
+        command += f' >> {configuration.latex_log_file_path} 2>&1'
+        command_called_twice = f'{command}; {command}'
+        with abjad.TemporaryDirectoryChange(tex.parent):
+            self.spawn_subprocess(command_called_twice)
+            for path in tex.parent.glob('*.aux'):
+                path.unlink()
+            for path in tex.parent.glob('*.log'):
+                path.unlink()
+
     def open_file(self, path, line_number=None):
         r'''Opens file `path`.
 
@@ -458,38 +395,33 @@ class IOManager(abjad.IOManager):
         '''
         line_number_string = ''
         if line_number is not None:
-            line_number_string = ' +{}'.format(line_number)
+            line_number_string = f' +{line_number}'
         if isinstance(path, str):
             path = pathlib.Path(path)
         if isinstance(path, list):
             path = [pathlib.Path(_) for _ in path]
+        vim_extensions = (
+            '.md',
+            '.py',
+            '.tex',
+            '.txt',
+            )
         if not isinstance(path, list) and not path.is_file():
             pass
-        if (isinstance(path, list) and all(_.suffix == '.pdf' for _ in path)):
+        if (isinstance(path, list) and
+            all(_.suffix in vim_extensions for _ in path)):
             paths = ' '.join([str(_) for _ in path])
-            command = 'open {}'.format(paths)
-        elif (isinstance(path, list) and
-            all(_.suffix == '.mp3' for _ in path)):
-            paths = ' '.join([str(_) for _ in path])
-            command = 'open {}'.format(paths)
-        elif (isinstance(path, list) and
-            all(_.suffix == '.aif' for _ in path)):
-            paths = ' '.join([str(_) for _ in path])
-            command = 'open {}'.format(paths)
+            command = f'vim {paths}'
         elif isinstance(path, list):
             paths = path
             paths = ' '.join([str(_) for _ in paths])
-            command = 'vim {}'.format(paths)
-        elif path.suffix == '.pdf':
-            command = 'open {!s}'.format(path)
-        elif path.suffix == '.mp3':
-            command = 'open {!s}'.format(path)
-        elif path.suffix == '.aif':
-            command = 'open {!s}'.format(path)
+            command = f'open {paths}'
+        elif (path.name[0] == '.' or
+            path.suffix in vim_extensions):
+            command = f'vim {path}'
         else:
-            command = 'vim {!s}'.format(path)
+            command = f'open {path}'
         command = command + line_number_string
-        self._session._attempted_to_open_file = True
         if self._session.is_test:
             return
         if isinstance(path, list):
@@ -511,26 +443,11 @@ class IOManager(abjad.IOManager):
                 script_path.unlink()
             with abjad.FilesystemState(remove=[script_path]):
                 script_path.write_text(completed_template)
-                permissions_command = 'chmod 755 {}'
-                permissions_command = permissions_command.format(script_path)
+                permissions_command = f'chmod 755 {script_path}'
                 self.spawn_subprocess(permissions_command)
                 close_command = str(script_path)
                 self.spawn_subprocess(close_command)
         self.spawn_subprocess(command)
-
-    def run_command(self, command):
-        r'''Makes subprocess with `command`.
-
-        Runs command.
-
-        Displays nothing.
-
-        Returns stdout from subprocess.
-        '''
-        process = self.make_subprocess(command)
-        lines = self._read_from_pipe(process.stdout)
-        lines = lines.splitlines()
-        return lines
 
     def write(self, path, string):
         r'''Writes `string` to `path`.

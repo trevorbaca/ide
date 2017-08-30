@@ -17,7 +17,7 @@ def test_AbjadIDE_go_to_wrapper_directory_01():
     input_ = 'red~score mm tempi ww q'
     abjad_ide._start(input_=input_)
     assert abjad_ide._io_manager._transcript.titles == titles
-    transcrtip = abjad_ide._io_manager._transcript.contents
+    transcrtip = abjad_ide._transcript
     assert 'red_score' in transcrtip
 
 
@@ -39,13 +39,13 @@ def test_AbjadIDE_go_to_wrapper_directory_02():
 
 
 def test_AbjadIDE_go_to_wrapper_directory_03():
-    r'''From build directory.
+    r'''From builds directory.
     '''
 
     titles = [
         'Abjad IDE - scores directory',
         'Red Score (2017)',
-        'Red Score (2017) - build directory',
+        'Red Score (2017) - builds directory',
         'Red Score (2017) - wrapper directory',
         ]
 

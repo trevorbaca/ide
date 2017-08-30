@@ -39,19 +39,6 @@ class Transcript(abjad.AbjadObject):
         entry = idetools.TranscriptEntry(lines, is_menu=is_menu)
         self.entries.append(entry)
 
-    def _write(self, transcripts_directory=None):
-        if transcripts_directory is None:
-            transcripts_directory = \
-                configuration.transcripts_directory
-        start_time = self.start_time.strftime('%Y-%m-%d-%H-%M-%S')
-        file_name = 'session-{}.txt'.format(start_time)
-        file_path = transcripts_directory / file_name
-        with file_path.open('w') as file_pointer:
-            for entry in self.entries:
-                line = entry._format()
-                file_pointer.write(line)
-                file_pointer.write('\n\n')
-
     ### PUBLIC PROPERTIES ###
 
     @property

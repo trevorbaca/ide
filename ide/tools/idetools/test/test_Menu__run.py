@@ -26,7 +26,6 @@ def test_Menu__run_01():
     result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -34,14 +33,6 @@ def test_Menu__run_01():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'app, che-ban'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_02():
@@ -70,7 +61,6 @@ def test_Menu__run_02():
     result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -78,14 +68,6 @@ def test_Menu__run_02():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'app, che-ban'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_03():
@@ -118,18 +100,9 @@ def test_Menu__run_03():
     result = menu._run(io_manager=io_manager)
     assert result == 'apple'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'app, che-ban'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_04():
@@ -162,7 +135,6 @@ def test_Menu__run_04():
     result = menu._run(io_manager=io_manager)
     assert result == ['apple', 'cherry', 'banana']
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -170,10 +142,6 @@ def test_Menu__run_04():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_05():
@@ -206,7 +174,6 @@ def test_Menu__run_05():
     result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -214,22 +181,6 @@ def test_Menu__run_05():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'add, mod-rm'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, thi-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, mod-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_06():
@@ -260,7 +211,6 @@ def test_Menu__run_06():
     result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -268,22 +218,6 @@ def test_Menu__run_06():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'add, mod-rm'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, thi-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, mod-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_07():
@@ -317,7 +251,6 @@ def test_Menu__run_07():
     result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -325,22 +258,6 @@ def test_Menu__run_07():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'add, mod-rm'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, thi-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, mod-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_08():
@@ -373,7 +290,6 @@ def test_Menu__run_08():
     result = menu._run(io_manager=io_manager)
     assert result == 'first command'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -381,22 +297,6 @@ def test_Menu__run_08():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'add, mod-rm'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, thi-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, mod-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_09():
@@ -434,26 +334,9 @@ def test_Menu__run_09():
     result = menu._run(io_manager=io_manager)
     assert result == 'add'
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'add, mod-rm'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, thi-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
-
-    io_manager._session._pending_input = 'fir, mod-sec'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_10():
@@ -499,7 +382,6 @@ def test_Menu__run_10():
     result = menu._run(io_manager=io_manager)
     assert result == ['add', 'mod', 'rm']
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -507,10 +389,6 @@ def test_Menu__run_10():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
 
 
 def test_Menu__run_11():
@@ -555,7 +433,6 @@ def test_Menu__run_11():
     result = menu._run(io_manager=io_manager)
     assert result == ['first command', 'third command', 'second command']
 
-    io_manager._session._allow_unknown_command_during_test = True
     io_manager._session._pending_input = 'foo'
     result = menu._run(io_manager=io_manager)
     assert result == ('foo',)
@@ -563,7 +440,3 @@ def test_Menu__run_11():
     io_manager._session._pending_input = '1'
     result = menu._run(io_manager=io_manager)
     assert result == ('1',)
-
-    io_manager._session._pending_input = '1, 3-2'
-    result = menu._run(io_manager=io_manager)
-    assert result is None
