@@ -13,6 +13,6 @@ try:
 except ImportError:
     pass
 
-input_ = ' '.join(sys.argv[1:])
+string = ' '.join(sys.argv[1:])
 abjad_ide = ide.AbjadIDE(is_example=True)
-abjad_ide._start(input_=input_)
+abjad_ide(string)

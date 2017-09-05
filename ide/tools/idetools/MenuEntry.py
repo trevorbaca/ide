@@ -52,7 +52,7 @@ class MenuEntry(abjad.AbjadObject):
         menu_section=None,
         prepopulated_value=None,
         ):
-        self._display_string = display_string
+        self._display_string = abjad.String(display_string)
         self._explicit_return_value = explicit_return_value
         assert MenuEntry._is_valid_key(key), repr(key)
         self._key = key
@@ -186,8 +186,8 @@ class MenuEntry(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
-    def matches(self, input_):
-        r'''Is true when menu entry matches `input_` string.
+    def matches(self, string):
+        r'''Is true when menu entry matches `string`.
 
         ..  container:: example
 
@@ -208,7 +208,7 @@ class MenuEntry(abjad.AbjadObject):
         Returns true or false.
         '''
         # aliases take priority over menu entry matches
-        if input_ in configuration.aliases:
+        if string in configuration.aliases:
             return False
         normalized_display_string = abjad.String(
             self.display_string).strip_diacritics()
@@ -220,21 +220,21 @@ class MenuEntry(abjad.AbjadObject):
         display_capital_letters = ''.join(display_capital_letters)
         if (self.menu_section.match_on_display_string and
             display_capital_letters and
-            input_ == display_capital_letters):
+            string == display_capital_letters):
             return True
-        if self.key is not None and input_ == self.key:
+        if self.key is not None and string == self.key:
             return True
-        if self.menu_section.is_numbered and input_ == str(self.number):
+        if self.menu_section.is_numbered and string == str(self.number):
             return True
         if (self.menu_section.match_on_display_string and
-            3 <= len(input_)):
-            if normalized_display_string.startswith(input_.lower()):
+            3 <= len(string)):
+            if normalized_display_string.startswith(string.lower()):
                 return True
         if (self.menu_section.match_on_display_string and
-            input_ == self.display_string):
+            string == self.display_string):
             return True
         if (self.menu_section.match_on_display_string and
-            3 <= len(input_) and
-            input_ in normalized_display_string):
+            3 <= len(string) and
+            string in normalized_display_string):
             return True
         return False

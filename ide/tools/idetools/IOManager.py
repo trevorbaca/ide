@@ -1,20 +1,9 @@
-from __future__ import print_function
-import abc
 import abjad
-import codecs
+import io
 import pathlib
 import platform
 import subprocess
-import sys
-import traceback
 from ide.tools.idetools.Configuration import Configuration
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-
-configuration = Configuration()
 
 
 class IOManager(abjad.IOManager):
@@ -34,56 +23,43 @@ class IOManager(abjad.IOManager):
     __documentation_section__ = 'Classes'
 
     __slots__ = (
-        '_session',
+        '_is_example',
+        '_is_quitting',
+        '_is_redrawing',
+        '_is_test',
+        '_pending_input',
         '_transcript',
         )
 
-    _tab = 4 * ' '
+    _editor_extensions = (
+        '.ily',
+        '.log',
+        '.ly',
+        '.md',
+        '.py',
+        '.tex',
+        '.txt',
+        )
+
+    configuration = Configuration()
 
     ### INITIALIZER ###
 
-    def __init__(self, session=None):
-        from ide.tools.idetools.Transcript import Transcript
-        assert session is not None
-        self._session = session
-        self._transcript = Transcript()
-
-    ### SPECIAL METHODS ###
-
-    def __repr__(self):
-        r'''Gets interpreter representation of IO manager.
-
-        ..  container:: example
-
-            ::
-
-                >>> io_manager
-                IOManager()
-
-        Returns string.
-        '''
-        return f'{type(self).__name__}()'
+    def __init__(self, is_example=False, is_test=False):
+        import ide
+        self._is_example = is_example
+        self._is_quitting = None
+        self._is_redrawing = True
+        self._is_test = is_test
+        self._pending_input = None
+        self._transcript = ide.Transcript()
 
     ### PRIVATE METHODS ###
 
     def _clean_up(self):
-        if not self._transcript[-1][-1] == '':
+        if not self._transcript.blocks[-1][-1] == '':
             self._display('')
         self.clear_terminal()
-        if self._session.is_test:
-            return
-
-    def _confirm(self, message='ok?', include_chevron=False):
-        getter = self._make_getter(include_newlines=False)
-        getter.append_yes_no_string(message, include_chevron=include_chevron)
-        result = getter._run()
-        if isinstance(result, str):
-            if result == '':
-                return False
-            if 'yes'.startswith(result.lower()):
-                return True
-            if 'no'.startswith(result.lower()):
-                return False
 
     def _display(self, lines, caps=True, is_menu=False):
         assert isinstance(lines, (str, list)), repr(lines)
@@ -92,101 +68,38 @@ class IOManager(abjad.IOManager):
         if caps:
             lines = [abjad.String(_).capitalize_start() for _ in lines]
         if lines:
-            self._transcript._append_entry(lines, is_menu=is_menu)
+            self._transcript._append_block(lines, is_menu=is_menu)
         for line in lines:
             print(line)
 
     def _display_errors(self, lines):
         self._display(lines, caps=False)
 
-    @staticmethod
-    def _get_greatest_version_number(version_directory):
-        version_directory = pathlib.Path(version_directory)
-        if not version_directory.is_dir():
-            return 0
-        greatest_number = 0
-        for entry in sorted(version_directory.glob('*')):
-            number = 0
-            try:
-                number = int(entry.stem[-4:])
-            except ValueError:
-                pass
-            if greatest_number < number:
-                greatest_number = number
-        return greatest_number
-
-    @staticmethod
-    def _get_one_line_menu_summary(argument):
-        if isinstance(argument, (type, abc.ABCMeta)):
-            return argument.__name__
-        elif isinstance(argument, str):
-            return argument
+    def _get_input(self, message='', split_input=False):
+        message = abjad.String(message).capitalize_start() + '> '
+        if self._pending_input:
+            string = self._pop_from_pending_input()
+            print(f'> {string}')
         else:
-            return repr(argument)
-
-    def _handle_input(
-        self,
-        message,
-        include_chevron=True,
-        include_newline=False,
-        prompt_character='>',
-        capitalize_prompt=True,
-        ):
-        r'''Handles user input.
-        Appends user input to command history.
-        Appends user input to IO transcript.
-        Returns command selected by user.
-        '''
-        found_default_token = False
-        if capitalize_prompt:
-            message = abjad.String(message).capitalize_start()
-        if include_chevron:
-            message = message + prompt_character + ' '
-        else:
-            message = message + ' '
-        if not self._session.pending_input:
-            was_pending_input = False
+            # TODO: this can be removed bc all test input should be pending:
             # try block only for pytest
             try:
-                input_ = input(message)
+                string = input(message)
             except OSError:
-                input_ = 'q'
-            if include_newline:
-                if not input_ == 'help':
-                    print('')
+                string = 'q'
+            if string and split_input:
+                parts = string.split()
+                string = parts[0]
+                pending_input = ' '.join(parts[1:])
+                if pending_input:
+                    self._pending_input = pending_input
+        if string == '<return>':
+            self._transcript._append_block([message.strip(), ''])
+            self._transcript._append_block(['> ', ''])
         else:
-            was_pending_input = True
-            input_ = self._pop_from_pending_input()
-            if input_ == '<return>':
-                found_default_token = True
-        if found_default_token:
-            menu_chunk = [message.strip()]
-            if include_newline:
-                if not input_ == 'help':
-                    menu_chunk.append('')
-            self._transcript._append_entry(menu_chunk)
-            if was_pending_input:
-                for string in menu_chunk:
-                    print(string)
-            menu_chunk = ['> ']
-            if include_newline:
-                if not input_ == 'help':
-                    menu_chunk.append('')
-            self._transcript._append_entry(menu_chunk)
-            if was_pending_input:
-                for string in menu_chunk:
-                    print(string)
-        else:
-            menu_chunk = []
-            menu_chunk.append(f'{message}{input_}')
-            if include_newline:
-                if not input_ == 'help':
-                    menu_chunk.append('')
-            self._transcript._append_entry(menu_chunk)
-            if was_pending_input:
-                for string in menu_chunk:
-                    print(string)
-        return input_
+            self._transcript._append_block([f'{message}{string}', ''])
+            self._transcript._append_block(['> ', ''])
+        return abjad.String(string)
 
     def _invoke_shell(self, statement):
         statement = statement.strip()
@@ -201,88 +114,21 @@ class IOManager(abjad.IOManager):
         lines = [_.strip() for _ in lines]
         self._display(lines, caps=False)
 
-    def _make_getter(
-        self,
-        allow_none=False,
-        include_chevron=True,
-        include_newlines=False,
-        ):
-        import ide
-        getter = ide.Getter(
-            allow_none=allow_none,
-            include_chevron=include_chevron,
-            include_newlines=include_newlines,
-            io_manager=self,
-            )
-        return getter
-
-    def _make_interaction(self):
-        import ide
-        return ide.Interaction(io_manager=self)
-
-    def _make_menu(
-        self,
-        directory=None,
-        header=None,
-        name=None,
-        subtitle=None,
-        ):
-        import ide
-        return ide.Menu(
-            directory=directory,
-            header=header,
-            name=name,
-            subtitle=subtitle,
-            )
-
-    def _make_selector(
-        self,
-        is_ranged=False,
-        items=None,
-        menu_entries=None,
-        menu_header=None,
-        target_name=None,
-        ):
-        import ide
-        return ide.Selector(
-            is_ranged=is_ranged,
-            items=items,
-            menu_entries=menu_entries,
-            menu_header=menu_header,
-            target_name=target_name,
-            )
-
     def _pop_from_pending_input(self):
-        if self._session.pending_input is None:
-            return None
-        elif self._session._pending_input == '':
-            self._session._pending_input = None
-            return None
-        elif self._session.pending_input.startswith('{{'):
-            index = self._session.pending_input.find('}}')
-            input_ = self._session.pending_input[2:index]
-            pending_input = self._session.pending_input[index + 2:]
-            pending_input = pending_input.strip()
-        else:
-            input_parts = self._session.pending_input.split(' ')
-            first_parts, rest_parts = [], []
-            for i, part in enumerate(input_parts):
-                if part == '-' or not part.endswith((',', '-')):
-                    break
-            first_parts = input_parts[:i + 1]
-            rest_parts = input_parts[i + 1:]
-            input_ = ' '.join(first_parts)
-            pending_input = ' '.join(rest_parts)
-        input_ = input_.replace('~', ' ')
-        self._session._pending_input = pending_input
-        return input_
+        parts = self._pending_input.split()
+        pending_input = ' '.join(parts[1:])
+        self._pending_input = pending_input
+        return parts[0].replace('~', ' ')
 
-    @staticmethod
-    def _trash_file(file_path):
-        file_path = pathlib.Path(file_path)
-        if not file_path.is_file():
-            return
-        file_path.unlink()
+    ### PUBLIC PROPERTIES ###
+
+    @property
+    def transcript(self):
+        r'''Gets transcript.
+
+        Returns transcript.
+        '''
+        return self._transcript
 
     ### PUBLIC METHODS ###
 
@@ -304,7 +150,7 @@ class IOManager(abjad.IOManager):
             command = f'vim {path}'
         else:
             command = f'vim +{line_number} {path}'
-        if self._session.is_test:
+        if self._is_test:
             return
         self.spawn_subprocess(command)
 
@@ -331,7 +177,7 @@ class IOManager(abjad.IOManager):
             raise Exception(message)
         directory = path.parent
         directory = abjad.TemporaryDirectoryChange(directory)
-        string_buffer = StringIO()
+        string_buffer = io.StringIO()
         with directory, string_buffer:
             process = subprocess.Popen(
                 command,
@@ -341,7 +187,6 @@ class IOManager(abjad.IOManager):
                 bufsize=1,
                 )
             for line in process.stdout:
-                #if sys.version_info[0] == 3:
                 line = line.decode('utf-8')
                 print(line, end='')
                 string_buffer.write(line)
@@ -365,7 +210,7 @@ class IOManager(abjad.IOManager):
         if not tex.is_file():
             return
         executables = self.find_executable('xelatex')
-        executables = [ide.PackagePath(_) for _ in executables]
+        executables = [ide.Path(_) for _ in executables]
         if not executables:
             executable_name = 'pdflatex'
             fancy_executable_name = 'LaTeX'
@@ -373,11 +218,11 @@ class IOManager(abjad.IOManager):
             executable_name = 'xelatex'
             fancy_executable_name = 'XeTeX'
         pdf_path = tex.parent / (str(tex.stem) + '.pdf')
-        command = f'date > {configuration.latex_log_file_path};'
+        command = f'date > {self.configuration.latex_log_file_path};'
         command += f' {executable_name} -halt-on-error'
         command += f' --jobname={tex.stem}'
         command += f' -output-directory={tex.parent} {tex}'
-        command += f' >> {configuration.latex_log_file_path} 2>&1'
+        command += f' >> {self.configuration.latex_log_file_path} 2>&1'
         command_called_twice = f'{command}; {command}'
         with abjad.TemporaryDirectoryChange(tex.parent):
             self.spawn_subprocess(command_called_twice)
@@ -400,29 +245,22 @@ class IOManager(abjad.IOManager):
             path = pathlib.Path(path)
         if isinstance(path, list):
             path = [pathlib.Path(_) for _ in path]
-        vim_extensions = (
-            '.md',
-            '.py',
-            '.tex',
-            '.txt',
-            )
         if not isinstance(path, list) and not path.is_file():
             pass
         if (isinstance(path, list) and
-            all(_.suffix in vim_extensions for _ in path)):
+            all(_.suffix in self._editor_extensions for _ in path)):
             paths = ' '.join([str(_) for _ in path])
             command = f'vim {paths}'
         elif isinstance(path, list):
             paths = path
             paths = ' '.join([str(_) for _ in paths])
             command = f'open {paths}'
-        elif (path.name[0] == '.' or
-            path.suffix in vim_extensions):
+        elif (path.name[0] == '.' or path.suffix in self._editor_extensions):
             command = f'vim {path}'
         else:
             command = f'open {path}'
         command = command + line_number_string
-        if self._session.is_test:
+        if self._is_test:
             return
         if isinstance(path, list):
             path_suffix = path[0].suffix
@@ -430,13 +268,13 @@ class IOManager(abjad.IOManager):
             path_suffix = path.suffix
         if (platform.system() == 'Darwin' and path_suffix == '.pdf'):
             source_path = pathlib.Path(
-                configuration.boilerplate_directory,
+                self.configuration.boilerplate_directory,
                 '__close_preview_pdf__.scr',
                 )
             template = source_path.read_text()
             completed_template = template.format(file_path=path)
             script_path = pathlib.Path(
-                configuration.home_directory,
+                self.configuration.home_directory,
                 '__close_preview_pdf__.scr',
                 )
             if script_path.exists():

@@ -6,52 +6,52 @@ def test_AbjadIDE_git_pull_01():
     r'''Available everywhere except scores directory.
     '''
 
-    path = ide.PackagePath('red_score')
+    path = ide.Path('red_score')
 
-    input_ = '? q'
-    abjad_ide._start(input_=input_)
-    assert 'git - pull (pull)' not in abjad_ide._transcript
+    abjad_ide('? q')
+    transcript = abjad_ide.io_manager.transcript
+    assert 'git - pull (pull)' not in transcript
 
-    input_ = 'red~score pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score bb pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score bb pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score dd pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score dd pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score ee pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score ee pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score gg pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score gg pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score gg A pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score gg A pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score mm pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score mm pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score mm magic~numbers pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score mm magic pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score oo pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score oo pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score tt pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score tt pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript
 
-    input_ = 'red~score yy pull q'
-    abjad_ide._start(input_=input_)
-    assert f'Git pull {path.wrapper} ...' in abjad_ide._transcript
+    abjad_ide('red~score yy pull q')
+    transcript = abjad_ide.io_manager.transcript
+    assert f'Git pull {path.wrapper} ...' in transcript

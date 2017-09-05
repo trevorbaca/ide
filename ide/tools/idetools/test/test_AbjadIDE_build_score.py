@@ -11,9 +11,8 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_build_score_01():
 
     with ide.Test():
-        input_ = 'red~score %letter bld q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter bld q')
+        transcript = abjad_ide.io_manager.transcript
         lines = [
             'Building score ...',
             'Collecting segment lys ...',

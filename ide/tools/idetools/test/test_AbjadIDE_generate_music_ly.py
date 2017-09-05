@@ -5,12 +5,11 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_generate_music_ly_01():
 
     with ide.Test():
-        target = ide.PackagePath('red_score').builds / 'letter' / 'music.ly'
+        target = ide.Path('red_score').builds / 'letter' / 'music.ly'
         target.remove()
 
-        input_ = 'red~score %letter mg q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter mg q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert 'Examining segments alphabetically ...' in transcript
@@ -24,9 +23,8 @@ def test_AbjadIDE_generate_music_ly_01():
         assert '\n    \include "../_segments/segment-02.ly"' in text
         assert '\n    \include "../_segments/segment-03.ly"' in text
 
-        input_ = 'red~score %letter mg q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter mg q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert 'Examining segments alphabetically ...' in transcript
@@ -46,12 +44,11 @@ def test_AbjadIDE_generate_music_ly_02():
     '''
 
     with ide.Test():
-        target = ide.PackagePath('red_score').builds / 'letter' / 'music.ly'
+        target = ide.Path('red_score').builds / 'letter' / 'music.ly'
         target.remove()
 
-        input_ = 'red~score gg new segment~04 %letter mg q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score gg new segment~04 %letter mg q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert 'Examining segments alphabetically ...' in transcript

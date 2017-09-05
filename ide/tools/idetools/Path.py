@@ -1,11 +1,50 @@
 import abjad
+import os
+import pathlib
 import shutil
 from abjad import abjad_configuration
+from ide.tools.idetools.Configuration import Configuration
 
 
-class PackagePath(abjad.PackagePath):
+class Path(abjad.Path):
     r'''Packge path.
     '''
+
+    ### CLASS VARIABLES ###
+
+    _configuration = Configuration()
+
+    _test_score_names = (
+        'blue_score',
+        'red_score',
+        )
+
+    ### CONSTRUCTOR ###
+
+    def __new__(class_, argument, scores=None):
+        from abjad import abjad_configuration
+        if isinstance(argument, pathlib.Path) or os.sep in argument:
+            self = pathlib.Path.__new__(class_, argument)
+        else:
+            arguments = []
+            if argument in Path._test_score_names:
+                arguments.append(Path._configuration.test_scores_directory)
+                arguments.extend(2 * [argument])
+            elif argument == 'boilerplate':
+                arguments.append(abjad_configuration.boilerplate_directory)
+            elif argument == 'test_scores':
+                arguments.append(Path._configuration.test_scores_directory)
+            elif scores is not None:
+                arguments.append(scores)
+                arguments.extend(2 * [argument])
+            else:
+                arguments.append(abjad_configuration.composer_scores_directory)
+                arguments.extend(2 * [argument])
+            self = pathlib.Path.__new__(class_, *arguments)
+        if scores is not None:
+            scores = type(self)(scores)
+        self._scores = scores
+        return self
 
     ### PRIVATE METHODS ###
 
@@ -45,24 +84,6 @@ class PackagePath(abjad.PackagePath):
         with abjad.TemporaryDirectoryChange(directory=self.wrapper):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
-
-    def _get_repository_root(self):
-        command = 'git rev-parse --show-toplevel'
-        with abjad.TemporaryDirectoryChange(directory=self):
-            lines = abjad.IOManager.run_command(command)
-            first_line = lines[0]
-            return type(self)(first_line)
-
-    def _get_title_metadatum(self, year=True):
-        if year and self.get_metadatum('year'):
-            title = self._get_title_metadatum(year=False)
-            year = self.get_metadatum('year')
-            result = f'{title} ({year})'
-            return result
-        else:
-            result = self.get_metadatum('title')
-            result = result or '(untitled score)'
-            return result
 
     def _get_unadded_asset_paths(self):
         assert self.is_dir()
@@ -114,7 +135,13 @@ class PackagePath(abjad.PackagePath):
     def _is_in_git_repository(self):
         if not self.exists():
             return False
-        path = self.wrapper
+        if self.wrapper is None:
+            path = self
+        else:
+            path = self.wrapper
+        test_scores = self._configuration.test_scores_directory
+        if str(self).startswith(str(test_scores)):
+            return True
         for path_ in path.glob('*'):
             if path_.name == '.git':
                 return True
@@ -140,9 +167,45 @@ class PackagePath(abjad.PackagePath):
                 raise ValueError(required_file)
             target = self / required_file
             shutil.copyfile(str(source), str(target))
-        paths = self.parent.list_ordered_paths()
+        paths = self.parent.list_paths()
         if self not in paths:
             self.parent.add_metadatum('view', None)
+
+    @staticmethod
+    def _smart_match(strings, pattern):
+        pattern = abjad.String(pattern)
+        for string in strings:
+            if string == pattern:
+                return string
+        if 3 <= len(pattern):
+            for string in strings:
+                if string.startswith(pattern):
+                    return string
+        if len(pattern) <= 1:
+            return
+        if not pattern.islower():
+            pattern_words = pattern.delimit_words(separate_caps=True)
+            for string in strings:
+                if (string.startswith(pattern_words[0]) and
+                    string.match_word_starts(pattern_words)):
+                    return string
+            for string in strings:
+                if string.match_word_starts(pattern_words):
+                    return string
+        if pattern.islower():
+            pattern_characters = list(pattern)
+            for string in strings:
+                if (string.startswith(pattern_characters[0]) and
+                    string.match_word_starts(pattern_characters)):
+                    return string
+            for string in strings:
+                if string.match_word_starts(pattern_characters):
+                    return string
+        if len(pattern) <= 2:
+            return
+        for string in strings:
+            if pattern.lower() in string.strip_diacritics().lower():
+                return string
 
     def _unadd_added_assets(self):
         paths = []
@@ -173,6 +236,37 @@ class PackagePath(abjad.PackagePath):
         text = text + '\n' + metadata_lines + '\n'
         metadata_py_path.write_text(text)
 
+    ### PUBLIC PROPERTIES ###
+
+    @property
+    def scores(self):
+        r'''Gets scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> path = abjad.Path(
+                ...     '/path/to/scores/my_score/my_score',
+                ...     scores='/path/to/scores',
+                ...     )
+                >>> path.scores
+                Path*('/path/to/scores')
+
+        Returns package path or none.
+        '''
+        from abjad import abjad_configuration
+        if getattr(self, '_scores', None) is not None:
+            result = self._scores
+            result._scores = self._scores
+            return result
+        for scores in (
+            self._configuration.test_scores_directory,
+            abjad_configuration.composer_scores_directory,
+            ):
+            if str(self).startswith(str(scores)):
+                return type(self)(scores)
+
     ### PUBLIC METHODS ###
 
     def copy_boilerplate(self, source_name, target_name=None, values=None):
@@ -194,54 +288,58 @@ class PackagePath(abjad.PackagePath):
         template = template.format(**values)
         target.write_text(template)
 
-    def get_menu_header(self):
+    def get_header(self):
         r'''Gets menu header.
 
         Returns string.
         '''
+        if self.is_external():
+            return f'Abjad IDE : {self}'
         if self.is_scores():
-            return 'Abjad IDE - scores directory'
-        if not self.is_package_path():
-            header = f'Abjad IDE - {directory}'
-            return header
-        header_parts = []
-        score_part = self.contents._get_title_metadatum()
-        header_parts.append(score_part)
+            return 'Abjad IDE : scores'
+        parts = [self.contents.get_title()]
         if self.is_wrapper():
-            header_parts.append('wrapper directory')
-        path_parts = type(self)(self.trim()).parts
-        path_parts = path_parts[1:]
-        if not path_parts:
-            directory_part, package_part = None, None
-        elif self.is_package_path(('contents', 'wrapper')):
-            directory_part, package_part = None, None
-        elif len(path_parts) == 1:
-            directory_part, package_part = path_parts[0], None
-        elif len(path_parts) == 2:
-            directory_part, package_part = path_parts
-        else:
-            message = f'can not classify {self!r}.'
-            raise ValueError(message, path_parts)
-        if directory_part:
-            directory_part = directory_part + ' directory'
-            header_parts.append(directory_part)
-        if package_part:
-            if package_part == '_segments':
-                package_part = 'segments'
-            else:
-                package_part = package_part.replace('_', ' ')
-            package_part = self.get_metadatum('name', package_part)
-            header_parts.append(package_part)
-        header = ' - '.join(header_parts)
-        return header
+            parts.append('wrapper')
+        elif not self.is_contents():
+            parts.extend(self.relative_to(self.contents).parts[:-1])
+            parts.append(self.get_identifier())
+        return ' : '.join(parts)
 
-    def make_menu(self, name=None):
+    def is_external(self):
+        r'''Is true when path does not have form of score package path.
+
+        ..  container:: example
+
+            ::
+
+                >>> path = abjad.Path('/path/to/location')
+                >>> path.is_external()
+                True
+
+        Returns true or false.
+        '''
+        from abjad import abjad_configuration
+        if not self.name[0].isalpha() and not self.name == '_segments':
+            return True
+        for scores in (abjad_configuration.composer_scores_directory,
+            self._configuration.test_scores_directory,
+            getattr(self, '_scores', None),
+            ):
+            if str(self).startswith(str(scores)):
+                return False
+        return True
+
+    def make_menu(self, io_manager=None, name=None):
         r'''Makes menu to manage path.
         
         Returns menu.
         '''
         import ide
-        menu = ide.Menu(directory=self, name=name)
+        menu = ide.Menu(
+            header=self.get_header(),
+            io_manager=io_manager,
+            name=name,
+            )
         entries = []
         for path in self.list_secondary_paths():
             entry = ide.MenuEntry(
@@ -257,8 +355,8 @@ class PackagePath(abjad.PackagePath):
                 name='secondary',
                 )
         entries = []
-        ppp = self._collect_similar_directories()
-        for path in self.list_ordered_paths():
+        ppp = self._collect_in_every_score()
+        for path in self.list_paths():
             if not self.is_wrapper():
                 entry = ide.MenuEntry(
                     display_string=path.get_identifier(),
@@ -273,3 +371,49 @@ class PackagePath(abjad.PackagePath):
         if entries:
             menu.make_asset_section(menu_entries=entries)
         return menu
+
+    def match_package_path(self, pattern):
+        r'''Matches package path against `pattern`.
+
+        Returns path or none.
+        '''
+        path = None
+        if not pattern:
+            pass
+        elif pattern == '<':
+            path = self.get_previous_package(cyclic=True)
+        elif pattern == '>':
+            path = self.get_next_package(cyclic=True)
+        elif abjad.mathtools.is_integer_equivalent(pattern):
+            segment_number = int(pattern)
+            path = self.segment_number_to_path(segment_number)
+        elif self.is_package_path():
+            paths = []
+            paths.extend(self.builds.list_paths())
+            paths.extend(self.distribution.list_paths())
+            paths.extend(self.etc.list_paths())
+            paths.extend(self.materials.list_paths())
+            paths.extend(self.segments.list_paths())
+            paths.extend(self.stylesheets.list_paths())
+            paths.extend(self.test.list_paths())
+            paths.extend(self.tools.list_paths())
+            strings = [_.get_identifier() for _ in paths]
+            string = self._smart_match(strings, pattern)
+            if string is not None:
+                path = paths[strings.index(string)]
+            if pattern[0] == '%' and not path.is_dir():
+                path = None
+        if path:
+            path = type(self)(path)
+        return path
+
+    def matches_manifest(self, manifest):
+        r'''Is true when path matches `manifest`.
+
+        Returns true or false.
+        '''
+        if manifest is True:
+            return True
+        if bool(manifest) is False:
+            return False
+        return self.is_package_path(manifest)

@@ -6,42 +6,34 @@ def test_AbjadIDE_go_to_segment_directory_01():
     r'''%-navigation.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score %A q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) : segments : A',
         ]
-
-    input_ = 'red~score %A q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_segment_directory_02():
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score %X q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score %X q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
-    transcript = abjad_ide._transcript
-    assert "Matches no display string '%X' ..." in transcript
+    assert "Matches no path '%X' ..." in transcript
 
 
 def test_AbjadIDE_go_to_segment_directory_03():
     r'''The %a should not catch tools/adjust_spacing_sections.py.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score %a q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score %a q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
-    transcript = abjad_ide._transcript
-    assert "Matches no display string '%a' ..." in transcript
+    assert "Matches no path '%a' ..." in transcript

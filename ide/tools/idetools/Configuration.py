@@ -1,5 +1,5 @@
-from __future__ import print_function
 import abjad
+import importlib
 import pathlib
 import sys
 
@@ -45,16 +45,6 @@ class Configuration(abjad.Configuration):
         self._read_aliases_file()
         self._make_missing_directories()
 
-    ### PRIVATE PROPERTIES ###
-
-    @property
-    def _initial_comment(self):
-        current_time = self._current_time
-        return [
-            f'Abjad IDE configuration file created on {current_time}.',
-            "This file is interpreted by ConfigParser and follows ini sytax.",
-            ]
-
     ### PRIVATE METHODS ###
 
     @staticmethod
@@ -66,45 +56,15 @@ class Configuration(abjad.Configuration):
             if path.is_dir():
                 sys.path.insert(0, str(path))
 
+    def _get_initial_comment(self):
+        current_time = self._get_current_time()
+        return [
+            f'Abjad IDE configuration file created on {current_time}.',
+            "This file is interpreted by ConfigParser and follows ini sytax.",
+            ]
+
     def _get_option_definitions(self):
-        options = {
-            'composer_email': {
-                'comment': ['Your email.'],
-                'default': 'first.last@domain.com',
-                'validator': str,
-                },
-            'composer_full_name': {
-                'comment': ['Your full name.'],
-                'default': 'Full Name',
-                'validator': str,
-                },
-            'composer_github_username': {
-                'comment': ['Your GitHub username.'],
-                'default': 'username',
-                'validator': str,
-                },
-            'composer_last_name': {
-                'comment': ['Your last name.'],
-                'default': 'Name',
-                'validator': str,
-                },
-            'composer_library': {
-                'comment': ['Your library.'],
-                'default': 'my_library',
-                'validator': str,
-                },
-            'composer_uppercase_name': {
-                'comment': ['Your full name in uppercase for score covers.'],
-                'default': 'FULL NAME',
-                'validator': str,
-                },
-            'composer_website': {
-                'comment': ['Your website.'],
-                'default': 'www.composername.com',
-                'validator': str,
-                },
-            }
-        return options
+        return {}
 
     def _make_missing_directories(self):
         from abjad import abjad_configuration
@@ -147,12 +107,12 @@ class Configuration(abjad.Configuration):
             ::
 
                 >>> configuration.aliases_file_path
-                PackagePath('.../.abjad/ide/__aliases__.py')
+                Path('.../.abjad/ide/__aliases__.py')
 
         Returns package path.
         '''
         import ide
-        return ide.PackagePath(self.configuration_directory / '__aliases__.py')
+        return ide.Path(self.configuration_directory / '__aliases__.py')
 
     @property
     def boilerplate_directory(self):
@@ -161,88 +121,13 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> configuration.boilerplate_directory
-            PackagePath('.../abjad/abjad/boilerplate')
+            Path('.../abjad/abjad/boilerplate')
 
         Returns package path.
         '''
         import ide
         from abjad import abjad_configuration
-        return ide.PackagePath(abjad_configuration.boilerplate_directory)
-
-    @property
-    def composer_email(self):
-        r'''Gets composer email.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_email # doctest: +SKIP
-                'trevor.baca@gmail.com'
-
-        Returns string.
-        '''
-        return self._settings['composer_email']
-
-    @property
-    def composer_full_name(self):
-        r'''Gets composer full name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_full_name # doctest: +SKIP
-                'Trevor Bača'
-
-        Returns string.
-        '''
-        return self._settings['composer_full_name']
-
-    @property
-    def composer_github_username(self):
-        r'''Gets GitHub username.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_github_username # doctest: +SKIP
-                'trevorbaca'
-
-        Returns string.
-        '''
-        return self._settings['composer_github_username']
-
-    @property
-    def composer_last_name(self):
-        r'''Gets composer last name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_last_name # doctest: +SKIP
-                'Bača'
-
-        Returns string.
-        '''
-        return self._settings['composer_last_name']
-
-    @property
-    def composer_library(self):
-        r'''Gets composer library package name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_library # doctest: +SKIP
-                'baca'
-
-        Returns string.
-        '''
-        return self._settings['composer_library']
+        return ide.Path(abjad_configuration.boilerplate_directory)
 
     @property
     def composer_scores_directory(self):
@@ -253,7 +138,7 @@ class Configuration(abjad.Configuration):
             ::
 
                 >>> configuration.composer_scores_directory # doctest: +SKIP
-                PackagePath('/Users/trevorbaca/Scores')
+                Path('/Users/trevorbaca/Scores')
 
         Returns package path.
         '''
@@ -261,41 +146,11 @@ class Configuration(abjad.Configuration):
             return self._composer_scores_directory_override
         if self._composer_scores_directory is None:
             from abjad import abjad_configuration
-            from ide.tools.idetools.PackagePath import PackagePath
+            from ide.tools.idetools.Path import Path
             directory = abjad_configuration.composer_scores_directory
-            directory = PackagePath(directory).expanduser()
+            directory = Path(directory).expanduser()
             self._composer_scores_directory = directory
         return self._composer_scores_directory
-
-    @property
-    def composer_uppercase_name(self):
-        r'''Gets composer uppercase name.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_uppercase_name # doctest: +SKIP
-                'TREVOR BAČA'
-
-        Returns string.
-        '''
-        return self._settings['composer_uppercase_name']
-
-    @property
-    def composer_website(self):
-        r'''Gets composer website.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_website  # doctest: +SKIP
-                'www.trevobaca.com'
-
-        Returns string.
-        '''
-        return self._settings['composer_website']
 
     @property
     def configuration_directory(self):
@@ -323,14 +178,14 @@ class Configuration(abjad.Configuration):
             ::
 
                 >>> configuration.ide_directory
-                PackagePath('.../ide')
+                Path('.../ide')
 
         Returns package path.
         '''
         import ide
-        from ide.tools.idetools.PackagePath import PackagePath
+        from ide.tools.idetools.Path import Path
         if self._ide_directory is None:
-            ide_directory = PackagePath(ide.__path__[0])
+            ide_directory = Path(ide.__path__[0])
             self._ide_directory = ide_directory
         return self._ide_directory
 
@@ -343,12 +198,12 @@ class Configuration(abjad.Configuration):
             ::
 
                 >>> configuration.latex_log_file_path
-                PackagePath('.../.abjad/ide/latex.log')
+                Path('.../.abjad/ide/latex.log')
 
         Returns package path.
         '''
         import ide
-        return ide.PackagePath(self.configuration_directory / 'latex.log')
+        return ide.Path(self.configuration_directory / 'latex.log')
 
     @property
     def test_scores_directory(self):
@@ -359,10 +214,13 @@ class Configuration(abjad.Configuration):
             ::
 
                 >>> configuration.test_scores_directory
-                PackagePath('...')
+                Path('.../ide/scores')
 
         Returns package path.
         '''
         import ide
-        from abjad import abjad_configuration
-        return ide.PackagePath(abjad_configuration.test_scores_directory)
+        try:
+            ide = importlib.import_module('ide')
+        except ImportError:
+            return
+        return ide.Path(ide.__path__[0]) / 'scores'

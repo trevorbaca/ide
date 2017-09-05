@@ -6,90 +6,78 @@ def test_AbjadIDE_go_to_contents_directory_01():
     r'''From material directory.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score mm tempi cc q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) - materials directory',
-        'Red Score (2017) - materials directory - tempi',
+        'Red Score (2017) : materials',
+        'Red Score (2017) : materials : tempi',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score mm tempi cc q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_contents_directory_02():
     r'''From segment directory.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score gg A cc q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) - segments directory',
-        'Red Score (2017) - segments directory - A',
+        'Red Score (2017) : segments',
+        'Red Score (2017) : segments : A',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score gg A cc q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_contents_directory_03():
     r'''From score directory.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score cc q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score cc q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_contents_directory_04():
     r'''From builds directory.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score bb cc q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) - builds directory',
+        'Red Score (2017) : builds',
         'Red Score (2017)',
         ]
-
-    input_ = 'red~score bb cc q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_contents_directory_05():
     r'''With substring matching.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('lue q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Blue Score (2017)',
         ]
-
-    input_ = 'lue q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles
 
 
 def test_AbjadIDE_go_to_contents_directory_06():
     r'''With capital letter matching.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('BS q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Blue Score (2017)',
         ]
-
-    input_ = 'BS q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles

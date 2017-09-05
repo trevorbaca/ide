@@ -15,19 +15,6 @@ class Test(abjad.FilesystemState):
 
     _configuration = Configuration()
 
-#    ### INITIALIZER ###
-#
-#    def __init__(self, keep=None, remove=None):
-#        keep = keep or []
-#        assert isinstance(keep, collections.Iterable), repr(keep)
-#        keep = tuple([str(_) for _ in keep])
-#        keep = keep + (str(self._configuration.test_scores_directory),)
-#        self._keep = keep
-#        remove = remove or []
-#        assert isinstance(remove, collections.Iterable), repr(remove)
-#        remove = tuple([str(_) for _ in remove])
-#        self._remove = remove
-
     ### SPECIAL METHODS ###
 
     def __enter__(self):

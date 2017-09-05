@@ -12,13 +12,12 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_interpret_score_01():
 
     with ide.Test():
-        source = ide.PackagePath('red_score').builds / 'letter' / 'score.tex'
+        source = ide.Path('red_score').builds / 'letter' / 'score.tex'
         target = source.with_suffix('.pdf')
         target.remove()
 
-        input_ = 'red~score %letter fci pi mi bci si q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter fci pi mi bci si q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -26,9 +25,8 @@ def test_AbjadIDE_interpret_score_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        input_ = 'red~score bb letter fci pi mi bci si q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score bb letter fci pi mi bci si q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -42,9 +40,9 @@ def test_AbjadIDE_interpret_score_02():
     '''
 
     with ide.Test():
-        pdf = ide.PackagePath('red_score').builds / 'letter' / 'front-cover.pdf'
+        pdf = ide.Path('red_score').builds / 'letter' / 'front-cover.pdf'
         pdf.remove()
-        input_ = 'red~score %letter si q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+
+        abjad_ide('red~score %letter si q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'ERROR IN LATEX LOG FILE ...' in transcript

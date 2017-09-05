@@ -55,7 +55,7 @@ def test_MenuSection__menu_entry_display_strings_02():
     assert section._menu_entry_display_strings == \
         ['add something', 'delete something', 'modify something']
     assert section._menu_entry_display_strings == \
-        [x.display_string for x in section.menu_entries]
+        [_.display_string for _ in section.menu_entries]
 
     menu = ide.Menu()
     commands = []
@@ -72,4 +72,4 @@ def test_MenuSection__menu_entry_display_strings_02():
     assert section._menu_entry_display_strings == \
         ['add something', 'delete something', 'modify something']
     assert section._menu_entry_display_strings == \
-        [x.display_string for x in section.menu_entries]
+        [_.display_string for _ in section.menu_entries]

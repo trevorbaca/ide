@@ -32,7 +32,6 @@ class MenuSection(abjad.AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_default_index',
         '_display_prepopulated_values',
         '_is_asset_section',
         '_is_command_section',
@@ -57,7 +56,6 @@ class MenuSection(abjad.AbjadObject):
 
     def __init__(
         self,
-        default_index=None,
         display_prepopulated_values=False,
         is_asset_section=False,
         is_command_section=False,
@@ -74,7 +72,6 @@ class MenuSection(abjad.AbjadObject):
         assert menu_entries, repr(name)
         assert name, repr(name)
         assert return_value_attribute in self.return_value_attributes
-        self._default_index = default_index
         self._display_prepopulated_values = display_prepopulated_values
         self._is_asset_section = is_asset_section
         self._is_command_section = is_command_section
@@ -133,15 +130,6 @@ class MenuSection(abjad.AbjadObject):
     ### PRIVATE PROPERTIES ###
 
     @property
-    def _default_value(self):
-        default_menu_entry = self.menu_entries[self.default_index]
-        return default_menu_entry.return_value
-
-    @property
-    def _has_default_value(self):
-        return self.default_index is not None
-
-    @property
     def _menu_entry_display_strings(self):
         return [_.display_string for _ in self]
 
@@ -155,14 +143,75 @@ class MenuSection(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _argument_range_string_to_numbers(self, argument_range_string):
-        argument_range_string = argument_range_string.strip()
+    def _argument_string_to_number(self, argument_string):
+        for index, menu_entry in enumerate(self):
+            if menu_entry.matches(argument_string):
+                menu_entry_number = index + 1
+                return menu_entry_number
+        try:
+            number = int(argument_string)
+        except (TypeError, ValueError):
+            return
+        greatest_menu_entry_number = len(self)
+        if greatest_menu_entry_number < number:
+            return greatest_menu_entry_number
+
+    def _make_lines(self):
+        lines = []
+        lines.extend(self._make_title_lines())
+        for i, menu_entry in enumerate(self):
+            line = self._make_tab(1)
+            display_string = menu_entry.display_string
+            key = menu_entry.key
+            prepopulated_value = menu_entry.prepopulated_value
+            if self.is_numbered:
+                number_indicator = f'{menu_entry.number}: '
+                tab = self._make_tab(1)
+                tab_width = len(tab)
+                number_width = len(str(number_indicator))
+                reduced_tab_width = tab_width - number_width
+                reduced_tab = reduced_tab_width * ' '
+                line = reduced_tab + number_indicator
+            line += display_string
+            if key:
+                line += f' ({key})'
+            if self.display_prepopulated_values:
+                line += ':'
+                if prepopulated_value not in (None, 'None'):
+                    line += f' {prepopulated_value}'
+            lines.append(line)
+        if self.menu_entries:
+            lines.append('')
+        return lines
+
+    def _make_tab(self, n=1):
+        tab_string = 6 * n * ' '
+        return tab_string
+
+    def _make_title_lines(self):
+        menu_lines = []
+        if isinstance(self.title, str):
+            title_lines = [abjad.String(self.title).capitalize_start()]
+        elif isinstance(self.title, list):
+            title_lines = self.title
+        else:
+            title_lines = []
+        for title_line in title_lines:
+            tab_string = self._make_tab(1)
+            line = f'{tab_string}{title_line}'
+            menu_lines.append(line)
+        if menu_lines:
+            menu_lines.append('')
+        return menu_lines
+
+    def _range_string_to_numbers(self, range_string):
+        range_string = range_string.strip()
         assert self.menu_entries
         numbers = []
-        if ',' in argument_range_string:
-            range_parts = argument_range_string.split(',')
+        if ',' in range_string:
+            range_parts = range_string.split(',')
         else:
-            range_parts = [argument_range_string]
+            range_parts = [range_string]
         for range_part in range_parts:
             range_part = range_part.strip()
             matches_entry = False
@@ -206,79 +255,7 @@ class MenuSection(abjad.AbjadObject):
                 numbers.append(number)
         return numbers
 
-    def _argument_string_to_number(self, argument_string):
-        for index, menu_entry in enumerate(self):
-            if menu_entry.matches(argument_string):
-                menu_entry_number = index + 1
-                return menu_entry_number
-        try:
-            number = int(argument_string)
-        except (TypeError, ValueError):
-            return
-        greatest_menu_entry_number = len(self)
-        if greatest_menu_entry_number < number:
-            return greatest_menu_entry_number
-
-    def _make_lines(self):
-        lines = []
-        lines.extend(self._make_title_lines())
-        for i, menu_entry in enumerate(self):
-            line = self._make_tab(1)
-            display_string = menu_entry.display_string
-            key = menu_entry.key
-            prepopulated_value = menu_entry.prepopulated_value
-            if self.is_numbered:
-                number_indicator = f'{menu_entry.number}: '
-                tab = self._make_tab(1)
-                tab_width = len(tab)
-                number_width = len(str(number_indicator))
-                reduced_tab_width = tab_width - number_width
-                reduced_tab = reduced_tab_width * ' '
-                line = reduced_tab + number_indicator
-            line += display_string
-            if key:
-                if i == self.default_index:
-                    line += f' [{key}]'
-                else:
-                    line += f' ({key})'
-            if self.display_prepopulated_values:
-                line += ':'
-                if prepopulated_value not in (None, 'None'):
-                    line += f' {prepopulated_value}'
-            lines.append(line)
-        if self.menu_entries:
-            lines.append('')
-        return lines
-
-    def _make_tab(self, n=1):
-        tab_string = 6 * n * ' '
-        return tab_string
-
-    def _make_title_lines(self):
-        menu_lines = []
-        if isinstance(self.title, str):
-            title_lines = [abjad.String(self.title).capitalize_start()]
-        elif isinstance(self.title, list):
-            title_lines = self.title
-        else:
-            title_lines = []
-        for title_line in title_lines:
-            tab_string = self._make_tab(1)
-            line = f'{tab_string}{title_line}'
-            menu_lines.append(line)
-        if menu_lines:
-            menu_lines.append('')
-        return menu_lines
-
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def default_index(self):
-        r'''Gets default index of menu section.
-
-        Returns nonnegative integer or none.
-        '''
-        return self._default_index
 
     @property
     def display_prepopulated_values(self):

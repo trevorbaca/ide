@@ -10,8 +10,7 @@ abjad_ide = ide.AbjadIDE(is_test=True)
     )
 def test_AbjadIDE_edit_latex_log_01():
 
-    path = abjad_ide._configuration.latex_log_file_path
-
-    input_ = 'lxg q'
-    abjad_ide._start(input_=input_)
-    assert f'Editing {path} ...' in abjad_ide._transcript
+    abjad_ide('lxg q')
+    transcript = abjad_ide.io_manager.transcript
+    path = abjad_ide.io_manager.configuration.latex_log_file_path
+    assert f'Editing {path} ...' in transcript

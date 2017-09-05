@@ -1,9 +1,8 @@
 import abjad
 import os
-import shlex
 
 
-class Menu(object):
+class Menu(abjad.AbjadObject):
     r'''Menu.
 
     ..  container:: example
@@ -26,20 +25,18 @@ class Menu(object):
         ::
 
             >>> menu
-            <Menu (1)>
+            Menu()
 
     '''
 
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_asset_section',
-        '_directory',
+        '_break_on_return',
         '_header',
         '_io_manager',
         '_menu_sections',
         '_name',
-        '_subtitle',
         '_title',
         )
 
@@ -53,12 +50,14 @@ class Menu(object):
         'ly',
         'pdf',
         'ly & pdf',
+        'midi',
         'build-preliminary',
         'build-generate',
         'build-edit',
         'build-interpret',
         'build-open',
         'builds',
+        'scripts',
         'basic',
         'git',
         )
@@ -72,107 +71,71 @@ class Menu(object):
         'back-home-quit',
         )
 
-    _tab = 4 * ' '
-
     ### INITIALIZER ###
 
     def __init__(
         self,
-        directory=None,
+        break_on_return=None,
         header=None,
+        io_manager=None,
         name=None,
-        subtitle=None,
         title=None,
         ):
-        self._directory = directory
+        self._break_on_return = break_on_return
         self._header = header
-        self._io_manager = None
+        self._io_manager = io_manager
         self._menu_sections = []
         self._name = name
-        self._subtitle = subtitle
         self._title = title
 
     ### SPECIAL METHODS ###
 
+    def __call__(self, string=None):
+        r'''Calls menu on `string`.
+
+        Returns response.
+        '''
+        import ide
+        if string is not None:
+            self._io_manager._pending_input = string
+        if self._io_manager._is_redrawing:
+            self._redraw()
+            self._io_manager._is_redrawing = False
+        while True:
+            payload = None
+            string = self._io_manager._get_input(split_input=True)
+            if self._io_manager._is_quitting:
+                break
+            elif string == '?':
+                self._redraw(command_type='action')
+                continue
+            elif string == ';':
+                self._redraw(command_type='navigation')
+                continue
+            elif string in ('', '<return>'):
+                if self.break_on_return:
+                    break
+                else:
+                    self._redraw()
+                    continue
+            elif bool(self._match_command(string)):
+                payload = self._match_command(string)
+            elif bool(self._match_asset(string)):
+                payload = self._match_asset(string)
+            elif bool(self._match_range(string)):
+                payload = self._match_range(string)
+            break
+        known = (payload is not None)
+        return ide.Response(known=known, payload=payload, string=string)
+
     def __getitem__(self, argument):
-        r'''Gets menu section indexed by `argument`.
+        r'''Gets menu section in menu.
 
-        Returns menu section with name equal to `argument` when `argument` is a
-        string.
-
-        Returns menu section at index `argument` when `argument` is an integer.
+        Returns menu section.
         '''
-        if isinstance(argument, str):
-            for section in self.menu_sections:
-                if section.name == argument:
-                    return section
-            raise KeyError(argument)
-        else:
-            return self.menu_sections.__getitem__(argument)
-
-    def __len__(self):
-        r'''Gets number of menu sections in menu.
-
-        Returns nonnegative integer.
-        '''
-        return len(self.menu_sections)
-
-    def __repr__(self):
-        r'''Gets interpreter representation of menu.
-
-        Returns string.
-        '''
-        if self.name:
-            string = f'<{type(self).__name__} {self.name!r} ({len(self)})>'
-        else:
-            string = f'<{type(self).__name__} ({len(self)})>'
-        return string
+        return self.menu_sections.__getitem__(argument)
 
     ### PRIVATE METHODS ###
-
-    def _change_input_to_directive(self, input_):
-        r'''Match order:
-
-            1. all command sections
-            2. assets sections
-
-        This avoids file name new-stylesheet.ily aliasing the (new) command.
-        '''
-        input_ = abjad.String(input_).strip_diacritics()
-        if input_.startswith(('@', '%', '^', '*', '+')):
-            return input_
-        if input_.startswith('!') and self._has_command('!'):
-            return input_
-        ends_with_bang = input_.endswith('!')
-        input_ = input_.strip('!')
-        if self._user_enters_nothing(input_):
-            default_value = None
-            for section in self.menu_sections:
-                if section._has_default_value:
-                    default_value = section._default_value
-            if default_value is not None:
-                return self._enclose_in_list(default_value)
-        for section in self.menu_sections:
-            if section.is_asset_section:
-                continue
-            for menu_entry in section:
-                if (menu_entry.matches(input_)):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
-        for asset_section in self.menu_sections:
-            if not asset_section.is_asset_section:
-                continue
-            for menu_entry in asset_section:
-                if (menu_entry.matches(input_)):
-                    return_value = menu_entry.return_value
-                    if ends_with_bang:
-                        return_value = return_value + '!'
-                    return self._enclose_in_list(return_value)
-        if self._user_enters_argument_range(input_):
-            return self._handle_argument_range_input(input_)
-        return (input_,)
 
     def _enclose_in_list(self, argument):
         if self._has_ranged_section():
@@ -180,72 +143,15 @@ class Menu(object):
         else:
             return argument
 
-    def _get_first_nonhidden_return_value_in_menu(self):
-        for section in self.menu_sections:
-            if section.is_hidden:
-                continue
-            if section._menu_entry_return_values:
-                return section._menu_entry_return_values[0]
-
-    def _handle_argument_range_input(self, input_):
-        if not self._has_ranged_section():
-            return
-        for section in self.menu_sections:
-            if section.is_ranged:
-                ranged_section = section
-        entry_numbers = ranged_section._argument_range_string_to_numbers(
-            input_)
-        if not entry_numbers:
-            return
-        entry_indices = [entry_number - 1 for entry_number in entry_numbers]
-        result = []
-        for i in entry_indices:
-            entry = ranged_section._menu_entry_return_values[i]
-            result.append(entry)
-        return result
-
-    def _handle_user_input(self):
-        input_ = self._io_manager._handle_input(
-            '',
-            prompt_character=self.prompt_character,
-            )
-        if input_ == '<return>':
-            input_ = ''
-        user_entered_lone_return = input_ in ('', '<return>')
-        directive = None
-        parts = shlex.split(input_, posix=False)
-        length = len(parts)
-        for i in range(len(parts)):
-            count = length - i
-            directive = ' '.join(parts[:count])
-            directive = self._change_input_to_directive(directive)
-            if directive is not None:
-                if count < length:
-                    remaining_count = length - count
-                    remaining_parts = parts[-remaining_count:]
-                    glued_remaining_parts = []
-                    for remaining_part in remaining_parts:
-                        remaining_part = remaining_part.replace(' ', '~')
-                        glued_remaining_parts.append(remaining_part)
-                    remaining_input = ' '.join(glued_remaining_parts)
-                    pending_input = self._io_manager._session._pending_input or ''
-                    pending_input = pending_input + remaining_input
-                    self._io_manager._session._pending_input = pending_input
-                    self._io_manager._session._pending_redraw = True
-                break
-        directive = self._strip_default_notice_from_strings(directive)
-        if directive is None and user_entered_lone_return:
-            result = '<return>'
-        elif directive is None and not user_entered_lone_return:
-            message = f'unknown command: {input_!r}.'
-            self._io_manager._display([message, ''])
-            result = None
-            if self._io_manager._session.is_test:
-                message = 'tests should contain no unknown commands.'
-                raise Exception(message)
+    def _get_terminal_dimensions(self):
+        result = os.popen('stty size', 'r').read().split()
+        if result:
+            terminal_height, terminal_width = result
+            terminal_height = int(terminal_height)
+            terminal_width = int(terminal_width)
         else:
-            result = directive
-        return result
+            terminal_height, terminal_width = 24, 80
+        return terminal_height, terminal_width
 
     def _has_command(self, command_name):
         for section in self.menu_sections:
@@ -255,14 +161,14 @@ class Menu(object):
         return False
 
     def _has_numbered_section(self):
-        return any(x.is_numbered for x in self.menu_sections)
+        return any(_.is_numbered for _ in self.menu_sections)
 
     def _has_ranged_section(self):
-        return any(x.is_ranged for x in self.menu_sections)
+        return any(_.is_ranged for _ in self.menu_sections)
 
     @staticmethod
     def _left_justify(string, width):
-        start_width = len(abjad.String(string).strip_diacritics())
+        start_width = len(string)
         if start_width < width:
             needed = width - start_width
             suffix = needed * ' '
@@ -277,7 +183,7 @@ class Menu(object):
             if not section.is_asset_section:
                 continue
             lines_ = section._make_lines()
-            lines_ = self._make_bicolumnar(lines_, strip=False)
+            lines_ = self._make_bicolumnar(lines_)
             lines.extend(lines_)
         return lines
 
@@ -285,37 +191,18 @@ class Menu(object):
         self,
         lines,
         break_only_at_blank_lines=False,
-        strip=True,
+        is_test=False,
         ):
-        # http://stackoverflow.com/questions/566746/
-        # how-to-get-console-window-width-in-python
-        result = os.popen('stty size', 'r').read().split()
-        if result:
-            terminal_height, terminal_width = result
-            terminal_height = int(terminal_height)
-            terminal_width = int(terminal_width)
-        # returns none when run under py.test
-        else:
-            terminal_height, terminal_width = 24, 80
-        if terminal_width <= 80:
+        if self._io_manager._is_test:
+            return lines
+        terminal_height, terminal_width = self._get_terminal_dimensions()
+        if terminal_width < 80:
             return lines
         if len(lines) < terminal_height - 8:
             return lines
-        if strip:
-            lines = [_.strip() for _ in lines]
-        all_packages_lines = [_ for _ in lines if _.startswith('all')]
-        lines = [_ for _ in lines if not _.startswith('all')]
-        # remove consecutive blank lines from comprehension above
-        clean_lines = []
-        for line in lines:
-            if line == '':
-                if clean_lines and clean_lines[-1] == '':
-                    continue
-            clean_lines.append(line)
-        # remove initial blank line
-        if clean_lines[0] == '':
-            clean_lines.pop(0)
-        lines = clean_lines
+        lines = [_.strip() for _ in lines]
+        if lines[0] == '':
+            lines.pop(0)
         midpoint = int(len(lines)/2)
         if break_only_at_blank_lines:
             while lines[midpoint] != '':
@@ -327,20 +214,13 @@ class Menu(object):
             assert len(left_lines) + len(right_lines) == len(lines) - 1
         else:
             right_lines = lines[midpoint:]
-        #left_count, right_count = len(left_lines), len(right_lines)
-        #assert right_count <= left_count, repr((left_count, right_count))
-        if strip:
-            left_width = max(len(_.strip()) for _ in left_lines)
-            right_width = max(len(_.strip()) for _ in right_lines)
-        else:
-            left_width = max(len(_) for _ in left_lines)
-            right_width = max(len(_) for _ in right_lines)
+        left_width = max(len(_) for _ in left_lines)
+        right_width = max(len(_) for _ in right_lines)
         left_lines = [self._left_justify(_, left_width) for _ in left_lines]
         right_lines = [self._left_justify(_, right_width) for _ in right_lines]
-        if strip:
-            left_margin_width, gutter_width = 4, 4
-        else:
-            left_margin_width, gutter_width = 0, 4
+        left_margin_width = 0
+        left_margin_width = 4
+        gutter_width = 1
         left_margin = left_margin_width * ' '
         gutter = gutter_width * ' '
         conjoined_lines = []
@@ -352,12 +232,6 @@ class Menu(object):
                 left_line, right_line = _
                 conjoined_line = left_margin + left_line + gutter + right_line
             conjoined_lines.append(conjoined_line)
-        if all_packages_lines:
-            blank_line = left_margin
-            conjoined_lines.append(blank_line)
-        for line in all_packages_lines:
-            conjoined_line = left_margin + line
-            conjoined_lines.append(conjoined_line)
         return conjoined_lines
 
     def _make_command_lines(self):
@@ -365,8 +239,7 @@ class Menu(object):
         section_names = []
         for section in self.menu_sections:
             if section.name in section_names:
-                message = f'{self!r} contains duplicate {section!r}.'
-                raise Exception(message)
+                raise Exception(f'{self!r} contains duplicate {section!r}.')
             else:
                 section_names.append(section.name)
             if section.is_hidden:
@@ -394,26 +267,20 @@ class Menu(object):
                 found_one = True
                 key = menu_entry.key
                 display_string = menu_entry.display_string
-                menu_line = self._tab
+                menu_line = 4 * ' '
                 menu_line += f'{display_string} ({key})'
                 lines.append(menu_line)
             if found_one:
                 lines.append('')
         if lines:
             lines.pop()
-        lines = self._make_bicolumnar(
-            lines,
-            break_only_at_blank_lines=True,
-            )
-        if self.directory is not None:
-            title = self.directory.get_menu_header()
-        else:
-            title = self.header
+        lines = self._make_bicolumnar(lines, break_only_at_blank_lines=True)
+        title = self.header
         assert isinstance(title, str), repr(title)
         if command_type == 'action':
-            title = title + ' - action commands'
+            title = title + ' : action commands'
         elif command_type == 'navigation':
-            title = title + ' - navigation commands'
+            title = title + ' : navigation commands'
         else:
             raise ValueError(repr(command_type))
         title = abjad.String(title).capitalize_start()
@@ -432,7 +299,6 @@ class Menu(object):
 
     def _make_section(
         self,
-        default_index=None,
         display_prepopulated_values=False,
         is_asset_section=False,
         is_command_section=False,
@@ -445,11 +311,10 @@ class Menu(object):
         return_value_attribute='display_string',
         title=None,
         ):
-        from ide.tools import idetools
+        import ide
         assert not (is_numbered and self._has_numbered_section())
         assert not (is_ranged and self._has_ranged_section())
-        section = idetools.MenuSection(
-            default_index=default_index,
+        section = ide.MenuSection(
             display_prepopulated_values=display_prepopulated_values,
             is_asset_section=is_asset_section,
             is_command_section=is_command_section,
@@ -476,60 +341,70 @@ class Menu(object):
 
     def _make_title_lines(self):
         result = []
-        if self.directory is not None:
-            title = self.directory.get_menu_header()
-        elif self.header is not None:
+        if self.header is not None:
             title = self.header
         elif self.title is not None:
             title = self.title
         else:
             title = ''
         result.append(abjad.String(title).capitalize_start())
-        if self.subtitle is not None:
-            line = '  ' + self.subtitle
-            result.append('')
-            result.append(line)
         result.append('')
         return result
 
+    def _match_asset(self, result):
+        import ide
+        for section in self.menu_sections:
+            if not section.is_asset_section:
+                continue
+            return_value = None
+            for entry in section:
+                if entry.key is not None and result == self.key:
+                    return self._enclose_in_list(entry.return_value)
+            for entry in section:
+                if (entry.menu_section.is_numbered and
+                    result == str(entry.number)):
+                    return self._enclose_in_list(entry.return_value)
+            if not section.match_on_display_string:
+                continue
+            strings = [abjad.String(_.display_string) for _ in section]
+            string = ide.Path._smart_match(strings, result)
+            if string is not None:
+                entry = section[strings.index(string)]
+                return self._enclose_in_list(entry.return_value)
+
+    def _match_command(self, result):
+        for section in self.menu_sections:
+            if section.is_asset_section:
+                continue
+            for menu_entry in section:
+                if (menu_entry.matches(result)):
+                    return_value = menu_entry.return_value
+                    result = self._enclose_in_list(return_value)
+                    return result
+
+    def _match_range(self, result):
+        for section in self.menu_sections:
+            if not section.is_ranged:
+                continue
+            entry_numbers = section._range_string_to_numbers(result)
+            if not entry_numbers:
+                continue
+            entry_indices = [_ - 1 for _ in entry_numbers]
+            result = []
+            for i in entry_indices:
+                entry = section._menu_entry_return_values[i]
+                result.append(entry)
+            return result
+
     def _redraw(self, command_type=None):
-        self._io_manager._session._pending_redraw = False
         self._io_manager.clear_terminal()
         if command_type is not None:
             lines = self._make_help_lines(command_type=command_type)
         else:
             lines = self._make_lines()
+        height, width = self._get_terminal_dimensions()
+        lines = [_[:width] for _ in lines]
         self._io_manager._display(lines, caps=False, is_menu=True)
-
-    def _return_value_to_location_pair(self, return_value):
-        for i, section in enumerate(self.menu_sections):
-            if return_value in section._menu_entry_return_values:
-                j = section._menu_entry_return_values.index(return_value)
-                return i, j
-
-    def _run(self, io_manager):
-        self._io_manager = io_manager
-        while True:
-            if self._io_manager._session.pending_redraw:
-                self._redraw()
-            result = None
-            if not result:
-                result = self._handle_user_input()
-                self._io_manager._session._previous_input = result
-            if self._io_manager._session.is_quitting:
-                return result
-            elif result == '<return>':
-                self._io_manager._session._pending_redraw = True
-                self._io_manager = None
-                return
-            elif result == '?':
-                self._redraw(command_type='action')
-            elif result == ';':
-                self._redraw(command_type='navigation')
-            else:
-                self._io_manager = None
-                return result
-        self._io_manager = None
 
     def _sort_menu_sections(self, command_type):
         ordered_menu_sections = []
@@ -548,47 +423,15 @@ class Menu(object):
                 ordered_menu_sections.append(menu_section)
         return ordered_menu_sections
 
-    @staticmethod
-    def _strip_default_notice_from_strings(argument):
-        if isinstance(argument, list):
-            cleaned_list = []
-            for element in argument:
-                if element.endswith(' (default)'):
-                    element = element.replace(' (default)', '')
-                cleaned_list.append(element)
-            return cleaned_list
-        elif isinstance(argument, str):
-            if argument.endswith(' (default)'):
-                argument = argument.replace(' (default)', '')
-            return argument
-        else:
-            return argument
-
-    @staticmethod
-    def _user_enters_argument_range(input_):
-        if ',' in input_:
-            return True
-        if '-' in input_:
-            return True
-        return False
-
-    @staticmethod
-    def _user_enters_nothing(input_):
-        if not input_:
-            return True
-        if 3 <= len(input_) and '<return>'.startswith(input_):
-            return True
-        return False
-
     ### PUBLIC PROPERTIES ###
 
     @property
-    def directory(self):
-        r'''Gets directory.
+    def break_on_return(self):
+        r'''Is true when menu breaks on empty return.
 
-        Returns path or none.
+        Returns true, false or none.
         '''
-        return self._directory
+        return self._break_on_return
 
     @property
     def header(self):
@@ -597,6 +440,14 @@ class Menu(object):
         Returns string or none.
         '''
         return self._header
+
+    @property
+    def io_manager(self):
+        r'''Gets IO manager.
+
+        Returns IO manager.
+        '''
+        return self._io_manager
 
     @property
     def menu_sections(self):
@@ -613,22 +464,6 @@ class Menu(object):
         Returns string.
         '''
         return self._name
-
-    @property
-    def prompt_character(self):
-        r'''Gets prompt character.
-
-        Returns '>'.
-        '''
-        return '>'
-
-    @property
-    def subtitle(self):
-        r'''Gets subtitle.
-
-        Returns string or none.
-        '''
-        return self._subtitle
 
     @property
     def title(self):
@@ -663,13 +498,11 @@ class Menu(object):
             name=name,
             return_value_attribute='explicit',
             )
-        self._asset_section = section
         return section
 
     def make_command_section(
         self,
         is_hidden=False,
-        default_index=None,
         match_on_display_string=False,
         commands=None,
         name=None,
@@ -686,7 +519,6 @@ class Menu(object):
         Returns menu section.
         '''
         section = self._make_section(
-            default_index=default_index,
             is_command_section=True,
             is_hidden=is_hidden,
             match_on_display_string=match_on_display_string,

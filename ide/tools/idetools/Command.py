@@ -1,7 +1,8 @@
+import abjad
 import string
 
 
-class Command(object):
+class Command(abjad.AbjadObject):
     r'''Command decorator.
     '''
 
@@ -23,9 +24,11 @@ class Command(object):
         'illustrate_file',
         'ly',
         'ly & pdf',
+        'midi',
         'pdf',
         'navigation',
         'scores',
+        'scripts',
         'sibling navigation',
         'star',
         'system',
@@ -49,9 +52,11 @@ class Command(object):
         argument_name=None,
         description=None,
         directories=None,
-        forbidden_directories=(),
+        external=None,
+        blacklist=(),
         is_hidden=True,
         section=None,
+        scores=None,
         ):
         assert isinstance(argument_name, (str, type(None)))
         self.argument_name = argument_name
@@ -63,9 +68,15 @@ class Command(object):
         if isinstance(directories, str):
             directories = (directories,)
         self.directories = directories
-        self.forbidden_directories = forbidden_directories
+        if external is not None:
+            external = bool(external)
+        self.external = external
+        self.blacklist = blacklist
         assert isinstance(is_hidden, bool), repr(is_hidden)
         self.is_hidden = is_hidden
+        if scores is not None:
+            scores = bool(scores)
+        self.scores = scores
         assert section in self._allowable_sections, repr(section)
         self.section = section
 
@@ -83,9 +94,11 @@ class Command(object):
         else:
             method.description = method.__name__.replace('_', ' ')
         method.directories = self.directories
-        method.forbidden_directories = self.forbidden_directories
+        method.external = self.external
+        method.blacklist = self.blacklist
         method.is_hidden = self.is_hidden
         method.is_navigation = self.section in self._navigation_section_names
+        method.scores = self.scores
         method.section = self.section
         return method
 

@@ -2,26 +2,23 @@ import abjad
 import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
+# TODO: add transcript asserts
 
 def test_AbjadIDE_replace_01():
     r'''In score directory.
     '''
 
     with ide.Test():
-        path = ide.PackagePath('red_score').tools / 'RhythmMaker.py'
 
-        input_ = 'red~score sr RhythmMaker q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
-        assert 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):' in \
-            transcript
+        abjad_ide('red~score sr RhythmMaker q')
+        transcript = abjad_ide.io_manager.transcript
+        string = 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
+        assert string in transcript
 
-        input_ = 'red~score rp RhythmMaker FooMaker y q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score rp RhythmMaker FooMaker y q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Replaced 2 instances over 1 lines in 1 files.' in transcript
 
-        input_ = 'red~score rp FooMaker RhythmMaker y q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score rp FooMaker RhythmMaker y q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Replaced 2 instances over 1 lines in 1 files.' in transcript

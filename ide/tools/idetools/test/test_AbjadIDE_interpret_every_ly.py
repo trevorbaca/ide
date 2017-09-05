@@ -8,16 +8,15 @@ def test_AbjadIDE_interpret_every_ly_01():
 
     with ide.Test():
         sources = [
-            ide.PackagePath('red_score').materials / name / 'illustration.ly'
+            ide.Path('red_score').materials / name / 'illustration.ly'
             for name in ['magic_numbers', 'ranges', 'tempi']
             ]
         targets = [_.with_suffix('.pdf') for _ in sources]
         for target in targets:
             target.remove()
 
-        input_ = 'red~score mm lyi* q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score mm lyi* q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -28,9 +27,8 @@ def test_AbjadIDE_interpret_every_ly_01():
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
 
-        input_ = 'red~score mm lyi* q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score mm lyi* q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -48,16 +46,15 @@ def test_AbjadIDE_interpret_every_ly_02():
 
     with ide.Test():
         sources = [
-            ide.PackagePath('red_score').segments / name / 'illustration.ly'
+            ide.Path('red_score').segments / name / 'illustration.ly'
             for name in ['segment_01', 'segment_02', 'segment_03']
             ]
         targets = [_.with_suffix('.pdf') for _ in sources]
         for target in targets:
             target.remove()
 
-        input_ = 'red~score gg lyi* q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score gg lyi* q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -68,9 +65,8 @@ def test_AbjadIDE_interpret_every_ly_02():
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
 
-        input_ = 'red~score gg lyi* q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score gg lyi* q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript

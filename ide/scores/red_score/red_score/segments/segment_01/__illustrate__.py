@@ -34,7 +34,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             directory = pathlib.Path(__file__).parent
-            directory = ide.PackagePath(directory)
+            directory = ide.Path(directory)
             directory._write_metadata_py(metadata)
         except:
             traceback.print_exc()
@@ -45,7 +45,7 @@ if __name__ == '__main__':
         print(message)
     try:
         directory = pathlib.Path(__file__).parent
-        directory = ide.PackagePath(directory)
+        directory = ide.Path(directory)
         target = directory / 'illustration.pdf'
         with abjad.Timer() as timer:
             abjad.persist(lilypond_file).as_pdf(target)

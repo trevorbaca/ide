@@ -6,13 +6,11 @@ def test_AbjadIDE_go_to_materials_directory_01():
     r'''From builds directory.
     '''
 
-    titles = [
-        'Abjad IDE - scores directory',
+    abjad_ide('red~score bb mm q')
+    transcript = abjad_ide.io_manager.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) - builds directory',
-        'Red Score (2017) - materials directory',
+        'Red Score (2017) : builds',
+        'Red Score (2017) : materials',
         ]
-
-    input_ = 'red~score bb mm q'
-    abjad_ide._start(input_=input_)
-    assert abjad_ide._io_manager._transcript.titles == titles

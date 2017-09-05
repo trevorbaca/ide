@@ -11,13 +11,12 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_interpret_back_cover_01():
 
     with ide.Test():
-        source = ide.PackagePath('red_score').builds / 'letter' / 'back-cover.tex'
+        source = ide.Path('red_score').builds / 'letter' / 'back-cover.tex'
         target = source.with_suffix('.pdf')
         target.remove()
 
-        input_ = 'red~score %letter bci q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter bci q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -25,8 +24,8 @@ def test_AbjadIDE_interpret_back_cover_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %letter bci q')
+        transcript = abjad_ide.io_manager.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript

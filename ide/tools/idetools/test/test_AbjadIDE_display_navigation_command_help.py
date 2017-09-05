@@ -1,3 +1,4 @@
+import abjad
 import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
@@ -6,8 +7,10 @@ def test_AbjadIDE_display_navigation_command_help_01():
     r'''In score directory.
     '''
 
-    lines = [
-        'Red Score (2017) - navigation commands',
+    abjad_ide('red~score ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-5]
+    block_ = [
+        'Red Score (2017) : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -30,19 +33,18 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '',
         '>',
         ]
-    input_ = 'red~score ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_02():
     r'''In material directory.
     '''
 
-    lines = [
-        'Red Score (2017) - materials directory - magic numbers - navigation commands',
+    abjad_ide('red~score mm magic ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-7]
+    block_ = [
+        'Red Score (2017) : materials : magic_numbers : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -68,19 +70,18 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '',
         '>',
         ]
-    input_ = 'red~score mm magic~numbers ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_03():
     r'''In segment directory.
     '''
 
-    lines = [
-        'Red Score (2017) - segments directory - A - navigation commands',
+    abjad_ide('red~score gg A ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-7]
+    block_ = [
+        'Red Score (2017) : segments : A : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -106,19 +107,18 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '',
         '>',
         ]
-    input_ = 'red~score gg A ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_04():
     r'''In scores directory.
     '''
 
-    lines = [
-        'Abjad IDE - scores directory - navigation commands',
+    abjad_ide('; q')
+    block = abjad_ide._io_manager._transcript.blocks[-4]
+    block_ = [
+        'Abjad IDE : scores : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -129,19 +129,18 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '',
         '>',
         ]
-    input_ = '; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_05():
     r'''In materials directory.
     '''
 
-    lines = [
-        'Red Score (2017) - materials directory - navigation commands',
+    abjad_ide('red~score mm ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-6]
+    block_ = [
+        'Red Score (2017) : materials : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -167,19 +166,18 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '',
         '>',
         ]
-    input_ = 'red~score mm ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_06():
     r'''In segments directory.
     '''
 
-    lines = [
-        'Red Score (2017) - segments directory - navigation commands',
+    abjad_ide('red~score gg ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-6]
+    block_ = [
+        'Red Score (2017) : segments : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -205,19 +203,18 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '',
         '>',
         ]
-    input_ = 'red~score gg ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_07():
     r'''In stylesheets directory.
     '''
 
-    lines = [
-        'Red Score (2017) - stylesheets directory - navigation commands',
+    abjad_ide('red~score yy ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-6]
+    block_ = [
+        'Red Score (2017) : stylesheets : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
@@ -240,8 +237,31 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '',
         '>',
         ]
-    input_ = 'red~score yy ; q'
-    abjad_ide._start(input_=input_)
-    transcript_entry = abjad_ide._io_manager._transcript.entries[-3]
-    for line, actual_line in zip(lines, transcript_entry.lines):
-        assert line == actual_line
+    for line, line_ in zip(block, block_):
+        assert line == line_
+
+
+def test_AbjadIDE_display_navigation_command_help_08():
+    r'''In external directory.
+    '''
+
+    scores = abjad.abjad_configuration.composer_scores_directory
+    if 'trevorbaca' not in scores:
+        return
+
+    abjad_ide('cdk ; q')
+    block = abjad_ide._io_manager._transcript.blocks[-5]
+    block_ = [
+        'Abjad IDE : /Users/trevorbaca/Desktop : navigation commands',
+        '',
+        '    display navigation command help (;)',
+        '',
+        '    go to scores directory (ss)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '',
+        '>',
+        ]
+    for line, line_ in zip(block, block_):
+        assert line == line_

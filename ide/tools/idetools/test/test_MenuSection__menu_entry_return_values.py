@@ -15,8 +15,7 @@ def test_MenuSection__menu_entry_return_values_01():
         title='section',
         )
     assert section.is_numbered
-    assert section._menu_entry_return_values == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_return_values == ['apple', 'banana', 'cherry']
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
@@ -31,8 +30,7 @@ def test_MenuSection__menu_entry_return_values_01():
         title='section',
         )
     assert not section.is_numbered
-    assert section._menu_entry_return_values == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_return_values == ['apple', 'banana', 'cherry']
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
@@ -49,8 +47,7 @@ def test_MenuSection__menu_entry_return_values_01():
         return_value_attribute='display_string',
         )
     assert section.is_numbered
-    assert section._menu_entry_return_values == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_return_values == ['apple', 'banana', 'cherry']
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 
@@ -65,8 +62,7 @@ def test_MenuSection__menu_entry_return_values_01():
         title='section',
         )
     assert not section.is_numbered
-    assert section._menu_entry_return_values == \
-        ['apple', 'banana', 'cherry']
+    assert section._menu_entry_return_values == ['apple', 'banana', 'cherry']
     assert section._menu_entry_return_values == \
         section._menu_entry_display_strings
 

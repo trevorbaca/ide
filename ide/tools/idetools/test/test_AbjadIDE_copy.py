@@ -7,18 +7,16 @@ def test_AbjadIDE_copy_01():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').builds / 'letter'
+        source = ide.Path('red_score').builds / 'letter'
         source /= 'front-cover.tex'
-        target = ide.PackagePath('blue_score').builds / 'letter'
+        target = ide.Path('blue_score').builds / 'letter'
         target /= 'front-cover.tex'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score bb letter cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue bb letter cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -27,16 +25,14 @@ def test_AbjadIDE_copy_02():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').distribution / 'red-score.pdf'
-        target = ide.PackagePath('blue_score').distribution / 'red-score.pdf'
+        source = ide.Path('red_score').distribution / 'red-score.pdf'
+        target = ide.Path('blue_score').distribution / 'red-score.pdf'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score dd cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue dd cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -45,16 +41,14 @@ def test_AbjadIDE_copy_03():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').etc / 'notes.txt'
-        target = ide.PackagePath('blue_score').etc / 'notes.txt'
+        source = ide.Path('red_score').etc / 'notes.txt'
+        target = ide.Path('blue_score').etc / 'notes.txt'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score ee cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue ee cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -63,16 +57,14 @@ def test_AbjadIDE_copy_04():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').tools / 'ScoreTemplate.py'
-        target = ide.PackagePath('blue_score').tools / 'ScoreTemplate.py'
+        source = ide.Path('red_score').tools / 'ScoreTemplate.py'
+        target = ide.Path('blue_score').tools / 'ScoreTemplate.py'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score oo cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue oo cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -81,18 +73,16 @@ def test_AbjadIDE_copy_05():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score')
+        source = ide.Path('red_score')
         source = source.materials / 'magic_numbers' / 'definition.py'
-        target = ide.PackagePath('blue_score')
+        target = ide.Path('blue_score')
         target = target.materials / 'staccati' / 'definition.py'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score mm staccati cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue mm staccati cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -101,16 +91,14 @@ def test_AbjadIDE_copy_06():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').materials / 'magic_numbers'
-        target = ide.PackagePath('blue_score').materials / 'magic_numbers'
+        source = ide.Path('red_score').materials / 'magic_numbers'
+        target = ide.Path('blue_score').materials / 'magic_numbers'
         assert source.is_dir()
         target.remove()
 
-        input_ = 'Blue~Score mm cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue mm cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -119,18 +107,16 @@ def test_AbjadIDE_copy_07():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score')
+        source = ide.Path('red_score')
         source = source.segments / 'segment_01' / 'definition.py'
-        target = ide.PackagePath('blue_score')
+        target = ide.Path('blue_score')
         target = target.segments / 'segment_01' / 'definition.py'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score gg segment~01 cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue gg segment_01 cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -140,16 +126,14 @@ def test_AbjadIDE_copy_08():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').segments / 'segment_03'
-        target = ide.PackagePath('blue_score').segments / 'segment_03'
+        source = ide.Path('red_score').segments / 'segment_03'
+        target = ide.Path('blue_score').segments / 'segment_03'
         assert source.is_dir()
         target.remove()
 
-        input_ = 'Blue~Score gg cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue gg cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -158,15 +142,13 @@ def test_AbjadIDE_copy_09():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').segments / 'segment_03'
+        source = ide.Path('red_score').segments / 'segment_03'
         assert source.is_dir()
 
-        input_ = 'Red~Score gg cp'
-        input_ += f' {source.trim()} q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide(f'Red gg cp {source.trim()} q')
+        transcript = abjad_ide.io_manager.transcript
         assert f'Existing {source.trim()} ...' in transcript
-        assert 'Enter new name]> ' in transcript
+        assert 'Enter new name> ' in transcript
 
 
 def test_AbjadIDE_copy_10():
@@ -174,16 +156,14 @@ def test_AbjadIDE_copy_10():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').stylesheets / 'stylesheet.ily'
-        target = ide.PackagePath('blue_score').stylesheets / 'stylesheet.ily'
+        source = ide.Path('red_score').stylesheets / 'stylesheet.ily'
+        target = ide.Path('blue_score').stylesheets / 'stylesheet.ily'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score yy cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue yy cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript
 
 
@@ -192,14 +172,12 @@ def test_AbjadIDE_copy_11():
     '''
 
     with ide.Test():
-        source = ide.PackagePath('red_score').test / 'test_dummy.py'
-        target = ide.PackagePath('blue_score').test / 'test_dummy.py'
+        source = ide.Path('red_score').test / 'test_dummy.py'
+        target = ide.Path('blue_score').test / 'test_dummy.py'
         assert source.is_file()
         target.remove()
 
-        input_ = 'Blue~Score tt cp'
-        input_ += f' red_score {source.trim()} q'
-        abjad_ide._start(input_=input_)
+        abjad_ide(f'Blue tt cp red_score {source.trim()} q')
         assert target.exists()
-        transcript = abjad_ide._transcript
+        transcript = abjad_ide.io_manager.transcript
         assert f'Writing {target.trim()} ...' in transcript

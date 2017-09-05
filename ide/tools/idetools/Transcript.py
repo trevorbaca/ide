@@ -1,8 +1,4 @@
 import abjad
-import datetime
-import time
-from ide.tools.idetools.Configuration import Configuration
-configuration = Configuration()
 
 
 class Transcript(abjad.AbjadObject):
@@ -12,75 +8,57 @@ class Transcript(abjad.AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_entries',
-        '_start_time',
+        '_blocks',
+        '_lines',
+        '_titles',
         )
 
     ### INITIALIZER ###
 
     def __init__(self):
-        self._entries = []
-        current_time = datetime.datetime.fromtimestamp(time.time())
-        self._start_time = current_time
+        self._blocks = []
+        self._lines = []
+        self._titles = []
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, argument):
-        r'''Gets transcript entry matching `argument`.
+    def __contains__(self, argument):
+        r'''Is true when `argument` appears in transcript.
 
-        Returns transcript entry.
+        Returns true or false.
         '''
-        return self.entries.__getitem__(argument)
+        return argument in '\n'.join(self.lines)
 
     ### PRIVATE METHODS ###
 
-    def _append_entry(self, lines, is_menu=False):
-        from ide.tools import idetools
-        entry = idetools.TranscriptEntry(lines, is_menu=is_menu)
-        self.entries.append(entry)
+    def _append_block(self, block, is_menu=False):
+        self._lines.extend(block)
+        self.blocks.append(block)
+        if is_menu:
+            self._titles.append(block[0])
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def contents(self):
-        r'''Gets all transcript contents joined together as a single string.
+    def blocks(self):
+        r'''Gets blocks.
 
-        Returns string.
+        Returns list.
         '''
-        return '\n'.join(self.lines)
-
-    @property
-    def entries(self):
-        r'''Gets transcript entries.
-
-        Returns list of transcript entries.
-        '''
-        return self._entries
+        return self._blocks
 
     @property
     def lines(self):
-        r'''Gets all transcript lines.
+        r'''Gets lines.
 
         Returns list.
         '''
-        lines = []
-        for entry in self:
-            lines.extend(entry.lines)
-        return lines
-
-    @property
-    def start_time(self):
-        r'''Gets transcript start time.
-
-        Returns date / time.
-        '''
-        return self._start_time
+        return self._lines
 
     @property
     def titles(self):
-        r'''Gets titles of system display entries in transcript.
+        r'''Gets titles.
 
         Returns list.
         '''
-        result = [_.lines[0] for _ in self if _.is_menu]
-        return result
+        return self._titles

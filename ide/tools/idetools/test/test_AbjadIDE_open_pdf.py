@@ -7,12 +7,11 @@ def test_AbjadIDE_open_pdf_01():
     '''
 
     with ide.Test():
-        path = ide.PackagePath('red_score').materials / 'magic_numbers'
+        path = ide.Path('red_score').materials / 'magic_numbers'
         path /= 'illustration.pdf'
 
-        input_ = 'red~score %magic pdfm pdfo q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %magic pdfm pdfo q')
+        transcript = abjad_ide.io_manager.transcript
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -21,12 +20,11 @@ def test_AbjadIDE_open_pdf_02():
     '''
 
     with ide.Test():
-        path = ide.PackagePath('red_score').segments / 'segment_01'
+        path = ide.Path('red_score').segments / 'segment_01'
         path /= 'illustration.pdf'
 
-        input_ = 'red~score %A pdfm pdfo q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %A pdfm pdfo q')
+        transcript = abjad_ide.io_manager.transcript
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -34,12 +32,11 @@ def test_AbjadIDE_open_pdf_03():
     r'''Displays message when PDF does not exist.
     '''
 
-    path = ide.PackagePath('blue_score').segments / 'segment_01'
+    path = ide.Path('blue_score').segments / 'segment_01'
     path /= 'illustration.pdf'
 
-    input_ = 'blue~score gg segment~01 pdfo q'
-    abjad_ide._start(input_=input_)
-    transcript = abjad_ide._transcript
+    abjad_ide('blue~score gg segment_01 pdfo q')
+    transcript = abjad_ide.io_manager.transcript
     assert f'Missing {path.trim()} ...' in transcript
 
 
@@ -48,11 +45,10 @@ def test_AbjadIDE_open_pdf_04():
     '''
 
     with ide.Test():
-        path = ide.PackagePath('red_score').materials / 'ranges' / 'illustration.pdf'
-        input_ = 'red~score %ranges pdfm cc *ranges q'
 
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %ranges pdfm cc *ranges q')
+        transcript = abjad_ide.io_manager.transcript
+        path = ide.Path('red_score').materials / 'ranges' / 'illustration.pdf'
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -61,12 +57,11 @@ def test_AbjadIDE_open_pdf_05():
     '''
 
     with ide.Test():
-        path = ide.PackagePath('red_score').segments / 'segment_01'
+        path = ide.Path('red_score').segments / 'segment_01'
         path /= 'illustration.pdf'
 
-        input_ = 'red~score %A pdfm cc *1 q'
-        abjad_ide._start(input_=input_)
-        transcript = abjad_ide._transcript
+        abjad_ide('red~score %A pdfm cc *1 q')
+        transcript = abjad_ide.io_manager.transcript
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -74,10 +69,9 @@ def test_AbjadIDE_open_pdf_06():
     r'''*-addressing messages nonexistent file.
     '''
 
-    path = ide.PackagePath('red_score').materials / 'performers'
+    path = ide.Path('red_score').materials / 'performers'
     path /= 'illustration.pdf'
 
-    input_ = 'red~score *performers q'
-    abjad_ide._start(input_=input_)
-    transcript = abjad_ide._transcript
+    abjad_ide('red~score *performers q')
+    transcript = abjad_ide.io_manager.transcript
     assert f'Missing {path.trim()} ...' in transcript
