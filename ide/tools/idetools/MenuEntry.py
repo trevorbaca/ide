@@ -1,240 +1,90 @@
 import abjad
-from ide.tools.idetools.Configuration import Configuration
-configuration = Configuration()
 
 
 class MenuEntry(abjad.AbjadObject):
     r'''Menu entry.
-
-    ..  container:: example
-
-        ::
-
-            >>> menu = ide.Menu()
-            >>> commands = []
-            >>> commands.append(('foo - add', 'add'))
-            >>> commands.append(('foo - delete', 'delete'))
-            >>> commands.append(('foo - modify', 'modify'))
-            >>> section = menu.make_command_section(
-            ...     commands=commands,
-            ...     name='test',
-            ...     )
-
-        ::
-
-            >>> for entry in section.menu_entries:
-            ...     entry
-            <MenuEntry: 'foo - add'>
-            <MenuEntry: 'foo - delete'>
-            <MenuEntry: 'foo - modify'>
-
     '''
 
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_display_string',
-        '_explicit_return_value',
-        '_key',
-        '_is_navigation',
-        '_menu_section',
-        '_prepopulated_value',
+        '_command',
+        '_display',
+        '_number',
+        '_value',
         )
 
     ### INITIALIZER ###
 
     def __init__(
         self,
-        display_string=None,
-        explicit_return_value=None,
-        is_navigation=False,
-        key=None,
-        menu_section=None,
-        prepopulated_value=None,
+        command=None,
+        display=None,
+        number=None,
+        value=None,
         ):
-        self._display_string = abjad.String(display_string)
-        self._explicit_return_value = explicit_return_value
-        assert MenuEntry._is_valid_key(key), repr(key)
-        self._key = key
-        self._is_navigation = is_navigation
-        self._menu_section = menu_section
-        self._prepopulated_value = prepopulated_value
+        self._command = command
+        self._display = abjad.String(display)
+        self._number = number
+        self._value = value
 
     ### SPECIAL METHODS ###
 
     def __lt__(self, argument):
-        r'''Is true when `argument` is a menu entry with a display string
-        greater than that of this menu entry. Otherwise false.
+        r'''Is true when `argument` is a menu entry with display greater than
+        that of this menu entry. Otherwise false.
 
         Returns true or false.
         '''
         if not isinstance(argument, type(self)):
             raise TypeError(argument)
-        return self.display_string < argument.display_string
-
-    def __repr__(self):
-        r'''Gets interpreter representation of menu entry.
-
-        Returns string.
-        '''
-        return f'<{type(self).__name__}: {self.display_string!r}>'
-
-    ### PRIVATE METHODS ###
-
-    def _get_storage_format_specification(self):
-        keyword_argument_names = (
-            'display_string',
-            'explicit_return_value',
-            'key',
-            'prepopulated_value',
-            )
-        positional_argument_values = ()
-        return abjad.StorageFormatSpecification(
-            self,
-            keyword_argument_names=keyword_argument_names,
-            positional_argument_values=positional_argument_values,
-            )
-
-    @staticmethod
-    def _is_valid_key(key):
-        if key is None:
-            return True
-        if isinstance(key, str) and key.lower() == key:
-            return True
-        return False
+        return self.display < argument.display
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def display_string(self):
-        r'''Gets display string.
-
-        Returns string.
-        '''
-        return self._display_string
-
-    @property
-    def explicit_return_value(self):
-        r'''Gets explicit return value.
-
-        Returns arbitrary value or none.
-        '''
-        return self._explicit_return_value
-
-    @property
-    def is_navigation(self):
-        r'''Is true when menu entry is navigation. Otherwise false.
-
-        Returns true or false.
-        '''
-        return self._is_navigation
-
-    @property
-    def key(self):
-        r'''Gets key.
+    def command(self):
+        r'''Gets name of command section.
 
         Returns string or none.
         '''
-        return self._key
+        return self._command
 
     @property
-    def menu_section(self):
-        r'''Gets menu section.
+    def display(self):
+        r'''Gets display.
 
-        Returns menu section.
+        Returns string.
         '''
-        return self._menu_section
+        return self._display
 
     @property
     def number(self):
         r'''Gets number.
 
-        Returns nonnegative integer or none.
+        Returns positive integer or none.
         '''
-        if self.menu_section.is_numbered:
-            return self.menu_section.menu_entries.index(self) + 1
+        return self._number
 
     @property
-    def prepopulated_value(self):
-        r'''Gets prepopulated value.
+    def value(self):
+        r'''Gets value.
 
-        Returns arbitrary value or none.
+        Returns value.
         '''
-        return self._prepopulated_value
-
-    @property
-    def return_value(self):
-        r'''Gets return value.
-
-        Returns arbitrary value.
-        '''
-        if self.menu_section.return_value_attribute == 'number':
-            return_value = str(self.number)
-        elif self.menu_section.return_value_attribute == 'display_string':
-            return_value = self.display_string
-        elif self.menu_section.return_value_attribute == 'key':
-            return_value = self.key
-        elif self.menu_section.return_value_attribute == 'explicit':
-            return_value = self.explicit_return_value
-        assert return_value, repr((
-            self.menu_section,
-            self.menu_section.return_value_attribute,
-            self,
-            return_value,
-            ))
-        return return_value
+        return self._value
 
     ### PUBLIC METHODS ###
 
-    def matches(self, string):
-        r'''Is true when menu entry matches `string`.
+    def make_line(self, left_margin_width):
+        r'''Makes line.
 
-        ..  container:: example
-
-            ::
-
-                >>> entry.matches('modify')
-                True
-
-        Otherwise false:
-
-        ..  container:: example
-
-            ::
-
-                >>> entry.matches('asdf')
-                False
-
-        Returns true or false.
+        Returns string.
         '''
-        # aliases take priority over menu entry matches
-        if string in configuration.aliases:
-            return False
-        normalized_display_string = abjad.String(
-            self.display_string).strip_diacritics()
-        normalized_display_string = normalized_display_string.lower()
-        display_capital_letters = [
-            _ for _ in self.display_string
-            if _.isupper()
-            ]
-        display_capital_letters = ''.join(display_capital_letters)
-        if (self.menu_section.match_on_display_string and
-            display_capital_letters and
-            string == display_capital_letters):
-            return True
-        if self.key is not None and string == self.key:
-            return True
-        if self.menu_section.is_numbered and string == str(self.number):
-            return True
-        if (self.menu_section.match_on_display_string and
-            3 <= len(string)):
-            if normalized_display_string.startswith(string.lower()):
-                return True
-        if (self.menu_section.match_on_display_string and
-            string == self.display_string):
-            return True
-        if (self.menu_section.match_on_display_string and
-            3 <= len(string) and
-            string in normalized_display_string):
-            return True
-        return False
+        if self.number is not None:
+            line = str(self.number) + ': '
+            line = line.rjust(left_margin_width)
+        else:
+            line = left_margin_width * ' '
+        line += self.display
+        return line

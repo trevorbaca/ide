@@ -13,7 +13,7 @@ def test_AbjadIDE_generate_back_cover_01():
         target.remove()
 
         abjad_ide('blue~score %letter bcg q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Generating back cover ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Writing {target.trim()} ...' in transcript
@@ -23,7 +23,7 @@ def test_AbjadIDE_generate_back_cover_01():
         assert '{8.5in, 11in}' in text
 
         abjad_ide('blue~score %letter bcg q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Generating back cover ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript

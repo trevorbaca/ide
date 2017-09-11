@@ -13,7 +13,7 @@ def test_AbjadIDE_make_every_pdf_01():
             target.remove()
 
         abjad_ide('red~score mm pdfm* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             directory = ide.Path('red_score').materials / name
             illustrate = directory / '__illustrate__.py'
@@ -35,7 +35,7 @@ def test_AbjadIDE_make_every_pdf_01():
                 transcript
 
         abjad_ide('red~score mm pdfm* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             directory = ide.Path('red_score').materials / name
             illustrate = directory / '__illustrate__.py'
@@ -67,7 +67,7 @@ def test_AbjadIDE_make_every_pdf_02():
             target.remove()
 
         abjad_ide('red~score gg pdfm* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         for name in names:
             directory = ide.Path('red_score').segments / name
             illustrate = directory / '__illustrate__.py'

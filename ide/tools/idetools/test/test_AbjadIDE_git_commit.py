@@ -9,49 +9,62 @@ def test_AbjadIDE_git_commit_01():
     path = ide.Path('red_score')
 
     abjad_ide('? q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert 'git - commit (ci)' not in transcript
 
-    abjad_ide('red~score ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score bb ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score bb ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score dd ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score dd ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score ee ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score ee ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score oo ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score oo ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score mm ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score mm ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score mm magic ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score mm magic ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score gg ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score gg ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score gg A ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score gg A ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score yy ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score yy ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
 
-    abjad_ide('red~score tt ? ci q')
-    transcript = abjad_ide.io_manager.transcript
+    abjad_ide('red~score tt ci q')
+    transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper} ...' in transcript
+
+
+def test_AbjadIDE_git_commit_02():
+    r'''In library directory.
+    '''
+
+    if not abjad_ide._test_external_directory():
+        return
+
+    abjad_ide('lib ci q')
+    transcript = abjad_ide.io.transcript
+    root = ide.Path('/Users/trevorbaca/baca')
+    assert f'Git commit {root} ...' in transcript

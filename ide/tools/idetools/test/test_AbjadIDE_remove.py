@@ -4,84 +4,167 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_remove_01():
-    r'''Removes one score directory.
+    r'''In build directory. Removes multiple files.
     '''
 
     with ide.Test():
-        package = ide.Path('test_scores') / 'test_score_100'
-        contents = package / package.name
+        build = ide.Path('red_score') / 'builds' / 'letter'
+        target_1 = build / 'back-cover.tex'
+        assert target_1.is_file()
+        target_2 = build / 'front-cover.tex'
+        assert target_2.is_file()
+        target_3 = build / 'music.ly'
+        assert target_3.is_file()
 
-        abjad_ide('new test~score~100 q')
-        assert package.is_dir()
-        title = 'Test Score 100'
-        contents.add_metadatum('title', title)
+        abjad_ide('red %letter rm 1-3 remove~3 q')
+        transcript = abjad_ide.io.transcript
+        assert not target_1.exists()
+        assert not target_2.exists()
+        assert not target_3.exists()
+        assert 'Select files to remove> 1-3' in transcript
+        assert 'Confirming ...' in transcript
+        assert f'    {target_1.trim()}' in transcript
+        assert f'    {target_2.trim()}' in transcript
+        assert f'    {target_3.trim()}' in transcript
+        assert "Type 'remove 3' to proceed> remove 3" in transcript
+        assert f'Removing {target_1.trim()} ...' in transcript
+        assert f'Removing {target_2.trim()} ...' in transcript
+        assert f'Removing {target_3.trim()} ...' in transcript
 
-        abjad_ide('rm Test~Score~100 remove q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter package(s) to remove> Test Score 100' in transcript
-        assert f'Confirming {package} ...'
-        assert "Type 'remove' to proceed> remove" in transcript
-        assert f'emoving {package} ...' in transcript
-        assert not package.exists()
+    with ide.Test():
+        assert target_1.is_file()
+        assert target_2.is_file()
+        assert target_3.is_file()
+
+        abjad_ide('red %letter rm 2-1,3 remove~3 q')
+        transcript = abjad_ide.io.transcript
+        assert not target_1.exists()
+        assert not target_2.exists()
+        assert not target_3.exists()
+        assert 'Select files to remove> 2-1,3' in transcript
+        assert 'Confirming ...' in transcript
+        assert f'    {target_2.trim()}' in transcript
+        assert f'    {target_1.trim()}' in transcript
+        assert f'    {target_3.trim()}' in transcript
+        assert "Type 'remove 3' to proceed> remove 3" in transcript
+        assert f'Removing {target_2.trim()} ...' in transcript
+        assert f'Removing {target_1.trim()} ...' in transcript
+        assert f'Removing {target_3.trim()} ...' in transcript
+
+    with ide.Test():
+        assert target_1.is_file()
+        assert target_2.is_file()
+        assert target_3.is_file()
+
+        abjad_ide('red %letter rm 2,1,3 remove~3 q')
+        transcript = abjad_ide.io.transcript
+        assert not target_1.exists()
+        assert not target_2.exists()
+        assert not target_3.exists()
+        assert 'Select files to remove> 2,1,3' in transcript
+        assert 'Confirming ...' in transcript
+        assert f'    {target_2.trim()}' in transcript
+        assert f'    {target_1.trim()}' in transcript
+        assert f'    {target_3.trim()}' in transcript
+        assert "Type 'remove 3' to proceed> remove 3" in transcript
+        assert f'Removing {target_2.trim()} ...' in transcript
+        assert f'Removing {target_1.trim()} ...' in transcript
+        assert f'Removing {target_3.trim()} ...' in transcript
 
 
 def test_AbjadIDE_remove_02():
-    r'''Removes range of score directories.
+    r'''In library directory.
     '''
 
-    with ide.Test():
-        example_100_package = ide.Path('test_scores') / 'test_score_100'
-        example_100_contents = example_100_package / example_100_package.name
-        example_101_package = ide.Path('test_scores') / 'test_score_101'
-        example_101_contents = example_101_package / example_101_package.name
-        paths = (
-            example_100_package,
-            example_100_contents,
-            example_101_package,
-            example_101_contents,
-            )
+    if not abjad_ide._test_external_directory():
+        return
 
-        abjad_ide('new test~score~100 new test~score~101 q')
-        assert example_100_package.is_dir()
-        assert example_101_package.is_dir()
-        title = 'Test Score 100'
-        example_100_contents.add_metadatum('title', title)
-        title = 'Test Score 101'
-        example_101_contents.add_metadatum('title', title)
+    directory = abjad_ide._get_library()
+    with abjad.FilesystemState(keep=[directory]):
 
-        abjad_ide('rm Test~Score~100,Test~Score~101 remove~2 q')
-        for line in [
-            'Enter package(s) to remove> Test Score 100,Test Score 101',
-            'Confirming ...',
-            f'    {example_100_package}',
-            f'    {example_101_package}',
-            "Type 'remove 2' to proceed> remove 2",
-            f'Removing {example_100_package} ...',
-            f'Removing {example_101_package} ...',
-            ]:
-            assert line in abjad_ide.io_manager.transcript
-        assert not example_100_package.exists()
-        assert not example_101_package.exists()
+        abjad_ide('lib new FooCommand.py y q')
+        path = directory / 'FooCommand.py'
+        assert path.is_file()
+
+        abjad_ide('lib rm FooCommand.py remove q')
+        transcript = abjad_ide.io.transcript
+        assert not path.exists()
+        assert 'Select assets to remove> FooCommand.py'
+        assert f'Confirming {path.trim()} ...' in transcript
+        assert "Type 'remove' to proceed> remove" in transcript
+        assert f'Removing {path.trim()} ...' in transcript
+
+        abjad_ide('lib rm FooCommand.py q')
+        transcript = abjad_ide.io.transcript
+        assert "Matches no path 'FooCommand.py' ..." in transcript
 
 
 def test_AbjadIDE_remove_03():
-    r'''Works with smart match.
+    r'''In scores directory. Removes one package.
+    '''
+
+    with ide.Test():
+
+        abjad_ide('new Test~Score~100 q')
+        wrapper = ide.Path('test_scores') / 'test_score_100'
+        assert wrapper.is_dir()
+
+        abjad_ide('rm Test~Score~100 remove q')
+        transcript = abjad_ide.io.transcript
+        assert 'Select packages to remove> Test Score 100' in transcript
+        assert f'Confirming {wrapper.trim()} ...'
+        assert "Type 'remove' to proceed> remove" in transcript
+        assert f'Removing {wrapper.trim()} ...' in transcript
+        assert not wrapper.exists()
+
+
+def test_AbjadIDE_remove_04():
+    r'''In scores directory. Removes multiple packages.
+    '''
+
+    with ide.Test():
+
+        abjad_ide('new test~score~100 new test~score~101 q')
+        example_100 = ide.Path('test_scores') / 'test_score_100'
+        example_101 = ide.Path('test_scores') / 'test_score_101'
+        assert example_100.is_dir()
+        assert example_101.is_dir()
+        example_100.contents.add_metadatum('title', 'Test Score 100')
+        example_101.contents.add_metadatum('title', 'Test Score 101')
+
+        abjad_ide('rm Test~Score~100,Test~Score~101 remove~2 q')
+        for line in [
+            'Select packages to remove> Test Score 100,Test Score 101',
+            'Confirming ...',
+            f'    {example_100.trim()}',
+            f'    {example_101.trim()}',
+            "Type 'remove 2' to proceed> remove 2",
+            f'Removing {example_100.trim()} ...',
+            f'Removing {example_101.trim()} ...',
+            ]:
+            assert line in abjad_ide.io.transcript
+        assert not example_100.exists()
+        assert not example_101.exists()
+
+
+def test_AbjadIDE_remove_05():
+    r'''In stylesheets directory. Works with smart match.
     '''
 
     with ide.Test():
         path = ide.Path('red_score').stylesheets / 'stylesheet.ily'
 
         abjad_ide('red~score yy rm sheet q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter file(s) to remove> sheet' in transcript
+        transcript = abjad_ide.io.transcript
+        assert 'Select files to remove> sheet' in transcript
         assert f'Confirming {path.trim()} ...' in transcript
 
         abjad_ide('red~score yy rm eet.i q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter file(s) to remove> eet.i' in transcript
+        transcript = abjad_ide.io.transcript
+        assert 'Select files to remove> eet.i' in transcript
         assert f'Confirming {path.trim()} ...' in transcript
 
         abjad_ide('red~score yy rm sty q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter file(s) to remove> sty' in transcript
+        transcript = abjad_ide.io.transcript
+        assert 'Select files to remove> sty' in transcript
         assert f'Confirming {path.trim()} ...' in transcript

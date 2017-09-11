@@ -1,4 +1,5 @@
 import abjad
+from ide.tools.idetools.Path import Path
 
 
 class Response(abjad.AbjadObject):
@@ -8,7 +9,6 @@ class Response(abjad.AbjadObject):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_known',
         '_payload',
         '_string',
         )
@@ -17,28 +17,15 @@ class Response(abjad.AbjadObject):
 
     def __init__(
         self,
-        known=None,
         payload=None,
         string=None,
         ):
-        import ide
-        self._known = known
-        if not known:
-            assert not payload, repr(payload)
-        assert isinstance(payload, (str, list, ide.Path, type(None)))
+        assert isinstance(payload, (str, list, Path, type(None)))
         self._payload = payload
-        assert isinstance(string, str), repr(string)
+        assert isinstance(string, (str, type(None))), repr(string)
         self._string = string
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def known(self):
-        r'''Is true when response is known.
-
-        Returns true, false or none.
-        '''
-        return self._known
 
     @property
     def payload(self):

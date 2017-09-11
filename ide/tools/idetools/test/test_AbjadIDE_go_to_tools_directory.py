@@ -7,7 +7,7 @@ def test_AbjadIDE_go_to_tools_directory_01():
     '''
 
     abjad_ide('red~score mm tempi oo q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -16,6 +16,7 @@ def test_AbjadIDE_go_to_tools_directory_01():
         'Red Score (2017) : tools',
         ]
     assert 'adjust_spacing_sections.py' in transcript
+    assert '.gitignore' not in transcript
 
 
 def test_AbjadIDE_go_to_tools_directory_02():
@@ -23,7 +24,7 @@ def test_AbjadIDE_go_to_tools_directory_02():
     '''
 
     abjad_ide('red~score gg A oo q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -38,7 +39,7 @@ def test_AbjadIDE_go_to_tools_directory_03():
     '''
 
     abjad_ide('red~score oo q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -52,7 +53,7 @@ def test_AbjadIDE_go_to_tools_directory_04():
 
 
     abjad_ide('red~score bb oo q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',

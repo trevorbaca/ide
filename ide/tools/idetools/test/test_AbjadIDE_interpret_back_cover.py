@@ -16,7 +16,7 @@ def test_AbjadIDE_interpret_back_cover_01():
         target.remove()
 
         abjad_ide('red~score %letter bci q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_interpret_back_cover_01():
         assert target.is_file()
 
         abjad_ide('red~score %letter bci q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript

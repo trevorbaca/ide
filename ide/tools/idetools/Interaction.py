@@ -8,13 +8,13 @@ class Interaction(abjad.ContextManager):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_io_manager',
+        '_io',
         )
 
     ### INITIALIZER ###
 
-    def __init__(self, io_manager=None):
-        self._io_manager = io_manager
+    def __init__(self, io=None):
+        self._io = io
 
     ### SPECIAL METHODS ###
 
@@ -26,7 +26,7 @@ class Interaction(abjad.ContextManager):
     def __exit__(self, exc_type, exc_value, traceback):
         r'''Exits context manager.
         '''
-        self._io_manager._display('')
+        self.io.display('')
 
     def __repr__(self):
         r'''Gets interpreter representation of context manager.
@@ -38,7 +38,7 @@ class Interaction(abjad.ContextManager):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def io_manager(self):
-        r'''Gets io manager.
+    def io(self):
+        r'''Gets IO manager.
         '''
-        return self._io_manager
+        return self._io

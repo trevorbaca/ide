@@ -12,7 +12,7 @@ def test_AbjadIDE_build_score_01():
 
     with ide.Test():
         abjad_ide('red~score %letter bld q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         lines = [
             'Building score ...',
             'Collecting segment lys ...',

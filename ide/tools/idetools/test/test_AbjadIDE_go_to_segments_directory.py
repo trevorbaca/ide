@@ -7,7 +7,7 @@ def test_AbjadIDE_go_to_segments_directory_01():
     '''
 
     abjad_ide('red~score mm tempi gg q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -15,6 +15,7 @@ def test_AbjadIDE_go_to_segments_directory_01():
         'Red Score (2017) : materials : tempi',
         'Red Score (2017) : segments',
         ]
+    assert '.gitignore' not in transcript
 
 
 def test_AbjadIDE_go_to_segments_directory_02():
@@ -22,7 +23,7 @@ def test_AbjadIDE_go_to_segments_directory_02():
     '''
 
     abjad_ide('red~score gg A gg q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -37,7 +38,7 @@ def test_AbjadIDE_go_to_segments_directory_03():
     '''
 
     abjad_ide('red~score gg q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -50,6 +51,6 @@ def test_AbjadIDE_go_to_segments_directory_04():
     '''
 
     abjad_ide('blue~score gg q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert '1: segment_02' in transcript
     assert '2: segment_01' in transcript

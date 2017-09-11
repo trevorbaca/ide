@@ -1,17 +1,16 @@
 import abjad
+import definition
 import pathlib
 
 
 def make_lilypond_file():
     r'''Reimplement for material-specific illustration logic.
     '''
-    import definition
-    material_directory = pathlib.Path(__file__).parent
-    material_name = material_directory.name
-    title = material_name.replace('_', ' ').capitalize()
+    name = pathlib.Path(__file__).parent.name
+    title = name.replace('_', ' ').capitalize()
     title = abjad.Markup(title)
     title = title.override(('font-name', 'Palatino'))
-    material = getattr(definition, material_name)
+    material = getattr(definition, name)
     try:
         lilypond_file = material.__illustrate__(title=title)
     except TypeError:

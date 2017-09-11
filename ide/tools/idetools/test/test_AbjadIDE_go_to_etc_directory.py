@@ -7,7 +7,7 @@ def test_AbjadIDE_go_to_etc_directory_01():
     '''
 
     abjad_ide('red~score mm tempi ee q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -15,6 +15,7 @@ def test_AbjadIDE_go_to_etc_directory_01():
         'Red Score (2017) : materials : tempi',
         'Red Score (2017) : etc',
         ]
+    assert '.gitignore' not in transcript
 
 
 def test_AbjadIDE_go_to_etc_directory_02():
@@ -22,7 +23,7 @@ def test_AbjadIDE_go_to_etc_directory_02():
     '''
 
     abjad_ide('red~score gg A ee q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -37,7 +38,7 @@ def test_AbjadIDE_go_to_etc_directory_03():
     '''
 
     abjad_ide('red~score bb ee q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',

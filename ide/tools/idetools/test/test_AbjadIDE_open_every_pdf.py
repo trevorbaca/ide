@@ -11,7 +11,7 @@ def test_AbjadIDE_open_every_pdf_01():
         path /= 'illustration.pdf'
 
         abjad_ide('red~score %magic pdfm mm pdf* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -24,7 +24,7 @@ def test_AbjadIDE_open_every_pdf_02():
         path /= 'illustration.pdf'
 
         abjad_ide('red~score %A pdfm gg pdf* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert f'Opening {path.trim()} ...' in transcript
 
 
@@ -33,6 +33,18 @@ def test_AbjadIDE_open_every_pdf_03():
     '''
 
     abjad_ide('pdf* q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     path = ide.Path('red_score').distribution / 'red-score.pdf'
     assert f'Opening {path.trim()} ...' in transcript
+
+
+def test_AbjadIDE_open_every_pdf_04():
+    r'''In external directory.
+    '''
+
+    if not abjad_ide._test_external_directory():
+        return
+
+    abjad_ide('cdk pdf* q')
+    transcript = abjad_ide.io.transcript
+    assert 'Missing PDFs ...' in transcript

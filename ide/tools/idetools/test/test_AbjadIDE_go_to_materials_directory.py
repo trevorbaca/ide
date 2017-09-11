@@ -7,10 +7,11 @@ def test_AbjadIDE_go_to_materials_directory_01():
     '''
 
     abjad_ide('red~score bb mm q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017) : builds',
         'Red Score (2017) : materials',
         ]
+    assert '.gitignore' not in transcript

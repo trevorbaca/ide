@@ -8,7 +8,7 @@ def test_AbjadIDE_go_to_test_directory_01():
     '''
 
     abjad_ide('red~score mm tempi tt q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -16,6 +16,7 @@ def test_AbjadIDE_go_to_test_directory_01():
         'Red Score (2017) : materials : tempi',
         'Red Score (2017) : test',
         ]
+    assert '.gitignore' not in transcript
 
 
 def test_AbjadIDE_go_to_test_directory_02():
@@ -23,7 +24,7 @@ def test_AbjadIDE_go_to_test_directory_02():
     '''
 
     abjad_ide('red~score gg A tt q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -38,7 +39,7 @@ def test_AbjadIDE_go_to_test_directory_03():
     '''
 
     abjad_ide('red~score bb tt q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -56,7 +57,7 @@ def test_AbjadIDE_go_to_test_directory_04():
         shutil.rmtree(str(test_directory))
 
         abjad_ide('red~score tt q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert f'Missing {test_directory.trim()} ...' in transcript
 
 
@@ -65,5 +66,6 @@ def test_AbjadIDE_go_to_test_directory_05():
     '''
 
     abjad_ide('red~score tt q')
-    transcript = abjad_ide.io_manager.transcript
-    assert '1: test_dummy.py' in transcript
+    transcript = abjad_ide.io.transcript
+    assert '1: test_materials.py' in transcript
+    assert '2: test_segments.py' in transcript

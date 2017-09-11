@@ -16,7 +16,7 @@ def test_AbjadIDE_interpret_every_ly_01():
             target.remove()
 
         abjad_ide('red~score mm lyi* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -28,7 +28,7 @@ def test_AbjadIDE_interpret_every_ly_01():
         assert all(_.is_file() for _ in targets)
 
         abjad_ide('red~score mm lyi* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -54,7 +54,7 @@ def test_AbjadIDE_interpret_every_ly_02():
             target.remove()
 
         abjad_ide('red~score gg lyi* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript
@@ -66,7 +66,7 @@ def test_AbjadIDE_interpret_every_ly_02():
         assert all(_.is_file() for _ in targets)
 
         abjad_ide('red~score gg lyi* q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Interpreting every ly ...' in transcript
         for source, target in zip(sources, targets):
             assert 'Interpreting ly ...' in transcript

@@ -7,7 +7,7 @@ def test_AbjadIDE_go_to_previous_package_01():
     '''
 
     abjad_ide('red~score mm < < < q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -23,7 +23,7 @@ def test_AbjadIDE_go_to_previous_package_02():
     '''
 
     abjad_ide('red~score mm performers < < q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -39,7 +39,7 @@ def test_AbjadIDE_go_to_previous_package_03():
     '''
 
     abjad_ide('red~score gg < < < q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
@@ -55,7 +55,7 @@ def test_AbjadIDE_go_to_previous_package_04():
     '''
 
     abjad_ide('red~score gg A < < q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',

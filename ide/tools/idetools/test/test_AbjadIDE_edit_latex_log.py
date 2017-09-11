@@ -11,6 +11,19 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_edit_latex_log_01():
 
     abjad_ide('lxg q')
-    transcript = abjad_ide.io_manager.transcript
-    path = abjad_ide.io_manager.configuration.latex_log_file_path
+    transcript = abjad_ide.io.transcript
+    path = abjad_ide.io.configuration.latex_log_file_path
+    assert f'Editing {path} ...' in transcript
+
+
+def test_AbjadIDE_edit_latex_log_02():
+    r'''In external directory.
+    '''
+
+    if not abjad_ide._test_external_directory():
+        return
+
+    abjad_ide('cdk lxg q')
+    transcript = abjad_ide.io.transcript
+    path = abjad_ide.io.configuration.latex_log_file_path
     assert f'Editing {path} ...' in transcript

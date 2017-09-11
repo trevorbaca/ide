@@ -33,6 +33,17 @@ class Configuration(abjad.Configuration):
 
     _configuration_file_name = 'ide.cfg'
 
+    editor_suffixes = (
+        '.cfg',
+        '.ily',
+        '.log',
+        '.ly',
+        '.md',
+        '.py',
+        '.tex',
+        '.txt',
+        )
+
     ### INITIALIZER ###
 
     def __init__(self):
@@ -52,7 +63,7 @@ class Configuration(abjad.Configuration):
         import ide
         configuration = ide.Configuration()
         directory = configuration.test_scores_directory
-        for path in directory.glob('*'):
+        for path in directory.iterdir():
             if path.is_dir():
                 sys.path.insert(0, str(path))
 
@@ -67,8 +78,9 @@ class Configuration(abjad.Configuration):
         return {}
 
     def _make_missing_directories(self):
-        from abjad import abjad_configuration
-        directory = pathlib.Path(abjad_configuration.composer_scores_directory)
+        directory = pathlib.Path(
+            abjad.abjad_configuration.composer_scores_directory
+            )
         if not directory.exists():
             directory.mkdir()
 
@@ -126,8 +138,7 @@ class Configuration(abjad.Configuration):
         Returns package path.
         '''
         import ide
-        from abjad import abjad_configuration
-        return ide.Path(abjad_configuration.boilerplate_directory)
+        return ide.Path(abjad.abjad_configuration.boilerplate_directory)
 
     @property
     def composer_scores_directory(self):
@@ -142,14 +153,13 @@ class Configuration(abjad.Configuration):
 
         Returns package path.
         '''
+        import ide
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
         if self._composer_scores_directory is None:
-            from abjad import abjad_configuration
-            from ide.tools.idetools.Path import Path
-            directory = abjad_configuration.composer_scores_directory
-            directory = Path(directory).expanduser()
-            self._composer_scores_directory = directory
+            scores = abjad.abjad_configuration.composer_scores_directory
+            scores = ide.Path(scores).expanduser()
+            self._composer_scores_directory = scores
         return self._composer_scores_directory
 
     @property
@@ -183,9 +193,8 @@ class Configuration(abjad.Configuration):
         Returns package path.
         '''
         import ide
-        from ide.tools.idetools.Path import Path
         if self._ide_directory is None:
-            ide_directory = Path(ide.__path__[0])
+            ide_directory = ide.Path(ide.__path__[0])
             self._ide_directory = ide_directory
         return self._ide_directory
 

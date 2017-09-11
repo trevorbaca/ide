@@ -1,9 +1,9 @@
 import abjad
 import io
-import pathlib
-import platform
 import subprocess
 from ide.tools.idetools.Configuration import Configuration
+from ide.tools.idetools.Path import Path
+from ide.tools.idetools.Transcript import Transcript
 
 
 class IOManager(abjad.IOManager):
@@ -13,114 +13,39 @@ class IOManager(abjad.IOManager):
 
         ::
 
-            >>> abjad_ide = ide.AbjadIDE(is_test=True)
-            >>> io_manager = abjad_ide._io_manager
+            >>> ide.IOManager()
+            IOManager()
 
     '''
 
-    ### CLASS VARAIBLES ###
+    ### CLASS VARIABLES ###
 
     __documentation_section__ = 'Classes'
 
     __slots__ = (
-        '_is_example',
-        '_is_quitting',
-        '_is_redrawing',
-        '_is_test',
         '_pending_input',
+        '_terminal_dimensions',
         '_transcript',
-        )
-
-    _editor_extensions = (
-        '.ily',
-        '.log',
-        '.ly',
-        '.md',
-        '.py',
-        '.tex',
-        '.txt',
         )
 
     configuration = Configuration()
 
     ### INITIALIZER ###
 
-    def __init__(self, is_example=False, is_test=False):
-        import ide
-        self._is_example = is_example
-        self._is_quitting = None
-        self._is_redrawing = True
-        self._is_test = is_test
+    def __init__(self, terminal_dimensions=None):
         self._pending_input = None
-        self._transcript = ide.Transcript()
-
-    ### PRIVATE METHODS ###
-
-    def _clean_up(self):
-        if not self._transcript.blocks[-1][-1] == '':
-            self._display('')
-        self.clear_terminal()
-
-    def _display(self, lines, caps=True, is_menu=False):
-        assert isinstance(lines, (str, list)), repr(lines)
-        if isinstance(lines, str):
-            lines = [lines]
-        if caps:
-            lines = [abjad.String(_).capitalize_start() for _ in lines]
-        if lines:
-            self._transcript._append_block(lines, is_menu=is_menu)
-        for line in lines:
-            print(line)
-
-    def _display_errors(self, lines):
-        self._display(lines, caps=False)
-
-    def _get_input(self, message='', split_input=False):
-        message = abjad.String(message).capitalize_start() + '> '
-        if self._pending_input:
-            string = self._pop_from_pending_input()
-            print(f'> {string}')
-        else:
-            # TODO: this can be removed bc all test input should be pending:
-            # try block only for pytest
-            try:
-                string = input(message)
-            except OSError:
-                string = 'q'
-            if string and split_input:
-                parts = string.split()
-                string = parts[0]
-                pending_input = ' '.join(parts[1:])
-                if pending_input:
-                    self._pending_input = pending_input
-        if string == '<return>':
-            self._transcript._append_block([message.strip(), ''])
-            self._transcript._append_block(['> ', ''])
-        else:
-            self._transcript._append_block([f'{message}{string}', ''])
-            self._transcript._append_block(['> ', ''])
-        return abjad.String(string)
-
-    def _invoke_shell(self, statement):
-        statement = statement.strip()
-        process = subprocess.Popen(
-            statement,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            )
-        lines = self._read_from_pipe(process.stdout).splitlines()
-        lines = lines or []
-        lines = [_.strip() for _ in lines]
-        self._display(lines, caps=False)
-
-    def _pop_from_pending_input(self):
-        parts = self._pending_input.split()
-        pending_input = ' '.join(parts[1:])
-        self._pending_input = pending_input
-        return parts[0].replace('~', ' ')
+        self._terminal_dimensions = terminal_dimensions
+        self._transcript = Transcript()
 
     ### PUBLIC PROPERTIES ###
+
+    @property
+    def terminal_dimensions(self):
+        r'''Gets terminal dimensions.
+
+        Returns pair or none.
+        '''
+        return self._terminal_dimensions
 
     @property
     def transcript(self):
@@ -132,27 +57,88 @@ class IOManager(abjad.IOManager):
 
     ### PUBLIC METHODS ###
 
-    def edit(self, path, allow_missing=False, line_number=None):
-        r'''Edits file `path`.
+    @staticmethod
+    def change(directory):
+        r'''Makes temporary directory change context manager.
+        '''
+        return abjad.TemporaryDirectoryChange(directory=directory)
 
-        Opens at `line_number` when `line_number` is set.
+    @staticmethod
+    def cleanup(remove=None):
+        r'''Makes filesystem state context manager.
+        '''
+        return abjad.FilesystemState(remove=remove)
 
-        Opens at first line when `line_number` is not set.
+    def confirm(self, message='ok?'):
+        r'''Confirms.
+
+        Returns true or false.
+        '''
+        result = self.get(message)
+        if isinstance(result, str):
+            if result == '':
+                return False
+            if 'yes'.startswith(result.lower()):
+                return True
+            if 'no'.startswith(result.lower()):
+                return False
+
+    def display(self, lines, is_menu=False, raw=False):
+        r'''Displays lines.
 
         Returns none.
         '''
-        path = pathlib.Path(path)
-        if not allow_missing and not path.is_file():
-            message = f'missing {path} ...'
-            self._display(message)
-            return
-        if line_number is None:
-            command = f'vim {path}'
+        assert isinstance(lines, (str, list)), repr(lines)
+        if isinstance(lines, str):
+            lines = [lines]
+        if not raw:
+            lines = [abjad.String(_).capitalize_start() for _ in lines]
+        if lines:
+            self.transcript.append(lines, is_menu=is_menu)
+        if self._terminal_dimensions:
+            height, width = self._terminal_dimensions
+            lines = [_[:width] for _ in lines]
+        for line in lines:
+            print(line)
+
+    def display_errors(self, lines):
+        r'''Displays errors.
+
+        Returns none.
+        '''
+        self.display(lines, raw=True)
+
+    def get(self, prompt='', split_input=False):
+        r'''Gets user input.
+
+        Returns none when user enters lone return.
+
+        Returns string when user types input and then hits return.
+        '''
+        prompt = prompt or ''
+        prompt = abjad.String(prompt).capitalize_start() + '> '
+        if self._pending_input:
+            parts = self._pending_input.split()
+            pending_input = ' '.join(parts[1:])
+            self._pending_input = pending_input
+            string = parts[0].replace('~', ' ')
+            print(f'{prompt}{string}')
         else:
-            command = f'vim +{line_number} {path}'
-        if self._is_test:
+            string = input(prompt)
+            if string and split_input and not string.startswith('!'):
+                parts = string.split()
+                string = parts[0]
+                pending_input = ' '.join(parts[1:])
+                if pending_input:
+                    self._pending_input = pending_input
+        if string in ('', '<return>'):
+            self.transcript.append([prompt.strip(), ''])
+            self.transcript.append(['> ', ''])
             return
-        self.spawn_subprocess(command)
+        else:
+            self.transcript.append([f'{prompt}{string}', ''])
+            self.transcript.append(['> ', ''])
+            return abjad.String(string)
 
     def interpret_file(self, path):
         r'''Invokes Python or LilyPond on `path`.
@@ -163,10 +149,10 @@ class IOManager(abjad.IOManager):
         This makes it possible to execute in silent context
         and then display stderr lines after execution.
         '''
-        path = pathlib.Path(path)
+        path = Path(path)
         if not path.exists():
             message = f'missing {path} ...'
-            self._display(message)
+            self.display(message)
             return False
         if path.suffix == '.py':
             command = f'python {path}'
@@ -206,11 +192,10 @@ class IOManager(abjad.IOManager):
 
         Returns none.
         '''
-        import ide
         if not tex.is_file():
             return
         executables = self.find_executable('xelatex')
-        executables = [ide.Path(_) for _ in executables]
+        executables = [Path(_) for _ in executables]
         if not executables:
             executable_name = 'pdflatex'
             fancy_executable_name = 'LaTeX'
@@ -231,68 +216,36 @@ class IOManager(abjad.IOManager):
             for path in tex.parent.glob('*.log'):
                 path.unlink()
 
-    def open_file(self, path, line_number=None):
-        r'''Opens file `path`.
-
-        Also works when `path` is a list.
+    def invoke_shell(self, statement):
+        r'''Invokes shell.
 
         Returns none.
         '''
-        line_number_string = ''
-        if line_number is not None:
-            line_number_string = f' +{line_number}'
-        if isinstance(path, str):
-            path = pathlib.Path(path)
-        if isinstance(path, list):
-            path = [pathlib.Path(_) for _ in path]
-        if not isinstance(path, list) and not path.is_file():
-            pass
-        if (isinstance(path, list) and
-            all(_.suffix in self._editor_extensions for _ in path)):
-            paths = ' '.join([str(_) for _ in path])
-            command = f'vim {paths}'
-        elif isinstance(path, list):
-            paths = path
-            paths = ' '.join([str(_) for _ in paths])
-            command = f'open {paths}'
-        elif (path.name[0] == '.' or path.suffix in self._editor_extensions):
-            command = f'vim {path}'
-        else:
-            command = f'open {path}'
-        command = command + line_number_string
-        if self._is_test:
-            return
-        if isinstance(path, list):
-            path_suffix = path[0].suffix
-        else:
-            path_suffix = path.suffix
-        if (platform.system() == 'Darwin' and path_suffix == '.pdf'):
-            source_path = pathlib.Path(
-                self.configuration.boilerplate_directory,
-                '__close_preview_pdf__.scr',
-                )
-            template = source_path.read_text()
-            completed_template = template.format(file_path=path)
-            script_path = pathlib.Path(
-                self.configuration.home_directory,
-                '__close_preview_pdf__.scr',
-                )
-            if script_path.exists():
-                script_path.unlink()
-            with abjad.FilesystemState(remove=[script_path]):
-                script_path.write_text(completed_template)
-                permissions_command = f'chmod 755 {script_path}'
-                self.spawn_subprocess(permissions_command)
-                close_command = str(script_path)
-                self.spawn_subprocess(close_command)
-        self.spawn_subprocess(command)
+        statement = statement.strip()
+        process = subprocess.Popen(
+            statement,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            )
+        lines = self._read_from_pipe(process.stdout).splitlines()
+        lines = lines or []
+        lines = [_.strip() for _ in lines]
+        self.display(lines, raw=True)
+
+    def pending_input(self, string):
+        r'''Sets pending input.
+
+        Returns string.
+        '''
+        self._pending_input = string
 
     def write(self, path, string):
         r'''Writes `string` to `path`.
 
         Returns none.
         '''
-        path = pathlib.Path(path)
+        path = Path(path)
         directory = path.parent
         if not directory.exists():
             directory.mkdir()

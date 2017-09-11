@@ -17,6 +17,7 @@ class Command(abjad.AbjadObject):
         'build-interpret',
         'build-open',
         'build-preliminary',
+        'clipboard',
         'definition_file',
         'display navigation',
         'git',
@@ -54,7 +55,6 @@ class Command(abjad.AbjadObject):
         directories=None,
         external=None,
         blacklist=(),
-        is_hidden=True,
         section=None,
         scores=None,
         ):
@@ -72,8 +72,6 @@ class Command(abjad.AbjadObject):
             external = bool(external)
         self.external = external
         self.blacklist = blacklist
-        assert isinstance(is_hidden, bool), repr(is_hidden)
-        self.is_hidden = is_hidden
         if scores is not None:
             scores = bool(scores)
         self.scores = scores
@@ -96,8 +94,6 @@ class Command(abjad.AbjadObject):
         method.directories = self.directories
         method.external = self.external
         method.blacklist = self.blacklist
-        method.is_hidden = self.is_hidden
-        method.is_navigation = self.section in self._navigation_section_names
         method.scores = self.scores
         method.section = self.section
         return method

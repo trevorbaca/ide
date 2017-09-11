@@ -1,5 +1,5 @@
 import abjad
-from red_score.materials.magic_numbers.definition import magic_numbers
+import definition
 
 
 def make_lilypond_file(magic_numbers):
@@ -10,4 +10,4 @@ def make_lilypond_file(magic_numbers):
     lilypond_file.items.append(markup)
     return lilypond_file
 
-lilypond_file = make_lilypond_file(magic_numbers)
+lilypond_file = make_lilypond_file(definition.magic_numbers)

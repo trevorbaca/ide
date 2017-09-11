@@ -12,7 +12,7 @@ def test_AbjadIDE_make_midi_01():
         target.remove()
 
         abjad_ide('red~score %A midim q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Removing {maker.trim()} ...' in transcript
@@ -22,7 +22,7 @@ def test_AbjadIDE_make_midi_01():
         assert target.is_file()
 
         abjad_ide('red~score %A midim q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript

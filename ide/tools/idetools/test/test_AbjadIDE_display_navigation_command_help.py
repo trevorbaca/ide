@@ -4,34 +4,25 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_display_navigation_command_help_01():
-    r'''In score directory.
+    r'''In library.
     '''
 
-    abjad_ide('red~score ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-5]
+    if not abjad_ide._get_library():
+        return
+
+    abjad_ide('lib ; q')
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
-        'Red Score (2017) : navigation commands',
+        'Abjad IDE : library : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
-        '',
-        '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
-        '    go to contents directory (cc)',
-        '    go to distribution directory (dd)',
-        '    go to etc directory (ee)',
-        '    go to materials directory (mm)',
-        '    go to segments directory (gg)',
-        '    go to stylesheets directory (yy)',
-        '    go to test directory (tt)',
-        '    go to tools directory (oo)',
-        '    go to wrapper directory (ww)',
         '',
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
@@ -42,16 +33,17 @@ def test_AbjadIDE_display_navigation_command_help_02():
     '''
 
     abjad_ide('red~score mm magic ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-7]
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
         'Red Score (2017) : materials : magic_numbers : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
         '',
         '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
+        '    go to builds segments directory (nn)',
         '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
@@ -68,27 +60,27 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_03():
-    r'''In segment directory.
+    r'''In materials directory.
     '''
 
-    abjad_ide('red~score gg A ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-7]
+    abjad_ide('red~score mm ; q')
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
-        'Red Score (2017) : segments : A : navigation commands',
+        'Red Score (2017) : materials : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
         '',
         '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
+        '    go to builds segments directory (nn)',
         '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
@@ -105,86 +97,83 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_04():
-    r'''In scores directory.
+    r'''In score directory.
     '''
 
-    abjad_ide('; q')
-    block = abjad_ide._io_manager._transcript.blocks[-4]
+    abjad_ide('red~score ; q')
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
-        'Abjad IDE : scores : navigation commands',
+        'Red Score (2017) : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
         '',
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_05():
-    r'''In materials directory.
+    r'''In scores directory.
     '''
 
-    abjad_ide('red~score mm ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-6]
+    abjad_ide('; q')
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
-        'Red Score (2017) : materials : navigation commands',
+        'Abjad IDE : scores : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
-        '',
-        '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
-        '    go to contents directory (cc)',
-        '    go to distribution directory (dd)',
-        '    go to etc directory (ee)',
-        '    go to materials directory (mm)',
-        '    go to segments directory (gg)',
-        '    go to stylesheets directory (yy)',
-        '    go to test directory (tt)',
-        '    go to tools directory (oo)',
-        '    go to wrapper directory (ww)',
-        '',
-        '    go to next package (>)',
-        '    go to previous package (<)',
         '',
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_06():
-    r'''In segments directory.
+    r'''In segment directory.
     '''
 
-    abjad_ide('red~score gg ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-6]
+    abjad_ide('red~score gg A ; q')
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
-        'Red Score (2017) : segments : navigation commands',
+        'Red Score (2017) : segments : A : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
         '',
         '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
+        '    go to builds segments directory (nn)',
         '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
@@ -201,27 +190,64 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_
 
 
 def test_AbjadIDE_display_navigation_command_help_07():
+    r'''In segments directory.
+    '''
+
+    abjad_ide('red~score gg ; q')
+    block = abjad_ide.io.transcript.menus[-1]
+    block_ = [
+        'Red Score (2017) : segments : navigation commands',
+        '',
+        '    display navigation command help (;)',
+        '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '',
+        ]
+    for line, line_ in zip(block, block_):
+        assert line == line_
+
+
+def test_AbjadIDE_display_navigation_command_help_08():
     r'''In stylesheets directory.
     '''
 
     abjad_ide('red~score yy ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-6]
+    block = abjad_ide.io.transcript.menus[-1]
     block_ = [
         'Red Score (2017) : stylesheets : navigation commands',
         '',
         '    display navigation command help (;)',
         '',
+        '    go to library (lib)',
         '    go to scores directory (ss)',
         '',
         '    go to builds directory (bb)',
-        '    go to builds directory segments (nn)',
+        '    go to builds segments directory (nn)',
         '    go to contents directory (cc)',
         '    go to distribution directory (dd)',
         '    go to etc directory (ee)',
@@ -235,33 +261,6 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '    back (-)',
         '    quit (q)',
         '',
-        '>',
-        ]
-    for line, line_ in zip(block, block_):
-        assert line == line_
-
-
-def test_AbjadIDE_display_navigation_command_help_08():
-    r'''In external directory.
-    '''
-
-    scores = abjad.abjad_configuration.composer_scores_directory
-    if 'trevorbaca' not in scores:
-        return
-
-    abjad_ide('cdk ; q')
-    block = abjad_ide._io_manager._transcript.blocks[-5]
-    block_ = [
-        'Abjad IDE : /Users/trevorbaca/Desktop : navigation commands',
-        '',
-        '    display navigation command help (;)',
-        '',
-        '    go to scores directory (ss)',
-        '',
-        '    back (-)',
-        '    quit (q)',
-        '',
-        '>',
         ]
     for line, line_ in zip(block, block_):
         assert line == line_

@@ -12,8 +12,8 @@ def test_AbjadIDE_generate_preface_01():
         target = ide.Path('blue_score').builds / 'letter' / 'preface.tex'
         target.remove()
 
-        abjad_ide('blue~score bb letter pg q')
-        transcript = abjad_ide.io_manager.transcript
+        abjad_ide('blue~score bb letter rg q')
+        transcript = abjad_ide.io.transcript
         assert 'Generating preface ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Writing {target.trim()} ...' in transcript
@@ -22,8 +22,8 @@ def test_AbjadIDE_generate_preface_01():
         assert 'paper_size' not in text
         assert '{8.5in, 11in}' in text
 
-        abjad_ide('blue~score bb letter pg q')
-        transcript = abjad_ide.io_manager.transcript
+        abjad_ide('blue~score bb letter rg q')
+        transcript = abjad_ide.io.transcript
         assert 'Generating preface ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript

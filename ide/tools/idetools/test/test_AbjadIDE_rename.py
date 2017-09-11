@@ -1,36 +1,24 @@
+import abjad
 import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
-# TODO: add transcript asserts to each test
 
 def test_AbjadIDE_rename_01():
-    r'''Renames score directory.
+    r'''Renames score package.
     '''
 
     with ide.Test():
-        example_100_package = ide.Path('test_scores') / 'test_score_100'
-        example_100_contents = example_100_package / example_100_package.name
-        example_101_package = ide.Path('test_scores') / 'test_score_101'
-        example_101_contents = example_101_package / example_101_package.name
-        paths = (
-            example_100_package,
-            example_100_contents,
-            example_101_package,
-            example_101_contents,
-            )
-        for path in paths:
-            path.remove()
+        test_score_100 = ide.Path('test_scores') / 'test_score_100'
+        test_score_100.remove()
+        test_score_101 = ide.Path('test_scores') / 'test_score_101'
+        test_score_101.remove()
 
-        abjad_ide('new test~score~100 q')
-        assert example_100_package.is_dir()
-        assert example_100_contents.is_dir()
-        title = 'Test Score 100'
-        example_100_contents.add_metadatum('title', title)
+        abjad_ide('new Test~Score~100 q')
+        assert test_score_100.is_dir()
 
         abjad_ide('ren Test~Score~100 test_score_101 y q')
-        assert not example_100_package.exists()
-        assert example_101_package.is_dir()
-        assert example_101_contents.is_dir()
+        assert not test_score_100.exists()
+        assert test_score_101.is_dir()
 
 
 def test_AbjadIDE_rename_02():
@@ -39,27 +27,25 @@ def test_AbjadIDE_rename_02():
 
     with ide.Test():
         source = ide.Path('red_score').materials / 'test_material'
+        source.remove()
         target = ide.Path('red_score').materials / 'new_test_material'
-        paths = (source, target)
-        for path in paths:
-            path.remove()
+        target.remove()
 
         abjad_ide('red mm new test_material q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter package name> test_material' in transcript
+        transcript = abjad_ide.io.transcript
         assert source.is_dir()
 
         abjad_ide('red mm ren test_material new~test~material y q')
-        transcript = abjad_ide.io_manager.transcript
-        assert 'Enter package to rename> test_material' in transcript
+        transcript = abjad_ide.io.transcript
+        assert not source.exists()
+        assert target.is_dir()
+        assert 'Select package to rename> test_material' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> new test material' in transcript
         assert 'Renaming ...' in transcript
         assert f' FROM: {source.trim()}' in transcript
         assert f'   TO: {target.trim()}' in transcript
-        assert 'Ok?' in transcript
-        assert not source.exists()
-        assert target.is_dir()
+        assert 'Ok?> y' in transcript
 
 
 def test_AbjadIDE_rename_03():
@@ -68,31 +54,47 @@ def test_AbjadIDE_rename_03():
 
     with ide.Test():
         source = ide.Path('red_score').segments / 'segment_04'
+        source.remove()
         target = source.with_name('renamed_segment_04')
-        for path in [source, target]:
-            path.remove()
+        target.remove()
 
         abjad_ide('red gg new segment_04 q')
         assert source.is_dir()
 
-        abjad_ide('red gg ren segment_04 renamed_segment_04 y q')
+        abjad_ide('red gg ren segment~04 renamed_segment_04 y q')
+        transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
+        assert 'Select package to rename> segment 04' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> renamed_segment_04' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript
 
 
 def test_AbjadIDE_rename_04():
-    r'''Renames segment directory with name metadatum.
+    r'''Renames named segment.
     '''
 
     with ide.Test():
         source = ide.Path('red_score').segments / 'segment_03'
-        target = source.with_name('renamed_segment_03')
         assert source.is_dir()
-        assert not target.exists()
+        target = source.with_name('renamed_segment_03')
+        target.remove()
 
         abjad_ide('red gg ren C renamed_segment_03 y q')
+        transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
+        assert 'Select package to rename> C' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> renamed_segment_03' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript
 
 
 def test_AbjadIDE_rename_05():
@@ -101,13 +103,21 @@ def test_AbjadIDE_rename_05():
 
     with ide.Test():
         source = ide.Path('red_score').builds / 'letter'
-        target = source.with_name('standard-size')
         assert source.is_dir()
+        target = source.with_name('standard-size')
         target.remove()
 
-        abjad_ide('red bb ren letter standard-size y q')
+        abjad_ide('red bb ren letter standard~size y q')
+        transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
+        assert 'Select directory to rename> letter' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> standard size' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript
 
 
 def test_AbjadIDE_rename_06():
@@ -116,16 +126,24 @@ def test_AbjadIDE_rename_06():
 
     with ide.Test():
         source = ide.Path('red_score').tools / 'NewMaker.py'
+        source.remove()
         target = source.with_name('RenamedMaker.py')
-        for path in [source, target]:
-            path.remove()
+        target.remove()
 
-        abjad_ide('red oo new NewMaker.py q')
+        abjad_ide('red oo new NewMaker.py y q')
         assert source.is_file()
 
-        abjad_ide('red oo ren NewMaker.py RenamedMaker.py y q')
+        abjad_ide('red oo ren NM RenamedMaker.py y q')
+        transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_file()
+        assert 'Select file to rename> NM' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> RenamedMaker.py' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript
 
 
 def test_AbjadIDE_rename_07():
@@ -133,15 +151,54 @@ def test_AbjadIDE_rename_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets
-        source /= 'new-stylesheet.ily'
+        source = ide.Path('red_score').stylesheets / 'new-stylesheet.ily'
+        source.remove()
         target = source.with_name('renamed-stylesheet.ily')
-        for path in [source, target]:
-            path.remove()
+        target.remove()
 
-        abjad_ide('red yy new new-stylesheet.ily q')
+        abjad_ide('red yy new new-stylesheet.ily y q')
         assert source.is_file()
 
-        abjad_ide('red yy ren new-stylesheet.ily renamed-stylesheet.ily y q')
+        abjad_ide('red yy ren new- renamed-stylesheet y q')
         assert not source.exists()
         assert target.is_file()
+        transcript = abjad_ide.io.transcript
+        assert not source.exists()
+        assert target.is_file()
+        assert 'Select file to rename> new-' in transcript
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> renamed-stylesheet' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript
+
+
+def test_AbjadIDE_rename_08():
+    r'''In library.
+    '''
+
+    if not abjad_ide._test_external_directory():
+        return
+
+    directory = abjad_ide._get_library()
+    with abjad.FilesystemState(keep=[directory]):
+        source = directory / 'FooCommand.py'
+        source.remove()
+        target = source.with_name('NewFooCommand.py')
+        target.remove()
+
+        abjad_ide('lib new FooCommand.py y q')
+        assert source.is_file()
+
+        abjad_ide('lib ren FooCommand.py NewFooCommand.py y q')
+        transcript = abjad_ide.io.transcript
+        assert not source.exists()
+        assert target.is_file()
+        assert 'Select assets to rename> FooCommand.py'
+        assert f'Renaming {source.trim()} ...' in transcript
+        assert 'New name> NewFooCommand.py' in transcript
+        assert 'Renaming ...' in transcript
+        assert f' FROM: {source.trim()}' in transcript
+        assert f'   TO: {target.trim()}' in transcript
+        assert 'Ok?> y' in transcript

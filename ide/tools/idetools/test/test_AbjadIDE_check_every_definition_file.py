@@ -7,7 +7,7 @@ def test_AbjadIDE_check_every_definition_file_01():
     '''
 
     abjad_ide('red~score mm dfk* q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     for name in [
         'magic_numbers',
         'performers',
@@ -25,7 +25,7 @@ def test_AbjadIDE_check_every_definition_file_02():
     '''
 
     abjad_ide('red~score gg dfk* q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     for name in [
         'segment_01',
         'segment_02',

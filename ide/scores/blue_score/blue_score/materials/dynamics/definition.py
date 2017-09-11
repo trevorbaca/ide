@@ -1,4 +1,4 @@
 import abjad
 
 
-dynamics = [abjad.Dyanmic('p'), abjad.Dynamic('f')]
+dynamics = [abjad.Dynamic('p'), abjad.Dynamic('f')]

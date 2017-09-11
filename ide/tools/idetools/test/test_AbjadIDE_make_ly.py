@@ -14,7 +14,7 @@ def test_AbjadIDE_make_ly_01():
         target.remove()
 
         abjad_ide('red~score %magic lym q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -23,7 +23,7 @@ def test_AbjadIDE_make_ly_01():
         assert target.is_file()
 
         abjad_ide('red~score %magic lym q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -43,7 +43,7 @@ def test_AbjadIDE_make_ly_02():
         target.remove()
 
         abjad_ide('red~score %A lym q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Removing {illustrate.trim()} ...' in transcript
@@ -54,7 +54,7 @@ def test_AbjadIDE_make_ly_02():
         assert target.is_file()
 
         abjad_ide('red~score %A lym q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Removing {illustrate.trim()} ...' in transcript

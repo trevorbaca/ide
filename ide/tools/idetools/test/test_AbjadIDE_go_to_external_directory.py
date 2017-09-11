@@ -5,10 +5,10 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 
 def test_AbjadIDE_go_to_external_directory_01():
 
-    directory = abjad.abjad_configuration.composer_scores_directory
-    if 'trevorbaca' not in directory:
+    if not abjad_ide._test_external_directory():
         return
 
     abjad_ide('cdk q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     assert '/Users/trevorbaca/Desktop' in transcript
+    assert '.gitignore' not in transcript

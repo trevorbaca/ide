@@ -7,7 +7,7 @@ def test_AbjadIDE_edit_every_definition_file_01():
     '''
 
     abjad_ide('red~score mm df* q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     for name in [
         'magic_numbers',
         'performers',
@@ -24,7 +24,7 @@ def test_AbjadIDE_edit_every_definition_file_02():
     '''
 
     abjad_ide('red~score gg df* q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
     for name in [
         'segment_01',
         'segment_02',

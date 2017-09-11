@@ -13,7 +13,7 @@ def test_AbjadIDE_collect_segment_lys_01():
     with ide.Test(remove=[ly_paths]):
 
         abjad_ide('red~score bb lyc q')
-        transcript = abjad_ide.io_manager.transcript
+        transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
             assert ly_path.is_file()
             assert f'Writing {ly_path.trim()} ...' in transcript

@@ -7,7 +7,8 @@ def test_AbjadIDE_search_01():
     '''
 
     abjad_ide('sr RhythmMaker q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
+    assert 'Enter search string> RhythmMaker' in transcript
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker('
@@ -27,7 +28,8 @@ def test_AbjadIDE_search_02():
     '''
 
     abjad_ide('red~score sr RhythmMaker q')
-    transcript = abjad_ide.io_manager.transcript
+    transcript = abjad_ide.io.transcript
+    assert 'Enter search string> RhythmMaker' in transcript
 
     ack_line = 'blue_score/blue_score/materials/talea_rhythm_maker/definition.py:4:'
     ack_line += 'talea_rhythm_maker = rhythmmakertools.TaleaRhythmMaker('
@@ -40,3 +42,15 @@ def test_AbjadIDE_search_02():
     grep_line = 'tools/RhythmMaker.py:'
     grep_line += 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
     assert ack_line in transcript or grep_line in transcript
+
+
+def test_AbjadIDE_search_03():
+    r'''In library.
+    '''
+
+    if not abjad_ide._test_external_directory():
+        return
+
+    abjad_ide('lib sr RhythmMaker q')
+    transcript = abjad_ide.io.transcript
+    assert 'Enter search string> RhythmMaker' in transcript

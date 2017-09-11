@@ -194,9 +194,13 @@ class SargassoMeasureMaker(abjad.AbjadObject):
         #print division_tokens
 
         measures = []
+        leaf_maker = abjad.LeafMaker()
         for meter_token, division_token in zip(meter_tokens, division_tokens):
-            leaves = abjad.make_leaves_from_talea(
-                division_token, measure_division_denominator)
+            #leaves = abjad.make_leaves_from_talea(
+            #    division_token, measure_division_denominator)
+            denominator = measure_division_denominator
+            durations = [(_, denominator) for _ in division_token]
+            leaves = leaf_maker([0], durations)
             measure = abjad.Measure(
                 meter_token,
                 leaves,
@@ -232,16 +236,16 @@ class SargassoMeasureMaker(abjad.AbjadObject):
         Returns LilyPond file.
         '''
         measures = self()
-        staff = abjad.Staff(measures)
-        staff.context_name = 'RhythmicStaff'
+        staff = abjad.Staff(measures, context_name='RhythmicStaff')
         score = abjad.Score([staff])
-        illustration = abjad.make_basic_lilypond_file(score)
         measures = score._get_components(abjad.Measure)
         for measure in measures:
             beam = abjad.Beam()
-            abjad.attach(beam, [measure])
+            leaves = abjad.select(measure).by_leaf()
+            abjad.attach(beam, leaves)
         score.add_final_bar_line()
-        return illustration
+        lilypond_file = abjad.LilyPondFile.new(score)
+        return lilypond_file
 
     ### PRIVATE METHODS ###
 
