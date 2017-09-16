@@ -8,44 +8,39 @@ class Command(abjad.AbjadObject):
 
     ### CLASS VARIABLES ###
 
-    # TODO: pass in from AbjadIDE and remove
-    _allowable_sections = (
-        'back-home-quit',
-        'basic',
-        'builds',
-        'build-edit',
-        'build-generate',
-        'build-interpret',
-        'build-open',
-        'build-preliminary',
-        'clipboard',
-        'definition_file',
-        'display navigation',
-        'git',
-        'global files',
-        'illustrate_file',
-        'ly',
-        'ly & pdf',
-        'midi',
-        'pdf',
-        'navigation',
-        'scores',
-        'scripts',
-        'sibling navigation',
+    commands = (
         'star',
         'system',
+        'global files',
         'tests',
+        'clipboard',
+        'definition_file',
+        'illustrate_file',
+        'ly',
+        'pdf',
+        'ly & pdf',
+        'midi',
+        'build-preliminary',
+        'build-generate',
+        'build-edit',
+        'build-interpret',
+        'build-open',
+        'builds',
+        'scripts',
+        'basic',
+        'git',
         )
 
-    # TODO: pass in from AbjadIDE and remove
-    _navigation_section_names = (
-        'back-home-quit',
+    navigation = (
         'display navigation',
+        'scores',
         'comparison',
         'navigation',
-        'scores',
         'sibling navigation',
+        'back-home-quit',
         )
+
+    known_sections = commands + navigation
 
     ### INITIALIZER ###
 
@@ -77,7 +72,7 @@ class Command(abjad.AbjadObject):
         if scores is not None:
             scores = bool(scores)
         self.scores = scores
-        assert section in self._allowable_sections, repr(section)
+        assert section in self.known_sections, repr(section)
         self.section = section
 
     ### SPECIAL METHODS ###

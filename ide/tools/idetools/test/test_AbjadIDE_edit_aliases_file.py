@@ -12,7 +12,7 @@ def test_AbjadIDE_edit_aliases_file_01():
 
     abjad_ide('red~score mm tempi als q')
     transcript = abjad_ide.io.transcript
-    path = abjad_ide.io.configuration.aliases_file_path
+    path = abjad_ide.configuration.aliases_file_path
     assert f'Editing {path} ...' in transcript
 
 
@@ -25,5 +25,5 @@ def test_AbjadIDE_edit_aliases_file_02():
 
     abjad_ide('cdk als q')
     transcript = abjad_ide.io.transcript
-    path = abjad_ide.io.configuration.aliases_file_path
+    path = abjad_ide.configuration.aliases_file_path
     assert f'Editing {path} ...' in transcript

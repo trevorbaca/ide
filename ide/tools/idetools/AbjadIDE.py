@@ -2,14 +2,16 @@ import abjad
 import datetime
 import importlib
 import inspect
+import io
 import os
 import pathlib
 import platform
 import shutil
+import subprocess
 from ide.tools.idetools.Command import Command
 from ide.tools.idetools.Configuration import Configuration
 from ide.tools.idetools.Interaction import Interaction
-from ide.tools.idetools.IOManager import IOManager
+from ide.tools.idetools.IO import IO
 from ide.tools.idetools.Menu import Menu
 from ide.tools.idetools.MenuSection import MenuSection
 from ide.tools.idetools.Path import Path
@@ -79,7 +81,7 @@ class AbjadIDE(abjad.AbjadObject):
         if terminal_dimensions is None and not is_test:
             terminal_dimensions = self._get_terminal_dimensions()
         self._terminal_dimensions = terminal_dimensions
-        self._io = IOManager(terminal_dimensions=terminal_dimensions)
+        self._io = IO(terminal_dimensions=terminal_dimensions)
         self._check_test_scores_directory(is_example or is_test)
         self._cache_commands()
 
@@ -102,7 +104,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._manage_directory(scores)
         last_line = self.io.transcript.lines[-1]
         assert last_line == '', repr(last_line)
-        self.io.clear_terminal()
+        abjad.IOManager.clear_terminal()
 
     ### PRIVATE METHODS ###
 
@@ -182,6 +184,41 @@ class AbjadIDE(abjad.AbjadObject):
             height, width = 24, 80
         return height, width
 
+    def _interpret_file(self, path):
+        path = Path(path)
+        if not path.exists():
+            message = f'missing {path} ...'
+            self.display(message)
+            return False
+        if path.suffix == '.py':
+            command = f'python {path}'
+        elif path.suffix == '.ly':
+            command = f'lilypond -dno-point-and-click {path}'
+        else:
+            message = f'can not interpret {path}.'
+            raise Exception(message)
+        directory = path.parent
+        directory = abjad.TemporaryDirectoryChange(directory)
+        string_buffer = io.StringIO()
+        with directory, string_buffer:
+            process = subprocess.Popen(
+                command,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                bufsize=1,
+                )
+            for line in process.stdout:
+                line = line.decode('utf-8')
+                print(line, end='')
+                string_buffer.write(line)
+            process.wait()
+            stdout_lines = string_buffer.getvalue().splitlines()
+            stderr_lines = abjad.IOManager._read_from_pipe(process.stderr)
+            stderr_lines = stderr_lines.splitlines()
+        exit_code = process.returncode
+        return stdout_lines, stderr_lines, exit_code
+
     def _interpret_tex_file(self, tex):
         if not tex.is_file():
             self.io.display(f'can not find {tex.trim()} ...')
@@ -191,7 +228,30 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'removing {pdf.trim()} ...')
             pdf.unlink()
         self.io.display(f'interpreting {tex.trim()} ...')
-        self.io.interpret_tex_file(tex)
+        if not tex.is_file():
+            return
+        executables = abjad.IOManager.find_executable('xelatex')
+        executables = [Path(_) for _ in executables]
+        if not executables:
+            executable_name = 'pdflatex'
+            fancy_executable_name = 'LaTeX'
+        else:
+            executable_name = 'xelatex'
+            fancy_executable_name = 'XeTeX'
+        pdf_path = tex.parent / (str(tex.stem) + '.pdf')
+        log = self.configuration.latex_log_file_path
+        command = f'date > {log};'
+        command += f' {executable_name} -halt-on-error'
+        command += f' --jobname={tex.stem}'
+        command += f' -output-directory={tex.parent} {tex}'
+        command += f' >> {log} 2>&1'
+        command_called_twice = f'{command}; {command}'
+        with self.change(tex.parent):
+            abjad.IOManager.spawn_subprocess(command_called_twice)
+            for path in tex.parent.glob('*.aux'):
+                path.unlink()
+            for path in tex.parent.glob('*.log'):
+                path.unlink()
         if pdf.is_file():
             self.io.display(f'writing {pdf.trim()} ...')
         else:
@@ -236,7 +296,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(f'    {build.trim()}')
         for path in paths:
             self.io.display(f'    {path.trim()}')
-        if not self.io.confirm():
+        if not self.confirm():
             return
         assert not build.exists()
         build.mkdir()
@@ -281,11 +341,16 @@ class AbjadIDE(abjad.AbjadObject):
                 navigations[name] = command
         self._navigations = navigations
         sections = []
-        for name in entries_by_section:
+        pairs = [(_, 'commands') for _ in Command.commands]
+        pairs += [(_, 'navigation') for _ in Command.navigation]
+        for name, help in pairs:
+            if name not in entries_by_section:
+                continue
             entries = entries_by_section[name]
             section = MenuSection(
                 command=name,
                 entries=entries,
+                help=help,
                 )
             sections.append(section)
         return sections
@@ -319,7 +384,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         else:
             self.io.display(f'writing {target.trim()} ...')
-            if not self.io.confirm():
+            if not self.confirm():
                 return
         if directory.is_tools():
             if abjad.String(name).is_classfile_name():
@@ -335,7 +400,9 @@ class AbjadIDE(abjad.AbjadObject):
                 template = template.format(function_name=target.stem)
                 target.write_text(template)
         else:
-            self.io.write(target, '')
+            if not target.parent.exists():
+                target.parent.mkdir()
+            target.write_text('')
 
     def _make_material_ly(self, directory):
         assert directory.is_dir()
@@ -355,14 +422,14 @@ class AbjadIDE(abjad.AbjadObject):
         source_make = Path('boilerplate')
         source_make /= '__make_material_ly__.py'
         target_make = directory / '__make_material_ly__.py'
-        with self.io.cleanup([target_make]):
+        with self.cleanup([target_make]):
             target_make.remove()
             shutil.copyfile(str(source_make), str(target_make))
             self.io.display(f'interpreting {source.trim()} ...')
-            result = self.io.interpret_file(str(target_make))
+            result = self._interpret_file(str(target_make))
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self.io.display_errors(stderr_lines)
+                self.io.display(stderr_lines, raw=True)
                 return
             if not target.is_file():
                 self.io.display(f'could not make {target.trim()}.')
@@ -385,17 +452,17 @@ class AbjadIDE(abjad.AbjadObject):
         boilerplate = Path('boilerplate')
         source_make = boilerplate / '__make_material_pdf__.py'
         target_make = directory / '__make_material_pdf__.py'
-        with self.io.cleanup([target_make]):
+        with self.cleanup([target_make]):
             for path in (source, target):
                 if path.exists():
                     self.io.display(f'removing {path.trim()} ...')
                     path.remove()
             shutil.copyfile(str(source_make), str(target_make))
             self.io.display(f'interpreting {illustrate.trim()} ...')
-            result = self.io.interpret_file(target_make)
+            result = self._interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self.io.display_errors(stderr_lines)
+                self.io.display(stderr_lines, raw=True)
             if open_after:
                 self.io.display(f'opening {target.trim()} ...')
                 self.___open_file(str(target))
@@ -436,7 +503,7 @@ class AbjadIDE(abjad.AbjadObject):
         wrapper = scores._find_empty_wrapper()
         if wrapper is not None:
             self.io.display(f'found {wrapper}.')
-            if not self.io.confirm(f'populate {wrapper}?'):
+            if not self.confirm(f'populate {wrapper}?'):
                 return
         title = self.io.get('enter title')
         if self.is_navigation(title):
@@ -479,7 +546,7 @@ class AbjadIDE(abjad.AbjadObject):
         source_make = boilerplate / '__make_segment_ly__.py'
         target_make = directory / '__make_segment_ly__.py'
         target_make.remove()
-        with self.io.cleanup([target_make]):
+        with self.cleanup([target_make]):
             source = directory / '__illustrate__.py'
             target = directory / 'illustration.ly'
             if target.exists():
@@ -505,10 +572,10 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'removing {source.trim()} ...')
                 self.io.display(f'writing {source.trim()} ...')
             self.io.display(f'interpreting {source.trim()} ...')
-            result = self.io.interpret_file(target_make)
+            result = self._interpret_file(target_make)
             stdout_lines, stderr_lines, exit_code = result
             if exit_code:
-                self.io.display_errors(stderr_lines)
+                self.io.display(stderr_lines, raw=True)
                 return
             self.io.display(f'writing {target.trim()} ...')
 
@@ -550,10 +617,10 @@ class AbjadIDE(abjad.AbjadObject):
             previous_segment_metadata_import_statement=statement
             )
         maker.write_text(template)
-        result = self.io.interpret_file(maker)
+        result = self._interpret_file(maker)
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
-            self.io.display_errors(stderr_lines)
+            self.io.display(stderr_lines, raw=True)
             return exit_code
         log = abjad.abjad_configuration.lilypond_log_file_path
         log = Path(log)
@@ -607,10 +674,10 @@ class AbjadIDE(abjad.AbjadObject):
             previous_segment_metadata_import_statement=statement
             )
         illustrate.write_text(completed_template)
-        result = self.io.interpret_file(illustrate)
+        result = self._interpret_file(illustrate)
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
-            self.io.display_errors(stderr_lines)
+            self.io.display(stderr_lines, raw=True)
             return exit_code
         log = abjad.abjad_configuration.lilypond_log_file_path
         log = Path(log)
@@ -686,8 +753,10 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(response.string):
             pass
         elif response.string.startswith('!') and not response.string == '!!':
-            with self.io.change(directory):
-                self.io.invoke_shell(response.string[1:])
+            with self.change(directory):
+                statement = response.string[1:].strip()
+                self.io.display(f'calling shell on {statement!r} ...')
+                abjad.IOManager.spawn_subprocess(statement)
         elif response.string[0] in Path.address_characters:
             if isinstance(response.payload, Path):
                 path = response.payload
@@ -854,10 +923,10 @@ class AbjadIDE(abjad.AbjadObject):
             with abjad.FilesystemState(remove=[script_path]):
                 script_path.write_text(completed_template)
                 permissions_command = f'chmod 755 {script_path}'
-                self.io.spawn_subprocess(permissions_command)
+                abjad.IOManager.spawn_subprocess(permissions_command)
                 close_command = str(script_path)
-                self.io.spawn_subprocess(close_command)
-        self.io.spawn_subprocess(command)
+                abjad.IOManager.spawn_subprocess(close_command)
+        abjad.IOManager.spawn_subprocess(command)
 
     @staticmethod
     def _replace_in_file(file_path, old, new):
@@ -882,8 +951,8 @@ class AbjadIDE(abjad.AbjadObject):
         command = f'ajv replace {search_string!r} {replace_string!r} -Y'
         if complete_words:
             command += ' -W'
-        with self.io.change(directory):
-            lines = self.io.run_command(command)
+        with self.change(directory):
+            lines = abjad.IOManager.run_command(command)
             lines = [_.strip() for _ in lines if not _ == '']
             return lines
 
@@ -891,7 +960,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert path.exists()
         self.io.display(f'running doctest on {path.trim()} ...')
         command = f'ajv doctest -x {path}'
-        self.io.spawn_subprocess(command)
+        abjad.IOManager.spawn_subprocess(command)
 
     def _run_lilypond(self, ly):
         assert ly.exists()
@@ -903,7 +972,7 @@ class AbjadIDE(abjad.AbjadObject):
         backup_pdf = ly.with_suffix('._backup.pdf')
         if backup_pdf.exists():
             backup_pdf.unlink()
-        with self.io.change(directory), self.io.cleanup([backup_pdf]):
+        with self.change(directory), self.cleanup([backup_pdf]):
             if pdf.exists():
                 self.io.display(f'removing {pdf.trim()} ...')
                 shutil.move(str(pdf), str(backup_pdf))
@@ -923,7 +992,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert path.exists()
         self.io.display(f'running pytest on {path.trim()} ...')
         command = f'py.test -xrf {path}'
-        self.io.spawn_subprocess(command)
+        abjad.IOManager.spawn_subprocess(command)
 
     def _select_path(
         self,
@@ -1155,6 +1224,32 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
+    @staticmethod
+    def change(directory):
+        r'''Makes temporary directory change context manager.
+        '''
+        return abjad.TemporaryDirectoryChange(directory=directory)
+
+    @staticmethod
+    def cleanup(remove=None):
+        r'''Makes filesystem state context manager.
+        '''
+        return abjad.FilesystemState(remove=remove)
+
+    def confirm(self, message='ok?'):
+        r'''Confirms.
+
+        Returns true or false.
+        '''
+        result = self.io.get(message)
+        if isinstance(result, str):
+            if result == '':
+                return False
+            if 'yes'.startswith(result.lower()):
+                return True
+            if 'no'.startswith(result.lower()):
+                return False
+
     def is_navigation(self, argument):
         r'''Is true when `argument` is navigation.
 
@@ -1218,6 +1313,20 @@ class AbjadIDE(abjad.AbjadObject):
         self.interpret_score(directory)
 
     @Command(
+        '!',
+        directories=True,
+        external=True,
+        scores=True,
+        section='system',
+        )
+    def call_shell(self, directory):
+        r'''Calls shell.
+
+        Returns none.
+        '''
+        pass
+
+    @Command(
         'dfk',
         argument_name='directory',
         description='definition file - check',
@@ -1236,7 +1345,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'missing {definition.trim()} ...')
             return
         with abjad.Timer() as timer:
-            result = self.io.interpret_file(definition)
+            result = self._interpret_file(definition)
         stdout_lines, stderr_lines, exit_code = result
         self.io.display(stdout_lines)
         if exit_code:
@@ -1334,8 +1443,8 @@ class AbjadIDE(abjad.AbjadObject):
         section='system',
         scores=True,
         )
-    def display_action_command_help(self):
-        r'''Displays action command help.
+    def display_command_help(self):
+        r'''Displays command help.
 
         Returns none.
         '''
@@ -1349,8 +1458,8 @@ class AbjadIDE(abjad.AbjadObject):
         scores=True,
         section='display navigation',
         )
-    def display_navigation_command_help(self):
-        r'''Displays navigation command help.
+    def display_navigation_help(self):
+        r'''Displays navigation help.
 
         Returns none.
         '''
@@ -1438,7 +1547,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(name):
             return
         command = f'find {directory!s} -name {name}'
-        paths = self.io.run_command(command)
+        paths = abjad.IOManager.run_command(command)
         if not paths:
             self.io.display(f'missing {name!r} files ...')
         else:
@@ -1465,8 +1574,8 @@ class AbjadIDE(abjad.AbjadObject):
         command = rf'vim -c "grep {search_string!s} --type=python"'
         if self.is_test:
             return
-        with self.io.change(directory):
-            self.io.spawn_subprocess(command)
+        with self.change(directory):
+            abjad.IOManager.spawn_subprocess(command)
 
     @Command(
         'fce',
@@ -1892,13 +2001,13 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'copying {source.trim()} ...')
             target = directory / source.name
             if source != target:
-                if not self.io.confirm():
+                if not self.confirm():
                     return
         else:
             self.io.display(f'copying ...')
             for path in paths:
                 self.io.display(f'    {path.trim()}')
-            if not self.io.confirm():
+            if not self.confirm():
                 return
         for source in paths:
             if source.is_contents():
@@ -1927,7 +2036,7 @@ class AbjadIDE(abjad.AbjadObject):
                 if source.is_segment() and source.get_metadatum('name'):
                     name_metadatum = self.io.get('name metadatum')
                 self.io.display(f'writing {target.trim()} ...')
-                if not self.io.confirm():
+                if not self.confirm():
                     continue
             if source.is_file():
                 shutil.copyfile(str(source), str(target))
@@ -1981,16 +2090,16 @@ class AbjadIDE(abjad.AbjadObject):
         if not root:
             self.io.display(f'missing {directory.trim()} repository ...')
             return
-        with self.io.change(root):
+        with self.change(root):
             self.io.display(f'git commit {root} ...')
             if not root._has_pending_commit():
                 self.io.display(f'{root} ... nothing to commit.')
                 return
-            self.io.spawn_subprocess('git status .')
+            abjad.IOManager.spawn_subprocess('git status .')
             if self.is_test:
                 return
             command = f'git add -A {root}'
-            lines = self.io.run_command(command)
+            lines = abjad.IOManager.run_command(command)
             self.io.display(lines, raw=True)
             if commit_message is None:
                 commit_message = self.io.get('commit message')
@@ -1998,7 +2107,7 @@ class AbjadIDE(abjad.AbjadObject):
                     return
             command = f'git commit -m "{commit_message}" {root}'
             command += '; git push'
-            lines = self.io.run_command(command)
+            lines = abjad.IOManager.run_command(command)
             self.io.display(lines, raw=True)
 
     @Command(
@@ -2037,8 +2146,8 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory._get_repository_root():
             self.io.display(f'missing {directory.trim()} repository ...')
             return
-        with self.io.change(directory):
-            self.io.spawn_subprocess(f'git diff {directory}')
+        with self.change(directory):
+            abjad.IOManager.spawn_subprocess(f'git diff {directory}')
 
     @Command(
         'pull',
@@ -2057,16 +2166,16 @@ class AbjadIDE(abjad.AbjadObject):
         if not root:
             self.io.display(f'missing {directory.trim()} repository ...')
             return
-        with self.io.change(root):
+        with self.change(root):
             self.io.display(f'git pull {root} ...')
             if not self.is_test:
-                lines = self.io.run_command('git pull .')
+                lines = abjad.IOManager.run_command('git pull .')
                 if lines and 'Already up-to-date' in lines[-1]:
                     lines = lines[-1:]
                 self.io.display(lines)
                 command = 'git submodule foreach git pull origin master'
                 self.io.display(f'{command} ...')
-                lines = self.io.run_command(command)
+                lines = abjad.IOManager.run_command(command)
                 if lines and 'Already up-to-date' in lines[-1]:
                     lines = lines[-1:]
                 self.io.display(lines)
@@ -2104,10 +2213,10 @@ class AbjadIDE(abjad.AbjadObject):
         if not root:
             self.io.display(f'missing {directory.trim()} repository ...')
             return
-        with self.io.change(root):
+        with self.change(root):
             self.io.display(f'git push {root} ...')
             if not self.is_test:
-                self.io.spawn_subprocess('git push .')
+                abjad.IOManager.spawn_subprocess('git push .')
 
     @Command(
         'push*',
@@ -2142,13 +2251,13 @@ class AbjadIDE(abjad.AbjadObject):
         if not root:
             self.io.display(f'missing {directory.trim()} repository ...')
             return
-        with self.io.change(root):
+        with self.change(root):
             self.io.display(f'git status {root} ...')
-            self.io.spawn_subprocess('git status .')
+            abjad.IOManager.spawn_subprocess('git status .')
             self.io.display('')
             command = 'git submodule foreach git fetch'
             self.io.display(f'{command} ...')
-            self.io.spawn_subprocess(command)
+            abjad.IOManager.spawn_subprocess(command)
 
     @Command(
         'st*',
@@ -2580,20 +2689,6 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_file(target)
 
     @Command(
-        '!',
-        directories=True,
-        external=True,
-        scores=True,
-        section='system',
-        )
-    def invoke_shell(self, directory):
-        r'''Invokes shell.
-
-        Returns none.
-        '''
-        pass
-
-    @Command(
         'pdfm*',
         argument_name='directory',
         description='every pdf - make',
@@ -3006,7 +3101,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('Renaming ...')
         self.io.display(f' FROM: {source.trim()}')
         self.io.display(f'   TO: {target.trim()}')
-        if not self.io.confirm():
+        if not self.confirm():
             return
         shutil.move(str(source), str(target))
         if target.is_dir():
@@ -3047,7 +3142,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(replace_string):
             return
         complete_words = False
-        result = self.io.confirm('complete words only?')
+        result = self.confirm('complete words only?')
         if result:
             complete_words = True
         if directory == directory.scores:
@@ -3076,7 +3171,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        with self.io.change(directory):
+        with self.change(directory):
             self._run_doctest(directory)
 
     @Command(
@@ -3093,7 +3188,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        with self.io.change(directory):
+        with self.change(directory):
             self._run_pytest(directory)
 
     @Command(
@@ -3130,9 +3225,9 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        executables = self.io.find_executable('ack')
+        executables = abjad.IOManager.find_executable('ack')
         if not executables:
-            executables = self.io.find_executable('grep')
+            executables = abjad.IOManager.find_executable('grep')
         executables = [Path(_) for _ in executables]
         if not executables:
             self.io.display('can not find ack.')
@@ -3157,8 +3252,8 @@ class AbjadIDE(abjad.AbjadObject):
             command = rf'{executable!s} -r {search_string!r} *'
         if directory.wrapper is not None:
             directory = directory.wrapper
-        with self.io.change(directory):
-            lines = self.io.run_command(command)
+        with self.change(directory):
+            lines = abjad.IOManager.run_command(command)
             self.io.display(lines, raw=True)
 
     @Command(

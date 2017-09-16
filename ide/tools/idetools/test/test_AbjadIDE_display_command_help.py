@@ -10,15 +10,15 @@ def test_AbjadIDE_display_command_help_01():
     abjad_ide('red~score bb letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : builds : letter : action commands',
+        'Red Score (2017) : builds : letter : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -90,15 +90,15 @@ def test_AbjadIDE_display_command_help_02():
     abjad_ide('red~score bb ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : builds : action commands',
+        'Red Score (2017) : builds : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -142,15 +142,15 @@ def test_AbjadIDE_display_command_help_03():
     abjad_ide('red~score ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : action commands',
+        'Red Score (2017) : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -187,15 +187,15 @@ def test_AbjadIDE_display_command_help_04():
     abjad_ide('red~score dd ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : distribution : action commands',
+        'Red Score (2017) : distribution : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -240,15 +240,15 @@ def test_AbjadIDE_display_command_help_05():
     abjad_ide('lib ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Abjad IDE : library : action commands',
+        'Abjad IDE : library : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -288,15 +288,15 @@ def test_AbjadIDE_display_command_help_06():
     abjad_ide('red~score mm magic ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : materials : magic_numbers : action commands',
+        'Red Score (2017) : materials : magic_numbers : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -350,7 +350,7 @@ def test_AbjadIDE_display_command_help_07():
     abjad_ide('red~score mm ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : materials : action commands',
+        'Red Score (2017) : materials : commands',
         '',
         '    every definition file - check (dfk*)',
         '    every definition file - edit (df*)',
@@ -360,9 +360,9 @@ def test_AbjadIDE_display_command_help_07():
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -404,15 +404,15 @@ def test_AbjadIDE_display_command_help_08():
     abjad_ide('? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Abjad IDE : scores : action commands',
+        'Abjad IDE : scores : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -451,15 +451,15 @@ def test_AbjadIDE_display_command_help_09():
     abjad_ide('red~score gg A ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : segments : A : action commands',
+        'Red Score (2017) : segments : A : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -512,7 +512,7 @@ def test_AbjadIDE_display_command_help_10():
     abjad_ide('red~score gg ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : segments : action commands',
+        'Red Score (2017) : segments : commands',
         '',
         '    every definition file - check (dfk*)',
         '    every definition file - edit (df*)',
@@ -522,9 +522,9 @@ def test_AbjadIDE_display_command_help_10():
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -566,15 +566,15 @@ def test_AbjadIDE_display_command_help_11():
     abjad_ide('red~score yy ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : stylesheets : action commands',
+        'Red Score (2017) : stylesheets : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -616,15 +616,15 @@ def test_AbjadIDE_display_command_help_12():
     abjad_ide('red~score tt ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : test : action commands',
+        'Red Score (2017) : test : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -666,15 +666,15 @@ def test_AbjadIDE_display_command_help_13():
     abjad_ide('red~score oo ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : tools : action commands',
+        'Red Score (2017) : tools : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',
@@ -716,15 +716,15 @@ def test_AbjadIDE_display_command_help_14():
     abjad_ide('red ww ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     menu_ = [
-        'Red Score (2017) : wrapper : action commands',
+        'Red Score (2017) : wrapper : commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
+        '    call shell (!)',
         '    display command help (?)',
         '    force single column (!!)',
-        '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
         '',

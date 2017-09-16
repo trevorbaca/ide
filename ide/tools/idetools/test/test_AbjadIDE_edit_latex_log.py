@@ -12,7 +12,7 @@ def test_AbjadIDE_edit_latex_log_01():
 
     abjad_ide('lxg q')
     transcript = abjad_ide.io.transcript
-    path = abjad_ide.io.configuration.latex_log_file_path
+    path = abjad_ide.configuration.latex_log_file_path
     assert f'Editing {path} ...' in transcript
 
 
@@ -25,5 +25,5 @@ def test_AbjadIDE_edit_latex_log_02():
 
     abjad_ide('cdk lxg q')
     transcript = abjad_ide.io.transcript
-    path = abjad_ide.io.configuration.latex_log_file_path
+    path = abjad_ide.configuration.latex_log_file_path
     assert f'Editing {path} ...' in transcript

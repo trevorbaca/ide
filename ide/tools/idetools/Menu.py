@@ -1,5 +1,5 @@
 import abjad
-from ide.tools.idetools.IOManager import IOManager
+from ide.tools.idetools.IO import IO
 from ide.tools.idetools.MenuEntry import MenuEntry
 from ide.tools.idetools.MenuSection import MenuSection
 from ide.tools.idetools.Path import Path
@@ -14,7 +14,7 @@ class Menu(abjad.AbjadObject):
         ::
 
             >>> ide.Menu()
-            Menu(io=IOManager(), navigations={}, sections=[])
+            Menu(io=IO(), navigations={}, sections=[])
 
     '''
 
@@ -29,40 +29,6 @@ class Menu(abjad.AbjadObject):
         '_navigations',
         '_prompt',
         '_sections',
-        )
-
-    # TODO: move up to AbjadIDE
-    _action_command_section_order = (
-        'star',
-        'system',
-        'global files',
-        'tests',
-        'clipboard',
-        'definition_file',
-        'illustrate_file',
-        'ly',
-        'pdf',
-        'ly & pdf',
-        'midi',
-        'build-preliminary',
-        'build-generate',
-        'build-edit',
-        'build-interpret',
-        'build-open',
-        'builds',
-        'scripts',
-        'basic',
-        'git',
-        )
-
-    # TODO: move up to AbjadIDE
-    _navigation_command_section_order = (
-        'display navigation',
-        'scores',
-        'comparison',
-        'navigation',
-        'sibling navigation',
-        'back-home-quit',
         )
 
     left_margin_width = 6
@@ -83,7 +49,7 @@ class Menu(abjad.AbjadObject):
         self._aliases = aliases
         self._getter = getter
         self._header = header
-        self._io = io or IOManager()
+        self._io = io or IO()
         self._loop = loop
         self._navigations = navigations or {}
         self._prompt = prompt
@@ -106,7 +72,7 @@ class Menu(abjad.AbjadObject):
         if string == '!!':
             return self(force_single_column=True)
         elif string == '?':
-            return self(redraw='action')
+            return self(redraw='commands')
         elif string == ';':
             return self(redraw='navigation')
         elif string == '' and self.loop:
@@ -244,24 +210,6 @@ class Menu(abjad.AbjadObject):
                 string.append(entry)
             return string
 
-    def _sort_command_sections(self, command_type):
-        ordered_sections = []
-        sections = {}
-        for section in self.sections:
-            if section.command:
-                sections[section.command] = section
-        if command_type == 'navigation':
-            order = self._navigation_command_section_order
-        elif command_type == 'action':
-            order = self._action_command_section_order
-        else:
-            raise ValueError(repr(command_type))
-        for command in order:
-            section = sections.get(command)
-            if section is not None:
-                ordered_sections.append(section)
-        return ordered_sections
-
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -371,33 +319,22 @@ class Menu(abjad.AbjadObject):
             )
         return menu
 
-    def make_help_lines(self, command_type):
+    def make_help_lines(self, value):
         r'''Makes help lines.
 
         Returns list.
         '''
-        assert command_type in ('action', 'navigation'), repr(command_type)
         lines = []
-        sections = self._sort_command_sections(command_type=command_type)
-        for section in sections:
-            if not section.command:
-                continue
-            lines_ = section.make_lines(left_margin_width=4)
-            lines.extend(lines_)
+        for section in self:
+            if section.help == value:
+                lines_ = section.make_lines(left_margin_width=4)
+                lines.extend(lines_)
         lines = self._make_bicolumnar(
             lines,
             lines_above=2,
             break_only_at_blank_lines=True,
             )
-        assert lines[-1] == ''
-        header = self.header
-        assert isinstance(header, str), repr(header)
-        if command_type == 'action':
-            header = header + ' : action commands'
-        elif command_type == 'navigation':
-            header = header + ' : navigation commands'
-        else:
-            raise ValueError(repr(command_type))
+        header = self.header + f' : {value}'
         header = abjad.String(header).capitalize_start()
         lines[0:0] = [header, '']
         return lines
@@ -423,6 +360,7 @@ class Menu(abjad.AbjadObject):
                 not section.force_single_column):
                 lines_ = self._make_bicolumnar(lines_, len(lines))
             lines.extend(lines_)
+        assert lines[-1] == '', repr(lines)
         return lines
 
     def redraw(self, value, force_single_column=False):
@@ -432,11 +370,11 @@ class Menu(abjad.AbjadObject):
         '''
         if not value:
             return
-        self.io.clear_terminal()
+        abjad.IOManager.clear_terminal()
         if value is True:
             lines = self.make_lines(force_single_column=force_single_column)
         else:
-            lines = self.make_help_lines(command_type=value)
+            lines = self.make_help_lines(value=value)
         if self.io._terminal_dimensions:
             height, width = self.io._terminal_dimensions
             lines = [_[:width] for _ in lines]

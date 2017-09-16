@@ -14,6 +14,7 @@ class MenuSection(abjad.AbjadObject):
     __slots__ = (
         '_command',
         '_entries',
+        '_help',
         '_force_single_column',
         '_multiple',
         '_secondary',
@@ -28,6 +29,7 @@ class MenuSection(abjad.AbjadObject):
         command=None,
         entries=None,
         force_single_column=None,
+        help=None,
         multiple=None,
         secondary=None,
         ):
@@ -37,6 +39,7 @@ class MenuSection(abjad.AbjadObject):
         self._command = command
         self._entries = []
         self._force_single_column = force_single_column
+        self._help = help
         self._multiple = multiple
         self._secondary = secondary
         self._initialize_entries(entries)
@@ -102,6 +105,14 @@ class MenuSection(abjad.AbjadObject):
         Returns true or false.
         '''
         return self._force_single_column
+
+    @property
+    def help(self):
+        r'''Gets help section.
+
+        Returns `'command'`, `'navigation'` or none.
+        '''
+        return self._help
 
     @property
     def multiple(self):
