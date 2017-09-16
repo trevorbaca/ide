@@ -125,7 +125,10 @@ class IOManager(abjad.IOManager):
             print(f'{prompt}{string}')
         else:
             string = input(prompt)
-            if string and split_input and not string.startswith('!'):
+            if (string and
+                not string.isspace() and
+                split_input and
+                not string.startswith('!')):
                 parts = string.split()
                 string = parts[0]
                 pending_input = ' '.join(parts[1:])

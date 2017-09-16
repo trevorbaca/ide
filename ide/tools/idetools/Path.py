@@ -171,7 +171,7 @@ class Path(abjad.Path):
 
             ::
 
-                >>> path = abjad.Path(
+                >>> path = ide.Path(
                 ...     '/path/to/scores/my_score/my_score',
                 ...     scores='/path/to/scores',
                 ...     )
@@ -244,7 +244,7 @@ class Path(abjad.Path):
 
             ::
 
-                >>> path = abjad.Path('/path/to/location')
+                >>> path = ide.Path('/path/to/location')
                 >>> path.is_external()
                 True
 
@@ -340,6 +340,57 @@ class Path(abjad.Path):
     def smart_match(strings, pattern):
         r'''Matches `pattern` against `strings`.
 
+        ..  container:: example
+
+            ::
+
+                >>> strings = [
+                ...     'AcciaccaturaSpecifier.py',
+                ...     'AnchorCommand.py',
+                ...     'ArpeggiationSpacingSpecifier.py',
+                ...     'AttachCommand.py',
+                ...     'ChordalSpacingSpecifier.py',
+                ...     ]
+
+            ::
+
+                >>> ide.Path.smart_match(strings, 'A') is None
+                True
+
+            ::
+
+                >>> ide.Path.smart_match(strings, 'At')
+                'AttachCommand.py'
+
+            ::
+
+                >>> ide.Path.smart_match(strings, 'AtC')
+                'AttachCommand.py'
+
+            ::
+
+                >>> ide.Path.smart_match(strings, 'ASS')
+                'ArpeggiationSpacingSpecifier.py'
+
+            ::
+
+                >>> ide.Path.smart_match(strings, 'AC')
+                'AnchorCommand.py'
+
+            ::
+
+                >>> ide.Path.smart_match(strings, '.py')
+                'AcciaccaturaSpecifier.py'
+
+        ..  container:: example
+
+            Regression:
+
+            ::
+
+                >>> ide.Path.smart_match(strings, '||') is None
+                True
+
         Returns string or none.
         '''
         pattern = abjad.String(pattern)
@@ -352,24 +403,27 @@ class Path(abjad.Path):
                     return string
         if len(pattern) <= 1:
             return
+        strings = [abjad.String(_) for _ in strings]
         if not pattern.islower() or any(_.isdigit() for _ in pattern):
             pattern_words = pattern.delimit_words(separate_caps=True)
-            for string in strings:
-                if (string.startswith(pattern_words[0]) and
-                    string.match_word_starts(pattern_words)):
-                    return string
-            for string in strings:
-                if string.match_word_starts(pattern_words):
-                    return string
+            if pattern_words:
+                for string in strings:
+                    if (string.startswith(pattern_words[0]) and
+                        string.match_word_starts(pattern_words)):
+                        return string
+                for string in strings:
+                    if string.match_word_starts(pattern_words):
+                        return string
         if pattern.islower():
             pattern_characters = list(pattern)
-            for string in strings:
-                if (string.startswith(pattern_characters[0]) and
-                    string.match_word_starts(pattern_characters)):
-                    return string
-            for string in strings:
-                if string.match_word_starts(pattern_characters):
-                    return string
+            if pattern_characters:
+                for string in strings:
+                    if (string.startswith(pattern_characters[0]) and
+                        string.match_word_starts(pattern_characters)):
+                        return string
+                for string in strings:
+                    if string.match_word_starts(pattern_characters):
+                        return string
         if len(pattern) <= 2:
             return
         for string in strings:

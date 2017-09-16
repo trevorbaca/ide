@@ -43,3 +43,15 @@ def test_AbjadIDE_go_back_03():
         'Red Score (2017)',
         'Abjad IDE : scores',
         ]
+
+
+def test_AbjadIDE_go_back_04():
+    r'''Regression: back manages scores directory rather than quitting.
+    '''
+
+    abjad_ide('- q')
+    transcript = abjad_ide.io.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
+        'Abjad IDE : scores',
+        ]

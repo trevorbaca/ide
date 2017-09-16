@@ -746,8 +746,8 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'missing {path.trim()} ...')
         else:
             assert response.payload is None, repr(response)
-            self.io.display(f'unknown command {response.string!r} ...')
-            if self.is_test:
+            self.io.display(fr'unknown command {response.string!r} ...')
+            if self.is_test and self.is_test != 'allow_unknown_input':
                 raise Exception(response)
         self.io.display('')
         if response.string == 'q':
@@ -2182,6 +2182,8 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         if self.previous_directory:
             self._manage_directory(self.previous_directory)
+        else:
+            self._manage_directory(self.current_directory)
 
     @Command(
         'bb',
