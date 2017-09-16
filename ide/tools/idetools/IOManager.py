@@ -57,12 +57,14 @@ class IOManager(abjad.IOManager):
 
     ### PUBLIC METHODS ###
 
+    # TODO: move to AbjadIDE
     @staticmethod
     def change(directory):
         r'''Makes temporary directory change context manager.
         '''
         return abjad.TemporaryDirectoryChange(directory=directory)
 
+    # TODO: move to AbjadIDE
     @staticmethod
     def cleanup(remove=None):
         r'''Makes filesystem state context manager.
@@ -101,6 +103,7 @@ class IOManager(abjad.IOManager):
         for line in lines:
             print(line)
 
+    # TODO: remove
     def display_errors(self, lines):
         r'''Displays errors.
 
@@ -143,6 +146,7 @@ class IOManager(abjad.IOManager):
             self.transcript.append(['> ', ''])
             return abjad.String(string)
 
+    # TODO: move to AbjadIDE
     def interpret_file(self, path):
         r'''Invokes Python or LilyPond on `path`.
 
@@ -186,6 +190,7 @@ class IOManager(abjad.IOManager):
         exit_code = process.returncode
         return stdout_lines, stderr_lines, exit_code
 
+    # TODO: move to AbjadIDE
     def interpret_tex_file(self, tex):
         r'''Interprets TeX file.
 
@@ -219,6 +224,7 @@ class IOManager(abjad.IOManager):
             for path in tex.parent.glob('*.log'):
                 path.unlink()
 
+    # TODO: move to AbjadIDE
     def invoke_shell(self, statement):
         r'''Invokes shell.
 
@@ -235,6 +241,9 @@ class IOManager(abjad.IOManager):
         lines = lines or []
         lines = [_.strip() for _ in lines]
         self.display(lines, raw=True)
+        # TODO: replace with these two lines:
+        #statement = statement.strip()
+        #self.io.spawn_subprocess(statement)
 
     def pending_input(self, string):
         r'''Sets pending input.
@@ -243,6 +252,7 @@ class IOManager(abjad.IOManager):
         '''
         self._pending_input = string
 
+    # TODO: move to AbjadIDE
     def write(self, path, string):
         r'''Writes `string` to `path`.
 

@@ -1303,107 +1303,6 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'cp',
         argument_name='directory',
-        blacklist=('contents',),
-        directories=True,
-        external=True,
-        scores=True,
-        section='basic',
-        )
-    def copy(self, directory):
-        r'''Copies into `directory`.
-
-        Returns none.
-        '''
-        paths = self._select_path(
-            directory, 
-            infinitive='to copy',
-            multiple=True,
-            scores=True,
-            )
-        if self.is_navigation(paths):
-            return
-        if len(paths) == 1:
-            source = paths[0]
-            if source.is_contents():
-                source = source.wrapper
-            self.io.display(f'copying {source.trim()} ...')
-            target = directory / source.name
-            if source != target:
-                if not self.io.confirm():
-                    return
-        else:
-            self.io.display(f'copying ...')
-            for path in paths:
-                self.io.display(f'    {path.trim()}')
-            if not self.io.confirm():
-                return
-        for source in paths:
-            if source.is_contents():
-                source = source.wrapper
-            title = None
-            name_metadatum = None
-            target = directory / source.name
-            if source == target:
-                self.io.display(f'existing {target.trim()} ...')
-                if source.is_wrapper():
-                    title = self.io.get('enter title')
-                    if self.is_navigation(title):
-                        continue
-                    name = title
-                else:
-                    name = self.io.get('enter new name')
-                    if self.is_navigation(name):
-                        continue
-                name = source.parent.coerce_asset_name(
-                    name,
-                    suffix=source.suffix,
-                    )
-                target = target.with_name(name)
-                if source == target:
-                    continue
-                if source.is_segment() and source.get_metadatum('name'):
-                    name_metadatum = self.io.get('name metadatum')
-                self.io.display(f'writing {target.trim()} ...')
-                if not self.io.confirm():
-                    continue
-            if source.is_file():
-                shutil.copyfile(str(source), str(target))
-            elif source.is_dir():
-                shutil.copytree(str(source), str(target))
-            else:
-                raise ValueError(source)
-            if target.is_segment():
-                if name_metadatum:
-                    target.add_metadatum('name', name_metadatum)
-                else:
-                    target.remove_metadatum('name')
-            elif target.is_wrapper():
-                shutil.move(
-                    str(target.wrapper / source.name),
-                    str(target.contents),
-                    )
-                lines = self._replace_in_tree(
-                    target,
-                    source.name,
-                    target.name,
-                    complete_words=True,
-                    )
-                self.io.display(lines)
-                if title is not None:
-                    target.contents.add_metadatum('title', title)
-                    source_title = source.contents.get_metadatum('title')
-                    if source_title is not None:
-                        lines = self._replace_in_tree(
-                            target,
-                            source_title,
-                            title,
-                            complete_words=True,
-                            )
-                        self.io.display(lines)
-
-    @Command(
-        'pc',
-        argument_name='directory',
         directories=True,
         external=True,
         scores=True,
@@ -1706,7 +1605,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_file(directory / 'stylesheet.ily')
 
     @Command(
-        'pe',
+        'ce',
         argument_name='directory',
         directories=True,
         external=True,
@@ -1726,7 +1625,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(path.trim())
         self._clipboard[:] = []
 
-    # HERE
     @Command(
         '!!',
         directories=True,
@@ -1964,6 +1862,107 @@ class AbjadIDE(abjad.AbjadObject):
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
         self._copy_boilerplate(directory, 'score.tex', values=values)
+
+    @Command(
+        'get',
+        argument_name='directory',
+        blacklist=('contents',),
+        directories=True,
+        external=True,
+        scores=True,
+        section='basic',
+        )
+    def get(self, directory):
+        r'''Copies into `directory`.
+
+        Returns none.
+        '''
+        paths = self._select_path(
+            directory, 
+            infinitive='to get',
+            multiple=True,
+            scores=True,
+            )
+        if self.is_navigation(paths):
+            return
+        if len(paths) == 1:
+            source = paths[0]
+            if source.is_contents():
+                source = source.wrapper
+            self.io.display(f'copying {source.trim()} ...')
+            target = directory / source.name
+            if source != target:
+                if not self.io.confirm():
+                    return
+        else:
+            self.io.display(f'copying ...')
+            for path in paths:
+                self.io.display(f'    {path.trim()}')
+            if not self.io.confirm():
+                return
+        for source in paths:
+            if source.is_contents():
+                source = source.wrapper
+            title = None
+            name_metadatum = None
+            target = directory / source.name
+            if source == target:
+                self.io.display(f'existing {target.trim()} ...')
+                if source.is_wrapper():
+                    title = self.io.get('enter title')
+                    if self.is_navigation(title):
+                        continue
+                    name = title
+                else:
+                    name = self.io.get('enter new name')
+                    if self.is_navigation(name):
+                        continue
+                name = source.parent.coerce_asset_name(
+                    name,
+                    suffix=source.suffix,
+                    )
+                target = target.with_name(name)
+                if source == target:
+                    continue
+                if source.is_segment() and source.get_metadatum('name'):
+                    name_metadatum = self.io.get('name metadatum')
+                self.io.display(f'writing {target.trim()} ...')
+                if not self.io.confirm():
+                    continue
+            if source.is_file():
+                shutil.copyfile(str(source), str(target))
+            elif source.is_dir():
+                shutil.copytree(str(source), str(target))
+            else:
+                raise ValueError(source)
+            if target.is_segment():
+                if name_metadatum:
+                    target.add_metadatum('name', name_metadatum)
+                else:
+                    target.remove_metadatum('name')
+            elif target.is_wrapper():
+                shutil.move(
+                    str(target.wrapper / source.name),
+                    str(target.contents),
+                    )
+                lines = self._replace_in_tree(
+                    target,
+                    source.name,
+                    target.name,
+                    complete_words=True,
+                    )
+                self.io.display(lines)
+                if title is not None:
+                    target.contents.add_metadatum('title', title)
+                    source_title = source.contents.get_metadatum('title')
+                    if source_title is not None:
+                        lines = self._replace_in_tree(
+                            target,
+                            source_title,
+                            title,
+                            complete_words=True,
+                            )
+                        self.io.display(lines)
 
     @Command(
         'ci',
@@ -2865,7 +2864,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_file(directory / 'score.pdf')
 
     @Command(
-        'pv',
+        'cv',
         argument_name='directory',
         directories=True,
         external=True,
@@ -3163,7 +3162,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(lines, raw=True)
 
     @Command(
-        'ps',
+        'cs',
         argument_name='directory',
         directories=True,
         external=True,

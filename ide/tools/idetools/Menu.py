@@ -151,7 +151,12 @@ class Menu(abjad.AbjadObject):
             result = string
         return result
 
-    def _make_bicolumnar(self, lines, break_only_at_blank_lines=False):
+    def _make_bicolumnar(
+        self,
+        lines,
+        lines_above,
+        break_only_at_blank_lines=False,
+        ):
         if lines and lines[-1] != '':
             lines.append('')
         dimensions = self.io._terminal_dimensions
@@ -161,7 +166,7 @@ class Menu(abjad.AbjadObject):
             return lines
         lines = [_.rstrip() for _ in lines]
         height, width = dimensions
-        if len(lines) < height - 10:
+        if len(lines) < height - lines_above:
             return lines
         midpoint = int(len(lines) / 2)
         if break_only_at_blank_lines:
@@ -379,7 +384,11 @@ class Menu(abjad.AbjadObject):
                 continue
             lines_ = section.make_lines(left_margin_width=4)
             lines.extend(lines_)
-        lines = self._make_bicolumnar(lines, break_only_at_blank_lines=True)
+        lines = self._make_bicolumnar(
+            lines,
+            lines_above=2,
+            break_only_at_blank_lines=True,
+            )
         assert lines[-1] == ''
         header = self.header
         assert isinstance(header, str), repr(header)
@@ -412,7 +421,7 @@ class Menu(abjad.AbjadObject):
             if (not section.secondary and
                 not force_single_column and
                 not section.force_single_column):
-                lines_ = self._make_bicolumnar(lines_)
+                lines_ = self._make_bicolumnar(lines_, len(lines))
             lines.extend(lines_)
         return lines
 

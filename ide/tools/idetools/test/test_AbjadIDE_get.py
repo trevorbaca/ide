@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_copy_01():
+def test_AbjadIDE_get_01():
     r'''Into build directory. Directory is empty.
     '''
 
@@ -13,11 +13,11 @@ def test_AbjadIDE_copy_01():
         target = ide.Path('blue_score').builds / 'letter' / 'front-cover.tex'
         target.remove()
 
-        abjad_ide(f'Blue %letter cp {source.trim()} y q')
+        abjad_ide(f'Blue %letter get {source.trim()} y q')
         assert target.is_file()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : builds : letter (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
@@ -37,11 +37,11 @@ def test_AbjadIDE_copy_01():
         target_3 = target_1.with_name('music.ly')
         target_3.remove()
 
-        abjad_ide(f'Blue %letter cp 2-3,1 y q')
+        abjad_ide(f'Blue %letter get 2-3,1 y q')
         assert target.is_file()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : builds : letter (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert '> 2-3,1' in transcript
         assert 'Copying ...' in transcript
@@ -51,7 +51,7 @@ def test_AbjadIDE_copy_01():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_02():
+def test_AbjadIDE_get_02():
     r'''Into distribution directory. Directory is empty.
     '''
 
@@ -61,18 +61,18 @@ def test_AbjadIDE_copy_02():
         target = ide.Path('blue_score').distribution / 'red-score.pdf'
         target.remove()
 
-        abjad_ide(f'Blue dd cp {source.trim()} y q')
+        abjad_ide(f'Blue dd get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : distribution (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_03():
+def test_AbjadIDE_get_03():
     r'''Into etc directory. Directory is empty.
     '''
 
@@ -82,17 +82,17 @@ def test_AbjadIDE_copy_03():
         target = ide.Path('blue_score').etc / 'notes.txt'
         target.remove()
 
-        abjad_ide(f'Blue ee cp {source.trim()} y q')
+        abjad_ide(f'Blue ee get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : etc (empty) - select files to copy:'
+        header = 'Blue Score (2017) : etc (empty) - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_04():
+def test_AbjadIDE_get_04():
     r'''In external directory.
     '''
 
@@ -106,10 +106,10 @@ def test_AbjadIDE_copy_04():
         target = source.with_name('NewMatrix.py')
         target.remove()
 
-        abjad_ide(f'lib cp Matrix.py NewMatrix.py y q')
+        abjad_ide(f'lib get Matrix.py NewMatrix.py y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f'Select assets to copy> Matrix.py' in transcript
+        assert f'Select assets to get> Matrix.py' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert f'Existing {source.trim()} ...' in transcript
         assert 'Enter new name> NewMatrix.py' in transcript
@@ -117,7 +117,7 @@ def test_AbjadIDE_copy_04():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_05():
+def test_AbjadIDE_get_05():
     r'''Into material directory.
     '''
 
@@ -129,18 +129,18 @@ def test_AbjadIDE_copy_05():
         target = target.materials / 'staccati' / 'definition.py'
         target.remove()
 
-        abjad_ide(f'Blue mm staccati cp {source.trim()} y q')
+        abjad_ide(f'Blue mm staccati get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : materials : staccati (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_06():
+def test_AbjadIDE_get_06():
     r'''Into materials directory.
     '''
 
@@ -150,17 +150,17 @@ def test_AbjadIDE_copy_06():
         target = ide.Path('blue_score').materials / 'magic_numbers'
         target.remove()
 
-        abjad_ide(f'Blue mm cp red_score {source.trim()} y q')
+        abjad_ide(f'Blue mm get red_score {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : materials - select packages to copy:'
+        header = 'Blue Score (2017) : materials - select packages to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_07():
+def test_AbjadIDE_get_07():
     r'''Into scores directory.
     '''
 
@@ -170,10 +170,10 @@ def test_AbjadIDE_copy_07():
         target = source.with_name('green_score')
         target.remove()
 
-        abjad_ide('cp Red~Score Green~Score y q')
+        abjad_ide('get Red~Score Green~Score y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert 'Select packages to copy> Red Score' in transcript
+        assert 'Select packages to get> Red Score' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert f'Existing {source.trim()} ...' in transcript
         assert 'Enter title> Green Score' in transcript 
@@ -182,7 +182,7 @@ def test_AbjadIDE_copy_07():
         assert "Replacing 'Red Score' with 'Green Score' ..." in transcript
 
 
-def test_AbjadIDE_copy_08():
+def test_AbjadIDE_get_08():
     r'''Into segment directory.
     '''
 
@@ -194,18 +194,18 @@ def test_AbjadIDE_copy_08():
         target = target.segments / 'segment_01' / 'definition.py'
         target.remove()
 
-        abjad_ide(f'Blue gg segment_01 cp {source.trim()} y q')
+        abjad_ide(f'Blue gg segment_01 get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : segments : segment_01 (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_09():
+def test_AbjadIDE_get_09():
     r'''Into segments directory from other score.
     '''
 
@@ -215,16 +215,16 @@ def test_AbjadIDE_copy_09():
         target = ide.Path('blue_score').segments / 'segment_03'
         target.remove()
 
-        abjad_ide(f'Blue gg cp red_score {source.trim()} y q')
+        abjad_ide(f'Blue gg get red_score {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : segments - select packages to copy:'
+        header = 'Blue Score (2017) : segments - select packages to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_10():
+def test_AbjadIDE_get_10():
     r'''Into segments directory from same score.
     '''
 
@@ -233,10 +233,10 @@ def test_AbjadIDE_copy_10():
         assert source.is_dir()
         target = source.with_name('segment_04')
 
-        abjad_ide(f'Red gg cp C segment~04 D y q')
+        abjad_ide(f'Red gg get C segment~04 D y q')
         transcript = abjad_ide.io.transcript
         assert target.is_dir()
-        assert 'Select packages to copy> C'
+        assert 'Select packages to get> C'
         assert f'Copying {source.trim()} ...' in transcript
         assert f'Existing {source.trim()} ...' in transcript
         assert 'Enter new name> segment 04' in transcript
@@ -245,7 +245,7 @@ def test_AbjadIDE_copy_10():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_11():
+def test_AbjadIDE_get_11():
     r'''Into stylesheets directory. Directory is empty.
     '''
 
@@ -255,18 +255,18 @@ def test_AbjadIDE_copy_11():
         target = ide.Path('blue_score').stylesheets / 'stylesheet.ily'
         target.remove()
 
-        abjad_ide(f'Blue yy cp {source.trim()} y q')
+        abjad_ide(f'Blue yy get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = 'Blue Score (2017) : stylesheets (empty)'
-        header += ' - select files to copy:'
+        header += ' - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_12():
+def test_AbjadIDE_get_12():
     r'''Into test directory. Directory is empty.
     '''
 
@@ -276,17 +276,17 @@ def test_AbjadIDE_copy_12():
         target = ide.Path('blue_score').test / 'test_materials.py'
         target.remove()
 
-        abjad_ide(f'Blue tt cp {source.trim()} y q')
+        abjad_ide(f'Blue tt get {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : test (empty) - select files to copy:'
+        header = 'Blue Score (2017) : test (empty) - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_copy_13():
+def test_AbjadIDE_get_13():
     r'''Into tools directory.
     '''
 
@@ -296,10 +296,10 @@ def test_AbjadIDE_copy_13():
         target = ide.Path('blue_score').tools / 'ScoreTemplate.py'
         target.remove()
 
-        abjad_ide(f'Blue oo cp red_score {source.trim()} y q')
+        abjad_ide(f'Blue oo get red_score {source.trim()} y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : tools - select files to copy:'
+        header = 'Blue Score (2017) : tools - select files to get:'
         assert header in transcript
         assert f'> {source.trim()}' in transcript
         assert f'Copying {source.trim()} ...' in transcript
