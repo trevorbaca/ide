@@ -22,6 +22,7 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -59,6 +60,7 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -96,6 +98,7 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -130,6 +133,7 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -152,6 +156,7 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -189,6 +194,7 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -226,6 +232,7 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):
@@ -260,6 +267,7 @@ def test_AbjadIDE_display_navigation_command_help_08():
         '',
         '    back (-)',
         '    quit (q)',
+        '    up (..)',
         '',
         ]
     for line, line_ in zip(block, block_):

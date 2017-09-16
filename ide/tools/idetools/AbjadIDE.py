@@ -257,7 +257,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _make_command_sections(self, directory):
         commands = []
-        for command in self._commands.values():
+        for command in self.commands.values():
             if directory.is_external() and command.external:
                 commands.append(command)
             elif directory.is_scores() and command.scores:
@@ -671,8 +671,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'missing {directory.trim()} ...')
             return
         assert directory.is_dir(), repr(directory)
-        if not self._current_directory == directory:
-            self._previous_directory = self._current_directory
+        if not self.current_directory == directory:
+            self._previous_directory = self.current_directory
             self._current_directory = directory
         sections = self._make_command_sections(directory)
         menu = Menu.from_directory(
@@ -722,10 +722,10 @@ class AbjadIDE(abjad.AbjadObject):
                 if path.is_package():
                     path /= 'illustration.pdf'
                 self._open_file(path)
-        elif response.payload in self._commands:
-            command = self._commands[response.payload]
+        elif response.payload in self.commands:
+            command = self.commands[response.payload]
             if command.argument_name == 'directory':
-                command(self._current_directory)
+                command(self.current_directory)
             else:
                 command()
         elif (isinstance(response.payload, Path) or
@@ -752,18 +752,18 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('')
         if response.string == 'q':
             return
-        elif self.is_navigating():
-            string = self._navigation
+        elif self.navigation is not None:
+            string = self.navigation
             self._navigation = None
-            if string in self._commands:
-                command = self._commands[string]
+            if string in self.commands:
+                command = self.commands[string]
                 if command.argument_name == 'directory':
-                    command(self._current_directory)
+                    command(self.current_directory)
                 else:
                     command()
         else:
             redraw = response.string is None
-            self._manage_directory(self._current_directory, redraw=redraw)
+            self._manage_directory(self.current_directory, redraw=redraw)
 
     def _match_alias(self, directory, string):
         if not self.aliases:
@@ -832,7 +832,7 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             command = f'open {path}'
         command = command + line_number_string
-        if self._is_test:
+        if self.is_test:
             return
         if isinstance(path, list):
             path_suffix = path[0].suffix
@@ -1074,6 +1074,30 @@ class AbjadIDE(abjad.AbjadObject):
         return self._aliases
 
     @property
+    def clipboard(self):
+        r'''Gets clipboard.
+
+        Returns list.
+        '''
+        return self._clipboard
+
+    @property
+    def commands(self):
+        r'''Gets commands.
+
+        Returns list.
+        '''
+        return self._commands
+
+    @property
+    def current_directory(self):
+        r'''Gets current directory.
+
+        Returns list.
+        '''
+        return self._current_directory
+
+    @property
     def io(self):
         r'''Gets IO manager.
 
@@ -1098,12 +1122,28 @@ class AbjadIDE(abjad.AbjadObject):
         return self._is_test
 
     @property
+    def navigation(self):
+        r'''Gets current navigation command.
+
+        Returns string.
+        '''
+        return self._navigation
+
+    @property
     def navigations(self):
-        r'''Gets current navigation context.
+        r'''Gets all navigation commands.
 
         Returns dictionary.
         '''
         return self._navigations
+
+    @property
+    def previous_directory(self):
+        r'''Gets previous directory.
+
+        Returns list.
+        '''
+        return self._previous_directory
 
     @property
     def terminal_dimensions(self):
@@ -1114,13 +1154,6 @@ class AbjadIDE(abjad.AbjadObject):
         return self._terminal_dimensions
 
     ### PUBLIC METHODS ###
-
-    def is_navigating(self):
-        r'''Is true when user is navigating.
-
-        Returns true or false.
-        '''
-        return self._navigation is not None
 
     def is_navigation(self, argument):
         r'''Is true when `argument` is navigation.
@@ -1392,7 +1425,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('copying to clipboard ...')
         for path in paths:
             self.io.display(path.trim(), raw=True)
-            self._clipboard.append(path)
+            self.clipboard.append(path)
 
     @Command(
         '?',
@@ -1683,11 +1716,11 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if not bool(self._clipboard):
+        if not bool(self.clipboard):
             self.io.display('clipboard is empty ...')
             return
         self.io.display('emptying clipboard ...')
-        for path in self._clipboard[:]:
+        for path in self.clipboard:
             self.io.display(path.trim())
         self._clipboard[:] = []
 
@@ -2130,8 +2163,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if self._previous_directory:
-            self._manage_directory(self._previous_directory)
+        if self.previous_directory:
+            self._manage_directory(self.previous_directory)
 
     @Command(
         'bb',
@@ -2353,6 +2386,22 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path()
         self._manage_directory(directory.wrapper)
+
+    @Command(
+        '..',
+        description='up',
+        directories=True,
+        external=True,
+        scores=True,
+        section='back-home-quit',
+        )
+    def go_up(self):
+        r'''Goes up.
+
+        Returns none.
+        '''
+        if self.current_directory:
+            self._manage_directory(self.current_directory.parent)
 
     @Command(
         'bci',
@@ -2809,11 +2858,11 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if not bool(self._clipboard):
+        if not bool(self.clipboard):
             self.io.display('showing empty clipboard ...')
             return
         self.io.display('pasting from clipboard ...')
-        for i, source in enumerate(self._clipboard[:]):
+        for i, source in enumerate(self.clipboard[:]):
             self.io.display(f'    {source.trim()} ...')
             target = directory / source.name
             self.io.display(f'    {target.trim()} ...')
@@ -2834,7 +2883,7 @@ class AbjadIDE(abjad.AbjadObject):
                 shutil.copytree(str(source), str(target))
             else:
                 shutil.copy(str(source), str(target))
-            if i < len(self._clipboard) - 1:
+            if i < len(self.clipboard) - 1:
                 self.io.display('')
 
     @Command(
@@ -3107,11 +3156,11 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if not bool(self._clipboard):
+        if not bool(self.clipboard):
             self.io.display('showing empty clipboard ...')
             return
         self.io.display('showing clipboard ...')
-        for path in self._clipboard[:]:
+        for path in self.clipboard:
             self.io.display(path.trim(), raw=True)
 
 #    @Command(
