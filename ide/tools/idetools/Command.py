@@ -8,6 +8,7 @@ class Command(abjad.AbjadObject):
 
     ### CLASS VARIABLES ###
 
+    # TODO: pass in from AbjadIDE and remove
     _allowable_sections = (
         'back-home-quit',
         'basic',
@@ -36,6 +37,7 @@ class Command(abjad.AbjadObject):
         'tests',
         )
 
+    # TODO: pass in from AbjadIDE and remove
     _navigation_section_names = (
         'back-home-quit',
         'display navigation',

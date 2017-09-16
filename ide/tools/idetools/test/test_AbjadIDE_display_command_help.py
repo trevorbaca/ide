@@ -3,20 +3,21 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_display_action_command_help_01():
+def test_AbjadIDE_display_command_help_01():
     r'''In build directory.
     '''
 
     abjad_ide('red~score bb letter ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : builds : letter : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -78,24 +79,25 @@ def test_AbjadIDE_display_action_command_help_01():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_02():
+def test_AbjadIDE_display_command_help_02():
     r'''In builds directory.
     '''
 
     abjad_ide('red~score bb ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : builds : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -129,24 +131,25 @@ def test_AbjadIDE_display_action_command_help_02():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_03():
+def test_AbjadIDE_display_command_help_03():
     r'''In contents directory.
     '''
 
     abjad_ide('red~score ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -173,24 +176,25 @@ def test_AbjadIDE_display_action_command_help_03():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_04():
+def test_AbjadIDE_display_command_help_04():
     r'''In distribution directory.
     '''
 
     abjad_ide('red~score dd ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : distribution : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -222,11 +226,11 @@ def test_AbjadIDE_display_action_command_help_04():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_05():
+def test_AbjadIDE_display_command_help_05():
     r'''In library.
     '''
 
@@ -234,15 +238,16 @@ def test_AbjadIDE_display_action_command_help_05():
         return
 
     abjad_ide('lib ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Abjad IDE : library : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -272,24 +277,25 @@ def test_AbjadIDE_display_action_command_help_05():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_06():
+def test_AbjadIDE_display_command_help_06():
     r'''In material directory.
     '''
 
     abjad_ide('red~score mm magic ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : materials : magic_numbers : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -333,17 +339,17 @@ def test_AbjadIDE_display_action_command_help_06():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_07():
+def test_AbjadIDE_display_command_help_07():
     r'''In materials directory.
     '''
 
     abjad_ide('red~score mm ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : materials : action commands',
         '',
         '    every definition file - check (dfk*)',
@@ -354,7 +360,8 @@ def test_AbjadIDE_display_action_command_help_07():
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -386,24 +393,25 @@ def test_AbjadIDE_display_action_command_help_07():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_08():
+def test_AbjadIDE_display_command_help_08():
     r'''In scores directory.
     '''
 
     abjad_ide('? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Abjad IDE : scores : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -432,24 +440,25 @@ def test_AbjadIDE_display_action_command_help_08():
         '    every package - git status (st*)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_09():
+def test_AbjadIDE_display_command_help_09():
     r'''In segment directory.
     '''
 
     abjad_ide('red~score gg A ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : segments : A : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -492,17 +501,17 @@ def test_AbjadIDE_display_action_command_help_09():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_10():
+def test_AbjadIDE_display_command_help_10():
     r'''In segments directory.
     '''
 
     abjad_ide('red~score gg ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : segments : action commands',
         '',
         '    every definition file - check (dfk*)',
@@ -513,7 +522,8 @@ def test_AbjadIDE_display_action_command_help_10():
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -545,24 +555,25 @@ def test_AbjadIDE_display_action_command_help_10():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_11():
+def test_AbjadIDE_display_command_help_11():
     r'''In stylesheets directory.
     '''
 
     abjad_ide('red~score yy ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : stylesheets : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -594,24 +605,25 @@ def test_AbjadIDE_display_action_command_help_11():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_12():
+def test_AbjadIDE_display_command_help_12():
     r'''In test directory.
     '''
 
     abjad_ide('red~score tt ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : test : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -643,24 +655,25 @@ def test_AbjadIDE_display_action_command_help_12():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_13():
+def test_AbjadIDE_display_command_help_13():
     r'''In tools directory.
     '''
 
     abjad_ide('red~score oo ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : tools : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -692,24 +705,25 @@ def test_AbjadIDE_display_action_command_help_13():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_action_command_help_14():
+def test_AbjadIDE_display_command_help_14():
     r'''In wrapper directory.
     '''
 
     abjad_ide('red ww ? q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : wrapper : action commands',
         '',
         '    every file - edit (ff*)',
         '    every pdf - open (pdf*)',
         '    every string - edit (ee*)',
         '',
-        '    display action command help (?)',
+        '    display command help (?)',
+        '    force single column (!!)',
         '    invoke shell (!)',
         '    replace (rp)',
         '    search (sr)',
@@ -741,5 +755,5 @@ def test_AbjadIDE_display_action_command_help_14():
         '    git - status (st)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_

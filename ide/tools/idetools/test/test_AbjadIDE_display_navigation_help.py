@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_display_navigation_command_help_01():
+def test_AbjadIDE_display_navigation_help_01():
     r'''In library.
     '''
 
@@ -11,11 +11,11 @@ def test_AbjadIDE_display_navigation_command_help_01():
         return
 
     abjad_ide('lib ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Abjad IDE : library : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -25,20 +25,20 @@ def test_AbjadIDE_display_navigation_command_help_01():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_02():
+def test_AbjadIDE_display_navigation_help_02():
     r'''In material directory.
     '''
 
     abjad_ide('red~score mm magic ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : materials : magic_numbers : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -63,20 +63,20 @@ def test_AbjadIDE_display_navigation_command_help_02():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_03():
+def test_AbjadIDE_display_navigation_help_03():
     r'''In materials directory.
     '''
 
     abjad_ide('red~score mm ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : materials : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -101,20 +101,20 @@ def test_AbjadIDE_display_navigation_command_help_03():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_04():
+def test_AbjadIDE_display_navigation_help_04():
     r'''In score directory.
     '''
 
     abjad_ide('red~score ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -136,20 +136,20 @@ def test_AbjadIDE_display_navigation_command_help_04():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_05():
+def test_AbjadIDE_display_navigation_help_05():
     r'''In scores directory.
     '''
 
     abjad_ide('; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Abjad IDE : scores : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -159,20 +159,20 @@ def test_AbjadIDE_display_navigation_command_help_05():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_06():
+def test_AbjadIDE_display_navigation_help_06():
     r'''In segment directory.
     '''
 
     abjad_ide('red~score gg A ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : segments : A : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -197,20 +197,20 @@ def test_AbjadIDE_display_navigation_command_help_06():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_07():
+def test_AbjadIDE_display_navigation_help_07():
     r'''In segments directory.
     '''
 
     abjad_ide('red~score gg ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : segments : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -235,20 +235,20 @@ def test_AbjadIDE_display_navigation_command_help_07():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_
 
 
-def test_AbjadIDE_display_navigation_command_help_08():
+def test_AbjadIDE_display_navigation_help_08():
     r'''In stylesheets directory.
     '''
 
     abjad_ide('red~score yy ; q')
-    block = abjad_ide.io.transcript.menus[-1]
-    block_ = [
+    menu = abjad_ide.io.transcript.menus[-1]
+    menu_ = [
         'Red Score (2017) : stylesheets : navigation commands',
         '',
-        '    display navigation command help (;)',
+        '    display navigation help (;)',
         '',
         '    go to library (lib)',
         '    go to scores directory (ss)',
@@ -270,5 +270,5 @@ def test_AbjadIDE_display_navigation_command_help_08():
         '    up (..)',
         '',
         ]
-    for line, line_ in zip(block, block_):
+    for line, line_ in zip(menu, menu_):
         assert line == line_

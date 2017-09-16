@@ -685,7 +685,7 @@ class AbjadIDE(abjad.AbjadObject):
         response = menu(redraw=redraw)
         if self.is_navigation(response.string):
             pass
-        elif response.string.startswith('!'):
+        elif response.string.startswith('!') and not response.string == '!!':
             with self.io.change(directory):
                 self.io.invoke_shell(response.string[1:])
         elif response.string[0] in Path.address_characters:
@@ -1429,6 +1429,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         '?',
+        description='display command help',
         directories=True,
         external=True,
         section='system',
@@ -1443,6 +1444,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         ';',
+        description='display navigation help',
         directories=True,
         external=True,
         scores=True,
@@ -1723,6 +1725,21 @@ class AbjadIDE(abjad.AbjadObject):
         for path in self.clipboard:
             self.io.display(path.trim())
         self._clipboard[:] = []
+
+    # HERE
+    @Command(
+        '!!',
+        directories=True,
+        external=True,
+        section='system',
+        scores=True,
+        )
+    def force_single_column(self):
+        r'''Forces single-column display.
+
+        Returns none.
+        '''
+        pass
 
     @Command(
         'bcg',

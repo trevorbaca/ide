@@ -91,19 +91,21 @@ class Menu(abjad.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __call__(self, string=None, redraw=True):
+    def __call__(self, string=None, redraw=True, force_single_column=False):
         r'''Calls menu on `string`.
 
         Returns response.
         '''
         if string is not None:
             self.io.pending_input(string)
-        self.redraw(redraw)
+        self.redraw(redraw, force_single_column=force_single_column)
         string = self.io.get(
             prompt=self.prompt,
             split_input=not self.getter,
             )
-        if string == '?':
+        if string == '!!':
+            return self(force_single_column=True)
+        elif string == '?':
             return self(redraw='action')
         elif string == ';':
             return self(redraw='navigation')
@@ -391,7 +393,7 @@ class Menu(abjad.AbjadObject):
         lines[0:0] = [header, '']
         return lines
 
-    def make_lines(self):
+    def make_lines(self, force_single_column=False):
         r'''Makes lines.
 
         Returns list.
@@ -407,12 +409,14 @@ class Menu(abjad.AbjadObject):
             if section.command:
                 continue
             lines_ = section.make_lines(self.left_margin_width)
-            if not section.secondary and not section.force_single_column:
+            if (not section.secondary and
+                not force_single_column and
+                not section.force_single_column):
                 lines_ = self._make_bicolumnar(lines_)
             lines.extend(lines_)
         return lines
 
-    def redraw(self, value):
+    def redraw(self, value, force_single_column=False):
         r'''Redraws menu.
 
         Returns none.
@@ -421,7 +425,7 @@ class Menu(abjad.AbjadObject):
             return
         self.io.clear_terminal()
         if value is True:
-            lines = self.make_lines()
+            lines = self.make_lines(force_single_column=force_single_column)
         else:
             lines = self.make_help_lines(command_type=value)
         if self.io._terminal_dimensions:
