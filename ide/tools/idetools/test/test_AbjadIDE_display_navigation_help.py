@@ -7,7 +7,7 @@ def test_AbjadIDE_display_navigation_help_01():
     r'''In library.
     '''
 
-    if not abjad.abjad_configuration.composer_library:
+    if not abjad.abjad_configuration.composer_library_tools:
         return
 
     abjad_ide('lib ; q')

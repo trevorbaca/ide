@@ -178,7 +178,7 @@ def test_AbjadIDE_rename_08():
     r'''In library.
     '''
 
-    if not abjad.abjad_configuration.composer_library:
+    if not abjad.abjad_configuration.composer_library_tools:
         return
 
     directory = ide.Path(abjad.abjad_configuration.composer_library_tools)

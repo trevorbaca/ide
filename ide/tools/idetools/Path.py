@@ -49,6 +49,7 @@ class Path(abjad.Path):
 
     ### PRIVATE METHODS ###
 
+    # TODO: move to AbjadIDE
     def _collect_segment_lys(self):
         entries = sorted(self.segments.iterdir())
         names = [_.name for _ in entries]
@@ -193,6 +194,7 @@ class Path(abjad.Path):
 
     ### PUBLIC METHODS ###
 
+    # TODO: move to AbjadIDE
     def copy_boilerplate(self, source_name, target_name=None, values=None):
         r'''Copies `source_name` from boilerplate directory to `target_name` in
         this directory.
@@ -326,6 +328,7 @@ class Path(abjad.Path):
             path = type(self)(path)
         return path
 
+    # TODO: rename
     def matches_manifest(self, manifest):
         r'''Is true when path matches `manifest`.
 

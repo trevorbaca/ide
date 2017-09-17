@@ -83,6 +83,7 @@ class IO(abjad.AbjadObject):
             pending_input = ' '.join(parts[1:])
             self._pending_input = pending_input
             string = parts[0].replace('~', ' ')
+            string = string.replace('<return>', '')
             print(f'{prompt}{string}')
         else:
             string = input(prompt)
@@ -95,13 +96,10 @@ class IO(abjad.AbjadObject):
                 pending_input = ' '.join(parts[1:])
                 if pending_input:
                     self._pending_input = pending_input
-        if string in ('', '<return>'):
-            self.transcript.append([prompt.strip(), ''])
-            self.transcript.append(['> ', ''])
-            return
-        else:
-            self.transcript.append([f'{prompt}{string}', ''])
-            self.transcript.append(['> ', ''])
+        assert not string == '<return>'
+        self.transcript.append([f'{prompt}{string}', ''])
+        self.transcript.append(['> ', ''])
+        if string:
             return abjad.String(string)
 
     def pending_input(self, string):

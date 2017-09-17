@@ -1453,6 +1453,107 @@ class AbjadIDE(abjad.AbjadObject):
         pass
 
     @Command(
+        'dup',
+        argument_name='directory',
+        blacklist=('contents', 'material', 'segment'),
+        directories=True,
+        external=True,
+        scores=True,
+        section='basic',
+        )
+    def duplicate(self, directory):
+        r'''Duplicates asset in `directory`.
+
+        Returns none.
+        '''
+        if not directory.list_paths():
+            assets = abjad.String(directory.get_asset_type()).pluralize()
+            self.io.display(f'missing {directory.trim()} {assets} ...')
+            return
+        paths = self._select_path(
+            directory,
+            infinitive='to duplicate',
+            multiple=True,
+            scores=False,
+            )
+        if self.is_navigation(paths):
+            return
+        if len(paths) == 1:
+            source = paths[0]
+            self.io.display(f'duplicating {source.trim()} ...')
+        else:
+            self.io.display(f'duplicating ...')
+            for path in paths:
+                self.io.display(f'    {path.trim()}')
+            if not self.confirm():
+                return
+        for source in paths:
+            title = None
+            name_metadatum = None
+            if source.is_wrapper():
+                title = self.io.get('enter title')
+                if self.is_navigation(title):
+                    continue
+                name = title
+            else:
+                name = self.io.get('enter new name')
+                if self.is_navigation(name):
+                    continue
+            name = source.parent.coerce_asset_name(
+                name,
+                suffix=source.suffix,
+                )
+            target = source.with_name(name)
+            if source == target:
+                continue
+            if source.is_segment() and source.get_metadatum('name'):
+                name_metadatum = self.io.get('name metadatum')
+            self.io.display(f'writing {target.trim()} ...')
+            if not self.confirm():
+                continue
+            if source.is_file():
+                shutil.copyfile(str(source), str(target))
+            elif source.is_dir():
+                shutil.copytree(str(source), str(target))
+            else:
+                raise ValueError(source)
+            if target.is_package():
+                if name_metadatum:
+                    target.add_metadatum('name', name_metadatum)
+                else:
+                    target.remove_metadatum('name')
+                lines = self._replace_in_tree(
+                    target,
+                    source.name,
+                    target.name,
+                    complete_words=True,
+                    )
+                self.io.display(lines)
+            elif target.is_wrapper():
+                shutil.move(
+                    str(target.wrapper / source.name),
+                    str(target.contents),
+                    )
+                lines = self._replace_in_tree(
+                    target,
+                    source.name,
+                    target.name,
+                    complete_words=True,
+                    )
+                self.io.display(lines)
+                if title is not None:
+                    target.contents.add_metadatum('title', title)
+                    source_title = source.contents.get_metadatum('title')
+                    if source_title is not None:
+                        lines = self._replace_in_tree(
+                            target,
+                            source_title,
+                            title,
+                            complete_words=True,
+                            )
+                        self.io.display(lines)
+
+    @Command(
         'als',
         description='aliases - edit',
         directories=True,
@@ -1964,8 +2065,6 @@ class AbjadIDE(abjad.AbjadObject):
         argument_name='directory',
         blacklist=('contents',),
         directories=True,
-        external=True,
-        scores=True,
         section='basic',
         )
     def get(self, directory):
@@ -1973,92 +2072,120 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        paths = self._select_path(
-            directory, 
-            infinitive='to get',
-            multiple=True,
-            scores=True,
+        items = []
+        if directory.is_package():
+            siblings = directory.parent.list_paths()
+            siblings.remove(directory)
+            for sibling in siblings:
+                definition = sibling / 'definition.py'
+                if definition.is_file():
+                    items.append((definition.trim(), definition))
+            label = directory.get_asset_type()
+            header = directory.get_header() 
+            header += f' : get {label} ...'
+            multiple = False
+        if not items:
+            for path in directory.scores.list_paths():
+                items.append((path.get_identifier(), path))
+            label = abjad.String(directory.get_asset_type()).pluralize()
+            header = directory.get_header() + f' : get {label} from ...'
+            selector = self._make_selector(
+                aliases=self.aliases,
+                header=header,
+                items=items,
+                multiple=False,
+                navigations=self.navigations,
+                )
+            response = selector()
+            if self.is_navigation(response):
+                return
+            if response.payload is None:
+                self.io.display(f'matches no score {response.string!r} ...')
+                return
+            score = response.payload
+            cousin = directory.with_score(score.name)
+            items = []
+            if directory.is_package():
+                cousins = cousin.parent.list_paths()
+                cousins.remove(cousin)
+                for cousin in cousins:
+                    definition = cousin / 'definition.py'
+                    if definition.is_file():
+                        items.append((definition.trim(), definition))
+                label = directory.get_asset_type()
+                multiple = False
+            else:
+                for path in cousin.list_paths():
+                    items.append((path.get_identifier(), path))
+                multiple = True
+            header = directory.get_header() 
+            header += f' : get {score.get_identifier()} {label} ...'
+        selector = self._make_selector(
+            aliases=self.aliases,
+            header=header,
+            items=items,
+            multiple=multiple,
+            navigations=self.navigations,
             )
-        if self.is_navigation(paths):
+        response = selector()
+        if self.is_navigation(response):
             return
-        if len(paths) == 1:
-            source = paths[0]
-            if source.is_contents():
-                source = source.wrapper
-            self.io.display(f'copying {source.trim()} ...')
-            target = directory / source.name
-            if source != target:
-                if not self.confirm():
-                    return
+        if response.payload is None:
+            self.io.display(f'matches no {label} {response.string!r} ...')
+            return
+        if isinstance(response.payload, Path):
+            paths = [response.payload]
         else:
-            self.io.display(f'copying ...')
+            paths = response.payload
+        if len(paths) == 1:
+            self.io.display(f'getting {paths[0].trim()} ...')
+        else:
+            self.io.display(f'getting ...')
             for path in paths:
                 self.io.display(f'    {path.trim()}')
-            if not self.confirm():
-                return
+        targets = []
         for source in paths:
-            if source.is_contents():
-                source = source.wrapper
-            title = None
-            name_metadatum = None
             target = directory / source.name
-            if source == target:
+            if target.exists():
                 self.io.display(f'existing {target.trim()} ...')
-                if source.is_wrapper():
-                    title = self.io.get('enter title')
-                    if self.is_navigation(title):
-                        continue
-                    name = title
-                else:
-                    name = self.io.get('enter new name')
-                    if self.is_navigation(name):
-                        continue
+                name = self.io.get('enter new name')
+                if self.is_navigation(name):
+                    return
                 name = source.parent.coerce_asset_name(
                     name,
                     suffix=source.suffix,
                     )
                 target = target.with_name(name)
-                if source == target:
-                    continue
-                if source.is_segment() and source.get_metadatum('name'):
-                    name_metadatum = self.io.get('name metadatum')
-                self.io.display(f'writing {target.trim()} ...')
-                if not self.confirm():
-                    continue
+                if target.exists():
+                    self.io.display(f'existing {target.trim()} ...')
+                    return
+            targets.append(target)
+        assert targets
+        if len(targets) == 1:
+            self.io.display(f'will write {targets[0].trim()} ...')
+        else:
+            self.io.display(f'will write ...')
+            for target in targets:
+                self.io.display(f'    {target.trim()} ...')
+        response = self.confirm()
+        if self.is_navigation(response) or not response:
+            return
+        for source, target in zip(paths, targets):
+            self.io.display(f'writing {target.trim()} ...')
             if source.is_file():
                 shutil.copyfile(str(source), str(target))
             elif source.is_dir():
                 shutil.copytree(str(source), str(target))
             else:
                 raise ValueError(source)
-            if target.is_segment():
-                if name_metadatum:
-                    target.add_metadatum('name', name_metadatum)
+            if source.is_package() and source.get_metadatum('name'):
+                name = self.io.get('name metadatum')
+                if self.is_navigation(name):
+                    return
+                if name:
+                    target.add_metadatum('name', name)
                 else:
                     target.remove_metadatum('name')
-            elif target.is_wrapper():
-                shutil.move(
-                    str(target.wrapper / source.name),
-                    str(target.contents),
-                    )
-                lines = self._replace_in_tree(
-                    target,
-                    source.name,
-                    target.name,
-                    complete_words=True,
-                    )
-                self.io.display(lines)
-                if title is not None:
-                    target.contents.add_metadatum('title', title)
-                    source_title = source.contents.get_metadatum('title')
-                    if source_title is not None:
-                        lines = self._replace_in_tree(
-                            target,
-                            source_title,
-                            title,
-                            complete_words=True,
-                            )
-                        self.io.display(lines)
 
     @Command(
         'ci',
@@ -3025,18 +3152,12 @@ class AbjadIDE(abjad.AbjadObject):
             return
         count = len(paths)
         if count == 1:
-            if paths[0].is_contents():
-                path_ = paths[0].wrapper
-            else:
-                path_ = paths[0]
-            self.io.display(f'confirming {path_.trim()} ...')
+            path_ = paths[0]
+            self.io.display(f'will remove {path_.trim()} ...')
         else:
-            self.io.display('confirming ...')
+            self.io.display('will remove ...')
             for path in paths:
-                if path.is_contents():
-                    path_ = path.wrapper
-                else:
-                    path_ = path
+                path_ = path
                 self.io.display(f'    {path_.trim()}')
         if count == 1:
             string = 'remove'
@@ -3046,8 +3167,6 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(result) or result != string:
             return
         for path in paths:
-            if path.is_contents():
-                path = path.wrapper
             self.io.display(f'removing {path.trim()} ...')
             path.remove()
 
