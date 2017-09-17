@@ -76,10 +76,10 @@ def test_AbjadIDE_remove_02():
     r'''In library directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad.abjad_configuration.composer_library:
         return
 
-    directory = abjad_ide._get_library()
+    directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
     with abjad.FilesystemState(keep=[directory]):
 
         abjad_ide('lib new FooCommand.py y q')

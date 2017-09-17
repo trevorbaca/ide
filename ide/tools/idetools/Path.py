@@ -280,19 +280,20 @@ class Path(abjad.Path):
         elif abjad.mathtools.is_integer_equivalent(pattern):
             segment_number = int(pattern)
             path = self.segment_number_to_path(segment_number)
-        elif self.is_package_path():
-            paths = []
-            paths.extend(self.contents.list_paths())
-            paths.append(self._segments)
-            paths.extend(self.builds.list_paths())
-            paths.extend(self._segments.list_paths())
-            paths.extend(self.distribution.list_paths())
-            paths.extend(self.etc.list_paths())
-            paths.extend(self.materials.list_paths())
-            paths.extend(self.segments.list_paths())
-            paths.extend(self.stylesheets.list_paths())
-            paths.extend(self.test.list_paths())
-            paths.extend(self.tools.list_paths())
+        elif self.is_dir():
+            paths = self.list_paths()
+            if self.is_package_path():
+                paths.extend(self.contents.list_paths())
+                paths.append(self._segments)
+                paths.extend(self.builds.list_paths())
+                paths.extend(self._segments.list_paths())
+                paths.extend(self.distribution.list_paths())
+                paths.extend(self.etc.list_paths())
+                paths.extend(self.materials.list_paths())
+                paths.extend(self.segments.list_paths())
+                paths.extend(self.stylesheets.list_paths())
+                paths.extend(self.test.list_paths())
+                paths.extend(self.tools.list_paths())
             if character == '@':
                 suffixes = self.configuration.editor_suffixes
                 paths = [

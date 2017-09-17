@@ -12,7 +12,7 @@ def test_AbjadIDE_edit_aliases_file_01():
 
     abjad_ide('red~score mm tempi als q')
     transcript = abjad_ide.io.transcript
-    path = abjad_ide.configuration.aliases_file_path
+    path = ide.Path(abjad_ide.configuration.aliases_file_path)
     assert f'Editing {path} ...' in transcript
 
 

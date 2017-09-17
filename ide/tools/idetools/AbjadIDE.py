@@ -151,19 +151,6 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _get_library(self):
-        name = abjad.abjad_configuration.composer_library
-        if not name:
-            return
-        try:
-            path = importlib.import_module(name)
-        except ImportError:
-            path = None
-        if not path:
-            return
-        path = Path(path.__path__[0]) / 'tools'
-        return path
-
     def _get_score_names(self):
         scores = self._get_scores_directory()
         names = [_.name for _ in scores.list_paths()]
@@ -366,7 +353,7 @@ class AbjadIDE(abjad.AbjadObject):
             if predicate and not predicate(abjad.String(name)):
                 self.io.display(f'invalid file name {name!r} ...')
                 return
-        elif directory == self._get_library():
+        elif directory.is_library():
             suffix = Path(name).suffix
             if suffix and suffix != '.py':
                 self.io.display(f'invalid file name {name!r} ...')
@@ -2375,11 +2362,11 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        directory = self._get_library()
-        if directory is None:
+        library = abjad.abjad_configuration.composer_library_tools
+        if library is None:
             self.io.display('missing library ...')
         else:
-            self._manage_directory(directory)
+            self._manage_directory(Path(library))
 
     @Command(
         'mm',
