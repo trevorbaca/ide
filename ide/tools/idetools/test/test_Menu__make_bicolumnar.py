@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True, terminal_dimensions=(10, 54))
+abjad_ide = ide.AbjadIDE(is_test='dimensions=(10, 54)')
 
 
 def test_Menu__make_bicolumnar_01():

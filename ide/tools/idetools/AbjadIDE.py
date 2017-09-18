@@ -24,8 +24,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         ::
 
-            >>> ide.AbjadIDE(terminal_dimensions=(24, 80))
-            AbjadIDE(terminal_dimensions=(24, 80))
+            >>> ide.AbjadIDE()
+            AbjadIDE()
 
     '''
 
@@ -42,12 +42,13 @@ class AbjadIDE(abjad.AbjadObject):
         '_navigation',
         '_navigations',
         '_previous_directory',
-        '_terminal_dimensions',
         )
+
+    configuration = Configuration()
 
     # taken from:
     # http://lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
-    _paper_size_to_paper_dimensions = {
+    paper_size_to_paper_dimensions = {
         'a3': '297 x 420 mm',
         'a4': '210 x 297 mm',
         'arch a': '9 x 12 in',
@@ -61,15 +62,12 @@ class AbjadIDE(abjad.AbjadObject):
         'tabloid': '11 x 17 in',
         }
 
-    configuration = Configuration()
-
     ### INITIALIZER ###
 
     def __init__(
         self,
         is_example=None,
         is_test=None,
-        terminal_dimensions=None,
         ):
         self._aliases = dict(self.configuration.aliases)
         self._clipboard = []
@@ -78,10 +76,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._is_test = is_test
         self._navigation = None
         self._previous_directory = None
-        if terminal_dimensions is None and not is_test:
-            terminal_dimensions = self._get_terminal_dimensions()
-        self._terminal_dimensions = terminal_dimensions
-        self._io = IO(terminal_dimensions=terminal_dimensions)
+        self._io = IO()
         self._check_test_scores_directory(is_example or is_test)
         self._cache_commands()
 
@@ -94,11 +89,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         if self.is_test and not string.endswith('q'):
             raise Exception(f"Test input must end with 'q': {string!r}.")
-        self.__init__(
-            is_example=self.is_example,
-            is_test=self.is_test,
-            terminal_dimensions=self.terminal_dimensions,
-            )
+        self.__init__(is_example=self.is_example, is_test=self.is_test)
         self.io.pending_input(string)
         scores = self._get_scores_directory()
         self._manage_directory(scores)
@@ -133,6 +124,22 @@ class AbjadIDE(abjad.AbjadObject):
             message = f'Empty test scores directory {directory} ...'
             raise Exception(message)
 
+    def _collect_segment_lys(self, directory):
+        entries = sorted(directory.segments.iterdir())
+        names = [_.name for _ in entries]
+        sources, targets = [], []
+        for name in names:
+            source = directory.segment(name, 'illustration.ly')
+            if not source.is_file():
+                continue
+            name = name.replace('_', '-') + '.ly'
+            target = directory._segments / name
+            sources.append(source)
+            targets.append(target)
+        if not directory.builds.is_dir():
+            directory.builds.mkdir()
+        return zip(sources, targets)
+
     def _copy_boilerplate(
         self,
         directory,
@@ -145,11 +152,15 @@ class AbjadIDE(abjad.AbjadObject):
         if target.exists():
             self.io.display(f'removing {target.trim()} ...')
         self.io.display(f'writing {target.trim()} ...')
-        directory.copy_boilerplate(
-            source_name=source_name,
-            target_name=target_name,
-            values=values,
-            )
+        values = values or {}
+        boilerplate = Path(abjad.abjad_configuration.boilerplate_directory)
+        source = boilerplate / source_name
+        target_name = target_name or source_name
+        target = directory / target_name
+        shutil.copyfile(str(source), str(target))
+        template = target.read_text()
+        template = template.format(**values)
+        target.write_text(template)
 
     def _get_score_names(self):
         scores = self._get_scores_directory()
@@ -160,16 +171,6 @@ class AbjadIDE(abjad.AbjadObject):
         if (self.is_test or self.is_example):
             return self.configuration.test_scores_directory
         return self.configuration.composer_scores_directory
-
-    def _get_terminal_dimensions(self):
-        result = os.popen('stty size', 'r').read().split()
-        if result:
-            height, width = result
-            height = int(height)
-            width = int(width)
-        else:
-            height, width = 24, 80
-        return height, width
 
     def _interpret_file(self, path):
         path = Path(path)
@@ -310,8 +311,8 @@ class AbjadIDE(abjad.AbjadObject):
             elif directory.is_scores() and command.scores:
                 commands.append(command)
             elif (directory.is_package_path() and
-                directory.matches_manifest(command.directories) and
-                not directory.matches_manifest(command.blacklist)):
+                directory.match_prototype(command.directories) and
+                not directory.match_prototype(command.blacklist)):
                 commands.append(command)
         entries_by_section = {}
         navigations = {}
@@ -736,7 +737,13 @@ class AbjadIDE(abjad.AbjadObject):
             navigations=self.navigations,
             sections=sections,
             )
-        response = menu(redraw=redraw)
+        dimensions = None
+        if self.is_test is True: 
+            dimensions = False
+        if (isinstance(self.is_test, str) and
+            self.is_test.startswith('dimensions')):
+            dimensions = eval(self.is_test.strip('dimensions='))
+        response = menu(dimensions=dimensions, redraw=redraw)
         if self.is_navigation(response.string):
             pass
         elif response.string.startswith('!') and not response.string == '!!':
@@ -986,86 +993,42 @@ class AbjadIDE(abjad.AbjadObject):
         directory,
         infinitive='',
         multiple=False,
-        scores=False,
         ):
-        assert scores in (True, False) or isinstance(scores, str)
         paths = []
         local_contents = directory.list_paths()
-        if directory.is_external() or directory.is_scores():
-            paths.extend(local_contents)
-        else:
-            assert directory.is_package_path()
-            paths = []
-            if isinstance(scores, str) or not local_contents:
-                for directory_ in directory.collect_cousins():
-                    for path in directory_.list_paths():
-                        if scores is True:
-                            paths.append(path)
-                        elif path.wrapper.name == scores:
-                            paths.append(path)
-            else:
-                paths.extend(local_contents)
-        asset_type = directory.get_asset_type()
-        asset_types = abjad.String(asset_type).pluralize()
+        paths.extend(local_contents)
         if not paths:
-            self.io.display(f'missing {directory.name} {asset_types} ...')
+            label = abjad.String(directory.get_asset_type()).pluralize()
+            self.io.display(f'missing {directory.name} {label} ...')
             return
         if multiple:
-            asset_type = asset_types
-        if infinitive:
-            infinitive_ = ' ' + infinitive
+            label = abjad.String(directory.get_asset_type()).pluralize()
         else:
-            infinitive_ = infinitive
+            label = abjad.String(directory.get_asset_type())
         items = []
-        if (directory.is_external() or
-            directory.is_scores() or
-            (local_contents and not isinstance(scores, str))):
-            header = None
-            for path in paths:
-                items.append((path.get_identifier(), path))
-            prompt = f'select {asset_type}{infinitive_}'
-            redraw = False
+        header = None
+        for path in paths:
+            items.append((path.get_identifier(), path))
+        if infinitive:
+            prompt = f'select {label} {infinitive}'
         else:
-            header = directory.get_header()
-            header = f'{header} - select {asset_type}{infinitive_}:'
-            for path in paths:
-                items.append((path.trim(), path))
-            prompt = None
-            redraw = True
+            prompt = f'select {label}'
+        redraw = False
         selector = self._make_selector(
             aliases=self.aliases,
             force_single_column=True,
-            header=header,
             items=items,
             multiple=multiple,
             navigations=self.navigations,
             prompt=prompt,
             )
-        response = selector(redraw=redraw)
-        if response.payload is None:
-            if self.is_navigation(response.string):
-                return response.string
-            elif response.string in self._get_score_names():
-                return self._select_path(
-                    directory,
-                    infinitive=infinitive,
-                    multiple=multiple,
-                    scores=response.string,
-                    )
-            elif bool(response.string):
-                self.io.display(f'matches no path {response.string!r} ...')
-                return
-            else:
-                return
-        scores = self._get_scores_directory()
-        if multiple:
-            assert isinstance(response.payload, list), repr(response)
-            paths = [type(directory)(_) for _ in response.payload]
-            paths = [scores / _.parts[0] / _ for _ in paths]
-            return paths
-        else:
-            assert isinstance(response.payload, Path), repr(response)
+        response = selector(redraw=False)
+        if response.payload is not None:
             return response.payload
+        if self.is_navigation(response.string):
+            return response.string
+        if bool(response.string):
+            self.io.display(f'matches no path {response.string!r} ...')
 
     def _test_external_directory(self):
         scores = abjad.abjad_configuration.composer_scores_directory
@@ -1077,7 +1040,7 @@ class AbjadIDE(abjad.AbjadObject):
         prototype = ('landscape', 'portrait', None)
         assert orientation in prototype, repr(orientation)
         try:
-            paper_dimensions = self._paper_size_to_paper_dimensions[paper_size]
+            paper_dimensions = self.paper_size_to_paper_dimensions[paper_size]
         except KeyError:
             return 8.5, 11, 'in'
         paper_dimensions = paper_dimensions.replace(' x ', ' ')
@@ -1200,14 +1163,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns list.
         '''
         return self._previous_directory
-
-    @property
-    def terminal_dimensions(self):
-        r'''Gets terminal dimensions.
-
-        Returns pair.
-        '''
-        return self._terminal_dimensions
 
     ### PUBLIC METHODS ###
 
@@ -1383,7 +1338,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path(('builds', 'build'))
         self.io.display('collecting segment lys ...')
-        pairs = directory._collect_segment_lys()
+        pairs = self._collect_segment_lys(directory)
         if not pairs:
             self.io.display('... no segment lys found.')
             return
@@ -1413,7 +1368,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory, 
             infinitive='for clipboard',
             multiple=True,
-            scores=False,
             )
         if self.is_navigation(paths):
             return
@@ -1474,7 +1428,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             infinitive='to duplicate',
             multiple=True,
-            scores=False,
             )
         if self.is_navigation(paths):
             return
@@ -3146,7 +3099,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             infinitive='to remove',
             multiple=True,
-            scores=False,
             )
         if self.is_navigation(paths):
             return
@@ -3188,7 +3140,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             infinitive='to rename',
             multiple=False,
-            scores=False,
             )
         if self.is_navigation(source):
             return
@@ -3253,7 +3204,7 @@ class AbjadIDE(abjad.AbjadObject):
             complete_words = True
         if directory == directory.scores:
             pass
-        else:
+        elif directory.is_package_path():
             directory = directory.wrapper
         lines = self._replace_in_tree(
             directory,

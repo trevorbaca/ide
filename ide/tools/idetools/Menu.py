@@ -1,4 +1,5 @@
 import abjad
+import os
 from ide.tools.idetools.IO import IO
 from ide.tools.idetools.MenuEntry import MenuEntry
 from ide.tools.idetools.MenuSection import MenuSection
@@ -57,26 +58,36 @@ class Menu(abjad.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __call__(self, string=None, redraw=True, force_single_column=False):
+    def __call__(
+        self,
+        string=None,
+        dimensions=None,
+        force_single_column=False,
+        redraw=True,
+        ):
         r'''Calls menu on `string`.
 
         Returns response.
         '''
         if string is not None:
             self.io.pending_input(string)
-        self.redraw(redraw, force_single_column=force_single_column)
+        self.redraw(
+            redraw,
+            dimensions=dimensions,
+            force_single_column=force_single_column,
+            )
         string = self.io.get(
             prompt=self.prompt,
             split_input=not self.getter,
             )
         if string == '!!':
-            return self(force_single_column=True)
+            return self(dimensions=dimensions, force_single_column=True)
         elif string == '?':
-            return self(redraw='commands')
+            return self(dimensions=dimensions, redraw='commands')
         elif string == ';':
-            return self(redraw='navigation')
+            return self(dimensions=dimensions, redraw='navigation')
         elif string == '' and self.loop:
-            return self()
+            return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
         elif self.aliases and string in self.aliases:
@@ -122,16 +133,24 @@ class Menu(abjad.AbjadObject):
         lines,
         lines_above,
         break_only_at_blank_lines=False,
+        dimensions=None,
         ):
         if lines and lines[-1] != '':
             lines.append('')
-        dimensions = self.io._terminal_dimensions
-        if not dimensions:
-            return lines
+        lines = [_.rstrip() for _ in lines]
         if len(lines) < 4:
             return lines
-        lines = [_.rstrip() for _ in lines]
-        height, width = dimensions
+        if dimensions is False:
+            return lines
+        if isinstance(dimensions, tuple):
+            height, width = dimensions
+        else:
+            result = os.popen('stty size', 'r').read().split()
+            if not result:
+                return lines
+            if result:
+                height = int(result[0])
+                width = int(result[1])
         if len(lines) < height - lines_above:
             return lines
         midpoint = int(len(lines) / 2)
@@ -319,7 +338,7 @@ class Menu(abjad.AbjadObject):
             )
         return menu
 
-    def make_help_lines(self, value):
+    def make_help_lines(self, value, dimensions=None):
         r'''Makes help lines.
 
         Returns list.
@@ -333,13 +352,14 @@ class Menu(abjad.AbjadObject):
             lines,
             lines_above=2,
             break_only_at_blank_lines=True,
+            dimensions=dimensions,
             )
         header = self.header + f' : {value}'
         header = abjad.String(header).capitalize_start()
         lines[0:0] = [header, '']
         return lines
 
-    def make_lines(self, force_single_column=False):
+    def make_lines(self, dimensions=None, force_single_column=False):
         r'''Makes lines.
 
         Returns list.
@@ -358,12 +378,16 @@ class Menu(abjad.AbjadObject):
             if (not section.secondary and
                 not force_single_column and
                 not section.force_single_column):
-                lines_ = self._make_bicolumnar(lines_, len(lines))
+                lines_ = self._make_bicolumnar(
+                    lines_,
+                    len(lines),
+                    dimensions=dimensions,
+                    )
             lines.extend(lines_)
         assert lines[-1] == '', repr(lines)
         return lines
 
-    def redraw(self, value, force_single_column=False):
+    def redraw(self, value, dimensions=None, force_single_column=False):
         r'''Redraws menu.
 
         Returns none.
@@ -372,10 +396,10 @@ class Menu(abjad.AbjadObject):
             return
         abjad.IOManager.clear_terminal()
         if value is True:
-            lines = self.make_lines(force_single_column=force_single_column)
+            lines = self.make_lines(
+                dimensions=dimensions,
+                force_single_column=force_single_column,
+                )
         else:
-            lines = self.make_help_lines(value=value)
-        if self.io._terminal_dimensions:
-            height, width = self.io._terminal_dimensions
-            lines = [_[:width] for _ in lines]
+            lines = self.make_help_lines(value=value, dimensions=dimensions)
         self.io.display(lines, is_menu=True, raw=True)

@@ -1,13 +1,11 @@
 import abjad
 import os
 import pathlib
-import shutil
-from abjad import abjad_configuration
 from ide.tools.idetools.Configuration import Configuration
 
 
 class Path(abjad.Path):
-    r'''Packge path.
+    r'''Path.
     '''
 
     ### CLASS VARIABLES ###
@@ -32,14 +30,16 @@ class Path(abjad.Path):
                 arguments.append(Path.configuration.test_scores_directory)
                 arguments.extend(2 * [argument])
             elif argument == 'boilerplate':
-                arguments.append(abjad_configuration.boilerplate_directory)
+                arguments.append(
+                    abjad.abjad_configuration.boilerplate_directory)
             elif argument == 'test_scores':
                 arguments.append(Path.configuration.test_scores_directory)
             elif scores is not None:
                 arguments.append(scores)
                 arguments.extend(2 * [argument])
             else:
-                arguments.append(abjad_configuration.composer_scores_directory)
+                arguments.append(
+                    abjad.abjad_configuration.composer_scores_directory)
                 arguments.extend(2 * [argument])
             self = pathlib.Path.__new__(class_, *arguments)
         if scores is not None:
@@ -48,26 +48,6 @@ class Path(abjad.Path):
         return self
 
     ### PRIVATE METHODS ###
-
-    # TODO: move to AbjadIDE
-    def _collect_segment_lys(self):
-        entries = sorted(self.segments.iterdir())
-        names = [_.name for _ in entries]
-        sources, targets = [], []
-        for name in names:
-            directory = self.segments / name
-            if not directory.is_dir():
-                continue
-            source = directory / 'illustration.ly'
-            if not source.is_file():
-                continue
-            name = name.replace('_', '-') + '.ly'
-            target = self._segments / name
-            sources.append(source)
-            targets.append(target)
-        if not self.builds.is_dir():
-            self.builds.mkdir()
-        return zip(sources, targets)
 
     def _get_added_asset_paths(self):
         paths = []
@@ -187,32 +167,12 @@ class Path(abjad.Path):
             return result
         for scores in (
             self.configuration.test_scores_directory,
-            abjad_configuration.composer_scores_directory,
+            abjad.abjad_configuration.composer_scores_directory,
             ):
             if str(self).startswith(str(scores)):
                 return type(self)(scores)
 
     ### PUBLIC METHODS ###
-
-    # TODO: move to AbjadIDE
-    def copy_boilerplate(self, source_name, target_name=None, values=None):
-        r'''Copies `source_name` from boilerplate directory to `target_name` in
-        this directory.
-
-        Replaces `values` in target.
-
-        Returns none.
-        '''
-        assert self.is_dir(), repr(self)
-        values = values or {}
-        boilerplate = type(self)(abjad_configuration.boilerplate_directory)
-        source = boilerplate / source_name
-        target_name = target_name or source_name
-        target = self / target_name
-        shutil.copyfile(str(source), str(target))
-        template = target.read_text()
-        template = template.format(**values)
-        target.write_text(template)
 
     def get_header(self):
         r'''Gets menu header.
@@ -220,7 +180,7 @@ class Path(abjad.Path):
         Returns string.
         '''
         if self.is_external():
-            if self.parent.name == abjad_configuration.composer_library:
+            if self.parent.name == abjad.abjad_configuration.composer_library:
                 header = 'Abjad IDE : library'
             else:
                 header = f'Abjad IDE : {self}'
@@ -254,7 +214,7 @@ class Path(abjad.Path):
         '''
         if not self.name[0].isalpha() and not self.name == '_segments':
             return True
-        for scores in (abjad_configuration.composer_scores_directory,
+        for scores in (abjad.abjad_configuration.composer_scores_directory,
             self.configuration.test_scores_directory,
             getattr(self, '_scores', None),
             ):
@@ -328,17 +288,16 @@ class Path(abjad.Path):
             path = type(self)(path)
         return path
 
-    # TODO: rename
-    def matches_manifest(self, manifest):
-        r'''Is true when path matches `manifest`.
+    def match_prototype(self, prototype):
+        r'''Is true when path matches `prototype`.
 
         Returns true or false.
         '''
-        if manifest is True:
+        if prototype is True:
             return True
-        if bool(manifest) is False:
+        if bool(prototype) is False:
             return False
-        return self.is_package_path(manifest)
+        return self.is_package_path(prototype)
 
     @staticmethod
     def smart_match(strings, pattern):

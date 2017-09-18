@@ -1,4 +1,5 @@
 import abjad
+import os
 from ide.tools.idetools.Transcript import Transcript
 
 
@@ -20,26 +21,16 @@ class IO(abjad.AbjadObject):
 
     __slots__ = (
         '_pending_input',
-        '_terminal_dimensions',
         '_transcript',
         )
 
     ### INITIALIZER ###
 
-    def __init__(self, terminal_dimensions=None):
+    def __init__(self):
         self._pending_input = None
-        self._terminal_dimensions = terminal_dimensions
         self._transcript = Transcript()
 
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def terminal_dimensions(self):
-        r'''Gets terminal dimensions.
-
-        Returns pair or none.
-        '''
-        return self._terminal_dimensions
 
     @property
     def transcript(self):
@@ -63,8 +54,9 @@ class IO(abjad.AbjadObject):
             lines = [abjad.String(_).capitalize_start() for _ in lines]
         if lines:
             self.transcript.append(lines, is_menu=is_menu)
-        if self._terminal_dimensions:
-            height, width = self._terminal_dimensions
+        result = os.popen('stty size', 'r').read().split()
+        if result:
+            width = int(result[1])
             lines = [_[:width] for _ in lines]
         for line in lines:
             print(line)
