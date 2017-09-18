@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_check_definition_01():
+def test_AbjadIDE_check_definition_file_01():
     r'''In material directory.
     '''
 
@@ -13,7 +13,7 @@ def test_AbjadIDE_check_definition_01():
     assert 'Total time ' in transcript
 
 
-def test_AbjadIDE_check_definition_02():
+def test_AbjadIDE_check_definition_file_02():
     r'''In segment directory.
     '''
 

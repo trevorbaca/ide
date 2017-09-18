@@ -301,7 +301,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.generate_music(build)
         self.generate_preface(build)
         self.generate_score(build)
-        self.generate_build_stylesheet(build)
+        self.generate_stylesheet(build)
 
     def _make_command_sections(self, directory):
         commands = []
@@ -1739,6 +1739,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self._open_file(directory / 'score.tex')
 
+    # TODO: change to 'ye'
     @Command(
         'ste',
         argument_name='directory',
@@ -1825,6 +1826,7 @@ class AbjadIDE(abjad.AbjadObject):
         values['paper_size'] = paper_size
         self._copy_boilerplate(directory, 'back-cover.tex', values=values)
 
+    # TODO: change to 'yg'
     @Command(
         'stg',
         argument_name='directory',
@@ -1832,24 +1834,21 @@ class AbjadIDE(abjad.AbjadObject):
         directories=('build',),
         section='build-generate',
         )
-    def generate_build_stylesheet(self, directory):
-        r'''Generates build directory ``stylsheet.ily``.
+    def generate_stylesheet(self, directory):
+        r'''Generates build directory ``stylesheet.ily``.
 
         Returns none.
         '''
         assert directory.is_build()
         self.io.display('generating stylesheet ...')
         values = {}
-        paper_size = directory.get_metadatum('paper_size')
+        paper_size = directory.get_metadatum('paper_size', 'letter')
         values['paper_size'] = paper_size
-        orientation = directory.get_metadatum('orientation')
-        if orientation:
-            orientation_ = f" '{orientation}"
-        else:
-            orientation_ = ''
-        values['orientation'] = orientation_
+        orientation = directory.get_metadatum('orientation', '')
+        values['orientation'] = orientation
         self._copy_boilerplate(
             directory,
+            # TODO: change to 'build-stylesheet.ily'
             'build-directory-stylesheet.ily',
             target_name='stylesheet.ily',
             values=values,
@@ -2214,6 +2213,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'missing {directory.trim()} repository ...')
             return
         with self.change(directory):
+            self.io.display(f'git diff {directory.trim()} ...')
             abjad.IOManager.spawn_subprocess(f'git diff {directory}')
 
     @Command(

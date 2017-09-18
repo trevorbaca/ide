@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test='dimensions=(10, 54)')
 
 
-def test_Menu__make_bicolumnar_01():
+def test_AbjadIDE_force_single_column_01():
 
     with ide.Test():
 
