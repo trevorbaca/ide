@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_address_pound_03():
+def test_AbjadIDE_address_pound_01():
     r'''Addresses external file.
     '''
 
@@ -16,7 +16,7 @@ def test_AbjadIDE_address_pound_03():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_04():
+def test_AbjadIDE_address_pound_02():
     r'''Addresses library file.
     '''
 
@@ -35,7 +35,7 @@ def test_AbjadIDE_address_pound_04():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_05():
+def test_AbjadIDE_address_pound_03():
     r'''Addresses material definition file.
     '''
 
@@ -45,7 +45,7 @@ def test_AbjadIDE_address_pound_05():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_06():
+def test_AbjadIDE_address_pound_04():
     r'''Addresses material sibling definition file backwards.
     '''
 
@@ -55,7 +55,7 @@ def test_AbjadIDE_address_pound_06():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_07():
+def test_AbjadIDE_address_pound_05():
     r'''Addresses material sibling definition file forwards.
     '''
 
@@ -65,7 +65,7 @@ def test_AbjadIDE_address_pound_07():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_08():
+def test_AbjadIDE_address_pound_06():
     r'''Addresses segment definition file.
     '''
 
@@ -75,7 +75,7 @@ def test_AbjadIDE_address_pound_08():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_09():
+def test_AbjadIDE_address_pound_07():
     r'''Addresses sibling segment definition file backwards.
     '''
 
@@ -85,7 +85,7 @@ def test_AbjadIDE_address_pound_09():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_10():
+def test_AbjadIDE_address_pound_08():
     r'''Addresses sibling segment definition file forwards.
     '''
 
@@ -95,7 +95,7 @@ def test_AbjadIDE_address_pound_10():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_12():
+def test_AbjadIDE_address_pound_09():
     r'''Addresses test file.
     '''
 
@@ -105,7 +105,7 @@ def test_AbjadIDE_address_pound_12():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_13():
+def test_AbjadIDE_address_pound_10():
     r'''Addresses tools classfile.
     '''
 
@@ -120,7 +120,7 @@ def test_AbjadIDE_address_pound_13():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_14():
+def test_AbjadIDE_address_pound_11():
     r'''Addresses tools functionfile.
     '''
 
@@ -130,7 +130,7 @@ def test_AbjadIDE_address_pound_14():
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_15():
+def test_AbjadIDE_address_pound_12():
     r'''Empty address and junk address.
     '''
 

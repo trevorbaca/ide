@@ -101,6 +101,15 @@ def test_AbjadIDE_duplicate_06():
 
 
 def test_AbjadIDE_duplicate_07():
+    r'''In scores directory. Handles empty return gracefully.
+    '''
+
+    abjad_ide('dup <return> q')
+    transcript = abjad_ide.io.transcript
+    assert 'Select packages to duplicate> ' in transcript
+
+
+def test_AbjadIDE_duplicate_08():
     r'''In segments directory.
     '''
 
@@ -122,7 +131,7 @@ def test_AbjadIDE_duplicate_07():
             transcript
 
 
-def test_AbjadIDE_duplicate_08():
+def test_AbjadIDE_duplicate_09():
     r'''In stylesheets directory.
     '''
 
@@ -142,7 +151,7 @@ def test_AbjadIDE_duplicate_08():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_duplicate_09():
+def test_AbjadIDE_duplicate_10():
     r'''In test directory.
     '''
 
@@ -162,7 +171,7 @@ def test_AbjadIDE_duplicate_09():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_duplicate_10():
+def test_AbjadIDE_duplicate_11():
     r'''In tools directory.
     '''
 

@@ -80,7 +80,9 @@ class Menu(abjad.AbjadObject):
             prompt=self.prompt,
             split_input=not self.getter,
             )
-        if string == '!!':
+        if string is None:
+            payload = None
+        elif string == '!!':
             return self(dimensions=dimensions, force_single_column=True)
         elif string == '?':
             return self(dimensions=dimensions, redraw='commands')

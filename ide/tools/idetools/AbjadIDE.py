@@ -1017,10 +1017,10 @@ class AbjadIDE(abjad.AbjadObject):
             prompt=prompt,
             )
         response = selector(redraw=False)
-        if response.payload is not None:
-            return response.payload
         if self.is_navigation(response.string):
             return response.string
+        if response.payload is not None:
+            return response.payload
         if bool(response.string):
             self.io.display(f'matches no path {response.string!r} ...')
 

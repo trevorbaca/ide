@@ -11,8 +11,7 @@ class Configuration(abjad.Configuration):
 
         ::
 
-            >>> configuration = ide.Configuration()
-            >>> configuration
+            >>> ide.Configuration()
             Configuration()
 
     '''
@@ -103,7 +102,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.aliases
+                >>> ide.Configuration().aliases
                 TypedOrderedDict(...)
 
         Returns ordered dictionary.
@@ -118,7 +117,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.aliases_file_path
+                >>> ide.Configuration().aliases_file_path
                 Path('.../.abjad/ide/__aliases__.py')
 
         Returns package path.
@@ -132,8 +131,10 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            >>> configuration.boilerplate_directory
-            Path('.../abjad/abjad/boilerplate')
+            ::
+
+                >>> ide.Configuration().boilerplate_directory
+                Path('.../abjad/abjad/boilerplate')
 
         Returns package path.
         '''
@@ -143,13 +144,6 @@ class Configuration(abjad.Configuration):
     @property
     def composer_scores_directory(self):
         r'''Gets composer scores directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> configuration.composer_scores_directory # doctest: +SKIP
-                Path('/Users/trevorbaca/Scores')
 
         Returns package path.
         '''
@@ -170,7 +164,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.configuration_directory
+                >>> ide.Configuration().configuration_directory
                 PosixPath('.../.abjad/ide')
 
         Returns path.
@@ -187,7 +181,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.ide_directory
+                >>> ide.Configuration().ide_directory
                 Path('.../ide')
 
         Returns package path.
@@ -206,7 +200,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.latex_log_file_path
+                >>> ide.Configuration().latex_log_file_path
                 Path('.../.abjad/ide/latex.log')
 
         Returns package path.
@@ -222,7 +216,7 @@ class Configuration(abjad.Configuration):
 
             ::
 
-                >>> configuration.test_scores_directory
+                >>> ide.Configuration().test_scores_directory
                 Path('.../ide/scores')
 
         Returns package path.
