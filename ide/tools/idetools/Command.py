@@ -27,7 +27,7 @@ class Command(abjad.AbjadObject):
         'build-open',
         'builds',
         'scripts',
-        'basic',
+        'path',
         'git',
         )
 

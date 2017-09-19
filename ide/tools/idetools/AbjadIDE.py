@@ -344,7 +344,6 @@ class AbjadIDE(abjad.AbjadObject):
         return sections
 
     def _make_file(self, directory):
-        assert directory.is_dir()
         name = self.io.get('file name')
         if self.is_navigation(name):
             return
@@ -457,7 +456,6 @@ class AbjadIDE(abjad.AbjadObject):
             return exit_code
 
     def _make_package(self, directory):
-        assert directory.is_dir()
         asset_type = directory.get_asset_type()
         name = self.io.get(f'enter {asset_type} name')
         if self.is_navigation(name):
@@ -1350,6 +1348,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'cp',
         argument_name='directory',
+        description='clipboard - copy',
         directories=True,
         external=True,
         scores=True,
@@ -1406,10 +1405,11 @@ class AbjadIDE(abjad.AbjadObject):
         'dup',
         argument_name='directory',
         blacklist=('contents', 'material', 'segment'),
+        description='path - duplicate',
         directories=True,
         external=True,
         scores=True,
-        section='basic',
+        section='path',
         )
     def duplicate(self, directory):
         r'''Duplicates asset in `directory`.
@@ -1448,10 +1448,7 @@ class AbjadIDE(abjad.AbjadObject):
                 name = self.io.get('enter new name')
                 if self.is_navigation(name):
                     continue
-            name = source.parent.coerce_asset_name(
-                name,
-                suffix=source.suffix,
-                )
+            name = source.parent.coerce_asset_name(name, suffix=source.suffix)
             target = source.with_name(name)
             if source == target:
                 continue
@@ -1754,6 +1751,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ce',
         argument_name='directory',
+        description='clipboard - empty',
         directories=True,
         external=True,
         scores=True,
@@ -2011,9 +2009,10 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'get',
         argument_name='directory',
+        description='path - get',
         blacklist=('contents',),
         directories=True,
-        section='basic',
+        section='path',
         )
     def get(self, directory):
         r'''Copies into `directory`.
@@ -2099,10 +2098,8 @@ class AbjadIDE(abjad.AbjadObject):
                 name = self.io.get('enter new name')
                 if self.is_navigation(name):
                     return
-                name = source.parent.coerce_asset_name(
-                    name,
-                    suffix=source.suffix,
-                    )
+                suffix = source.suffix
+                name = source.parent.coerce_asset_name(name, suffix=suffix)
                 target = target.with_name(name)
                 if target.exists():
                     self.io.display(f'existing {target.trim()} ...')
@@ -2858,10 +2855,11 @@ class AbjadIDE(abjad.AbjadObject):
         'new',
         argument_name='directory',
         blacklist=('contents',),
+        description='path - new',
         directories=True,
         external=True,
         scores=True,
-        section='basic',
+        section='path',
         )
     def new(self, directory):
         r'''Makes asset.
@@ -2986,44 +2984,35 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_file(directory / 'preface.pdf')
 
     @Command(
-        'spdfo',
+        'so',
         argument_name='directory',
         description='score pdf - open',
         directories=True,
-        section='pdf',
+        section='builds',
         )
     def open_score_pdf(self, directory):
-        r'''Opens ``score.pdf``.
+        r'''Opens ``score.pdf`` in build `directory`.
 
-        Returns score PDF path.
-        '''
-        assert directory.is_package_path()
-        path = directory._get_score_pdf()
-        if path:
-            self._open_file(path)
-        else:
-            message = 'missing score PDF'
-            message += ' in distribution and build directories ...'
-            self.io.display(message)
-
-    @Command(
-        'so',
-        argument_name='directory',
-        description='score - open',
-        directories=('build',),
-        section='build-open',
-        )
-    def open_score_pdf_in_build_directory(self, directory):
-        r'''Opens ``score.pdf`` in `directory`.
+        Opens score PDF in all other package directories.
 
         Returns none.
         '''
-        assert directory.is_build()
-        self._open_file(directory / 'score.pdf')
+        if directory.is_build():
+            self._open_file(directory / 'score.pdf')
+        else:
+            assert directory.is_package_path()
+            path = directory._get_score_pdf()
+            if path:
+                self._open_file(path)
+            else:
+                message = 'missing score PDF'
+                message += ' in distribution and build directories ...'
+                self.io.display(message)
 
     @Command(
         'cv',
         argument_name='directory',
+        description='clipboard - paste',
         directories=True,
         external=True,
         scores=True,
@@ -3081,10 +3070,11 @@ class AbjadIDE(abjad.AbjadObject):
         'rm',
         argument_name='directory',
         blacklist=('contents',),
+        description='path - remove',
         directories=True,
         external=True,
         scores=True,
-        section='basic',
+        section='path',
         )
     def remove(self, directory):
         r'''Removes file or directory.
@@ -3122,10 +3112,11 @@ class AbjadIDE(abjad.AbjadObject):
         'ren',
         argument_name='directory',
         blacklist=('contents',),
+        description='path - rename',
         directories=True,
         external=True,
         scores=True,
-        section='basic',
+        section='path',
         )
     def rename(self, directory):
         r'''Renames asset.
@@ -3139,14 +3130,12 @@ class AbjadIDE(abjad.AbjadObject):
             )
         if self.is_navigation(source):
             return
-        if source.is_contents():
-            source = source.parent
         self.io.display(f'renaming {source.trim()} ...')
         target = self.io.get('new name')
         if self.is_navigation(target):
             return
         original_target_name = target
-        target = directory.coerce_asset_name(target)
+        target = directory.coerce_asset_name(target, suffix=source.suffix)
         target = source.parent / target
         if target.exists():
             self.io.display(f'existing {target.trim()!r} ...')
@@ -3312,6 +3301,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'cs',
         argument_name='directory',
+        description='clipboard - show',
         directories=True,
         external=True,
         scores=True,

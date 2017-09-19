@@ -106,7 +106,7 @@ def test_Menu___call___04():
                     ('second command', 'rm'),
                     ('third command', 'mod'),
                     ],
-                command='basic',
+                command='path',
                 ),
             ],
         )
