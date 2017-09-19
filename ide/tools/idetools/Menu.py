@@ -384,6 +384,9 @@ class Menu(abjad.AbjadObject):
                     dimensions=dimensions,
                     )
             lines.extend(lines_)
+        lines = [_.rstrip() for _ in lines]
+        for line in lines:
+            assert not line.isspace()
         assert lines[-1] == '', repr(lines)
         return lines
 

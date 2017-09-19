@@ -31,7 +31,7 @@ def test_AbjadIDE_force_single_column_01():
             '   5: test_file_02.py              13: test_file_10.py',
             '   6: test_file_03.py              14: test_file_11.py',
             '   7: test_file_04.py              15: test_file_12.py',
-            '   8: test_file_05.py                                 ', 
+            '   8: test_file_05.py',
             ]:
             assert line in transcript.lines, repr(line)
 
