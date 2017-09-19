@@ -86,8 +86,8 @@ def test_AbjadIDE_address_caret_08():
 
     abjad_ide('^ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matches no Python file '^' ..." in transcript
+    assert "No Python file '^' ..." in transcript
 
     abjad_ide('^asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matches no Python file '^asdf' ..." in transcript
+    assert "No Python file '^asdf' ..." in transcript

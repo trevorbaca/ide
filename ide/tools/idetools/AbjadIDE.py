@@ -758,33 +758,29 @@ class AbjadIDE(abjad.AbjadObject):
                 path = Path(self.aliases[response.string[1:]])
             else:
                 path = directory.match_package_path(response.string)
-            if path is None:
-                if response.string[0] == '@':
-                    message = 'matches no file {!r} ...'
-                elif response.string[0] == '%':
-                    message = 'matches no directory {!r} ...'
-                elif response.string[0] == '^':
-                    message = 'matches no Python file {!r} ...'
-                elif response.string[0] == '*':
-                    message = 'matches no PDF {!r} ...'
-                else:
-                    raise ValueError(response.string[0])
-                message = message.format(response.string)
-                self.io.display(message)
-            elif response.string[0] == '@':
-                if path.is_package():
-                    path = path / 'definition.py'
+            character = response.string[0]
+            if character == '@' and path:
                 self._open_file(path)
-            elif response.string[0] == '%':
-                if path.is_wrapper():
-                    path = path.contents
+            elif character == '@' and not path:
+                self.io.display(f'no file {response.string!r} ...')
+            elif character == '#' and path:
+                self._run_pytest(path)
+            elif character == '#' and not path:
+                self.io.display(f'no Python file {response.string!r} ...')
+            elif character == '%' and path:
                 self._manage_directory(path)
-            elif response.string[0] == '^':
+            elif character == '%' and not path:
+                self.io.display(f'no directory {response.string!r} ...')
+            elif character == '^' and path:
                 self._run_doctest(path)
-            elif response.string[0] == '*':
-                if path.is_package():
-                    path /= 'illustration.pdf'
+            elif character == '^' and not path:
+                self.io.display(f'no Python file {response.string!r} ...')
+            elif character == '*' and path:
                 self._open_file(path)
+            elif character == '*' and not path:
+                self.io.display(f'no PDF {response.string!r} ...')
+            else:
+                raise ValueError(repr(character))
         elif response.payload in self.commands:
             command = self.commands[response.payload]
             if command.argument_name == 'directory':

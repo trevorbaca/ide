@@ -40,11 +40,11 @@ def test_AbjadIDE_address_star_04():
 
     abjad_ide('* q')
     transcript = abjad_ide.io.transcript 
-    assert "Matches no PDF '*' ..." in transcript
+    assert "No PDF '*' ..." in transcript
 
 
 def test_AbjadIDE_address_star_05():
 
     abjad_ide('*asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matches no PDF '*asdf' ..." in transcript
+    assert "No PDF '*asdf' ..." in transcript

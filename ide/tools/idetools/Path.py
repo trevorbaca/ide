@@ -10,7 +10,7 @@ class Path(abjad.Path):
 
     ### CLASS VARIABLES ###
 
-    address_characters = ('@', '%', '^', '*')
+    address_characters = ('@', '#', '%', '^', '*')
 
     configuration = Configuration()
 
@@ -261,22 +261,22 @@ class Path(abjad.Path):
                 paths = [
                     _ for _ in paths if _.suffix in suffixes or _.is_dir()
                     ]
+            elif character == '#':
+                paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
             elif character == '%':
                 paths = [_ for _ in paths if _.is_dir()]
             elif character == '*':
                 paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
             elif character == '^':
                 paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
+            else:
+                raise ValueError(repr(character))
             strings = [_.get_identifier() for _ in paths]
             string = self.smart_match(strings, pattern)
             if string is not None:
                 path = paths[strings.index(string)]
         if path is not None:
-            if character == '@' and path.is_dir():
-                path /= 'definition.py'
-                if not path.is_file():
-                    path = None
-            elif character == '^' and path.is_dir():
+            if character in ('@', '#', '^') and path.is_dir():
                 path /= 'definition.py'
                 if not path.is_file():
                     path = None

@@ -24,7 +24,7 @@ def test_AbjadIDE_go_to_segment_directory_02():
         'Abjad IDE : scores',
         'Red Score (2017)',
         ]
-    assert "Matches no directory '%X' ..." in transcript
+    assert "No directory '%X' ..." in transcript
 
 
 def test_AbjadIDE_go_to_segment_directory_03():
@@ -37,4 +37,4 @@ def test_AbjadIDE_go_to_segment_directory_03():
         'Abjad IDE : scores',
         'Red Score (2017)',
         ]
-    assert "Matches no directory '%a' ..." in transcript
+    assert "No directory '%a' ..." in transcript

@@ -4,11 +4,10 @@ abjad_ide = ide.AbjadIDE(is_test='allow_unknown_input')
 
 def test_Menu_junk_input_01():
 
-    abjad_ide('` # $ & ( ) _ = + q')
+    abjad_ide('` $ & ( ) _ = + q')
     transcript = abjad_ide.io.transcript
 
     assert "Unknown command '`' ..." in transcript
-    assert "Unknown command '#' ..." in transcript
     assert "Unknown command '$' ..." in transcript
     assert "Unknown command '&' ..." in transcript
     assert "Unknown command '(' ..." in transcript
@@ -17,11 +16,10 @@ def test_Menu_junk_input_01():
     assert "Unknown command '=' ..." in transcript
     assert "Unknown command '+' ..." in transcript
 
-    abjad_ide('`` ## $$ && (( )) __ == ++ q')
+    abjad_ide('`` $$ && (( )) __ == ++ q')
     transcript = abjad_ide.io.transcript
 
     assert "Unknown command '``' ..." in transcript
-    assert "Unknown command '##' ..." in transcript
     assert "Unknown command '$$' ..." in transcript
     assert "Unknown command '&&' ..." in transcript
     assert "Unknown command '((' ..." in transcript
