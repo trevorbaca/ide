@@ -3,141 +3,142 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_address_pound_01():
-    r'''Addresses external file.
+def test_AbjadIDE_address_plus_01():
+    r'''Tests external file.
     '''
 
     if not abjad_ide._test_external_directory():
         return
 
-    abjad_ide('cdi #ath q')
+    abjad_ide('cdi +ath q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('/Users/trevorbaca/abjad-ide/ide/tools/idetools/Path.py')
-    assert f'Running pytest on {path.trim()} ...' in transcript
+    assert f'Running pytest on Path.py ...' in transcript
 
 
-def test_AbjadIDE_address_pound_02():
-    r'''Addresses library file.
+def test_AbjadIDE_address_plus_02():
+    r'''Tests library file.
     '''
 
     if not abjad_ide._test_external_directory():
         return
 
-    path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path /= 'PitchArrayCell.py'
-
-    abjad_ide('lib #PAC q')
+    abjad_ide('lib +PAC q')
     transcript = abjad_ide.io.transcript 
-    assert f'Running pytest on {path.trim()} ...' in transcript
+    assert f'Running pytest on 2 modules ...' in transcript
 
-    abjad_ide('lib #ACel q')
+    abjad_ide('lib +ACel q')
     transcript = abjad_ide.io.transcript 
-    assert f'Running pytest on {path.trim()} ...' in transcript
+    assert f'Running pytest on PitchArrayCell.py ...' in transcript
 
 
-def test_AbjadIDE_address_pound_03():
-    r'''Addresses material definition file.
+def test_AbjadIDE_address_plus_03():
+    r'''Tests material definition files.
     '''
 
-    abjad_ide('red~score #agic q')
+    abjad_ide('red~score +agic q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').material('magic_numbers', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
+    abjad_ide('red~score mm ++defini q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running pytest on 5 modules ...' in transcript
 
-def test_AbjadIDE_address_pound_04():
-    r'''Addresses material sibling definition file backwards.
+    abjad_ide('red~score mm ++ q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running pytest on 25 modules ...' in transcript
+
+
+def test_AbjadIDE_address_plus_04():
+    r'''Tests material sibling definition files.
     '''
 
-    abjad_ide('red~score %magic #< q')
+    abjad_ide('red~score %magic +< q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('red_score').material('time_signatures', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
-
-def test_AbjadIDE_address_pound_05():
-    r'''Addresses material sibling definition file forwards.
-    '''
-
-    abjad_ide('red~score %magic #> q')
+    abjad_ide('red~score %magic +> q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('red_score').material('performers', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_06():
-    r'''Addresses segment definition file.
+def test_AbjadIDE_address_plus_05():
+    r'''Tests segment definition file.
     '''
 
-    abjad_ide('red~score #1 q')
+    abjad_ide('red~score +1 q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').segment('segment_01', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
+    abjad_ide('red~score gg ++defi q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running pytest on 3 modules ...' in transcript
 
-def test_AbjadIDE_address_pound_07():
-    r'''Addresses sibling segment definition file backwards.
+    abjad_ide('red~score gg ++ q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running pytest on 18 modules ...' in transcript
+
+
+def test_AbjadIDE_address_plus_06():
+    r'''Tests sibling segment definition files.
     '''
 
-    abjad_ide('red~score %A #< q')
+    abjad_ide('red~score %A +< q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('red_score').segment('segment_03', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
-
-def test_AbjadIDE_address_pound_08():
-    r'''Addresses sibling segment definition file forwards.
-    '''
-
-    abjad_ide('red~score %A #> q')
+    abjad_ide('red~score %A +> q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('red_score').segment('segment_02', 'definition.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_09():
-    r'''Addresses test file.
+def test_AbjadIDE_address_plus_07():
+    r'''Tests test file.
     '''
 
-    abjad_ide('red~score #tm q')
+    abjad_ide('red~score +tm q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').test / 'test_materials.py'
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_10():
-    r'''Addresses tools classfile.
+def test_AbjadIDE_address_plus_08():
+    r'''Tests tools files.
     '''
 
-    abjad_ide('red~score #RM q')
+    abjad_ide('red~score +RM q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').tools / 'RhythmMaker.py'
     assert f'Running pytest on {path.trim()} ...' in transcript
 
-    abjad_ide('red~score #ScT q')
+    abjad_ide('red~score +ScT q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').tools / 'ScoreTemplate.py'
     assert f'Running pytest on {path.trim()} ...' in transcript
 
-
-def test_AbjadIDE_address_pound_11():
-    r'''Addresses tools functionfile.
-    '''
-
-    abjad_ide('red~score #ass q')
+    abjad_ide('red~score +ass q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').tools / 'adjust_spacing_sections.py'
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_pound_12():
-    r'''Empty address and junk address.
+def test_AbjadIDE_address_plus_09():
+    r'''Handles empty input and junk input.
     '''
 
-    abjad_ide('# q')
+    abjad_ide('+ q')
     transcript = abjad_ide.io.transcript 
-    assert "No Python file '#' ..." in transcript
+    assert "No Python file '+' ..." in transcript
 
-    abjad_ide('#asdf q')
+    abjad_ide('+asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "No Python file '#asdf' ..." in transcript
+    assert "No Python file '+asdf' ..." in transcript
+
+    abjad_ide('++asdf q')
+    transcript = abjad_ide.io.transcript 
+    assert "No Python file '++asdf' ..." in transcript

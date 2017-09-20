@@ -3,32 +3,33 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_AbjadIDE_display_command_help_01():
+def test_AbjadIDE_show_help_01():
     r'''In build directory.
     '''
 
-    abjad_ide('red~score bb letter ? q')
+    abjad_ide('red~score %letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : builds : letter : commands',
+    assert menu == [
+        'Red Score (2017) : builds : letter : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -42,14 +43,14 @@ def test_AbjadIDE_display_command_help_01():
         '    music - generate (mg)',
         '    preface - generate (rg)',
         '    score - generate (sg)',
-        '    stylesheet - generate (stg)',
+        '    stylesheet - generate (yg)',
         '',
         '    back cover - edit (bce)',
         '    front cover - edit (fce)',
         '    music - edit (me)',
         '    preface - edit (re)',
         '    score - edit (se)',
-        '    stylesheet - edit (ste)',
+        '    stylesheet - edit (ye)',
         '',
         '    back cover - interpret (bci)',
         '    front cover - interpret (fci)',
@@ -77,37 +78,55 @@ def test_AbjadIDE_display_command_help_01():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_02():
+def test_AbjadIDE_show_help_02():
     r'''In builds directory.
     '''
 
     abjad_ide('red~score bb ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : builds : commands',
+    assert menu == [
+        'Red Score (2017) : builds : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -130,37 +149,55 @@ def test_AbjadIDE_display_command_help_02():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_03():
+def test_AbjadIDE_show_help_03():
     r'''In contents directory.
     '''
 
     abjad_ide('red~score ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : commands',
+    assert menu == [
+        'Red Score (2017) : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -175,37 +212,55 @@ def test_AbjadIDE_display_command_help_03():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_04():
+def test_AbjadIDE_show_help_04():
     r'''In distribution directory.
     '''
 
     abjad_ide('red~score dd ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : distribution : commands',
+    assert menu == [
+        'Red Score (2017) : distribution : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -226,12 +281,29 @@ def test_AbjadIDE_display_command_help_04():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_05():
+def test_AbjadIDE_show_help_05():
     r'''In library.
     '''
 
@@ -240,26 +312,27 @@ def test_AbjadIDE_display_command_help_05():
 
     abjad_ide('lib ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Abjad IDE : library : commands',
+    assert menu == [
+        'Abjad IDE : library : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -277,37 +350,43 @@ def test_AbjadIDE_display_command_help_05():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_06():
+def test_AbjadIDE_show_help_06():
     r'''In material directory.
     '''
 
-    abjad_ide('red~score mm magic ? q')
+    abjad_ide('red~score %magic ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : materials : magic_numbers : commands',
+    assert menu == [
+        'Red Score (2017) : materials : magic_numbers : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -340,41 +419,61 @@ def test_AbjadIDE_display_command_help_06():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_07():
+def test_AbjadIDE_show_help_07():
     r'''In materials directory.
     '''
 
     abjad_ide('red~score mm ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : materials : commands',
+    assert menu == [
+        'Red Score (2017) : materials : help',
         '',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '    every definition file - check (dfk*)',
-        '    every definition file - edit (df*)',
-        '    every file - edit (ff*)',
         '    every ly - interpret (lyi*)',
         '    every pdf - make (pdfm*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -395,37 +494,58 @@ def test_AbjadIDE_display_command_help_07():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_08():
+def test_AbjadIDE_show_help_08():
     r'''In scores directory.
     '''
 
     abjad_ide('? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Abjad IDE : scores : commands',
+    assert menu == [
+        'Abjad IDE : scores : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -442,37 +562,43 @@ def test_AbjadIDE_display_command_help_08():
         '    every package - git push (push*)',
         '    every package - git status (st*)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_09():
+def test_AbjadIDE_show_help_09():
     r'''In segment directory.
     '''
 
-    abjad_ide('red~score gg A ? q')
+    abjad_ide('red~score %A ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : segments : A : commands',
+    assert menu == [
+        'Red Score (2017) : segments : A : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -504,41 +630,61 @@ def test_AbjadIDE_display_command_help_09():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_10():
+def test_AbjadIDE_show_help_10():
     r'''In segments directory.
     '''
 
     abjad_ide('red~score gg ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : segments : commands',
+    assert menu == [
+        'Red Score (2017) : segments : help',
         '',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '    every definition file - check (dfk*)',
-        '    every definition file - edit (df*)',
-        '    every file - edit (ff*)',
         '    every ly - interpret (lyi*)',
         '    every pdf - make (pdfm*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -559,37 +705,58 @@ def test_AbjadIDE_display_command_help_10():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    go to next package (>)',
+        '    go to previous package (<)',
+        '',
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_11():
+def test_AbjadIDE_show_help_11():
     r'''In stylesheets directory.
     '''
 
     abjad_ide('red~score yy ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : stylesheets : commands',
+    assert menu == [
+        'Red Score (2017) : stylesheets : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -610,37 +777,55 @@ def test_AbjadIDE_display_command_help_11():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_12():
+def test_AbjadIDE_show_help_12():
     r'''In test directory.
     '''
 
     abjad_ide('red~score tt ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : test : commands',
+    assert menu == [
+        'Red Score (2017) : test : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -661,37 +846,55 @@ def test_AbjadIDE_display_command_help_12():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_13():
+def test_AbjadIDE_show_help_13():
     r'''In tools directory.
     '''
 
     abjad_ide('red~score oo ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : tools : commands',
+    assert menu == [
+        'Red Score (2017) : tools : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -712,37 +915,55 @@ def test_AbjadIDE_display_command_help_13():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_
 
 
-def test_AbjadIDE_display_command_help_14():
+def test_AbjadIDE_show_help_14():
     r'''In wrapper directory.
     '''
 
     abjad_ide('red ww ? q')
     menu = abjad_ide.io.transcript.menus[-1]
-    menu_ = [
-        'Red Score (2017) : wrapper : commands',
+    assert menu == [
+        'Red Score (2017) : wrapper : help',
         '',
-        '    every file - edit (ff*)',
-        '    every pdf - open (pdf*)',
-        '    every string - edit (ee*)',
+        '    every - file edit (@@)',
+        '    every - pdf open (**)',
+        '    every - string edit (ee*)',
         '',
         '    call shell (!)',
-        '    display command help (?)',
         '    force single column (!!)',
+        '    go to directory (%)',
         '    replace (rp)',
         '    search (sr)',
+        '    show help (?)',
         '',
         '    aliases - edit (als)',
         '    latex log - edit (lxg)',
         '    lilypond log - edit (lpg)',
         '',
-        '    doctest - run (dt)',
-        '    pytest - run (pt)',
-        '    tests - run (tests)',
+        '    tests - all (tests)',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
         '',
         '    clipboard - copy (cp)',
         '    clipboard - empty (ce)',
@@ -763,6 +984,23 @@ def test_AbjadIDE_display_command_help_14():
         '    git - push (push)',
         '    git - status (st)',
         '',
+        '    go to library (lib)',
+        '    go to scores directory (ss)',
+        '',
+        '    go to builds directory (bb)',
+        '    go to builds segments directory (nn)',
+        '    go to contents directory (cc)',
+        '    go to distribution directory (dd)',
+        '    go to etc directory (ee)',
+        '    go to materials directory (mm)',
+        '    go to segments directory (gg)',
+        '    go to stylesheets directory (yy)',
+        '    go to test directory (tt)',
+        '    go to tools directory (oo)',
+        '    go to wrapper directory (ww)',
+        '',                                    
+        '    back (-)',
+        '    quit (q)',
+        '    up (..)',
+        '',
         ]
-    for line, line_ in zip(menu, menu_):
-        assert line == line_

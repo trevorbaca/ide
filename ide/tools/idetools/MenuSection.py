@@ -14,7 +14,6 @@ class MenuSection(abjad.AbjadObject):
     __slots__ = (
         '_command',
         '_entries',
-        '_help',
         '_force_single_column',
         '_multiple',
         '_secondary',
@@ -29,7 +28,6 @@ class MenuSection(abjad.AbjadObject):
         command=None,
         entries=None,
         force_single_column=None,
-        help=None,
         multiple=None,
         secondary=None,
         ):
@@ -39,7 +37,6 @@ class MenuSection(abjad.AbjadObject):
         self._command = command
         self._entries = []
         self._force_single_column = force_single_column
-        self._help = help
         self._multiple = multiple
         self._secondary = secondary
         self._initialize_entries(entries)
@@ -107,14 +104,6 @@ class MenuSection(abjad.AbjadObject):
         return self._force_single_column
 
     @property
-    def help(self):
-        r'''Gets help section.
-
-        Returns `'command'`, `'navigation'` or none.
-        '''
-        return self._help
-
-    @property
     def multiple(self):
         r'''Is true when section is multiple. Otherwise false.
 
@@ -157,11 +146,9 @@ class MenuSection(abjad.AbjadObject):
                 if str(entry.number) == string:
                     return entry
         else:
-            displays = [_.display for _ in self]
-            display = Path.smart_match(displays, string)
-            if display is not None:
-                entry = self[displays.index(display)]
-                return entry
+            strings = [_.display for _ in self]
+            for i in Path.match_strings(strings, string):
+                return self[i]
 
     def range_string_to_numbers(self, range_string):
         r'''Changes `range_string` to numbers.

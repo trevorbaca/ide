@@ -6,6 +6,5 @@ def test_AbjadIDE_run_tests_01():
 
     abjad_ide('red~score tests q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score')
-    assert f'Running doctest on {path} ...' in transcript
-    assert f'Running pytest on {path} ...' in transcript
+    assert f'Running doctest on red_score ...' in transcript
+    assert f'Running pytest on red_score ...' in transcript

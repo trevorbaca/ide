@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(is_test=True)
 
 
-def test_Path_match_package_path_01():
+def test_Path_match_paths_01():
     r'''Handles numeric input.
     '''
 

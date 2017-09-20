@@ -85,9 +85,7 @@ class Menu(abjad.AbjadObject):
         elif string == '!!':
             return self(dimensions=dimensions, force_single_column=True)
         elif string == '?':
-            return self(dimensions=dimensions, redraw='commands')
-        elif string == ';':
-            return self(dimensions=dimensions, redraw='navigation')
+            return self(dimensions=dimensions, redraw='help')
         elif string == '' and self.loop:
             return self(dimensions=dimensions)
         elif string in self.navigations:
@@ -204,9 +202,8 @@ class Menu(abjad.AbjadObject):
                 if (entry.number is not None and string == str(entry.number)):
                     return self._enclose_in_list(entry.value)
             strings = [abjad.String(_.display) for _ in section]
-            result = Path.smart_match(strings, string)
-            if result is not None:
-                entry = section[strings.index(result)]
+            for i in Path.match_strings(strings, string):
+                entry = section[i]
                 return self._enclose_in_list(entry.value)
 
     def _match_command(self, string):
@@ -340,14 +337,14 @@ class Menu(abjad.AbjadObject):
             )
         return menu
 
-    def make_help_lines(self, value, dimensions=None):
+    def make_help_lines(self, dimensions=None):
         r'''Makes help lines.
 
         Returns list.
         '''
         lines = []
         for section in self:
-            if section.help == value:
+            if section.command:
                 lines_ = section.make_lines(left_margin_width=4)
                 lines.extend(lines_)
         lines = self._make_bicolumnar(
@@ -356,7 +353,7 @@ class Menu(abjad.AbjadObject):
             break_only_at_blank_lines=True,
             dimensions=dimensions,
             )
-        header = self.header + f' : {value}'
+        header = self.header + ' : help'
         header = abjad.String(header).capitalize_start()
         lines[0:0] = [header, '']
         return lines
@@ -406,5 +403,5 @@ class Menu(abjad.AbjadObject):
                 force_single_column=force_single_column,
                 )
         else:
-            lines = self.make_help_lines(value=value, dimensions=dimensions)
+            lines = self.make_help_lines(dimensions=dimensions)
         self.io.display(lines, is_menu=True, raw=True)

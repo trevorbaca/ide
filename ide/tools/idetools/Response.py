@@ -47,8 +47,16 @@ class Response(abjad.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def body(self):
-        r'''Gets body.
+    def pair(self):
+        r'''Gets prefix / pattern pair.
+
+        Returns tuple.
+        '''
+        return self.prefix, self.pattern
+
+    @property
+    def pattern(self):
+        r'''Gets pattern.
 
         Returns string or none.
         '''
@@ -88,12 +96,13 @@ class Response(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
-    def address(self, string):
-        r'''Gets address.
+    def is_shell(self):
+        r'''Is true when response is shell command.
 
-        Returns string or none.
+        Returns true or false.
         '''
-        if len(string) == 1 and self._is_single_address():
-            return self.string[:1] == string
-        if len(string) == 2 and self._is_double_address():
-            return self.string[:2] == string
+        if (self.string and
+            self.string.startswith('!') and
+            not self.string == '!!'):
+            return True
+        return False

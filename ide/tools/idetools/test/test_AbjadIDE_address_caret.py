@@ -12,8 +12,7 @@ def test_AbjadIDE_address_caret_01():
 
     abjad_ide('cdi ^ath q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('/Users/trevorbaca/abjad-ide/ide/tools/idetools/Path.py')
-    assert f'Running doctest on {path.trim()} ...' in transcript
+    assert f'Running doctest on Path.py ...' in transcript
 
 
 def test_AbjadIDE_address_caret_02():
@@ -25,29 +24,43 @@ def test_AbjadIDE_address_caret_02():
 
     abjad_ide('lib ^ACel q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path /= 'PitchArrayCell.py'
-    assert f'Running doctest on {path.trim()} ...' in transcript
+    assert f'Running doctest on PitchArrayCell.py ...' in transcript
 
 
 def test_AbjadIDE_address_caret_03():
-    r'''Addresses material definition file.
+    r'''Addresses material definition files.
     '''
 
     abjad_ide('red~score ^agic q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').materials / 'magic_numbers' / 'definition.py'
+    path = ide.Path('red_score').material('magic_numbers', 'definition.py')
     assert f'Running doctest on {path.trim()} ...' in transcript
+
+    abjad_ide('red~score mm ^^efin q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running doctest on 5 modules ...' in transcript
+
+    abjad_ide('red~score mm ^^ q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running doctest on 25 modules ...' in transcript
 
 
 def test_AbjadIDE_address_caret_04():
-    r'''Addresses segment definition file.
+    r'''Addresses segment definition files.
     '''
 
     abjad_ide('red~score ^1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments / 'segment_01' / 'definition.py'
+    path = ide.Path('red_score').segment('segment_01', 'definition.py')
     assert f'Running doctest on {path.trim()} ...' in transcript
+
+    abjad_ide('red~score gg ^^efin q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running doctest on 3 modules ...' in transcript
+
+    abjad_ide('red~score gg ^^ q')
+    transcript = abjad_ide.io.transcript 
+    assert f'Running doctest on 18 modules ...' in transcript
 
 
 def test_AbjadIDE_address_caret_05():
@@ -61,7 +74,7 @@ def test_AbjadIDE_address_caret_05():
 
 
 def test_AbjadIDE_address_caret_06():
-    r'''Addresses tools classfile.
+    r'''Addresses tools files.
     '''
 
     abjad_ide('red~score ^ScT q')
@@ -69,18 +82,13 @@ def test_AbjadIDE_address_caret_06():
     path = ide.Path('red_score').tools / 'ScoreTemplate.py'
     assert f'Running doctest on {path.trim()} ...' in transcript
 
-
-def test_AbjadIDE_address_caret_07():
-    r'''Addresses tools functionfile.
-    '''
-
     abjad_ide('red~score ^ass q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path('red_score').tools / 'adjust_spacing_sections.py'
     assert f'Running doctest on {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_caret_08():
+def test_AbjadIDE_address_caret_07():
     r'''Emtpy and junk addresses.
     '''
 
@@ -91,3 +99,7 @@ def test_AbjadIDE_address_caret_08():
     abjad_ide('^asdf q')
     transcript = abjad_ide.io.transcript 
     assert "No Python file '^asdf' ..." in transcript
+
+    abjad_ide('^^asdf q')
+    transcript = abjad_ide.io.transcript 
+    assert "No Python file '^^asdf' ..." in transcript

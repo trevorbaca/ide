@@ -8,7 +8,7 @@ class Command(abjad.AbjadObject):
 
     ### CLASS VARIABLES ###
 
-    commands = (
+    known_sections = (
         'star',
         'system',
         'global files',
@@ -29,9 +29,7 @@ class Command(abjad.AbjadObject):
         'scripts',
         'path',
         'git',
-        )
 
-    navigation = (
         'display navigation',
         'scores',
         'comparison',
@@ -39,8 +37,6 @@ class Command(abjad.AbjadObject):
         'sibling navigation',
         'back-home-quit',
         )
-
-    known_sections = commands + navigation
 
     ### INITIALIZER ###
 

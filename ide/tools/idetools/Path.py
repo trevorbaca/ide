@@ -10,7 +10,13 @@ class Path(abjad.Path):
 
     ### CLASS VARIABLES ###
 
-    address_characters = ('@', '#', '%', '^', '*')
+    address_characters = {
+        '@': 'file',
+        '%': 'directory',
+        '^': 'Python file',
+        '*': 'PDF',
+        '+': 'Python file',
+        }
 
     configuration = Configuration()
 
@@ -174,6 +180,17 @@ class Path(abjad.Path):
 
     ### PUBLIC METHODS ###
 
+    def full_trim(self, current_directory):
+        r'''Gets full trim.
+        
+        Returns string.
+        '''
+        if self == current_directory:
+            return self.name
+        if self.parent == current_directory:
+            return self.name
+        return self.trim()
+
     def get_header(self):
         r'''Gets menu header.
 
@@ -222,102 +239,8 @@ class Path(abjad.Path):
                 return False
         return True
 
-    def match_package_path(self, pattern, all=False):
-        r'''Matches package path against `pattern`.
-
-        Returns path or none.
-        '''
-        if not pattern:
-            return
-        if (2 <= len(pattern) and
-            pattern[0] in self.address_characters and
-            pattern[0] == pattern[1]):
-            prefix = pattern[:2]
-            pattern = pattern[2:]
-        elif pattern[0] in self.address_characters:
-            prefix = pattern[:1]
-            pattern = pattern[1:]
-        else:
-            prefix = ''
-        result = []
-        if pattern == '<':
-            path = self.get_previous_package(cyclic=True)
-            if path:
-                result.append(path)
-        elif pattern == '>':
-            path = self.get_next_package(cyclic=True)
-            if path:
-                result.append(path)
-        elif abjad.mathtools.is_integer_equivalent(pattern):
-            segment_number = int(pattern)
-            path = self.segment_number_to_path(segment_number)
-            if path:
-                result.append(path)
-        elif self.is_dir():
-            paths = self.list_paths()
-            if self.is_package_path():
-                paths.extend(self.contents.list_paths())
-                paths.append(self._segments)
-                paths.extend(self.builds.list_paths())
-                paths.extend(self._segments.list_paths())
-                paths.extend(self.distribution.list_paths())
-                paths.extend(self.etc.list_paths())
-                paths.extend(self.materials.list_paths())
-                for path in self.materials.list_paths():
-                    paths.extend(path.list_paths())
-                paths.extend(self.segments.list_paths())
-                for path in self.segments.list_paths():
-                    paths.extend(path.list_paths())
-                paths.extend(self.stylesheets.list_paths())
-                paths.extend(self.test.list_paths())
-                paths.extend(self.tools.list_paths())
-            if prefix.startswith('@'):
-                suffixes = self.configuration.editor_suffixes
-                paths = [
-                    _ for _ in paths if _.suffix in suffixes or _.is_dir()
-                    ]
-            elif prefix.startswith('#'):
-                paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
-            elif prefix.startswith('%'):
-                paths = [_ for _ in paths if _.is_dir()]
-            elif prefix.startswith('*'):
-                paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
-            elif prefix.startswith('^'):
-                paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
-            else:
-                raise ValueError(repr(prefix))
-            strings = [_.get_identifier() for _ in paths]
-            if all:
-                matches = self.smart_match(strings, pattern, all=True)
-                if matches:
-                    indices = []
-                    for match in set(matches):
-                        for i, string in enumerate(strings):
-                            if string == match:
-                                indices.append(i)
-                    for i in sorted(indices):
-                        path = paths[i]
-                        result.append(path)
-            else:
-                match = self.smart_match(strings, pattern)
-                if match is not None:
-                    path = paths[strings.index(match)]
-                    result.append(path)
-        result_ = []
-        for path in result:
-            if prefix[0] in ('@', '#', '^') and path.is_dir():
-                path /= 'definition.py'
-            elif prefix[0] == '*' and path.is_dir():
-                path /= 'illustration.pdf'
-            if prefix[0] == '%' or path.is_file():
-                result_.append(Path(path))
-        if all:
-            return result_
-        elif result_ and len(result_) == 1:
-            return result_[0]
-
-    def match_prototype(self, prototype):
-        r'''Is true when path matches `prototype`.
+    def is_prototype(self, prototype):
+        r'''Is true when path is `prototype`.
 
         Returns true or false.
         '''
@@ -327,8 +250,66 @@ class Path(abjad.Path):
             return False
         return self.is_package_path(prototype)
 
+    def match_paths(self, prefix, pattern):
+        r'''Matches paths against `pattern`.
+
+        Returns list.
+        '''
+        if len(prefix) == 1 and not pattern:
+            return []
+        if prefix == '%%':
+            return []
+        path, match = None, True
+        if pattern == '<':
+            path = self.get_previous_package(cyclic=True)
+        elif pattern == '>':
+            path = self.get_next_package(cyclic=True)
+        elif abjad.mathtools.is_integer_equivalent(pattern):
+            segment_number = int(pattern)
+            path = self.segment_number_to_path(segment_number)
+        if path:
+            paths, match = [path], False
+        elif len(prefix) == 2:
+            paths = self.glob('**/*')
+        elif self.is_package_path():
+            paths = self.contents.glob('**/*')
+        else:
+            paths = self.glob('*')
+        if prefix.startswith('@'):
+            suffixes = self.configuration.editor_suffixes
+            paths = [_ for _ in paths if _.suffix in suffixes or _.is_dir()]
+        elif prefix.startswith('%'):
+            paths = [_ for _ in paths if _.is_dir()]
+        elif prefix.startswith('^'):
+            paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
+        elif prefix.startswith('*'):
+            paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
+        elif prefix.startswith('+'):
+            paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
+        else:
+            raise ValueError(repr(prefix))
+        if pattern and match:
+            paths_ = []
+            strings = [_.get_identifier() for _ in paths]
+            for i in self.match_strings(strings, pattern):
+                paths_.append(paths[i])
+            paths = paths_
+        paths_ = []
+        for path in paths:
+            if prefix[0] in ('@', '^', '+') and path.is_dir():
+                path /= 'definition.py'
+            elif prefix[0] == '*' and path.is_dir():
+                path /= 'illustration.pdf'
+            if prefix[0] == '%' or path.is_file():
+                path = Path(path)
+                paths_.append(path)
+            paths = paths_
+        if prefix in ('@', '%', '*'):
+            paths = paths[:1]
+        return paths
+
     @staticmethod
-    def smart_match(strings, pattern, all=False):
+    def match_strings(strings, pattern):
         r'''Matches `pattern` against `strings`.
 
         ..  container:: example
@@ -345,38 +326,48 @@ class Path(abjad.Path):
 
             ::
 
-                >>> ide.Path.smart_match(strings, 'A') is None
-                True
+                >>> ide.Path.match_strings(strings, 'A')
+                []
 
             ::
 
-                >>> ide.Path.smart_match(strings, 'At')
+                >>> for i in ide.Path.match_strings(strings, 'At'):
+                ...     strings[i]
                 'AttachCommand.py'
 
             ::
 
-                >>> ide.Path.smart_match(strings, 'AtC')
+                >>> for i in ide.Path.match_strings(strings, 'AtC'):
+                ...     strings[i]
                 'AttachCommand.py'
 
             ::
 
-                >>> ide.Path.smart_match(strings, 'ASS')
+                >>> for i in ide.Path.match_strings(strings, 'ASS'):
+                ...     strings[i]
                 'ArpeggiationSpacingSpecifier.py'
 
             ::
 
-                >>> ide.Path.smart_match(strings, 'AC')
+                >>> for i in ide.Path.match_strings(strings, 'AC'):
+                ...     strings[i]
                 'AnchorCommand.py'
+                'AttachCommand.py'
 
             ::
 
-                >>> ide.Path.smart_match(strings, '.py')
+                >>> for i in ide.Path.match_strings(strings, '.py'):
+                ...     strings[i]
                 'AcciaccaturaSpecifier.py'
+                'AnchorCommand.py'
+                'ArpeggiationSpacingSpecifier.py'
+                'AttachCommand.py'
+                'ChordalSpacingSpecifier.py'
 
             ::
 
-                >>> ide.Path.smart_match(strings, '@AC') is None
-                True
+                >>> ide.Path.match_strings(strings, '@AC')
+                []
 
         ..  container:: example
 
@@ -384,72 +375,56 @@ class Path(abjad.Path):
 
             ::
 
-                >>> ide.Path.smart_match(strings, '||') is None
-                True
+                >>> ide.Path.match_strings(strings, '||')
+                []
 
         Returns string or none.
         '''
-        if not pattern or pattern[0] in Path.address_characters:
-            return
+        if not pattern:
+            return []
+        if pattern[0] in Path.address_characters:
+            return []
         pattern = abjad.String(pattern)
-        matches = []
-        for string in strings:
+        indices = []
+        for i, string in enumerate(strings):
             if string == pattern:
-                if all:
-                    matches.append(string)
-                else:
-                    return string
+                indices.append(i)
         if 3 <= len(pattern):
-            for string in strings:
+            for i, string in enumerate(strings):
                 if string.startswith(pattern):
-                    if all:
-                        matches.append(string)
-                    else:
-                        return string
+                    if i not in indices:
+                        indices.append(i)
         if len(pattern) <= 1:
-            if not all:
-                return
+            return indices
         strings = [abjad.String(_) for _ in strings]
         if not pattern.islower() or any(_.isdigit() for _ in pattern):
             pattern_words = pattern.delimit_words(separate_caps=True)
             if pattern_words:
-                for string in strings:
+                for i, string in enumerate(strings):
                     if (string.startswith(pattern_words[0]) and
                         string.match_word_starts(pattern_words)):
-                        if all:
-                            matches.append(string)
-                        else:
-                            return string
-                for string in strings:
+                        if i not in indices:
+                            indices.append(i)
+                for i, string in enumerate(strings):
                     if string.match_word_starts(pattern_words):
-                        if all:
-                            matches.append(string)
-                        else:
-                            return string
+                        if i not in indices:
+                            indices.append(i)
         if pattern.islower():
             pattern_characters = list(pattern)
             if pattern_characters:
-                for string in strings:
+                for i, string in enumerate(strings):
                     if (string.startswith(pattern_characters[0]) and
                         string.match_word_starts(pattern_characters)):
-                        if all:
-                            matches.append(string)
-                        else:
-                            return string
-                for string in strings:
+                        if i not in indices:
+                            indices.append(i)
+                for i, string in enumerate(strings):
                     if string.match_word_starts(pattern_characters):
-                        if all:
-                            matches.append(string)
-                        else:
-                            return string
-        if len(pattern) <= 2:
-            if not all:
-                return
-        for string in strings:
-            if pattern.lower() in string.strip_diacritics().lower():
-                if all:
-                    matches.append(string)
-                else:
-                    return string
-        if all:
-            return matches
+                        if i not in indices:
+                            indices.append(i)
+        if len(pattern) < 3:
+            return indices
+        for i, string in enumerate(strings):
+            if pattern in string.strip_diacritics().lower():
+                if i not in indices:
+                    indices.append(i)
+        return indices

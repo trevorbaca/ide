@@ -3,7 +3,7 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 
 
 def test_AbjadIDE_address_percent_01():
-    r'''To alias.
+    r'''Goes to aliased directory.
     '''
 
     if not abjad_ide._test_external_directory():
@@ -21,7 +21,7 @@ def test_AbjadIDE_address_percent_01():
 
 
 def test_AbjadIDE_address_percent_02():
-    r'''To build directory.
+    r'''Goes to build directory.
     '''
 
     abjad_ide('red~score %ette q')
@@ -30,7 +30,7 @@ def test_AbjadIDE_address_percent_02():
 
 
 def test_AbjadIDE_address_percent_03():
-    r'''To builds segments directory.
+    r'''Goes to builds segments directory.
     '''
 
     abjad_ide('red~score %_seg q')
@@ -39,7 +39,7 @@ def test_AbjadIDE_address_percent_03():
 
 
 def test_AbjadIDE_address_percent_04():
-    r'''To distribution directory.
+    r'''Goes to distribution directory.
     '''
 
     abjad_ide('red~score %istri q')
@@ -48,7 +48,7 @@ def test_AbjadIDE_address_percent_04():
 
 
 def test_AbjadIDE_address_percent_05():
-    r'''To etc directory.
+    r'''Goes to etc directory.
     '''
 
     abjad_ide('red~score %etc q')
@@ -57,7 +57,7 @@ def test_AbjadIDE_address_percent_05():
 
 
 def test_AbjadIDE_address_percent_06():
-    r'''To material directory.
+    r'''Goes to material directory.
     '''
 
     abjad_ide('red~score %agic q')
@@ -70,7 +70,7 @@ def test_AbjadIDE_address_percent_06():
 
 
 def test_AbjadIDE_address_percent_07():
-    r'''To materials directory.
+    r'''Goes to materials directory.
     '''
 
     abjad_ide('red~score %erial q')
@@ -79,7 +79,7 @@ def test_AbjadIDE_address_percent_07():
 
 
 def test_AbjadIDE_address_percent_08():
-    r'''To segment directory.
+    r'''Goes to segment directory.
     '''
 
     abjad_ide('red~score %A q')
@@ -88,7 +88,7 @@ def test_AbjadIDE_address_percent_08():
 
 
 def test_AbjadIDE_address_percent_09():
-    r'''To segments directory.
+    r'''Goes to segments directory.
     '''
 
     abjad_ide('red~score %egmen q')
@@ -97,7 +97,7 @@ def test_AbjadIDE_address_percent_09():
 
 
 def test_AbjadIDE_address_percent_10():
-    r'''To stylesheet directory.
+    r'''Goes to stylesheet directory.
     '''
 
     abjad_ide('red~score %yles q')
@@ -106,7 +106,7 @@ def test_AbjadIDE_address_percent_10():
 
 
 def test_AbjadIDE_address_percent_11():
-    r'''To test directory.
+    r'''Goes to test directory.
     '''
 
     abjad_ide('red~score %est q')
@@ -115,7 +115,7 @@ def test_AbjadIDE_address_percent_11():
 
 
 def test_AbjadIDE_address_percent_12():
-    r'''To tools directory.
+    r'''Goes to tools directory.
     '''
 
     abjad_ide('red~score %ool q')
@@ -124,18 +124,21 @@ def test_AbjadIDE_address_percent_12():
 
 
 def test_AbjadIDE_address_percent_13():
-    r'''Empty address.
+    r'''Handles empty input and junk input.
     '''
 
     abjad_ide('% q')
     transcript = abjad_ide.io.transcript 
     assert "No directory '%' ..." in transcript
 
-
-def test_AbjadIDE_address_percent_14():
-    r'''Junk address.
-    '''
+    abjad_ide('%% q')
+    transcript = abjad_ide.io.transcript 
+    assert "No directory '%%' ..." in transcript
 
     abjad_ide('%asdf q')
     transcript = abjad_ide.io.transcript 
     assert "No directory '%asdf' ..." in transcript
+
+    abjad_ide('%%asdf q')
+    transcript = abjad_ide.io.transcript 
+    assert "No directory '%%asdf' ..." in transcript
