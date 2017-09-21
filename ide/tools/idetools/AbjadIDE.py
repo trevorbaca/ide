@@ -1621,7 +1621,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([directory / 'music.ly'])
 
     @Command(
-        're',
+        'pe',
         argument_name='directory',
         description='preface - edit',
         directories=('build',),
@@ -1850,7 +1850,7 @@ class AbjadIDE(abjad.AbjadObject):
         target.write_text(template)
 
     @Command(
-        'rg',
+        'pg',
         argument_name='directory',
         description='preface - generate',
         directories=('build',),
@@ -2673,7 +2673,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files([target])
 
     @Command(
-        'ri',
+        'pi',
         argument_name='directory',
         description='preface - interpret',
         directories=('build',),
@@ -2933,7 +2933,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([directory / 'illustration.pdf'])
 
     @Command(
-        'ro',
+        'po',
         argument_name='directory',
         description='preface - open',
         directories=('build',),

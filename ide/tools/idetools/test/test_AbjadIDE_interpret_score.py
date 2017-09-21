@@ -16,7 +16,7 @@ def test_AbjadIDE_interpret_score_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red~score %letter fci ri mi bci si q')
+        abjad_ide('red~score %letter fci pi mi bci si q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_interpret_score_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red~score bb letter fci ri mi bci si q')
+        abjad_ide('red~score bb letter fci pi mi bci si q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript

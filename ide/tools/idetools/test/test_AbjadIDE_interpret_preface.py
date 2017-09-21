@@ -9,7 +9,7 @@ def test_AbjadIDE_interpret_preface_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red~score %letter ri q')
+        abjad_ide('red~score %letter pi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting preface ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -18,7 +18,7 @@ def test_AbjadIDE_interpret_preface_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red~score %letter ri q')
+        abjad_ide('red~score %letter pi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting preface ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
