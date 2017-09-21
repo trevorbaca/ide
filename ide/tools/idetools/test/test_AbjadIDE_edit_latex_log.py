@@ -1,7 +1,7 @@
 import ide
 import os
 import pytest
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 @pytest.mark.skipif(
@@ -20,7 +20,7 @@ def test_AbjadIDE_edit_latex_log_02():
     r'''In external directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('cdk lxg q')

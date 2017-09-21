@@ -1,13 +1,13 @@
 import abjad
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_address_caret_01():
     r'''Addresses external file.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('cdi ^ath q')
@@ -19,7 +19,7 @@ def test_AbjadIDE_address_caret_02():
     r'''Addresses library file.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('lib ^ACel q')

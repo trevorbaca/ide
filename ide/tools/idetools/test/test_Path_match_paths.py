@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_Path_match_paths_01():

@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_check_every_definition_file_01():

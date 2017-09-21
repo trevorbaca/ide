@@ -1,6 +1,6 @@
 import abjad
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_address_at_01():
@@ -27,7 +27,7 @@ def test_AbjadIDE_address_at_03():
     r'''Edits external file.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('cdi @ath q')
@@ -40,7 +40,7 @@ def test_AbjadIDE_address_at_04():
     r'''Edits library file.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     path = ide.Path(abjad.abjad_configuration.composer_library_tools)

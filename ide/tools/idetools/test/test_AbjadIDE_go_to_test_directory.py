@@ -1,6 +1,6 @@
 import ide
 import shutil
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_test_directory_01():

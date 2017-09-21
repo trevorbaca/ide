@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_status_01():
@@ -72,7 +72,7 @@ def test_AbjadIDE_git_status_02():
     r'''In library directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('lib st q')

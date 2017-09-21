@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test='allow_unknown_input')
+abjad_ide = ide.AbjadIDE(test='allow_unknown_input')
 
 
 def test_Menu_junk_input_01():

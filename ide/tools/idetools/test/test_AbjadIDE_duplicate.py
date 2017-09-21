@@ -1,6 +1,6 @@
 import abjad
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_duplicate_01():
@@ -37,7 +37,7 @@ def test_AbjadIDE_duplicate_04():
     r'''In external directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     directory = ide.Path('/Users/trevorbaca/baca/baca/tools')

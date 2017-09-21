@@ -37,13 +37,13 @@ class AbjadIDE(abjad.AbjadObject):
         '_clipboard',
         '_commands',
         '_current_directory',
+        '_example',
         '_io',
-        '_is_example',
-        '_is_test',
         '_navigation',
         '_navigations',
         '_previous_directory',
         '_redraw',
+        '_test',
         )
 
     configuration = Configuration()
@@ -68,19 +68,19 @@ class AbjadIDE(abjad.AbjadObject):
 
     def __init__(
         self,
-        is_example=None,
-        is_test=None,
+        example=None,
+        test=None,
         ):
         self._aliases = dict(self.configuration.aliases)
         self._clipboard = []
         self._current_directory = None
-        self._is_example = is_example
-        self._is_test = is_test
+        self._example = example
         self._navigation = None
         self._previous_directory = None
         self._redraw = None
+        self._test = test
         self._io = IO()
-        self._check_test_scores_directory(is_example or is_test)
+        self._check_test_scores_directory(example or test)
         self._cache_commands()
 
     ### SPECIAL METHODS ###
@@ -90,9 +90,9 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if self.is_test and not string.endswith('q'):
+        if self.test and not string.endswith('q'):
             raise Exception(f"Test input must end with 'q': {string!r}.")
-        self.__init__(is_example=self.is_example, is_test=self.is_test)
+        self.__init__(example=self.example, test=self.test)
         self.io.pending_input(string)
         scores = self._get_scores_directory()
         self._manage_directory(scores)
@@ -171,7 +171,7 @@ class AbjadIDE(abjad.AbjadObject):
         return names
 
     def _get_scores_directory(self):
-        if (self.is_test or self.is_example):
+        if (self.test or self.example):
             return self.configuration.test_scores_directory
         return self.configuration.composer_scores_directory
 
@@ -737,11 +737,11 @@ class AbjadIDE(abjad.AbjadObject):
             sections=sections,
             )
         dimensions = None
-        if self.is_test is True: 
+        if self.test is True: 
             dimensions = False
-        if (isinstance(self.is_test, str) and
-            self.is_test.startswith('dimensions')):
-            dimensions = eval(self.is_test.strip('dimensions='))
+        if (isinstance(self.test, str) and
+            self.test.startswith('dimensions')):
+            dimensions = eval(self.test.strip('dimensions='))
         response = menu(dimensions=dimensions, redraw=redraw)
         if self.is_navigation(response.string):
             pass
@@ -795,7 +795,7 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             assert response.payload is None, repr(response)
             self.io.display(fr'unknown command {response.string!r} ...')
-            if self.is_test and self.is_test != 'allow_unknown_input':
+            if self.test and self.test != 'allow_unknown_input':
                 raise Exception(response)
         self.io.display('')
         if response.string == 'q':
@@ -842,7 +842,7 @@ class AbjadIDE(abjad.AbjadObject):
             command = f'open {string}'
             for path in paths:
                 self.io.display(f'opening {path.trim()} ...')
-        if self.is_test:
+        if self.test:
             return
         if (platform.system() == 'Darwin' and paths[0].suffix == '.pdf'):
             boilerplate = self.configuration.boilerplate_directory
@@ -979,12 +979,6 @@ class AbjadIDE(abjad.AbjadObject):
         if bool(response.string):
             self.io.display(f'matches no path {response.string!r} ...')
 
-    def _test_external_directory(self):
-        scores = abjad.abjad_configuration.composer_scores_directory
-        if 'trevorbaca' in scores:
-            return True
-        return False
-
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
         prototype = ('landscape', 'portrait', None)
         assert orientation in prototype, repr(orientation)
@@ -1066,28 +1060,20 @@ class AbjadIDE(abjad.AbjadObject):
         return self._current_directory
 
     @property
+    def example(self):
+        r'''Is true when IDE is example.
+
+        Returns true, false or none.
+        '''
+        return self._example
+
+    @property
     def io(self):
         r'''Gets IO manager.
 
         Returns IO manager.
         '''
         return self._io
-
-    @property
-    def is_example(self):
-        r'''Is true when IDE is example.
-
-        Returns true, false or none.
-        '''
-        return self._is_example
-
-    @property
-    def is_test(self):
-        r'''Is true when IDE is test.
-
-        Returns true, false or none.
-        '''
-        return self._is_test
 
     @property
     def navigation(self):
@@ -1112,6 +1098,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns list.
         '''
         return self._previous_directory
+
+    @property
+    def test(self):
+        r'''Is true when IDE is test.
+
+        Returns true, false or none.
+        '''
+        return self._test
 
     ### PUBLIC METHODS ###
 
@@ -1158,6 +1152,16 @@ class AbjadIDE(abjad.AbjadObject):
             if argument.string in self.navigations:
                 self._navigation = argument.string
                 return True
+        return False
+
+    def test_baca_directories(self):
+        r'''Is true when IDE can test local directories on Trevor's machine.
+
+        Returns true or false.
+        '''
+        scores = abjad.abjad_configuration.composer_scores_directory
+        if 'trevorbaca' in scores:
+            return True
         return False
 
     ### USER METHODS ###
@@ -1520,7 +1524,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(search_string):
             return
         command = rf'vim -c "grep {search_string!s} --type=python"'
-        if self.is_test:
+        if self.test:
             return
         with self.change(directory):
             abjad.IOManager.spawn_subprocess(command)
@@ -1720,7 +1724,7 @@ class AbjadIDE(abjad.AbjadObject):
             catalog_number += f' / {catalog_number_suffix}'
         values['catalog_number'] = catalog_number
         composer_website = abjad.abjad_configuration.composer_website or ''
-        if self.is_test or self.is_example:
+        if self.test or self.example:
             composer_website = 'www.composer-website.com'
         values['composer_website'] = composer_website
         price = contents.get_metadatum('price', r'\null')
@@ -1758,7 +1762,7 @@ class AbjadIDE(abjad.AbjadObject):
         year = contents.get_metadatum('year', '')
         values['year'] = str(year)
         composer = abjad.abjad_configuration.composer_uppercase_name
-        if (self.is_test or self.is_example):
+        if (self.test or self.example):
             composer = 'COMPOSER'
         values['composer'] = str(composer)
         paper_size = contents.get_metadatum('paper_size', 'letter')
@@ -2069,7 +2073,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'{root} ... nothing to commit.')
                 return
             abjad.IOManager.spawn_subprocess('git status .')
-            if self.is_test:
+            if self.test:
                 return
             command = f'git add -A {root}'
             lines = abjad.IOManager.run_command(command)
@@ -2142,7 +2146,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         with self.change(root):
             self.io.display(f'git pull {root} ...')
-            if not self.is_test:
+            if not self.test:
                 lines = abjad.IOManager.run_command('git pull .')
                 if lines and 'Already up-to-date' in lines[-1]:
                     lines = lines[-1:]
@@ -2189,7 +2193,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         with self.change(root):
             self.io.display(f'git push {root} ...')
-            if not self.is_test:
+            if not self.test:
                 abjad.IOManager.spawn_subprocess('git push .')
 
     @Command(
@@ -2460,7 +2464,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         directory = self.configuration.composer_scores_directory
-        if self.is_test or self.is_example:
+        if self.test or self.example:
             directory = self.configuration.test_scores_directory
         self._manage_directory(directory)
 

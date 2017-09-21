@@ -1,5 +1,5 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_edit_every_string_01():
@@ -24,7 +24,7 @@ def test_AbjadIDE_edit_every_string_03():
     r'''Works in external directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('cdk ee* foo q')

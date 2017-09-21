@@ -1,12 +1,12 @@
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_aliases_01():
     r'''From material directory.
     '''
     
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('fab mm tempi sti q')
@@ -24,7 +24,7 @@ def test_AbjadIDE_aliases_02():
     r'''From scores directory.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('sti q')

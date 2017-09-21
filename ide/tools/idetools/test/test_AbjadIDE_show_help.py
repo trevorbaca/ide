@@ -1,6 +1,6 @@
 import abjad
 import ide
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_show_help_01():
@@ -319,7 +319,7 @@ def test_AbjadIDE_show_help_05():
     r'''In library.
     '''
 
-    if not abjad_ide._test_external_directory():
+    if not abjad_ide.test_baca_directories():
         return
 
     abjad_ide('lib ? q')

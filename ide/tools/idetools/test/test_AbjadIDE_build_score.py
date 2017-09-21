@@ -1,7 +1,7 @@
 import ide
 import os
 import pytest
-abjad_ide = ide.AbjadIDE(is_test=True)
+abjad_ide = ide.AbjadIDE(test=True)
 
 
 @pytest.mark.skipif(
