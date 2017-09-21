@@ -2389,6 +2389,22 @@ class AbjadIDE(abjad.AbjadObject):
         self._manage_directory(directory)
 
     @Command(
+        '>>',
+        argument_name='directory',
+        directories=True,
+        scores=True,
+        section='sibling navigation',
+        )
+    def go_to_next_score(self, directory):
+        r'''Goes to next score.
+
+        Returns none.
+        '''
+        assert directory.is_package_path() or directory.is_scores()
+        wrapper = directory.get_next_score(cyclic=True)
+        self._manage_directory(wrapper.contents)
+
+    @Command(
         '<',
         argument_name='directory',
         directories=('material', 'materials', 'segment', 'segments',),
@@ -2403,6 +2419,22 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_package_path(prototype)
         directory = directory.get_previous_package(cyclic=True)
         self._manage_directory(directory)
+
+    @Command(
+        '<<',
+        argument_name='directory',
+        directories=True,
+        scores=True,
+        section='sibling navigation',
+        )
+    def go_to_previous_score(self, directory):
+        r'''Goes to previous score.
+
+        Returns none.
+        '''
+        assert directory.is_package_path() or directory.is_scores()
+        wrapper = directory.get_previous_score(cyclic=True)
+        self._manage_directory(wrapper.contents)
 
     @Command(
         'ss',
