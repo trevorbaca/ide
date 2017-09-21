@@ -64,7 +64,7 @@ def test_AbjadIDE_git_push_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib push q')
+    abjad_ide('ll push q')
     transcript = abjad_ide.io.transcript
     root = ide.Path('/Users/trevorbaca/baca')
     assert f'Git push {root} ...' in transcript

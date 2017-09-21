@@ -64,7 +64,7 @@ def test_AbjadIDE_git_commit_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib ci q')
+    abjad_ide('ll ci q')
     transcript = abjad_ide.io.transcript
     root = ide.Path('/Users/trevorbaca/baca')
     assert f'Git commit {root} ...' in transcript

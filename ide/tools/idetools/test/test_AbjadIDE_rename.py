@@ -188,10 +188,10 @@ def test_AbjadIDE_rename_08():
         target = source.with_name('NewFooCommand.py')
         target.remove()
 
-        abjad_ide('lib new FooCommand.py y q')
+        abjad_ide('ll new FooCommand.py y q')
         assert source.is_file()
 
-        abjad_ide('lib ren FooCommand.py NewFooCommand.py y q')
+        abjad_ide('ll ren FooCommand.py NewFooCommand.py y q')
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_file()

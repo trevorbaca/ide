@@ -66,7 +66,7 @@ def test_AbjadIDE_git_diff_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib diff q')
+    abjad_ide('ll diff q')
     transcript = abjad_ide.io.transcript
     path = ide.Path(abjad.abjad_configuration.composer_library_tools)
     assert f'Git diff {path.trim()} ...' in transcript

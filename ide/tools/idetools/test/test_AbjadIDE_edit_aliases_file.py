@@ -10,7 +10,7 @@ abjad_ide = ide.AbjadIDE(test=True)
     )
 def test_AbjadIDE_edit_aliases_file_01():
 
-    abjad_ide('red~score mm tempi als q')
+    abjad_ide('red~score mm tempi al q')
     transcript = abjad_ide.io.transcript
     path = ide.Path(abjad_ide.configuration.aliases_file_path)
     assert f'Editing {path} ...' in transcript
@@ -23,7 +23,7 @@ def test_AbjadIDE_edit_aliases_file_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('cdk als q')
+    abjad_ide('cdk al q')
     transcript = abjad_ide.io.transcript
     path = abjad_ide.configuration.aliases_file_path
     assert f'Editing {path} ...' in transcript

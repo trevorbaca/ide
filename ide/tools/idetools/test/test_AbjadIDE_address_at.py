@@ -46,11 +46,11 @@ def test_AbjadIDE_address_at_04():
     path = ide.Path(abjad.abjad_configuration.composer_library_tools)
     path /= 'PitchArrayCell.py'
 
-    abjad_ide('lib @PAC q')
+    abjad_ide('ll @PAC q')
     transcript = abjad_ide.io.transcript 
     assert f'Editing {path.trim()} ...' in transcript
 
-    abjad_ide('lib @ACel q')
+    abjad_ide('ll @ACel q')
     transcript = abjad_ide.io.transcript 
     assert f'Editing {path.trim()} ...' in transcript
 

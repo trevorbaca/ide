@@ -64,7 +64,7 @@ def test_AbjadIDE_git_pull_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib pull q')
+    abjad_ide('ll pull q')
     transcript = abjad_ide.io.transcript
     root = ide.Path('/Users/trevorbaca/baca')
     assert f'Git pull {root} ...' in transcript

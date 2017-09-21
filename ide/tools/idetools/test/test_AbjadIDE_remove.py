@@ -81,11 +81,11 @@ def test_AbjadIDE_remove_02():
     directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
     with abjad.FilesystemState(keep=[directory]):
 
-        abjad_ide('lib new FooCommand.py y q')
+        abjad_ide('ll new FooCommand.py y q')
         path = directory / 'FooCommand.py'
         assert path.is_file()
 
-        abjad_ide('lib rm FooCommand.py remove q')
+        abjad_ide('ll rm FooCommand.py remove q')
         transcript = abjad_ide.io.transcript
         assert not path.exists()
         assert 'Select assets to remove> FooCommand.py'
@@ -93,7 +93,7 @@ def test_AbjadIDE_remove_02():
         assert "Type 'remove' to proceed> remove" in transcript
         assert f'Removing {path.trim()} ...' in transcript
 
-        abjad_ide('lib rm FooCommand.py q')
+        abjad_ide('ll rm FooCommand.py q')
         transcript = abjad_ide.io.transcript
         assert "Matches no path 'FooCommand.py' ..." in transcript
 

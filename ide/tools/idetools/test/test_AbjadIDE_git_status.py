@@ -75,7 +75,7 @@ def test_AbjadIDE_git_status_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib st q')
+    abjad_ide('ll st q')
     transcript = abjad_ide.io.transcript
     root = ide.Path('/Users/trevorbaca/baca')
     assert f'Git status {root} ...' in transcript

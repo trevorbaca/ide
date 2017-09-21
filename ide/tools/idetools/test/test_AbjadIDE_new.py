@@ -339,7 +339,7 @@ def test_AbjadIDE_new_11():
     directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
     with abjad.FilesystemState(keep=[directory]):
 
-        abjad_ide('lib new FooCommand y q')
+        abjad_ide('ll new FooCommand y q')
         transcript = abjad_ide.io.transcript
         path = directory / 'FooCommand.py'
         assert path.is_file()
@@ -347,11 +347,11 @@ def test_AbjadIDE_new_11():
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
-        abjad_ide('lib new FooCommand q')
+        abjad_ide('ll new FooCommand q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...' in transcript
 
-        abjad_ide('lib new foo~command y q')
+        abjad_ide('ll new foo~command y q')
         transcript = abjad_ide.io.transcript
         path = directory / 'foo_command.py'
         assert path.is_file()
@@ -359,6 +359,6 @@ def test_AbjadIDE_new_11():
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
-        abjad_ide('lib new foo~command q')
+        abjad_ide('ll new foo~command q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...' in transcript

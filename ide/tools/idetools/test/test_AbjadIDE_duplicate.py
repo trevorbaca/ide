@@ -47,7 +47,7 @@ def test_AbjadIDE_duplicate_04():
         target = source.with_name('NewMatrix.py')
         target.remove()
 
-        abjad_ide(f'lib dup Matrix.py NewMatrix.py y q')
+        abjad_ide(f'll dup Matrix.py NewMatrix.py y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         assert f'Select assets to duplicate> Matrix.py' in transcript

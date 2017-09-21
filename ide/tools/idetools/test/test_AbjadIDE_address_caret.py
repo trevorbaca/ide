@@ -22,7 +22,7 @@ def test_AbjadIDE_address_caret_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib ^ACel q')
+    abjad_ide('ll ^ACel q')
     transcript = abjad_ide.io.transcript 
     assert f'Running doctest on PitchArrayCell.py ...' in transcript
 

@@ -22,11 +22,11 @@ def test_AbjadIDE_address_plus_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib +PAC q')
+    abjad_ide('ll +PAC q')
     transcript = abjad_ide.io.transcript 
     assert f'Running pytest on 2 modules ...' in transcript
 
-    abjad_ide('lib +ACel q')
+    abjad_ide('ll +ACel q')
     transcript = abjad_ide.io.transcript 
     assert f'Running pytest on PitchArrayCell.py ...' in transcript
 

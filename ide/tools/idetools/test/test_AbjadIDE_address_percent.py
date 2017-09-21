@@ -9,12 +9,12 @@ def test_AbjadIDE_address_percent_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib %sti q')
+    abjad_ide('ll %sti q')
     transcript = abjad_ide.io.transcript 
     assert 'Abjad IDE : library' in transcript.titles
     assert 'Stirrings Still (2017)' in transcript.titles
 
-    abjad_ide('lib %fab q')
+    abjad_ide('ll %fab q')
     transcript = abjad_ide.io.transcript 
     assert 'Abjad IDE : library' in transcript.titles
     assert 'Fabergé Investigations (2016)' in transcript.titles

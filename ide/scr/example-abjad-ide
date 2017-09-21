@@ -14,5 +14,5 @@ except ImportError:
     pass
 
 string = ' '.join(sys.argv[1:])
-abjad_ide = ide.AbjadIDE(is_example=True)
+abjad_ide = ide.AbjadIDE(example=True)
 abjad_ide(string)

@@ -85,16 +85,23 @@ class Menu(abjad.AbjadObject):
             )
         if string is None:
             payload = None
-        elif string == '!!':
-            return self(dimensions=dimensions, force_single_column=True)
         elif string == '?':
             return self(dimensions=dimensions, redraw='help')
+        elif string == ';':
+            return self(dimensions=dimensions, force_single_column=True)
+        elif string == '?;':
+            return self(
+                dimensions=dimensions,
+                force_single_column=True,
+                redraw='help',
+                )
         elif string == '' and self.loop:
             return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
         elif bool(self._match_alias(string)):
             payload = self._match_alias(string)
+            raise Exception(payload)
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
         elif bool(self._match_asset(string)):
@@ -207,7 +214,7 @@ class Menu(abjad.AbjadObject):
             if section.command:
                 continue
             for entry in section:
-                if entry.value == path:
+                if str(entry.value) == str(path):
                     return path
 
     def _match_asset(self, string):
@@ -324,6 +331,7 @@ class Menu(abjad.AbjadObject):
     def from_directory(
         directory,
         aliases=None,
+        allow_aliases=None,
         io=None,
         navigations=None,
         sections=None,
@@ -353,6 +361,7 @@ class Menu(abjad.AbjadObject):
             sections.append(section)
         menu = Menu(
             aliases=aliases,
+            allow_aliases=allow_aliases,
             header=directory.get_header(),
             io=io,
             loop=True,
@@ -361,7 +370,7 @@ class Menu(abjad.AbjadObject):
             )
         return menu
 
-    def make_help_lines(self, dimensions=None):
+    def make_help_lines(self, dimensions=None, force_single_column=None):
         r'''Makes help lines.
 
         Returns list.
@@ -371,12 +380,13 @@ class Menu(abjad.AbjadObject):
             if section.command:
                 lines_ = section.make_lines(left_margin_width=4)
                 lines.extend(lines_)
-        lines = self._make_bicolumnar(
-            lines,
-            lines_above=2,
-            break_only_at_blank_lines=True,
-            dimensions=dimensions,
-            )
+        if not force_single_column:
+            lines = self._make_bicolumnar(
+                lines,
+                lines_above=2,
+                break_only_at_blank_lines=True,
+                dimensions=dimensions,
+                )
         header = self.header + ' : help'
         header = abjad.String(header).capitalize_start()
         lines[0:0] = [header, '']
@@ -427,5 +437,8 @@ class Menu(abjad.AbjadObject):
                 force_single_column=force_single_column,
                 )
         else:
-            lines = self.make_help_lines(dimensions=dimensions)
+            lines = self.make_help_lines(
+                dimensions=dimensions,
+                force_single_column=force_single_column,
+                )
         self.io.display(lines, is_menu=True, raw=True)

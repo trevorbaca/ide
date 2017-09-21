@@ -35,7 +35,7 @@ def test_AbjadIDE_replace_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib rp RhythmMaker <return> q')
+    abjad_ide('ll rp RhythmMaker <return> q')
     transcript = abjad_ide.io.transcript
     assert 'Enter search string> RhythmMaker' in transcript
     assert 'Enter replace string>' in transcript

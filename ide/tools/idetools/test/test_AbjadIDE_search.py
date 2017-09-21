@@ -51,6 +51,6 @@ def test_AbjadIDE_search_03():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('lib sr RhythmMaker q')
+    abjad_ide('ll sr RhythmMaker q')
     transcript = abjad_ide.io.transcript
     assert 'Enter search string> RhythmMaker' in transcript

@@ -35,7 +35,7 @@ def test_AbjadIDE_force_single_column_01():
             ]:
             assert line in transcript.lines, repr(line)
 
-        abjad_ide('red~score oo !! q')
+        abjad_ide('red~score oo ; q')
         transcript = abjad_ide.io.transcript
         for line in [
             '   1: RhythmMaker.py',

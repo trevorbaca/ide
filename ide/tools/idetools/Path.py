@@ -360,14 +360,19 @@ class Path(abjad.Path):
         for i, string in enumerate(strings):
             if string == pattern:
                 indices.append(i)
+        strings = [abjad.String(_) for _ in strings]
         if 3 <= len(pattern):
             for i, string in enumerate(strings):
                 if string.startswith(pattern):
                     if i not in indices:
                         indices.append(i)
+            for i, string in enumerate(strings):
+                string = string.strip_diacritics().lower()
+                if string.startswith(pattern.lower()):
+                    if i not in indices:
+                        indices.append(i)
         if len(pattern) <= 1:
             return indices
-        strings = [abjad.String(_) for _ in strings]
         if not pattern.islower() or any(_.isdigit() for _ in pattern):
             pattern_words = pattern.delimit_words(separate_caps=True)
             if pattern_words:
