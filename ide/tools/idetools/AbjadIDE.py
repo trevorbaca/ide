@@ -678,6 +678,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _make_selector(
         self,
         aliases=None,
+        allow_aliases=None,
         navigations=None,
         force_single_column=False,
         header=None,
@@ -706,6 +707,7 @@ class AbjadIDE(abjad.AbjadObject):
             sections = [section]
         menu = Menu(
             aliases=aliases,
+            allow_aliases=allow_aliases,
             navigations=navigations,
             getter=True,
             header=header,
@@ -1938,6 +1940,7 @@ class AbjadIDE(abjad.AbjadObject):
             header = directory.get_header() + f' : get {label} from ...'
             selector = self._make_selector(
                 aliases=self.aliases,
+                allow_aliases=True,
                 header=header,
                 items=items,
                 multiple=False,

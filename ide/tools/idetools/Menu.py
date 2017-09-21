@@ -23,6 +23,7 @@ class Menu(abjad.AbjadObject):
 
     __slots__ = (
         '_aliases',
+        '_allow_aliases',
         '_getter',
         '_header',
         '_io',
@@ -39,6 +40,7 @@ class Menu(abjad.AbjadObject):
     def __init__(
         self,
         aliases=None,
+        allow_aliases=None,
         getter=None,
         header=None,
         io=None,
@@ -48,6 +50,7 @@ class Menu(abjad.AbjadObject):
         sections=None,
         ):
         self._aliases = aliases
+        self._allow_aliases = allow_aliases
         self._getter = getter
         self._header = header
         self._io = io or IO()
@@ -90,8 +93,8 @@ class Menu(abjad.AbjadObject):
             return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
-        elif self.aliases and string in self.aliases:
-            payload = None
+        elif bool(self._match_alias(string)):
+            payload = self._match_alias(string)
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
         elif bool(self._match_asset(string)):
@@ -194,6 +197,19 @@ class Menu(abjad.AbjadObject):
             lines.append('')
         return lines
 
+    def _match_alias(self, string):
+        if not self.aliases:
+            return
+        path = self.aliases.get(string)
+        if path is None:
+            return
+        for section in self.sections:
+            if section.command:
+                continue
+            for entry in section:
+                if entry.value == path:
+                    return path
+
     def _match_asset(self, string):
         for section in self.sections:
             if section.command:
@@ -237,6 +253,14 @@ class Menu(abjad.AbjadObject):
         Returns dictionary or none.
         '''
         return self._aliases
+
+    @property
+    def allow_aliases(self):
+        r'''Is true when menu allow aliases.
+
+        Returns true, false or none.
+        '''
+        return self._allow_aliases
 
     @property
     def getter(self):
