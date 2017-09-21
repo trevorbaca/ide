@@ -488,8 +488,8 @@ class AbjadIDE(abjad.AbjadObject):
         scores = self._get_scores_directory()
         wrapper = scores._find_empty_wrapper()
         if wrapper is not None:
-            self.io.display(f'found {wrapper}.')
-            if not self.confirm(f'populate {wrapper}?'):
+            self.io.display(f'found {wrapper.trim()}.')
+            if not self.confirm(f'populate {wrapper.trim()}?'):
                 return
         title = self.io.get('enter title')
         if self.is_navigation(title):
@@ -498,9 +498,9 @@ class AbjadIDE(abjad.AbjadObject):
             name = scores.coerce_asset_name(title)
             wrapper = scores / name
             if wrapper.exists():
-                self.io.display(f'existing {wrapper} ...')
+                self.io.display(f'existing {wrapper.trim()} ...')
                 return
-        self.io.display(f'making {wrapper} ...')
+        self.io.display(f'making {wrapper.trim()} ...')
         year = datetime.date.today().year
         abjad.IOManager._make_score_package(
             score_package_path=str(wrapper),

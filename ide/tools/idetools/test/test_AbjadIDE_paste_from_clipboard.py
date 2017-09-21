@@ -16,7 +16,7 @@ def test_AbjadIDE_paste_from_clipboard_01():
 
         abjad_ide('red dd cp gram-no ss blue dd cv q')
         transcript = abjad_ide.io.transcript
-        assert source in abjad_ide._clipboard
+        assert source in abjad_ide.clipboard
         assert target_1.is_file()
         assert 'Select files for clipboard> gram-no' in transcript
         assert 'Copying to clipboard ...' in transcript

@@ -14,7 +14,8 @@ def test_AbjadIDE_edit_lilypond_log_01():
     abjad_ide('lp q')
     transcript = abjad_ide.io.transcript
     path = abjad.abjad_configuration.lilypond_log_file_path
-    assert f'Editing {path} ...' in transcript
+    path = ide.Path(path)
+    assert f'Editing {path.trim()} ...' in transcript
 
 
 def test_AbjadIDE_edit_lilypond_log_02():
@@ -27,4 +28,5 @@ def test_AbjadIDE_edit_lilypond_log_02():
     abjad_ide('cdk lp q')
     transcript = abjad_ide.io.transcript
     path = abjad.abjad_configuration.lilypond_log_file_path
-    assert f'Editing {path} ...' in transcript
+    path = ide.Path(path)
+    assert f'Editing {path.trim()} ...' in transcript

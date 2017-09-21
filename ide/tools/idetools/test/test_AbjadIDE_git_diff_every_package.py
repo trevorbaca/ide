@@ -9,4 +9,4 @@ def test_AbjadIDE_git_diff_every_package_01():
     abjad_ide('diff* q')
     transcript = abjad_ide.io.transcript
     for path in [ide.Path('red_score'), ide.Path('blue_score')]:
-        assert f'Git diff {path.wrapper()} ...' in transcript
+        assert f'Git diff {path.wrapper().trim()} ...' in transcript
