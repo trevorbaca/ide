@@ -2098,7 +2098,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ci*',
         argument_name='directory',
-        description='git - git commit',
+        description='git - commit',
         scores=True,
         section='git',
         )
@@ -2136,6 +2136,22 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(f'git diff {directory}')
 
     @Command(
+        'diff*',
+        argument_name='directory',
+        description='git - diff',
+        scores=True,
+        section='git',
+        )
+    def git_diff_every_package(self, directory):
+        r'''Displays Git diff of every working copy.
+
+        Returns none.
+        '''
+        assert directory.is_scores()
+        for path in directory.list_paths():
+            self.git_diff(path)
+
+    @Command(
         'pull',
         argument_name='directory',
         description='git - pull',
@@ -2169,7 +2185,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'pull*',
         argument_name='directory',
-        description='git - git pull',
+        description='git - pull',
         scores=True,
         section='git',
         )
@@ -2207,7 +2223,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'push*',
         argument_name='directory',
-        description='git - git push',
+        description='git - push',
         scores=True,
         section='git',
         )
@@ -2248,7 +2264,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'st*',
         argument_name='directory',
-        description='git - git status',
+        description='git - status',
         scores=True,
         section='git',
         )
