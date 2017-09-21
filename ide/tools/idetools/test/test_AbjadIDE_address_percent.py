@@ -129,16 +129,16 @@ def test_AbjadIDE_address_percent_13():
 
     abjad_ide('% q')
     transcript = abjad_ide.io.transcript 
-    assert "No directory '%' ..." in transcript
+    assert "Matching '%' to no directories ..." in transcript
 
     abjad_ide('%% q')
     transcript = abjad_ide.io.transcript 
-    assert "No directory '%%' ..." in transcript
+    assert "Matching '%%' to no directories ..." in transcript
 
     abjad_ide('%asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "No directory '%asdf' ..." in transcript
+    assert "Matching '%asdf' to no directories ..." in transcript
 
     abjad_ide('%%asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "No directory '%%asdf' ..." in transcript
+    assert "Matching '%%asdf' to no directories ..." in transcript

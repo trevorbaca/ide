@@ -19,13 +19,13 @@ def test_AbjadIDE_replace_01():
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> RhythmMaker' in transcript
         assert 'Enter replace string> FooMaker' in transcript
-        assert 'Replaced 2 instances over 1 lines in 1 files.' in transcript
+        assert 'Replaced 2 instances over 1 line in 1 file.' in transcript
 
         abjad_ide('red~score rp FooMaker RhythmMaker y q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> FooMaker' in transcript
         assert 'Enter replace string> RhythmMaker' in transcript
-        assert 'Replaced 2 instances over 1 lines in 1 files.' in transcript
+        assert 'Replaced 2 instances over 1 line in 1 file.' in transcript
 
 
 def test_AbjadIDE_replace_02():

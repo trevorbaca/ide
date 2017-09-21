@@ -13,9 +13,9 @@ class Path(abjad.Path):
     address_characters = {
         '@': 'file',
         '%': 'directory',
-        '^': 'Python file',
+        '^': 'source file',
         '*': 'PDF',
-        '+': 'Python file',
+        '+': 'test file',
         }
 
     configuration = Configuration()
@@ -63,26 +63,26 @@ class Path(abjad.Path):
             if line.startswith('A'):
                 path = line.strip('A')
                 path = path.strip()
-                root = self.wrapper()
+                root = self.wrapper
                 path = root / path
                 paths.append(path)
         return paths
 
     def _get_git_status_lines(self):
-        with abjad.TemporaryDirectoryChange(directory=self.wrapper()):
+        with abjad.TemporaryDirectoryChange(directory=self.wrapper):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
     def _get_repository_root(self):
         if not self.exists():
             return
-        if self.wrapper() is None:
+        if self.wrapper is None:
             path = self
         else:
-            path = self.wrapper()
+            path = self.wrapper
         test_scores = self.configuration.test_scores_directory
         if str(self).startswith(str(test_scores)):
-            return self.wrapper()
+            return self.wrapper
         while str(path) != str(path.parts[0]):
             for path_ in path.iterdir():
                 if path_.name == '.git':
@@ -92,7 +92,7 @@ class Path(abjad.Path):
     def _get_unadded_asset_paths(self):
         assert self.is_dir()
         paths = []
-        root = self.wrapper()
+        root = self.wrapper
         git_status_lines = self._get_git_status_lines()
         for line in git_status_lines:
             line = str(line)
@@ -148,18 +148,210 @@ class Path(abjad.Path):
         with abjad.TemporaryDirectoryChange(directory=path):
             abjad.IOManager.spawn_subprocess(command)
 
+    ### PUBLIC PROPERTIES ###
+
+    @property
+    def scores(self):
+        r'''Gets scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> path = ide.Path(
+                ...     '/path/to/scores/my_score/my_score',
+                ...     scores='/path/to/scores',
+                ...     )
+                >>> path.scores
+                Path*('/path/to/scores')
+                >>> path.scores('red_score', 'red_score', 'etc')
+                Path*('/path/to/scores/red_score/red_score/etc')
+
+        Returns package path or none.
+        '''
+        if getattr(self, '_scores', None) is not None:
+            result = self._scores
+            result._scores = self._scores
+            return result
+        for scores in (
+            self.configuration.test_scores_directory,
+            abjad.abjad_configuration.composer_scores_directory,
+            ):
+            if str(self).startswith(str(scores)):
+                return type(self)(scores)
+
     ### PUBLIC METHODS ###
 
-    def full_trim(self, current_directory):
-        r'''Gets full trim.
-        
-        Returns string.
+    def collect_paths(self, prefix, pattern=None):
+        r'''Collects `prefix` paths that match `pattern`.
+
+        ..  container:: example
+
+            In segments directory:
+
+            ::
+
+                >>> directory = ide.Path('red_score').segments
+
+            Missing pattern:
+
+            ::
+
+                >>> directory.collect_paths('@')
+                []
+
+            
+            Unique local match (in current directory):
+
+            ::
+
+                >>> for path in directory.collect_paths('@', '__init'):
+                ...     path.trim()
+                ...
+                'red_score/segments/__init__.py'
+
+            Unique remote match (elsewhere in score):
+
+            ::
+
+                >>> for path in directory.collect_paths('@', 'ST'):
+                ...     path.trim()
+                ...
+                'red_score/tools/ScoreTemplate.py'
+
+            Neither local nor remote unique match; so all matches scorewide
+            (for error messaging):
+
+            ::
+
+                >>> for path in directory.collect_paths('@', 'def'):
+                ...     path.trim()
+                ...
+                'red_score/materials/magic_numbers/definition.py'
+                'red_score/materials/performers/definition.py'
+                'red_score/materials/ranges/definition.py'
+                'red_score/materials/tempi/definition.py'
+                'red_score/materials/time_signatures/definition.py'
+                'red_score/segments/segment_01/definition.py'
+                'red_score/segments/segment_02/definition.py'
+                'red_score/segments/segment_03/definition.py'
+                'red_score/stylesheets/context-definitions.ily'
+
+            No matches anywhere in score:
+
+            ::
+
+                >>> directory.collect_paths('@', 'asdf')
+                []
+
+            All editable nonprivate files in current tree:
+
+            ::
+
+                >>> for path in directory.collect_paths('@@'):
+                ...     path.trim()
+                ...
+                'red_score/segments/segment_01/definition.py'
+                'red_score/segments/segment_02/definition.py'
+                'red_score/segments/segment_03/definition.py'
+                'red_score/segments/segment_01/illustration.ly'
+                'red_score/segments/segment_02/illustration.ly'
+                'red_score/segments/segment_03/illustration.ly'
+
+            All matches in current tree:
+
+            ::
+
+                >>> for path in directory.collect_paths('@@', '__init'):
+                ...     path.trim()
+                ...
+                'red_score/segments/__init__.py'
+                'red_score/segments/segment_01/__init__.py'
+                'red_score/segments/segment_02/__init__.py'
+                'red_score/segments/segment_03/__init__.py'
+
+            ::
+
+                >>> for path in directory.collect_paths('@@', 'def'):
+                ...     path.trim()
+                ...
+                'red_score/segments/segment_01/definition.py'
+                'red_score/segments/segment_02/definition.py'
+                'red_score/segments/segment_03/definition.py'
+
+            No match in current tree:
+
+            ::
+
+                >>> directory.collect_paths('@@', 'ST')
+                []
+
+            ::
+
+                >>> directory.collect_paths('@@', 'asdf')
+                []
+
+        Returns list.
         '''
-        if self == current_directory:
-            return self.name
-        if self.parent == current_directory:
-            return self.name
-        return self.trim()
+        if len(prefix) == 1 and not pattern:
+            return []
+        if prefix == '%%':
+            return []
+        path, match = None, True
+        if pattern == '<':
+            path = self.get_previous_package(cyclic=True)
+        elif pattern == '>':
+            path = self.get_next_package(cyclic=True)
+        elif abjad.mathtools.is_integer_equivalent(pattern):
+            segment_number = int(pattern)
+            path = self.segment_number_to_path(segment_number)
+        if path:
+            paths, match = [path], False
+        elif len(prefix) == 1 and self.is_package_path():
+            paths = self.contents.glob('**/*')
+        else:
+            paths = self.glob('**/*')
+        if prefix.startswith('@'):
+            suffixes = self.configuration.editor_suffixes
+            paths = [_ for _ in paths if _.suffix in suffixes or _.is_dir()]
+        elif prefix.startswith('%'):
+            paths = [_ for _ in paths if _.is_dir()]
+        elif prefix.startswith('^'):
+            paths = [
+                _ for _ in paths
+                if (_.suffix == '.py' or _.is_dir()) and
+                not _.name.startswith('test_')
+                ]
+        elif prefix.startswith('*'):
+            paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
+        elif prefix.startswith('+'):
+            paths = [
+                _ for _ in paths
+                if _.name.startswith('test_') and _.suffix == '.py'
+                ]
+        else:
+            raise ValueError(repr(prefix))
+        if not pattern:
+            paths = [_ for _ in paths if not _.name.startswith('_')]
+        if pattern and match:
+            strings = [_.get_identifier() for _ in paths]
+            indices = abjad.String.match_strings(strings, pattern)
+            paths = abjad.Sequence(paths).retain(indices)
+        result = []
+        for path in paths:
+            if prefix[0] in ('@', '^', '+') and path.is_dir():
+                path /= 'definition.py'
+            elif prefix[0] == '*' and path.is_dir():
+                path /= 'illustration.pdf'
+            if path.is_file() or prefix == '%':
+                path = Path(path)
+                if path not in result:
+                    result.append(path)
+        if len(prefix) == 1 and 1 < len(result):
+            children = [_ for _ in result if _.parent == self]
+            if len(children) == 1:
+                result = children
+        return result
 
     def get_header(self):
         r'''Gets menu header.
@@ -176,11 +368,11 @@ class Path(abjad.Path):
             return header
         if self.is_scores():
             return 'Abjad IDE : scores'
-        parts = [self.contents().get_title()]
+        parts = [self.contents.get_title()]
         if self.is_wrapper():
             parts.append('wrapper')
         elif not self.is_contents():
-            parts.extend(self.relative_to(self.contents()).parts[:-1])
+            parts.extend(self.relative_to(self.contents).parts[:-1])
             parts.append(self.get_identifier())
         if parts and not self.list_paths():
             parts[-1] += ' (empty)'
@@ -219,222 +411,3 @@ class Path(abjad.Path):
         if bool(prototype) is False:
             return False
         return self.is_package_path(prototype)
-
-    def match_paths(self, prefix, pattern):
-        r'''Matches paths against `pattern`.
-
-        Returns list.
-        '''
-        if len(prefix) == 1 and not pattern:
-            return []
-        if prefix == '%%':
-            return []
-        path, match = None, True
-        if pattern == '<':
-            path = self.get_previous_package(cyclic=True)
-        elif pattern == '>':
-            path = self.get_next_package(cyclic=True)
-        elif abjad.mathtools.is_integer_equivalent(pattern):
-            segment_number = int(pattern)
-            path = self.segment_number_to_path(segment_number)
-        if path:
-            paths, match = [path], False
-        elif len(prefix) == 2:
-            paths = self.glob('**/*')
-        elif self.is_package_path():
-            paths = self.contents().glob('**/*')
-        else:
-            paths = self.glob('*')
-        if prefix.startswith('@'):
-            suffixes = self.configuration.editor_suffixes
-            paths = [_ for _ in paths if _.suffix in suffixes or _.is_dir()]
-        elif prefix.startswith('%'):
-            paths = [_ for _ in paths if _.is_dir()]
-        elif prefix.startswith('^'):
-            paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
-        elif prefix.startswith('*'):
-            paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
-        elif prefix.startswith('+'):
-            paths = [_ for _ in paths if _.suffix == '.py' or _.is_dir()]
-        else:
-            raise ValueError(repr(prefix))
-        if pattern and match:
-            paths_ = []
-            strings = [_.get_identifier() for _ in paths]
-            for i in self.match_strings(strings, pattern):
-                paths_.append(paths[i])
-            paths = paths_
-        paths_ = []
-        for path in paths:
-            if prefix[0] in ('@', '^', '+') and path.is_dir():
-                path /= 'definition.py'
-            elif prefix[0] == '*' and path.is_dir():
-                path /= 'illustration.pdf'
-            if prefix[0] == '%' or path.is_file():
-                path = Path(path)
-                paths_.append(path)
-            paths = paths_
-        if prefix in ('@', '%', '*'):
-            paths = paths[:1]
-        return paths
-
-    # TODO: move to abjad.String
-    @staticmethod
-    def match_strings(strings, pattern):
-        r'''Matches `pattern` against `strings`.
-
-        ..  container:: example
-
-            ::
-
-                >>> strings = [
-                ...     'AcciaccaturaSpecifier.py',
-                ...     'AnchorCommand.py',
-                ...     'ArpeggiationSpacingSpecifier.py',
-                ...     'AttachCommand.py',
-                ...     'ChordalSpacingSpecifier.py',
-                ...     ]
-
-            ::
-
-                >>> ide.Path.match_strings(strings, 'A')
-                []
-
-            ::
-
-                >>> for i in ide.Path.match_strings(strings, 'At'):
-                ...     strings[i]
-                'AttachCommand.py'
-
-            ::
-
-                >>> for i in ide.Path.match_strings(strings, 'AtC'):
-                ...     strings[i]
-                'AttachCommand.py'
-
-            ::
-
-                >>> for i in ide.Path.match_strings(strings, 'ASS'):
-                ...     strings[i]
-                'ArpeggiationSpacingSpecifier.py'
-
-            ::
-
-                >>> for i in ide.Path.match_strings(strings, 'AC'):
-                ...     strings[i]
-                'AnchorCommand.py'
-                'AttachCommand.py'
-
-            ::
-
-                >>> for i in ide.Path.match_strings(strings, '.py'):
-                ...     strings[i]
-                'AcciaccaturaSpecifier.py'
-                'AnchorCommand.py'
-                'ArpeggiationSpacingSpecifier.py'
-                'AttachCommand.py'
-                'ChordalSpacingSpecifier.py'
-
-            ::
-
-                >>> ide.Path.match_strings(strings, '@AC')
-                []
-
-        ..  container:: example
-
-            Regression:
-
-            ::
-
-                >>> ide.Path.match_strings(strings, '||')
-                []
-
-        Returns string or none.
-        '''
-        if not pattern:
-            return []
-        if pattern[0] in Path.address_characters:
-            return []
-        pattern = abjad.String(pattern)
-        indices = []
-        for i, string in enumerate(strings):
-            if string == pattern:
-                indices.append(i)
-        strings = [abjad.String(_) for _ in strings]
-        if 3 <= len(pattern):
-            for i, string in enumerate(strings):
-                if string.startswith(pattern):
-                    if i not in indices:
-                        indices.append(i)
-            for i, string in enumerate(strings):
-                string = string.strip_diacritics().lower()
-                if string.startswith(pattern.lower()):
-                    if i not in indices:
-                        indices.append(i)
-        if len(pattern) <= 1:
-            return indices
-        if not pattern.islower() or any(_.isdigit() for _ in pattern):
-            pattern_words = pattern.delimit_words(separate_caps=True)
-            if pattern_words:
-                for i, string in enumerate(strings):
-                    if (string.startswith(pattern_words[0]) and
-                        string.match_word_starts(pattern_words)):
-                        if i not in indices:
-                            indices.append(i)
-                for i, string in enumerate(strings):
-                    if string.match_word_starts(pattern_words):
-                        if i not in indices:
-                            indices.append(i)
-        if pattern.islower():
-            pattern_characters = list(pattern)
-            if pattern_characters:
-                for i, string in enumerate(strings):
-                    if (string.startswith(pattern_characters[0]) and
-                        string.match_word_starts(pattern_characters)):
-                        if i not in indices:
-                            indices.append(i)
-                for i, string in enumerate(strings):
-                    if string.match_word_starts(pattern_characters):
-                        if i not in indices:
-                            indices.append(i)
-        if len(pattern) < 3:
-            return indices
-        for i, string in enumerate(strings):
-            if pattern in string.strip_diacritics().lower():
-                if i not in indices:
-                    indices.append(i)
-        return indices
-
-    def scores(self, *names):
-        r'''Gets scores directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> path = ide.Path(
-                ...     '/path/to/scores/my_score/my_score',
-                ...     scores='/path/to/scores',
-                ...     )
-                >>> path.scores()
-                Path*('/path/to/scores')
-                >>> path.scores('red_score', 'red_score', 'etc')
-                Path*('/path/to/scores/red_score/red_score/etc')
-
-        Returns package path or none.
-        '''
-        if getattr(self, '_scores', None) is not None:
-            result = self._scores
-            result._scores = self._scores
-            for name in names:
-                result /= name
-            return result
-        for scores in (
-            self.configuration.test_scores_directory,
-            abjad.abjad_configuration.composer_scores_directory,
-            ):
-            if str(self).startswith(str(scores)):
-                result = type(self)(scores)
-                for name in names:
-                    result /= name
-                return result

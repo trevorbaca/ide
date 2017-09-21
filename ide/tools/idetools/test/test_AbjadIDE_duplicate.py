@@ -9,7 +9,7 @@ def test_AbjadIDE_duplicate_01():
 
     abjad_ide(f'blu %letter dup q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score').build('letter')
+    path = ide.Path('blue_score').builds('letter')
     assert f'Missing {path.trim()} files ...' in transcript
 
 
@@ -62,7 +62,7 @@ def test_AbjadIDE_duplicate_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').material('magic_numbers')
+        source = ide.Path('red_score').materials('magic_numbers')
         assert source.is_dir()
         target = source.with_name('magic_values')
         target.remove()
@@ -114,7 +114,7 @@ def test_AbjadIDE_duplicate_08():
     '''
 
     with ide.Test():
-        source = ide.Path('blue_score').segment('segment_02')
+        source = ide.Path('blue_score').segments('segment_02')
         assert source.is_dir()
         target = source.with_name('segment_03')
         target.remove()

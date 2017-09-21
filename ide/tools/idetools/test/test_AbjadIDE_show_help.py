@@ -102,7 +102,7 @@ def test_AbjadIDE_show_help_01():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -178,7 +178,7 @@ def test_AbjadIDE_show_help_02():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -246,7 +246,7 @@ def test_AbjadIDE_show_help_03():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -320,7 +320,7 @@ def test_AbjadIDE_show_help_04():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -379,7 +379,7 @@ def test_AbjadIDE_show_help_05():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -467,7 +467,7 @@ def test_AbjadIDE_show_help_06():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -548,7 +548,7 @@ def test_AbjadIDE_show_help_07():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -607,7 +607,7 @@ def test_AbjadIDE_show_help_08():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -694,7 +694,7 @@ def test_AbjadIDE_show_help_09():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -775,7 +775,7 @@ def test_AbjadIDE_show_help_10():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -849,7 +849,7 @@ def test_AbjadIDE_show_help_11():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -923,7 +923,7 @@ def test_AbjadIDE_show_help_12():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -997,7 +997,7 @@ def test_AbjadIDE_show_help_13():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]
 
@@ -1071,6 +1071,6 @@ def test_AbjadIDE_show_help_14():
         '',
         '    tests - doctest (^)',
         '    tests - pytest (+)',
-        '    tests - run (#)',
+        '    tests - run (##)',
         '',
         ]

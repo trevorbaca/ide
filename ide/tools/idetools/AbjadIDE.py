@@ -128,19 +128,19 @@ class AbjadIDE(abjad.AbjadObject):
             raise Exception(message)
 
     def _collect_segment_lys(self, directory):
-        entries = sorted(directory.segments().iterdir())
+        entries = sorted(directory.segments.iterdir())
         names = [_.name for _ in entries]
         sources, targets = [], []
         for name in names:
-            source = directory.segment(name, 'illustration.ly')
+            source = directory.segments(name, 'illustration.ly')
             if not source.is_file():
                 continue
             name = name.replace('_', '-') + '.ly'
             target = directory._segments(name)
             sources.append(source)
             targets.append(target)
-        if not directory.builds().is_dir():
-            directory.builds().mkdir()
+        if not directory.builds.is_dir():
+            directory.builds.mkdir()
         return zip(sources, targets)
 
     def _copy_boilerplate(
@@ -512,7 +512,7 @@ class AbjadIDE(abjad.AbjadObject):
             score_title=title,
             year=year,
             )
-        for path in wrapper.builds().iterdir():
+        for path in wrapper.builds.iterdir():
             if path.name == '.gitignore':
                 continue
             path.remove()
@@ -545,7 +545,7 @@ class AbjadIDE(abjad.AbjadObject):
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
                 statement = statement.format(
-                    directory.contents().name,
+                    directory.contents.name,
                     previous_segment.name,
                     )
             template = target_make.read_text()
@@ -595,7 +595,7 @@ class AbjadIDE(abjad.AbjadObject):
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
             statement = statement.format(
-                directory.contents().name,
+                directory.contents.name,
                 previous_segment.name,
                 )
         template = maker.read_text()
@@ -652,7 +652,7 @@ class AbjadIDE(abjad.AbjadObject):
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
             statement = statement.format(
-                directory.contents().name,
+                directory.contents.name,
                 previous_segment.name,
                 )
         template = illustrate.read_text()
@@ -756,20 +756,40 @@ class AbjadIDE(abjad.AbjadObject):
             if self.aliases and response.pattern in self.aliases:
                 paths = [Path(self.aliases[response.pattern])]
             else:
-                paths = directory.match_paths(*response.pair)
+                paths = directory.collect_paths(*response.pair)
+            string = repr(response.string)
+            count = len(paths)
+            label = Path.address_characters[response.prefix[0]]
+            label = abjad.String(label).pluralize(count)
             if not paths:
-                asset = Path.address_characters[response.prefix[0]]
-                self.io.display(f'no {asset} {response.string!r} ...')
+                if len(response.prefix) == 1 and directory.is_package_path():
+                    scope = ' in score'
+                else:
+                    scope = ''
+                self.io.display(f'matching {string} to no {label}{scope} ...')
+            elif len(paths) == 1:
+                self.io.display(f'matching {string} to {paths[0].trim()} ...')
+            else:
+                if len(response.prefix) == 1:
+                    self.io.display('no unique match ...')
+                message = f'matching {string} to {count} {label} ...'
+                self.io.display(message)
+                for path in paths:
+                    self.io.display(f'{path.trim()} ...', raw=True)
+            if not paths:
+                pass
+            elif 1 < len(paths) and len(response.prefix) == 1:
+                pass
             elif response.prefix.startswith('@'):
-                self._open_files(paths)
+                self._open_files(paths, silent=True)
             elif response.prefix.startswith('%'):
                 self._manage_directory(paths[0])
             elif response.prefix.startswith('^'):
-                self._run_doctest(paths)
+                self._run_doctest(paths, silent=True)
             elif response.prefix.startswith('*'):
-                self._open_files(paths)
+                self._open_files(paths, silent=True)
             elif response.prefix.startswith('+'):
-                self._run_pytest(paths)
+                self._run_pytest(paths, silent=True)
             else:
                 raise ValueError(repr(response.prefix))
         elif response.payload in self.commands:
@@ -791,7 +811,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([path])
             elif path.is_dir():
                 if path.is_wrapper():
-                    path = path.contents()
+                    path = path.contents
                 self._manage_directory(path)
             else:
                 self.io.display(f'missing {path.trim()} ...')
@@ -827,10 +847,10 @@ class AbjadIDE(abjad.AbjadObject):
         if path.exists():
             return path
         if (directory.is_package_path() and not directory.is_scores()):
-            score_directory = directory.contents()
+            score_directory = directory.contents
             return directory.contents(value)
 
-    def _open_files(self, paths):
+    def _open_files(self, paths, silent=False):
         assert isinstance(paths, list), repr(paths)
         for path in paths:
             if not path.exists():
@@ -842,12 +862,14 @@ class AbjadIDE(abjad.AbjadObject):
         string = ' '.join([str(_) for _ in paths])
         if all(_.suffix in self.configuration.editor_suffixes for _ in paths):
             command = f'vim {string}'
-            for path in paths:
-                self.io.display(f'editing {path.trim()} ...')
+            if not silent:
+                for path in paths:
+                    self.io.display(f'editing {path.trim()} ...')
         else:
             command = f'open {string}'
-            for path in paths:
-                self.io.display(f'opening {path.trim()} ...')
+            if not silent:
+                for path in paths:
+                    self.io.display(f'opening {path.trim()} ...')
         if self.test:
             return
         if (platform.system() == 'Darwin' and paths[0].suffix == '.pdf'):
@@ -894,14 +916,15 @@ class AbjadIDE(abjad.AbjadObject):
             lines = [_.strip() for _ in lines if not _ == '']
             return lines
 
-    def _run_doctest(self, paths):
+    def _run_doctest(self, paths, silent=False):
         assert isinstance(paths, list), repr(paths)
-        if len(paths) == 1:
-            string = paths[0].full_trim(self._current_directory)
-            self.io.display(f'running doctest on {string} ...')
-        else:
-            unit = abjad.String('module').pluralize()
-            self.io.display(f'running doctest on {len(paths)} {unit} ...')
+        if not silent:
+            for path in paths:
+                self.io.display(f'collecting {path.trim()} ...')
+            label = abjad.String('module').pluralize(len(paths))
+            self.io.display(f'running doctest on {len(paths)} {label} ...')
+        if self.test:
+            return
         string = ' '.join([str(_) for _ in paths])
         command = f'ajv doctest -x {string}'
         abjad.IOManager.spawn_subprocess(command)
@@ -932,14 +955,15 @@ class AbjadIDE(abjad.AbjadObject):
                     shutil.move(str(backup_pdf), str(pdf))
             self.io.display(f'writing {pdf.trim()} ...')
 
-    def _run_pytest(self, paths):
+    def _run_pytest(self, paths, silent=False):
         assert isinstance(paths, list), repr(paths)
-        if len(paths) == 1:
-            string = paths[0].full_trim(self._current_directory)
-            self.io.display(f'running pytest on {string} ...')
-        else:
-            unit = abjad.String('module').pluralize()
-            self.io.display(f'running pytest on {len(paths)} {unit} ...')
+        if not silent:
+            for path in paths:
+                self.io.display(f'collecting {path.trim()} ...')
+            label = abjad.String('module').pluralize(len(paths))
+            self.io.display(f'running pytest on {len(paths)} {label} ...')
+        if self.test:
+            return
         string = ' '.join([str(_) for _ in paths])
         command = f'py.test -xrf {string}'
         abjad.IOManager.spawn_subprocess(command)
@@ -1308,7 +1332,7 @@ class AbjadIDE(abjad.AbjadObject):
         if not pairs:
             self.io.display('... no segment lys found.')
             return
-        if not directory._segments().is_dir():
+        if not directory._segments.is_dir():
             _segments_directory.mkdir()
         for source, target in pairs:
             if target.exists():
@@ -1420,7 +1444,7 @@ class AbjadIDE(abjad.AbjadObject):
             elif target.is_wrapper():
                 shutil.move(
                     str(target.wrapper(source.name)),
-                    str(target.contents()),
+                    str(target.contents),
                     )
                 lines = self._replace_in_tree(
                     target,
@@ -1430,8 +1454,8 @@ class AbjadIDE(abjad.AbjadObject):
                     )
                 self.io.display(lines)
                 if title is not None:
-                    target.contents().add_metadatum('title', title)
-                    source_title = source.contents().get_metadatum('title')
+                    target.contents.add_metadatum('title', title)
+                    source_title = source.contents.get_metadatum('title')
                     if source_title is not None:
                         lines = self._replace_in_tree(
                             target,
@@ -1724,7 +1748,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self.io.display('generating back cover ...')
         values = {}
-        contents = directory.contents()
+        contents = directory.contents
         catalog_number = contents.get_metadatum('catalog_number')
         name = 'catalog_number_suffix'
         catalog_number_suffix = contents.get_metadatum(name)
@@ -1758,7 +1782,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents()
+        contents = directory.contents
         self.io.display('generating front cover ...')
         file_name = 'front-cover.tex'
         values = {}
@@ -1794,15 +1818,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents()
+        contents = directory.contents
         self.io.display('generating music ...')
         target = directory / 'music.ly'
         if target.exists():
             self.io.display(f'removing {target.trim()} ...')
             target.unlink()
-        paths = contents.segments().list_paths()
+        paths = contents.segments.list_paths()
         if paths:
-            view = contents.segments().get_metadatum('view')
+            view = contents.segments.get_metadatum('view')
             if bool(view):
                 self.io.display(f'examining segments in view order ...')
             else:
@@ -1955,7 +1979,7 @@ class AbjadIDE(abjad.AbjadObject):
             header += f' : get {label} ...'
             multiple = False
         if not items:
-            for path in directory.scores().list_paths():
+            for path in directory.scores.list_paths():
                 items.append((path.get_identifier(), path))
             label = abjad.String(directory.get_asset_type()).pluralize()
             header = directory.get_header() + f' : get {label} from ...'
@@ -2338,7 +2362,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.contents())
+        self._manage_directory(directory.contents)
 
     @Command(
         '%',
@@ -2451,7 +2475,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path() or directory.is_scores()
         wrapper = directory.get_next_score(cyclic=True)
-        self._manage_directory(wrapper.contents())
+        self._manage_directory(wrapper.contents)
 
     @Command(
         '<',
@@ -2485,7 +2509,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path() or directory.is_scores()
         wrapper = directory.get_previous_score(cyclic=True)
-        self._manage_directory(wrapper.contents())
+        self._manage_directory(wrapper.contents)
 
     @Command(
         'ss',
@@ -2578,7 +2602,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.wrapper())
+        self._manage_directory(directory.wrapper)
 
     @Command(
         '..',
@@ -2793,7 +2817,7 @@ class AbjadIDE(abjad.AbjadObject):
         shutil.copyfile(str(source), str(target))
         template = target.read_text()
         template = template.format(
-            score_package_name=directory.contents().name,
+            score_package_name=directory.contents.name,
             material_package_name=directory.name,
             )
         target.write_text(template)
@@ -3197,7 +3221,7 @@ class AbjadIDE(abjad.AbjadObject):
         if directory == directory.scores():
             pass
         elif directory.is_package_path():
-            directory = directory.wrapper()
+            directory = directory.wrapper
         lines = self._replace_in_tree(
             directory,
             search_string,
@@ -3239,7 +3263,7 @@ class AbjadIDE(abjad.AbjadObject):
         pass
 
     @Command(
-        '#',
+        '##',
         argument_name='directory',
         description='tests - run',
         directories=True,
@@ -3299,8 +3323,8 @@ class AbjadIDE(abjad.AbjadObject):
             command = command.format(executable, search_string)
         elif executable.name == 'grep':
             command = rf'{executable!s} -r {search_string!r} *'
-        if directory.wrapper() is not None:
-            directory = directory.wrapper()
+        if directory.wrapper is not None:
+            directory = directory.wrapper
         with self.change(directory):
             lines = abjad.IOManager.run_command(command)
             self.io.display(lines, raw=True)

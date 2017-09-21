@@ -147,7 +147,7 @@ class MenuSection(abjad.AbjadObject):
                     return entry
         else:
             strings = [_.display for _ in self]
-            for i in Path.match_strings(strings, string):
+            for i in abjad.String.match_strings(strings, string):
                 return self[i]
 
     def range_string_to_numbers(self, range_string):

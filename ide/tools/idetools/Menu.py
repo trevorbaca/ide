@@ -224,7 +224,7 @@ class Menu(abjad.AbjadObject):
                 if (entry.number is not None and string == str(entry.number)):
                     return self._enclose_in_list(entry.value)
             strings = [abjad.String(_.display) for _ in section]
-            for i in Path.match_strings(strings, string):
+            for i in abjad.String.match_strings(strings, string):
                 entry = section[i]
                 return self._enclose_in_list(entry.value)
 

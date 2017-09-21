@@ -9,7 +9,7 @@ def test_AbjadIDE_generate_build_stylesheet_01():
         text = source.read_text()
         assert 'paper_size' in text
         assert '"letter"' not in text
-        target = ide.Path('blue_score').build('letter', 'stylesheet.ily')
+        target = ide.Path('blue_score').builds('letter', 'stylesheet.ily')
         target.remove()
 
         abjad_ide('blue~score %letter yg q')

@@ -9,7 +9,7 @@ def test_AbjadIDE_address_star_01():
     abjad_ide('red~score *-score q')
     path = ide.Path('red_score').distribution('red-score.pdf')
     transcript = abjad_ide.io.transcript 
-    assert f'Opening {path.trim()} ...' in transcript
+    assert f"Matching '*-score' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_address_star_02():
@@ -17,12 +17,12 @@ def test_AbjadIDE_address_star_02():
     '''
 
     abjad_ide('red~score %tempi pdfm q')
-    path = ide.Path('red_score').material('tempi', 'illustration.pdf')
+    path = ide.Path('red_score').materials('tempi', 'illustration.pdf')
     assert path.is_file()
 
     abjad_ide('red~score *tempi q')
     transcript = abjad_ide.io.transcript 
-    assert f'Opening {path.trim()} ...' in transcript
+    assert f"Matching '*tempi' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_address_star_03():
@@ -30,16 +30,16 @@ def test_AbjadIDE_address_star_03():
     '''
 
     abjad_ide('red~score %A pdfm q')
-    path = ide.Path('red_score').segment('segment_01', 'illustration.pdf')
+    path = ide.Path('red_score').segments('segment_01', 'illustration.pdf')
     assert path.is_file()
 
     abjad_ide('red~score *A q')
     transcript = abjad_ide.io.transcript 
-    assert f'Opening {path.trim()} ...' in transcript
+    assert f"Matching '*A' to {path.trim()} ..." in transcript
 
     abjad_ide('red~score *1 q')
     transcript = abjad_ide.io.transcript 
-    assert f'Opening {path.trim()} ...' in transcript
+    assert f"Matching '*1' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_address_star_04():
@@ -48,8 +48,8 @@ def test_AbjadIDE_address_star_04():
 
     abjad_ide('* q')
     transcript = abjad_ide.io.transcript 
-    assert "No PDF '*' ..." in transcript
+    assert "Matching '*' to no PDFs ..." in transcript
 
     abjad_ide('*asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "No PDF '*asdf' ..." in transcript
+    assert "Matching '*asdf' to no PDFs ..." in transcript

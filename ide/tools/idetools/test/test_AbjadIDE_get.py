@@ -8,7 +8,7 @@ def test_AbjadIDE_get_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').build('letter', 'front-cover.tex')
+        source = ide.Path('red_score').builds('letter', 'front-cover.tex')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()

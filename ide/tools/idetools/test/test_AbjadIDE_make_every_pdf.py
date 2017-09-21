@@ -55,24 +55,24 @@ def test_AbjadIDE_make_every_pdf_01():
         abjad_ide('red~score mm **llus q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').material(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            assert "Matching '**llus' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').material(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score mm ** q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').material(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            assert "Matching '**' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score mm **asdf q')
         transcript = abjad_ide.io.transcript
-        assert "No PDF '**asdf' ..." in transcript
+        assert "Matching '**asdf' to no PDFS ..."
 
 
 def test_AbjadIDE_make_every_pdf_02():
@@ -105,21 +105,21 @@ def test_AbjadIDE_make_every_pdf_02():
         abjad_ide('red~score gg **llus q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segment(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            assert "Matching '**llus' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score gg **pdf q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segment(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score gg ** q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segment(name, 'illustration.pdf')
-            assert f'Opening {path.trim()} ...' in transcript
+            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            assert "Matching '**' to 3 PDFs ..." in transcript
 
         abjad_ide('red~score gg **asdf q')
         transcript = abjad_ide.io.transcript
-        assert "No PDF '**asdf' ..." in transcript
+        assert "Matching '**asdf' to no PDFs ..." in transcript
