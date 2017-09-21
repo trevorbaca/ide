@@ -8,14 +8,14 @@ def test_AbjadIDE_make_every_pdf_01():
         can_illustrate = ['magic_numbers', 'ranges', 'tempi']
         can_not_illustrate = ['performers', 'time_signatures']
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials / name
+            directory = ide.Path('red_score').materials(name)
             target = directory / 'illustration.pdf'
             target.remove()
 
         abjad_ide('red~score mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials / name
+            directory = ide.Path('red_score').materials(name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'
@@ -28,14 +28,14 @@ def test_AbjadIDE_make_every_pdf_01():
             assert source.is_file()
             assert target.is_file()
         for name in can_not_illustrate:
-            directory = ide.Path('red_score').materials / name
+            directory = ide.Path('red_score').materials(name)
             illustrate = directory / '__illustrate__.py'
             assert f'Can not find {illustrate.trim()} ...' in transcript
 
         abjad_ide('red~score mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials / name
+            directory = ide.Path('red_score').materials(name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'
@@ -48,7 +48,7 @@ def test_AbjadIDE_make_every_pdf_01():
             assert source.is_file()
             assert target.is_file()
         for name in can_not_illustrate:
-            directory = ide.Path('red_score').materials / name
+            directory = ide.Path('red_score').materials(name)
             illustrate = directory / '__illustrate__.py'
             assert f'Can not find {illustrate.trim()} ...' in transcript
 
@@ -80,14 +80,14 @@ def test_AbjadIDE_make_every_pdf_02():
     with ide.Test():
         names = ['segment_01', 'segment_02', 'segment_03']
         for name in names:
-            directory = ide.Path('red_score').segments
+            directory = ide.Path('red_score').segments()
             target = directory / name / 'illustration.pdf'
             target.remove()
 
         abjad_ide('red~score gg pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            directory = ide.Path('red_score').segments / name
+            directory = ide.Path('red_score').segments(name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'

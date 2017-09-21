@@ -34,7 +34,7 @@ def test_AbjadIDE_get_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').distribution / 'red-score.pdf'
+        source = ide.Path('red_score').distribution('red-score.pdf')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -61,7 +61,7 @@ def test_AbjadIDE_get_03():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').etc / 'notes.txt'
+        source = ide.Path('red_score').etc('notes.txt')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -88,7 +88,7 @@ def test_AbjadIDE_get_04():
 
     with ide.Test():
         source = ide.Path('blue_score')
-        source = source.materials / 'dynamics' / 'definition.py'
+        source = source.materials('dynamics', 'definition.py')
         assert source.is_file()
         target = source.with_parent('staccati')
         target.remove()
@@ -104,7 +104,7 @@ def test_AbjadIDE_get_04():
             'sargasso_measures', 
             'talea_rhythm_maker',
             ]:
-            path = source.materials / name / 'definition.py'
+            path = source.materials(name, 'definition.py')
             assert path.trim() in transcript
         assert f'> dyn' in transcript
         assert f'Getting {source.trim()} ...' in transcript
@@ -118,7 +118,7 @@ def test_AbjadIDE_get_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials / 'magic_numbers'
+        source = ide.Path('red_score').materials('magic_numbers')
         assert source.is_dir()
         target = source.with_score('blue_score')
         target.remove()
@@ -141,7 +141,7 @@ def test_AbjadIDE_get_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments.definition('segment_02')
+        source = ide.Path('red_score').segments('segment_02', 'definition.py')
         assert source.is_file()
         target = source.with_parent('segment_03')
         target.remove()
@@ -185,7 +185,7 @@ def test_AbjadIDE_get_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments / 'segment_03'
+        source = ide.Path('red_score').segments('segment_03')
         assert source.is_dir()
         target = source.with_score('blue_score')
         target.remove()
@@ -212,7 +212,7 @@ def test_AbjadIDE_get_08():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets / 'stylesheet.ily'
+        source = ide.Path('red_score').stylesheets('stylesheet.ily')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -235,7 +235,7 @@ def test_AbjadIDE_get_09():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').test / 'test_materials.py'
+        source = ide.Path('red_score').test('test_materials.py')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -258,7 +258,7 @@ def test_AbjadIDE_get_10():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').tools / 'ScoreTemplate.py'
+        source = ide.Path('red_score').tools('ScoreTemplate.py')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()

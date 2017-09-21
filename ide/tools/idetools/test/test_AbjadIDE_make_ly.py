@@ -8,7 +8,7 @@ def test_AbjadIDE_make_ly_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials
+        source = ide.Path('red_score').materials()
         source = source / 'magic_numbers' / '__illustrate__.py'
         target = source.with_name('illustration.ly')
         target.remove()
@@ -37,7 +37,7 @@ def test_AbjadIDE_make_ly_02():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score').segments / 'segment_01'
+        target = ide.Path('red_score').segments('segment_01')
         target /= 'illustration.ly'
         illustrate = target.with_name('__illustrate__.py')
         target.remove()

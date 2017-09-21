@@ -128,7 +128,7 @@ class AbjadIDE(abjad.AbjadObject):
             raise Exception(message)
 
     def _collect_segment_lys(self, directory):
-        entries = sorted(directory.segments.iterdir())
+        entries = sorted(directory.segments().iterdir())
         names = [_.name for _ in entries]
         sources, targets = [], []
         for name in names:
@@ -136,11 +136,11 @@ class AbjadIDE(abjad.AbjadObject):
             if not source.is_file():
                 continue
             name = name.replace('_', '-') + '.ly'
-            target = directory._segments / name
+            target = directory._segments(name)
             sources.append(source)
             targets.append(target)
-        if not directory.builds.is_dir():
-            directory.builds.mkdir()
+        if not directory.builds().is_dir():
+            directory.builds().mkdir()
         return zip(sources, targets)
 
     def _copy_boilerplate(
@@ -511,7 +511,7 @@ class AbjadIDE(abjad.AbjadObject):
             score_title=title,
             year=year,
             )
-        for path in wrapper.builds.iterdir():
+        for path in wrapper.builds().iterdir():
             if path.name == '.gitignore':
                 continue
             path.remove()
@@ -544,7 +544,7 @@ class AbjadIDE(abjad.AbjadObject):
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
                 statement = statement.format(
-                    diretory.contents.name,
+                    directory.contents().name,
                     previous_segment.name,
                     )
             template = target_make.read_text()
@@ -594,7 +594,7 @@ class AbjadIDE(abjad.AbjadObject):
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
             statement = statement.format(
-                directory.contents.name,
+                directory.contents().name,
                 previous_segment.name,
                 )
         template = maker.read_text()
@@ -651,7 +651,7 @@ class AbjadIDE(abjad.AbjadObject):
             statement = 'from {}.segments.{}.__metadata__'
             statement += ' import metadata as previous_metadata'
             statement = statement.format(
-                directory.contents.name,
+                directory.contents().name,
                 previous_segment.name,
                 )
         template = illustrate.read_text()
@@ -788,7 +788,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([path])
             elif path.is_dir():
                 if path.is_wrapper():
-                    path = path.contents
+                    path = path.contents()
                 self._manage_directory(path)
             else:
                 self.io.display(f'missing {path.trim()} ...')
@@ -824,8 +824,8 @@ class AbjadIDE(abjad.AbjadObject):
         if path.exists():
             return path
         if (directory.is_package_path() and not directory.is_scores()):
-            score_directory = directory.contents
-            return directory.contents / value
+            score_directory = directory.contents()
+            return directory.contents(value)
 
     def _open_files(self, paths):
         assert isinstance(paths, list), repr(paths)
@@ -1297,7 +1297,7 @@ class AbjadIDE(abjad.AbjadObject):
         if not pairs:
             self.io.display('... no segment lys found.')
             return
-        if not directory._segments.is_dir():
+        if not directory._segments().is_dir():
             _segments_directory.mkdir()
         for source, target in pairs:
             if target.exists():
@@ -1408,8 +1408,8 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(lines)
             elif target.is_wrapper():
                 shutil.move(
-                    str(target.wrapper / source.name),
-                    str(target.contents),
+                    str(target.wrapper(source.name)),
+                    str(target.contents()),
                     )
                 lines = self._replace_in_tree(
                     target,
@@ -1419,8 +1419,8 @@ class AbjadIDE(abjad.AbjadObject):
                     )
                 self.io.display(lines)
                 if title is not None:
-                    target.contents.add_metadatum('title', title)
-                    source_title = source.contents.get_metadatum('title')
+                    target.contents().add_metadatum('title', title)
+                    source_title = source.contents().get_metadatum('title')
                     if source_title is not None:
                         lines = self._replace_in_tree(
                             target,
@@ -1712,7 +1712,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self.io.display('generating back cover ...')
         values = {}
-        contents = directory.contents
+        contents = directory.contents()
         catalog_number = contents.get_metadatum('catalog_number')
         name = 'catalog_number_suffix'
         catalog_number_suffix = contents.get_metadatum(name)
@@ -1746,7 +1746,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents
+        contents = directory.contents()
         self.io.display('generating front cover ...')
         file_name = 'front-cover.tex'
         values = {}
@@ -1782,15 +1782,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents
+        contents = directory.contents()
         self.io.display('generating music ...')
         target = directory / 'music.ly'
         if target.exists():
             self.io.display(f'removing {target.trim()} ...')
             target.unlink()
-        paths = contents.segments.list_paths()
+        paths = contents.segments().list_paths()
         if paths:
-            view = contents.segments.get_metadatum('view')
+            view = contents.segments().get_metadatum('view')
             if bool(view):
                 self.io.display(f'examining segments in view order ...')
             else:
@@ -1807,7 +1807,7 @@ class AbjadIDE(abjad.AbjadObject):
         segment_include_statements = ''
         for i, name in enumerate(names):
             name += '.ly'
-            path = directory._segments / name
+            path = directory._segments(name)
             if path.is_file():
                 line = rf'\include "../_segments/{name}"'
             else:
@@ -1943,7 +1943,7 @@ class AbjadIDE(abjad.AbjadObject):
             header += f' : get {label} ...'
             multiple = False
         if not items:
-            for path in directory.scores.list_paths():
+            for path in directory.scores().list_paths():
                 items.append((path.get_identifier(), path))
             label = abjad.String(directory.get_asset_type()).pluralize()
             header = directory.get_header() + f' : get {label} from ...'
@@ -2279,7 +2279,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.builds)
+        self._manage_directory(directory.builds())
 
     @Command(
         'nn',
@@ -2293,7 +2293,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory._segments)
+        self._manage_directory(directory._segments())
 
     @Command(
         'cc',
@@ -2307,7 +2307,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.contents)
+        self._manage_directory(directory.contents())
 
     @Command(
         '%',
@@ -2335,7 +2335,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.distribution)
+        self._manage_directory(directory.distribution())
 
     @Command(
         'ee',
@@ -2349,7 +2349,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.etc)
+        self._manage_directory(directory.etc())
 
     @Command(
         'lib',
@@ -2381,7 +2381,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.materials)
+        self._manage_directory(directory.materials())
 
     @Command(
         '>',
@@ -2413,7 +2413,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path() or directory.is_scores()
         wrapper = directory.get_next_score(cyclic=True)
-        self._manage_directory(wrapper.contents)
+        self._manage_directory(wrapper.contents())
 
     @Command(
         '<',
@@ -2445,7 +2445,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_package_path() or directory.is_scores()
         wrapper = directory.get_previous_score(cyclic=True)
-        self._manage_directory(wrapper.contents)
+        self._manage_directory(wrapper.contents())
 
     @Command(
         'ss',
@@ -2476,7 +2476,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.segments)
+        self._manage_directory(directory.segments())
 
     @Command(
         'yy',
@@ -2490,7 +2490,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.stylesheets)
+        self._manage_directory(directory.stylesheets())
 
     @Command(
         'tt',
@@ -2504,7 +2504,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.test)
+        self._manage_directory(directory.test())
 
     @Command(
         'oo',
@@ -2518,7 +2518,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.tools)
+        self._manage_directory(directory.tools())
 
     @Command(
         'ww',
@@ -2532,7 +2532,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path()
-        self._manage_directory(directory.wrapper)
+        self._manage_directory(directory.wrapper())
 
     @Command(
         '..',
@@ -2747,7 +2747,7 @@ class AbjadIDE(abjad.AbjadObject):
         shutil.copyfile(str(source), str(target))
         template = target.read_text()
         template = template.format(
-            score_package_name=directory.contents.name,
+            score_package_name=directory.contents().name,
             material_package_name=directory.name,
             )
         target.write_text(template)
@@ -3147,10 +3147,10 @@ class AbjadIDE(abjad.AbjadObject):
         result = self.confirm('complete words only?')
         if result:
             complete_words = True
-        if directory == directory.scores:
+        if directory == directory.scores():
             pass
         elif directory.is_package_path():
-            directory = directory.wrapper
+            directory = directory.wrapper()
         lines = self._replace_in_tree(
             directory,
             search_string,
@@ -3251,8 +3251,8 @@ class AbjadIDE(abjad.AbjadObject):
             command = command.format(executable, search_string)
         elif executable.name == 'grep':
             command = rf'{executable!s} -r {search_string!r} *'
-        if directory.wrapper is not None:
-            directory = directory.wrapper
+        if directory.wrapper() is not None:
+            directory = directory.wrapper()
         with self.change(directory):
             lines = abjad.IOManager.run_command(command)
             self.io.display(lines, raw=True)

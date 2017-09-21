@@ -9,7 +9,7 @@ def test_AbjadIDE_address_at_01():
 
     abjad_ide('red~score @ram-not q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').distribution / 'red-score-program-notes.txt'
+    path = ide.Path('red_score').distribution('red-score-program-notes.txt')
     assert f'Editing {path.trim()} ...' in transcript
 
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_address_at_02():
 
     abjad_ide('red~score @notes.txt q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').etc / 'notes.txt'
+    path = ide.Path('red_score').etc('notes.txt')
     assert f'Editing {path.trim()} ...' in transcript
 
 
@@ -78,7 +78,7 @@ def test_AbjadIDE_address_at_05():
 
     abjad_ide('red~score mm @@ q')
     transcript = abjad_ide.io.transcript 
-    for path in ide.Path('red_score').materials.glob('**/*'):
+    for path in ide.Path('red_score').materials().glob('**/*'):
         if path.suffix != '.py':
             continue
         assert f'Editing {path.trim()} ...' in transcript
@@ -105,7 +105,7 @@ def test_AbjadIDE_address_at_07():
 
     abjad_ide('red~score @1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments / 'segment_01' / 'definition.py'
+    path = ide.Path('red_score').segment('segment_01', 'definition.py')
     assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red~score gg @@efin q')
@@ -120,7 +120,7 @@ def test_AbjadIDE_address_at_07():
 
     abjad_ide('red~score gg @@ q')
     transcript = abjad_ide.io.transcript 
-    for path in ide.Path('red_score').segments.glob('**/*'):
+    for path in ide.Path('red_score').segments().glob('**/*'):
         if path.suffix != '.py':
             continue
         assert f'Editing {path.trim()} ...' in transcript
@@ -132,12 +132,12 @@ def test_AbjadIDE_address_at_08():
 
     abjad_ide('red~score %A @< q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').segments / 'segment_03' / 'definition.py'
+    path = ide.Path('red_score').segment('segment_03', 'definition.py')
     assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red~score %A @> q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').segments / 'segment_02' / 'definition.py'
+    path = ide.Path('red_score').segment('segment_02', 'definition.py')
     assert f'Editing {path.trim()} ...' in transcript
 
 
@@ -147,7 +147,7 @@ def test_AbjadIDE_address_at_09():
 
     abjad_ide('red~score @ext-def q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').stylesheets / 'context-definitions.ily'
+    path = ide.Path('red_score').stylesheets('context-definitions.ily')
     assert f'Editing {path.trim()} ...' in transcript
 
 
@@ -157,7 +157,7 @@ def test_AbjadIDE_address_at_10():
 
     abjad_ide('red~score @tm q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').test / 'test_materials.py'
+    path = ide.Path('red_score').test('test_materials.py')
     assert f'Editing {path.trim()} ...' in transcript
 
 
@@ -167,17 +167,17 @@ def test_AbjadIDE_address_at_11():
 
     abjad_ide('red~score @RM q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'RhythmMaker.py'
+    path = ide.Path('red_score').tools('RhythmMaker.py')
     assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red~score @ScT q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'ScoreTemplate.py'
+    path = ide.Path('red_score').tools('ScoreTemplate.py')
     assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red~score @ass q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'adjust_spacing_sections.py'
+    path = ide.Path('red_score').tools('adjust_spacing_sections.py')
     assert f'Editing {path.trim()} ...' in transcript
 
 

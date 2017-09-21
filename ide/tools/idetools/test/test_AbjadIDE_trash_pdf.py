@@ -7,7 +7,7 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 #    '''
 #
 #    with ide.Test():
-#        target = ide.Path('red_score').materials / 'magic_numbers'
+#        target = ide.Path('red_score').materials('magic_numbers')
 #        target /= 'illustration.pdf'
 #
 #        abjad_ide('red~score %magic pdfm q')
@@ -24,7 +24,7 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 #    '''
 #
 #    with ide.Test():
-#        target = ide.Path('red_score').segments / 'segment_01'
+#        target = ide.Path('red_score').segments('segment_01')
 #        target /= 'illustration.pdf'
 #
 #        abjad_ide('red~score %A pdfm q')

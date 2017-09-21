@@ -103,7 +103,7 @@ def test_AbjadIDE_address_plus_07():
 
     abjad_ide('red~score +tm q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').test / 'test_materials.py'
+    path = ide.Path('red_score').test('test_materials.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 
@@ -113,17 +113,17 @@ def test_AbjadIDE_address_plus_08():
 
     abjad_ide('red~score +RM q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'RhythmMaker.py'
+    path = ide.Path('red_score').tools('RhythmMaker.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
     abjad_ide('red~score +ScT q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'ScoreTemplate.py'
+    path = ide.Path('red_score').tools('ScoreTemplate.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
     abjad_ide('red~score +ass q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools / 'adjust_spacing_sections.py'
+    path = ide.Path('red_score').tools('adjust_spacing_sections.py')
     assert f'Running pytest on {path.trim()} ...' in transcript
 
 

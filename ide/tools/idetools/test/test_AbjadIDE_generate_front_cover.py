@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(is_test=True)
 def test_AbjadIDE_generate_front_cover_01():
 
     with ide.Test():
-        target = ide.Path('red_score').builds / 'letter' / 'front-cover.tex'
+        target = ide.Path('red_score').builds('letter', 'front-cover.tex')
         target.remove()
 
         abjad_ide('red~score %letter fcg q')

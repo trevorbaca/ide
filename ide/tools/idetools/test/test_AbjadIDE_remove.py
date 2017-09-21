@@ -128,8 +128,8 @@ def test_AbjadIDE_remove_04():
         example_101 = ide.Path('test_scores') / 'test_score_101'
         assert example_100.is_dir()
         assert example_101.is_dir()
-        example_100.contents.add_metadatum('title', 'Test Score 100')
-        example_101.contents.add_metadatum('title', 'Test Score 101')
+        example_100.contents().add_metadatum('title', 'Test Score 100')
+        example_101.contents().add_metadatum('title', 'Test Score 101')
 
         abjad_ide('rm Test~Score~100,Test~Score~101 remove~2 q')
         for line in [
@@ -151,7 +151,7 @@ def test_AbjadIDE_remove_05():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score').stylesheets / 'stylesheet.ily'
+        path = ide.Path('red_score').stylesheets('stylesheet.ily')
 
         abjad_ide('red~score yy rm sheet q')
         transcript = abjad_ide.io.transcript

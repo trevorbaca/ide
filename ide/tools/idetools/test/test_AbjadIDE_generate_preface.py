@@ -9,7 +9,7 @@ def test_AbjadIDE_generate_preface_01():
         text = source.read_text()
         assert 'paper_size' in text
         assert '{8.5in, 11in}' not in text
-        target = ide.Path('blue_score').builds / 'letter' / 'preface.tex'
+        target = ide.Path('blue_score').builds('letter', 'preface.tex')
         target.remove()
 
         abjad_ide('blue~score bb letter rg q')

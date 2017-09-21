@@ -19,7 +19,7 @@ def test_AbjadIDE_duplicate_02():
 
     abjad_ide(f'blu dd dup q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score').distribution
+    path = ide.Path('blue_score').distribution()
     assert f'Missing {path.trim()} files ...' in transcript
 
 
@@ -29,7 +29,7 @@ def test_AbjadIDE_duplicate_03():
 
     abjad_ide(f'blu ee dup q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score').etc
+    path = ide.Path('blue_score').etc()
     assert f'Missing {path.trim()} files ...' in transcript
 
 
@@ -84,7 +84,7 @@ def test_AbjadIDE_duplicate_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').wrapper 
+        source = ide.Path('red_score').wrapper ()
         assert source.is_dir()
         target = source.with_name('green_score')
         target.remove()
@@ -136,7 +136,7 @@ def test_AbjadIDE_duplicate_09():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets / 'stylesheet.ily'
+        source = ide.Path('red_score').stylesheets('stylesheet.ily')
         assert source.is_file()
         target = source.with_name('new-stylesheet.ily')
         target.remove()
@@ -156,7 +156,7 @@ def test_AbjadIDE_duplicate_10():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').test / 'test_materials.py'
+        source = ide.Path('red_score').test('test_materials.py')
         assert source.is_file()
         target = source.with_name('test_new_materials.py')
         target.remove()
@@ -176,7 +176,7 @@ def test_AbjadIDE_duplicate_11():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').tools / 'ScoreTemplate.py'
+        source = ide.Path('red_score').tools('ScoreTemplate.py')
         assert source.is_file()
         target = source.with_name('ColorSpecifier.py')
         target.remove()

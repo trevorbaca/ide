@@ -7,7 +7,7 @@ def test_AbjadIDE_address_star_01():
     '''
 
     abjad_ide('red~score *-score q')
-    path = ide.Path('red_score').distribution / 'red-score.pdf'
+    path = ide.Path('red_score').distribution('red-score.pdf')
     transcript = abjad_ide.io.transcript 
     assert f'Opening {path.trim()} ...' in transcript
 

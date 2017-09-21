@@ -63,26 +63,26 @@ class Path(abjad.Path):
             if line.startswith('A'):
                 path = line.strip('A')
                 path = path.strip()
-                root = self.wrapper
+                root = self.wrapper()
                 path = root / path
                 paths.append(path)
         return paths
 
     def _get_git_status_lines(self):
-        with abjad.TemporaryDirectoryChange(directory=self.wrapper):
+        with abjad.TemporaryDirectoryChange(directory=self.wrapper()):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
     def _get_repository_root(self):
         if not self.exists():
             return
-        if self.wrapper is None:
+        if self.wrapper() is None:
             path = self
         else:
-            path = self.wrapper
+            path = self.wrapper()
         test_scores = self.configuration.test_scores_directory
         if str(self).startswith(str(test_scores)):
-            return self.wrapper
+            return self.wrapper()
         while str(path) != str(path.parts[0]):
             for path_ in path.iterdir():
                 if path_.name == '.git':
@@ -92,7 +92,7 @@ class Path(abjad.Path):
     def _get_unadded_asset_paths(self):
         assert self.is_dir()
         paths = []
-        root = self.wrapper
+        root = self.wrapper()
         git_status_lines = self._get_git_status_lines()
         for line in git_status_lines:
             line = str(line)
@@ -148,36 +148,6 @@ class Path(abjad.Path):
         with abjad.TemporaryDirectoryChange(directory=path):
             abjad.IOManager.spawn_subprocess(command)
 
-    ### PUBLIC PROPERTIES ###
-
-    @property
-    def scores(self):
-        r'''Gets scores directory.
-
-        ..  container:: example
-
-            ::
-
-                >>> path = ide.Path(
-                ...     '/path/to/scores/my_score/my_score',
-                ...     scores='/path/to/scores',
-                ...     )
-                >>> path.scores
-                Path*('/path/to/scores')
-
-        Returns package path or none.
-        '''
-        if getattr(self, '_scores', None) is not None:
-            result = self._scores
-            result._scores = self._scores
-            return result
-        for scores in (
-            self.configuration.test_scores_directory,
-            abjad.abjad_configuration.composer_scores_directory,
-            ):
-            if str(self).startswith(str(scores)):
-                return type(self)(scores)
-
     ### PUBLIC METHODS ###
 
     def full_trim(self, current_directory):
@@ -206,11 +176,11 @@ class Path(abjad.Path):
             return header
         if self.is_scores():
             return 'Abjad IDE : scores'
-        parts = [self.contents.get_title()]
+        parts = [self.contents().get_title()]
         if self.is_wrapper():
             parts.append('wrapper')
         elif not self.is_contents():
-            parts.extend(self.relative_to(self.contents).parts[:-1])
+            parts.extend(self.relative_to(self.contents()).parts[:-1])
             parts.append(self.get_identifier())
         if parts and not self.list_paths():
             parts[-1] += ' (empty)'
@@ -272,7 +242,7 @@ class Path(abjad.Path):
         elif len(prefix) == 2:
             paths = self.glob('**/*')
         elif self.is_package_path():
-            paths = self.contents.glob('**/*')
+            paths = self.contents().glob('**/*')
         else:
             paths = self.glob('*')
         if prefix.startswith('@'):
@@ -308,6 +278,7 @@ class Path(abjad.Path):
             paths = paths[:1]
         return paths
 
+    # TODO: move to abjad.String
     @staticmethod
     def match_strings(strings, pattern):
         r'''Matches `pattern` against `strings`.
@@ -428,3 +399,37 @@ class Path(abjad.Path):
                 if i not in indices:
                     indices.append(i)
         return indices
+
+    def scores(self, *names):
+        r'''Gets scores directory.
+
+        ..  container:: example
+
+            ::
+
+                >>> path = ide.Path(
+                ...     '/path/to/scores/my_score/my_score',
+                ...     scores='/path/to/scores',
+                ...     )
+                >>> path.scores()
+                Path*('/path/to/scores')
+                >>> path.scores('red_score', 'red_score', 'etc')
+                Path*('/path/to/scores/red_score/red_score/etc')
+
+        Returns package path or none.
+        '''
+        if getattr(self, '_scores', None) is not None:
+            result = self._scores
+            result._scores = self._scores
+            for name in names:
+                result /= name
+            return result
+        for scores in (
+            self.configuration.test_scores_directory,
+            abjad.abjad_configuration.composer_scores_directory,
+            ):
+            if str(self).startswith(str(scores)):
+                result = type(self)(scores)
+                for name in names:
+                    result /= name
+                return result

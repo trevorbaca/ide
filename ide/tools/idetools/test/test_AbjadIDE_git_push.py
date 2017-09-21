@@ -14,47 +14,47 @@ def test_AbjadIDE_git_push_01():
 
     abjad_ide('red~score push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score bb push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score dd push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score ee push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score gg push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score gg A push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score mm push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score mm magic push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score oo push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score tt push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score yy push q')
     transcript = abjad_ide.io.transcript
-    assert f'Git push {path.wrapper} ...' in transcript
+    assert f'Git push {path.wrapper()} ...' in transcript
 
 
 def test_AbjadIDE_git_push_02():

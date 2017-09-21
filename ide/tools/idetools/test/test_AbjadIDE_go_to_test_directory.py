@@ -53,7 +53,7 @@ def test_AbjadIDE_go_to_test_directory_04():
     '''
 
     with ide.Test():
-        test_directory = ide.Path('red_score').test
+        test_directory = ide.Path('red_score').test()
         shutil.rmtree(str(test_directory))
 
         abjad_ide('red~score tt q')

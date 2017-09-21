@@ -14,47 +14,47 @@ def test_AbjadIDE_git_commit_01():
 
     abjad_ide('red~score ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score bb ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score dd ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score ee ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score oo ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score mm ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score mm magic ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score gg ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score gg A ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score yy ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
     abjad_ide('red~score tt ci q')
     transcript = abjad_ide.io.transcript
-    assert f'Git commit {path.wrapper} ...' in transcript
+    assert f'Git commit {path.wrapper()} ...' in transcript
 
 
 def test_AbjadIDE_git_commit_02():

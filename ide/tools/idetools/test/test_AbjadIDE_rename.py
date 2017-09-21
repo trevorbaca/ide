@@ -26,9 +26,9 @@ def test_AbjadIDE_rename_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials / 'test_material'
+        source = ide.Path('red_score').materials('test_material')
         source.remove()
-        target = ide.Path('red_score').materials / 'new_test_material'
+        target = ide.Path('red_score').materials('new_test_material')
         target.remove()
 
         abjad_ide('red mm new test_material q')
@@ -53,7 +53,7 @@ def test_AbjadIDE_rename_03():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments / 'segment_04'
+        source = ide.Path('red_score').segments('segment_04')
         source.remove()
         target = source.with_name('renamed_segment_04')
         target.remove()
@@ -79,7 +79,7 @@ def test_AbjadIDE_rename_04():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments / 'segment_03'
+        source = ide.Path('red_score').segments('segment_03')
         assert source.is_dir()
         target = source.with_name('renamed_segment_03')
         target.remove()
@@ -102,7 +102,7 @@ def test_AbjadIDE_rename_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').builds / 'letter'
+        source = ide.Path('red_score').builds('letter')
         assert source.is_dir()
         target = source.with_name('standard-size')
         target.remove()
@@ -125,7 +125,7 @@ def test_AbjadIDE_rename_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').tools / 'NewMaker.py'
+        source = ide.Path('red_score').tools('NewMaker.py')
         source.remove()
         target = source.with_name('RenamedMaker.py')
         target.remove()
@@ -151,7 +151,7 @@ def test_AbjadIDE_rename_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets / 'new-stylesheet.ily'
+        source = ide.Path('red_score').stylesheets('new-stylesheet.ily')
         source.remove()
         target = source.with_name('renamed-stylesheet.ily')
         target.remove()

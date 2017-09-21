@@ -15,48 +15,48 @@ def test_AbjadIDE_git_diff_01():
 
     abjad_ide('red~score diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.contents.trim()} ...' in transcript
+    assert f'Git diff {path.contents().trim()} ...' in transcript
 
     abjad_ide('red~score bb diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.builds.trim()} ...' in transcript
+    assert f'Git diff {path.builds().trim()} ...' in transcript
 
     abjad_ide('red~score dd diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.distribution.trim()} ...' in transcript
+    assert f'Git diff {path.distribution().trim()} ...' in transcript
 
     abjad_ide('red~score ee diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.etc.trim()} ...' in transcript
+    assert f'Git diff {path.etc().trim()} ...' in transcript
 
     abjad_ide('red~score oo diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.tools.trim()} ...' in transcript
+    assert f'Git diff {path.tools().trim()} ...' in transcript
 
     abjad_ide('red~score mm diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.materials.trim()} ...' in transcript
+    assert f'Git diff {path.materials().trim()} ...' in transcript
 
     abjad_ide('red~score %magic diff q')
     transcript = abjad_ide.io.transcript
-    assert f"Git diff {path.material('magic_numbers').trim()} ..." in \
+    assert f"Git diff {path.materials('magic_numbers').trim()} ..." in \
         transcript
 
     abjad_ide('red~score gg diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.segments.trim()} ...' in transcript
+    assert f'Git diff {path.segments().trim()} ...' in transcript
 
     abjad_ide('red~score %A diff q')
     transcript = abjad_ide.io.transcript
-    assert f"Git diff {path.segment('segment_01').trim()} ..." in transcript
+    assert f"Git diff {path.segments('segment_01').trim()} ..." in transcript
 
     abjad_ide('red~score yy diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.stylesheets.trim()} ...' in transcript
+    assert f'Git diff {path.stylesheets().trim()} ...' in transcript
 
     abjad_ide('red~score tt diff q')
     transcript = abjad_ide.io.transcript
-    assert f'Git diff {path.test.trim()} ...' in transcript
+    assert f'Git diff {path.test().trim()} ...' in transcript
 
 
 def test_AbjadIDE_git_diff_02():

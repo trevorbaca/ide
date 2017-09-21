@@ -8,4 +8,4 @@ def test_AbjadIDE_git_commit_every_package_01():
     transcript = abjad_ide.io.transcript
     assert 'Commit message> Updated.' in transcript
     for path in [ide.Path('red_score'), ide.Path('blue_score')]:
-        assert f'Git commit {path.wrapper} ...' in transcript
+        assert f'Git commit {path.wrapper()} ...' in transcript

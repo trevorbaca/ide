@@ -7,7 +7,7 @@ def test_AbjadIDE_collect_segment_lys_01():
     ly_paths = []
     for number in ('01', '02', '03'):
         ly_name = f'segment-{number}.ly'
-        ly_path = ide.Path('red_score').builds / '_segments' / ly_name
+        ly_path = ide.Path('red_score')._segments(ly_name)
         ly_paths.append(ly_path)
 
     with ide.Test(remove=[ly_paths]):

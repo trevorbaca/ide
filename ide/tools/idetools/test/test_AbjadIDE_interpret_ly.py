@@ -7,7 +7,7 @@ def test_AbjadIDE_interpret_ly_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials / 'tempi' / 'illustration.ly'
+        source = ide.Path('red_score').materials('tempi', 'illustration.ly')
         target = source.with_suffix('.pdf')
         target.remove()
 
@@ -35,8 +35,10 @@ def test_AbjadIDE_interpret_ly_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments
-        source = source / 'segment_01' / 'illustration.ly'
+        source = ide.Path('red_score').segments(
+            'segment_01',
+            'illustration.ly',
+            )
         target = source.with_suffix('.pdf')
         target.remove()
 
