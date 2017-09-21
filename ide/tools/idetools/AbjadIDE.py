@@ -15,6 +15,7 @@ from ide.tools.idetools.IO import IO
 from ide.tools.idetools.Menu import Menu
 from ide.tools.idetools.MenuSection import MenuSection
 from ide.tools.idetools.Path import Path
+from ide.tools.idetools.Response import Response
 
 
 class AbjadIDE(abjad.AbjadObject):
@@ -42,6 +43,7 @@ class AbjadIDE(abjad.AbjadObject):
         '_navigation',
         '_navigations',
         '_previous_directory',
+        '_redraw',
         )
 
     configuration = Configuration()
@@ -76,6 +78,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._is_test = is_test
         self._navigation = None
         self._previous_directory = None
+        self._redraw = None
         self._io = IO()
         self._check_test_scores_directory(is_example or is_test)
         self._cache_commands()
@@ -807,7 +810,8 @@ class AbjadIDE(abjad.AbjadObject):
                 else:
                     command()
         else:
-            redraw = response.string is None
+            redraw = response.string is None or self._redraw
+            self._redraw = None
             self._manage_directory(self.current_directory, redraw=redraw)
 
     def _match_alias(self, directory, string):
@@ -959,7 +963,6 @@ class AbjadIDE(abjad.AbjadObject):
             prompt = f'select {label} {infinitive}'
         else:
             prompt = f'select {label}'
-        redraw = False
         selector = self._make_selector(
             aliases=self.aliases,
             force_single_column=True,
@@ -1143,12 +1146,18 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns true or false.
         '''
-        assert not (isinstance(argument, str) and argument == '')
-        if (isinstance(argument, str) and argument in self.navigations):
-            self._navigation = argument
-            return True
+        assert argument != '', repr(argument)
         if argument is None:
             return True
+        if str(argument) in self.navigations:
+            self._navigation = argument
+            return True
+        if isinstance(argument, Response):
+            if argument.string is None:
+                return True
+            if argument.string in self.navigations:
+                self._navigation = argument.string
+                return True
         return False
 
     ### USER METHODS ###
@@ -1948,6 +1957,7 @@ class AbjadIDE(abjad.AbjadObject):
                 )
             response = selector()
             if self.is_navigation(response):
+                self._redraw = True
                 return
             if response.payload is None:
                 self.io.display(f'matches no score {response.string!r} ...')
@@ -1979,6 +1989,7 @@ class AbjadIDE(abjad.AbjadObject):
             )
         response = selector()
         if self.is_navigation(response):
+            self._redraw = True
             return
         if response.payload is None:
             self.io.display(f'matches no {label} {response.string!r} ...')

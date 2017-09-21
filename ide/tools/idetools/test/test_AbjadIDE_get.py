@@ -157,6 +157,28 @@ def test_AbjadIDE_get_06():
         assert 'Ok?> y' in transcript
         assert f'Writing {target.trim()} ...' in transcript
 
+    # regression: return jumps from selector
+    abjad_ide(f'blu %1 get <return> q')
+    transcript = abjad_ide.io.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
+        'Blue Score (2017)',
+        'Blue Score (2017) : segments : segment_01',
+        'Blue Score (2017) : segments : segment_01 : get file ...',
+        'Blue Score (2017) : segments : segment_01',
+        ]
+
+    # regression: quit jumps from selector
+    abjad_ide(f'blu %1 get q')
+    transcript = abjad_ide.io.transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
+        'Blue Score (2017)',
+        'Blue Score (2017) : segments : segment_01',
+        'Blue Score (2017) : segments : segment_01 : get file ...',
+        ]
+    assert "Matches no file 'q' ..." not in transcript
+
 
 def test_AbjadIDE_get_07():
     r'''In segments directory.
