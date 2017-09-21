@@ -784,6 +784,7 @@ class AbjadIDE(abjad.AbjadObject):
                 path = self._match_alias(directory, response.string)
             else:
                 path = response.payload
+            path = Path(path)
             if not path.exists() and path.suffix:
                 self._open_files([path])
             elif path.is_file():
@@ -832,8 +833,11 @@ class AbjadIDE(abjad.AbjadObject):
     def _open_files(self, paths):
         assert isinstance(paths, list), repr(paths)
         for path in paths:
-            if not path.is_file():
+            if not path.exists():
                 self.io.display(f'missing {path.trim()} ...')
+                return
+            if not path.is_file():
+                self.io.display(f'not a file {path.trim()} ...')
                 return
         string = ' '.join([str(_) for _ in paths])
         if all(_.suffix in self.configuration.editor_suffixes for _ in paths):

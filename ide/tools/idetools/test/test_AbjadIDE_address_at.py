@@ -182,7 +182,7 @@ def test_AbjadIDE_address_at_11():
 
 
 def test_AbjadIDE_address_at_12():
-    r'''Handles empty input and junk input.
+    r'''Handles empty input, junk input and nonfile input.
     '''
 
     abjad_ide('@ q')
@@ -196,3 +196,11 @@ def test_AbjadIDE_address_at_12():
     abjad_ide('@@asdf q')
     transcript = abjad_ide.io.transcript 
     assert "No file '@@asdf' ..." in transcript
+
+    if not abjad_ide.test_baca_directories():
+        return
+
+    abjad_ide('@aka q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('akasha')
+    assert f'Not a file {path.trim()} ...' in transcript

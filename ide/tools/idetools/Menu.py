@@ -101,7 +101,6 @@ class Menu(abjad.AbjadObject):
             payload = None
         elif bool(self._match_alias(string)):
             payload = self._match_alias(string)
-            raise Exception(payload)
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
         elif bool(self._match_asset(string)):
