@@ -18,5 +18,5 @@ def test_AbjadIDE_edit_definition_file_02():
 
     abjad_ide('red~score %A dfe q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
+    path = ide.Path('red_score').segments('A', 'definition.py')
     assert f'Editing {path.trim()} ...' in transcript

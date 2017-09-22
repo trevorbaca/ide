@@ -48,7 +48,7 @@ def test_AbjadIDE_git_diff_01():
 
     abjad_ide('red~score %A diff q')
     transcript = abjad_ide.io.transcript
-    assert f"Git diff {path.segments('segment_01').trim()} ..." in transcript
+    assert f"Git diff {path.segments('A').trim()} ..." in transcript
 
     abjad_ide('red~score yy diff q')
     transcript = abjad_ide.io.transcript

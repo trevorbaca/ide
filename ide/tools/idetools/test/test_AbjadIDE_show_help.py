@@ -186,6 +186,83 @@ def test_AbjadIDE_show_help_02():
 
 
 def test_AbjadIDE_show_help_03():
+    r'''In builds segments directory.
+    '''
+
+    abjad_ide('red~score nn ? q')
+    menu = abjad_ide.io.transcript.menus[-1]
+    assert menu == [
+        'Red Score (2017) : builds : _segments : help',
+        '',
+        '    clipboard - copy (cp)',
+        '    clipboard - empty (cx)',
+        '    clipboard - paste (cv)',
+        '    clipboard - show (cs)',
+        '',
+        '    files - edit (@@)',
+        '    files - vi (vi)',
+        '',
+        '    git - commit (ci)',
+        '    git - diff (diff)',
+        '    git - pull (pull)',
+        '    git - push (push)',
+        '    git - status (st)',
+        '',
+        '    go - back (-)',
+        '    go - directory (%)',
+        '    go - library (ll)',
+        '    go - quit (q)',
+        '    go - scores (ss)',
+        '    go - up (..)',
+        '',
+        '    hop - next score (>>)',
+        '    hop - previous score (<<)',
+        '',
+        '    log - aliases (al)',
+        '    log - latex (lx)',
+        '    log - lilypond (lp)',
+        '',
+        '    lys - collect (lyc)',
+        '',
+        '    package - builds (bb)',
+        '    package - builds segments (nn)',
+        '    package - contents (cc)',
+        '    package - distribution (dd)',
+        '    package - etc (ee)',
+        '    package - materials (mm)',
+        '    package - segments (gg)',
+        '    package - stylesheets (yy)',
+        '    package - test (tt)',
+        '    package - tools (oo)',
+        '    package - wrapper (ww)',
+        '',
+        '    path - duplicate (dup)',
+        '    path - get (get)',
+        '    path - new (new)',
+        '    path - remove (rm)',
+        '    path - rename (ren)',
+        '',
+        '    pdfs - open (**)',
+        '',
+        '    score - open (so)',
+        '',
+        '    shell - call (!)',
+        '',
+        '    show - column (;)',
+        '    show - help (?)',
+        '',
+        '    tests - doctest (^)',
+        '    tests - pytest (+)',
+        '    tests - run (##)',
+        '',
+        '    text - edit (it)',
+        '    text - replace (rp)',
+        '    text - search (sr)',
+        '',
+        ]
+
+
+def test_AbjadIDE_show_help_04():
     r'''In contents directory.
     '''
 
@@ -254,7 +331,7 @@ def test_AbjadIDE_show_help_03():
         ]
 
 
-def test_AbjadIDE_show_help_04():
+def test_AbjadIDE_show_help_05():
     r'''In distribution directory.
     '''
 
@@ -329,7 +406,7 @@ def test_AbjadIDE_show_help_04():
         ]
 
 
-def test_AbjadIDE_show_help_05():
+def test_AbjadIDE_show_help_06():
     r'''In library.
     '''
 
@@ -389,7 +466,7 @@ def test_AbjadIDE_show_help_05():
         ]
 
 
-def test_AbjadIDE_show_help_06():
+def test_AbjadIDE_show_help_07():
     r'''In material directory.
     '''
 
@@ -478,7 +555,7 @@ def test_AbjadIDE_show_help_06():
         ]
 
 
-def test_AbjadIDE_show_help_07():
+def test_AbjadIDE_show_help_08():
     r'''In materials directory.
     '''
 
@@ -560,7 +637,7 @@ def test_AbjadIDE_show_help_07():
         ]
 
 
-def test_AbjadIDE_show_help_08():
+def test_AbjadIDE_show_help_09():
     r'''In scores directory.
     '''
 
@@ -620,7 +697,7 @@ def test_AbjadIDE_show_help_08():
         ]
 
 
-def test_AbjadIDE_show_help_09():
+def test_AbjadIDE_show_help_10():
     r'''In segment directory.
     '''
 
@@ -708,7 +785,7 @@ def test_AbjadIDE_show_help_09():
         ]
 
 
-def test_AbjadIDE_show_help_10():
+def test_AbjadIDE_show_help_11():
     r'''In segments directory.
     '''
 
@@ -790,7 +867,7 @@ def test_AbjadIDE_show_help_10():
         ]
 
 
-def test_AbjadIDE_show_help_11():
+def test_AbjadIDE_show_help_12():
     r'''In stylesheets directory.
     '''
 
@@ -865,7 +942,7 @@ def test_AbjadIDE_show_help_11():
         ]
 
 
-def test_AbjadIDE_show_help_12():
+def test_AbjadIDE_show_help_13():
     r'''In test directory.
     '''
 
@@ -940,7 +1017,7 @@ def test_AbjadIDE_show_help_12():
         ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_14():
     r'''In tools directory.
     '''
 
@@ -1015,7 +1092,7 @@ def test_AbjadIDE_show_help_13():
         ]
 
 
-def test_AbjadIDE_show_help_14():
+def test_AbjadIDE_show_help_15():
     r'''In wrapper directory.
     '''
 

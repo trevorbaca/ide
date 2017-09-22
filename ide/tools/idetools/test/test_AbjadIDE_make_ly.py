@@ -37,7 +37,7 @@ def test_AbjadIDE_make_ly_02():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score').segments('segment_01')
+        target = ide.Path('red_score').segments('A')
         target /= 'illustration.ly'
         illustrate = target.with_name('__illustrate__.py')
         target.remove()

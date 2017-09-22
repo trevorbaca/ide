@@ -24,7 +24,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 #    '''
 #
 #    with ide.Test():
-#        target = ide.Path('red_score').segments('segment_01')
+#        target = ide.Path('red_score').segments('A')
 #        target /= 'illustration.pdf'
 #
 #        abjad_ide('red~score %A pdfm q')

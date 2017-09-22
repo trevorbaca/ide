@@ -36,7 +36,7 @@ def test_AbjadIDE_interpret_ly_02():
 
     with ide.Test():
         source = ide.Path('red_score').segments(
-            'segment_01',
+            'A',
             'illustration.ly',
             )
         target = source.with_suffix('.pdf')

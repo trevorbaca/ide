@@ -9,7 +9,7 @@ def test_AbjadIDE_address_plus_01():
 
     abjad_ide('red + q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '+' to no test files in score ..." in transcript
+    assert "Matching '+' to no test files ..." in transcript
 
     abjad_ide('red ++ q')
     transcript = abjad_ide.io.transcript 
@@ -17,7 +17,7 @@ def test_AbjadIDE_address_plus_01():
 
     abjad_ide('red +def q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '+def' to no test files in score ..." in transcript
+    assert "Matching '+def' to no test files ..." in transcript
 
     abjad_ide('red ++def q')
     transcript = abjad_ide.io.transcript 
@@ -25,7 +25,7 @@ def test_AbjadIDE_address_plus_01():
 
     abjad_ide('red +magic q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '+magic' to no test files in score ..." in transcript
+    assert f"Matching '+magic' to no test files ..." in transcript
 
     abjad_ide('red ++magic q')
     transcript = abjad_ide.io.transcript 
@@ -33,7 +33,7 @@ def test_AbjadIDE_address_plus_01():
 
     abjad_ide('red +A q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '+A' to no test files in score ..." in transcript
+    assert f"Matching '+A' to no test files ..." in transcript
 
     abjad_ide('red ++A q')
     transcript = abjad_ide.io.transcript 
@@ -41,7 +41,7 @@ def test_AbjadIDE_address_plus_01():
 
     abjad_ide('red +ST q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '+ST' to no test files in score ..." in transcript
+    assert f"Matching '+ST' to no test files ..." in transcript
 
     abjad_ide('red ++ST q')
     transcript = abjad_ide.io.transcript 
@@ -85,7 +85,7 @@ def test_AbjadIDE_address_plus_04():
 
     abjad_ide('red tt + q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '+' to no test files in score ..." in transcript
+    assert "Matching '+' to no test files ..." in transcript
 
     abjad_ide('red tt ++ q')
     transcript = abjad_ide.io.transcript 
@@ -98,6 +98,42 @@ def test_AbjadIDE_address_plus_04():
 
 
 def test_AbjadIDE_address_plus_05():
+    r'''Handles single-prefix numeric input.
+    '''
+
+    abjad_ide('red tt +0 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '+0' to no test files ..." in transcript
+
+    abjad_ide('red tt +1 q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('red_score').test('test_materials.py')
+    assert f"Matching '+1' to {path.trim()} ..." in transcript
+
+    abjad_ide('red tt +99 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '+99' to no test files ..." in transcript
+
+
+def test_AbjadIDE_address_plus_06():
+    r'''Handles double-prefix numeric input.
+    '''
+
+    abjad_ide('red tt ++0 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '++0' to no test files ..." in transcript
+
+    abjad_ide('red tt ++1 q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('red_score').test('test_materials.py')
+    assert f"Matching '++1' to {path.trim()} ..." in transcript
+
+    abjad_ide('red tt ++99 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '++99' to no test files ..." in transcript
+
+
+def test_AbjadIDE_address_plus_07():
     r'''Handles empty input and junk input.
     '''
 

@@ -6,6 +6,7 @@ import io
 import os
 import pathlib
 import platform
+import re
 import shutil
 import subprocess
 from ide.tools.idetools.Command import Command
@@ -96,6 +97,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.pending_input(string)
         scores = self._get_scores_directory()
         self._manage_directory(scores)
+        self.io.transcript.trim()
         last_line = self.io.transcript.lines[-1]
         assert last_line == '', repr(last_line)
         abjad.IOManager.clear_terminal()
@@ -256,7 +258,7 @@ class AbjadIDE(abjad.AbjadObject):
         name = self.io.get('build name')
         if self.is_navigation(name):
             return
-        name = builds.coerce_asset_name(name)
+        name = builds.coerce(name)
         build = builds / name
         if build.exists():
             self.io.display(f'existing {build.trim()} ...')
@@ -300,10 +302,15 @@ class AbjadIDE(abjad.AbjadObject):
         if bool(suffix):
             build.add_metadatum('catalog_number_suffix', suffix)
         self.generate_back_cover(build)
+        self.io.display('')
         self.generate_front_cover(build)
+        self.io.display('')
         self.generate_music(build)
+        self.io.display('')
         self.generate_preface(build)
+        self.io.display('')
         self.generate_score(build)
+        self.io.display('')
         self.generate_stylesheet(build)
 
     def _make_command_sections(self, directory):
@@ -349,7 +356,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(name):
             return
         if directory.is_package_path():
-            name = directory.coerce_asset_name(name)
+            name = directory.coerce(name)
             predicate = directory.get_name_predicate()
             if predicate and not predicate(abjad.String(name)):
                 self.io.display(f'invalid file name {name!r} ...')
@@ -460,8 +467,8 @@ class AbjadIDE(abjad.AbjadObject):
         name = self.io.get(f'enter {asset_type} name')
         if self.is_navigation(name):
             return
-        name = directory.coerce_asset_name(name)
-        path = directory / name
+        name = directory.coerce(name)
+        path = directory(name)
         if path.exists():
             self.io.display(f'existing {path.trim()} ...')
             return
@@ -471,10 +478,10 @@ class AbjadIDE(abjad.AbjadObject):
             boilerplate = abjad.abjad_configuration.boilerplate_directory
             boilerplate = Path(boilerplate)
             if name == '__init__.py':
-                source = boilerplate / 'empty.py'
+                source = boilerplate('empty.py')
             else:
-                source = boilerplate / name
-            target = path / name
+                source = boilerplate(name)
+            target = path(name)
             self.io.display(f'writing {target.trim()} ...')
             shutil.copyfile(str(source), str(target))
         paths = path.parent.list_paths()
@@ -495,7 +502,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(title):
             return
         if wrapper is None:
-            name = scores.coerce_asset_name(title)
+            name = scores.coerce(title)
             wrapper = scores / name
             if wrapper.exists():
                 self.io.display(f'existing {wrapper.trim()} ...')
@@ -755,18 +762,48 @@ class AbjadIDE(abjad.AbjadObject):
         elif response.prefix:
             if self.aliases and response.pattern in self.aliases:
                 paths = [Path(self.aliases[response.pattern])]
+            elif isinstance(response.payload, Path):
+                paths = [response.payload]
+            elif isinstance(response.payload, list):
+                paths = response.payload
             else:
+                paths = directory.collect_paths(*response.pair)
+            if response.prefix[0] in ('@', '^'):
+                paths_ = []
+                for path in paths:
+                    if path.is_dir():
+                        path_ = path('definition.py')
+                        if path_.is_file():
+                            paths_.append(path_)
+                            continue
+                    paths_.append(path)
+                paths = paths_
+            elif response.prefix[0] == '*':
+                paths_ = []
+                for path in paths:
+                    if path.is_dir():
+                        path_ = path('illustration.pdf')
+                        if path_.is_file():
+                            paths_.append(path_)
+                            continue
+                    paths_.append(path)
+                paths = paths_
+            if response.prefix.startswith('^'):
+                paths = [_ for _ in paths if not _.name.startswith('test_')]
+            if response.prefix.startswith('+'):
+                paths = [_ for _ in paths if _.name.startswith('test_')]
+            if response.prefix.startswith('*'):
+                paths = [_ for _ in paths if _.suffix == '.pdf']
+            if response.prefix.startswith('%'):
+                paths = [_ for _ in paths if _.is_dir()]
+            if not paths:
                 paths = directory.collect_paths(*response.pair)
             string = repr(response.string)
             count = len(paths)
             label = Path.address_characters[response.prefix[0]]
             label = abjad.String(label).pluralize(count)
             if not paths:
-                if len(response.prefix) == 1 and directory.is_package_path():
-                    scope = ' in score'
-                else:
-                    scope = ''
-                self.io.display(f'matching {string} to no {label}{scope} ...')
+                self.io.display(f'matching {string} to no {label} ...')
             elif len(paths) == 1:
                 self.io.display(f'matching {string} to {paths[0].trim()} ...')
             else:
@@ -792,18 +829,24 @@ class AbjadIDE(abjad.AbjadObject):
                 self._run_pytest(paths, silent=True)
             else:
                 raise ValueError(repr(response.prefix))
-        elif response.payload in self.commands:
+        elif str(response.payload) in self.commands:
             command = self.commands[response.payload]
             if command.argument_name == 'directory':
                 command(self.current_directory)
             else:
                 command()
         elif (isinstance(response.payload, Path) or
+            (isinstance(response.payload, list) and
+            len(response.payload) == 1) or
             self._match_alias(directory, response.string) is not None):
             if response.payload is None:
                 path = self._match_alias(directory, response.string)
-            else:
+            elif isinstance(response.payload, Path):
                 path = response.payload
+            elif isinstance(response.payload, list):
+                path = response.payload[0]
+            else:
+                raise Exception(response)
             path = Path(path)
             if not path.exists() and path.suffix:
                 self._open_files([path])
@@ -815,9 +858,18 @@ class AbjadIDE(abjad.AbjadObject):
                 self._manage_directory(path)
             else:
                 self.io.display(f'missing {path.trim()} ...')
+        elif isinstance(response.payload, list):
+            assert not response.prefix, repr(reponse)
+            path = response.payload[0]
+            if path.is_dir():
+                if path.is_wrapper():
+                    path = path.contents
+                self._manage_directory(path)
+            else:
+                self._open_files([path])
         else:
             assert response.payload is None, repr(response)
-            self.io.display(fr'unknown command {response.string!r} ...')
+            self.io.display(f'unknown command {response.string!r} ...')
             if self.test and self.test != 'allow_unknown_input':
                 raise Exception(response)
         self.io.display('')
@@ -890,14 +942,17 @@ class AbjadIDE(abjad.AbjadObject):
         abjad.IOManager.spawn_subprocess(command)
 
     @staticmethod
-    def _replace_in_file(file_path, old, new):
+    def _replace_in_file(file_path, old, new, whole_words=False):
         assert file_path.is_file()
         assert isinstance(old, str), repr(old)
         assert isinstance(new, str), repr(new)
         with file_path.open() as file_pointer:
             new_file_lines = []
             for line in file_pointer.readlines():
-                line = line.replace(old, new)
+                if whole_words:
+                    line = re.sub(r"\b%s\b" % old, new, line)
+                else:
+                    line = line.replace(old, new)
                 new_file_lines.append(line)
         new_file_contents = ''.join(new_file_lines)
         file_path.write_text(new_file_contents)
@@ -1005,10 +1060,16 @@ class AbjadIDE(abjad.AbjadObject):
         response = selector(redraw=False)
         if self.is_navigation(response.string):
             return response.string
-        if response.payload is not None:
-            return response.payload
-        if bool(response.string):
-            self.io.display(f'matches no path {response.string!r} ...')
+        if response.payload is None:
+            if bool(response.string):
+                self.io.display(f'matches no path {response.string!r} ...')
+            return
+        if not multiple and isinstance(response.payload, list):
+            assert len(response.payload) == 1, repr(response)
+            result = response.payload[0]
+        else:
+            result = response.payload
+        return result
 
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
         prototype = ('landscape', 'portrait', None)
@@ -1212,10 +1273,13 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self.io.display('building score ...')
         self.collect_segment_lys(directory)
+        self.io.display('')
         self.generate_music(directory)
+        self.io.display('')
         self.interpret_music(directory, open_after=False)
-        tex = directory / 'front-cover.tex'
-        pdf = directory / 'front-cover.pdf'
+        self.io.display('')
+        tex = directory('front-cover.tex')
+        pdf = directory('front-cover.pdf')
         if tex.is_file():
             self.interpret_front_cover(directory, open_after=False)
         elif pdf.is_file():
@@ -1223,8 +1287,9 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             self.io.display('missing front cover ...')
             return
-        tex = directory / 'preface.tex'
-        pdf = directory / 'preface.pdf'
+        self.io.display('')
+        tex = directory('preface.tex')
+        pdf = directory('preface.pdf')
         if tex.is_file():
             self.interpret_preface(directory, open_after=False)
         elif pdf:
@@ -1232,8 +1297,9 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             self.io.display('missing preface ...')
             return
-        tex = directory / 'back-cover.tex'
-        pdf = directory / 'back-cover.pdf'
+        self.io.display('')
+        tex = directory('back-cover.tex')
+        pdf = directory('back-cover.pdf')
         if tex.is_file():
             self.interpret_back_cover(directory, open_after=False)
         elif pdf.is_file():
@@ -1241,7 +1307,9 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             self.io.display('missing back cover ...')
             return
+        self.io.display('')
         self.generate_score(directory)
+        self.io.display('')
         self.interpret_score(directory)
 
     @Command(
@@ -1309,7 +1377,7 @@ class AbjadIDE(abjad.AbjadObject):
         'lyc',
         argument_name='directory',
         description='lys - collect',
-        directories=('build', 'builds',),
+        directories=('build', 'builds', '_segments'),
         section='lys',
         )
     def collect_segment_lys(self, directory):
@@ -1327,7 +1395,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_package_path(('builds', 'build'))
+        assert directory.is_package_path(('builds', 'build', '_segments'))
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segment_lys(directory)
         if not pairs:
@@ -1415,7 +1483,7 @@ class AbjadIDE(abjad.AbjadObject):
                 name = self.io.get('enter new name')
                 if self.is_navigation(name):
                     continue
-            name = source.parent.coerce_asset_name(name, suffix=source.suffix)
+            name = source.parent.coerce(name, suffix=source.suffix)
             target = source.with_name(name)
             if source == target:
                 continue
@@ -1999,7 +2067,11 @@ class AbjadIDE(abjad.AbjadObject):
             if response.payload is None:
                 self.io.display(f'matches no score {response.string!r} ...')
                 return
-            score = response.payload
+            if isinstance(response.payload, list):
+                assert len(response.payload) == 1, repr(response)
+                score = response.payload[0]
+            else:
+                score = response.payload
             cousin = directory.with_score(score.name)
             items = []
             if directory.is_package():
@@ -2050,7 +2122,7 @@ class AbjadIDE(abjad.AbjadObject):
                 if self.is_navigation(name):
                     return
                 suffix = source.suffix
-                name = source.parent.coerce_asset_name(name, suffix=suffix)
+                name = source.parent.coerce(name, suffix=suffix)
                 target = target.with_name(name)
                 if target.exists():
                     self.io.display(f'existing {target.trim()} ...')
@@ -2792,8 +2864,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_package_path(('materials', 'segments'))
-        for path in directory.list_paths():
+        paths = directory.list_paths() 
+        for i, path in enumerate(paths):
             self.make_pdf(path, open_after=False)
+            if i + 1 < len(paths):
+                self.io.display('')
 
     @Command(
         'illm',
@@ -3166,7 +3241,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(target):
             return
         original_target_name = target
-        target = directory.coerce_asset_name(target, suffix=source.suffix)
+        target = directory.coerce(target, suffix=source.suffix)
         target = source.parent / target
         if target.exists():
             self.io.display(f'existing {target.trim()!r} ...')
@@ -3179,7 +3254,12 @@ class AbjadIDE(abjad.AbjadObject):
         shutil.move(str(source), str(target))
         if target.is_dir():
             for path in sorted(target.glob('*.py')):
-                self._replace_in_file(path, source.name, target.name)
+                self._replace_in_file(
+                    path,
+                    source.name,
+                    target.name,
+                    whole_words=True,
+                    )
         if target.is_wrapper():
             false_contents_directory = target / source.name
             assert false_contents_directory.exists()
@@ -3193,7 +3273,12 @@ class AbjadIDE(abjad.AbjadObject):
                 original_target_name,
                 )
             for path in sorted(true_contents_directory.glob('*.py')):
-                self._replace_in_file(path, source.name, target.name)
+                self._replace_in_file(
+                    path,
+                    source.name,
+                    target.name,
+                    whole_words=True,
+                    )
 
     @Command(
         'rp',
@@ -3219,7 +3304,7 @@ class AbjadIDE(abjad.AbjadObject):
         result = self.confirm('complete words only?')
         if result:
             complete_words = True
-        if directory == directory.scores():
+        if directory == directory.scores:
             pass
         elif directory.is_package_path():
             directory = directory.wrapper

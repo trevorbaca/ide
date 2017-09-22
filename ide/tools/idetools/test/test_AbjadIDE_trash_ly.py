@@ -23,7 +23,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 #
 #    with ide.Test():
 #        target = ide.Path('red_score')
-#        target = target / 'segments' / 'segment_01' / 'illustration.ly'
+#        target = target / 'segments' / 'A' / 'illustration.ly'
 #        assert target.is_file()
 #
 #        abjad_ide('red~score %A lyt q')

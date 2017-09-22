@@ -18,7 +18,7 @@ def test_Menu___call___01():
         )
 
     response = menu('app')
-    assert response.payload == 'apple'
+    assert response.payload == ['apple']
     assert response.string == 'app'
 
     response = menu('foo')
@@ -52,7 +52,7 @@ def test_Menu___call___02():
     assert response.string == '1'
 
     response = menu('app')
-    assert response.payload == 'apple'
+    assert response.payload == ['apple']
     assert response.string == 'app'
 
     response = menu('foo')

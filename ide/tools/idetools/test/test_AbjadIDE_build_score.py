@@ -13,23 +13,23 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red~score %letter bld q')
         transcript = abjad_ide.io.transcript
-        lines = [
+        assert transcript.lines[-44:] == [
             'Building score ...',
             'Collecting segment lys ...',
-            'Removing red_score/builds/_segments/segment-01.ly ...',
-            'Writing red_score/builds/_segments/segment-01.ly ...',
-            'Removing red_score/builds/_segments/segment-02.ly ...',
-            'Writing red_score/builds/_segments/segment-02.ly ...',
-            'Removing red_score/builds/_segments/segment-03.ly ...',
-            'Writing red_score/builds/_segments/segment-03.ly ...',
+            'Removing red_score/builds/_segments/A.ly ...',
+            'Writing red_score/builds/_segments/A.ly ...',
+            'Removing red_score/builds/_segments/B.ly ...',
+            'Writing red_score/builds/_segments/B.ly ...',
+            'Removing red_score/builds/_segments/C.ly ...',
+            'Writing red_score/builds/_segments/C.ly ...',
             '',
             'Generating music ...',
             'Removing red_score/builds/letter/music.ly ...',
             'Examining segments alphabetically ...',
-            'Examining red_score/segments/segment_01 ...',
-            'Examining red_score/segments/segment_02 ...',
-            'Examining red_score/segments/segment_03 ...',
-            'Writing red_score/builds/letter/music.ly ...'
+            'Examining red_score/segments/A ...',
+            'Examining red_score/segments/B ...',
+            'Examining red_score/segments/C ...',
+            'Writing red_score/builds/letter/music.ly ...',
             '',
             'Interpreting music ...',
             'Interpreting red_score/builds/letter/music.ly ...',
@@ -54,9 +54,8 @@ def test_AbjadIDE_build_score_01():
             'Interpreting score ...',
             'Interpreting red_score/builds/letter/score.tex ...',
             'Writing red_score/builds/letter/score.pdf ...',
-            '',
             'Opening red_score/builds/letter/score.pdf ...',
             '',
+            '> q',
+            '',
             ]
-        for line in lines:
-            assert line in transcript

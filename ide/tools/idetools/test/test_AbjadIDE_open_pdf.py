@@ -25,8 +25,7 @@ def test_AbjadIDE_open_pdf_02():
     with ide.Test():
 
         abjad_ide('red~score %A pdfm q')
-        path = ide.Path('red_score').segments('segment_01')
-        path /= 'illustration.pdf'
+        path = ide.Path('red_score').segments('A', 'illustration.pdf')
         assert path.is_file()
 
         abjad_ide('red~score %A pdfo q')
@@ -38,8 +37,7 @@ def test_AbjadIDE_open_pdf_03():
     r'''Displays message when PDF does not exist.
     '''
 
-    abjad_ide('blue~score gg segment_01 pdfo q')
-    path = ide.Path('blue_score').segments('segment_01')
-    path /= 'illustration.pdf'
+    abjad_ide('blue~score %A pdfo q')
+    path = ide.Path('blue_score').segments('A', 'illustration.pdf')
     transcript = abjad_ide.io.transcript
     assert f'Missing {path.trim()} ...' in transcript

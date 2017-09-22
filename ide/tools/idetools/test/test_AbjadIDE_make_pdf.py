@@ -41,7 +41,7 @@ def test_AbjadIDE_make_pdf_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('segment_01')
+        source = ide.Path('red_score').segments('A')
         source /= 'illustration.ly'
         illustrate = source.with_name('__illustrate__.py')
         target = source.with_suffix('.pdf')

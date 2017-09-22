@@ -9,7 +9,7 @@ def test_AbjadIDE_address_caret_01():
 
     abjad_ide('red ^ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^' to no source files in score ..." in transcript
+    assert "Matching '^' to no source files ..." in transcript
 
     abjad_ide('red ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -36,12 +36,12 @@ def test_AbjadIDE_address_caret_01():
 
     abjad_ide('red ^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
+    path = ide.Path('red_score').segments('A', 'definition.py')
     assert f"Matching '^A' to {path.trim()} ..." in transcript
 
     abjad_ide('red ^^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
+    path = ide.Path('red_score').segments('A', 'definition.py')
     assert f"Matching '^^A' to {path.trim()} ..." in transcript
 
     abjad_ide('red ^ST q')
@@ -89,7 +89,7 @@ def test_AbjadIDE_address_caret_04():
 
     abjad_ide('red mm ^ q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '^' to no source files in score ..." in transcript
+    assert f"Matching '^' to no source files ..." in transcript
 
     abjad_ide('red mm ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -130,7 +130,7 @@ def test_AbjadIDE_address_caret_05():
 
     abjad_ide('red gg ^ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^' to no source files in score ..." in transcript
+    assert "Matching '^' to no source files ..." in transcript
 
     abjad_ide('red gg ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -145,15 +145,15 @@ def test_AbjadIDE_address_caret_05():
     transcript = abjad_ide.io.transcript 
     assert "Matching '^^def' to 3 source files ..." in transcript
 
-    abjad_ide('red gg ^1 q')
+    abjad_ide('red gg ^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
-    assert f"Matching '^1' to {path.trim()} ..." in transcript
+    path = ide.Path('red_score').segments('A', 'definition.py')
+    assert f"Matching '^A' to {path.trim()} ..." in transcript
 
-    abjad_ide('red gg ^^1 q')
+    abjad_ide('red gg ^^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
-    assert f"Matching '^^1' to {path.trim()} ..." in transcript
+    path = ide.Path('red_score').segments('A', 'definition.py')
+    assert f"Matching '^^A' to {path.trim()} ..." in transcript
 
     abjad_ide('red gg ^ST q')
     transcript = abjad_ide.io.transcript 
@@ -171,7 +171,7 @@ def test_AbjadIDE_address_caret_06():
 
     abjad_ide('red tt ^ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^' to no source files in score ..." in transcript
+    assert "Matching '^' to no source files ..." in transcript
 
     abjad_ide('red tt ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -179,7 +179,7 @@ def test_AbjadIDE_address_caret_06():
 
     abjad_ide('red tt ^tm q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '^tm' to no source files in score ..." in transcript
+    assert f"Matching '^tm' to no source files ..." in transcript
 
 
 def test_AbjadIDE_address_caret_07():
@@ -198,6 +198,42 @@ def test_AbjadIDE_address_caret_07():
 
 
 def test_AbjadIDE_address_caret_08():
+    r'''Handles single-prefix numeric input.
+    '''
+
+    abjad_ide('red oo ^0 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '^0' to no source files ..." in transcript
+
+    abjad_ide('red oo ^1 q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('red_score').tools('RhythmMaker.py')
+    assert f"Matching '^1' to {path.trim()} ..." in transcript
+
+    abjad_ide('red oo ^99 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '^99' to no source files ..." in transcript
+
+
+def test_AbjadIDE_address_caret_09():
+    r'''Handles double-prefix numeric input.
+    '''
+
+    abjad_ide('red oo ^^0 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '^^0' to no source files ..." in transcript
+
+    abjad_ide('red oo ^^1 q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('red_score').tools('RhythmMaker.py')
+    assert f"Matching '^^1' to {path.trim()} ..." in transcript
+
+    abjad_ide('red oo ^^99 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '^^99' to no source files ..." in transcript
+
+
+def test_AbjadIDE_address_caret_10():
     r'''Emtpy and junk addresses.
     '''
 

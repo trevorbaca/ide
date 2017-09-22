@@ -141,41 +141,41 @@ def test_AbjadIDE_get_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('segment_02', 'definition.py')
+        source = ide.Path('red_score').segments('B', 'definition.py')
         assert source.is_file()
-        target = source.with_parent('segment_03')
+        target = source.with_parent('C')
         target.remove()
 
-        abjad_ide(f'red %C get segment_02 y q')
+        abjad_ide(f'red %C get B y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = 'Red Score (2017) : segments : C : get file ...'
         assert header in transcript
-        assert f'> segment_02' in transcript
+        assert f'> B' in transcript
         assert f'Getting {source.trim()} ...' in transcript
         assert f'Will write {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
         assert f'Writing {target.trim()} ...' in transcript
 
     # regression: return jumps from selector
-    abjad_ide(f'blu %1 get <return> q')
+    abjad_ide(f'blu %A get <return> q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Blue Score (2017)',
-        'Blue Score (2017) : segments : segment_01',
-        'Blue Score (2017) : segments : segment_01 : get file ...',
-        'Blue Score (2017) : segments : segment_01',
+        'Blue Score (2017) : segments : A',
+        'Blue Score (2017) : segments : A : get file ...',
+        'Blue Score (2017) : segments : A',
         ]
 
     # regression: quit jumps from selector
-    abjad_ide(f'blu %1 get q')
+    abjad_ide(f'blu %A get q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Blue Score (2017)',
-        'Blue Score (2017) : segments : segment_01',
-        'Blue Score (2017) : segments : segment_01 : get file ...',
+        'Blue Score (2017) : segments : A',
+        'Blue Score (2017) : segments : A : get file ...',
         ]
     assert "Matches no file 'q' ..." not in transcript
 
@@ -185,7 +185,7 @@ def test_AbjadIDE_get_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('segment_03')
+        source = ide.Path('red_score').segments('C')
         assert source.is_dir()
         target = source.with_score('blue_score')
         target.remove()
@@ -204,7 +204,6 @@ def test_AbjadIDE_get_07():
         assert f'Will write {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
         assert f'Writing {target.trim()} ...' in transcript
-        assert 'Name metadatum> ' in transcript
 
 
 def test_AbjadIDE_get_08():

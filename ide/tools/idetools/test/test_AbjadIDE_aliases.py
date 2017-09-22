@@ -1,5 +1,6 @@
 import ide
-abjad_ide = ide.AbjadIDE(test=True)
+# test must be false for this file
+abjad_ide = ide.AbjadIDE(test=False)
 
 
 def test_AbjadIDE_aliases_01():
@@ -16,7 +17,7 @@ def test_AbjadIDE_aliases_01():
         'Fabergé Investigations (2016)',
         'Fabergé Investigations (2016) : materials',
         'Fabergé Investigations (2016) : materials : tempi',
-        'Stirrings Still (2017)'
+        'Stirrings Still (2017)',
         ]
 
 
@@ -31,5 +32,21 @@ def test_AbjadIDE_aliases_02():
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
-        'Stirrings Still (2017)'
+        'Stirrings Still (2017)',
+        ]
+
+
+def test_AbjadIDE_aliases_03():
+    r'''With test score.
+    '''
+
+    if not abjad_ide.test_baca_directories():
+        return
+
+    abjad_ide('red q')
+    transcript = abjad_ide.io.transcript
+    assert 'Red Shift Hijinks (2006)' in transcript
+    assert transcript.titles == [
+        'Abjad IDE : scores',
+        'Red Score (2017)',
         ]

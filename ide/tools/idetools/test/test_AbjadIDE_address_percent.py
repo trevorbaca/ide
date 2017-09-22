@@ -124,6 +124,24 @@ def test_AbjadIDE_address_percent_12():
 
 
 def test_AbjadIDE_address_percent_13():
+    r'''Handles numeric input.
+    '''
+
+    abjad_ide('red gg %0 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '%0' to no directories ..." in transcript
+
+    abjad_ide('red gg %1 q')
+    transcript = abjad_ide.io.transcript 
+    path = ide.Path('red_score').segments('A')
+    assert f"Matching '%1' to {path.trim()} ..." in transcript
+
+    abjad_ide('red gg %99 q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '%99' to no directories ..." in transcript
+
+
+def test_AbjadIDE_address_percent_14():
     r'''Handles empty input and junk input.
     '''
 

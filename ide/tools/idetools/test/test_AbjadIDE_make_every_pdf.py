@@ -78,7 +78,7 @@ def test_AbjadIDE_make_every_pdf_01():
 def test_AbjadIDE_make_every_pdf_02():
 
     with ide.Test():
-        names = ['segment_01', 'segment_02', 'segment_03']
+        names = ['A', 'B', 'C']
         for name in names:
             directory = ide.Path('red_score').segments()
             target = directory / name / 'illustration.pdf'

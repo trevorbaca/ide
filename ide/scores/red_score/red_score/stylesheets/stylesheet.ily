@@ -1,7 +1,7 @@
 #(set-default-paper-size "letter" 'portrait)
 #(set-global-staff-size 14)
 
-\include "context-definitions.ily"
+\include "contexts.ily"
 
 \paper {
     evenFooterMarkup = \markup {}

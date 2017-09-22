@@ -6,7 +6,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_make_midi_01():
 
     with ide.Test():
-        target = ide.Path('red_score').segments('segment_01')
+        target = ide.Path('red_score').segments('A')
         target /= 'segment.midi'
         maker = target.with_name('__midi__.py')
         target.remove()

@@ -90,7 +90,6 @@ class IO(abjad.AbjadObject):
                     self._pending_input = pending_input
         assert not string == '<return>'
         self.transcript.append([f'{prompt}{string}', ''])
-        self.transcript.append(['> ', ''])
         if string:
             return abjad.String(string)
 

@@ -28,7 +28,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 #    '''
 #
 #    with ide.Test():
-#        source = ide.Path('red_score').segments('segment_01')
+#        source = ide.Path('red_score').segments('A')
 #        source /= 'illustration.ly'
 #        target = source.with_suffix('.pdf')
 #

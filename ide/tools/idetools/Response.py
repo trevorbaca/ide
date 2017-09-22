@@ -10,6 +10,7 @@ class Response(abjad.AbjadObject):
 
     __slots__ = (
         '_payload',
+        '_source',
         '_string',
         )
 
@@ -18,10 +19,13 @@ class Response(abjad.AbjadObject):
     def __init__(
         self,
         payload=None,
+        source=None,
         string=None,
         ):
         assert isinstance(payload, (str, list, Path, type(None)))
         self._payload = payload
+        assert isinstance(source, (str, type(None))), repr(source)
+        self._source = source
         assert isinstance(string, (str, type(None))), repr(string)
         self._string = string
 
@@ -85,6 +89,14 @@ class Response(abjad.AbjadObject):
         if self._is_double_address():
             return self.string[:2]
         return ''
+
+    @property
+    def source(self):
+        r'''Gets source.
+
+        Returns string or none.
+        '''
+        return self._source
 
     @property
     def string(self):

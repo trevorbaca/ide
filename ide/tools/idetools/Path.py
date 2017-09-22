@@ -125,6 +125,8 @@ class Path(abjad.Path):
                 return True
             if 'Changes to be committed:' in line:
                 return True
+            if 'Untracked files:' in line:
+                return True
         
     def _is_git_unknown(self):
         if not self.exists():
@@ -232,9 +234,9 @@ class Path(abjad.Path):
                 'red_score/materials/ranges/definition.py'
                 'red_score/materials/tempi/definition.py'
                 'red_score/materials/time_signatures/definition.py'
-                'red_score/segments/segment_01/definition.py'
-                'red_score/segments/segment_02/definition.py'
-                'red_score/segments/segment_03/definition.py'
+                'red_score/segments/A/definition.py'
+                'red_score/segments/B/definition.py'
+                'red_score/segments/C/definition.py'
 
             No matches anywhere in score:
 
@@ -250,12 +252,12 @@ class Path(abjad.Path):
                 >>> for path in directory.collect_paths('@@'):
                 ...     path.trim()
                 ...
-                'red_score/segments/segment_01/definition.py'
-                'red_score/segments/segment_02/definition.py'
-                'red_score/segments/segment_03/definition.py'
-                'red_score/segments/segment_01/illustration.ly'
-                'red_score/segments/segment_02/illustration.ly'
-                'red_score/segments/segment_03/illustration.ly'
+                'red_score/segments/A/definition.py'
+                'red_score/segments/B/definition.py'
+                'red_score/segments/C/definition.py'
+                'red_score/segments/A/illustration.ly'
+                'red_score/segments/B/illustration.ly'
+                'red_score/segments/C/illustration.ly'
 
             All matches in current tree:
 
@@ -265,18 +267,18 @@ class Path(abjad.Path):
                 ...     path.trim()
                 ...
                 'red_score/segments/__init__.py'
-                'red_score/segments/segment_01/__init__.py'
-                'red_score/segments/segment_02/__init__.py'
-                'red_score/segments/segment_03/__init__.py'
+                'red_score/segments/A/__init__.py'
+                'red_score/segments/B/__init__.py'
+                'red_score/segments/C/__init__.py'
 
             ::
 
                 >>> for path in directory.collect_paths('@@', 'def'):
                 ...     path.trim()
                 ...
-                'red_score/segments/segment_01/definition.py'
-                'red_score/segments/segment_02/definition.py'
-                'red_score/segments/segment_03/definition.py'
+                'red_score/segments/A/definition.py'
+                'red_score/segments/B/definition.py'
+                'red_score/segments/C/definition.py'
 
             No match in current tree:
 
@@ -301,9 +303,6 @@ class Path(abjad.Path):
             path = self.get_previous_package(cyclic=True)
         elif pattern == '>':
             path = self.get_next_package(cyclic=True)
-        elif abjad.mathtools.is_integer_equivalent(pattern):
-            segment_number = int(pattern)
-            path = self.segment_number_to_path(segment_number)
         if path:
             paths, match = [path], False
         elif len(prefix) == 1 and self.is_package_path():
@@ -390,7 +389,9 @@ class Path(abjad.Path):
 
         Returns true or false.
         '''
-        if not self.name[0].isalpha() and not self.name == '_segments':
+        if (not self.name[0].isalpha() and
+            not self.name == '_segments' and
+            not self.parent.name == 'segments'):
             return True
         for scores in (abjad.abjad_configuration.composer_scores_directory,
             self.configuration.test_scores_directory,

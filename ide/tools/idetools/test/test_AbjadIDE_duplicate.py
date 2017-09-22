@@ -114,21 +114,20 @@ def test_AbjadIDE_duplicate_08():
     '''
 
     with ide.Test():
-        source = ide.Path('blue_score').segments('segment_02')
+        source = ide.Path('blue_score').segments('B')
         assert source.is_dir()
-        target = source.with_name('segment_03')
+        target = source.with_name('C')
         target.remove()
 
-        abjad_ide(f'blu gg dup segment~02 segment~03 y q')
+        abjad_ide(f'blu gg dup B C y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f'Select packages to duplicate> segment 02' in transcript
+        assert f'Select packages to duplicate> B' in transcript
         assert f'Duplicating {source.trim()} ...'
-        assert 'Enter new name> segment 03'
+        assert 'Enter new name> C'
         assert f'Writing {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
-        assert "Replacing 'segment_02' with 'segment_03' ..." in \
-            transcript
+        assert "Replacing 'B' with 'C' ..." in transcript
 
 
 def test_AbjadIDE_duplicate_09():

@@ -77,3 +77,15 @@ class Transcript(abjad.AbjadObject):
         if is_menu:
             self._menus.append(block)
             self._titles.append(block[0])
+
+    def trim(self):
+        r'''Trims transcript.
+
+        Returns none.
+        '''
+        for line in reversed(self.lines):
+            if line == '':
+                self.lines.pop(-1)
+            else:
+                break
+        self.lines.append('')

@@ -83,6 +83,10 @@ class Menu(abjad.AbjadObject):
             prompt=self.prompt,
             split_input=not self.getter,
             )
+        prefix, string = self._split_prefix(string)
+        source = None
+#        if '@' in prefix:
+#            raise Exception(prefix, string)
         if string is None:
             payload = None
         elif string == '?':
@@ -99,17 +103,26 @@ class Menu(abjad.AbjadObject):
             return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
+            source = 'navigations'
         elif bool(self._match_alias(string)):
             payload = self._match_alias(string)
+            source = 'alias'
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
+            source = 'command'
         elif bool(self._match_asset(string)):
             payload = self._match_asset(string)
+            source = 'asset'
         elif bool(self._match_range(string)):
             payload = self._match_range(string)
+            source = 'range'
         else:
             payload = None
-        return Response(payload=payload, string=string)
+        if string:
+            string = prefix + string
+        elif prefix:
+            string = prefix
+        return Response(payload=payload, source=source, string=string)
 
     def __getitem__(self, argument):
         r'''Gets section in menu.
@@ -207,26 +220,32 @@ class Menu(abjad.AbjadObject):
         if not self.aliases:
             return
         path = self.aliases.get(string)
-        if path is None:
-            return
-        for section in self.sections:
-            if section.command:
-                continue
-            for entry in section:
-                if str(entry.value) == str(path):
-                    return path
+        if path is not None:
+            return Path(path)
 
     def _match_asset(self, string):
         for section in self.sections:
             if section.command:
                 continue
-            for entry in section:
-                if (entry.number is not None and string == str(entry.number)):
-                    return self._enclose_in_list(entry.value)
-            strings = [abjad.String(_.display) for _ in section]
+            if abjad.mathtools.is_integer_equivalent(string):
+                number = int(string)
+                for entry in section:
+                    if entry.number == number:
+                        return self._enclose_in_list(entry.value)
+            paths = [Path(_.display) for _ in section]
+            for i, path in enumerate(paths):
+                for part in path.parts:
+                    if part == '/':
+                        continue
+                    if part == string:
+                        entry = section[i]
+                        return self._enclose_in_list(entry.value)
+            strings, values = [abjad.String(_.display) for _ in section], []
             for i in abjad.String.match_strings(strings, string):
                 entry = section[i]
-                return self._enclose_in_list(entry.value)
+                values.append(entry.value)
+            if values:
+                return values
 
     def _match_command(self, string):
         for section in self.sections:
@@ -237,9 +256,9 @@ class Menu(abjad.AbjadObject):
                 return self._enclose_in_list(entry.value)
 
     def _match_range(self, string):
+        if ',' not in string and '-' not in string:
+            return
         for section in self.sections:
-            if not section.multiple:
-                continue
             numbers = section.range_string_to_numbers(string)
             if not numbers:
                 continue
@@ -249,6 +268,23 @@ class Menu(abjad.AbjadObject):
                 entry = [_.value for _ in section][i]
                 string.append(entry)
             return string
+
+    @staticmethod
+    def _split_prefix(string):
+        if (string and
+            2 <= len(string) and
+            string[0] == string[1] and
+            string[0] in Path.address_characters):
+            prefix = string[:2]
+            string = string[2:] or None
+        elif (string and
+            1 <= len(string) and
+            string[0] in Path.address_characters):
+            prefix = string[:1]
+            string = string[1:] or None
+        else:
+            prefix = ''
+        return prefix, string
 
     ### PUBLIC PROPERTIES ###
 

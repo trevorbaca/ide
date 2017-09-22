@@ -138,27 +138,32 @@ def test_AbjadIDE_new_04():
         assert 'Paper size (ex: letter landscape)> arch a' in transcript
         assert r'Price (ex: \$80 / \euro 72)> $80' in transcript
         assert 'Catalog number suffix (ex: ann.)> ARCH-A'in transcript
-        assert 'Making ...' in transcript
-        assert f'    {build.trim()}' in transcript
-        paths = [build / _ for _ in (
-            'back-cover.tex',
-            'front-cover.tex',
-            'music.ly',
-            'preface.tex',
-            'score.tex',
-            'stylesheet.ily',
-            )]
-        for path in paths:
-            assert f'    {path.trim()}' in transcript
-        assert 'Ok?> y' in transcript
-        assert 'Generating back cover ...' in transcript
-        assert 'Generating front cover ...' in transcript
-        assert 'Generating music ...' in transcript
-        assert 'Generating preface ...' in transcript
-        assert 'Generating score ...' in transcript
-        assert 'Generating stylesheet ...' in transcript
-        for path in paths:
-            assert f'Writing {path.trim()} ...' in transcript
+        assert transcript.lines[-24:] == [
+            'Generating back cover ...',
+            'Writing red_score/builds/arch-a/back-cover.tex ...',
+            '',
+            'Generating front cover ...',
+            'Writing red_score/builds/arch-a/front-cover.tex ...',
+            '',
+            'Generating music ...',
+            'Examining segments alphabetically ...',
+            'Examining red_score/segments/A ...',
+            'Examining red_score/segments/B ...',
+            'Examining red_score/segments/C ...',
+            'Writing red_score/builds/arch-a/music.ly ...',
+            '',
+            'Generating preface ...',
+            'Writing red_score/builds/arch-a/preface.tex ...',
+            '',
+            'Generating score ...',
+            'Writing red_score/builds/arch-a/score.tex ...',
+            '',
+            'Generating stylesheet ...',
+            'Writing red_score/builds/arch-a/stylesheet.ily ...',
+            '',
+            '> q',
+            '',
+            ]
 
         abjad_ide('red~score bb new arch-a q')
         transcript = abjad_ide.io.transcript

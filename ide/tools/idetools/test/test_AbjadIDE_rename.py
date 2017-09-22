@@ -53,21 +53,21 @@ def test_AbjadIDE_rename_03():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('segment_04')
+        source = ide.Path('red_score').segments('D')
         source.remove()
-        target = source.with_name('renamed_segment_04')
+        target = source.with_name('E')
         target.remove()
 
-        abjad_ide('red gg new segment_04 q')
+        abjad_ide('red gg new D q')
         assert source.is_dir()
 
-        abjad_ide('red gg ren segment~04 renamed_segment_04 y q')
+        abjad_ide('red gg ren D E y q')
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select package to rename> segment 04' in transcript
+        assert 'Select package to rename> D' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
-        assert 'New name> renamed_segment_04' in transcript
+        assert 'New name> E' in transcript
         assert 'Renaming ...' in transcript
         assert f' FROM: {source.trim()}' in transcript
         assert f'   TO: {target.trim()}' in transcript
@@ -79,18 +79,18 @@ def test_AbjadIDE_rename_04():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('segment_03')
+        source = ide.Path('red_score').segments('C')
         assert source.is_dir()
-        target = source.with_name('renamed_segment_03')
+        target = source.with_name('D')
         target.remove()
 
-        abjad_ide('red gg ren C renamed_segment_03 y q')
+        abjad_ide('red gg ren C D y q')
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
         assert 'Select package to rename> C' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
-        assert 'New name> renamed_segment_03' in transcript
+        assert 'New name> D' in transcript
         assert 'Renaming ...' in transcript
         assert f' FROM: {source.trim()}' in transcript
         assert f'   TO: {target.trim()}' in transcript

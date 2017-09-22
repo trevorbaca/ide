@@ -52,5 +52,5 @@ def test_AbjadIDE_go_to_segments_directory_04():
 
     abjad_ide('blue~score gg q')
     transcript = abjad_ide.io.transcript
-    assert '1: segment_02' in transcript
-    assert '2: segment_01' in transcript
+    assert '1: B' in transcript
+    assert '2: A' in transcript

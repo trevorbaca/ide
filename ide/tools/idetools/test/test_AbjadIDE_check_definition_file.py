@@ -17,7 +17,7 @@ def test_AbjadIDE_check_definition_file_02():
     r'''In segment directory.
     '''
 
-    path = ide.Path('red_score').segments('segment_01', 'definition.py')
+    path = ide.Path('red_score').segments('A', 'definition.py')
     abjad_ide('red~score %A dfk q')
     transcript = abjad_ide.io.transcript
     assert f'{path.trim()} ... OK' in transcript

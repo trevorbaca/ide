@@ -27,9 +27,9 @@ def test_AbjadIDE_check_every_definition_file_02():
     abjad_ide('red~score gg dfk* q')
     transcript = abjad_ide.io.transcript
     for name in [
-        'segment_01',
-        'segment_02',
-        'segment_03',
+        'A',
+        'B',
+        'C',
         ]:
         path = ide.Path('red_score').segments(name, 'definition.py')
         assert f'{path.trim()} ... OK' in transcript

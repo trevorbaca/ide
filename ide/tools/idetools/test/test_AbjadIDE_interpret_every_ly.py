@@ -47,7 +47,7 @@ def test_AbjadIDE_interpret_every_ly_02():
     with ide.Test():
         sources = [
             ide.Path('red_score').segments(name, 'illustration.ly')
-            for name in ['segment_01', 'segment_02', 'segment_03']
+            for name in ['A', 'B', 'C']
             ]
         targets = [_.with_suffix('.pdf') for _ in sources]
         for target in targets:
