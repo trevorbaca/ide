@@ -966,7 +966,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.test:
             return
         string = ' '.join([str(_) for _ in paths])
-        command = f'py.test -xrf {string}'
+        command = f'py.test -xrf {string}; say "done"'
         abjad.IOManager.spawn_subprocess(command)
 
     def _select_path(
