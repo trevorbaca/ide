@@ -33,9 +33,9 @@ class Command(abjad.AbjadObject):
         'score',
         'shell',
         'show',
-        'strings',
         'stylesheet',
         'tests',
+        'text',
         )
 
     ### INITIALIZER ###

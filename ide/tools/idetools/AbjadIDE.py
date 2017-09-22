@@ -1538,13 +1538,13 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ed',
+        'it',
         argument_name='directory',
-        description='strings - edit',
+        description='text - edit',
         directories=True,
         external=True,
         scores=True,
-        section='strings',
+        section='text',
         )
     def edit_every_string(self, directory):
         r'''Opens Vim and goes to every occurrence of search string.
@@ -3197,11 +3197,11 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rp',
         argument_name='directory',
-        description='strings - replace',
+        description='text - replace',
         directories=True,
         external=True,
         scores=True,
-        section='strings',
+        section='text',
         )
     def replace(self, directory):
         r'''Replaces search string with replace string.
@@ -3283,11 +3283,11 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'sr',
         argument_name='directory',
-        description='strings - search',
+        description='text - search',
         directories=True,
         external=True,
         scores=True,
-        section='strings',
+        section='text',
         )
     def search(self, directory):
         r'''Searches for expression
