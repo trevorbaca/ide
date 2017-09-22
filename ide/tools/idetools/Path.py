@@ -235,7 +235,6 @@ class Path(abjad.Path):
                 'red_score/segments/segment_01/definition.py'
                 'red_score/segments/segment_02/definition.py'
                 'red_score/segments/segment_03/definition.py'
-                'red_score/stylesheets/context-definitions.ily'
 
             No matches anywhere in score:
 

@@ -146,10 +146,10 @@ def test_AbjadIDE_address_at_09():
     r'''Edits stylesheet.
     '''
 
-    abjad_ide('red @ext-def q')
+    abjad_ide('red @contexts q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').stylesheets('context-definitions.ily')
-    assert f"Matching '@ext-def' to {path.trim()} ..." in transcript
+    path = ide.Path('red_score').stylesheets('contexts.ily')
+    assert f"Matching '@contexts' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_address_at_10():
