@@ -850,7 +850,7 @@ class AbjadIDE(abjad.AbjadObject):
             score_directory = directory.contents
             return directory.contents(value)
 
-    def _open_files(self, paths, silent=False):
+    def _open_files(self, paths, force_vim=False, silent=False):
         assert isinstance(paths, list), repr(paths)
         for path in paths:
             if not path.exists():
@@ -860,7 +860,8 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'not a file {path.trim()} ...')
                 return
         string = ' '.join([str(_) for _ in paths])
-        if all(_.suffix in self.configuration.editor_suffixes for _ in paths):
+        if (force_vim or all(_.suffix in self.configuration.editor_suffixes 
+            for _ in paths)):
             command = f'vim {string}'
             if not silent:
                 for path in paths:
@@ -3409,3 +3410,26 @@ class AbjadIDE(abjad.AbjadObject):
 #        '''
 #        assert directory.is_package()
 #        self._trash_file(directory / 'illustration.pdf')
+
+    @Command(
+        'vi',
+        argument_name='directory',
+        description='files - vi',
+        directories=True,
+        external=True,
+        scores=True,
+        section='files',
+        )
+    def vi_files(self, directory):
+        r'''Edits files in Vim.
+
+        Returns none.
+        '''
+        paths = self._select_path(
+            directory,
+            infinitive='to open in Vim',
+            multiple=True,
+            )
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths, force_vim=True)
