@@ -15,7 +15,7 @@ def test_AbjadIDE_interpret_back_cover_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red~score %letter bci q')
+        abjad_ide('red %letter bci q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -24,7 +24,7 @@ def test_AbjadIDE_interpret_back_cover_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red~score %letter bci q')
+        abjad_ide('red %letter bci q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting back cover ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript

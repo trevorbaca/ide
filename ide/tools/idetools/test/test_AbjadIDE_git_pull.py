@@ -12,47 +12,47 @@ def test_AbjadIDE_git_pull_01():
     transcript = abjad_ide.io.transcript
     assert 'git - pull (pull)' not in transcript
 
-    abjad_ide('red~score pull q')
+    abjad_ide('red pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score bb pull q')
+    abjad_ide('red bb pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score dd pull q')
+    abjad_ide('red dd pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score ee pull q')
+    abjad_ide('red ee pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score gg pull q')
+    abjad_ide('red gg pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score gg A pull q')
+    abjad_ide('red gg A pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score mm pull q')
+    abjad_ide('red mm pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score mm magic pull q')
+    abjad_ide('red mm magic pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score oo pull q')
+    abjad_ide('red oo pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score tt pull q')
+    abjad_ide('red tt pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red~score yy pull q')
+    abjad_ide('red yy pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 

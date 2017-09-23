@@ -6,7 +6,7 @@ def test_AbjadIDE_go_to_previous_package_01():
     r'''In materials directory.
     '''
 
-    abjad_ide('red~score mm < < < q')
+    abjad_ide('red mm < < < q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -22,7 +22,7 @@ def test_AbjadIDE_go_to_previous_package_02():
     r'''In material directory.
     '''
 
-    abjad_ide('red~score mm performers < < q')
+    abjad_ide('red mm performers < < q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -38,7 +38,7 @@ def test_AbjadIDE_go_to_previous_package_03():
     r'''In segments directory.
     '''
 
-    abjad_ide('red~score gg < < < q')
+    abjad_ide('red gg < < < q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -54,7 +54,7 @@ def test_AbjadIDE_go_to_previous_package_04():
     r'''In segment directory.
     '''
 
-    abjad_ide('red~score gg A < < q')
+    abjad_ide('red gg A < < q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

@@ -12,7 +12,7 @@ def test_AbjadIDE_make_every_pdf_01():
             target = directory / 'illustration.pdf'
             target.remove()
 
-        abjad_ide('red~score mm pdfm* q')
+        abjad_ide('red mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             directory = ide.Path('red_score').materials(name)
@@ -32,7 +32,7 @@ def test_AbjadIDE_make_every_pdf_01():
             illustrate = directory / '__illustrate__.py'
             assert f'Can not find {illustrate.trim()} ...' in transcript
 
-        abjad_ide('red~score mm pdfm* q')
+        abjad_ide('red mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             directory = ide.Path('red_score').materials(name)
@@ -52,25 +52,25 @@ def test_AbjadIDE_make_every_pdf_01():
             illustrate = directory / '__illustrate__.py'
             assert f'Can not find {illustrate.trim()} ...' in transcript
 
-        abjad_ide('red~score mm **llus q')
+        abjad_ide('red mm **llus q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score').materials(name, 'illustration.pdf')
             assert "Matching '**llus' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score mm **pdf q')
+        abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score').materials(name, 'illustration.pdf')
             assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score mm ** q')
+        abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score').materials(name, 'illustration.pdf')
             assert "Matching '**' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score mm **asdf q')
+        abjad_ide('red mm **asdf q')
         transcript = abjad_ide.io.transcript
         assert "Matching '**asdf' to no PDFS ..."
 
@@ -84,7 +84,7 @@ def test_AbjadIDE_make_every_pdf_02():
             target = directory / name / 'illustration.pdf'
             target.remove()
 
-        abjad_ide('red~score gg pdfm* q')
+        abjad_ide('red gg pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in names:
             directory = ide.Path('red_score').segments(name)
@@ -102,24 +102,24 @@ def test_AbjadIDE_make_every_pdf_02():
             assert source.is_file()
             assert target.is_file()
 
-        abjad_ide('red~score gg **llus q')
+        abjad_ide('red gg **llus q')
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score').segments(name, 'illustration.pdf')
             assert "Matching '**llus' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score gg **pdf q')
+        abjad_ide('red gg **pdf q')
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score').segments(name, 'illustration.pdf')
             assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score gg ** q')
+        abjad_ide('red gg ** q')
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score').segments(name, 'illustration.pdf')
             assert "Matching '**' to 3 PDFs ..." in transcript
 
-        abjad_ide('red~score gg **asdf q')
+        abjad_ide('red gg **asdf q')
         transcript = abjad_ide.io.transcript
         assert "Matching '**asdf' to no PDFs ..." in transcript

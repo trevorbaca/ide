@@ -12,7 +12,7 @@ def test_AbjadIDE_generate_build_stylesheet_01():
         target = ide.Path('blue_score').builds('letter', 'stylesheet.ily')
         target.remove()
 
-        abjad_ide('blue~score %letter yg q')
+        abjad_ide('blu %letter yg q')
         transcript = abjad_ide.io.transcript
         assert 'Generating stylesheet ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -22,7 +22,7 @@ def test_AbjadIDE_generate_build_stylesheet_01():
         assert 'paper_size' not in text
         assert '"letter"' in text
 
-        abjad_ide('blue~score %letter yg q')
+        abjad_ide('blu %letter yg q')
         transcript = abjad_ide.io.transcript
         assert 'Generating stylesheet ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript

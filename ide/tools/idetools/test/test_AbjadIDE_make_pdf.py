@@ -15,7 +15,7 @@ def test_AbjadIDE_make_pdf_01():
         source.remove()
         target.remove()
 
-        abjad_ide('red~score %magic pdfm q')
+        abjad_ide('red %magic pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' not in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_make_pdf_01():
         assert source.is_file()
         assert target.is_file()
 
-        abjad_ide('red~score %magic pdfm q')
+        abjad_ide('red %magic pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' in transcript
@@ -48,7 +48,7 @@ def test_AbjadIDE_make_pdf_02():
         source.remove()
         target.remove()
 
-        abjad_ide('red~score %A pdfm q')
+        abjad_ide('red %A pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' not in transcript
@@ -60,7 +60,7 @@ def test_AbjadIDE_make_pdf_02():
         assert source.is_file()
         assert target.is_file()
 
-        abjad_ide('red~score %A pdfm q')
+        abjad_ide('red %A pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' in transcript

@@ -11,11 +11,11 @@ abjad_ide = ide.AbjadIDE(test=True)
 #        source /= 'illustration.ly'
 #        target = source.with_suffix('.pdf')
 #
-#        abjad_ide('red~score %magic pdfm q')
+#        abjad_ide('red %magic pdfm q')
 #        assert source.is_file()
 #        assert target.is_file()
 #
-#        abjad_ide('red~score %magic trash q')
+#        abjad_ide('red %magic trash q')
 #        transcript = abjad_ide.io.transcript
 #        assert f'Trashing {source.trim()} ...' in transcript
 #        assert f'Trashing {target.trim()} ...' in transcript
@@ -32,11 +32,11 @@ abjad_ide = ide.AbjadIDE(test=True)
 #        source /= 'illustration.ly'
 #        target = source.with_suffix('.pdf')
 #
-#        abjad_ide('red~score %A pdfm q')
+#        abjad_ide('red %A pdfm q')
 #        assert source.is_file()
 #        assert target.is_file()
 #
-#        abjad_ide('red~score %A trash q')
+#        abjad_ide('red %A trash q')
 #        transcript = abjad_ide.io.transcript
 #        assert f'Trashing {source.trim()} ...' in transcript
 #        assert f'Trashing {target.trim()} ...' in transcript

@@ -11,7 +11,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 #        target = target / 'materials' / 'magic_numbers' / 'illustration.ly'
 #        assert target.is_file()
 #
-#        abjad_ide('red~score %magic lyt q')
+#        abjad_ide('red %magic lyt q')
 #        transcript = abjad_ide.io.transcript
 #        assert f'Trashing {target.trim()} ...' in transcript
 #        assert not target.exists()
@@ -26,7 +26,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 #        target = target / 'segments' / 'A' / 'illustration.ly'
 #        assert target.is_file()
 #
-#        abjad_ide('red~score %A lyt q')
+#        abjad_ide('red %A lyt q')
 #        transcript = abjad_ide.io.transcript
 #        assert f'Trashing {target.trim()} ...' in transcript
 #        assert not target.exists()

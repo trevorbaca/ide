@@ -6,7 +6,7 @@ def test_AbjadIDE_check_every_definition_file_01():
     r'''In materials directory.
     '''
 
-    abjad_ide('red~score mm dfk* q')
+    abjad_ide('red mm dfk* q')
     transcript = abjad_ide.io.transcript
     for name in [
         'magic_numbers',
@@ -24,7 +24,7 @@ def test_AbjadIDE_check_every_definition_file_02():
     r'''In segments directory.
     '''
 
-    abjad_ide('red~score gg dfk* q')
+    abjad_ide('red gg dfk* q')
     transcript = abjad_ide.io.transcript
     for name in [
         'A',

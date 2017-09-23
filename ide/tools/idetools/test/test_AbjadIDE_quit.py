@@ -13,25 +13,25 @@ def test_AbjadIDE_quit_02():
     r'''In builds directory.
     '''
 
-    abjad_ide('red~score bb q')
+    abjad_ide('red bb q')
 
 
 def test_AbjadIDE_quit_03():
     r'''In material directory.
     '''
 
-    abjad_ide('red~score %tempi q')
+    abjad_ide('red %tempi q')
 
 
 def test_AbjadIDE_quit_04():
     r'''In score directory.
     '''
 
-    abjad_ide('red~score q')
+    abjad_ide('red q')
 
 
 def test_AbjadIDE_quit_05():
     r'''In segment directory.
     '''
 
-    abjad_ide('red~score %A q')
+    abjad_ide('red %A q')

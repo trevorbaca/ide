@@ -6,7 +6,7 @@ def test_AbjadIDE_address_star_01():
     r'''In contents directory.
     '''
 
-    abjad_ide('red~score *-score q')
+    abjad_ide('red *-score q')
     path = ide.Path('red_score').distribution('red-score.pdf')
     transcript = abjad_ide.io.transcript 
     assert f"Matching '*-score' to {path.trim()} ..." in transcript
@@ -18,11 +18,11 @@ def test_AbjadIDE_address_star_02():
 
     with ide.Test():
 
-        abjad_ide('red~score %tempi pdfm q')
+        abjad_ide('red %tempi pdfm q')
         path = ide.Path('red_score').materials('tempi', 'illustration.pdf')
         assert path.is_file()
 
-        abjad_ide('red~score *tempi q')
+        abjad_ide('red *tempi q')
         transcript = abjad_ide.io.transcript 
         assert f"Matching '*tempi' to {path.trim()} ..." in transcript
 
@@ -33,11 +33,11 @@ def test_AbjadIDE_address_star_03():
 
     with ide.Test():
 
-        abjad_ide('red~score %A pdfm q')
+        abjad_ide('red %A pdfm q')
         path = ide.Path('red_score').segments('A', 'illustration.pdf')
         assert path.is_file()
 
-        abjad_ide('red~score *A q')
+        abjad_ide('red *A q')
         transcript = abjad_ide.io.transcript 
         assert f"Matching '*A' to {path.trim()} ..." in transcript
 
@@ -49,18 +49,18 @@ def test_AbjadIDE_address_star_04():
     with ide.Test():
         path = ide.Path('red_score').segments('A', 'illustration.pdf')
 
-        abjad_ide('red~score %A pdfm q')
+        abjad_ide('red %A pdfm q')
         assert path.is_file()
 
-        abjad_ide('red~score gg *0 q')
+        abjad_ide('red gg *0 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '*0' to no PDFs ..." in transcript
 
-        abjad_ide('red~score gg *1 q')
+        abjad_ide('red gg *1 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '*1' to {path.trim()} ..." in transcript
 
-        abjad_ide('red~score gg *99 q')
+        abjad_ide('red gg *99 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '*99' to no PDFs ..." in transcript
 
@@ -72,18 +72,18 @@ def test_AbjadIDE_address_star_05():
     with ide.Test():
         path = ide.Path('red_score').segments('A', 'illustration.pdf')
 
-        abjad_ide('red~score %A pdfm q')
+        abjad_ide('red %A pdfm q')
         assert path.is_file()
 
-        abjad_ide('red~score gg **0 q')
+        abjad_ide('red gg **0 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '**0' to no PDFs ..." in transcript
 
-        abjad_ide('red~score gg **1 q')
+        abjad_ide('red gg **1 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '**1' to {path.trim()} ..." in transcript
 
-        abjad_ide('red~score gg **99 q')
+        abjad_ide('red gg **99 q')
         transcript = abjad_ide.io.transcript
         assert f"Matching '**99' to no PDFs ..." in transcript
 

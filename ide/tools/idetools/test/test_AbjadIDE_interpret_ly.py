@@ -11,7 +11,7 @@ def test_AbjadIDE_interpret_ly_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red~score %tempi lyi q')
+        abjad_ide('red %tempi lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -20,7 +20,7 @@ def test_AbjadIDE_interpret_ly_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red~score %tempi lyi q')
+        abjad_ide('red %tempi lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -42,7 +42,7 @@ def test_AbjadIDE_interpret_ly_02():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red~score %A lyi q')
+        abjad_ide('red %A lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -51,7 +51,7 @@ def test_AbjadIDE_interpret_ly_02():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red~score %A lyi q')
+        abjad_ide('red %A lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript

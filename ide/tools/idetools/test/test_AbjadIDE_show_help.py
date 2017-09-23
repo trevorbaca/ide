@@ -7,7 +7,7 @@ def test_AbjadIDE_show_help_01():
     r'''In build directory.
     '''
 
-    abjad_ide('red~score %letter ? q')
+    abjad_ide('red %letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : builds : letter : help',
@@ -112,7 +112,7 @@ def test_AbjadIDE_show_help_02():
     r'''In builds directory.
     '''
 
-    abjad_ide('red~score bb ? q')
+    abjad_ide('red bb ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : builds : help',
@@ -189,7 +189,7 @@ def test_AbjadIDE_show_help_03():
     r'''In builds segments directory.
     '''
 
-    abjad_ide('red~score nn ? q')
+    abjad_ide('red nn ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : builds : _segments : help',
@@ -266,7 +266,7 @@ def test_AbjadIDE_show_help_04():
     r'''In contents directory.
     '''
 
-    abjad_ide('red~score ? q')
+    abjad_ide('red ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : help',
@@ -335,7 +335,7 @@ def test_AbjadIDE_show_help_05():
     r'''In distribution directory.
     '''
 
-    abjad_ide('red~score dd ? q')
+    abjad_ide('red dd ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : distribution : help',
@@ -470,7 +470,7 @@ def test_AbjadIDE_show_help_07():
     r'''In material directory.
     '''
 
-    abjad_ide('red~score %magic ? q')
+    abjad_ide('red %magic ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : materials : magic_numbers : help',
@@ -559,7 +559,7 @@ def test_AbjadIDE_show_help_08():
     r'''In materials directory.
     '''
 
-    abjad_ide('red~score mm ? q')
+    abjad_ide('red mm ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : materials : help',
@@ -701,7 +701,7 @@ def test_AbjadIDE_show_help_10():
     r'''In segment directory.
     '''
 
-    abjad_ide('red~score %A ? q')
+    abjad_ide('red %A ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : segments : A : help',
@@ -789,7 +789,7 @@ def test_AbjadIDE_show_help_11():
     r'''In segments directory.
     '''
 
-    abjad_ide('red~score gg ? q')
+    abjad_ide('red gg ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : segments : help',
@@ -871,7 +871,7 @@ def test_AbjadIDE_show_help_12():
     r'''In stylesheets directory.
     '''
 
-    abjad_ide('red~score yy ? q')
+    abjad_ide('red yy ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : stylesheets : help',
@@ -946,7 +946,7 @@ def test_AbjadIDE_show_help_13():
     r'''In test directory.
     '''
 
-    abjad_ide('red~score tt ? q')
+    abjad_ide('red tt ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : test : help',
@@ -1021,7 +1021,7 @@ def test_AbjadIDE_show_help_14():
     r'''In tools directory.
     '''
 
-    abjad_ide('red~score oo ? q')
+    abjad_ide('red oo ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         'Red Score (2017) : tools : help',

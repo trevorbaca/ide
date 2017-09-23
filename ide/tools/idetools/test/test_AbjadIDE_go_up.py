@@ -4,7 +4,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_go_up_01():
 
-    abjad_ide('red~score %tempi .. .. .. q')
+    abjad_ide('red %tempi .. .. .. q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -18,7 +18,7 @@ def test_AbjadIDE_go_up_01():
 
 def test_AbjadIDE_go_up_02():
 
-    abjad_ide('red~score %A .. .. .. q')
+    abjad_ide('red %A .. .. .. q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

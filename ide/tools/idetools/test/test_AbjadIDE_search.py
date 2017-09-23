@@ -27,7 +27,7 @@ def test_AbjadIDE_search_02():
     r'''In score directory.
     '''
 
-    abjad_ide('red~score sr RhythmMaker q')
+    abjad_ide('red sr RhythmMaker q')
     transcript = abjad_ide.io.transcript
     assert 'Enter search string> RhythmMaker' in transcript
 

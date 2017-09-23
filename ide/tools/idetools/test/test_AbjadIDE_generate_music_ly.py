@@ -8,7 +8,7 @@ def test_AbjadIDE_generate_music_ly_01():
         target = ide.Path('red_score').builds('letter', 'music.ly')
         target.remove()
 
-        abjad_ide('red~score %letter mg q')
+        abjad_ide('red %letter mg q')
         transcript = abjad_ide.io.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -23,7 +23,7 @@ def test_AbjadIDE_generate_music_ly_01():
         assert '\n    \include "../_segments/B.ly"' in text
         assert '\n    \include "../_segments/C.ly"' in text
 
-        abjad_ide('red~score %letter mg q')
+        abjad_ide('red %letter mg q')
         transcript = abjad_ide.io.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
@@ -47,7 +47,7 @@ def test_AbjadIDE_generate_music_ly_02():
         target = ide.Path('red_score').builds('letter', 'music.ly')
         target.remove()
 
-        abjad_ide('red~score gg new D %letter mg q')
+        abjad_ide('red gg new D %letter mg q')
         transcript = abjad_ide.io.transcript
         assert 'Generating music ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript

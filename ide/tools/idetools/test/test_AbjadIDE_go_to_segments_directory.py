@@ -6,7 +6,7 @@ def test_AbjadIDE_go_to_segments_directory_01():
     r'''From material directory.
     '''
 
-    abjad_ide('red~score mm tempi gg q')
+    abjad_ide('red mm tempi gg q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -22,7 +22,7 @@ def test_AbjadIDE_go_to_segments_directory_02():
     r'''From segment directory.
     '''
 
-    abjad_ide('red~score gg A gg q')
+    abjad_ide('red gg A gg q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -37,7 +37,7 @@ def test_AbjadIDE_go_to_segments_directory_03():
     r'''From score directory.
     '''
 
-    abjad_ide('red~score gg q')
+    abjad_ide('red gg q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -50,7 +50,7 @@ def test_AbjadIDE_go_to_segments_directory_04():
     r'''Makes sure reverse-order view is in effect.
     '''
 
-    abjad_ide('blue~score gg q')
+    abjad_ide('blu gg q')
     transcript = abjad_ide.io.transcript
     assert '1: B' in transcript
     assert '2: A' in transcript

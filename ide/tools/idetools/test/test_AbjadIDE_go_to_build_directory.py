@@ -4,7 +4,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_go_to_build_directory_01():
 
-    abjad_ide('red~score %letter q')
+    abjad_ide('red %letter q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

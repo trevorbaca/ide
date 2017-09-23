@@ -6,7 +6,7 @@ def test_AbjadIDE_go_to_materials_directory_01():
     r'''From builds directory.
     '''
 
-    abjad_ide('red~score bb mm q')
+    abjad_ide('red bb mm q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

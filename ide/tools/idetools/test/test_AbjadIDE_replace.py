@@ -9,19 +9,19 @@ def test_AbjadIDE_replace_01():
 
     with ide.Test():
 
-        abjad_ide('red~score sr RhythmMaker q')
+        abjad_ide('red sr RhythmMaker q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> RhythmMaker' in transcript
         string = 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
         assert string in transcript
 
-        abjad_ide('red~score rp RhythmMaker FooMaker y q')
+        abjad_ide('red rp RhythmMaker FooMaker y q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> RhythmMaker' in transcript
         assert 'Enter replace string> FooMaker' in transcript
         assert 'Replaced 2 instances over 1 line in 1 file.' in transcript
 
-        abjad_ide('red~score rp FooMaker RhythmMaker y q')
+        abjad_ide('red rp FooMaker RhythmMaker y q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> FooMaker' in transcript
         assert 'Enter replace string> RhythmMaker' in transcript

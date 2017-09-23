@@ -11,7 +11,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_build_score_01():
 
     with ide.Test():
-        abjad_ide('red~score %letter bld q')
+        abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
         assert transcript.lines[-44:] == [
             'Building score ...',

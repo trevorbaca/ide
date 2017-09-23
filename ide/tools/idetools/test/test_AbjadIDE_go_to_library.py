@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_library_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('red~score mm tempi ll q')
+    abjad_ide('red mm tempi ll q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -27,7 +27,7 @@ def test_AbjadIDE_go_to_library_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('red~score gg A ll q')
+    abjad_ide('red gg A ll q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -45,7 +45,7 @@ def test_AbjadIDE_go_to_library_03():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('red~score ll q')
+    abjad_ide('red ll q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

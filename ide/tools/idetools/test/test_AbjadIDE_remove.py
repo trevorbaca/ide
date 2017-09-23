@@ -153,17 +153,17 @@ def test_AbjadIDE_remove_05():
     with ide.Test():
         path = ide.Path('red_score').stylesheets('stylesheet.ily')
 
-        abjad_ide('red~score yy rm sheet q')
+        abjad_ide('red yy rm sheet q')
         transcript = abjad_ide.io.transcript
         assert 'Select files to remove> sheet' in transcript
         assert f'Will remove {path.trim()} ...' in transcript
 
-        abjad_ide('red~score yy rm eet.i q')
+        abjad_ide('red yy rm eet.i q')
         transcript = abjad_ide.io.transcript
         assert 'Select files to remove> eet.i' in transcript
         assert f'Will remove {path.trim()} ...' in transcript
 
-        abjad_ide('red~score yy rm sty q')
+        abjad_ide('red yy rm sty q')
         transcript = abjad_ide.io.transcript
         assert 'Select files to remove> sty' in transcript
         assert f'Will remove {path.trim()} ...' in transcript

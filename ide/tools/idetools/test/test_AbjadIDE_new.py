@@ -129,7 +129,7 @@ def test_AbjadIDE_new_04():
     build = ide.Path('red_score').builds('arch-a')
     with ide.Test(remove=[build]):
 
-        abjad_ide('red~score bb new arch-a arch~a $80 ARCH-A y q')
+        abjad_ide('red bb new arch-a arch~a $80 ARCH-A y q')
         transcript = abjad_ide.io.transcript
         assert build.is_dir()
         assert build.get_metadatum('price') == '$80'
@@ -165,7 +165,7 @@ def test_AbjadIDE_new_04():
             '',
             ]
 
-        abjad_ide('red~score bb new arch-a q')
+        abjad_ide('red bb new arch-a q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {build.trim()} ...' in transcript
 
@@ -177,7 +177,7 @@ def test_AbjadIDE_new_05():
     path = ide.Path('red_score').builds('arch-a')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red~score bb new arch-a arch~a <return> <return> y q')
+        abjad_ide('red bb new arch-a arch~a <return> <return> y q')
         transcript = abjad_ide.io.transcript
         assert path.is_dir()
         assert path.get_metadatum('price') is None
@@ -216,7 +216,7 @@ def test_AbjadIDE_new_06():
     path = ide.Path('red_score').tools('NewClass.py')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red~score oo new NewClass.py y q')
+        abjad_ide('red oo new NewClass.py y q')
         transcript = abjad_ide.io.transcript
         assert path.is_file()
         text = path.read_text()
@@ -225,7 +225,7 @@ def test_AbjadIDE_new_06():
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
-        abjad_ide('red~score oo new NewClass q')
+        abjad_ide('red oo new NewClass q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
 
@@ -237,7 +237,7 @@ def test_AbjadIDE_new_07():
     path = ide.Path('red_score').tools('make_material.py')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red~score oo new make_material y q')
+        abjad_ide('red oo new make_material y q')
         transcript = abjad_ide.io.transcript
         assert path.is_file()
         text = path.read_text()
@@ -246,7 +246,7 @@ def test_AbjadIDE_new_07():
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
-        abjad_ide('red~score oo new make~material q')
+        abjad_ide('red oo new make~material q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
 
@@ -273,7 +273,7 @@ def test_AbjadIDE_new_08():
         for name in names:
             assert f'Writing {(path / name).trim()} ...' in transcript
 
-        abjad_ide('red~score mm new test_notes q')
+        abjad_ide('red mm new test_notes q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
 
@@ -285,7 +285,7 @@ def test_AbjadIDE_new_09():
     path = ide.Path('red_score').segments('segment_04')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red~score gg new segment~04 q')
+        abjad_ide('red gg new segment~04 q')
         transcript = abjad_ide.io.transcript
         assert path.is_dir()
         names = [
@@ -300,7 +300,7 @@ def test_AbjadIDE_new_09():
         for name in names:
             assert f'Writing {(path / name).trim()} ...' in transcript
 
-        abjad_ide('red~score gg new segment_04 q')
+        abjad_ide('red gg new segment_04 q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
 
@@ -312,23 +312,23 @@ def test_AbjadIDE_new_10():
     path = ide.Path('red_score').stylesheets('new-stylesheet.ily')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red~score yy new new~stylesheet y q')
+        abjad_ide('red yy new new~stylesheet y q')
         transcript = abjad_ide.io.transcript
         assert path.is_file()
         assert 'File name> new stylesheet' in transcript
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 
-        abjad_ide('red~score yy new new~stylesheet.ily q')
+        abjad_ide('red yy new new~stylesheet.ily q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
 
-        abjad_ide('red~score yy new <return> q')
+        abjad_ide('red yy new <return> q')
         transcript = abjad_ide.io.transcript
         assert 'Existing' not in transcript
         assert 'Writing' not in transcript
 
-        abjad_ide('red~score yy new ss q')
+        abjad_ide('red yy new ss q')
         transcript = abjad_ide.io.transcript
         assert 'Existing' not in transcript
         assert 'Writing' not in transcript
