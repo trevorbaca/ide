@@ -8,7 +8,7 @@ def test_AbjadIDE_make_pdf_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials('magic_numbers')
+        source = ide.Path('red_score', 'materials', 'magic_numbers')
         source /= 'illustration.ly'
         illustrate = source.with_name('__illustrate__.py')
         target = source.with_suffix('.pdf')
@@ -41,8 +41,7 @@ def test_AbjadIDE_make_pdf_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('A')
-        source /= 'illustration.ly'
+        source = ide.Path('red_score', 'segments', 'A', 'illustration.ly')
         illustrate = source.with_name('__illustrate__.py')
         target = source.with_suffix('.pdf')
         source.remove()

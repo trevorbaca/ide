@@ -7,7 +7,7 @@ def test_AbjadIDE_address_star_01():
     '''
 
     abjad_ide('red *-score q')
-    path = ide.Path('red_score').distribution('red-score.pdf')
+    path = ide.Path('red_score', 'distribution', 'red-score.pdf')
     transcript = abjad_ide.io.transcript 
     assert f"Matching '*-score' to {path.trim()} ..." in transcript
 
@@ -19,7 +19,7 @@ def test_AbjadIDE_address_star_02():
     with ide.Test():
 
         abjad_ide('red %tempi pdfm q')
-        path = ide.Path('red_score').materials('tempi', 'illustration.pdf')
+        path = ide.Path('red_score', 'materials', 'tempi', 'illustration.pdf')
         assert path.is_file()
 
         abjad_ide('red *tempi q')
@@ -34,7 +34,7 @@ def test_AbjadIDE_address_star_03():
     with ide.Test():
 
         abjad_ide('red %A pdfm q')
-        path = ide.Path('red_score').segments('A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
         assert path.is_file()
 
         abjad_ide('red *A q')
@@ -47,7 +47,7 @@ def test_AbjadIDE_address_star_04():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score').segments('A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
 
         abjad_ide('red %A pdfm q')
         assert path.is_file()
@@ -70,7 +70,7 @@ def test_AbjadIDE_address_star_05():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score').segments('A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
 
         abjad_ide('red %A pdfm q')
         assert path.is_file()

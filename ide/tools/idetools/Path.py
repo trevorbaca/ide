@@ -27,7 +27,11 @@ class Path(abjad.Path):
 
     ### CONSTRUCTOR ###
 
-    def __new__(class_, argument, scores=None):
+    def __new__(class_, *arguments, scores=None):
+        if not arguments:
+            raise Exception('must provide at least one argument.')
+        argument = arguments[0]
+        _arguments = arguments[1:]
         if isinstance(argument, pathlib.Path) or os.sep in argument:
             self = pathlib.Path.__new__(class_, argument)
         else:
@@ -47,6 +51,7 @@ class Path(abjad.Path):
                 arguments.append(
                     abjad.abjad_configuration.composer_scores_directory)
                 arguments.extend(2 * [argument])
+            arguments.extend(_arguments)
             self = pathlib.Path.__new__(class_, *arguments)
         if scores is not None:
             scores = type(self)(scores)

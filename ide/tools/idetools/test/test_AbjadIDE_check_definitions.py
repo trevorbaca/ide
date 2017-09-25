@@ -15,7 +15,7 @@ def test_AbjadIDE_check_definitions_01():
         'tempi',
         'time_signatures',
         ]:
-        path = ide.Path('red_score').materials(name, 'definition.py')
+        path = ide.Path('red_score', 'materials', name, 'definition.py')
         assert f'{path.trim()} ... OK' in transcript
     assert 'Total time ' in transcript
 
@@ -31,6 +31,6 @@ def test_AbjadIDE_check_definitions_02():
         'B',
         'C',
         ]:
-        path = ide.Path('red_score').segments(name, 'definition.py')
+        path = ide.Path('red_score', 'segments', name, 'definition.py')
         assert f'{path.trim()} ... OK' in transcript
     assert 'Total time ' in transcript

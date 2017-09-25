@@ -6,7 +6,7 @@ def test_AbjadIDE_trash_lys_01():
 
     with ide.Test():
         paths = [
-            ide.Path('red_score').segments(name, 'illustration.ly')
+            ide.Path('red_score', 'segments', name, 'illustration.ly')
             for name in ['A', 'B', 'C']
             ]
         for path in paths:

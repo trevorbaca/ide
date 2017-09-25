@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_definition_01():
 
     with ide.Test():
-        path = ide.Path('red_score').segments('A', 'definition.py')
+        path = ide.Path('red_score', 'segments', 'A', 'definition.py')
         assert path.is_file()
 
         abjad_ide('red %A dft q')

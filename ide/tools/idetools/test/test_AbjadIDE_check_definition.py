@@ -6,7 +6,7 @@ def test_AbjadIDE_check_definition_01():
     r'''In material directory.
     '''
 
-    path = ide.Path('red_score').materials('magic_numbers', 'definition.py')
+    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
     abjad_ide('red %magic dfk q')
     transcript = abjad_ide.io.transcript
     assert f'{path.trim()} ... OK' in transcript
@@ -17,7 +17,7 @@ def test_AbjadIDE_check_definition_02():
     r'''In segment directory.
     '''
 
-    path = ide.Path('red_score').segments('A', 'definition.py')
+    path = ide.Path('red_score', 'segments', 'A', 'definition.py')
     abjad_ide('red %A dfk q')
     transcript = abjad_ide.io.transcript
     assert f'{path.trim()} ... OK' in transcript

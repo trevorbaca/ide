@@ -8,7 +8,7 @@ def test_AbjadIDE_open_score_01():
 
     abjad_ide('red ro q')
     transcript = abjad_ide.io.transcript
-    target = ide.Path('red_score').distribution('red-score.pdf')
+    target = ide.Path('red_score', 'distribution', 'red-score.pdf')
     assert f'Opening {target.trim()} ...' in transcript
 
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_open_score_02():
 
     abjad_ide('red %letter ro q')
     transcript = abjad_ide.io.transcript
-    target = ide.Path('red_score').builds('letter', 'score.pdf')
+    target = ide.Path('red_score', 'builds', 'letter', 'score.pdf')
     assert f'Missing {target.trim()} ...' in transcript
 
 

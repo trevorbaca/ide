@@ -8,5 +8,5 @@ def test_AbjadIDE_open_scores_01():
 
     abjad_ide('ro* q')
     transcript = abjad_ide.io.transcript
-    target = ide.Path('red_score').distribution('red-score.pdf')
+    target = ide.Path('red_score', 'distribution', 'red-score.pdf')
     assert f'Opening {target.trim()} ...' in transcript

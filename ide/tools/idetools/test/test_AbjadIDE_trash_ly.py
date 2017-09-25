@@ -7,7 +7,7 @@ def test_AbjadIDE_trash_ly_01():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score').materials('magic_numbers')
+        target = ide.Path('red_score', 'materials', 'magic_numbers')
         target /= 'illustration.ly'
         assert target.is_file()
 
@@ -26,7 +26,7 @@ def test_AbjadIDE_trash_ly_02():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score').segments('A', 'illustration.ly')
+        target = ide.Path('red_score', 'segments', 'A', 'illustration.ly')
         assert target.is_file()
 
         abjad_ide('red %A lyt q')

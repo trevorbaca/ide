@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_generate_music_01():
 
     with ide.Test():
-        target = ide.Path('red_score').builds('letter', 'music.ly')
+        target = ide.Path('red_score', 'builds', 'letter', 'music.ly')
         target.remove()
 
         abjad_ide('red %letter mg q')
@@ -44,7 +44,7 @@ def test_AbjadIDE_generate_music_02():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score').builds('letter', 'music.ly')
+        target = ide.Path('red_score', 'builds', 'letter', 'music.ly')
         target.remove()
 
         abjad_ide('red gg new D %letter mg q')

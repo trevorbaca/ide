@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_music_01():
 
     with ide.Test():
-        path = ide.Path('red_score').builds('letter', 'music.ly')
+        path = ide.Path('red_score', 'builds', 'letter', 'music.ly')
         assert path.is_file()
 
         abjad_ide('red %letter mt q')

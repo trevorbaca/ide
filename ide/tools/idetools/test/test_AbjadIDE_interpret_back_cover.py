@@ -11,7 +11,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_interpret_back_cover_01():
 
     with ide.Test():
-        source = ide.Path('red_score').builds('letter', 'back-cover.tex')
+        source = ide.Path('red_score', 'builds', 'letter', 'back-cover.tex')
         target = source.with_suffix('.pdf')
         target.remove()
 

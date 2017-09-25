@@ -8,14 +8,14 @@ def test_AbjadIDE_make_pdfs_01():
         can_illustrate = ['magic_numbers', 'ranges', 'tempi']
         can_not_illustrate = ['performers', 'time_signatures']
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials(name)
+            directory = ide.Path('red_score', 'materials', name)
             target = directory / 'illustration.pdf'
             target.remove()
 
         abjad_ide('red mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials(name)
+            directory = ide.Path('red_score', 'materials', name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'
@@ -28,14 +28,14 @@ def test_AbjadIDE_make_pdfs_01():
             assert source.is_file()
             assert target.is_file()
         for name in can_not_illustrate:
-            directory = ide.Path('red_score').materials(name)
+            directory = ide.Path('red_score', 'materials', name)
             illustrate = directory / '__illustrate__.py'
             assert f'Can not find {illustrate.trim()} ...' in transcript
 
         abjad_ide('red mm pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            directory = ide.Path('red_score').materials(name)
+            directory = ide.Path('red_score', 'materials', name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'
@@ -55,19 +55,19 @@ def test_AbjadIDE_make_pdfs_01():
         abjad_ide('red mm **llus q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
             assert "Matching '**llus' to 3 PDFs ..." in transcript
 
         abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
             assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
         abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
-            path = ide.Path('red_score').materials(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
             assert "Matching '**' to 3 PDFs ..." in transcript
 
         abjad_ide('red mm **asdf q')
@@ -80,14 +80,14 @@ def test_AbjadIDE_make_pdfs_02():
     with ide.Test():
         names = ['A', 'B', 'C']
         for name in names:
-            directory = ide.Path('red_score').segments()
-            target = directory / name / 'illustration.pdf'
+            target = ide.Path('red_score', 'segments', name)
+            target /= 'illustration.pdf'
             target.remove()
 
         abjad_ide('red gg pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            directory = ide.Path('red_score').segments(name)
+            directory = ide.Path('red_score', 'segments', name)
             illustrate = directory / '__illustrate__.py'
             source = directory / 'illustration.ly'
             target = directory / 'illustration.pdf'
@@ -105,19 +105,19 @@ def test_AbjadIDE_make_pdfs_02():
         abjad_ide('red gg **llus q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**llus' to 3 PDFs ..." in transcript
 
         abjad_ide('red gg **pdf q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**pdf' to 3 PDFs ..." in transcript
 
         abjad_ide('red gg ** q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score').segments(name, 'illustration.pdf')
+            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**' to 3 PDFs ..." in transcript
 
         abjad_ide('red gg **asdf q')

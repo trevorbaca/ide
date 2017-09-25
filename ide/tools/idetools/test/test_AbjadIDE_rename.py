@@ -53,7 +53,7 @@ def test_AbjadIDE_rename_03():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('D')
+        source = ide.Path('red_score', 'segments', 'D')
         source.remove()
         target = source.with_name('E')
         target.remove()
@@ -79,7 +79,7 @@ def test_AbjadIDE_rename_04():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').segments('C')
+        source = ide.Path('red_score', 'segments', 'C')
         assert source.is_dir()
         target = source.with_name('D')
         target.remove()
@@ -102,7 +102,7 @@ def test_AbjadIDE_rename_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').builds('letter')
+        source = ide.Path('red_score', 'builds', 'letter')
         assert source.is_dir()
         target = source.with_name('standard-size')
         target.remove()
@@ -125,7 +125,7 @@ def test_AbjadIDE_rename_06():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').tools('NewMaker.py')
+        source = ide.Path('red_score', 'tools', 'NewMaker.py')
         source.remove()
         target = source.with_name('RenamedMaker.py')
         target.remove()
@@ -151,7 +151,7 @@ def test_AbjadIDE_rename_07():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').stylesheets('new-stylesheet.ily')
+        source = ide.Path('red_score', 'stylesheets', 'new-stylesheet.ily')
         source.remove()
         target = source.with_name('renamed-stylesheet.ily')
         target.remove()

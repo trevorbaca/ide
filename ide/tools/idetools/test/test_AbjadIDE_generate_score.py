@@ -6,7 +6,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_generate_score_01():
 
     with ide.Test():
-        target = ide.Path('red_score').builds('letter', 'score.tex')
+        target = ide.Path('red_score', 'builds', 'letter', 'score.tex')
         target.remove()
 
         abjad_ide('red %letter rg q')

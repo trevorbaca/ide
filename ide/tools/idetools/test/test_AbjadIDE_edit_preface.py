@@ -6,5 +6,5 @@ def test_AbjadIDE_edit_preface_01():
     
     abjad_ide('red %letter pe q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').builds('letter', 'preface.tex')
+    path = ide.Path('red_score', 'builds', 'letter', 'preface.tex')
     assert f'Editing {path.trim()} ...' in transcript

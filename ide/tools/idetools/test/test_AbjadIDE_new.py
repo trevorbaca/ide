@@ -126,7 +126,7 @@ def test_AbjadIDE_new_04():
     r'''Makes build directory.
     '''
 
-    build = ide.Path('red_score').builds('arch-a')
+    build = ide.Path('red_score', 'builds', 'arch-a')
     with ide.Test(remove=[build]):
 
         abjad_ide('red bb new arch-a arch~a $80 ARCH-A y q')
@@ -174,7 +174,7 @@ def test_AbjadIDE_new_05():
     r'''Makes build directory. Ignores empty metadata.
     '''
 
-    path = ide.Path('red_score').builds('arch-a')
+    path = ide.Path('red_score', 'builds', 'arch-a')
     with ide.Test(remove=[path]):
 
         abjad_ide('red bb new arch-a arch~a <return> <return> y q')
@@ -213,7 +213,7 @@ def test_AbjadIDE_new_06():
     r'''Makes tools classfile.
     '''
 
-    path = ide.Path('red_score').tools('NewClass.py')
+    path = ide.Path('red_score', 'tools', 'NewClass.py')
     with ide.Test(remove=[path]):
 
         abjad_ide('red oo new NewClass.py y q')
@@ -234,7 +234,7 @@ def test_AbjadIDE_new_07():
     r'''Makes tools functionfile.
     '''
 
-    path = ide.Path('red_score').tools('make_material.py')
+    path = ide.Path('red_score', 'tools', 'make_material.py')
     with ide.Test(remove=[path]):
 
         abjad_ide('red oo new make_material y q')
@@ -255,7 +255,7 @@ def test_AbjadIDE_new_08():
     r'''Makes material directory.
     '''
 
-    path = ide.Path('red_score').materials('test_notes')
+    path = ide.Path('red_score', 'materials', 'test_notes')
     with ide.Test(remove=[path]):
 
         abjad_ide('Red~Score mm new test~notes q')
@@ -282,7 +282,7 @@ def test_AbjadIDE_new_09():
     r'''Makes segment directory.
     '''
 
-    path = ide.Path('red_score').segments('segment_04')
+    path = ide.Path('red_score', 'segments', 'segment_04')
     with ide.Test(remove=[path]):
 
         abjad_ide('red gg new segment~04 q')
@@ -309,7 +309,7 @@ def test_AbjadIDE_new_10():
     r'''Makes stylesheet.
     '''
 
-    path = ide.Path('red_score').stylesheets('new-stylesheet.ily')
+    path = ide.Path('red_score', 'stylesheets', 'new-stylesheet.ily')
     with ide.Test(remove=[path]):
 
         abjad_ide('red yy new new~stylesheet y q')

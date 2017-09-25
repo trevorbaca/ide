@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_pdf_01():
 
     with ide.Test():
-        path = ide.Path('red_score').segments('A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
 
         abjad_ide('red %A pdfm q')
         assert path.is_file()

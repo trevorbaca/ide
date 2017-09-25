@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_interpret_music_01():
 
     with ide.Test():
-        source = ide.Path('red_score').builds('letter', 'music.ly')
+        source = ide.Path('red_score', 'builds', 'letter', 'music.ly')
         target = source.with_suffix('.pdf')
         target.remove()
 

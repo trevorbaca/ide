@@ -8,7 +8,7 @@ def test_AbjadIDE_remove_01():
     '''
 
     with ide.Test():
-        target_1 = ide.Path('red_score').builds('letter', 'back-cover.tex')
+        target_1 = ide.Path('red_score', 'builds', 'letter', 'back-cover.tex')
         assert target_1.is_file()
         target_2 = target_1.with_name('front-cover.tex')
         assert target_2.is_file()
@@ -151,7 +151,7 @@ def test_AbjadIDE_remove_05():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score').stylesheets('stylesheet.ily')
+        path = ide.Path('red_score', 'stylesheets', 'stylesheet.ily')
 
         abjad_ide('red yy rm sheet q')
         transcript = abjad_ide.io.transcript
