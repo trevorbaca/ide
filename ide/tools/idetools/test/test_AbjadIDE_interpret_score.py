@@ -16,7 +16,7 @@ def test_AbjadIDE_interpret_score_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red %letter fci pi mi bci si q')
+        abjad_ide('red %letter fci pi mi bci ri q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_interpret_score_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red bb letter fci pi mi bci si q')
+        abjad_ide('red bb letter fci pi mi bci ri q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
@@ -43,6 +43,6 @@ def test_AbjadIDE_interpret_score_02():
         pdf = ide.Path('red_score').builds('letter', 'front-cover.pdf')
         pdf.remove()
 
-        abjad_ide('red %letter si q')
+        abjad_ide('red %letter ri q')
         transcript = abjad_ide.io.transcript
         assert 'ERROR IN LATEX LOG FILE ...' in transcript

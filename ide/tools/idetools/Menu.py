@@ -256,6 +256,8 @@ class Menu(abjad.AbjadObject):
                 return self._enclose_in_list(entry.value)
 
     def _match_range(self, string):
+        if string.startswith('!'):
+            return
         if ',' not in string and '-' not in string:
             return
         for section in self.sections:

@@ -305,7 +305,7 @@ class Path(abjad.Path):
             path = self.get_next_package(cyclic=True)
         if path:
             paths, match = [path], False
-        elif len(prefix) == 1 and self.is_package_path():
+        elif len(prefix) == 1 and self.is_score_package_path():
             paths = self.contents.glob('**/*')
         else:
             paths = self.glob('**/*')
@@ -410,4 +410,4 @@ class Path(abjad.Path):
             return True
         if bool(prototype) is False:
             return False
-        return self.is_package_path(prototype)
+        return self.is_score_package_path(prototype)

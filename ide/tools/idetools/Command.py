@@ -3,18 +3,21 @@ import string
 
 
 class Command(abjad.AbjadObject):
-    r'''Command decorator.
+    r'''Command.
+
+    Decorates IDE methods.
     '''
 
     ### CLASS VARIABLES ###
 
     known_sections = (
+        'all',
         'back cover',
         'build',
         'clipboard',
         'definition',
         'definitions',
-        'files',
+        #'files',
         'front cover',
         'git',
         'go',
@@ -33,8 +36,9 @@ class Command(abjad.AbjadObject):
         'score',
         'shell',
         'show',
+        'smart',
         'stylesheet',
-        'tests',
+        #'tests',
         'text',
         )
 
@@ -43,33 +47,30 @@ class Command(abjad.AbjadObject):
     def __init__(
         self,
         command_name,
-        argument_name=None,
+        score_package_path_blacklist=(),
         description=None,
-        directories=None,
-        external=None,
-        blacklist=(),
-        section=None,
-        scores=None,
+        external_directories=None,
+        menu_section=None,
+        score_package_paths=None,
+        scores_directory=None,
         ):
-        assert isinstance(argument_name, (str, type(None)))
-        self.argument_name = argument_name
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
+        self.score_package_path_blacklist = score_package_path_blacklist
         self.command_name = command_name
         self.description = description
-        directories = directories or ()
-        if isinstance(directories, str):
-            directories = (directories,)
-        self.directories = directories
-        if external is not None:
-            external = bool(external)
-        self.external = external
-        self.blacklist = blacklist
-        if scores is not None:
-            scores = bool(scores)
-        self.scores = scores
-        assert section in self.known_sections, repr(section)
-        self.section = section
+        if external_directories is not None:
+            external_directories = bool(external_directories)
+        self.external_directories = external_directories
+        score_package_paths = score_package_paths or ()
+        if isinstance(score_package_paths, str):
+            score_package_paths = (score_package_paths,)
+        self.score_package_paths = score_package_paths
+        if scores_directory is not None:
+            scores_directory = bool(scores_directory)
+        self.scores_directory = scores_directory
+        assert menu_section in self.known_sections, repr(menu_section)
+        self.menu_section = menu_section
 
     ### SPECIAL METHODS ###
 
@@ -78,17 +79,17 @@ class Command(abjad.AbjadObject):
 
         Returns `method` with metadata attached.
         '''
-        method.argument_name = self.argument_name
+        method.score_package_path_blacklist = \
+            self.score_package_path_blacklist
         method.command_name = self.command_name
         if self.description is not None:
             method.description = self.description
         else:
             method.description = method.__name__.replace('_', ' ')
-        method.directories = self.directories
-        method.external = self.external
-        method.blacklist = self.blacklist
-        method.scores = self.scores
-        method.section = self.section
+        method.external_directories = self.external_directories
+        method.menu_section = self.menu_section
+        method.score_package_paths = self.score_package_paths
+        method.scores_directory = self.scores_directory
         return method
 
     ### PRIVATE METHODS ###
