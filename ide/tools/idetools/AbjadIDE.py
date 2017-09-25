@@ -474,16 +474,17 @@ class AbjadIDE(abjad.AbjadObject):
             return
         self.io.display(f'making {path.trim()} ...')
         path.mkdir()
-        for name in ('__init__.py', '__metadata__.py', 'definition.py'):
-            boilerplate = abjad.abjad_configuration.boilerplate_directory
-            boilerplate = Path(boilerplate)
-            if name == '__init__.py':
-                source = boilerplate('empty.py')
-            else:
-                source = boilerplate(name)
-            target = path(name)
+        target = path('__init__.py')
+        self.io.display(f'writing {target.trim()} ...')
+        target.write_text('')
+        if path.is_segment():
+            target = path('__metadata__.py')
             self.io.display(f'writing {target.trim()} ...')
-            shutil.copyfile(str(source), str(target))
+            text = 'import abjad\n\n\nmetadata = abjad.TypedOrderedDict()'
+            target.write_text(text)
+        target = path('definition.py')
+        self.io.display(f'writing {target.trim()} ...')
+        target.write_text('')
         paths = path.parent.list_paths()
         if path not in paths:
             view = path.parent.get_metadatum('view')

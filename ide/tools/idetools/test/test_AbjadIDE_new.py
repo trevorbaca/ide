@@ -263,7 +263,6 @@ def test_AbjadIDE_new_08():
         assert path.is_dir()
         names = [
             '__init__.py',
-            '__metadata__.py',
             'definition.py',
             ]
         for name in names:
