@@ -32,6 +32,10 @@ class Configuration(abjad.Configuration):
 
     _configuration_file_name = 'ide.cfg'
 
+    always_ignore = (
+        '__pycache__',
+        )
+
     editor_suffixes = (
         '.cfg',
         '.ily',
@@ -41,6 +45,12 @@ class Configuration(abjad.Configuration):
         '.py',
         '.tex',
         '.txt',
+        )
+
+    noneditor_suffixes = (
+        '.mid',
+        '.midi',
+        '.pdf',
         )
 
     ### INITIALIZER ###

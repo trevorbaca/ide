@@ -17,7 +17,6 @@ class Command(abjad.AbjadObject):
         'clipboard',
         'definition',
         'definitions',
-        #'files',
         'front cover',
         'git',
         'go',
@@ -38,7 +37,6 @@ class Command(abjad.AbjadObject):
         'show',
         'smart',
         'stylesheet',
-        #'tests',
         'text',
         )
 

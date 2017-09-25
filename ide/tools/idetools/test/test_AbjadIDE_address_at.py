@@ -4,27 +4,16 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_address_at_01():
-    r'''Matches distribution file.
+    r'''Edits etc file.
     '''
 
-    abjad_ide('red @ram-not q')
+    abjad_ide('red @notes.txt q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').distribution('red-score-program-notes.txt')
-    assert f"Matching '@ram-not' to {path.trim()} ..." in transcript
+    path = ide.Path('red_score', 'etc', 'notes.txt')
+    assert f'Editing {path.trim()} ...' in transcript
 
 
-# TODO: make this work again
-#def test_AbjadIDE_address_at_02():
-#    r'''Address etc file.
-#    '''
-#
-#    abjad_ide('red @notes.txt q')
-#    transcript = abjad_ide.io.transcript 
-#    path = ide.Path('red_score').etc('notes.txt')
-#    assert f'Editing {path.trim()} ...' in transcript
-
-
-def test_AbjadIDE_address_at_03():
+def test_AbjadIDE_address_at_02():
     r'''Edits external file.
     '''
 
@@ -37,7 +26,7 @@ def test_AbjadIDE_address_at_03():
     assert f"Matching '@ath' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_address_at_04():
+def test_AbjadIDE_address_at_03():
     r'''Edits library file.
     '''
 
@@ -50,60 +39,29 @@ def test_AbjadIDE_address_at_04():
 
     abjad_ide('ll @PAC q')
     transcript = abjad_ide.io.transcript 
-    assert 'No unique match ...' in transcript
     assert f"Matching '@PAC' to 2 files ..." in transcript
-    assert f'{path_1.trim()} ...' in transcript
-    assert f'{path_2.trim()} ...' in transcript
+    assert path_1.trim() in transcript.lines
+    assert path_2.trim() in transcript.lines
+    assert f'Editing {path_1.trim()} ...' in transcript
 
     abjad_ide('ll @ACel q')
     transcript = abjad_ide.io.transcript 
     assert f"Matching '@ACel' to {path_1.trim()} ..." in transcript
+    assert f'Editing {path_1.trim()} ...' in transcript
 
 
-def test_AbjadIDE_address_at_05():
-    r'''Edits material definition files.
+def test_AbjadIDE_address_at_04():
+    r'''Edits material definition file.
     '''
 
     abjad_ide('red @agic q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').materials('magic_numbers', 'definition.py')
+    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
     assert f"Matching '@agic' to {path.trim()} ..." in transcript
 
-    abjad_ide('red mm @@fini q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '@@fini' to 5 files ..." in transcript
-    for name in [
-        'magic_numbers',
-        'performers',
-        'ranges',
-        'tempi',
-        'time_signatures',
-        ]:
-        path = ide.Path('red_score').materials(name, 'definition.py')
-        assert f'{path.trim()} ...' in transcript
 
-    abjad_ide('red mm @@ q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '@@' to 8 files ..." in transcript
-
-
-def test_AbjadIDE_address_at_06():
-    r'''Edits material definition file siblings.
-    '''
-
-    abjad_ide('red %magic @< q')
-    transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').materials('time_signatures', 'definition.py')
-    assert f"Matching '@<' to {path.trim()} ..." in transcript
-
-    abjad_ide('red %magic @> q')
-    transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').materials('performers', 'definition.py')
-    assert f"Matching '@>' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_address_at_07():
-    r'''Edits segment definition files.
+def test_AbjadIDE_address_at_05():
+    r'''Edits segment definition file.
     '''
 
     abjad_ide('red @A q')
@@ -111,38 +69,8 @@ def test_AbjadIDE_address_at_07():
     path = ide.Path('red_score').segments('A', 'definition.py')
     assert f"Matching '@A' to {path.trim()} ..." in transcript
 
-    abjad_ide('red gg @@efin q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '@@efin' to 3 files ..." in transcript
-    for name in [
-        'A',
-        'B',
-        'C',
-        ]:
-        path = ide.Path('red_score').segments(name, 'definition.py')
-        assert f'{path.trim()} ...' in transcript
 
-    abjad_ide('red gg @@ q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '@@' to 6 files ..." in transcript
-
-
-def test_AbjadIDE_address_at_08():
-    r'''Edits sibling segment definition files.
-    '''
-
-    abjad_ide('red %A @< q')
-    transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').segments('C', 'definition.py')
-    assert f"Matching '@<' to {path.trim()} ..." in transcript
-
-    abjad_ide('red %A @> q')
-    transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score').segments('B', 'definition.py')
-    assert f"Matching '@>' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_address_at_09():
+def test_AbjadIDE_address_at_06():
     r'''Edits stylesheet.
     '''
 
@@ -152,17 +80,7 @@ def test_AbjadIDE_address_at_09():
     assert f"Matching '@contexts' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_address_at_10():
-    r'''Edits test file.
-    '''
-
-    abjad_ide('red @tm q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').test('test_materials.py')
-    assert f"Matching '@tm' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_address_at_11():
+def test_AbjadIDE_address_at_07():
     r'''Edits tools files.
     '''
 
@@ -182,13 +100,13 @@ def test_AbjadIDE_address_at_11():
     assert f"Matching '@ass' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_address_at_12():
+def test_AbjadIDE_address_at_08():
     r'''Handles single-prefix numeric input.
     '''
 
     abjad_ide('red mm @0 q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@0' to no files ..." in transcript
+    assert f"Matching '@0' to 0 files ..." in transcript
 
     abjad_ide('red mm @1 q')
     transcript = abjad_ide.io.transcript 
@@ -197,42 +115,20 @@ def test_AbjadIDE_address_at_12():
 
     abjad_ide('red mm @99 q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@99' to no files ..." in transcript
+    assert f"Matching '@99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_address_at_13():
-    r'''Handles double-prefix numeric input.
-    '''
-
-    abjad_ide('red mm @@0 q')
-    transcript = abjad_ide.io.transcript 
-    assert f"Matching '@@0' to no files ..." in transcript
-
-    abjad_ide('red mm @@1 q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').materials('magic_numbers', 'definition.py')
-    assert f"Matching '@@1' to {path.trim()} ..." in transcript
-
-    abjad_ide('red mm @@99 q')
-    transcript = abjad_ide.io.transcript 
-    assert f"Matching '@@99' to no files ..." in transcript
-
-
-def test_AbjadIDE_address_at_14():
+def test_AbjadIDE_address_at_09():
     r'''Handles empty input, junk input and nonfile input.
     '''
 
     abjad_ide('@ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '@' to no files ..." in transcript
+    assert "Matching '@' to 0 files ..." in transcript
 
     abjad_ide('@asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '@asdf' to no files ..." in transcript
-
-    abjad_ide('@@asdf q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '@@asdf' to no files ..." in transcript
+    assert "Matching '@asdf' to 0 files ..." in transcript
 
     if not abjad_ide.test_baca_directories():
         return
