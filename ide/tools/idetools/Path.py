@@ -60,6 +60,101 @@ class Path(abjad.Path):
 
     ### PRIVATE METHODS ###
 
+    def _find_doctest_files(self, force=False):
+        files, strings = [], []
+        if force or not self.is_score_package_path():
+            for path in self.glob('**/*.py'):
+                if '__pycache__' in str(path):
+                    continue
+                if not path.is_file():
+                    continue
+                if path.name.startswith('test'):
+                    continue
+                files.append(path)
+                strings.append(path.name)
+        else:
+            for path in self.segments.list_paths():
+                files.append(path('definition.py'))
+                strings.append(path.get_identifier())
+            for path in self.materials.list_paths():
+                files.append(path('definition.py'))
+                strings.append(path.get_identifier())
+            for path in self.tools.list_paths():
+                files.append(path)
+                strings.append(path.name)
+        return files, strings
+
+    def _find_editable_files(self, force=False):
+        files, strings = [], []
+        if force or not self.is_score_package_path():
+            for path in self.glob('**/*'):
+                if '__pycache__' in str(path):
+                    continue
+                if not path.is_file():
+                    continue
+                if path.suffix in self.configuration.noneditor_suffixes:
+                    continue
+                if path.name.startswith('test'):
+                    continue
+                files.append(path)
+                strings.append(path.name)
+        else:
+            for path in self.segments.list_paths():
+                files.append(path('definition.py'))
+                strings.append(path.get_identifier())
+            for path in self.materials.list_paths():
+                files.append(path('definition.py'))
+                strings.append(path.get_identifier())
+            for path in self.tools.list_paths():
+                files.append(path)
+                strings.append(path.name)
+            for path in self.stylesheets.list_paths():
+                files.append(path)
+                strings.append(path.name)
+            for path in self.etc.list_paths():
+                files.append(path)
+                strings.append(path.name)
+        return files, strings
+
+    def _find_pdfs(self, force=False):
+        files, strings = [], []
+        if force or not self.is_score_package_path():
+            for path in self.glob('**/*.pdf'):
+                if '__pycache__' in str(path):
+                    continue
+                if not path.is_file():
+                    continue
+                files.append(path)
+                strings.append(path.name)
+        else:
+            for path in self.segments.list_paths():
+                files.append(path('illustration.pdf'))
+                strings.append(path.get_identifier())
+            for path in self.materials.list_paths():
+                files.append(path('illustration.pdf'))
+                strings.append(path.get_identifier())
+            for path in self.etc.list_paths():
+                if path.suffix == '.pdf':
+                    files.append(path)
+                    strings.append(path.name)
+        return files, strings
+
+    def _find_pytest_files(self, force=False):
+        files, strings = [], []
+        if force or not self.is_score_package_path():
+            for path in self.glob('**/test*.py'):
+                if '__pycache__' in str(path):
+                    continue
+                if not path.is_file():
+                    continue
+                files.append(path)
+                strings.append(path.name)
+        else:
+            for path in self.test.list_paths():
+                files.append(path)
+                strings.append(path.name)
+        return files, strings
+
     def _get_added_asset_paths(self):
         paths = []
         git_status_lines = self._get_git_status_lines()
@@ -188,173 +283,6 @@ class Path(abjad.Path):
                 return type(self)(scores)
 
     ### PUBLIC METHODS ###
-
-    def collect_paths(self, prefix, pattern=None):
-        r'''Collects `prefix` paths that match `pattern`.
-
-        ..  container:: example
-
-            In segments directory:
-
-            ::
-
-                >>> directory = ide.Path('red_score').segments
-
-            Missing pattern:
-
-            ::
-
-                >>> directory.collect_paths('@')
-                []
-
-            
-            Unique local match (in current directory):
-
-            ::
-
-                >>> for path in directory.collect_paths('@', '__init'):
-                ...     path.trim()
-                ...
-                'red_score/segments/__init__.py'
-
-            Unique remote match (elsewhere in score):
-
-            ::
-
-                >>> for path in directory.collect_paths('@', 'ST'):
-                ...     path.trim()
-                ...
-                'red_score/tools/ScoreTemplate.py'
-
-            Neither local nor remote unique match; so all matches scorewide
-            (for error messaging):
-
-            ::
-
-                >>> for path in directory.collect_paths('@', 'def'):
-                ...     path.trim()
-                ...
-                'red_score/materials/magic_numbers/definition.py'
-                'red_score/materials/performers/definition.py'
-                'red_score/materials/ranges/definition.py'
-                'red_score/materials/tempi/definition.py'
-                'red_score/materials/time_signatures/definition.py'
-                'red_score/segments/A/definition.py'
-                'red_score/segments/B/definition.py'
-                'red_score/segments/C/definition.py'
-
-            No matches anywhere in score:
-
-            ::
-
-                >>> directory.collect_paths('@', 'asdf')
-                []
-
-            All editable nonprivate files in current tree:
-
-            ::
-
-                >>> for path in directory.collect_paths('@@'):
-                ...     path.trim()
-                ...
-                'red_score/segments/A/definition.py'
-                'red_score/segments/B/definition.py'
-                'red_score/segments/C/definition.py'
-                'red_score/segments/A/illustration.ly'
-                'red_score/segments/B/illustration.ly'
-                'red_score/segments/C/illustration.ly'
-
-            All matches in current tree:
-
-            ::
-
-                >>> for path in directory.collect_paths('@@', '__init'):
-                ...     path.trim()
-                ...
-                'red_score/segments/__init__.py'
-                'red_score/segments/A/__init__.py'
-                'red_score/segments/B/__init__.py'
-                'red_score/segments/C/__init__.py'
-
-            ::
-
-                >>> for path in directory.collect_paths('@@', 'def'):
-                ...     path.trim()
-                ...
-                'red_score/segments/A/definition.py'
-                'red_score/segments/B/definition.py'
-                'red_score/segments/C/definition.py'
-
-            No match in current tree:
-
-            ::
-
-                >>> directory.collect_paths('@@', 'ST')
-                []
-
-            ::
-
-                >>> directory.collect_paths('@@', 'asdf')
-                []
-
-        Returns list.
-        '''
-        if len(prefix) == 1 and not pattern:
-            return []
-        if prefix == '%%':
-            return []
-        path, match = None, True
-        if pattern == '<':
-            path = self.get_previous_package(cyclic=True)
-        elif pattern == '>':
-            path = self.get_next_package(cyclic=True)
-        if path:
-            paths, match = [path], False
-        elif len(prefix) == 1 and self.is_score_package_path():
-            paths = self.contents.glob('**/*')
-        else:
-            paths = self.glob('**/*')
-        if prefix.startswith('@'):
-            suffixes = self.configuration.editor_suffixes
-            paths = [_ for _ in paths if _.suffix in suffixes or _.is_dir()]
-        elif prefix.startswith('%'):
-            paths = [_ for _ in paths if _.is_dir()]
-        elif prefix.startswith('^'):
-            paths = [
-                _ for _ in paths
-                if (_.suffix == '.py' or _.is_dir()) and
-                not _.name.startswith('test_')
-                ]
-        elif prefix.startswith('*'):
-            paths = [_ for _ in paths if _.suffix == '.pdf' or _.is_dir()]
-        elif prefix.startswith('+'):
-            paths = [
-                _ for _ in paths
-                if _.name.startswith('test_') and _.suffix == '.py'
-                ]
-        else:
-            raise ValueError(repr(prefix))
-        if not pattern:
-            paths = [_ for _ in paths if not _.name.startswith('_')]
-        if pattern and match:
-            strings = [_.get_identifier() for _ in paths]
-            indices = abjad.String.match_strings(strings, pattern)
-            paths = abjad.Sequence(paths).retain(indices)
-        result = []
-        for path in paths:
-            if prefix[0] in ('@', '^', '+') and path.is_dir():
-                path /= 'definition.py'
-            elif prefix[0] == '*' and path.is_dir():
-                path /= 'illustration.pdf'
-            if path.is_file() or prefix == '%':
-                path = Path(path)
-                if path not in result:
-                    result.append(path)
-        if len(prefix) == 1 and 1 < len(result):
-            children = [_ for _ in result if _.parent == self]
-            if len(children) == 1:
-                result = children
-        return result
 
     def get_header(self):
         r'''Gets menu header.

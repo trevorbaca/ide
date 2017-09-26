@@ -56,19 +56,19 @@ def test_AbjadIDE_make_pdfs_01():
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**llus' to 3 PDFs ..." in transcript
+            assert "Matching '**llus' to 3 files ..." in transcript
 
         abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**pdf' to 3 PDFs ..." in transcript
+            assert "Matching '**pdf' to 3 files ..." in transcript
 
         abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**' to 3 PDFs ..." in transcript
+            assert "Matching '**' to 3 files ..." in transcript
 
         abjad_ide('red mm **asdf q')
         transcript = abjad_ide.io.transcript
@@ -106,20 +106,20 @@ def test_AbjadIDE_make_pdfs_02():
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
-            assert "Matching '**llus' to 3 PDFs ..." in transcript
+            assert "Matching '**llus' to 3 files ..." in transcript
 
         abjad_ide('red gg **pdf q')
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
-            assert "Matching '**pdf' to 3 PDFs ..." in transcript
+            assert "Matching '**pdf' to 3 files ..." in transcript
 
         abjad_ide('red gg ** q')
         transcript = abjad_ide.io.transcript
         for name in names:
             path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
-            assert "Matching '**' to 3 PDFs ..." in transcript
+            assert "Matching '**' to 3 files ..." in transcript
 
         abjad_ide('red gg **asdf q')
         transcript = abjad_ide.io.transcript
-        assert "Matching '**asdf' to no PDFs ..." in transcript
+        assert "Matching '**asdf' to 0 files ..." in transcript

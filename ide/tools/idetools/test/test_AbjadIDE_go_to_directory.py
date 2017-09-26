@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_address_percent_01():
+def test_AbjadIDE_go_to_directory_01():
     r'''Goes to aliased directory.
     '''
 
@@ -20,7 +20,7 @@ def test_AbjadIDE_address_percent_01():
     assert 'Fabergé Investigations (2016)' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_02():
+def test_AbjadIDE_go_to_directory_02():
     r'''Goes to build directory.
     '''
 
@@ -29,7 +29,7 @@ def test_AbjadIDE_address_percent_02():
     assert 'Red Score (2017) : builds : letter' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_03():
+def test_AbjadIDE_go_to_directory_03():
     r'''Goes to builds segments directory.
     '''
 
@@ -38,7 +38,7 @@ def test_AbjadIDE_address_percent_03():
     assert 'Red Score (2017) : builds : _segments' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_04():
+def test_AbjadIDE_go_to_directory_04():
     r'''Goes to distribution directory.
     '''
 
@@ -47,7 +47,7 @@ def test_AbjadIDE_address_percent_04():
     assert 'Red Score (2017) : distribution' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_05():
+def test_AbjadIDE_go_to_directory_05():
     r'''Goes to etc directory.
     '''
 
@@ -56,7 +56,7 @@ def test_AbjadIDE_address_percent_05():
     assert 'Red Score (2017) : etc' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_06():
+def test_AbjadIDE_go_to_directory_06():
     r'''Goes to material directory.
     '''
 
@@ -69,7 +69,7 @@ def test_AbjadIDE_address_percent_06():
     assert 'Red Score (2017) : materials : magic_numbers' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_07():
+def test_AbjadIDE_go_to_directory_07():
     r'''Goes to materials directory.
     '''
 
@@ -78,7 +78,7 @@ def test_AbjadIDE_address_percent_07():
     assert 'Red Score (2017) : materials' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_08():
+def test_AbjadIDE_go_to_directory_08():
     r'''Goes to segment directory.
     '''
 
@@ -87,7 +87,7 @@ def test_AbjadIDE_address_percent_08():
     assert 'Red Score (2017) : segments : A' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_09():
+def test_AbjadIDE_go_to_directory_09():
     r'''Goes to segments directory.
     '''
 
@@ -96,7 +96,7 @@ def test_AbjadIDE_address_percent_09():
     assert 'Red Score (2017) : segments' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_10():
+def test_AbjadIDE_go_to_directory_10():
     r'''Goes to stylesheet directory.
     '''
 
@@ -105,7 +105,7 @@ def test_AbjadIDE_address_percent_10():
     assert 'Red Score (2017) : stylesheets' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_11():
+def test_AbjadIDE_go_to_directory_11():
     r'''Goes to test directory.
     '''
 
@@ -114,7 +114,7 @@ def test_AbjadIDE_address_percent_11():
     assert 'Red Score (2017) : test' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_12():
+def test_AbjadIDE_go_to_directory_12():
     r'''Goes to tools directory.
     '''
 
@@ -123,13 +123,13 @@ def test_AbjadIDE_address_percent_12():
     assert 'Red Score (2017) : tools' in transcript.titles
 
 
-def test_AbjadIDE_address_percent_13():
+def test_AbjadIDE_go_to_directory_13():
     r'''Handles numeric input.
     '''
 
     abjad_ide('red gg %0 q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '%0' to no directories ..." in transcript
+    assert "Matching '%0' to 0 directories ..." in transcript
 
     abjad_ide('red gg %1 q')
     transcript = abjad_ide.io.transcript 
@@ -138,25 +138,30 @@ def test_AbjadIDE_address_percent_13():
 
     abjad_ide('red gg %99 q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '%99' to no directories ..." in transcript
+    assert "Matching '%99' to 0 directories ..." in transcript
 
 
-def test_AbjadIDE_address_percent_14():
+def test_AbjadIDE_go_to_directory_14():
     r'''Handles empty input and junk input.
     '''
 
     abjad_ide('% q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '%' to no directories ..." in transcript
-
-    abjad_ide('%% q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '%%' to no directories ..." in transcript
+    assert "Matching '%' to 0 directories ..." in transcript
 
     abjad_ide('%asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '%asdf' to no directories ..." in transcript
+    assert "Matching '%asdf' to 0 directories ..." in transcript
+
+
+def test_AbjadIDE_go_to_directory_15():
+    r'''Handles double input.
+    '''
+
+    abjad_ide('%% q')
+    transcript = abjad_ide.io.transcript 
+    assert "Matching '%%' to 0 directories ..." in transcript
 
     abjad_ide('%%asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '%%asdf' to no directories ..." in transcript
+    assert "Matching '%%asdf' to 0 directories ..." in transcript

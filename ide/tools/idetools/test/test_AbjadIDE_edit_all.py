@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_address_at_at_01():
+def test_AbjadIDE_edit_all_01():
     r'''Edits material definition files.
     '''
 
@@ -17,15 +17,15 @@ def test_AbjadIDE_address_at_at_01():
         'tempi',
         'time_signatures',
         ]:
-        path = ide.Path('red_score').materials(name, 'definition.py')
-        assert f'{path.trim()} ...' in transcript
+        path = ide.Path('red_score', 'materials', name, 'definition.py')
+        assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red mm @@ q')
     transcript = abjad_ide.io.transcript 
     assert "Matching '@@' to 8 files ..." in transcript
 
 
-def test_AbjadIDE_address_at_at_02():
+def test_AbjadIDE_edit_all_02():
     r'''Edits segment definition files.
     '''
 
@@ -37,46 +37,45 @@ def test_AbjadIDE_address_at_at_02():
         'B',
         'C',
         ]:
-        path = ide.Path('red_score').segments(name, 'definition.py')
-        assert f'{path.trim()} ...' in transcript
+        path = ide.Path('red_score', 'segments', name, 'definition.py')
+        assert f'Editing {path.trim()} ...' in transcript
 
     abjad_ide('red gg @@ q')
     transcript = abjad_ide.io.transcript 
     assert "Matching '@@' to 6 files ..." in transcript
 
 
-def test_AbjadIDE_address_at_at_03():
-    r'''Handles double-prefix numeric input.
+def test_AbjadIDE_edit_all_03():
+    r'''Handles nonexisting numeric input.
     '''
 
     abjad_ide('red mm @@0 q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@@0' to no files ..." in transcript
+    assert f"Matching '@@0' to 0 files ..." in transcript
 
     abjad_ide('red mm @@1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
-    assert f"Matching '@@1' to {path.trim()} ..." in transcript
+    assert f"Matching '@@1' to 0 files ..." in transcript
 
     abjad_ide('red mm @@99 q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@@99' to no files ..." in transcript
+    assert f"Matching '@@99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_address_at_at_04():
+def test_AbjadIDE_edit_all_04():
     r'''Handles empty input, junk input and nonfile input.
     '''
 
     abjad_ide('@@asdf q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '@@asdf' to no files ..." in transcript
+    assert "Matching '@@asdf' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_address_at_at_05():
+def test_AbjadIDE_edit_all_05():
     r'''Provides warning with <= 20 files.
     '''
 
     abjad_ide('red @@ <return> q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@@' to 35 files ..."
-    assert '35 files ok?> ' in transcript
+    assert f"Matching '@@' to " in transcript
+    assert ' files ok?> ' in transcript

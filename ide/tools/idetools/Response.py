@@ -108,6 +108,43 @@ class Response(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
+    def get_path(self):
+        r'''Gets path.
+
+        Returns path or none.
+        '''
+        if isinstance(self.payload, Path):
+            return self.payload
+        if (isinstance(self.payload, list) and
+            isinstance(self.payload[0], Path)):
+            return self.payload[0]
+
+    def is_address(self):
+        r'''Is true when response is address.
+
+        Returns true or false.
+        '''
+        return bool(self.prefix)
+
+    def is_command(self, commands):
+        r'''Is true when response is command.
+
+        Returns true or false.
+        '''
+        return str(self.payload) in commands
+
+    def is_path(self):
+        r'''Is true when response is path.
+
+        Returns true or false.
+        '''
+        if isinstance(self.payload, Path):
+            return True
+        if (isinstance(self.payload, list) and
+            isinstance(self.payload[0], Path)):
+            return True
+        return False
+
     def is_shell(self):
         r'''Is true when response is shell command.
 

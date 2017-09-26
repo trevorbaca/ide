@@ -1,4 +1,5 @@
 import abjad
+import collections
 import datetime
 import importlib
 import inspect
@@ -167,6 +168,21 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
+    @staticmethod
+    def _filter_files(files, strings, pattern):
+        if isinstance(pattern, str):
+            indices = abjad.String.match_strings(strings, pattern)
+            files = abjad.Sequence(files).retain(indices)
+        return files
+
+    def _get_dimensions(self):
+        dimensions = None
+        if self.test is True:
+            dimensions = False
+        if isinstance(self.test, str) and self.test.startswith('dimensions'):
+            dimensions = eval(self.test.strip('dimensions='))
+        return dimensions
+
     def _get_score_names(self):
         scores = self._get_scores_directory()
         names = [_.name for _ in scores.list_paths()]
@@ -176,6 +192,31 @@ class AbjadIDE(abjad.AbjadObject):
         if (self.test or self.example):
             return self.configuration.test_scores_directory
         return self.configuration.composer_scores_directory
+
+    def _handle_address(self, directory, response):
+        assert response.prefix, repr(response)
+        if response.prefix == '@':
+            self.smart_edit(directory, response.pattern, response.payload)
+        elif response.prefix == '@@':
+            self.edit_all(directory, response.pattern)
+        elif response.prefix == '%':
+            self.go_to_directory(directory, response.pattern, response.payload)
+        elif response.prefix == '%%':
+            self.go_to_directory(directory, response.string[1:])
+        elif response.prefix == '^':
+            self.smart_doctest(directory, response.pattern, response.payload)
+        elif response.prefix == '^^':
+            self.doctest_all(directory, response.pattern)
+        elif response.prefix == '+':
+            self.smart_pytest(directory, response.pattern, response.payload)
+        elif response.prefix == '++':
+            self.pytest_all(directory, response.pattern)
+        elif response.prefix == '*':
+            self.smart_pdf(directory, response.pattern, response.payload)
+        elif response.prefix == '**':
+            self.open_all_pdfs(directory, response.pattern)
+        else:
+            raise ValueEror(response.prefix)
 
     def _interpret_file(self, path):
         path = Path(path)
@@ -755,114 +796,21 @@ class AbjadIDE(abjad.AbjadObject):
             navigations=self.navigations,
             sections=sections,
             )
-        dimensions = None
-        if self.test is True: 
-            dimensions = False
-        if (isinstance(self.test, str) and
-            self.test.startswith('dimensions')):
-            dimensions = eval(self.test.strip('dimensions='))
+        dimensions = self._get_dimensions()
         response = menu(dimensions=dimensions, redraw=redraw)
         if self.is_navigation(response.string):
             pass
-        elif response.is_shell():
-            with self.change(directory):
-                statement = response.string[1:].strip()
-                self.io.display(f'calling shell on {statement!r} ...')
-                abjad.IOManager.spawn_subprocess(statement)
-        elif response.prefix == '@':
-            self.smart_edit(directory, response.pattern, response.payload)
-        elif response.prefix:
-            if self.aliases and response.pattern in self.aliases:
-                paths = [Path(self.aliases[response.pattern])]
-            elif isinstance(response.payload, Path):
-                paths = [response.payload]
-            elif isinstance(response.payload, list):
-                paths = response.payload
-            else:
-                paths = directory.collect_paths(*response.pair)
-            if response.prefix[0] in ('@', '^'):
-                paths_ = []
-                for path in paths:
-                    if path.is_dir():
-                        path_ = path('definition.py')
-                        if path_.is_file():
-                            paths_.append(path_)
-                            continue
-                    paths_.append(path)
-                paths = paths_
-            elif response.prefix[0] == '*':
-                paths_ = []
-                for path in paths:
-                    if path.is_dir():
-                        path_ = path('illustration.pdf')
-                        if path_.is_file():
-                            paths_.append(path_)
-                            continue
-                    paths_.append(path)
-                paths = paths_
-            if response.prefix.startswith('^'):
-                paths = [_ for _ in paths if not _.name.startswith('test_')]
-            if response.prefix.startswith('+'):
-                paths = [_ for _ in paths if _.name.startswith('test_')]
-            if response.prefix.startswith('*'):
-                paths = [_ for _ in paths if _.suffix == '.pdf']
-            if response.prefix.startswith('%'):
-                paths = [_ for _ in paths if _.is_dir()]
-            if not paths:
-                paths = directory.collect_paths(*response.pair)
-            string = repr(response.string)
-            count = len(paths)
-            label = Path.address_characters[response.prefix[0]]
-            label = abjad.String(label).pluralize(count)
-            if not paths:
-                self.io.display(f'matching {string} to no {label} ...')
-            elif len(paths) == 1:
-                self.io.display(f'matching {string} to {paths[0].trim()} ...')
-            else:
-                if len(response.prefix) == 1:
-                    self.io.display('no unique match ...')
-                message = f'matching {string} to {count} {label} ...'
-                self.io.display(message)
-                for path in paths:
-                    self.io.display(f'{path.trim()} ...', raw=True)
-            if not paths:
-                pass
-            elif 1 < len(paths) and len(response.prefix) == 1:
-                pass
-            elif response.prefix.startswith('@'):
-                self._open_files(paths, silent=True)
-            elif response.prefix.startswith('%'):
-                self._manage_directory(paths[0])
-            elif response.prefix.startswith('^'):
-                self._run_doctest(paths, silent=True)
-            elif response.prefix.startswith('*'):
-                self._open_files(paths, silent=True)
-            elif response.prefix.startswith('+'):
-                self._run_pytest(paths, silent=True)
-            else:
-                raise ValueError(repr(response.prefix))
-        elif str(response.payload) in self.commands:
+        elif response.is_address():
+            self._handle_address(directory, response)
+        elif response.is_command(self.commands):
             command = self.commands[response.payload]
             try:
                 command(self.current_directory)
             except TypeError:
                 command()
-        elif (isinstance(response.payload, Path) or
-            (isinstance(response.payload, list) and
-            len(response.payload) == 1) or
-            self._match_alias(directory, response.string) is not None):
-            if response.payload is None:
-                path = self._match_alias(directory, response.string)
-            elif isinstance(response.payload, Path):
-                path = response.payload
-            elif isinstance(response.payload, list):
-                path = response.payload[0]
-            else:
-                raise Exception(response)
-            path = Path(path)
-            if not path.exists() and path.suffix:
-                self._open_files([path])
-            elif path.is_file():
+        elif response.is_path():
+            path = response.get_path()
+            if path.is_file():
                 self._open_files([path])
             elif path.is_dir():
                 if path.is_wrapper():
@@ -870,15 +818,8 @@ class AbjadIDE(abjad.AbjadObject):
                 self._manage_directory(path)
             else:
                 self.io.display(f'missing {path.trim()} ...')
-        elif isinstance(response.payload, list):
-            assert not response.prefix, repr(reponse)
-            path = response.payload[0]
-            if path.is_dir():
-                if path.is_wrapper():
-                    path = path.contents
-                self._manage_directory(path)
-            else:
-                self._open_files([path])
+        elif response.is_shell():
+            self.call_shell(directory, response.string[1:].strip())
         else:
             assert response.payload is None, repr(response)
             self.io.display(f'unknown command {response.string!r} ...')
@@ -914,8 +855,64 @@ class AbjadIDE(abjad.AbjadObject):
             score_directory = directory.contents
             return directory.contents(value)
 
+    def _match_files(self, files, strings, pattern, prefix):
+        if pattern:
+            files = self._filter_files(files, strings, pattern)
+        else:
+            files = [_ for _ in files if _.name[0].isalpha()]
+        address = prefix + (pattern or '')
+        count = len(files)
+        counter = abjad.String('file').pluralize(count)
+        message = f'matching {address!r} to {count} {counter} ...'
+        self.io.display(message)
+        return files
+
+    def _match_smart_file(
+        self,
+        directory,
+        pattern,
+        paths,
+        prefix,
+        finder,
+        default_name=None,
+        ):
+        if not pattern:
+            self.io.display(f"missing {prefix!r} pattern ...")
+            return prefix, None
+        alias = ''
+        if self.aliases and pattern in self.aliases:
+            alias = pattern
+            path, pattern = Path(self.aliases[pattern]), None
+            if path.is_dir():
+                directory, paths = path, None
+            else:
+                paths = [path]
+        elif not (pattern and pattern[0].isdigit()):
+            paths = None
+        if isinstance(paths, Path):
+            paths = [paths]
+        if paths:
+            files = self._supply_name(paths, default_name)
+        else:
+            files, strings = finder(directory)
+            files = self._filter_files(files, strings, pattern)
+        address = prefix + (pattern or '') + alias
+        count = len(files)
+        counter = abjad.String('file').pluralize(count)
+        file_ = None
+        if not files:
+            self.io.display(f'matching {address!r} to {count} {counter} ...')
+        elif len(files) == 1:
+            file_ = files[0]
+        else:
+            self.io.display(f'matching {address!r} to {count} {counter} ...')
+            for file_ in files:
+                self.io.display(file_.trim(), raw=True)
+            self.io.display(f"narrow search or use {2*prefix!r} for all ...")
+        return address, file_
+
     def _open_files(self, paths, force_vim=False, silent=False):
-        assert isinstance(paths, list), repr(paths)
+        assert isinstance(paths, collections.Iterable), repr(paths)
         for path in paths:
             if not path.exists():
                 self.io.display(f'missing {path.trim()} ...')
@@ -953,6 +950,8 @@ class AbjadIDE(abjad.AbjadObject):
             if response is not True:
                 return
         if self.test:
+            return
+        if not paths:
             return
         if (platform.system() == 'Darwin' and paths[0].suffix == '.pdf'):
             boilerplate = self.configuration.boilerplate_directory
@@ -1001,18 +1000,17 @@ class AbjadIDE(abjad.AbjadObject):
             lines = [_.strip() for _ in lines if not _ == '']
             return lines
 
-    def _run_doctest(self, paths, silent=False):
-        assert isinstance(paths, list), repr(paths)
-        if not silent:
-            for path in paths:
-                self.io.display(f'collecting {path.trim()} ...')
-            label = abjad.String('module').pluralize(len(paths))
-            self.io.display(f'running doctest on {len(paths)} {label} ...')
+    def _run_doctest(self, paths):
+        assert isinstance(paths, collections.Iterable), repr(paths)
+        for path in paths:
+            if path.is_dir():
+                raise Exception(f'directory {path.trim()} not a file ...')
         if self.test:
             return
-        string = ' '.join([str(_) for _ in paths])
-        command = f'ajv doctest -x {string}'
-        abjad.IOManager.spawn_subprocess(command)
+        if paths:
+            string = ' '.join([str(_) for _ in paths])
+            command = f'ajv doctest -x {string}'
+            abjad.IOManager.spawn_subprocess(command)
 
     def _run_lilypond(self, ly):
         assert ly.exists()
@@ -1040,18 +1038,17 @@ class AbjadIDE(abjad.AbjadObject):
                     shutil.move(str(backup_pdf), str(pdf))
             self.io.display(f'writing {pdf.trim()} ...')
 
-    def _run_pytest(self, paths, silent=False):
-        assert isinstance(paths, list), repr(paths)
-        if not silent:
-            for path in paths:
-                self.io.display(f'collecting {path.trim()} ...')
-            label = abjad.String('module').pluralize(len(paths))
-            self.io.display(f'running pytest on {len(paths)} {label} ...')
+    def _run_pytest(self, paths):
+        assert isinstance(paths, collections.Iterable), repr(paths)
+        for path in paths:
+            if path.is_dir():
+                raise Exception(f'directory {path.trim()} not a file ...')
         if self.test:
             return
-        string = ' '.join([str(_) for _ in paths])
-        command = f'py.test -xrf {string}; say "done"'
-        abjad.IOManager.spawn_subprocess(command)
+        if paths:
+            string = ' '.join([str(_) for _ in paths])
+            command = f'py.test -xrf {string}; say "done"'
+            abjad.IOManager.spawn_subprocess(command)
 
     def _select_path(
         self,
@@ -1063,21 +1060,21 @@ class AbjadIDE(abjad.AbjadObject):
         local_contents = directory.list_paths()
         paths.extend(local_contents)
         if not paths:
-            label = abjad.String(directory.get_asset_type()).pluralize()
-            self.io.display(f'missing {directory.name} {label} ...')
+            counter = abjad.String(directory.get_asset_type()).pluralize()
+            self.io.display(f'missing {directory.name} {counter} ...')
             return
         if multiple:
-            label = abjad.String(directory.get_asset_type()).pluralize()
+            counter = abjad.String(directory.get_asset_type()).pluralize()
         else:
-            label = abjad.String(directory.get_asset_type())
+            counter = abjad.String(directory.get_asset_type())
         items = []
         header = None
         for path in paths:
             items.append((path.get_identifier(), path))
         if infinitive:
-            prompt = f'select {label} {infinitive}'
+            prompt = f'select {counter} {infinitive}'
         else:
-            prompt = f'select {label}'
+            prompt = f'select {counter}'
         selector = self._make_selector(
             aliases=self.aliases,
             force_single_column=True,
@@ -1103,6 +1100,16 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             result = response.payload
         return result
+
+    @staticmethod
+    def _supply_name(paths, name):
+        files = []
+        for path in paths:
+            if path.is_dir() and name:
+                path /= name
+            if path.is_file():
+                files.append(path)
+        return files
 
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
         prototype = ('landscape', 'portrait', None)
@@ -1348,12 +1355,14 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         scores_directory=True,
         )
-    def call_shell(self, directory):
+    def call_shell(self, directory, statement):
         r'''Calls shell.
 
         Returns none.
         '''
-        pass
+        with self.change(directory):
+            self.io.display(f'calling shell on {statement!r} ...')
+            abjad.IOManager.spawn_subprocess(statement)
 
     @Command(
         'dfk',
@@ -1470,12 +1479,14 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         scores_directory=True,
         )
-    def doctest_all(self, directory):
+    def doctest_all(self, directory, pattern=None):
         r'''Doctests all.
 
         Returns none.
         '''
-        pass
+        files, strings = directory._find_doctest_files(force=True)
+        files = self._match_files(files, strings, pattern, '^^')
+        self._run_doctest(files)
 
     @Command(
         'dup',
@@ -1596,6 +1607,26 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([self.configuration.aliases_file_path])
         self.configuration._read_aliases_file()
         self._aliases = dict(self.configuration.aliases)
+        for name, path in self.aliases.items():
+            if not Path(path).exists():
+                self.io.display(f'missing {name!r} {path} ...')
+
+    @Command(
+        '@@',
+        description='all - edit',
+        external_directories=True,
+        menu_section='all',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def edit_all(self, directory, pattern=None):
+        r'''Edits all.
+
+        Returns none.
+        '''
+        files, strings = directory._find_editable_files(force=True)
+        files = self._match_files(files, strings, pattern, '@@')
+        self._open_files(files)
 
     @Command(
         'bce',
@@ -1643,52 +1674,6 @@ class AbjadIDE(abjad.AbjadObject):
             if definition.is_file():
                 definitions.append(definition)
         self._open_files(definitions)
-
-    @Command(
-        '@@',
-        description='all - edit',
-        external_directories=True,
-        menu_section='all',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def edit_all(self, directory):
-        r'''Edits all.
-
-        Returns none.
-        '''
-        name = self.io.get('enter filename')
-        if self.is_navigation(name):
-            return
-        command = f'find {directory!s} -name {name}'
-        paths = abjad.IOManager.run_command(command)
-        if not paths:
-            self.io.display(f'missing {name!r} files ...')
-        else:
-            paths = [Path(_) for _ in paths]
-            self._open_files(paths)
-
-    @Command(
-        'it',
-        description='text - edit',
-        external_directories=True,
-        menu_section='text',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def edit_text(self, directory):
-        r'''Opens Vim and goes to every occurrence of search string.
-
-        Returns none.
-        '''
-        search_string = self.io.get('enter search string')
-        if self.is_navigation(search_string):
-            return
-        command = rf'vim -c "grep {search_string!s} --type=python"'
-        if self.test:
-            return
-        with self.change(directory):
-            abjad.IOManager.spawn_subprocess(command)
 
     @Command(
         'fce',
@@ -1818,6 +1803,28 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_build()
         self._open_files([directory / 'stylesheet.ily'])
+
+    @Command(
+        'it',
+        description='text - edit',
+        external_directories=True,
+        menu_section='text',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def edit_text(self, directory):
+        r'''Opens Vim and goes to every occurrence of search string.
+
+        Returns none.
+        '''
+        search_string = self.io.get('enter search string')
+        if self.is_navigation(search_string):
+            return
+        command = rf'vim -c "grep {search_string!s} --type=python"'
+        if self.test:
+            return
+        with self.change(directory):
+            abjad.IOManager.spawn_subprocess(command)
 
     @Command(
         'cx',
@@ -2480,12 +2487,65 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         scores_directory=True,
         )
-    def go_to_directory(self, directory):
+    def go_to_directory(self, directory, pattern=None, payload=None):
         r'''Goes to directory.
 
         Returns none.
         '''
-        pass
+        assert directory.is_dir()
+        address = '%' + (pattern or '')
+        if self.aliases and pattern in self.aliases:
+            path = Path(self.aliases[pattern])
+            self.io.display(f'matching {address!r} to {path.trim()} ...')
+            self._manage_directory(path)
+            return
+        if isinstance(payload, Path):
+            path = payload
+            self.io.display(f'matching {address!r} to {path.trim()} ...')
+            self._manage_directory(path)
+            return
+        if isinstance(payload, list) and len(payload) == 1:
+            path = payload[0]
+            self.io.display(f'matching {address!r} to {path.trim()} ...')
+            self._manage_directory(path)
+            return
+        if isinstance(payload, list):
+            assert all(isinstance(_, Path) for _ in payload), repr(payload)
+            paths = payload
+            counter = abjad.String('directory').pluralize(len(paths))
+            message = f'matching {address!r} to {len(paths)} {counter} ...'
+            self.io.display(message)
+            for path in paths:
+                self.io.display(path.trim(), raw=True)
+            if paths:
+                self._manage_directory(paths[:1])
+            return
+        assert payload is None, repr(payload)
+        paths, strings = [], []
+        if directory.is_score_package_path():
+            root = directory.contents
+        else:
+            root = directory
+        for path in root.glob('**/*'):
+            if '__pycache__' in str(path):
+                continue
+            if not path.is_dir():
+                continue
+            paths.append(path)
+            strings.append(path.name)
+        if isinstance(pattern, str):
+            indices = abjad.String.match_strings(strings, pattern)
+            paths = abjad.Sequence(paths).retain(indices)
+        if len(paths) == 1:
+            self.io.display(f'matching {address!r} to {paths[0].trim()} ...')
+        else:
+            counter = abjad.String('directory').pluralize(len(paths))
+            message = f'matching {address!r} to {len(paths)} {counter} ...'
+            self.io.display(message)
+            for path in paths:
+                self.io.display(path.trim(), raw=True)
+        if paths:
+            self._manage_directory(paths[0])
 
     @Command(
         'dd',
@@ -2736,35 +2796,6 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files([target])
 
     @Command(
-        'lyi*',
-        description='lys - interpret',
-        menu_section='lys',
-        score_package_paths=('materials', 'segments',),
-        )
-    def interpret_lys(self, directory):
-        r'''Interprets LilyPond file in every directory.
-
-        Makes PDF in every directory.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        self.io.display('interpreting every ly ...')
-        paths = directory.list_paths()
-        sources = []
-        for path in paths:
-            source = path / 'illustration.ly'
-            if source.is_file():
-                sources.append(source)
-        if not sources:
-            self.io.display('no LilyPond files found.')
-            return
-        with abjad.Timer() as timer:
-            for source in sources:
-                self.interpret_ly(source.parent, open_after=False)
-            self.io.display(timer.total_time_message)
-
-    @Command(
         'fci',
         description='front cover - interpret',
         menu_section='front cover',
@@ -2806,6 +2837,35 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'missing {source.trim()} ...')
         if target.is_file() and open_after:
             self._open_files([target])
+
+    @Command(
+        'lyi*',
+        description='lys - interpret',
+        menu_section='lys',
+        score_package_paths=('materials', 'segments',),
+        )
+    def interpret_lys(self, directory):
+        r'''Interprets LilyPond file in every directory.
+
+        Makes PDF in every directory.
+
+        Returns none.
+        '''
+        assert directory.is_materials_or_segments()
+        self.io.display('interpreting every ly ...')
+        paths = directory.list_paths()
+        sources = []
+        for path in paths:
+            source = path / 'illustration.ly'
+            if source.is_file():
+                sources.append(source)
+        if not sources:
+            self.io.display('no LilyPond files found.')
+            return
+        with abjad.Timer() as timer:
+            for source in sources:
+                self.interpret_ly(source.parent, open_after=False)
+            self.io.display(timer.total_time_message)
 
     @Command(
         'mi',
@@ -2866,24 +2926,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._interpret_tex_file(source)
         if target.is_file() and open_after:
             self._open_files([target])
-
-    @Command(
-        'pdfm*',
-        description='pdfs - make',
-        menu_section='pdfs',
-        score_package_paths=('materials', 'segments',),
-        )
-    def make_pdfs(self, directory):
-        r'''Makes PDF in every directory.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths() 
-        for i, path in enumerate(paths):
-            self.make_pdf(path, open_after=False)
-            if i + 1 < len(paths):
-                self.io.display('')
 
     @Command(
         'illm',
@@ -2986,6 +3028,24 @@ class AbjadIDE(abjad.AbjadObject):
             raise ValueError(directory)
 
     @Command(
+        'pdfm*',
+        description='pdfs - make',
+        menu_section='pdfs',
+        score_package_paths=('materials', 'segments',),
+        )
+    def make_pdfs(self, directory):
+        r'''Makes PDF in every directory.
+
+        Returns none.
+        '''
+        assert directory.is_materials_or_segments()
+        paths = directory.list_paths()
+        for i, path in enumerate(paths):
+            self.make_pdf(path, open_after=False)
+            if i + 1 < len(paths):
+                self.io.display('')
+
+    @Command(
         'new',
         description='path - new',
         external_directories=True,
@@ -3009,6 +3069,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._make_file(directory)
 
     @Command(
+        '**',
+        description='all - pdfs',
+        external_directories=True,
+        menu_section='all',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def open_all_pdfs(self, directory, pattern=None):
+        r'''Opens all PDFs.
+
+        Returns none.
+        '''
+        files, strings = directory._find_pdfs(force=True)
+        files = self._match_files(files, strings, pattern, '**')
+        self._open_files(files)
+
+    @Command(
         'bco',
         description='back cover - open',
         menu_section='back cover',
@@ -3021,38 +3098,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_build()
         self._open_files([directory / 'back-cover.pdf'])
-
-    @Command(
-        '**',
-        description='all - pdfs',
-        external_directories=True,
-        menu_section='all',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def open_all_pdfs(self, directory):
-        r'''Opens PDF in every package.
-
-        Returns none.
-        '''
-        pdfs = []
-        if directory.is_scores():
-            for path in directory.list_paths():
-                pdf = path._get_score_pdf()
-                if pdf is None:
-                    continue
-                pdfs.append(pdf)
-        else:
-            for path in directory.list_paths():
-                if path.suffix == '.pdf':
-                    pdfs.append(path)
-                elif path.is_dir():
-                    for pdf_ in path.glob('*.pdf'):
-                        pdfs.append(pdf_)
-        if not pdfs:
-            self.io.display('missing PDFs ...')
-        else:
-            self._open_files(pdfs)
 
     @Command(
         'fco',
@@ -3203,12 +3248,14 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         scores_directory=True,
         )
-    def pytest_all(self, directory):
+    def pytest_all(self, directory, pattern=None):
         r'''Pytests all.
 
         Returns none.
         '''
-        pass
+        files, strings = directory._find_pytest_files(force=True)
+        files = self._match_files(files, strings, pattern, '++')
+        self._run_pytest(files)
 
     @Command(
         'q',
@@ -3372,150 +3419,6 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(lines, raw=True)
 
     @Command(
-        '^',
-        description='smart - doctest',
-        external_directories=True,
-        menu_section='smart',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def smart_doctest(self, directory):
-        r'''Smart doctest.
-
-        Returns none.
-        '''
-        pass
-
-    @Command(
-        '@',
-        description='smart - edit',
-        external_directories=True,
-        menu_section='smart',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def smart_edit(self, directory, pattern=None, payload=None):
-        r'''Smart edit.
-
-        Returns none.
-        '''
-        assert directory.is_dir()
-        address = '@' + (pattern or '')
-        if self.aliases and pattern in self.aliases:
-            path = Path(self.aliases[pattern])
-            self.io.display(f'matching {address!r} to {path.trim()} ...')
-            self._open_files([path])
-            return
-        if isinstance(payload, Path):
-            path = payload
-            if path.is_dir():
-                path /= 'definition.py'
-            if path.is_file():
-                self.io.display(f'matching {address!r} to {path.trim()} ...')
-                self._open_files([path])
-            else:
-                self.io.display(f'matching {address!r} to 0 files ...')
-            return
-        if isinstance(payload, list) and len(payload) == 1:
-            path = payload[0]
-            if path.is_dir():
-                path /= 'definition.py'
-            if path.is_file():
-                self.io.display(f'matching {address!r} to {path.trim()} ...')
-                self._open_files([path])
-            else:
-                self.io.display(f'matching {address!r} to 0 files ...')
-            return
-        if isinstance(payload, list):
-            assert all(isinstance(_, Path) for _ in payload), repr(payload)
-            paths = []
-            for path in payload:
-                if path.is_dir():
-                    path /= 'definition.py'
-                if path.is_file():
-                    paths.append(path)
-            label = abjad.String('file').pluralize(len(paths))
-            message = f'matching {address!r} to {len(paths)} {label} ...'
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-            if paths:
-                self._open_files(paths[:1])
-            return
-        #assert isinstance(payload, (str, type(None))), repr(payload)
-        assert payload is None, repr(payload)
-        paths, strings = [], []
-        if not directory.is_score_package_path():
-            for path in directory.glob('**/*'):
-                if '__pycache__' in str(path):
-                    continue
-                if not path.is_file():
-                    continue
-                if path.suffix in self.configuration.noneditor_suffixes:
-                    continue
-                paths.append(path)
-                strings.append(path.name)
-        else:
-            for path in directory.segments.list_paths():
-                paths.append(path('definition.py'))
-                strings.append(path.get_identifier())
-            for path in directory.materials.list_paths():
-                paths.append(path('definition.py'))
-                strings.append(path.get_identifier())
-            for path in directory.tools.list_paths():
-                paths.append(path)
-                strings.append(path.name)
-            for path in directory.stylesheets.list_paths():
-                paths.append(path)
-                strings.append(path.name)
-            for path in directory.etc.list_paths():
-                paths.append(path)
-                strings.append(path.name)
-        if isinstance(pattern, str):
-            indices = abjad.String.match_strings(strings, pattern)
-            paths = abjad.Sequence(paths).retain(indices)
-        if len(paths) == 1:
-            self.io.display(f'matching {address!r} to {paths[0].trim()} ...')
-        else:
-            label = abjad.String('file').pluralize(len(paths))
-            message = f'matching {address!r} to {len(paths)} {label} ...'
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-        if paths:
-            self._open_files(list(paths[:1]))
-
-    @Command(
-        '*',
-        description='smart - pdf',
-        external_directories=True,
-        menu_section='smart',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def smart_pdf(self, directory):
-        r'''Smart PDF.
-
-        Returns none.
-        '''
-        pass
-
-    @Command(
-        '+',
-        description='smart - pytest',
-        external_directories=True,
-        menu_section='smart',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def smart_pytest(self, directory):
-        r'''Smart pytest.
-
-        Returns none.
-        '''
-        pass
-
-    @Command(
         'sr',
         description='text - search',
         external_directories=True,
@@ -3597,6 +3500,104 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         pass
+
+    @Command(
+        '^',
+        description='smart - doctest',
+        external_directories=True,
+        menu_section='smart',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def smart_doctest(self, directory, pattern, menu_paths):
+        r'''Smart doctest.
+
+        Returns none.
+        '''
+        address, file_ = self._match_smart_file(
+            directory,
+            pattern,
+            menu_paths,
+            '^',
+            Path._find_doctest_files,
+            'definition.py',
+            )
+        if file_:
+            self.io.display(f'matching {address!r} to {file_.trim()} ...')
+            self._run_doctest([file_])
+
+    @Command(
+        '@',
+        description='smart - edit',
+        external_directories=True,
+        menu_section='smart',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def smart_edit(self, directory, pattern, menu_paths):
+        r'''Smart edit.
+
+        Returns none.
+        '''
+        address, file_ = self._match_smart_file(
+            directory,
+            pattern,
+            menu_paths,
+            '@',
+            Path._find_editable_files,
+            'definition.py',
+            )
+        if file_:
+            self._open_files([file_])
+
+    @Command(
+        '*',
+        description='smart - pdf',
+        external_directories=True,
+        menu_section='smart',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def smart_pdf(self, directory, pattern, menu_paths):
+        r'''Smart PDF.
+
+        Returns none.
+        '''
+        address, file_ = self._match_smart_file(
+            directory,
+            pattern,
+            menu_paths,
+            '*',
+            Path._find_pdfs,
+            'illustration.pdf',
+            )
+        if file_:
+            self._open_files([file_])
+
+    @Command(
+        '+',
+        description='smart - pytest',
+        external_directories=True,
+        menu_section='smart',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def smart_pytest(self, directory, pattern, menu_paths):
+        r'''Smart pytest.
+
+        Returns none.
+        '''
+        address, file_ = self._match_smart_file(
+            directory,
+            pattern,
+            menu_paths,
+            '+',
+            Path._find_pytest_files,
+            None,
+            )
+        if file_:
+            self.io.display(f'matching {address!r} to {file_.trim()} ...')
+            self._run_pytest([file_])
 
     @Command(
         'bct',

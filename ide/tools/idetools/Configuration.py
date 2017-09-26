@@ -95,10 +95,10 @@ class Configuration(abjad.Configuration):
 
     def _read_aliases_file(self):
         globals_ = globals()
-        file_path = self.configuration_directory / '__aliases__.py'
-        if file_path.is_file():
-            file_contents_string = file_path.read_text()
-            exec(file_contents_string, globals_)
+        path = self.configuration_directory / '__aliases__.py'
+        if path.is_file():
+            text = path.read_text()
+            exec(text, globals_)
         aliases = globals_.get('aliases') or abjad.TypedOrderedDict()
         self._aliases = aliases
 
