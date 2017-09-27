@@ -330,10 +330,10 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(f'    {build.trim()}')
         for path in paths:
             self.io.display(f'    {path.trim()}')
-        response = self.confirm()
+        response = self.io.get('ok?')
         if self.is_navigation(response):
             return
-        if response is not True:
+        if response != 'y':
             return
         assert not build.exists()
         build.mkdir()
@@ -423,10 +423,10 @@ class AbjadIDE(abjad.AbjadObject):
             return
         else:
             self.io.display(f'writing {target.trim()} ...')
-            response = self.confirm()
+            response = self.io.get('ok?')
             if self.is_navigation(response):
                 return
-            if response is not True:
+            if response != 'y':
                 return
         if directory.is_tools():
             if abjad.String(name).is_classfile_name():
@@ -544,10 +544,10 @@ class AbjadIDE(abjad.AbjadObject):
         wrapper = scores._find_empty_wrapper()
         if wrapper is not None:
             self.io.display(f'found {wrapper.trim()}.')
-            response = self.confirm(f'populate {wrapper.trim()}?')
+            response = self.io.get(f'populate {wrapper.trim()}?')
             if self.is_navigation(response):
                 return
-            if response is not True:
+            if response != 'y':
                 return
         title = self.io.get('enter title')
         if self.is_navigation(title):
@@ -944,10 +944,10 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             return
         if 20 <= len(paths):
-            response = self.confirm(f'{len(paths)} files ok?')
+            response = self.io.get(f'{len(paths)} files ok?')
             if self.is_navigation(response):
                 return response
-            if response is not True:
+            if response != 'y':
                 return
         if self.test:
             return
@@ -1253,16 +1253,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         return abjad.FilesystemState(remove=remove)
 
-    def confirm(self, message='ok?'):
-        r'''Confirms.
-
-        Returns true or false.
-        '''
-        response = self.io.get(message)
-        if response and 'yes'.startswith(response.lower()):
-            return True
-        return response
-
     def is_navigation(self, argument):
         r'''Is true when `argument` is navigation.
 
@@ -1520,10 +1510,10 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'duplicating ...')
             for path in paths:
                 self.io.display(f'    {path.trim()}')
-            response = self.confirm()
+            response = self.io.get('ok?')
             if self.is_navigation(response):
                 return
-            if response is not True:
+            if response != 'y':
                 return
         for source in paths:
             title = None
@@ -1544,10 +1534,10 @@ class AbjadIDE(abjad.AbjadObject):
             if source.is_segment() and source.get_metadatum('name'):
                 name_metadatum = self.io.get('name metadatum')
             self.io.display(f'writing {target.trim()} ...')
-            response = self.confirm()
+            response = self.io.get('ok?')
             if self.is_navigation(response):
                 return
-            if response is not True:
+            if response != 'y':
                 continue
             if source.is_file():
                 shutil.copyfile(str(source), str(target))
@@ -2188,10 +2178,10 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'will write ...')
             for target in targets:
                 self.io.display(f'    {target.trim()} ...')
-        response = self.confirm()
+        response = self.io.get('ok?')
         if self.is_navigation(response):
             return
-        if response is not True:
+        if response != 'y':
             return
         for source, target in zip(paths, targets):
             self.io.display(f'writing {target.trim()} ...')
@@ -3347,10 +3337,10 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('Renaming ...')
         self.io.display(f' FROM: {source.trim()}')
         self.io.display(f'   TO: {target.trim()}')
-        response = self.confirm()
+        response = self.io.get('ok?')
         if self.is_navigation(response):
             return
-        if response is not True:
+        if response != 'y':
             return
         shutil.move(str(source), str(target))
         if target.is_dir():
@@ -3401,10 +3391,10 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(replace_string):
             return
         complete_words = False
-        response = self.confirm('complete words only?')
+        response = self.io.get('complete words only?')
         if self.is_navigation(response):
             return
-        if response is True:
+        if response != 'y':
             complete_words = True
         if directory == directory.scores:
             pass
