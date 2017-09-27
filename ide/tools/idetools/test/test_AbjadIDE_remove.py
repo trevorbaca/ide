@@ -103,18 +103,16 @@ def test_AbjadIDE_remove_03():
     '''
 
     with ide.Test():
+        path = ide.Path('blue_score').wrapper
+        assert path.is_dir()
 
-        abjad_ide('new Test~Score~100 q')
-        wrapper = ide.Path('test_scores') / 'test_score_100'
-        assert wrapper.is_dir()
-
-        abjad_ide('rm Test~Score~100 remove q')
+        abjad_ide('rm blu remove q')
         transcript = abjad_ide.io.transcript
-        assert 'Select packages to remove> Test Score 100' in transcript
-        assert f'Will remove {wrapper.trim()} ...'
+        assert 'Select packages to remove> blu' in transcript
+        assert f'Will remove {path.trim()} ...'
         assert "Type 'remove' to proceed> remove" in transcript
-        assert f'Removing {wrapper.trim()} ...' in transcript
-        assert not wrapper.exists()
+        assert f'Removing {path.trim()} ...' in transcript
+        assert not path.exists()
 
 
 def test_AbjadIDE_remove_04():
@@ -122,28 +120,22 @@ def test_AbjadIDE_remove_04():
     '''
 
     with ide.Test():
+        path_1 = ide.Path('blue_score').wrapper
+        path_2 = ide.Path('red_score').wrapper
 
-        abjad_ide('new test~score~100 new test~score~101 q')
-        example_100 = ide.Path('test_scores') / 'test_score_100'
-        example_101 = ide.Path('test_scores') / 'test_score_101'
-        assert example_100.is_dir()
-        assert example_101.is_dir()
-        example_100.contents().add_metadatum('title', 'Test Score 100')
-        example_101.contents().add_metadatum('title', 'Test Score 101')
-
-        abjad_ide('rm Test~Score~100,Test~Score~101 remove~2 q')
+        abjad_ide('rm blu,red remove~2 q')
         for line in [
-            'Select packages to remove> Test Score 100,Test Score 101',
+            'Select packages to remove> blu,red',
             'Will remove ...',
-            f'    {example_100.trim()}',
-            f'    {example_101.trim()}',
+            f'    {path_1.trim()}',
+            f'    {path_2.trim()}',
             "Type 'remove 2' to proceed> remove 2",
-            f'Removing {example_100.trim()} ...',
-            f'Removing {example_101.trim()} ...',
+            f'Removing {path_1.trim()} ...',
+            f'Removing {path_2.trim()} ...',
             ]:
             assert line in abjad_ide.io.transcript
-        assert not example_100.exists()
-        assert not example_101.exists()
+        assert not path_1.exists()
+        assert not path_2.exists()
 
 
 def test_AbjadIDE_remove_05():

@@ -1503,6 +1503,15 @@ class AbjadIDE(abjad.AbjadObject):
             )
         if self.is_navigation(paths):
             return
+        if isinstance(paths, Path):
+            paths = [paths]
+        paths_ = []
+        for path in paths:
+            if path.is_contents():
+                paths_.append(path.wrapper)
+            else:
+                paths_.append(path)
+        paths = paths_
         if len(paths) == 1:
             source = paths[0]
             self.io.display(f'duplicating {source.trim()} ...')
@@ -3283,6 +3292,15 @@ class AbjadIDE(abjad.AbjadObject):
             )
         if self.is_navigation(paths):
             return
+        if isinstance(paths, Path):
+            paths = [paths]
+        paths_ = []
+        for path in paths:
+            if path.is_contents():
+                paths_.append(path.wrapper)
+            else:
+                paths_.append(path)
+        paths = paths_
         count = len(paths)
         if count == 1:
             path_ = paths[0]
@@ -3324,6 +3342,8 @@ class AbjadIDE(abjad.AbjadObject):
             )
         if self.is_navigation(source):
             return
+        if source.is_contents():
+            source = source.wrapper
         self.io.display(f'renaming {source.trim()} ...')
         target = self.io.get('new name')
         if self.is_navigation(target):

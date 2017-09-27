@@ -8,17 +8,14 @@ def test_AbjadIDE_rename_01():
     '''
 
     with ide.Test():
-        test_score_100 = ide.Path('test_scores') / 'test_score_100'
-        test_score_100.remove()
-        test_score_101 = ide.Path('test_scores') / 'test_score_101'
-        test_score_101.remove()
+        source = ide.Path('blue_score')
+        assert source.is_dir()
+        target = ide.Path('test_scores') / 'green_score'
+        target.remove()
 
-        abjad_ide('new Test~Score~100 q')
-        assert test_score_100.is_dir()
-
-        abjad_ide('ren Test~Score~100 test_score_101 y q')
-        assert not test_score_100.exists()
-        assert test_score_101.is_dir()
+        abjad_ide('ren blu Green~Score y q')
+        assert not source.exists()
+        assert target.is_dir()
 
 
 def test_AbjadIDE_rename_02():
@@ -26,9 +23,9 @@ def test_AbjadIDE_rename_02():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score').materials('test_material')
+        source = ide.Path('red_score', 'materials', 'test_material')
         source.remove()
-        target = ide.Path('red_score').materials('new_test_material')
+        target = ide.Path('red_score', 'materials', 'new_test_material')
         target.remove()
 
         abjad_ide('red mm new test_material q')

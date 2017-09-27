@@ -89,10 +89,10 @@ def test_AbjadIDE_duplicate_06():
         target = source.with_name('green_score')
         target.remove()
 
-        abjad_ide('dup Red~Score Green~Score y q')
+        abjad_ide('dup red Green~Score y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert 'Select packages to duplicate> Red Score' in transcript
+        assert 'Select packages to duplicate> red' in transcript
         assert f'Duplicating {source.trim()} ...' in transcript
         assert 'Enter title> Green Score' in transcript 
         assert 'Ok?> y' in transcript

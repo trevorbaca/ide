@@ -258,7 +258,7 @@ def test_AbjadIDE_new_08():
     path = ide.Path('red_score', 'materials', 'test_notes')
     with ide.Test(remove=[path]):
 
-        abjad_ide('Red~Score mm new test~notes q')
+        abjad_ide('red mm new test~notes q')
         transcript = abjad_ide.io.transcript
         assert path.is_dir()
         names = [
