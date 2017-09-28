@@ -289,6 +289,8 @@ class Path(abjad.Path):
 
         Returns string.
         '''
+        if self.is_scores():
+            return 'Abjad IDE : scores'
         if self.is_external():
             if self.parent.name == abjad.abjad_configuration.composer_library:
                 header = 'Abjad IDE : library'
@@ -297,8 +299,6 @@ class Path(abjad.Path):
             if not self.list_paths():
                 header += ' (empty)'
             return header
-        if self.is_scores():
-            return 'Abjad IDE : scores'
         parts = [self.contents.get_title()]
         if self.is_wrapper():
             parts.append('wrapper')
@@ -316,8 +316,30 @@ class Path(abjad.Path):
 
             ::
 
-                >>> path = ide.Path('/path/to/location')
-                >>> path.is_external()
+                >>> path = ide.Path(
+                ...     '/path/to/scores/my_score/my_score',
+                ...     scores='/path/to/scores',
+                ...     )
+
+            ::
+
+                >>> path.builds.is_external()
+                False
+                >>> path.contents.is_external()
+                False
+                >>> path.wrapper.is_external()
+                False
+
+            ::
+
+                >>> path.scores.is_external()
+                True
+
+        ..  container:: example
+
+            ::
+
+                >>> ide.Path('/path/to/location').is_external()
                 True
 
         Returns true or false.
@@ -330,6 +352,8 @@ class Path(abjad.Path):
             self.configuration.test_scores_directory,
             getattr(self, '_scores', None),
             ):
+            if str(self) == str(scores):
+                return True
             if str(self).startswith(str(scores)):
                 return False
         return True

@@ -77,8 +77,7 @@ class Command(abjad.AbjadObject):
 
         Returns `method` with metadata attached.
         '''
-        method.score_package_path_blacklist = \
-            self.score_package_path_blacklist
+        method.score_package_path_blacklist = self.score_package_path_blacklist
         method.command_name = self.command_name
         if self.description is not None:
             method.description = self.description

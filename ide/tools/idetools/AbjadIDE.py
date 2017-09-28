@@ -360,13 +360,16 @@ class AbjadIDE(abjad.AbjadObject):
     def _make_command_sections(self, directory):
         commands = []
         for command in self.commands.values():
-            if directory.is_external() and command.external_directories:
+            blacklist = command.score_package_path_blacklist
+            if directory.is_scores() and command.scores_directory:
                 commands.append(command)
-            elif directory.is_scores() and command.scores_directory:
+            elif (directory.is_external() and
+                not directory.is_scores() and
+                command.external_directories):
                 commands.append(command)
             elif (directory.is_score_package_path() and
                 directory.is_prototype(command.score_package_paths) and
-                not directory.is_prototype(command.score_package_path_blacklist)):
+                not directory.is_prototype(blacklist)):
                 commands.append(command)
         entries_by_section = {}
         navigations = {}
