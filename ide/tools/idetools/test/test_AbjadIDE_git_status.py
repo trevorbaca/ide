@@ -47,7 +47,7 @@ def test_AbjadIDE_git_status_01():
     assert f'Git status {path.wrapper()} ...' in transcript
     assert 'Git submodule foreach git fetch ...' in transcript
 
-    abjad_ide('red mm magic st q')
+    abjad_ide('red mm rpc st q')
     transcript = abjad_ide.io.transcript
     assert f'Git status {path.wrapper()} ...' in transcript
     assert 'Git submodule foreach git fetch ...' in transcript

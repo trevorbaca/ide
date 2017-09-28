@@ -9,7 +9,7 @@ def test_AbjadIDE_interpret_lys_01():
     with ide.Test():
         sources = [
             ide.Path('red_score', 'materials', name, 'illustration.ly')
-            for name in ['magic_numbers', 'ranges', 'tempi']
+            for name in ['red_pitch_classes', 'metronome_marks']
             ]
         targets = [_.with_suffix('.pdf') for _ in sources]
         for target in targets:
@@ -45,10 +45,10 @@ def test_AbjadIDE_interpret_lys_02():
     '''
 
     with ide.Test():
-        sources = [
-            ide.Path('red_score', 'segments', name, 'illustration.ly')
-            for name in ['A', 'B', 'C']
-            ]
+        sources = []
+        for name in ['_', 'A', 'B']:
+            path = ide.Path('red_score', 'segments', name, 'illustration.ly')
+            sources.append(path)
         targets = [_.with_suffix('.pdf') for _ in sources]
         for target in targets:
             target.remove()

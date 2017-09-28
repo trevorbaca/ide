@@ -6,8 +6,9 @@ def test_AbjadIDE_check_definition_01():
     r'''In material directory.
     '''
 
-    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
-    abjad_ide('red %magic dfk q')
+    path = ide.Path(
+        'red_score', 'materials', 'red_pitch_classes', 'definition.py')
+    abjad_ide('red %rpc dfk q')
     transcript = abjad_ide.io.transcript
     assert f'{path.trim()} ... OK' in transcript
     assert 'Total time ' in transcript

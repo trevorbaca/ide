@@ -1,13 +1,15 @@
 import abjad
 
 
-ranges = abjad.PitchRangeList(
+ranges = abjad.TypedOrderedDict(
     [
-        abjad.PitchRange(
-            '[A0, C4)'
+        (
+            'low',
+            abjad.PitchRange('[A0, C4)'),
             ),
-        abjad.PitchRange(
-            '[C4, C8]'
+        (
+            'high',
+            abjad.PitchRange('[C4, C8]'),
             ),
         ]
     )

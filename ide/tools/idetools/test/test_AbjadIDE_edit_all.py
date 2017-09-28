@@ -11,10 +11,10 @@ def test_AbjadIDE_edit_all_01():
     transcript = abjad_ide.io.transcript 
     assert "Matching '@@fini' to 5 files ..." in transcript
     for name in [
-        'magic_numbers',
-        'performers',
+        'instruments',
+        'red_pitch_classes',
+        'metronome_marks',
         'ranges',
-        'tempi',
         'time_signatures',
         ]:
         path = ide.Path('red_score', 'materials', name, 'definition.py')
@@ -22,7 +22,7 @@ def test_AbjadIDE_edit_all_01():
 
     abjad_ide('red mm @@ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '@@' to 8 files ..." in transcript
+    assert "Matching '@@' to 7 files ..." in transcript
 
 
 def test_AbjadIDE_edit_all_02():
@@ -32,11 +32,7 @@ def test_AbjadIDE_edit_all_02():
     abjad_ide('red gg @@efin q')
     transcript = abjad_ide.io.transcript 
     assert "Matching '@@efin' to 3 files ..." in transcript
-    for name in [
-        'A',
-        'B',
-        'C',
-        ]:
+    for name in ['_', 'A', 'B']:
         path = ide.Path('red_score', 'segments', name, 'definition.py')
         assert f'Editing {path.trim()} ...' in transcript
 

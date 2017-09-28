@@ -76,18 +76,18 @@ def test_AbjadIDE_rename_04():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'segments', 'C')
+        source = ide.Path('red_score', 'segments', 'B')
         assert source.is_dir()
-        target = source.with_name('D')
+        target = source.with_name('C')
         target.remove()
 
-        abjad_ide('red gg ren C D y q')
+        abjad_ide('red gg ren B C y q')
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select package to rename> C' in transcript
+        assert 'Select package to rename> B' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
-        assert 'New name> D' in transcript
+        assert 'New name> C' in transcript
         assert 'Renaming ...' in transcript
         assert f' FROM: {source.trim()}' in transcript
         assert f'   TO: {target.trim()}' in transcript

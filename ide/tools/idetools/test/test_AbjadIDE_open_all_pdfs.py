@@ -4,14 +4,14 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_open_all_pdfs_01():
 
-    for name in ['A', 'B', 'C']:
+    for name in ['_', 'A', 'B']:
         path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
         path.remove()
 
     with ide.Test():
-        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', '_', 'illustration.pdf')
 
-        abjad_ide('red %A pdfm q')
+        abjad_ide('red %_ pdfm q')
         assert path.is_file()
 
         abjad_ide('red gg ** q')

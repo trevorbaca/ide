@@ -1,8 +1,8 @@
 import abjad
 
 
-class SargassoMeasureMaker(abjad.AbjadObject):
-    r'''Sargasso measure maker.
+class MeasureMaker(abjad.AbjadObject):
+    r'''Measure-maker.
     '''
 
     ### CLASS VARIABLES ###
@@ -54,7 +54,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self):
-        r'''Calls sargasso measure maker.
+        r'''Calls measure maker.
 
         Returns list of measures.
         '''
@@ -215,8 +215,8 @@ class SargassoMeasureMaker(abjad.AbjadObject):
         return selection
 
     def __eq__(self, argument):
-        r'''Is true when `argument` is a sargasso measure-maker with type and
-        public properties equal to those of this sargasso measure-maker.
+        r'''Is true when `argument` is a measure-maker with type and
+        public properties equal to those of this measure-maker.
         Otherwise false.
 
         Returns true or false.
@@ -224,14 +224,14 @@ class SargassoMeasureMaker(abjad.AbjadObject):
         return abjad.StorageFormatManager.compare(self, argument)
 
     def __hash__(self):
-        r'''Hashes sargasso measure-maker.
+        r'''Hashes measure-maker.
         '''
         hash_values = abjad.StorageFormatManager.get_hash_values(
             self)
         return hash(hash_values)
 
     def __illustrate__(self, **keywords):
-        r'''Illustrates sargasso measure maker.
+        r'''Illustrates measure maker.
 
         Returns LilyPond file.
         '''
@@ -312,7 +312,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
 
     @property
     def measure_denominator(self):
-        r'''Gets measure denominator of sargasso measure maker.
+        r'''Gets measure denominator of measure maker.
 
         Returns positive integer.
         '''
@@ -320,7 +320,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
 
     @property
     def measure_division_denominator(self):
-        r'''Gets mesaure division denominator of sargasso measure maker.
+        r'''Gets mesaure division denominator of measure maker.
 
         Returns positive integer.
         '''
@@ -328,7 +328,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
 
     @property
     def measure_division_talea(self):
-        r'''Gets measure division talea of sargasso measure maker.
+        r'''Gets measure division talea of measure maker.
 
         Returns tuple.
         '''
@@ -336,7 +336,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
 
     @property
     def measure_numerator_talea(self):
-        r'''Gets measure numerator talea of sargasso measure maker.
+        r'''Gets measure numerator talea of measure maker.
 
         Returns tuple.
         '''
@@ -368,7 +368,7 @@ class SargassoMeasureMaker(abjad.AbjadObject):
 
     @property
     def total_duration(self):
-        r'''Gets total duration of sargasso measure maker.
+        r'''Gets total duration of measure maker.
 
         Returns duration.
         '''

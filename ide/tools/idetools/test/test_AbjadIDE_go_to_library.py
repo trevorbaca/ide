@@ -9,13 +9,13 @@ def test_AbjadIDE_go_to_library_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('red mm tempi ll q')
+    abjad_ide('red mm metronome ll q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017) : materials',
-        'Red Score (2017) : materials : tempi',
+        'Red Score (2017) : materials : metronome_marks',
         'Abjad IDE : library',
         ]
 

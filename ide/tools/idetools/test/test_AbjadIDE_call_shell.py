@@ -16,7 +16,7 @@ def test_AbjadIDE_call_shell_02():
     r'''In material directory.
     '''
 
-    abjad_ide('red mm tempi !pwd q')
+    abjad_ide('red mm metronome !pwd q')
     transcript = abjad_ide.io.transcript
     assert "Calling shell on 'pwd' ..." in transcript
 

@@ -15,9 +15,9 @@ def test_AbjadIDE_smart_pytest_01():
     transcript = abjad_ide.io.transcript 
     assert "Matching '+def' to 0 files ..." in transcript
 
-    abjad_ide('red +magic q')
+    abjad_ide('red +rpc q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '+magic' to 0 files ..." in transcript
+    assert f"Matching '+rpc' to 0 files ..." in transcript
 
     abjad_ide('red +A q')
     transcript = abjad_ide.io.transcript 

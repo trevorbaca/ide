@@ -19,7 +19,7 @@ if __name__ == '__main__':
             traceback.print_exc()
             sys.exit(1)
         try:
-            from blue_score.segments.B.__metadata__ import metadata as previous_metadata
+            previous_metadata = None
         except ImportError:
             traceback.print_exc()
             sys.exit(1)

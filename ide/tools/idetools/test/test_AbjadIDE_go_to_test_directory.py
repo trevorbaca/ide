@@ -7,13 +7,13 @@ def test_AbjadIDE_go_to_test_directory_01():
     r'''From material directory.
     '''
 
-    abjad_ide('red mm tempi tt q')
+    abjad_ide('red mm metronome tt q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017) : materials',
-        'Red Score (2017) : materials : tempi',
+        'Red Score (2017) : materials : metronome_marks',
         'Red Score (2017) : test',
         ]
     assert '.gitignore' not in transcript

@@ -5,8 +5,8 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_make_pdfs_01():
 
     with ide.Test():
-        can_illustrate = ['magic_numbers', 'ranges', 'tempi']
-        can_not_illustrate = ['performers', 'time_signatures']
+        can_illustrate = ['red_pitch_classes', 'metronome_marks']
+        can_not_illustrate = ['instruments', 'ranges', 'time_signatures']
         for name in can_illustrate:
             directory = ide.Path('red_score', 'materials', name)
             target = directory / 'illustration.pdf'
@@ -56,19 +56,19 @@ def test_AbjadIDE_make_pdfs_01():
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**llus' to 3 files ..." in transcript
+            assert "Matching '**llus' to 2 files ..." in transcript
 
         abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**pdf' to 3 files ..." in transcript
+            assert "Matching '**pdf' to 2 files ..." in transcript
 
         abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
         for name in can_illustrate:
             path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
-            assert "Matching '**' to 3 files ..." in transcript
+            assert "Matching '**' to 2 files ..." in transcript
 
         abjad_ide('red mm **asdf q')
         transcript = abjad_ide.io.transcript
@@ -78,7 +78,7 @@ def test_AbjadIDE_make_pdfs_01():
 def test_AbjadIDE_make_pdfs_02():
 
     with ide.Test():
-        names = ['A', 'B', 'C']
+        names = ['_', 'A', 'B']
         for name in names:
             target = ide.Path('red_score', 'segments', name)
             target /= 'illustration.pdf'

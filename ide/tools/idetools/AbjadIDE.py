@@ -131,8 +131,11 @@ class AbjadIDE(abjad.AbjadObject):
             raise Exception(message)
 
     def _collect_segment_lys(self, directory):
-        entries = sorted(directory.segments.iterdir())
-        names = [_.name for _ in entries]
+        paths = sorted(directory.segments.iterdir())
+        names = [_.name for _ in paths]
+        if '_' in names:
+            names.remove('_')
+            names.insert(0, '_')
         sources, targets = [], []
         for name in names:
             source = directory.segments(name, 'illustration.ly')
@@ -902,17 +905,17 @@ class AbjadIDE(abjad.AbjadObject):
         address = prefix + (pattern or '') + alias
         count = len(files)
         counter = abjad.String('file').pluralize(count)
-        file_ = None
+        result = None
         if not files:
             self.io.display(f'matching {address!r} to {count} {counter} ...')
         elif len(files) == 1:
-            file_ = files[0]
+            result = files[0]
         else:
             self.io.display(f'matching {address!r} to {count} {counter} ...')
             for file_ in files:
                 self.io.display(file_.trim(), raw=True)
             self.io.display(f"narrow search or use {2*prefix!r} for all ...")
-        return address, file_
+        return address, result
 
     def _open_files(self, paths, force_vim=False, silent=False):
         assert isinstance(paths, collections.Iterable), repr(paths)
@@ -1012,7 +1015,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if paths:
             string = ' '.join([str(_) for _ in paths])
-            command = f'ajv doctest -x {string}'
+            command = f'ajv doctest --external-modules=baca -x {string}'
             abjad.IOManager.spawn_subprocess(command)
 
     def _run_lilypond(self, ly):
@@ -1369,7 +1372,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns integer exit code for Travis tests.
         '''
         assert directory.is_material_or_segment()
-        self.io.display('checking definition file ...')
+        self.io.display('checking definition ...')
         definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'missing {definition.trim()} ...')

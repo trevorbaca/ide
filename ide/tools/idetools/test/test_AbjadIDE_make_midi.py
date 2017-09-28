@@ -6,11 +6,11 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_make_midi_01():
 
     with ide.Test():
-        target = ide.Path('red_score', 'segments', 'A', 'segment.midi')
+        target = ide.Path('red_score', 'segments', '_', 'segment.midi')
         maker = target.with_name('__midi__.py')
         target.remove()
 
-        abjad_ide('red %A midm q')
+        abjad_ide('red %_ midm q')
         transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -20,7 +20,7 @@ def test_AbjadIDE_make_midi_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red %A midm q')
+        abjad_ide('red %_ midm q')
         transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
         assert f'Removing {target.trim()} ...' in transcript

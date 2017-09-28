@@ -5,12 +5,11 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_lys_01():
 
     with ide.Test():
-        paths = [
-            ide.Path('red_score', 'segments', name, 'illustration.ly')
-            for name in ['A', 'B', 'C']
-            ]
-        for path in paths:
+        paths = []
+        for name in ['_', 'A', 'B']:
+            path = ide.Path('red_score', 'segments', name, 'illustration.ly')
             assert path.is_file()
+            paths.append(path)
 
         abjad_ide('red gg lyt* q')
         transcript = abjad_ide.io.transcript

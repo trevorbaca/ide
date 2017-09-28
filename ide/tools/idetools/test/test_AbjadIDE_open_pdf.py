@@ -8,12 +8,12 @@ def test_AbjadIDE_open_pdf_01():
 
     with ide.Test():
 
-        abjad_ide('red %magic pdfm q')
-        path = ide.Path('red_score', 'materials', 'magic_numbers')
-        path /= 'illustration.pdf'
+        abjad_ide('red %rpc pdfm q')
+        path = ide.Path(
+            'red_score', 'materials', 'red_pitch_classes', 'illustration.pdf')
         assert path.is_file()
 
-        abjad_ide('red %magic pdfo q')
+        abjad_ide('red %rpc pdfo q')
         transcript = abjad_ide.io.transcript
         assert f'Opening {path.trim()} ...' in transcript
 

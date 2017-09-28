@@ -19,7 +19,7 @@ if __name__ == '__main__':
             traceback.print_exc()
             sys.exit(1)
         try:
-            from red_score.segments.A.__metadata__ import metadata as previous_metadata
+            from red_score.segments.B.__metadata__ import metadata as previous_metadata
         except ImportError:
             traceback.print_exc()
             sys.exit(1)

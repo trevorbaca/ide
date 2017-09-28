@@ -8,11 +8,12 @@ def test_AbjadIDE_smart_pdf_01():
 
     with ide.Test():
 
-        abjad_ide('red %tempi pdfm q')
-        path = ide.Path('red_score', 'materials', 'tempi', 'illustration.pdf')
+        abjad_ide('red %metronome pdfm q')
+        path = ide.Path(
+            'red_score', 'materials', 'metronome_marks', 'illustration.pdf')
         assert path.is_file()
 
-        abjad_ide('red *tempi q')
+        abjad_ide('red *metronome q')
         transcript = abjad_ide.io.transcript 
         assert f"Opening {path.trim()} ..." in transcript
 
@@ -37,9 +38,9 @@ def test_AbjadIDE_smart_pdf_03():
     '''
 
     with ide.Test():
-        path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
+        path = ide.Path('red_score', 'segments', '_', 'illustration.pdf')
 
-        abjad_ide('red %A pdfm q')
+        abjad_ide('red %_ pdfm q')
         assert path.is_file()
 
         abjad_ide('red gg *0 q')

@@ -36,7 +36,7 @@ def test_AbjadIDE_git_commit_01():
     transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper()} ...' in transcript
 
-    abjad_ide('red mm magic ci q')
+    abjad_ide('red mm rpc ci q')
     transcript = abjad_ide.io.transcript
     assert f'Git commit {path.wrapper()} ...' in transcript
 

@@ -8,14 +8,14 @@ def test_AbjadIDE_make_pdf_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'materials', 'magic_numbers')
-        source /= 'illustration.ly'
+        source = ide.Path(
+            'red_score', 'materials', 'red_pitch_classes', 'illustration.ly')
         illustrate = source.with_name('__illustrate__.py')
         target = source.with_suffix('.pdf')
         source.remove()
         target.remove()
 
-        abjad_ide('red %magic pdfm q')
+        abjad_ide('red %rpc pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' not in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_make_pdf_01():
         assert source.is_file()
         assert target.is_file()
 
-        abjad_ide('red %magic pdfm q')
+        abjad_ide('red %rpc pdfm q')
         transcript = abjad_ide.io.transcript
         assert 'Making PDF ...'in transcript
         assert f'Removing {source.trim()} ...' in transcript

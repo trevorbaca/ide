@@ -486,10 +486,10 @@ def test_AbjadIDE_show_help_07():
     r'''In material directory.
     '''
 
-    abjad_ide('red %magic ? q')
+    abjad_ide('red %rpc ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
-        'Red Score (2017) : materials : magic_numbers : help',
+        'Red Score (2017) : materials : red_pitch_classes : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',

@@ -15,19 +15,20 @@ def test_AbjadIDE_smart_doctest_01():
     transcript = abjad_ide.io.transcript 
     assert "Matching '^def' to 0 files ..." in transcript
 
-    abjad_ide('red ^magic q')
+    abjad_ide('red ^rpc q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').materials('magic_numbers', 'definition.py')
-    assert f"Matching '^magic' to {path.trim()} ..." in transcript
+    path = ide.Path(
+        'red_score', 'materials', 'red_pitch_classes', 'definition.py')
+    assert f"Matching '^rpc' to {path.trim()} ..." in transcript
 
     abjad_ide('red ^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('A', 'definition.py')
+    path = ide.Path('red_score', 'segments', 'A', 'definition.py')
     assert f"Matching '^A' to {path.trim()} ..." in transcript
 
     abjad_ide('red ^ST q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('ScoreTemplate.py')
+    path = ide.Path('red_score', 'tools', 'ScoreTemplate.py')
     assert f"Matching '^ST' to {path.trim()} ..." in transcript
 
 
@@ -71,14 +72,15 @@ def test_AbjadIDE_smart_doctest_04():
     transcript = abjad_ide.io.transcript 
     assert f"Matching '^def' to 0 files ..." in transcript
 
-    abjad_ide('red mm ^magic q')
+    abjad_ide('red mm ^rpc q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').materials('magic_numbers', 'definition.py')
-    assert f"Matching '^magic' to {path.trim()} ..." in transcript
+    path = ide.Path(
+        'red_score', 'materials', 'red_pitch_classes', 'definition.py')
+    assert f"Matching '^rpc' to {path.trim()} ..." in transcript
 
     abjad_ide('red mm ^ST q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('ScoreTemplate.py')
+    path = ide.Path('red_score', 'tools', 'ScoreTemplate.py')
     assert f"Matching '^ST' to {path.trim()} ..." in transcript
 
 
@@ -114,10 +116,10 @@ def test_AbjadIDE_smart_doctest_06():
     path = ide.Path('red_score').tools('ScoreTemplate.py')
     assert f"Matching '^ScT' to {path.trim()} ..." in transcript
 
-    abjad_ide('red oo ^ass q')
+    abjad_ide('red oo ^spacing q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('adjust_spacing_sections.py')
-    assert f"Matching '^ass' to {path.trim()} ..." in transcript
+    path = ide.Path('red_score', 'tools', 'adjust_spacing_sections.py')
+    assert f"Matching '^spacing' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_doctest_07():

@@ -20,7 +20,7 @@ def test_AbjadIDE_quit_03():
     r'''In material directory.
     '''
 
-    abjad_ide('red %tempi q')
+    abjad_ide('red %metronome q')
 
 
 def test_AbjadIDE_quit_04():

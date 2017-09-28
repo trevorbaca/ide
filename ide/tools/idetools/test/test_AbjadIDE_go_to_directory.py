@@ -60,13 +60,10 @@ def test_AbjadIDE_go_to_directory_06():
     r'''Goes to material directory.
     '''
 
-    abjad_ide('red %agic q')
+    abjad_ide('red %rpc q')
     transcript = abjad_ide.io.transcript 
-    assert 'Red Score (2017) : materials : magic_numbers' in transcript.titles
-
-    abjad_ide('red %mn q')
-    transcript = abjad_ide.io.transcript 
-    assert 'Red Score (2017) : materials : magic_numbers' in transcript.titles
+    line = 'Red Score (2017) : materials : red_pitch_classes'
+    assert line in transcript.titles
 
 
 def test_AbjadIDE_go_to_directory_07():
@@ -133,7 +130,7 @@ def test_AbjadIDE_go_to_directory_13():
 
     abjad_ide('red gg %1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('A')
+    path = ide.Path('red_score', 'segments', '_')
     assert f"Matching '%1' to {path.trim()} ..." in transcript
 
     abjad_ide('red gg %99 q')

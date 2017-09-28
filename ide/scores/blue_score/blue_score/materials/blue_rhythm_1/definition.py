@@ -1,7 +1,7 @@
 import abjad
 
 
-talea_rhythm_maker = abjad.rhythmmakertools.TaleaRhythmMaker(
+blue_rhythm_1 = abjad.rhythmmakertools.TaleaRhythmMaker(
     talea=abjad.rhythmmakertools.Talea(
         counts=(2, 2, -3),
         denominator=8,

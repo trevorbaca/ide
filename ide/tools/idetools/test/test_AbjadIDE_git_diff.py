@@ -37,10 +37,10 @@ def test_AbjadIDE_git_diff_01():
     transcript = abjad_ide.io.transcript
     assert f'Git diff {path.materials().trim()} ...' in transcript
 
-    abjad_ide('red %magic diff q')
+    abjad_ide('red %rpc diff q')
     transcript = abjad_ide.io.transcript
-    assert f"Git diff {path.materials('magic_numbers').trim()} ..." in \
-        transcript
+    line = f"Git diff {path.materials('red_pitch_classes').trim()} ..."
+    assert line in transcript
 
     abjad_ide('red gg diff q')
     transcript = abjad_ide.io.transcript

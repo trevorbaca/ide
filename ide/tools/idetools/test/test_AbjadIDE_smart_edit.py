@@ -53,9 +53,10 @@ def test_AbjadIDE_smart_edit_04():
     r'''Edits material definition file.
     '''
 
-    abjad_ide('red @agic q')
+    abjad_ide('red @rpc q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
+    path = ide.Path(
+        'red_score', 'materials', 'red_pitch_classes', 'definition.py')
     assert f"Editing {path.trim()} ..." in transcript
 
 
@@ -65,7 +66,7 @@ def test_AbjadIDE_smart_edit_05():
 
     abjad_ide('red @A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('A', 'definition.py')
+    path = ide.Path('red_score', 'segments', 'A', 'definition.py')
     assert f"Editing {path.trim()} ..." in transcript
 
 
@@ -75,7 +76,7 @@ def test_AbjadIDE_smart_edit_06():
 
     abjad_ide('red @contexts q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').stylesheets('contexts.ily')
+    path = ide.Path('red_score', 'stylesheets', 'contexts.ily')
     assert f"Editing {path.trim()} ..." in transcript
 
 
@@ -85,17 +86,17 @@ def test_AbjadIDE_smart_edit_07():
 
     abjad_ide('red @RM q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('RhythmMaker.py')
+    path = ide.Path('red_score', 'tools', 'RhythmMaker.py')
     assert f"Editing {path.trim()} ..." in transcript
 
     abjad_ide('red @ScT q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('ScoreTemplate.py')
+    path = ide.Path('red_score', 'tools', 'ScoreTemplate.py')
     assert f"Editing {path.trim()} ..." in transcript
 
-    abjad_ide('red @ass q')
+    abjad_ide('red @spacing q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('adjust_spacing_sections.py')
+    path = ide.Path('red_score', 'tools', 'adjust_spacing_sections.py')
     assert f"Editing {path.trim()} ..." in transcript
 
 
@@ -109,7 +110,7 @@ def test_AbjadIDE_smart_edit_08():
 
     abjad_ide('red mm @1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
+    path = ide.Path('red_score', 'materials', 'instruments', 'definition.py')
     assert f"Editing {path.trim()} ..." in transcript
 
     abjad_ide('red mm @99 q')

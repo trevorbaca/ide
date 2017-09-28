@@ -10,13 +10,13 @@ def test_AbjadIDE_aliases_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('fab mm tempi sti q')
+    abjad_ide('fab mm metronome sti q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Fabergé Investigations (2016)',
         'Fabergé Investigations (2016) : materials',
-        'Fabergé Investigations (2016) : materials : tempi',
+        'Fabergé Investigations (2016) : materials : metronome_marks',
         'Stirrings Still (2017)',
         ]
 

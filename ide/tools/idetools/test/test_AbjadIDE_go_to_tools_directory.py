@@ -6,13 +6,13 @@ def test_AbjadIDE_go_to_tools_directory_01():
     r'''From material directory.
     '''
 
-    abjad_ide('red mm tempi oo q')
+    abjad_ide('red mm metronome oo q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017) : materials',
-        'Red Score (2017) : materials : tempi',
+        'Red Score (2017) : materials : metronome_marks',
         'Red Score (2017) : tools',
         ]
     assert 'adjust_spacing_sections.py' in transcript

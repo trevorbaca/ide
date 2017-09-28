@@ -6,9 +6,10 @@ def test_AbjadIDE_edit_definition_01():
     r'''In material directory.
     '''
 
-    abjad_ide('red %magic dfe q')
+    abjad_ide('red %rpc dfe q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score', 'materials', 'magic_numbers', 'definition.py')
+    path = ide.Path(
+        'red_score', 'materials', 'red_pitch_classes', 'definition.py')
     assert f'Editing {path.trim()} ...' in transcript
 
 

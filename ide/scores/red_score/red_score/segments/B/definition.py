@@ -1,17 +1,17 @@
 import abjad
 
 
-time_signatures = 5 * [(3, 4)]
+time_signatures = 2 * [(6, 8)]
 rh_divisions = []
-rh_divisions.extend(4 * [(2, 8)])
-rh_divisions.extend(4 * [(2, 16)])
-rh_divisions.extend(4 * [(3, 8)])
-rh_divisions.extend(4 * [(3, 16)])
+rh_divisions.extend(6 * [(2, 16)])
+rh_divisions.extend(3 * [(3, 8)])
+rh_divisions.extend(6 * [(2, 16)])
+rh_divisions.extend(3 * [(3, 8)])
 lh_divisions = []
-lh_divisions.extend(4 * [(3, 8)])
-lh_divisions.extend(4 * [(3, 16)])
-lh_divisions.extend(4 * [(2, 8)])
-lh_divisions.extend(4 * [(2, 16)])
+lh_divisions.extend(3 * [(3, 8)])
+lh_divisions.extend(6 * [(2, 16)])
+lh_divisions.extend(3 * [(3, 8)])
+lh_divisions.extend(6 * [(2, 16)])
 divisions = {
     'RH Voice': rh_divisions,
     'LH Voice': lh_divisions,

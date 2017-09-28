@@ -40,7 +40,7 @@ def test_AbjadIDE_git_pull_01():
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 
-    abjad_ide('red mm magic pull q')
+    abjad_ide('red mm rpc pull q')
     transcript = abjad_ide.io.transcript
     assert f'Git pull {path.wrapper()} ...' in transcript
 

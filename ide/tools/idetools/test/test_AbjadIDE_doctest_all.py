@@ -15,9 +15,9 @@ def test_AbjadIDE_doctest_all_01():
     transcript = abjad_ide.io.transcript 
     assert "Matching '^^def' to 8 files ..." in transcript
 
-    abjad_ide('red ^^magic q')
+    abjad_ide('red ^^rpc q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^^magic' to 0 files ..." in transcript
+    assert "Matching '^^rpc' to 0 files ..." in transcript
 
     abjad_ide('red ^^A q')
     transcript = abjad_ide.io.transcript 
@@ -40,9 +40,9 @@ def test_AbjadIDE_doctest_all_02():
     transcript = abjad_ide.io.transcript 
     assert f"Matching '^^def' to 5 files ..." in transcript
 
-    abjad_ide('red mm ^^magic q')
+    abjad_ide('red mm ^^rpc q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^^magic' to 0 files ..." in transcript
+    assert "Matching '^^rpc' to 0 files ..." in transcript
 
     abjad_ide('red mm ^^ST q')
     transcript = abjad_ide.io.transcript 

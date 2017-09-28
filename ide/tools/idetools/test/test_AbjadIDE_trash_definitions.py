@@ -7,7 +7,7 @@ def test_AbjadIDE_trash_definitions_01():
     with ide.Test():
         paths = [
             ide.Path('red_score', 'segments', name, 'definition.py')
-            for name in ['A', 'B', 'C']
+            for name in ['_', 'A', 'B']
             ]
         for path in paths:
             assert path.is_file()

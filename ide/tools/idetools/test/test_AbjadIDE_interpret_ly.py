@@ -7,11 +7,12 @@ def test_AbjadIDE_interpret_ly_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'materials', 'tempi', 'illustration.ly')
+        source = ide.Path(
+            'red_score', 'materials', 'metronome_marks', 'illustration.ly')
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red %tempi lyi q')
+        abjad_ide('red %metronome lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -20,7 +21,7 @@ def test_AbjadIDE_interpret_ly_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red %tempi lyi q')
+        abjad_ide('red %metronome lyi q')
         transcript = abjad_ide.io.transcript
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript

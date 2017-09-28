@@ -62,21 +62,21 @@ def test_AbjadIDE_duplicate_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'materials', 'magic_numbers')
+        source = ide.Path('red_score', 'materials', 'red_pitch_classes')
         assert source.is_dir()
-        target = source.with_name('magic_values')
+        target = source.with_name('orange_pitch_classes')
         target.remove()
 
-        abjad_ide(f'red mm dup agic magic~values y q')
+        abjad_ide(f'red mm dup rpc orange~pitch~classes y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f'Select packages to duplicate> agic' in transcript
+        assert f'Select packages to duplicate> rpc' in transcript
         assert f'Duplicating {source.trim()} ...'
-        assert 'Enter new name> magic values'
+        assert 'Enter new name> orane pitch classes'
         assert f'Writing {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
-        assert "Replacing 'magic_numbers' with 'magic_values' ..." in \
-            transcript
+        line = "Replacing 'red_pitch_classes' with 'orange_pitch_classes' ..."
+        assert line in transcript
 
 
 def test_AbjadIDE_duplicate_06():
@@ -114,20 +114,20 @@ def test_AbjadIDE_duplicate_08():
     '''
 
     with ide.Test():
-        source = ide.Path('blue_score', 'segments', 'B')
+        source = ide.Path('blue_score', 'segments', 'A')
         assert source.is_dir()
-        target = source.with_name('C')
+        target = source.with_name('B')
         target.remove()
 
-        abjad_ide(f'blu gg dup B C y q')
+        abjad_ide(f'blu gg dup A B y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f'Select packages to duplicate> B' in transcript
+        assert f'Select packages to duplicate> A' in transcript
         assert f'Duplicating {source.trim()} ...'
-        assert 'Enter new name> C'
+        assert 'Enter new name> B'
         assert f'Writing {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
-        assert "Replacing 'B' with 'C' ..." in transcript
+        assert "Replacing 'A' with 'B' ..." in transcript
 
 
 def test_AbjadIDE_duplicate_09():

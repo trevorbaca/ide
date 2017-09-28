@@ -8,12 +8,12 @@ def test_AbjadIDE_make_ly_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'materials', 'magic_numbers')
-        source /= '__illustrate__.py'
+        source = ide.Path(
+            'red_score', 'materials', 'red_pitch_classes', '__illustrate__.py')
         target = source.with_name('illustration.ly')
         target.remove()
 
-        abjad_ide('red %magic lym q')
+        abjad_ide('red %rpc lym q')
         transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
@@ -22,7 +22,7 @@ def test_AbjadIDE_make_ly_01():
         assert f'Opening {target.trim()} ...' not in transcript
         assert target.is_file()
 
-        abjad_ide('red %magic lym q')
+        abjad_ide('red %rpc lym q')
         transcript = abjad_ide.io.transcript
         assert 'Making ly ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
