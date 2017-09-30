@@ -3,71 +3,62 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_make_pdfs_01():
+    r'''In materials directory.
+    '''
 
     with ide.Test():
-        can_illustrate = ['red_pitch_classes', 'metronome_marks']
-        can_not_illustrate = ['instruments', 'ranges', 'time_signatures']
-        for name in can_illustrate:
-            directory = ide.Path('red_score', 'materials', name)
-            target = directory / 'illustration.pdf'
-            target.remove()
+        directory = ide.Path('red_score').materials
+        whitelist = ['metronome_marks', 'red_pitch_classes']
+        blacklist = ['instruments', 'ranges', 'time_signatures']
+        for name in whitelist:
+            ly = directory(name, 'illustration.ly')
+            ly.remove()
+            pdf = directory(name, 'illustration.pdf')
+            pdf.remove()
 
         abjad_ide('red mm pdfm* q')
         transcript = abjad_ide.io.transcript
-        for name in can_illustrate:
-            directory = ide.Path('red_score', 'materials', name)
-            illustrate = directory / '__illustrate__.py'
-            source = directory / 'illustration.ly'
-            target = directory / 'illustration.pdf'
+        for name in whitelist:
+            ly = directory(name, 'illustration.ly')
+            pdf = directory(name, 'illustration.pdf')
+            maker = directory(name, '__make_pdf__.py')
             assert 'Making PDF ...' in transcript
-            assert f'Removing {source.trim()} ...' in transcript
-            assert f'Removing {target.trim()} ...' not in transcript
-            assert f'Interpreting {illustrate.trim()} ...' in transcript
-            assert f'Opening {target.trim()} ...' not in transcript
-            assert illustrate.is_file()
-            assert source.is_file()
-            assert target.is_file()
-        for name in can_not_illustrate:
-            directory = ide.Path('red_score', 'materials', name)
-            illustrate = directory / '__illustrate__.py'
-            assert f'Can not find {illustrate.trim()} ...' in transcript
-
-        abjad_ide('red mm pdfm* q')
-        transcript = abjad_ide.io.transcript
-        for name in can_illustrate:
-            directory = ide.Path('red_score', 'materials', name)
-            illustrate = directory / '__illustrate__.py'
-            source = directory / 'illustration.ly'
-            target = directory / 'illustration.pdf'
+            assert f'Removing {ly.trim()} ...' not in transcript
+            assert f'Removing {pdf.trim()} ...' not in transcript
+            assert f'Writing {maker.trim()} ...' in transcript
+            assert f'Interpreting {maker.trim()} ...' in transcript
+            assert f'Writing {ly.trim()} ...' in transcript
+            assert f'Writing {pdf.trim()} ...' in transcript
+            assert f'Removing {maker.trim()} ...' in transcript
+            assert f'Opening' not in transcript
+            assert ly.is_file()
+            assert pdf.is_file()
+            assert not maker.exists()
+        for name in blacklist:
+            ly = directory(name, 'illustration.ly')
+            pdf = directory(name, 'illustration.pdf')
+            maker = directory(name, '__make_pdf__.py')
             assert 'Making PDF ...' in transcript
-            assert f'Removing {source.trim()} ...' in transcript
-            assert f'Removing {target.trim()} ...' in transcript
-            assert f'Interpreting {illustrate.trim()} ...' in transcript
-            assert f'Opening {target.trim()} ...' not in transcript
-            assert illustrate.is_file()
-            assert source.is_file()
-            assert target.is_file()
-        for name in can_not_illustrate:
-            directory = ide.Path('red_score').materials(name)
-            illustrate = directory / '__illustrate__.py'
-            assert f'Can not find {illustrate.trim()} ...' in transcript
+            assert f'Writing {maker.trim()} ...' in transcript
+            assert f'Interpreting {maker.trim()} ...' in transcript
+            assert f'Removing {maker.trim()} ...' in transcript
+            assert not ly.exists()
+            assert not pdf.exists()
+            assert not maker.exists()
 
         abjad_ide('red mm **llus q')
         transcript = abjad_ide.io.transcript
-        for name in can_illustrate:
-            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
+        for name in whitelist:
             assert "Matching '**llus' to 2 files ..." in transcript
 
         abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
-        for name in can_illustrate:
-            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
+        for name in whitelist:
             assert "Matching '**pdf' to 2 files ..." in transcript
 
         abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
-        for name in can_illustrate:
-            path = ide.Path('red_score', 'materials', name, 'illustration.pdf')
+        for name in whitelist:
             assert "Matching '**' to 2 files ..." in transcript
 
         abjad_ide('red mm **asdf q')
@@ -76,48 +67,50 @@ def test_AbjadIDE_make_pdfs_01():
 
 
 def test_AbjadIDE_make_pdfs_02():
+    r'''In segments directory.
+    '''
 
     with ide.Test():
+        directory = ide.Path('red_score').segments
         names = ['_', 'A', 'B']
         for name in names:
-            target = ide.Path('red_score', 'segments', name)
-            target /= 'illustration.pdf'
-            target.remove()
+            ly = directory('illustration.ly')
+            ly.remove()
+            pdf = directory('illustration.pdf')
+            pdf.remove()
+            maker = directory('__make_pdf__.py')
+            maker.remove()
 
         abjad_ide('red gg pdfm* q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            directory = ide.Path('red_score', 'segments', name)
-            illustrate = directory / '__illustrate__.py'
-            source = directory / 'illustration.ly'
-            target = directory / 'illustration.pdf'
+            ly = directory(name, 'illustration.ly')
+            pdf = directory(name, 'illustration.pdf')
+            maker = directory(name, '__make_pdf__.py')
             assert 'Making PDF ...' in transcript
-            assert f'Removing {source.trim()} ...' in transcript
-            assert f'Removing {target.trim()} ...' not in transcript
-            assert f'Removing {illustrate.trim()} ...' in transcript
-            assert f'Writing {illustrate.trim()} ...' in transcript
-            assert f'Interpreting {illustrate.trim()} ...' in transcript
-            assert f'Opening {target.trim()} ...' not in transcript
-            assert illustrate.is_file()
-            assert source.is_file()
-            assert target.is_file()
+            assert f'Writing {maker.trim()} ...' in transcript
+            assert f'Interpreting {maker.trim()} ...' in transcript
+            assert f'Writing {ly.trim()} ...' in transcript
+            assert f'Writing {pdf.trim()} ...' in transcript
+            assert f'Removing {maker.trim()} ...' in transcript
+            assert f'Opening' not in transcript
+            assert ly.is_file()
+            assert pdf.is_file()
+            assert not maker.exists()
 
         abjad_ide('red gg **llus q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**llus' to 3 files ..." in transcript
 
         abjad_ide('red gg **pdf q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**pdf' to 3 files ..." in transcript
 
         abjad_ide('red gg ** q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            path = ide.Path('red_score', 'segments', name, 'illustration.pdf')
             assert "Matching '**' to 3 files ..." in transcript
 
         abjad_ide('red gg **asdf q')

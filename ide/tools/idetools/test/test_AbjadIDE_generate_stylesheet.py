@@ -5,11 +5,11 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_generate_stylesheet_01():
 
     with ide.Test():
-        source = ide.Path('boilerplate') / 'build-stylesheet.ily'
+        source = ide.Path('boilerplate') / 'stylesheet.ily'
         text = source.read_text()
         assert 'paper_size' in text
         assert '"letter"' not in text
-        target = ide.Path('blue_score').builds('letter', 'stylesheet.ily')
+        target = ide.Path('blue_score', 'builds', 'letter', 'stylesheet.ily')
         target.remove()
 
         abjad_ide('blu %letter yg q')
