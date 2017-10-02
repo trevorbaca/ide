@@ -6,26 +6,32 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_make_midi_01():
 
     with ide.Test():
-        target = ide.Path('red_score', 'segments', '_', 'segment.midi')
-        maker = target.with_name('__midi__.py')
-        target.remove()
+        directory = ide.Path('red_score', 'segments', '_')
+        midi = directory('segment.midi')
+        midi.remove()
+        maker = directory('__midi__.py')
+        maker.remove()
 
         abjad_ide('red %_ midm q')
         transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
-        assert f'Removing {target.trim()} ...' not in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
+        assert f'Removing {midi.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Opening {target.trim()} ...' in transcript
-        assert target.is_file()
+        assert f'Writing {midi.trim()} ...' in transcript
+        assert f'Removing {maker.trim()} ...' in transcript
+        assert f'Opening {midi.trim()} ...' in transcript
+        assert midi.is_file()
+        assert not maker.exists()
 
         abjad_ide('red %_ midm q')
         transcript = abjad_ide.io.transcript
         assert 'Making MIDI ...'in transcript
-        assert f'Removing {target.trim()} ...' in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
+        assert f'Removing {midi.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Opening {target.trim()} ...' in transcript
-        assert target.is_file()
+        assert f'Writing {midi.trim()} ...' in transcript
+        assert f'Removing {maker.trim()} ...' in transcript
+        assert f'Opening {midi.trim()} ...' in transcript
+        assert midi.is_file()
+        assert not maker.exists()

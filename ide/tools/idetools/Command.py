@@ -22,7 +22,6 @@ class Command(abjad.AbjadObject):
         'go',
         'hop',
         'log',
-        'illustrate',
         'ly',
         'lys',
         'midi',

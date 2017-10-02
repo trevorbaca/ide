@@ -23,7 +23,6 @@ class Menu(abjad.AbjadObject):
 
     __slots__ = (
         '_aliases',
-        '_allow_aliases',
         '_getter',
         '_header',
         '_io',
@@ -40,7 +39,6 @@ class Menu(abjad.AbjadObject):
     def __init__(
         self,
         aliases=None,
-        allow_aliases=None,
         getter=None,
         header=None,
         io=None,
@@ -50,7 +48,6 @@ class Menu(abjad.AbjadObject):
         sections=None,
         ):
         self._aliases = aliases
-        self._allow_aliases = allow_aliases
         self._getter = getter
         self._header = header
         self._io = io or IO()
@@ -85,8 +82,6 @@ class Menu(abjad.AbjadObject):
             )
         prefix, string = self._split_prefix(string)
         source = None
-#        if '@' in prefix:
-#            raise Exception(prefix, string)
         if string is None:
             payload = None
         elif string == '?':
@@ -110,9 +105,9 @@ class Menu(abjad.AbjadObject):
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
             source = 'command'
-        elif bool(self._match_asset(string)):
-            payload = self._match_asset(string)
-            source = 'asset'
+        elif bool(self._match_assets(string)):
+            payload = self._match_assets(string)
+            source = 'assets'
         elif bool(self._match_range(string)):
             payload = self._match_range(string)
             source = 'range'
@@ -132,12 +127,6 @@ class Menu(abjad.AbjadObject):
         return self.sections.__getitem__(argument)
 
     ### PRIVATE METHODS ###
-
-    def _enclose_in_list(self, argument):
-        for section in self:
-            if section.multiple:
-                return [argument]
-        return argument
 
     @staticmethod
     def _left_justify(string, width):
@@ -221,9 +210,9 @@ class Menu(abjad.AbjadObject):
             return
         path = self.aliases.get(string)
         if path is not None:
-            return Path(path)
+            return [Path(path)]
 
-    def _match_asset(self, string):
+    def _match_assets(self, string):
         for section in self.sections:
             if section.command:
                 continue
@@ -231,7 +220,7 @@ class Menu(abjad.AbjadObject):
                 number = int(string)
                 for entry in section:
                     if entry.number == number:
-                        return self._enclose_in_list(entry.value)
+                        return [entry.value]
             paths = [Path(_.display) for _ in section]
             for i, path in enumerate(paths):
                 for part in path.parts:
@@ -239,7 +228,7 @@ class Menu(abjad.AbjadObject):
                         continue
                     if part == string:
                         entry = section[i]
-                        return self._enclose_in_list(entry.value)
+                        return [entry.value]
             strings, values = [abjad.String(_.display) for _ in section], []
             for i in abjad.String.match_strings(strings, string):
                 entry = section[i]
@@ -253,7 +242,7 @@ class Menu(abjad.AbjadObject):
                 continue
             entry = section.match(string)
             if entry is not None:
-                return self._enclose_in_list(entry.value)
+                return entry.value
 
     def _match_range(self, string):
         if string.startswith('!'):
@@ -297,14 +286,6 @@ class Menu(abjad.AbjadObject):
         Returns dictionary or none.
         '''
         return self._aliases
-
-    @property
-    def allow_aliases(self):
-        r'''Is true when menu allow aliases.
-
-        Returns true, false or none.
-        '''
-        return self._allow_aliases
 
     @property
     def getter(self):
@@ -368,7 +349,6 @@ class Menu(abjad.AbjadObject):
     def from_directory(
         directory,
         aliases=None,
-        allow_aliases=None,
         io=None,
         navigations=None,
         sections=None,
@@ -398,7 +378,6 @@ class Menu(abjad.AbjadObject):
             sections.append(section)
         menu = Menu(
             aliases=aliases,
-            allow_aliases=allow_aliases,
             header=directory.get_header(),
             io=io,
             loop=True,

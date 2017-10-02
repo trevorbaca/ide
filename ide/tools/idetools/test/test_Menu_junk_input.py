@@ -59,3 +59,12 @@ def test_Menu_junk_input_02():
     assert '''Unknown command '""' ...''' in transcript
     assert "Unknown command ',,' ..." in transcript
     assert "Unknown command '//' ..." in transcript
+
+
+def test_Menu_junk_input_03():
+    r'''Multihypen input doesn't break anything.
+    '''
+
+    abjad_ide(r'''allegro-moderato-ma-non-troppo q''')
+    transcript = abjad_ide.io.transcript
+    assert 'Unknown command' in transcript

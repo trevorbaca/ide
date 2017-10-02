@@ -1,8 +1,6 @@
 import abjad
-import types
 from ide.tools.idetools.Configuration import Configuration
 from ide.tools.idetools.MenuEntry import MenuEntry
-from ide.tools.idetools.Path import Path
 
 
 class MenuSection(abjad.AbjadObject):
@@ -15,7 +13,6 @@ class MenuSection(abjad.AbjadObject):
         '_command',
         '_entries',
         '_force_single_column',
-        '_multiple',
         '_secondary',
         )
 
@@ -28,16 +25,12 @@ class MenuSection(abjad.AbjadObject):
         command=None,
         entries=None,
         force_single_column=None,
-        multiple=None,
         secondary=None,
         ):
         abjad.AbjadObject.__init__(self)
-        if command and multiple:
-            raise Exception('command sections can not select multiple.')
         self._command = command
         self._entries = []
         self._force_single_column = force_single_column
-        self._multiple = multiple
         self._secondary = secondary
         self._initialize_entries(entries)
 
@@ -104,14 +97,6 @@ class MenuSection(abjad.AbjadObject):
         return self._force_single_column
 
     @property
-    def multiple(self):
-        r'''Is true when section is multiple. Otherwise false.
-
-        Returns true or false.
-        '''
-        return self._multiple
-
-    @property
     def secondary(self):
         r'''Is true when section lists secondary assets. Otherwise false.
 
@@ -150,28 +135,30 @@ class MenuSection(abjad.AbjadObject):
             for i in abjad.String.match_strings(strings, string):
                 return self[i]
 
-    def range_string_to_numbers(self, range_string):
-        r'''Changes `range_string` to numbers.
+    def range_string_to_numbers(self, string):
+        r'''Changes range `string` to numbers.
 
         Returns list.
         '''
-        range_string = range_string.strip()
+        string = string.strip()
         assert self.entries
+        if not self.entries[0].number:
+            return
         numbers = []
-        if ',' in range_string:
-            range_parts = range_string.split(',')
+        if ',' in string:
+            parts = string.split(',')
         else:
-            range_parts = [range_string]
-        for range_part in range_parts:
-            range_part = range_part.strip()
-            entry = self.match(range_part)
+            parts = [string]
+        for part in parts:
+            part = part.strip()
+            entry = self.match(part)
             if entry is not None:
                 numbers.append(entry.number)
                 continue
-            if range_part == 'all':
+            if part == 'all':
                 numbers.extend(range(1, len(self.entries) + 1))
-            elif '-' in range_part:
-                start, stop = range_part.split('-')
+            elif part.count('-') == 1:
+                start, stop = part.split('-')
                 start = start.strip()
                 stop = stop.strip()
                 entry = self.match(start)
@@ -193,7 +180,7 @@ class MenuSection(abjad.AbjadObject):
                     new_numbers = range(start, stop - 1, -1)
                     numbers.extend(new_numbers)
             else:
-                entry = self.match(range_part)
+                entry = self.match(part)
                 if entry is None:
                     break
                 numbers.append(entry.number)

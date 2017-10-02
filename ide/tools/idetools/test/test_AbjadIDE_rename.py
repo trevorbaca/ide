@@ -36,7 +36,7 @@ def test_AbjadIDE_rename_02():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select package to rename> test_material' in transcript
+        assert 'Select packages to rename> test_material' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> new test material' in transcript
         assert 'Renaming ...' in transcript
@@ -62,7 +62,7 @@ def test_AbjadIDE_rename_03():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select package to rename> D' in transcript
+        assert 'Select packages to rename> D' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> E' in transcript
         assert 'Renaming ...' in transcript
@@ -85,7 +85,7 @@ def test_AbjadIDE_rename_04():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select package to rename> B' in transcript
+        assert 'Select packages to rename> B' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> C' in transcript
         assert 'Renaming ...' in transcript
@@ -108,7 +108,7 @@ def test_AbjadIDE_rename_05():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert 'Select directory to rename> letter' in transcript
+        assert 'Select directories to rename> letter' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> standard size' in transcript
         assert 'Renaming ...' in transcript
@@ -134,7 +134,7 @@ def test_AbjadIDE_rename_06():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_file()
-        assert 'Select file to rename> NM' in transcript
+        assert 'Select files to rename> NM' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> RenamedMaker.py' in transcript
         assert 'Renaming ...' in transcript
@@ -162,7 +162,7 @@ def test_AbjadIDE_rename_07():
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_file()
-        assert 'Select file to rename> new-' in transcript
+        assert 'Select files to rename> new-' in transcript
         assert f'Renaming {source.trim()} ...' in transcript
         assert 'New name> renamed-stylesheet' in transcript
         assert 'Renaming ...' in transcript
