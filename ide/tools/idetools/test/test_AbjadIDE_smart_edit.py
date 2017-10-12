@@ -143,7 +143,7 @@ def test_AbjadIDE_smart_edit_11():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('@am q')
+    abjad_ide('@LAM q')
     transcript = abjad_ide.io.transcript 
     path = abjad.abjad_configuration.composer_library_tools
     path = ide.Path(path) / 'LibraryAM.py'
