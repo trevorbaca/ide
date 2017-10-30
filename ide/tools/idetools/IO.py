@@ -8,10 +8,8 @@ class IO(abjad.AbjadObject):
 
     ..  container:: example
 
-        ::
-
-            >>> ide.IO()
-            IO()
+        >>> ide.IO()
+        IO()
 
     '''
 

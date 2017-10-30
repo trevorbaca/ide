@@ -258,16 +258,14 @@ class Path(abjad.Path):
 
         ..  container:: example
 
-            ::
-
-                >>> path = ide.Path(
-                ...     '/path/to/scores/my_score/my_score',
-                ...     scores='/path/to/scores',
-                ...     )
-                >>> path.scores
-                Path*('/path/to/scores')
-                >>> path.scores('red_score', 'red_score', 'etc')
-                Path*('/path/to/scores/red_score/red_score/etc')
+            >>> path = ide.Path(
+            ...     '/path/to/scores/my_score/my_score',
+            ...     scores='/path/to/scores',
+            ...     )
+            >>> path.scores
+            Path*('/path/to/scores')
+            >>> path.scores('red_score', 'red_score', 'etc')
+            Path*('/path/to/scores/red_score/red_score/etc')
 
         Returns package path or none.
         '''
@@ -314,33 +312,25 @@ class Path(abjad.Path):
 
         ..  container:: example
 
-            ::
+            >>> path = ide.Path(
+            ...     '/path/to/scores/my_score/my_score',
+            ...     scores='/path/to/scores',
+            ...     )
 
-                >>> path = ide.Path(
-                ...     '/path/to/scores/my_score/my_score',
-                ...     scores='/path/to/scores',
-                ...     )
+            >>> path.builds.is_external()
+            False
+            >>> path.contents.is_external()
+            False
+            >>> path.wrapper.is_external()
+            False
 
-            ::
-
-                >>> path.builds.is_external()
-                False
-                >>> path.contents.is_external()
-                False
-                >>> path.wrapper.is_external()
-                False
-
-            ::
-
-                >>> path.scores.is_external()
-                True
+            >>> path.scores.is_external()
+            True
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Path('/path/to/location').is_external()
-                True
+            >>> ide.Path('/path/to/location').is_external()
+            True
 
         Returns true or false.
         '''

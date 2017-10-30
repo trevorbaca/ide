@@ -9,10 +9,8 @@ class Configuration(abjad.Configuration):
 
     ..  container:: example
 
-        ::
-
-            >>> ide.Configuration()
-            Configuration()
+        >>> ide.Configuration()
+        Configuration()
 
     '''
 
@@ -110,10 +108,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().aliases
-                TypedOrderedDict(...)
+            >>> ide.Configuration().aliases
+            TypedOrderedDict(...)
 
         Returns ordered dictionary.
         '''
@@ -125,10 +121,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().aliases_file_path
-                Path('.../.abjad/ide/__aliases__.py')
+            >>> ide.Configuration().aliases_file_path
+            Path('.../.abjad/ide/__aliases__.py')
 
         Returns package path.
         '''
@@ -141,10 +135,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().boilerplate_directory
-                Path('.../abjad/abjad/boilerplate')
+            >>> ide.Configuration().boilerplate_directory
+            Path('.../abjad/abjad/boilerplate')
 
         Returns package path.
         '''
@@ -172,10 +164,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().configuration_directory
-                PosixPath('.../.abjad/ide')
+            >>> ide.Configuration().configuration_directory
+            PosixPath('.../.abjad/ide')
 
         Returns path.
         '''
@@ -189,10 +179,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().ide_directory
-                Path('.../ide')
+            >>> ide.Configuration().ide_directory
+            Path('.../ide')
 
         Returns package path.
         '''
@@ -208,10 +196,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().latex_log_file_path
-                Path('.../.abjad/ide/latex.log')
+            >>> ide.Configuration().latex_log_file_path
+            Path('.../.abjad/ide/latex.log')
 
         Returns package path.
         '''
@@ -224,10 +210,8 @@ class Configuration(abjad.Configuration):
 
         ..  container:: example
 
-            ::
-
-                >>> ide.Configuration().test_scores_directory
-                Path('.../ide/scores')
+            >>> ide.Configuration().test_scores_directory
+            Path('.../ide/scores')
 
         Returns package path.
         '''

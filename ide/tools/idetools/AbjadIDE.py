@@ -24,10 +24,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     ..  container:: example
 
-        ::
-
-            >>> ide.AbjadIDE()
-            AbjadIDE()
+        >>> ide.AbjadIDE()
+        AbjadIDE()
 
     '''
 

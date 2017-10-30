@@ -12,10 +12,8 @@ class Menu(abjad.AbjadObject):
 
     ..  container:: example
 
-        ::
-
-            >>> ide.Menu()
-            Menu(io=IO(), navigations={}, sections=[])
+        >>> ide.Menu()
+        Menu(io=IO(), navigations={}, sections=[])
 
     '''
 
