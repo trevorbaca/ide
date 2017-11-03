@@ -1061,7 +1061,6 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             prompt = f'select {counter}'
         selector = self._make_selector(
-            #aliases=self.aliases,
             aliases=None,
             force_single_column=True,
             items=items,
@@ -2977,6 +2976,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.make_pdf(path, open_after=False)
             if i + 1 < len(paths):
                 self.io.display('')
+            else:
+                abjad.IOManager.spawn_subprocess('say "done"')
 
     @Command(
         'new',
