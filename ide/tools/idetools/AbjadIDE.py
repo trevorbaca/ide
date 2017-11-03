@@ -1451,6 +1451,7 @@ class AbjadIDE(abjad.AbjadObject):
         files, strings = directory._find_doctest_files(force=True)
         files = self._match_files(files, strings, pattern, '^^')
         self._run_doctest(files)
+        abjad.IOManager.spawn_subprocess('say "done"')
 
     @Command(
         'dup',
