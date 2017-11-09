@@ -18,7 +18,7 @@ def test_AbjadIDE_make_pdf_01():
 
         abjad_ide('red %rpc pdfm q')
         transcript = abjad_ide.io.transcript
-        assert 'Making PDF ...'in transcript
+        assert 'Making red pitch classes PDF ...'in transcript
         assert f'Removing {ly.trim()} ...' not in transcript
         assert f'Removing {pdf.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
@@ -33,7 +33,7 @@ def test_AbjadIDE_make_pdf_01():
 
         abjad_ide('red %rpc pdfm q')
         transcript = abjad_ide.io.transcript
-        assert 'Making PDF ...'in transcript
+        assert 'Making red pitch classes PDF ...'in transcript
         assert f'Removing {ly.trim()} ...' in transcript
         assert f'Removing {pdf.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
@@ -62,7 +62,7 @@ def test_AbjadIDE_make_pdf_02():
 
         abjad_ide('red %A pdfm q')
         transcript = abjad_ide.io.transcript
-        assert 'Making PDF ...'in transcript
+        assert 'Making segment A PDF ...'in transcript
         assert f'Removing {ly.trim()} ...' not in transcript
         assert f'Removing {pdf.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
@@ -77,7 +77,7 @@ def test_AbjadIDE_make_pdf_02():
 
         abjad_ide('red %A pdfm q')
         transcript = abjad_ide.io.transcript
-        assert 'Making PDF ...'in transcript
+        assert 'Making segment A PDF ...'in transcript
         assert f'Removing {ly.trim()} ...' in transcript
         assert f'Removing {pdf.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript

@@ -22,7 +22,7 @@ def test_AbjadIDE_make_pdfs_01():
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
             maker = directory(name, '__make_pdf__.py')
-            assert 'Making PDF ...' in transcript
+            assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Removing {ly.trim()} ...' not in transcript
             assert f'Removing {pdf.trim()} ...' not in transcript
             assert f'Writing {maker.trim()} ...' in transcript
@@ -38,7 +38,7 @@ def test_AbjadIDE_make_pdfs_01():
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
             maker = directory(name, '__make_pdf__.py')
-            assert 'Making PDF ...' in transcript
+            assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
             assert f'Removing {maker.trim()} ...' in transcript
@@ -87,7 +87,7 @@ def test_AbjadIDE_make_pdfs_02():
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
             maker = directory(name, '__make_pdf__.py')
-            assert 'Making PDF ...' in transcript
+            assert f'Making segment {name} PDF ...' in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
             assert f'Writing {ly.trim()} ...' in transcript
