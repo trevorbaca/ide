@@ -17,7 +17,7 @@ divisions = {
     'LH Voice': lh_divisions,
     }
 
-segment_maker = abjad.PianoStaffSegmentMaker(
+maker = abjad.PianoStaffSegmentMaker(
     time_signatures=time_signatures,
     divisions=divisions,
     )

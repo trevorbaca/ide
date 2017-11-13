@@ -1563,7 +1563,9 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
+        print(self.configuration.aliases_file_path, 'AAA')
         self._open_files([self.configuration.aliases_file_path])
+        print('BBB')
         self.configuration._read_aliases_file()
         self._aliases = dict(self.configuration.aliases)
         for name, path in self.aliases.items():
