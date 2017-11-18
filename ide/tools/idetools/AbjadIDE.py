@@ -1584,9 +1584,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        print(self.configuration.aliases_file_path, 'AAA')
         self._open_files([self.configuration.aliases_file_path])
-        print('BBB')
         self.configuration._read_aliases_file()
         self._aliases = dict(self.configuration.aliases)
         for name, path in self.aliases.items():
@@ -3559,17 +3557,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self.io.display('toggling segment lys ...')
         if not directory._segments.is_dir():
-            self.io.display('... no _segments directory found.')
+            self.io.display('no _segments directory found ...')
             return
-        toggled = 0
         for path in directory._segments.list_paths():
-            print(path.trim())
-            text, toggled_ = self._toggle_ly(path)
+            text, count = self._toggle_ly(path)
+            counter = abjad.String('tagged line').pluralize(count)
+            self.io.display(f'toggling {count} {path.trim()} {counter} ...')
             path.write_text(text)
-            toggled += toggled_
-        self.io.display(f'... with {toggled} toggled lines.')
 
     @Command(
         'bct',
