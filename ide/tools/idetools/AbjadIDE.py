@@ -9,14 +9,14 @@ import platform
 import re
 import shutil
 import subprocess
-from ide.tools.idetools.Command import Command
-from ide.tools.idetools.Configuration import Configuration
-from ide.tools.idetools.Interaction import Interaction
-from ide.tools.idetools.IO import IO
-from ide.tools.idetools.Menu import Menu
-from ide.tools.idetools.MenuSection import MenuSection
-from ide.tools.idetools.Path import Path
-from ide.tools.idetools.Response import Response
+from .Command import Command
+from .Configuration import Configuration
+from .Interaction import Interaction
+from .IO import IO
+from .Menu import Menu
+from .MenuSection import MenuSection
+from .Path import Path
+from .Response import Response
 
 
 class AbjadIDE(abjad.AbjadObject):
@@ -1104,6 +1104,27 @@ class AbjadIDE(abjad.AbjadObject):
             height = height_
             width = width_
         return width, height, unit
+
+    @staticmethod
+    def _toggle_ly(ly):
+        assert ly.is_file()
+        lines, toggled = [], 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if ('% SEGMENT' not in line and
+                    '% FROM PREVIOUS SEGMENT' not in line):
+                    lines.append(line)
+                    continue
+                if line.startswith('%'):
+                    line = line.replace('%', ' ', 1)
+                elif line.startswith(' '):
+                    line = line.replace(' ', '%', 1)
+                else:
+                    raise ValueError(repr(line))
+                lines.append(line)
+                toggled += 1
+        lines = ''.join(lines)
+        return lines, toggled
 
     def _trash_file(self, path):
         if path.is_file():
@@ -3525,6 +3546,30 @@ class AbjadIDE(abjad.AbjadObject):
         if file_:
             self.io.display(f'matching {address!r} to {file_.trim()} ...')
             self._run_pytest([file_])
+
+    @Command(
+        'lyg*',
+        description='lys - toggle',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def toggle_lys(self, directory):
+        r'''Toggles segment LilyPond file tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self.io.display('toggling segment lys ...')
+        if not directory._segments.is_dir():
+            self.io.display('... no _segments directory found.')
+            return
+        toggled = 0
+        for path in directory._segments.list_paths():
+            print(path.trim())
+            text, toggled_ = self._toggle_ly(path)
+            path.write_text(text)
+            toggled += toggled_
+        self.io.display(f'... with {toggled} toggled lines.')
 
     @Command(
         'bct',
