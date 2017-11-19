@@ -1,4 +1,4 @@
-\version "2.19.65"
+\version "2.19.80"
 \language "english"
 
 #(ly:set-option 'relative-includes #t)
@@ -14,13 +14,13 @@
 \score {
     \context Score = "Two-Staff Piano Score" <<
         \context GlobalContext = "Global Context" {
-            {
+            { % measure
                 \time 6/8
                 s1 * 3/4
-            }
-            {
+            } % measure
+            { % measure
                 s1 * 3/4
-            }
+            } % measure
         }
         \context PianoStaff = "Piano Staff" <<
             \context Staff = "RH Staff" {
