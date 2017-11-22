@@ -1428,12 +1428,19 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not directory._segments.is_dir():
             _segments_directory.mkdir()
+        time_signatures = abjad.TypedOrderedDict()
         for source, target in pairs:
             if target.exists():
                 self.io.display(f'removing {target.trim()} ...')
             self.io.display(f'writing {target.trim()} ...')
             text = self._trim_ly(source)
             target.write_text(text)
+            segment = source.parent
+            time_signatures_ = segment.get_metadatum('time_signatures')
+            time_signatures[segment.name] = time_signatures_
+        path = directory._segments('time_signatures.py')
+        text = 'time_signatures = ' + format(time_signatures)
+        path.write_text(text)
 
     @Command(
         'cp',
