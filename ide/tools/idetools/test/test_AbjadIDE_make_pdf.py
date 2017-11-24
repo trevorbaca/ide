@@ -13,7 +13,7 @@ def test_AbjadIDE_make_pdf_01():
         ly.remove()
         pdf = directory('illustration.pdf')
         pdf.remove()
-        maker = directory('__make_pdf__.py')
+        maker = directory('__make_material_pdf__.py')
         maker.remove()
 
         abjad_ide('red %rpc pdfm q')
@@ -57,7 +57,7 @@ def test_AbjadIDE_make_pdf_02():
         ly.remove()
         pdf = directory('illustration.pdf')
         pdf.remove()
-        maker = directory('__make_pdf__.py')
+        maker = directory('__make_segment_pdf__.py')
         maker.remove()
 
         abjad_ide('red %A pdfm q')

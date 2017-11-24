@@ -9,7 +9,7 @@ def test_AbjadIDE_make_midi_01():
         directory = ide.Path('red_score', 'segments', '_')
         midi = directory('segment.midi')
         midi.remove()
-        maker = directory('__midi__.py')
+        maker = directory('__make_segment_midi__.py')
         maker.remove()
 
         abjad_ide('red %_ midm q')

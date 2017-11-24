@@ -21,7 +21,7 @@ def test_AbjadIDE_make_pdfs_01():
         for name in whitelist:
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_pdf__.py')
+            maker = directory(name, '__make_material_pdf__.py')
             assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Removing {ly.trim()} ...' not in transcript
             assert f'Removing {pdf.trim()} ...' not in transcript
@@ -37,7 +37,7 @@ def test_AbjadIDE_make_pdfs_01():
         for name in blacklist:
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_pdf__.py')
+            maker = directory(name, '__make_material_pdf__.py')
             assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
@@ -78,7 +78,7 @@ def test_AbjadIDE_make_pdfs_02():
             ly.remove()
             pdf = directory('illustration.pdf')
             pdf.remove()
-            maker = directory('__make_pdf__.py')
+            maker = directory('__make_segment_pdf__.py')
             maker.remove()
 
         abjad_ide('red gg pdfm* q')
@@ -86,7 +86,7 @@ def test_AbjadIDE_make_pdfs_02():
         for name in names:
             ly = directory(name, 'illustration.ly')
             pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_pdf__.py')
+            maker = directory(name, '__make_segment_pdf__.py')
             assert f'Making segment {name} PDF ...' in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript

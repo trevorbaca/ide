@@ -11,7 +11,7 @@ def test_AbjadIDE_make_ly_01():
         material = ide.Path('red_score', 'materials', 'red_pitch_classes')
         ly = material('illustration.ly')
         ly.remove()
-        maker = material('__make_ly__.py')
+        maker = material('__make_material_ly__.py')
         maker.remove()
 
         abjad_ide('red %rpc lym q')
@@ -45,7 +45,7 @@ def test_AbjadIDE_make_ly_02():
         segment = ide.Path('red_score', 'segments', 'A')
         ly = segment('illustration.ly')
         ly.remove()
-        maker = segment('__make_ly__.py')
+        maker = segment('__make_segment_ly__.py')
         maker.remove()
 
         abjad_ide('red %A lym q')

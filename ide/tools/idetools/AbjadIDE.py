@@ -422,7 +422,7 @@ class AbjadIDE(abjad.AbjadObject):
             suffix = suffix or '.py'
             name = stem + suffix
         target = directory / name
-        boilerplate = self.configuration.boilerplate_directory
+        #boilerplate = self.configuration.boilerplate_directory
         if target.exists():
             self.io.display(f'existing {target.trim()} ...')
             return
@@ -435,14 +435,12 @@ class AbjadIDE(abjad.AbjadObject):
                 return
         if directory.is_tools():
             if abjad.String(name).is_classfile_name():
-                source = boilerplate('Maker.py')
-                shutil.copyfile(str(source), str(target))
+                self._copy_boilerplate(directory, 'Maker.py', target.name)
                 template = target.read_text()
                 template = template.format(class_name=target.stem)
                 target.write_text(template)
             else:
-                source = boilerplate('function.py')
-                shutil.copyfile(str(source), str(target))
+                self._copy_boilerplate(directory, 'function.py', target.name)
                 template = target.read_text()
                 template = template.format(function_name=target.stem)
                 target.write_text(template)
@@ -460,12 +458,11 @@ class AbjadIDE(abjad.AbjadObject):
         ly = directory('illustration.ly')
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
-        maker_template = Path('boilerplate') / '__make_material_ly__.py'
-        maker = directory('__make_ly__.py')
+        maker = directory('__make_material_ly__.py')
+        maker.remove()
         with self.cleanup([maker]):
-            maker.remove()
             self.io.display(f'writing {maker.trim()} ...')
-            shutil.copyfile(str(maker_template), str(maker))
+            self._copy_boilerplate(directory, maker.name)
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(str(maker))
             if ly.is_file():
@@ -491,12 +488,11 @@ class AbjadIDE(abjad.AbjadObject):
         if pdf.exists():
             self.io.display(f'removing {pdf.trim()} ...')
             pdf.remove()
-        maker = directory('__make_pdf__.py')
+        maker = directory('__make_material_pdf__.py')
         maker.remove()
         with self.cleanup([maker]):
-            maker_template = Path('boilerplate', '__make_material_pdf__.py')
             self.io.display(f'writing {maker.trim()} ...')
-            shutil.copyfile(str(maker_template), str(maker))
+            self._copy_boilerplate(directory, maker.name)
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
             if ly.is_file():
@@ -591,13 +587,11 @@ class AbjadIDE(abjad.AbjadObject):
         ly = directory('illustration.ly')
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
-        maker = directory('__make_ly__.py')
+        maker = directory('__make_segment_ly__.py')
         maker.remove()
         with self.cleanup([maker]):
-            # TODO: use self._copy_boilerplate()?
-            maker_template = Path('boilerplate', '__make_segment_ly__.py')
             self.io.display(f'writing {maker.trim()} ...')
-            shutil.copyfile(str(maker_template), str(maker))
+            self._copy_boilerplate(directory, maker.name)
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
@@ -638,13 +632,11 @@ class AbjadIDE(abjad.AbjadObject):
         if midi.exists():
             self.io.display(f'removing {midi.trim()} ...')
             midi.remove()
-        maker = directory('__midi__.py')
+        maker = directory('__make_segment_midi__.py')
         maker.remove()
         with self.cleanup([maker]):
-            # TODO: use self._copy_boilerplate()?
-            maker_template = Path('boilerplate', '__make_segment_midi__.py')
             self.io.display(f'writing {maker.trim()} ...')
-            shutil.copyfile(str(maker_template), str(maker))
+            self._copy_boilerplate(directory, maker.name)
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
@@ -700,13 +692,11 @@ class AbjadIDE(abjad.AbjadObject):
         if pdf.exists():
             self.io.display(f'removing {pdf.trim()} ...')
             pdf.remove()
-        maker = directory('__make_pdf__.py')
+        maker = directory('__make_segment_pdf__.py')
         maker.remove()
         with self.cleanup([maker]):
-            # TODO: use self._copy_boilerplate()?
-            maker_template = Path('boilerplate', '__make_segment_pdf__.py')
             self.io.display(f'writing {maker.trim()} ...')
-            shutil.copyfile(str(maker_template), str(maker))
+            self._copy_boilerplate(directory, maker.name)
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
@@ -1950,9 +1940,7 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(f'examining {path.trim()} ...')
         names = [_.stem.replace('_', '-') for _ in paths]
-        source = Path('boilerplate', 'music.ly')
-        self.io.display(f'writing {target.trim()} ...')
-        shutil.copyfile(str(source), str(target))
+        self._copy_boilerplate(directory, target.name)
         lines = []
         segment_include_statements = ''
         for i, name in enumerate(names):
