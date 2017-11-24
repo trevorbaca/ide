@@ -21,6 +21,7 @@ class Command(abjad.AbjadObject):
         'git',
         'go',
         'hop',
+        'layout',
         'log',
         'ly',
         'lys',

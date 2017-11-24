@@ -164,6 +164,8 @@ class AbjadIDE(abjad.AbjadObject):
         target_name = target_name or source_name
         target = directory / target_name
         shutil.copyfile(str(source), str(target))
+        if not values:
+            return
         template = target.read_text()
         template = template.format(**values)
         target.write_text(template)
@@ -592,6 +594,7 @@ class AbjadIDE(abjad.AbjadObject):
         maker = directory('__make_ly__.py')
         maker.remove()
         with self.cleanup([maker]):
+            # TODO: use self._copy_boilerplate()?
             maker_template = Path('boilerplate', '__make_segment_ly__.py')
             self.io.display(f'writing {maker.trim()} ...')
             shutil.copyfile(str(maker_template), str(maker))
@@ -638,6 +641,7 @@ class AbjadIDE(abjad.AbjadObject):
         maker = directory('__midi__.py')
         maker.remove()
         with self.cleanup([maker]):
+            # TODO: use self._copy_boilerplate()?
             maker_template = Path('boilerplate', '__make_segment_midi__.py')
             self.io.display(f'writing {maker.trim()} ...')
             shutil.copyfile(str(maker_template), str(maker))
@@ -699,6 +703,7 @@ class AbjadIDE(abjad.AbjadObject):
         maker = directory('__make_pdf__.py')
         maker.remove()
         with self.cleanup([maker]):
+            # TODO: use self._copy_boilerplate()?
             maker_template = Path('boilerplate', '__make_segment_pdf__.py')
             self.io.display(f'writing {maker.trim()} ...')
             shutil.copyfile(str(maker_template), str(maker))
@@ -962,7 +967,8 @@ class AbjadIDE(abjad.AbjadObject):
                 target = self.configuration.home_directory / source.name
                 if target.exists():
                     target.remove()
-                with abjad.FilesystemState(remove=[target]):
+                #with abjad.FilesystemState(remove=[target]):
+                with self.cleanup([target]):
                     target.write_text(template)
                     permissions = f'chmod 755 {target}'
                     abjad.IOManager.spawn_subprocess(permissions)
@@ -2914,6 +2920,38 @@ class AbjadIDE(abjad.AbjadObject):
         self._interpret_tex_file(source)
         if target.is_file() and open_after:
             self._open_files([target])
+
+    @Command(
+        'yom',
+        description='layout - make',
+        menu_section='layout',
+        score_package_paths=('build',),
+        )
+    def make_layout(self, directory):
+        r'''Makes layout ly.
+
+        Returns none.
+        '''
+        assert directory.is_build()
+        self.io.display('making layout ...')
+        layout_py = directory('layout.py')
+        layout_ly = layout_py.with_suffix('.ly')
+        if not layout_py.is_file():
+            self.io.display(f'missing {layout_py.trim()} ...')
+            return
+        boilerplate = '__make_layout_ly__.py'
+        maker = directory(boilerplate)
+        with self.cleanup([maker]):
+            self._copy_boilerplate(directory, boilerplate)
+            self.io.display(f'interpreting {maker.trim()} ...')
+            result = self._interpret_file(maker)
+            if layout_ly.is_file():
+                self.io.display(f'writing {layout_ly.trim()} ...')
+            self.io.display(f'removing {maker.trim()} ...')
+        stdout_lines, stderr_lines, exit_code = result
+        if exit_code:
+            self.io.display(stderr_lines, raw=True)
+            return exit_code
 
     @Command(
         'lym',
