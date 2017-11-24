@@ -152,20 +152,41 @@ class AbjadIDE(abjad.AbjadObject):
     @staticmethod
     def _comment_out_segment_line_breaking(ly):
         assert ly.is_file()
-        lines, total = [], 0
+        lines, total, skipped = [], 0, 0
         with ly.open() as file_pointer:
             for line in file_pointer.readlines():
                 if '% SEGMENT:LINE-BREAKING' not in line:
                     lines.append(line)
                     continue
-                if line.startswith('%'):
+                if line.startswith(' '):
+                    line = line.replace(' ', '%', 1)
+                    total += 1
+                else:
+                    skipped += 1
+                lines.append(line)
+        lines = ''.join(lines)
+        return lines, total, skipped
+
+    @staticmethod
+    def _comment_out_segment_reminders(ly):
+        assert ly.is_file()
+        lines, count, skipped = [], 0, 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT' not in line:
                     lines.append(line)
                     continue
-                line = line.replace(' ', '%', 1)
+                if '% SEGMENT:LINE-BREAKING' in line:
+                    lines.append(line)
+                    continue
+                if line.startswith(' '):
+                    line = line.replace(' ', '%', 1)
+                    count += 1
+                else:
+                    skipped += 1
                 lines.append(line)
-                total += 1
-        lines = ''.join(lines)
-        return lines, total
+        text = ''.join(lines)
+        return text, count, skipped
 
     def _copy_boilerplate(
         self,
@@ -1122,26 +1143,6 @@ class AbjadIDE(abjad.AbjadObject):
             width = width_
         return width, height, unit
 
-    @staticmethod
-    def _toggle_ly(ly):
-        assert ly.is_file()
-        lines, count = [], 0
-        with ly.open() as file_pointer:
-            for line in file_pointer.readlines():
-                if '% SEGMENT' not in line:
-                    lines.append(line)
-                    continue
-                if line.startswith('%'):
-                    line = line.replace('%', ' ', 1)
-                elif line.startswith(' '):
-                    line = line.replace(' ', '%', 1)
-                else:
-                    raise ValueError(repr(line))
-                lines.append(line)
-                count += 1
-        text = ''.join(lines)
-        return text, count
-
     def _trash_file(self, path):
         if path.is_file():
             self.io.display(f'trashing {path.trim()} ...')
@@ -1175,7 +1176,7 @@ class AbjadIDE(abjad.AbjadObject):
     @staticmethod
     def _uncomment_segment_line_breaking(ly):
         assert ly.is_file()
-        lines, total = [], 0
+        lines, total, skipped = [], 0, 0
         with ly.open() as file_pointer:
             for line in file_pointer.readlines():
                 if '% SEGMENT:LINE-BREAKING' not in line:
@@ -1183,10 +1184,33 @@ class AbjadIDE(abjad.AbjadObject):
                     continue
                 if line.startswith('%'):
                     line = line.replace('%', ' ', 1)
+                    total += 1
+                else:
+                    skipped += 1
                 lines.append(line)
-                total += 1
         text = ''.join(lines)
-        return text, total
+        return text, total, skipped
+
+    @staticmethod
+    def _uncomment_segment_reminders(ly):
+        assert ly.is_file()
+        lines, count, skipped = [], 0, 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT' not in line:
+                    lines.append(line)
+                    continue
+                if '% SEGMENT:LINE-BREAKING' in line:
+                    lines.append(line)
+                    continue
+                if line.startswith('%'):
+                    line = line.replace('%', ' ', 1)
+                    count += 1
+                else:
+                    skipped += 1
+                lines.append(line)
+        text = ''.join(lines)
+        return text, count, skipped
 
     ### PUBLIC PROPERTIES ###
 
@@ -1317,12 +1341,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lyb*',
-        description='lys - line-breaking - activate',
+        description='lys - breaks - activate',
         menu_section='lys',
         score_package_paths=True,
         )
     def activate_segment_line_breaking(self, directory):
-        r'''Activates segment line-breaking.
+        r'''Activates segment breaks.
 
         Returns none.
         '''
@@ -1330,14 +1354,54 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
             return
-        for path in directory._segments.list_paths():
-            if not path.name.startswith('segment'):
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
                 continue
-            text, count = self._uncomment_segment_line_breaking(path)
-            counter = abjad.String('tagged line').pluralize(count)
-            message = f'activating {count} {path.trim()} {counter} ...'
-            self.io.display(message)
-            path.write_text(text)
+            text, count, skipped = self._uncomment_segment_line_breaking(ly)
+            if 0 < count:
+                counter = abjad.String('break').pluralize(count)
+                message = f'activating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('break').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} active'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} breaks found ...')
+            ly.write_text(text)
+
+    @Command(
+        'lyr*',
+        description='lys - reminders - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_reminders(self, directory):
+        r'''Activates segment reminders.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
+                continue
+            text, count, skipped = self._uncomment_segment_reminders(ly)
+            if 0 < count:
+                counter = abjad.String('reminder').pluralize(count)
+                message = f'activating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('reminder').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} active'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} reminders found ...')
+            ly.write_text(text)
 
     @Command(
         'bld',
@@ -1522,12 +1586,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lybb*',
-        description='lys - line-breaking - deactivate',
+        description='lys - breaks - deactivate',
         menu_section='lys',
         score_package_paths=True,
         )
     def deactivate_segment_line_breaking(self, directory):
-        r'''Deactivates segment line-breaking.
+        r'''Deactivates segment breaks.
 
         Returns none.
         '''
@@ -1535,14 +1599,54 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
             return
-        for path in directory._segments.list_paths():
-            if not path.name.startswith('segment'):
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
                 continue
-            text, count = self._comment_out_segment_line_breaking(path)
-            counter = abjad.String('tagged line').pluralize(count)
-            message = f'deactivating {count} {path.trim()} {counter} ...'
-            self.io.display(message)
-            path.write_text(text)
+            text, count, skipped = self._comment_out_segment_line_breaking(ly)
+            if 0 < count:
+                counter = abjad.String('break').pluralize(count)
+                message = f'deactivating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('break').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} inactive'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} breaks found ...')
+            ly.write_text(text)
+
+    @Command(
+        'lyrr*',
+        description='lys - reminders - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_reminders(self, directory):
+        r'''Deactivates segment reminders.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
+                continue
+            text, count, skipped = self._comment_out_segment_reminders(ly)
+            if 0 < count:
+                counter = abjad.String('reminder').pluralize(count)
+                message = f'deactivating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('reminder').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} inactive'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} reminders found ...')
+            ly.write_text(text)
 
     @Command(
         '^^',
@@ -3666,29 +3770,6 @@ class AbjadIDE(abjad.AbjadObject):
         if file_:
             self.io.display(f'matching {address!r} to {file_.trim()} ...')
             self._run_pytest([file_])
-
-    @Command(
-        'lyg*',
-        description='lys - toggle',
-        menu_section='lys',
-        score_package_paths=True,
-        )
-    def toggle_lys(self, directory):
-        r'''Toggles segment LilyPond file tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if not directory._segments.is_dir():
-            self.io.display('no _segments directory found ...')
-            return
-        for path in directory._segments.list_paths():
-            if not path.name.startswith('segment'):
-                continue
-            text, count = self._toggle_ly(path)
-            counter = abjad.String('tagged line').pluralize(count)
-            self.io.display(f'toggling {count} {path.trim()} {counter} ...')
-            path.write_text(text)
 
     @Command(
         'bct',
