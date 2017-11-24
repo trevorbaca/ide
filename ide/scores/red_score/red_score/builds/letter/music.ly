@@ -1,6 +1,6 @@
 % Red Score (2017) for piano
 
-\version "2.19.65"
+\version "2.19.80"
 \language "english"
 
 #(ly:set-option 'relative-includes #t)
@@ -8,8 +8,8 @@
 
 \score {
     {
-    \include "../_segments/A.ly"
-    \include "../_segments/B.ly"
-    \include "../_segments/C.ly"
+    \include "../_segments/segment-_.ly"
+    \include "../_segments/segment-A.ly"
+    \include "../_segments/segment-B.ly"
     }
 }

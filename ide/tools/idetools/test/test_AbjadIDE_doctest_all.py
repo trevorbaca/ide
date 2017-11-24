@@ -9,7 +9,7 @@ def test_AbjadIDE_doctest_all_01():
 
     abjad_ide('red ^^ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '^^' to 11 files ..." in transcript
+    assert "Matching '^^' to 12 files ..." in transcript
 
     abjad_ide('red ^^def q')
     transcript = abjad_ide.io.transcript 

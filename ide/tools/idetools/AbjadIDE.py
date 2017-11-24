@@ -138,7 +138,10 @@ class AbjadIDE(abjad.AbjadObject):
             source = directory.segments(name, 'illustration.ly')
             if not source.is_file():
                 continue
-            name = name.replace('_', '-') + '.ly'
+            if name == '_':
+                name = 'segment-_.ly'
+            else:
+                name = 'segment-' + name.replace('_', '-') + '.ly'
             target = directory._segments(name)
             sources.append(source)
             targets.append(target)
@@ -1122,11 +1125,10 @@ class AbjadIDE(abjad.AbjadObject):
     @staticmethod
     def _toggle_ly(ly):
         assert ly.is_file()
-        lines, toggled = [], 0
+        lines, count = [], 0
         with ly.open() as file_pointer:
             for line in file_pointer.readlines():
-                if ('% SEGMENT' not in line and
-                    '% FROM PREVIOUS SEGMENT' not in line):
+                if '% SEGMENT' not in line:
                     lines.append(line)
                     continue
                 if line.startswith('%'):
@@ -1136,9 +1138,9 @@ class AbjadIDE(abjad.AbjadObject):
                 else:
                     raise ValueError(repr(line))
                 lines.append(line)
-                toggled += 1
-        lines = ''.join(lines)
-        return lines, toggled
+                count += 1
+        text = ''.join(lines)
+        return text, count
 
     def _trash_file(self, path):
         if path.is_file():
@@ -1329,6 +1331,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no _segments directory found ...')
             return
         for path in directory._segments.list_paths():
+            if not path.name.startswith('segment'):
+                continue
             text, count = self._uncomment_segment_line_breaking(path)
             counter = abjad.String('tagged line').pluralize(count)
             message = f'activating {count} {path.trim()} {counter} ...'
@@ -1532,6 +1536,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no _segments directory found ...')
             return
         for path in directory._segments.list_paths():
+            if not path.name.startswith('segment'):
+                continue
             text, count = self._comment_out_segment_line_breaking(path)
             counter = abjad.String('tagged line').pluralize(count)
             message = f'deactivating {count} {path.trim()} {counter} ...'
@@ -2017,12 +2023,17 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no segments found ...')
         for path in paths:
             self.io.display(f'examining {path.trim()} ...')
-        names = [_.stem.replace('_', '-') for _ in paths]
+        names = []
+        for path in paths:
+            name = path.stem
+            if path.stem != '_':
+                name = name.replace('_', '-')
+            names.append(name)
         self._copy_boilerplate(directory, target.name)
         lines = []
         segment_include_statements = ''
         for i, name in enumerate(names):
-            name += '.ly'
+            name = 'segment-' + name + '.ly'
             path = directory._segments(name)
             if path.is_file():
                 line = rf'\include "../_segments/{name}"'
@@ -3672,6 +3683,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no _segments directory found ...')
             return
         for path in directory._segments.list_paths():
+            if not path.name.startswith('segment'):
+                continue
             text, count = self._toggle_ly(path)
             counter = abjad.String('tagged line').pluralize(count)
             self.io.display(f'toggling {count} {path.trim()} {counter} ...')
