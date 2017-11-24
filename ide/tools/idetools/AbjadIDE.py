@@ -146,6 +146,24 @@ class AbjadIDE(abjad.AbjadObject):
             directory.builds.mkdir()
         return zip(sources, targets)
 
+    @staticmethod
+    def _comment_out_segment_line_breaking(ly):
+        assert ly.is_file()
+        lines, total = [], 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT:LINE-BREAKING' not in line:
+                    lines.append(line)
+                    continue
+                if line.startswith('%'):
+                    lines.append(line)
+                    continue
+                line = line.replace(' ', '%', 1)
+                lines.append(line)
+                total += 1
+        lines = ''.join(lines)
+        return lines, total
+
     def _copy_boilerplate(
         self,
         directory,
@@ -1152,6 +1170,22 @@ class AbjadIDE(abjad.AbjadObject):
         lines = ''.join(lines)
         return lines
 
+    @staticmethod
+    def _uncomment_segment_line_breaking(ly):
+        assert ly.is_file()
+        lines, total = [], 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT:LINE-BREAKING' not in line:
+                    lines.append(line)
+                    continue
+                if line.startswith('%'):
+                    line = line.replace('%', ' ', 1)
+                lines.append(line)
+                total += 1
+        text = ''.join(lines)
+        return text, total
+
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -1278,6 +1312,28 @@ class AbjadIDE(abjad.AbjadObject):
         return False
 
     ### USER METHODS ###
+
+    @Command(
+        'lyb*',
+        description='lys - line-breaking - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_line_breaking(self, directory):
+        r'''Activates segment line-breaking.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for path in directory._segments.list_paths():
+            text, count = self._uncomment_segment_line_breaking(path)
+            counter = abjad.String('tagged line').pluralize(count)
+            message = f'activating {count} {path.trim()} {counter} ...'
+            self.io.display(message)
+            path.write_text(text)
 
     @Command(
         'bld',
@@ -1459,6 +1515,28 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
+
+    @Command(
+        'lybb*',
+        description='lys - line-breaking - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_line_breaking(self, directory):
+        r'''Deactivates segment line-breaking.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for path in directory._segments.list_paths():
+            text, count = self._comment_out_segment_line_breaking(path)
+            counter = abjad.String('tagged line').pluralize(count)
+            message = f'deactivating {count} {path.trim()} {counter} ...'
+            self.io.display(message)
+            path.write_text(text)
 
     @Command(
         '^^',
