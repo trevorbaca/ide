@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_deactivate_segment_line_breaks_01():
+def test_AbjadIDE_deactivate_segment_duplicates_01():
 
     ly_paths = []
     for name in ('_', 'A', 'B'):
@@ -12,15 +12,15 @@ def test_AbjadIDE_deactivate_segment_line_breaks_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red lybb* q')
+        abjad_ide('red lydd* q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No {ly_path.trim()} breaks found ...'
+            line = f'No {ly_path.trim()} duplicates found ...'
             assert line in transcript
 
 
-def test_AbjadIDE_deactivate_segment_line_breaks_02():
+def test_AbjadIDE_deactivate_segment_duplicates_02():
 
-    abjad_ide('blu lybb* q')
+    abjad_ide('blu lydd* q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript

@@ -1372,6 +1372,21 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_segment_tag(directory, 'SEGMENT:BREAK', 'break')
 
     @Command(
+        'lyd*',
+        description='lys - duplicates - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_duplicates(self, directory):
+        r'''Activates segment duplicates.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_segment_tag(directory, 'SEGMENT:DUPLICATE', 'duplicate')
+
+
+    @Command(
         'lyr*',
         description='lys - reminders - activate',
         menu_section='lys',
@@ -1600,6 +1615,24 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             'SEGMENT:BREAK',
             'break',
+            )
+
+    @Command(
+        'lydd*',
+        description='lys - duplicates - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_duplicates(self, directory):
+        r'''Deactivates segment duplicates.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_segment_tag(
+            directory,
+            'SEGMENT:DUPLICATE',
+            'duplicate',
             )
 
     @Command(
