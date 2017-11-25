@@ -150,6 +150,24 @@ class AbjadIDE(abjad.AbjadObject):
         return zip(sources, targets)
 
     @staticmethod
+    def _comment_out_segment_empty_bars(ly):
+        assert ly.is_file()
+        lines, total, skipped = [], 0, 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT:EMPTY-BAR' not in line:
+                    lines.append(line)
+                    continue
+                if line.startswith(' '):
+                    line = line.replace(' ', '%', 1)
+                    total += 1
+                else:
+                    skipped += 1
+                lines.append(line)
+        lines = ''.join(lines)
+        return lines, total, skipped
+
+    @staticmethod
     def _comment_out_segment_line_breaking(ly):
         assert ly.is_file()
         lines, total, skipped = [], 0, 0
@@ -177,6 +195,9 @@ class AbjadIDE(abjad.AbjadObject):
                     lines.append(line)
                     continue
                 if '% SEGMENT:LINE-BREAKING' in line:
+                    lines.append(line)
+                    continue
+                if '% SEGMENT:EMPTY-BAR' in line:
                     lines.append(line)
                     continue
                 if line.startswith(' '):
@@ -1174,6 +1195,24 @@ class AbjadIDE(abjad.AbjadObject):
         return lines
 
     @staticmethod
+    def _uncomment_segment_empty_bars(ly):
+        assert ly.is_file()
+        lines, total, skipped = [], 0, 0
+        with ly.open() as file_pointer:
+            for line in file_pointer.readlines():
+                if '% SEGMENT:EMPTY-BAR' not in line:
+                    lines.append(line)
+                    continue
+                if line.startswith('%'):
+                    line = line.replace('%', ' ', 1)
+                    total += 1
+                else:
+                    skipped += 1
+                lines.append(line)
+        text = ''.join(lines)
+        return text, total, skipped
+
+    @staticmethod
     def _uncomment_segment_line_breaking(ly):
         assert ly.is_file()
         lines, total, skipped = [], 0, 0
@@ -1201,6 +1240,9 @@ class AbjadIDE(abjad.AbjadObject):
                     lines.append(line)
                     continue
                 if '% SEGMENT:LINE-BREAKING' in line:
+                    lines.append(line)
+                    continue
+                if '% SEGMENT:EMPTY-BAR' in line:
                     lines.append(line)
                     continue
                 if line.startswith('%'):
@@ -1338,6 +1380,38 @@ class AbjadIDE(abjad.AbjadObject):
         return False
 
     ### USER METHODS ###
+
+    @Command(
+        'lye*',
+        description='lys - empty bars - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_empty_bars(self, directory):
+        r'''Activates segment empty bars.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
+                continue
+            text, count, skipped = self._uncomment_segment_empty_bars(ly)
+            if 0 < count:
+                counter = abjad.String('empty bar').pluralize(count)
+                message = f'activating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('empty bar').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} active'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} breaks found ...')
+            ly.write_text(text)
 
     @Command(
         'lyb*',
@@ -1583,6 +1657,38 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
+
+    @Command(
+        'lyee*',
+        description='lys - empty bars - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_empty_bars(self, directory):
+        r'''Deactivates segment empty bars.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if not directory._segments.is_dir():
+            self.io.display('no _segments directory found ...')
+            return
+        for ly in directory._segments.list_paths():
+            if not ly.name.startswith('segment'):
+                continue
+            text, count, skipped = self._comment_out_segment_empty_bars(ly)
+            if 0 < count:
+                counter = abjad.String('empty bar').pluralize(count)
+                message = f'deactivating {count} {ly.trim()} {counter} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('empty bar').pluralize(skipped)
+                message = f'skipping {skipped} {ly.trim()} inactive'
+                message += f' {counter} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                self.io.display(f'no {ly.trim()} breaks found ...')
+            ly.write_text(text)
 
     @Command(
         'lybb*',
