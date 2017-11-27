@@ -52,6 +52,8 @@ def test_AbjadIDE_show_help_01():
         '    hop - next score (>>)',
         '    hop - previous score (<<)',
         '',
+        '    layout - build tags - activate (lyg*)',
+        '    layout - build tags - deactivate (lygg*)',
         '    layout - make (yom)',
         '',
         '    log - aliases (al)',

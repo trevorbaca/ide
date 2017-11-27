@@ -1324,6 +1324,22 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
+        'lyg*',
+        description='layout - build tags - activate',
+        menu_section='layout',
+        score_package_paths=('build',),
+        )
+    def activate_build_tags(self, directory):
+        r'''Activates `'BUILD:<directory>'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_build()
+        build_name = directory.name
+        tag = 'BUILD:' + build_name.upper()
+        self._activate_tag(directory, tag, f'{build_name} build tag')
+
+    @Command(
         'lyb*',
         description='lys - breaks - activate',
         menu_section='lys',
@@ -1580,6 +1596,22 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
+
+    @Command(
+        'lygg*',
+        description='layout - build tags - deactivate',
+        menu_section='layout',
+        score_package_paths=('build',),
+        )
+    def deactivate_build_tags(self, directory):
+        r'''Activates `'BUILD:<directory>'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_build()
+        build_name = directory.name
+        tag = 'BUILD:' + build_name.upper()
+        self._deactivate_tag(directory, tag, f'{build_name} build tag')
 
     @Command(
         'lybb*',
