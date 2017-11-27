@@ -15,7 +15,7 @@ def test_AbjadIDE_activate_segment_reminders_01():
         abjad_ide('red lyr* q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No {ly_path.trim()} reminders found ...'
+            line = f'No reminders found in {ly_path.trim()} ...'
             assert line in transcript
 
 

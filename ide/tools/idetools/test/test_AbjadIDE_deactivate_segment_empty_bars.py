@@ -15,7 +15,7 @@ def test_AbjadIDE_deactivate_segment_empty_bars_01():
         abjad_ide('red lyee* q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No {ly_path.trim()} empty bars found ...'
+            line = f'No empty bars found in {ly_path.trim()} ...'
             assert line in transcript
 
 

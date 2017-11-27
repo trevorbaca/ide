@@ -15,7 +15,7 @@ def test_AbjadIDE_activate_segment_duplicates_01():
         abjad_ide('red lyd* q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No {ly_path.trim()} duplicates found ...'
+            line = f'No duplicates found in {ly_path.trim()} ...'
             assert line in transcript
 
 

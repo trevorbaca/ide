@@ -15,7 +15,7 @@ def test_AbjadIDE_deactivate_segment_breaks_01():
         abjad_ide('red lybb* q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No {ly_path.trim()} breaks found ...'
+            line = f'No segment breaks found in {ly_path.trim()} ...'
             assert line in transcript
 
 

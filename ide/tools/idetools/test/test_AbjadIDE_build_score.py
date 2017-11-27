@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-44:] == [
+        assert transcript.lines[-50:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Removing red_score/builds/_segments/segment-_.ly ...',
@@ -22,6 +22,12 @@ def test_AbjadIDE_build_score_01():
             'Writing red_score/builds/_segments/segment-A.ly ...',
             'Removing red_score/builds/_segments/segment-B.ly ...',
             'Writing red_score/builds/_segments/segment-B.ly ...',
+            'No segment breaks found in red_score/builds/_segments/segment-_.ly ...',
+            'No segment breaks found in red_score/builds/_segments/segment-A.ly ...',
+            'No segment breaks found in red_score/builds/_segments/segment-B.ly ...',
+            'No empty bars found in red_score/builds/_segments/segment-_.ly ...',
+            'No empty bars found in red_score/builds/_segments/segment-A.ly ...',
+            'No empty bars found in red_score/builds/_segments/segment-B.ly ...',
             '',
             'Generating music ...',
             'Removing red_score/builds/letter/music.ly ...',

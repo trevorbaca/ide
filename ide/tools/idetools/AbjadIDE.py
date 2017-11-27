@@ -107,22 +107,30 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
             return
-        for ly in directory._segments.list_paths():
-            if not ly.name.startswith('segment'):
+        names = []
+        for path in directory._segments.list_paths():
+            if not path.name.startswith('segment'):
                 continue
+            names.append(path.name)
+        first_segment_name = 'segment-_.ly'
+        if first_segment_name in names:
+            names.remove(first_segment_name)
+            names.insert(0, first_segment_name)
+        lys = [directory._segments(_) for _ in names]
+        for ly in lys:
             text, count, skipped = self._uncomment_segment_tag(ly, tag)
             if 0 < count:
                 counter_ = abjad.String(counter).pluralize(count)
-                message = f'activating {count} {ly.trim()} {counter_} ...'
+                message = f'activating {count} {counter_} in {ly.trim()} ...'
                 self.io.display(message)
             if 0 < skipped:
                 counter_ = abjad.String(counter).pluralize(skipped)
-                message = f'skipping {skipped} {ly.trim()} active'
-                message += f' {counter_} ...'
+                message = f'skipping {skipped} active {counter_}'
+                message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if count == skipped == 0:
                 counter_ = abjad.String(counter).pluralize(0)
-                self.io.display(f'no {ly.trim()} {counter_} found ...')
+                self.io.display(f'no {counter_} found in {ly.trim()} ...')
             ly.write_text(text)
 
     def _cache_commands(self):
@@ -219,22 +227,30 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
             return
-        for ly in directory._segments.list_paths():
-            if not ly.name.startswith('segment'):
+        names = []
+        for path in directory._segments.list_paths():
+            if not path.name.startswith('segment'):
                 continue
+            names.append(path.name)
+        first_segment_name = 'segment-_.ly'
+        if first_segment_name in names:
+            names.remove(first_segment_name)
+            names.insert(0, first_segment_name)
+        lys = [directory._segments(_) for _ in names]
+        for ly in lys:
             text, count, skipped = self._comment_out_segment_tag(ly, tag)
             if 0 < count:
                 counter_ = abjad.String(counter).pluralize(count)
-                message = f'deactivating {count} {ly.trim()} {counter_} ...'
+                message = f'deactivating {count} {counter_} in {ly.trim()} ...'
                 self.io.display(message)
             if 0 < skipped:
                 counter_ = abjad.String(counter).pluralize(skipped)
-                message = f'skipping {skipped} {ly.trim()} inactive'
-                message += f' {counter_} ...'
+                message = f'skipping {skipped} inactive {counter_}'
+                message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if count == skipped == 0:
                 counter_ = abjad.String(counter).pluralize(0)
-                self.io.display(f'no {ly.trim()} {counter_} found ...')
+                self.io.display(f'no {counter_} found in {ly.trim()} ...')
             ly.write_text(text)
 
     @staticmethod
@@ -1558,6 +1574,8 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
+        self.deactivate_segment_breaks(directory)
+        self.deactivate_segment_empty_bars(directory)
 
     @Command(
         'cp',
@@ -1614,7 +1632,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_segment_tag(
             directory,
             'SEGMENT:BREAK',
-            'break',
+            'segment break',
             )
 
     @Command(
