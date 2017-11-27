@@ -102,7 +102,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_segment_tag(self, directory, tag, counter):
+    def _activate_tag(self, directory, tag, counter):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -118,7 +118,7 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = self._uncomment_segment_tag(ly, tag)
+            text, count, skipped = ly.uncomment_tag(tag)
             if 0 < count:
                 counter_ = abjad.String(counter).pluralize(count)
                 message = f'activating {count} {counter_} in {ly.trim()} ...'
@@ -180,24 +180,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory.builds.mkdir()
         return zip(sources, targets)
 
-    @staticmethod
-    def _comment_out_segment_tag(ly, tag):
-        assert ly.is_file()
-        lines, total, skipped = [], 0, 0
-        with ly.open() as file_pointer:
-            for line in file_pointer.readlines():
-                if tag not in line:
-                    lines.append(line)
-                    continue
-                if line.startswith(' '):
-                    line = line.replace(' ', '%', 1)
-                    total += 1
-                else:
-                    skipped += 1
-                lines.append(line)
-        lines = ''.join(lines)
-        return lines, total, skipped
-
     def _copy_boilerplate(
         self,
         directory,
@@ -222,7 +204,7 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _deactivate_segment_tag(self, directory, tag, counter):
+    def _deactivate_tag(self, directory, tag, counter):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -238,7 +220,7 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = self._comment_out_segment_tag(ly, tag)
+            text, count, skipped = ly.comment_out_tag(tag)
             if 0 < count:
                 counter_ = abjad.String(counter).pluralize(count)
                 message = f'deactivating {count} {counter_} in {ly.trim()} ...'
@@ -1214,24 +1196,6 @@ class AbjadIDE(abjad.AbjadObject):
         lines = ''.join(lines)
         return lines
 
-    @staticmethod
-    def _uncomment_segment_tag(ly, tag):
-        assert ly.is_file()
-        lines, total, skipped = [], 0, 0
-        with ly.open() as file_pointer:
-            for line in file_pointer.readlines():
-                if tag not in line:
-                    lines.append(line)
-                    continue
-                if line.startswith('%'):
-                    line = line.replace('%', ' ', 1)
-                    total += 1
-                else:
-                    skipped += 1
-                lines.append(line)
-        text = ''.join(lines)
-        return text, total, skipped
-
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -1371,7 +1335,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_segment_tag(directory, 'SEGMENT:BREAK', 'break')
+        self._activate_tag(directory, 'SEGMENT:BREAK', 'break')
 
     @Command(
         'lyd*',
@@ -1385,7 +1349,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_segment_tag(directory, 'SEGMENT:DUPLICATE', 'duplicate')
+        self._activate_tag(directory, 'SEGMENT:DUPLICATE', 'duplicate')
 
     @Command(
         'lye*',
@@ -1399,7 +1363,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_segment_tag(directory, 'SEGMENT:EMPTY-BAR', 'empty bar')
+        self._activate_tag(directory, 'SEGMENT:EMPTY-BAR', 'empty bar')
 
     @Command(
         'lyf*',
@@ -1413,7 +1377,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_segment_tag(
+        self._activate_tag(
             directory,
             'SEGMENT:FERMATA-MEASURE-TREATMENT',
             'fermata measure treatment',
@@ -1431,7 +1395,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_segment_tag(directory, 'SEGMENT:REMINDER', 'reminder')
+        self._activate_tag(directory, 'SEGMENT:REMINDER', 'reminder')
 
     @Command(
         'bld',
@@ -1629,7 +1593,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
+        self._deactivate_tag(
             directory,
             'SEGMENT:BREAK',
             'segment break',
@@ -1647,7 +1611,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
+        self._deactivate_tag(
             directory,
             'SEGMENT:DUPLICATE',
             'duplicate',
@@ -1665,7 +1629,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
+        self._deactivate_tag(
             directory,
             'SEGMENT:EMPTY-BAR',
             'empty bar',
@@ -1683,7 +1647,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
+        self._deactivate_tag(
             directory,
             'SEGMENT:FERMATA-MEASURE-TREATMENT',
             'fermata measure treatment',
@@ -1701,7 +1665,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
+        self._deactivate_tag(
             directory,
             'SEGMENT:REMINDER',
             'reminder',
