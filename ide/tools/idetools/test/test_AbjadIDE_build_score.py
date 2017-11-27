@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-50:] == [
+        assert transcript.lines[-53:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Removing red_score/builds/_segments/segment-_.ly ...',
@@ -28,6 +28,9 @@ def test_AbjadIDE_build_score_01():
             'No empty bars found in red_score/builds/_segments/segment-_.ly ...',
             'No empty bars found in red_score/builds/_segments/segment-A.ly ...',
             'No empty bars found in red_score/builds/_segments/segment-B.ly ...',
+            'No fermata measure treatments found in red_score/builds/_segments/segment-_.ly ...',
+            'No fermata measure treatments found in red_score/builds/_segments/segment-A.ly ...',
+            'No fermata measure treatments found in red_score/builds/_segments/segment-B.ly ...',
             '',
             'Generating music ...',
             'Removing red_score/builds/letter/music.ly ...',

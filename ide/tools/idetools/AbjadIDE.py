@@ -1360,27 +1360,13 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'lye*',
-        description='lys - empty bars - activate',
-        menu_section='lys',
-        score_package_paths=True,
-        )
-    def activate_segment_empty_bars(self, directory):
-        r'''Activates segment empty bars.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_segment_tag(directory, 'SEGMENT:EMPTY-BAR', 'empty bar')
-
-    @Command(
         'lyb*',
         description='lys - breaks - activate',
         menu_section='lys',
         score_package_paths=True,
         )
     def activate_segment_breaks(self, directory):
-        r'''Activates segment breaks.
+        r'''Activates `'SEGMENT:BREAK'` tags.
 
         Returns none.
         '''
@@ -1394,13 +1380,44 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def activate_segment_duplicates(self, directory):
-        r'''Activates segment duplicates.
+        r'''Activates `'SEGMENT:DUPLICATE'` tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
         self._activate_segment_tag(directory, 'SEGMENT:DUPLICATE', 'duplicate')
 
+    @Command(
+        'lye*',
+        description='lys - empty bars - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_empty_bars(self, directory):
+        r'''Activates `'SEGMENT:EMPTY-BAR'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_segment_tag(directory, 'SEGMENT:EMPTY-BAR', 'empty bar')
+
+    @Command(
+        'lyf*',
+        description='lys - fermata measure treatments - activate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def activate_segment_fermata_measure_treatments(self, directory):
+        r'''Activates `'SEGMENT:FERMATA-MEASURE-TREATMENT'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_segment_tag(
+            directory,
+            'SEGMENT:FERMATA-MEASURE-TREATMENT',
+            'fermata measure treatment',
+            )
 
     @Command(
         'lyr*',
@@ -1409,7 +1426,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def activate_segment_reminders(self, directory):
-        r'''Activates segment reminders.
+        r'''Activates `'SEGMENT:REMINDER'` tags.
 
         Returns none.
         '''
@@ -1576,6 +1593,7 @@ class AbjadIDE(abjad.AbjadObject):
         path.write_text(text)
         self.deactivate_segment_breaks(directory)
         self.deactivate_segment_empty_bars(directory)
+        self.deactivate_segment_fermata_measure_treatments(directory)
 
     @Command(
         'cp',
@@ -1600,31 +1618,13 @@ class AbjadIDE(abjad.AbjadObject):
             self.clipboard.append(path)
 
     @Command(
-        'lyee*',
-        description='lys - empty bars - deactivate',
-        menu_section='lys',
-        score_package_paths=True,
-        )
-    def deactivate_segment_empty_bars(self, directory):
-        r'''Deactivates segment empty bars.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_segment_tag(
-            directory,
-            'SEGMENT:EMPTY-BAR',
-            'empty bar',
-            )
-
-    @Command(
         'lybb*',
         description='lys - breaks - deactivate',
         menu_section='lys',
         score_package_paths=True,
         )
     def deactivate_segment_breaks(self, directory):
-        r'''Deactivates segment breaks.
+        r'''Deactivates `'SEGMENT:BREAK'` tags.
 
         Returns none.
         '''
@@ -1642,7 +1642,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def deactivate_segment_duplicates(self, directory):
-        r'''Deactivates segment duplicates.
+        r'''Deactivates `'SEGMENT:DUPLICATE'` tags.
 
         Returns none.
         '''
@@ -1654,13 +1654,49 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
+        'lyee*',
+        description='lys - empty bars - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_empty_bars(self, directory):
+        r'''Deactivates `'SEGMENT:EMPTY-BAR'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_segment_tag(
+            directory,
+            'SEGMENT:EMPTY-BAR',
+            'empty bar',
+            )
+
+    @Command(
+        'lyff*',
+        description='lys - fermata measure treatments - deactivate',
+        menu_section='lys',
+        score_package_paths=True,
+        )
+    def deactivate_segment_fermata_measure_treatments(self, directory):
+        r'''Deactivates `'SEGMENT:FERMATA-MEASURE-TREATMENT'` tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_segment_tag(
+            directory,
+            'SEGMENT:FERMATA-MEASURE-TREATMENT',
+            'fermata measure treatment',
+            )
+
+    @Command(
         'lyrr*',
         description='lys - reminders - deactivate',
         menu_section='lys',
         score_package_paths=True,
         )
     def deactivate_segment_reminders(self, directory):
-        r'''Deactivates segment reminders.
+        r'''Deactivates `'SEGMENT:REMINDER'` tags.
 
         Returns none.
         '''
