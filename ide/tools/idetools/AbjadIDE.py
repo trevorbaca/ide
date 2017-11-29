@@ -1568,7 +1568,7 @@ class AbjadIDE(abjad.AbjadObject):
         'lyc*',
         description='lys - collect',
         menu_section='lys',
-        score_package_paths=True,
+        score_package_paths=('build',),
         )
     def collect_segment_lys(self, directory):
         r'''Collects segment lys.
