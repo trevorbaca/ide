@@ -12,15 +12,15 @@ def test_AbjadIDE_deactivate_segment_duplicates_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red lydd* q')
+        abjad_ide('red hhgd q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No duplicates found in {ly_path.trim()} ...'
+            line = f'No SEGMENT:DUPLICATE tags found in {ly_path.trim()} ...'
             assert line in transcript
 
 
 def test_AbjadIDE_deactivate_segment_duplicates_02():
 
-    abjad_ide('blu lydd* q')
+    abjad_ide('blu hhgd q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript

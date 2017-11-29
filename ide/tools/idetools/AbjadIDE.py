@@ -120,17 +120,18 @@ class AbjadIDE(abjad.AbjadObject):
         for ly in lys:
             text, count, skipped = ly.uncomment_tag(tag)
             if 0 < count:
-                counter_ = abjad.String(counter).pluralize(count)
-                message = f'activating {count} {counter_} in {ly.trim()} ...'
+                counter = abjad.String('tag').pluralize(count)
+                message = f'activating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if 0 < skipped:
-                counter_ = abjad.String(counter).pluralize(skipped)
-                message = f'skipping {skipped} active {counter_}'
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} active {tag} {counter}'
                 message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if count == skipped == 0:
-                counter_ = abjad.String(counter).pluralize(0)
-                self.io.display(f'no {counter_} found in {ly.trim()} ...')
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
             ly.write_text(text)
 
     def _cache_commands(self):
@@ -222,17 +223,18 @@ class AbjadIDE(abjad.AbjadObject):
         for ly in lys:
             text, count, skipped = ly.comment_out_tag(tag)
             if 0 < count:
-                counter_ = abjad.String(counter).pluralize(count)
-                message = f'deactivating {count} {counter_} in {ly.trim()} ...'
+                counter = abjad.String('tag').pluralize(count)
+                message = f'deactivating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if 0 < skipped:
-                counter_ = abjad.String(counter).pluralize(skipped)
-                message = f'skipping {skipped} inactive {counter_}'
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} inactive {tag} {counter}'
                 message += f' in {ly.trim()} ...'
                 self.io.display(message)
             if count == skipped == 0:
-                counter_ = abjad.String(counter).pluralize(0)
-                self.io.display(f'no {counter_} found in {ly.trim()} ...')
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
             ly.write_text(text)
 
     @staticmethod
@@ -1324,94 +1326,95 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'lyg*',
-        description='layout - build tags - activate',
-        menu_section='layout',
+        'ggb',
+        description='tags - BUILD - activate',
+        menu_section='tags',
         score_package_paths=('build',),
         )
     def activate_build_tags(self, directory):
-        r'''Activates `'BUILD:<directory>'` tags.
+        r'''Activates BUILD tags.
 
         Returns none.
         '''
         assert directory.is_build()
         build_name = directory.name
         tag = 'BUILD:' + build_name.upper()
-        self._activate_tag(directory, tag, f'{build_name} build tag')
+        self._activate_tag(directory, tag, tag)
 
     @Command(
-        'lyb*',
-        description='lys - breaks - activate',
-        menu_section='lys',
+        'gggk',
+        description='tags - SEGMENT:BREAK - activate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def activate_segment_breaks(self, directory):
-        r'''Activates `'SEGMENT:BREAK'` tags.
+        r'''Activates SEGMENT:BREAK tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:BREAK', 'break')
+        tag = 'SEGMENT:BREAK'
+        self._activate_tag(directory, tag, tag)
 
     @Command(
-        'lyd*',
-        description='lys - duplicates - activate',
-        menu_section='lys',
+        'gggd',
+        description='tags - SEGMENT:DUPLICATE - activate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def activate_segment_duplicates(self, directory):
-        r'''Activates `'SEGMENT:DUPLICATE'` tags.
+        r'''Activates SEGMENT:DUPLICATE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:DUPLICATE', 'duplicate')
+        tag = 'SEGMENT:DUPLICATE'
+        self._activate_tag(directory, tag, tag)
 
     @Command(
-        'lye*',
-        description='lys - empty bars - activate',
-        menu_section='lys',
+        'gggeb',
+        description='tags - SEGMENT:EMPTY-BAR - activate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def activate_segment_empty_bars(self, directory):
-        r'''Activates `'SEGMENT:EMPTY-BAR'` tags.
+        r'''Activates SEGMENT:EMPTY-BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:EMPTY-BAR', 'empty bar')
+        tag = 'SEGMENT:EMPTY-BAR'
+        self._activate_tag(directory, tag, tag)
 
     @Command(
-        'lyf*',
-        description='lys - fermata measure treatments - activate',
-        menu_section='lys',
+        'gggfm',
+        description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - activate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def activate_segment_fermata_measure_treatments(self, directory):
-        r'''Activates `'SEGMENT:FERMATA-MEASURE-TREATMENT'` tags.
+        r'''Activates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(
-            directory,
-            'SEGMENT:FERMATA-MEASURE-TREATMENT',
-            'fermata measure treatment',
-            )
+        tag = 'SEGMENT:FERMATA-MEASURE-TREATMENT'
+        self._activate_tag(directory, tag, tag)
 
     @Command(
-        'lyr*',
-        description='lys - reminders - activate',
-        menu_section='lys',
+        'gggr',
+        description='tags - SEGMENT:REMINDER - activate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def activate_segment_reminders(self, directory):
-        r'''Activates `'SEGMENT:REMINDER'` tags.
+        r'''Activates SEGMENT:REMINDER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:REMINDER', 'reminder')
+        tag = 'SEGMENT:REMINDER'
+        self._activate_tag(directory, tag, tag)
 
     @Command(
         'ggsn',
@@ -1420,7 +1423,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('segment',),
         )
     def activate_stage_number_tags(self, directory):
-        r'''Activates `'STAGE-NUMBER'` tags.
+        r'''Activates STAGE-NUMBER tags.
 
         Returns none.
         '''
@@ -1630,110 +1633,95 @@ class AbjadIDE(abjad.AbjadObject):
             self.clipboard.append(path)
 
     @Command(
-        'lygg*',
-        description='layout - build tags - deactivate',
-        menu_section='layout',
+        'hhb',
+        description='tags - BUILD - deactivate',
+        menu_section='tags',
         score_package_paths=('build',),
         )
     def deactivate_build_tags(self, directory):
-        r'''Activates `'BUILD:<directory>'` tags.
+        r'''Deactivates BUILD tags.
 
         Returns none.
         '''
         assert directory.is_build()
         build_name = directory.name
         tag = 'BUILD:' + build_name.upper()
-        self._deactivate_tag(directory, tag, f'{build_name} build tag')
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
-        'lybb*',
-        description='lys - breaks - deactivate',
-        menu_section='lys',
+        'hhgk',
+        description='tags - SEGMENT:BREAK - deactivate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def deactivate_segment_breaks(self, directory):
-        r'''Deactivates `'SEGMENT:BREAK'` tags.
+        r'''Deactivates SEGMENT:BREAK tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'SEGMENT:BREAK',
-            'segment break',
-            )
+        tag = 'SEGMENT:BREAK'
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
-        'lydd*',
-        description='lys - duplicates - deactivate',
-        menu_section='lys',
+        'hhgd',
+        description='tags - SEGMENT:DUPLICATE - deactivate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def deactivate_segment_duplicates(self, directory):
-        r'''Deactivates `'SEGMENT:DUPLICATE'` tags.
+        r'''Deactivates SEGMENT:DUPLICATE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'SEGMENT:DUPLICATE',
-            'duplicate',
-            )
+        tag = 'SEGMENT:DUPLICATE'
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
-        'lyee*',
-        description='lys - empty bars - deactivate',
-        menu_section='lys',
+        'hhgeb',
+        description='tags - SEGMENT:EMPTY-BAR - deactivate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def deactivate_segment_empty_bars(self, directory):
-        r'''Deactivates `'SEGMENT:EMPTY-BAR'` tags.
+        r'''Deactivates SEGMENT:EMPTY-BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'SEGMENT:EMPTY-BAR',
-            'empty bar',
-            )
+        tag = 'SEGMENT:EMPTY-BAR'
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
-        'lyff*',
-        description='lys - fermata measure treatments - deactivate',
-        menu_section='lys',
+        'hhgfm',
+        description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - deactivate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
-        r'''Deactivates `'SEGMENT:FERMATA-MEASURE-TREATMENT'` tags.
+        r'''Deactivates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'SEGMENT:FERMATA-MEASURE-TREATMENT',
-            'fermata measure treatment',
-            )
+        tag = 'SEGMENT:FERMATA-MEASURE-TREATMENT'
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
-        'lyrr*',
-        description='lys - reminders - deactivate',
-        menu_section='lys',
+        'hhgr',
+        description='tags - SEGMENT:REMINDER - deactivate',
+        menu_section='tags',
         score_package_paths=True,
         )
     def deactivate_segment_reminders(self, directory):
-        r'''Deactivates `'SEGMENT:REMINDER'` tags.
+        r'''Deactivates SEGMENT:REMINDER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'SEGMENT:REMINDER',
-            'reminder',
-            )
+        tag = 'SEGMENT:REMINDER'
+        self._deactivate_tag(directory, tag, tag)
 
     @Command(
         'hhsn',
@@ -1742,7 +1730,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('segment',),
         )
     def deactivate_stage_number_tags(self, directory):
-        r'''Deactivates `'STAGE-NUMBER'` tags.
+        r'''Deactivates STAGE-NUMBER tags.
 
         Returns none.
         '''
