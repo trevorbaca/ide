@@ -1329,7 +1329,7 @@ class AbjadIDE(abjad.AbjadObject):
         'ggb',
         description='tags - BUILD - activate',
         menu_section='tags',
-        score_package_paths=('build',),
+        score_package_paths=('build', 'segment'),
         )
     def activate_build_tags(self, directory):
         r'''Activates BUILD tags.
@@ -1345,7 +1345,7 @@ class AbjadIDE(abjad.AbjadObject):
         'gggk',
         description='tags - SEGMENT:BREAK - activate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def activate_segment_breaks(self, directory):
         r'''Activates SEGMENT:BREAK tags.
@@ -1360,7 +1360,7 @@ class AbjadIDE(abjad.AbjadObject):
         'gggd',
         description='tags - SEGMENT:DUPLICATE - activate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def activate_segment_duplicates(self, directory):
         r'''Activates SEGMENT:DUPLICATE tags.
@@ -1375,7 +1375,7 @@ class AbjadIDE(abjad.AbjadObject):
         'gggeb',
         description='tags - SEGMENT:EMPTY-BAR - activate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def activate_segment_empty_bars(self, directory):
         r'''Activates SEGMENT:EMPTY-BAR tags.
@@ -1390,7 +1390,7 @@ class AbjadIDE(abjad.AbjadObject):
         'gggfm',
         description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - activate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def activate_segment_fermata_measure_treatments(self, directory):
         r'''Activates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
@@ -1405,7 +1405,7 @@ class AbjadIDE(abjad.AbjadObject):
         'gggr',
         description='tags - SEGMENT:REMINDER - activate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def activate_segment_reminders(self, directory):
         r'''Activates SEGMENT:REMINDER tags.
@@ -1420,7 +1420,7 @@ class AbjadIDE(abjad.AbjadObject):
         'ggsn',
         description='tags - STAGE-NUMBER - activate',
         menu_section='tags',
-        score_package_paths=('segment',),
+        score_package_paths=('build', 'segment'),
         )
     def activate_stage_number_tags(self, directory):
         r'''Activates STAGE-NUMBER tags.
@@ -1636,7 +1636,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhb',
         description='tags - BUILD - deactivate',
         menu_section='tags',
-        score_package_paths=('build',),
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_build_tags(self, directory):
         r'''Deactivates BUILD tags.
@@ -1652,7 +1652,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhgk',
         description='tags - SEGMENT:BREAK - deactivate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_segment_breaks(self, directory):
         r'''Deactivates SEGMENT:BREAK tags.
@@ -1667,7 +1667,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhgd',
         description='tags - SEGMENT:DUPLICATE - deactivate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_segment_duplicates(self, directory):
         r'''Deactivates SEGMENT:DUPLICATE tags.
@@ -1682,7 +1682,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhgeb',
         description='tags - SEGMENT:EMPTY-BAR - deactivate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_segment_empty_bars(self, directory):
         r'''Deactivates SEGMENT:EMPTY-BAR tags.
@@ -1697,7 +1697,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhgfm',
         description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - deactivate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
         r'''Deactivates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
@@ -1712,7 +1712,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhgr',
         description='tags - SEGMENT:REMINDER - deactivate',
         menu_section='tags',
-        score_package_paths=True,
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_segment_reminders(self, directory):
         r'''Deactivates SEGMENT:REMINDER tags.
@@ -1727,7 +1727,7 @@ class AbjadIDE(abjad.AbjadObject):
         'hhsn',
         description='tags - STAGE-NUMBER - deactivate',
         menu_section='tags',
-        score_package_paths=('segment',),
+        score_package_paths=('build', 'segment'),
         )
     def deactivate_stage_number_tags(self, directory):
         r'''Deactivates STAGE-NUMBER tags.
