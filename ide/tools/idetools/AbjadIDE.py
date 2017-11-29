@@ -1414,6 +1414,38 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'SEGMENT:REMINDER', 'reminder')
 
     @Command(
+        'ggsn',
+        description='tags - STAGE-NUMBER - activate',
+        menu_section='tags',
+        score_package_paths=('segment',),
+        )
+    def activate_stage_number_tags(self, directory):
+        r'''Activates `'STAGE-NUMBER'` tags.
+
+        Returns none.
+        '''
+        tag = 'STAGE-NUMBER'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.uncomment_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'activating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} active {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
+
+    @Command(
         'bld',
         description='build - build',
         menu_section='build',
@@ -1702,6 +1734,38 @@ class AbjadIDE(abjad.AbjadObject):
             'SEGMENT:REMINDER',
             'reminder',
             )
+
+    @Command(
+        'hhsn',
+        description='tags - STAGE-NUMBER - deactivate',
+        menu_section='tags',
+        score_package_paths=('segment',),
+        )
+    def deactivate_stage_number_tags(self, directory):
+        r'''Deactivates `'STAGE-NUMBER'` tags.
+
+        Returns none.
+        '''
+        tag = 'STAGE-NUMBER'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.comment_out_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'deactivating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} inactive {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
 
     @Command(
         '^^',

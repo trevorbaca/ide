@@ -37,6 +37,7 @@ class Command(abjad.AbjadObject):
         'show',
         'smart',
         'stylesheet',
+        'tags',
         'text',
         )
 
