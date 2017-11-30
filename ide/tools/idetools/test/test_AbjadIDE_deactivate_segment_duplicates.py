@@ -14,8 +14,9 @@ def test_AbjadIDE_deactivate_segment_duplicates_01():
 
         abjad_ide('red %let gdx q')
         transcript = abjad_ide.io.transcript
+        tag = 'SEGMENT:DUPLICATE'
         for ly_path in ly_paths:
-            line = f'No SEGMENT:DUPLICATE tags found in {ly_path.trim()} ...'
+            line = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
             assert line in transcript
 
 

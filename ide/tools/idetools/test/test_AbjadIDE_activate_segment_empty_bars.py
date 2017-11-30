@@ -14,8 +14,9 @@ def test_AbjadIDE_activate_segment_empty_bars_01():
 
         abjad_ide('red %let gesb q')
         transcript = abjad_ide.io.transcript
+        tag = 'SEGMENT:EMPTY_START_BAR'
         for ly_path in ly_paths:
-            line = f'No SEGMENT:EMPTY_START_BAR tags found in {ly_path.trim()} ...'
+            line = f'Activating 0 {tag} tags in {ly_path.name} ...'
             assert line in transcript
 
 

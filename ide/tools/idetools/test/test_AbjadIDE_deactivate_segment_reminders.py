@@ -14,8 +14,9 @@ def test_AbjadIDE_deactivate_segment_reminders_01():
 
         abjad_ide('red %let grx q')
         transcript = abjad_ide.io.transcript
+        tag = 'SEGMENT:REMINDER'
         for ly_path in ly_paths:
-            line = f'No SEGMENT:REMINDER tags found in {ly_path.trim()} ...'
+            line = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
             assert line in transcript
 
 

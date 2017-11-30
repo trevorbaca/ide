@@ -14,8 +14,9 @@ def test_AbjadIDE_deactivate_segment_layout_tags_01():
 
         abjad_ide('red %let glx q')
         transcript = abjad_ide.io.transcript
+        tag = 'SEGMENT:LAYOUT'
         for ly_path in ly_paths:
-            line = f'No SEGMENT:LAYOUT tags found in {ly_path.trim()} ...'
+            line = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
             assert line in transcript
 
 

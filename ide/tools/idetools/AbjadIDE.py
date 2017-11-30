@@ -994,40 +994,40 @@ class AbjadIDE(abjad.AbjadObject):
         return address, result
 
     @staticmethod
-    def _message_activate(ly, tag, count, skipped):
+    def _message_activate(ly, tag, count, skipped, skip_empty=False):
         messages = []
-        if 0 < count:
+        if 0 < count or (count == 0 and not skip_empty):
             counter = abjad.String('tag').pluralize(count)
             message = f'activating {count} {tag} {counter}'
-            message += f' in {ly.trim()} ...'
+            if ly is not None:
+                message += f' in {ly.name}'
+            message += ' ...'
             messages.append(message)
         if 0 < skipped:
             counter = abjad.String('tag').pluralize(skipped)
             message = f'skipping {skipped} active {tag} {counter}'
-            message += f' in {ly.trim()} ...'
-            messages.append(message)
-        if count == skipped == 0:
-            counter = abjad.String('tag').pluralize(0)
-            message = f'no {tag} {counter} found in {ly.trim()} ...'
+            if ly is not None:
+                message += f' in {ly.name}'
+            message += ' ...'
             messages.append(message)
         return messages
 
     @staticmethod
     def _message_deactivate(ly, tag, count, skipped, skip_empty=False):
         messages = []
-        if 0 < count:
+        if 0 < count or (count == 0 and not skip_empty):
             counter = abjad.String('tag').pluralize(count)
             message = f'deactivating {count} {tag} {counter}'
-            message += f' in {ly.trim()} ...'
+            if ly is not None:
+                message += f' in {ly.name}'
+            message += ' ...'
             messages.append(message)
         if 0 < skipped:
             counter = abjad.String('tag').pluralize(skipped)
             message = f'skipping {skipped} inactive {tag} {counter}'
-            message += f' in {ly.trim()} ...'
-            messages.append(message)
-        if count == skipped == 0 and not skip_empty:
-            counter = abjad.String('tag').pluralize(0)
-            message = f'no {tag} {counter} found in {ly.trim()} ...'
+            if ly is not None:
+                message += f' in {ly.name}'
+            message += ' ...'
             messages.append(message)
         return messages
 
@@ -1741,9 +1741,10 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self.deactivate_segment_layout(directory)
         self.deactivate_segment_empty_bars(directory)
         self.deactivate_segment_fermata_bar_line_tags(directory)
+        self.deactivate_segment_layout(directory)
+        self.activate_build_fermata_bar_line_tags(directory)
 
     @Command(
         'cp',
