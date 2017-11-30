@@ -42,6 +42,8 @@ class Command(abjad.AbjadObject):
         'z:tags 2',
         'z:tags 3',
         'z:tags 4',
+        'z:tags 5',
+        'z:tags 6',
         )
 
     ### INITIALIZER ###

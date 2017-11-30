@@ -1384,13 +1384,13 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'bl',
-        description='BUILD',
-        menu_section='z:tags 1',
+        'bfm',
+        description='BUILD:FERMATA_MEASURE',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_build_tags(self, directory):
-        r'''Activates BUILD tags.
+    def activate_build_fermata_measure_tags(self, directory):
+        r'''Activates BUILD:FERMATA_MEASURE tags.
 
         Returns none.
         '''
@@ -1400,10 +1400,51 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
+        tag += ':FERMATA_MEASURE'
         self._activate_tag(directory, tag)
 
     @Command(
-        'kt',
+        'bsc',
+        description='BUILD:SPACING_COMMAND',
+        menu_section='z:tags 3',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_build_spacing_command_tags(self, directory):
+        r'''Activates BUILD:SPACING_COMMAND tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        tag += ':SPACING_COMMAND'
+        self._activate_tag(directory, tag)
+
+    @Command(
+        'bsm',
+        description='BUILD:SPACING_MARKUP',
+        menu_section='z:tags 3',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_build_spacing_markup_tags(self, directory):
+        r'''Activates BUILD:SPACING_MARKUP tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        tag += ':SPACING_MARKUP'
+        self._activate_tag(directory, tag)
+
+    @Command(
+        'ct',
         description='CLOCK_TIME',
         menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1433,7 +1474,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gd',
         description='SEGMENT:DUPLICATE',
-        menu_section='z:tags 3',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_duplicates(self, directory):
@@ -1447,7 +1488,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gesb',
         description='SEGMENT:EMPTY_START_BAR',
-        menu_section='z:tags 3',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_empty_bars(self, directory):
@@ -1461,7 +1502,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gfm',
         description='SEGMENT:FERMATA_MEASURE',
-        menu_section='z:tags 3',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_fermata_measure_treatments(self, directory):
@@ -1475,7 +1516,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gl',
         description='SEGMENT:LAYOUT',
-        menu_section='z:tags 3',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_layout(self, directory):
@@ -1489,7 +1530,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gr',
         description='SEGMENT:REMINDER',
-        menu_section='z:tags 3',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_reminders(self, directory):
@@ -1502,31 +1543,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gsc',
-        description='SEGMENT:SPACING:COMMAND',
-        menu_section='z:tags 3',
+        description='SEGMENT:SPACING_COMMAND',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_command_tags(self, directory):
-        r'''Activates SEGMENT:SPACING:COMMAND tags.
+        r'''Activates SEGMENT:SPACING_COMMAND tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:SPACING:COMMAND')
+        self._activate_tag(directory, 'SEGMENT:SPACING_COMMAND')
 
     @Command(
         'gsm',
-        description='SEGMENT:SPACING:MARKUP',
-        menu_section='z:tags 3',
+        description='SEGMENT:SPACING_MARKUP',
+        menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_markup_tags(self, directory):
-        r'''Activates SEGMENT:SPACING:MARKUP tags.
+        r'''Activates SEGMENT:SPACING_MARKUP tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:SPACING:MARKUP')
+        self._activate_tag(directory, 'SEGMENT:SPACING_MARKUP')
 
     @Command(
         'sn',
@@ -1727,13 +1768,13 @@ class AbjadIDE(abjad.AbjadObject):
             self.clipboard.append(path)
 
     @Command(
-        'blx',
-        description='BUILD - hide',
-        menu_section='z:tags 2',
+        'bfmx',
+        description='BUILD:FERMATA_MEASURE - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_build_tags(self, directory):
-        r'''Deactivates BUILD tags.
+    def deactivate_build_fermata_measure_tags(self, directory):
+        r'''Deactivates BUILD:FERMATA_MEASURE tags.
 
         Returns none.
         '''
@@ -1743,10 +1784,51 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
+        tag += ':FERMATA_MEASURE'
         self._deactivate_tag(directory, tag)
 
     @Command(
-        'ktx',
+        'bscx',
+        description='BUILD:SPACING_COMMAND - hide',
+        menu_section='z:tags 4',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_build_spacing_command_tags(self, directory):
+        r'''Deactivates BUILD:SPACING_COMMAND tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        tag += ':SPACING_COMMAND'
+        self._deactivate_tag(directory, tag)
+
+    @Command(
+        'bsmx',
+        description='BUILD:SPACING_MARKUP - hide',
+        menu_section='z:tags 4',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_build_spacing_markup_tags(self, directory):
+        r'''Deactivates BUILD:SPACING_MARKUP tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        tag += ':SPACING_MARKUP'
+        self._deactivate_tag(directory, tag)
+
+    @Command(
+        'ctx',
         description='CLOCK_TIME - hide',
         menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1776,7 +1858,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gdx',
         description='SEGMENT:DUPLICATE - hide',
-        menu_section='z:tags 4',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_duplicates(self, directory):
@@ -1790,7 +1872,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gesbx',
         description='SEGMENT:EMPTY_START_BAR - hide',
-        menu_section='z:tags 4',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_empty_bars(self, directory):
@@ -1804,7 +1886,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gfmx',
         description='SEGMENT:FERMATA_MEASURE - hide',
-        menu_section='z:tags 4',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
@@ -1818,7 +1900,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'glx',
         description='SEGMENT:LAYOUT - hide',
-        menu_section='z:tags 4',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_layout(self, directory):
@@ -1832,7 +1914,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'grx',
         description='SEGMENT:REMINDER - hide',
-        menu_section='z:tags 4',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_reminders(self, directory):
@@ -1845,31 +1927,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gscx',
-        description='SEGMENT:SPACING:COMMAND - hide',
-        menu_section='z:tags 4',
+        description='SEGMENT:SPACING_COMMAND - hide',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_command_tags(self, directory):
-        r'''Deactivates SEGMENT:SPACING:COMMAND tags.
+        r'''Deactivates SEGMENT:SPACING_COMMAND tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:SPACING:COMMAND')
+        self._deactivate_tag(directory, 'SEGMENT:SPACING_COMMAND')
 
     @Command(
         'gsmx',
-        description='SEGMENT:SPACING:MARKUP - hide',
-        menu_section='z:tags 4',
+        description='SEGMENT:SPACING_MARKUP - hide',
+        menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_markup_tags(self, directory):
-        r'''Deactivates SEGMENT:SPACING:MARKUP tags.
+        r'''Deactivates SEGMENT:SPACING_MARKUP tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:SPACING:MARKUP')
+        self._deactivate_tag(directory, 'SEGMENT:SPACING_MARKUP')
 
     @Command(
         'snx',
