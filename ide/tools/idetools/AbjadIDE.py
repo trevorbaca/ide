@@ -1481,6 +1481,70 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, tag, tag)
 
     @Command(
+        'gsc',
+        description='SEGMENT:SPACING:COMMAND - activate',
+        menu_section='tags',
+        score_package_paths=('build', 'segment'),
+        )
+    def activate_segment_spacing_command_tags(self, directory):
+        r'''Activates SEGMENT:SPACING:COMMAND tags.
+
+        Returns none.
+        '''
+        tag = 'SEGMENT:SPACING:COMMAND'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.uncomment_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'activating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} active {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
+
+    @Command(
+        'gsm',
+        description='SEGMENT:SPACING:MARKUP - activate',
+        menu_section='tags',
+        score_package_paths=('build', 'segment'),
+        )
+    def activate_segment_spacing_markup_tags(self, directory):
+        r'''Activates SEGMENT:SPACING:MARKUP tags.
+
+        Returns none.
+        '''
+        tag = 'SEGMENT:SPACING:MARKUP'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.uncomment_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'activating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} active {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
+
+    @Command(
         'ggsn',
         description='tags - STAGE-NUMBER - activate',
         menu_section='tags',
@@ -1850,6 +1914,70 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         tag = 'SEGMENT:REMINDER'
         self._deactivate_tag(directory, tag, tag)
+
+    @Command(
+        'gscx',
+        description='SEGMENT:SPACING:COMMAND - deactivate',
+        menu_section='tags',
+        score_package_paths=('build', 'segment'),
+        )
+    def deactivate_segment_spacing_command_tags(self, directory):
+        r'''Deactivates SEGMENT:SPACING:COMMAND tags.
+
+        Returns none.
+        '''
+        tag = 'SEGMENT:SPACING:COMMAND'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.comment_out_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'deactivating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} inactive {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
+
+    @Command(
+        'gsmx',
+        description='SEGMENT:SPACING:MARKUP - deactivate',
+        menu_section='tags',
+        score_package_paths=('build', 'segment'),
+        )
+    def deactivate_segment_spacing_markup_tags(self, directory):
+        r'''Deactivates SEGMENT:SPACING:MARKUP tags.
+
+        Returns none.
+        '''
+        tag = 'SEGMENT:SPACING:MARKUP'
+        if directory.is_segment():
+            ly = directory('illustration.ly')
+            if not ly.is_file():
+                self.io.display(f'missing {ly.trim()} ...')
+            text, count, skipped = ly.comment_out_tag(tag)
+            if 0 < count:
+                counter = abjad.String('tag').pluralize(count)
+                message = f'deactivating {count} {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if 0 < skipped:
+                counter = abjad.String('tag').pluralize(skipped)
+                message = f'skipping {skipped} inactive {tag} {counter}'
+                message += f' in {ly.trim()} ...'
+                self.io.display(message)
+            if count == skipped == 0:
+                counter = abjad.String('tag').pluralize(0)
+                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            ly.write_text(text)
 
     @Command(
         'hhsn',
