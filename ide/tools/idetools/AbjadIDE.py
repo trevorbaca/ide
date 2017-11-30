@@ -1431,20 +1431,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'FIGURE_NAME')
 
     @Command(
-        'gk',
-        description='SEGMENT:BREAK',
-        menu_section='z:tags 3',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_segment_breaks(self, directory):
-        r'''Activates SEGMENT:BREAK tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:BREAK')
-
-    @Command(
         'gd',
         description='SEGMENT:DUPLICATE',
         menu_section='z:tags 3',
@@ -1485,6 +1471,20 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
+
+    @Command(
+        'gl',
+        description='SEGMENT:LAYOUT',
+        menu_section='z:tags 3',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_segment_layout(self, directory):
+        r'''Activates SEGMENT:LAYOUT tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'SEGMENT:LAYOUT')
 
     @Command(
         'gr',
@@ -1700,7 +1700,7 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self.deactivate_segment_breaks(directory)
+        self.deactivate_segment_layout(directory)
         self.deactivate_segment_empty_bars(directory)
         self.deactivate_segment_fermata_measure_treatments(directory)
 
@@ -1774,20 +1774,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'FIGURE_NAME')
 
     @Command(
-        'gkx',
-        description='SEGMENT:BREAK - hide',
-        menu_section='z:tags 4',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_segment_breaks(self, directory):
-        r'''Deactivates SEGMENT:BREAK tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:BREAK')
-
-    @Command(
         'gdx',
         description='SEGMENT:DUPLICATE - hide',
         menu_section='z:tags 4',
@@ -1828,6 +1814,20 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._deactivate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
+
+    @Command(
+        'glx',
+        description='SEGMENT:LAYOUT - hide',
+        menu_section='z:tags 4',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_segment_layout(self, directory):
+        r'''Deactivates SEGMENT:LAYOUT tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'SEGMENT:LAYOUT')
 
     @Command(
         'grx',
