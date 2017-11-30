@@ -12,15 +12,15 @@ def test_AbjadIDE_deactivate_segment_empty_bars_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red %let gebx q')
+        abjad_ide('red %let gesbx q')
         transcript = abjad_ide.io.transcript
         for ly_path in ly_paths:
-            line = f'No SEGMENT:EMPTY_BAR tags found in {ly_path.trim()} ...'
+            line = f'No SEGMENT:EMPTY_START_BAR tags found in {ly_path.trim()} ...'
             assert line in transcript
 
 
 def test_AbjadIDE_deactivate_segment_empty_bars_02():
 
-    abjad_ide('blu %let gebx q')
+    abjad_ide('blu %let gesbx q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript

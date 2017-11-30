@@ -1459,18 +1459,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'SEGMENT:DUPLICATE')
 
     @Command(
-        'geb',
-        description='SEGMENT:EMPTY_BAR',
+        'gesb',
+        description='SEGMENT:EMPTY_START_BAR',
         menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_empty_bars(self, directory):
-        r'''Activates SEGMENT:EMPTY_BAR tags.
+        r'''Activates SEGMENT:EMPTY_START_BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:EMPTY_BAR')
+        self._activate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
 
     @Command(
         'gfm',
@@ -1802,18 +1802,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'SEGMENT:DUPLICATE')
 
     @Command(
-        'gebx',
-        description='SEGMENT:EMPTY_BAR - hide',
+        'gesbx',
+        description='SEGMENT:EMPTY_START_BAR - hide',
         menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_empty_bars(self, directory):
-        r'''Deactivates SEGMENT:EMPTY_BAR tags.
+        r'''Deactivates SEGMENT:EMPTY_START_BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:EMPTY_BAR')
+        self._deactivate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
 
     @Command(
         'gfmx',
