@@ -1384,13 +1384,13 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'bfm',
-        description='BUILD:FERMATA_MEASURE',
+        'bfbl',
+        description='BUILD:FERMATA_BAR_LINE',
         menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_build_fermata_measure_tags(self, directory):
-        r'''Activates BUILD:FERMATA_MEASURE tags.
+    def activate_build_fermata_bar_line_tags(self, directory):
+        r'''Activates BUILD:FERMATA_BAR_LINE tags.
 
         Returns none.
         '''
@@ -1400,7 +1400,7 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
-        tag += ':FERMATA_MEASURE'
+        tag += ':FERMATA_BAR_LINE'
         self._activate_tag(directory, tag)
 
     @Command(
@@ -1500,18 +1500,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
 
     @Command(
-        'gfm',
-        description='SEGMENT:FERMATA_MEASURE',
+        'gfbl',
+        description='SEGMENT:FERMATA_BAR_LINE',
         menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_fermata_measure_treatments(self, directory):
-        r'''Activates SEGMENT:FERMATA_MEASURE tags.
+    def activate_segment_fermata_bar_line_tags(self, directory):
+        r'''Activates SEGMENT:FERMATA_BAR_LINE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
+        self._activate_tag(directory, 'SEGMENT:FERMATA_BAR_LINE')
 
     @Command(
         'gl',
@@ -1743,7 +1743,7 @@ class AbjadIDE(abjad.AbjadObject):
         path.write_text(text)
         self.deactivate_segment_layout(directory)
         self.deactivate_segment_empty_bars(directory)
-        self.deactivate_segment_fermata_measure_treatments(directory)
+        self.deactivate_segment_fermata_bar_line_tags(directory)
 
     @Command(
         'cp',
@@ -1768,13 +1768,13 @@ class AbjadIDE(abjad.AbjadObject):
             self.clipboard.append(path)
 
     @Command(
-        'bfmx',
-        description='BUILD:FERMATA_MEASURE - hide',
+        'bfblx',
+        description='BUILD:FERMATA_BAR_LINE - hide',
         menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_build_fermata_measure_tags(self, directory):
-        r'''Deactivates BUILD:FERMATA_MEASURE tags.
+    def deactivate_build_fermata_bar_line_tags(self, directory):
+        r'''Deactivates BUILD:FERMATA_BAR_LINE tags.
 
         Returns none.
         '''
@@ -1784,7 +1784,7 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
-        tag += ':FERMATA_MEASURE'
+        tag += ':FERMATA_BAR_LINE'
         self._deactivate_tag(directory, tag)
 
     @Command(
@@ -1884,18 +1884,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
 
     @Command(
-        'gfmx',
-        description='SEGMENT:FERMATA_MEASURE - hide',
+        'gfblx',
+        description='SEGMENT:FERMATA_BAR_LINE - hide',
         menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_fermata_measure_treatments(self, directory):
-        r'''Deactivates SEGMENT:FERMATA_MEASURE tags.
+    def deactivate_segment_fermata_bar_line_tags(self, directory):
+        r'''Deactivates SEGMENT:FERMATA_BAR_LINE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
+        self._deactivate_tag(directory, 'SEGMENT:FERMATA_BAR_LINE')
 
     @Command(
         'glx',
