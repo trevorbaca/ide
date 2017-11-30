@@ -993,7 +993,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f"narrow search or use {2*prefix!r} for all ...")
         return address, result
 
-    def _message_activate(self, ly, tag, count, skipped):
+    @staticmethod
+    def _message_activate(ly, tag, count, skipped):
         messages = []
         if 0 < count:
             counter = abjad.String('tag').pluralize(count)
@@ -1011,7 +1012,8 @@ class AbjadIDE(abjad.AbjadObject):
             messages.append(message)
         return messages
 
-    def _message_deactivate(self, ly, tag, count, skipped):
+    @staticmethod
+    def _message_deactivate(ly, tag, count, skipped, skip_empty=False):
         messages = []
         if 0 < count:
             counter = abjad.String('tag').pluralize(count)
@@ -1023,7 +1025,7 @@ class AbjadIDE(abjad.AbjadObject):
             message = f'skipping {skipped} inactive {tag} {counter}'
             message += f' in {ly.trim()} ...'
             messages.append(message)
-        if count == skipped == 0:
+        if count == skipped == 0 and not skip_empty:
             counter = abjad.String('tag').pluralize(0)
             message = f'no {tag} {counter} found in {ly.trim()} ...'
             messages.append(message)
@@ -1402,31 +1404,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'kt',
-        description='CLOCK-TIME',
+        description='CLOCK_TIME',
         menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_clock_time_tags(self, directory):
-        r'''Activates CLOCK-TIME tags.
+        r'''Activates CLOCK_TIME tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'CLOCK-TIME')
+        self._activate_tag(directory, 'CLOCK_TIME')
 
     @Command(
         'fn',
-        description='FIGURE-NAME',
+        description='FIGURE_NAME',
         menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_figure_name_tags(self, directory):
-        r'''Activates FIGURE-NAME tags.
+        r'''Activates FIGURE_NAME tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'FIGURE-NAME')
+        self._activate_tag(directory, 'FIGURE_NAME')
 
     @Command(
         'gk',
@@ -1458,31 +1460,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'geb',
-        description='SEGMENT:EMPTY-BAR',
+        description='SEGMENT:EMPTY_BAR',
         menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_empty_bars(self, directory):
-        r'''Activates SEGMENT:EMPTY-BAR tags.
+        r'''Activates SEGMENT:EMPTY_BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:EMPTY-BAR')
+        self._activate_tag(directory, 'SEGMENT:EMPTY_BAR')
 
     @Command(
         'gfm',
-        description='SEGMENT:FERMATA-MEASURE-TREATMENT',
+        description='SEGMENT:FERMATA_MEASURE',
         menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_fermata_measure_treatments(self, directory):
-        r'''Activates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
+        r'''Activates SEGMENT:FERMATA_MEASURE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:FERMATA-MEASURE-TREATMENT')
+        self._activate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
 
     @Command(
         'gr',
@@ -1528,17 +1530,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'sn',
-        description='STAGE-NUMBER',
+        description='STAGE_NUMBER',
         menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_stage_number_tags(self, directory):
-        r'''Activates STAGE-NUMBER tags.
+        r'''Activates STAGE_NUMBER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'STAGE-NUMBER')
+        self._activate_tag(directory, 'STAGE_NUMBER')
 
     @Command(
         'bld',
@@ -1745,31 +1747,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ktx',
-        description='CLOCK-TIME - hide',
+        description='CLOCK_TIME - hide',
         menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_clock_time_tags(self, directory):
-        r'''Deactivates CLOCK-TIME tags.
+        r'''Deactivates CLOCK_TIME tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'CLOCK-TIME')
+        self._deactivate_tag(directory, 'CLOCK_TIME')
 
     @Command(
         'fnx',
-        description='FIGURE-NAME - hide',
+        description='FIGURE_NAME - hide',
         menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_figure_name_tags(self, directory):
-        r'''Deactivates FIGURE-NAME tags.
+        r'''Deactivates FIGURE_NAME tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'FIGURE-NAME')
+        self._deactivate_tag(directory, 'FIGURE_NAME')
 
     @Command(
         'gkx',
@@ -1801,31 +1803,31 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gebx',
-        description='SEGMENT:EMPTY-BAR - hide',
+        description='SEGMENT:EMPTY_BAR - hide',
         menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_empty_bars(self, directory):
-        r'''Deactivates SEGMENT:EMPTY-BAR tags.
+        r'''Deactivates SEGMENT:EMPTY_BAR tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:EMPTY-BAR')
+        self._deactivate_tag(directory, 'SEGMENT:EMPTY_BAR')
 
     @Command(
         'gfmx',
-        description='SEGMENT:FERMATA-MEASURE-TREATMENT - hide',
+        description='SEGMENT:FERMATA_MEASURE - hide',
         menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
-        r'''Deactivates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
+        r'''Deactivates SEGMENT:FERMATA_MEASURE tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:FERMATA-MEASURE-TREATMENT')
+        self._deactivate_tag(directory, 'SEGMENT:FERMATA_MEASURE')
 
     @Command(
         'grx',
@@ -1871,17 +1873,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'snx',
-        description='STAGE-NUMBER - hide',
+        description='STAGE_NUMBER - hide',
         menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_stage_number_tags(self, directory):
-        r'''Deactivates STAGE-NUMBER tags.
+        r'''Deactivates STAGE_NUMBER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'STAGE-NUMBER')
+        self._deactivate_tag(directory, 'STAGE_NUMBER')
 
     @Command(
         '^^',
