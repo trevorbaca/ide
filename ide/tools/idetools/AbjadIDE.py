@@ -102,7 +102,18 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_tag(self, directory, tag, counter):
+    def _activate_tag(self, directory, tag):
+        if directory.is_build():
+            self._activate_tag_in_build_lys(directory, tag)
+        elif directory.is_segment():
+            self._activate_tag_in_segment_ly(directory, tag)
+        elif directory.is_segments():
+            for segment in directory.list_paths():
+                self._activate_tag_in_segment_ly(segment, tag)
+        else:
+            raise ValueError(directory)
+
+    def _activate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -119,20 +130,19 @@ class AbjadIDE(abjad.AbjadObject):
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
             text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            messages = self._message_activate(ly, tag, count, skipped)
+            self.io.display(messages)
             ly.write_text(text)
+
+    def _activate_tag_in_segment_ly(self, directory, tag):
+        ly = directory('illustration.ly')
+        if not ly.is_file():
+            self.io.display(f'missing {ly.trim()} ...')
+            return
+        text, count, skipped = ly.uncomment_tag(tag)
+        messages = self._message_activate(ly, tag, count, skipped)
+        self.io.display(messages)
+        ly.write_text(text)
 
     def _cache_commands(self):
         commands = {}
@@ -205,7 +215,18 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _deactivate_tag(self, directory, tag, counter):
+    def _deactivate_tag(self, directory, tag):
+        if directory.is_build():
+            self._deactivate_tag_in_build_lys(directory, tag)
+        elif directory.is_segment():
+            self._deactivate_tag_in_segment_ly(directory, tag)
+        elif directory.is_segments():
+            for segment in directory.list_paths():
+                self._deactivate_tag_in_segment_ly(segment, tag)
+        else:
+            raise ValueError(directory)
+
+    def _deactivate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -222,20 +243,19 @@ class AbjadIDE(abjad.AbjadObject):
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
             text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
+            messages = self._message_deactivate(ly, tag, count, skipped)
+            self.io.display(messages)
             ly.write_text(text)
+
+    def _deactivate_tag_in_segment_ly(self, directory, tag):
+        ly = directory('illustration.ly')
+        if not ly.is_file():
+            self.io.display(f'missing {ly.trim()} ...')
+            return
+        text, count, skipped = ly.comment_out_tag(tag)
+        messages = self._message_deactivate(ly, tag, count, skipped)
+        self.io.display(messages)
+        ly.write_text(text)
 
     @staticmethod
     def _filter_files(files, strings, pattern):
@@ -973,6 +993,42 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f"narrow search or use {2*prefix!r} for all ...")
         return address, result
 
+    def _message_activate(self, ly, tag, count, skipped):
+        messages = []
+        if 0 < count:
+            counter = abjad.String('tag').pluralize(count)
+            message = f'activating {count} {tag} {counter}'
+            message += f' in {ly.trim()} ...'
+            messages.append(message)
+        if 0 < skipped:
+            counter = abjad.String('tag').pluralize(skipped)
+            message = f'skipping {skipped} active {tag} {counter}'
+            message += f' in {ly.trim()} ...'
+            messages.append(message)
+        if count == skipped == 0:
+            counter = abjad.String('tag').pluralize(0)
+            message = f'no {tag} {counter} found in {ly.trim()} ...'
+            messages.append(message)
+        return messages
+
+    def _message_deactivate(self, ly, tag, count, skipped):
+        messages = []
+        if 0 < count:
+            counter = abjad.String('tag').pluralize(count)
+            message = f'deactivating {count} {tag} {counter}'
+            message += f' in {ly.trim()} ...'
+            messages.append(message)
+        if 0 < skipped:
+            counter = abjad.String('tag').pluralize(skipped)
+            message = f'skipping {skipped} inactive {tag} {counter}'
+            message += f' in {ly.trim()} ...'
+            messages.append(message)
+        if count == skipped == 0:
+            counter = abjad.String('tag').pluralize(0)
+            message = f'no {tag} {counter} found in {ly.trim()} ...'
+            messages.append(message)
+        return messages
+
     def _open_files(self, paths, force_vim=False, silent=False):
         assert isinstance(paths, collections.Iterable), repr(paths)
         for path in paths:
@@ -1329,87 +1385,54 @@ class AbjadIDE(abjad.AbjadObject):
         'ggb',
         description='tags - BUILD - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_build_tags(self, directory):
         r'''Activates BUILD tags.
 
         Returns none.
         '''
-        assert directory.is_build()
-        build_name = directory.name
-        tag = 'BUILD:' + build_name.upper()
-        self._activate_tag(directory, tag, tag)
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        self._activate_tag(directory, tag)
 
     @Command(
         'kt',
         description='CLOCK-TIME - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_clock_time_tags(self, directory):
         r'''Activates CLOCK-TIME tags.
 
         Returns none.
         '''
-        tag = 'CLOCK-TIME'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'CLOCK-TIME')
 
     @Command(
         'ggfn',
         description='tags - FIGURE-NAME - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_figure_name_tags(self, directory):
         r'''Activates FIGURE-NAME tags.
 
         Returns none.
         '''
-        tag = 'FIGURE-NAME'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'FIGURE-NAME')
 
     @Command(
         'gggk',
         description='tags - SEGMENT:BREAK - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_breaks(self, directory):
         r'''Activates SEGMENT:BREAK tags.
@@ -1417,14 +1440,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:BREAK'
-        self._activate_tag(directory, tag, tag)
+        self._activate_tag(directory, 'SEGMENT:BREAK')
 
     @Command(
         'gggd',
         description='tags - SEGMENT:DUPLICATE - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_duplicates(self, directory):
         r'''Activates SEGMENT:DUPLICATE tags.
@@ -1432,14 +1454,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:DUPLICATE'
-        self._activate_tag(directory, tag, tag)
+        self._activate_tag(directory, 'SEGMENT:DUPLICATE')
 
     @Command(
         'gggeb',
         description='tags - SEGMENT:EMPTY-BAR - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_empty_bars(self, directory):
         r'''Activates SEGMENT:EMPTY-BAR tags.
@@ -1447,14 +1468,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:EMPTY-BAR'
-        self._activate_tag(directory, tag, tag)
+        self._activate_tag(directory, 'SEGMENT:EMPTY-BAR')
 
     @Command(
         'gggfm',
         description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_fermata_measure_treatments(self, directory):
         r'''Activates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
@@ -1462,14 +1482,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:FERMATA-MEASURE-TREATMENT'
-        self._activate_tag(directory, tag, tag)
+        self._activate_tag(directory, 'SEGMENT:FERMATA-MEASURE-TREATMENT')
 
     @Command(
         'gggr',
         description='tags - SEGMENT:REMINDER - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_reminders(self, directory):
         r'''Activates SEGMENT:REMINDER tags.
@@ -1477,104 +1496,49 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:REMINDER'
-        self._activate_tag(directory, tag, tag)
+        self._activate_tag(directory, 'SEGMENT:REMINDER')
 
     @Command(
         'gsc',
         description='SEGMENT:SPACING:COMMAND - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_command_tags(self, directory):
         r'''Activates SEGMENT:SPACING:COMMAND tags.
 
         Returns none.
         '''
-        tag = 'SEGMENT:SPACING:COMMAND'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'SEGMENT:SPACING:COMMAND')
 
     @Command(
         'gsm',
         description='SEGMENT:SPACING:MARKUP - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_markup_tags(self, directory):
         r'''Activates SEGMENT:SPACING:MARKUP tags.
 
         Returns none.
         '''
-        tag = 'SEGMENT:SPACING:MARKUP'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'SEGMENT:SPACING:MARKUP')
 
     @Command(
         'ggsn',
         description='tags - STAGE-NUMBER - activate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_stage_number_tags(self, directory):
         r'''Activates STAGE-NUMBER tags.
 
         Returns none.
         '''
-        tag = 'STAGE-NUMBER'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.uncomment_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'activating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} active {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'STAGE-NUMBER')
 
     @Command(
         'bld',
@@ -1764,87 +1728,54 @@ class AbjadIDE(abjad.AbjadObject):
         'hhb',
         description='tags - BUILD - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_build_tags(self, directory):
         r'''Deactivates BUILD tags.
 
         Returns none.
         '''
-        assert directory.is_build()
-        build_name = directory.name
-        tag = 'BUILD:' + build_name.upper()
-        self._deactivate_tag(directory, tag, tag)
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build_name = directory.name
+            tag = 'BUILD:' + build_name.upper()
+        else:
+            tag = 'BUILD'
+        self._deactivate_tag(directory, tag)
 
     @Command(
         'ktx',
         description='CLOCK-TIME - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_clock_time_tags(self, directory):
         r'''Deactivates CLOCK-TIME tags.
 
         Returns none.
         '''
-        tag = 'CLOCK-TIME'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'CLOCK-TIME')
 
     @Command(
         'hhfn',
         description='tags - FIGURE-NAME - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_figure_name_tags(self, directory):
         r'''Deactivates FIGURE-NAME tags.
 
         Returns none.
         '''
-        tag = 'FIGURE-NAME'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'FIGURE-NAME')
 
     @Command(
         'hhgk',
         description='tags - SEGMENT:BREAK - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_breaks(self, directory):
         r'''Deactivates SEGMENT:BREAK tags.
@@ -1852,14 +1783,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:BREAK'
-        self._deactivate_tag(directory, tag, tag)
+        self._deactivate_tag(directory, 'SEGMENT:BREAK')
 
     @Command(
         'hhgd',
         description='tags - SEGMENT:DUPLICATE - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_duplicates(self, directory):
         r'''Deactivates SEGMENT:DUPLICATE tags.
@@ -1867,14 +1797,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:DUPLICATE'
-        self._deactivate_tag(directory, tag, tag)
+        self._deactivate_tag(directory, 'SEGMENT:DUPLICATE')
 
     @Command(
         'hhgeb',
         description='tags - SEGMENT:EMPTY-BAR - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_empty_bars(self, directory):
         r'''Deactivates SEGMENT:EMPTY-BAR tags.
@@ -1882,14 +1811,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:EMPTY-BAR'
-        self._deactivate_tag(directory, tag, tag)
+        self._deactivate_tag(directory, 'SEGMENT:EMPTY-BAR')
 
     @Command(
         'hhgfm',
         description='tags - SEGMENT:FERMATA-MEASURE-TREATMENT - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
         r'''Deactivates SEGMENT:FERMATA-MEASURE-TREATMENT tags.
@@ -1897,14 +1825,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:FERMATA-MEASURE-TREATMENT'
-        self._deactivate_tag(directory, tag, tag)
+        self._deactivate_tag(directory, 'SEGMENT:FERMATA-MEASURE-TREATMENT')
 
     @Command(
         'hhgr',
         description='tags - SEGMENT:REMINDER - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_reminders(self, directory):
         r'''Deactivates SEGMENT:REMINDER tags.
@@ -1912,104 +1839,49 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = 'SEGMENT:REMINDER'
-        self._deactivate_tag(directory, tag, tag)
+        self._deactivate_tag(directory, 'SEGMENT:REMINDER')
 
     @Command(
         'gscx',
         description='SEGMENT:SPACING:COMMAND - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_command_tags(self, directory):
         r'''Deactivates SEGMENT:SPACING:COMMAND tags.
 
         Returns none.
         '''
-        tag = 'SEGMENT:SPACING:COMMAND'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'SEGMENT:SPACING:COMMAND')
 
     @Command(
         'gsmx',
         description='SEGMENT:SPACING:MARKUP - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_markup_tags(self, directory):
         r'''Deactivates SEGMENT:SPACING:MARKUP tags.
 
         Returns none.
         '''
-        tag = 'SEGMENT:SPACING:MARKUP'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'SEGMENT:SPACING:MARKUP')
 
     @Command(
         'hhsn',
         description='tags - STAGE-NUMBER - deactivate',
         menu_section='tags',
-        score_package_paths=('build', 'segment'),
+        score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_stage_number_tags(self, directory):
         r'''Deactivates STAGE-NUMBER tags.
 
         Returns none.
         '''
-        tag = 'STAGE-NUMBER'
-        if directory.is_segment():
-            ly = directory('illustration.ly')
-            if not ly.is_file():
-                self.io.display(f'missing {ly.trim()} ...')
-            text, count, skipped = ly.comment_out_tag(tag)
-            if 0 < count:
-                counter = abjad.String('tag').pluralize(count)
-                message = f'deactivating {count} {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if 0 < skipped:
-                counter = abjad.String('tag').pluralize(skipped)
-                message = f'skipping {skipped} inactive {tag} {counter}'
-                message += f' in {ly.trim()} ...'
-                self.io.display(message)
-            if count == skipped == 0:
-                counter = abjad.String('tag').pluralize(0)
-                self.io.display(f'no {tag} {counter} found in {ly.trim()} ...')
-            ly.write_text(text)
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'STAGE-NUMBER')
 
     @Command(
         '^^',
