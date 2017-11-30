@@ -1384,7 +1384,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'bl',
         description='BUILD',
-        menu_section='tags',
+        menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_build_tags(self, directory):
@@ -1403,7 +1403,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'kt',
         description='CLOCK-TIME',
-        menu_section='tags',
+        menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_clock_time_tags(self, directory):
@@ -1417,7 +1417,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fn',
         description='FIGURE-NAME',
-        menu_section='tags',
+        menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_figure_name_tags(self, directory):
@@ -1431,7 +1431,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gk',
         description='SEGMENT:BREAK',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_breaks(self, directory):
@@ -1445,7 +1445,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gd',
         description='SEGMENT:DUPLICATE',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_duplicates(self, directory):
@@ -1459,7 +1459,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'geb',
         description='SEGMENT:EMPTY-BAR',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_empty_bars(self, directory):
@@ -1473,7 +1473,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gfm',
         description='SEGMENT:FERMATA-MEASURE-TREATMENT',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_fermata_measure_treatments(self, directory):
@@ -1487,7 +1487,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gr',
         description='SEGMENT:REMINDER',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_reminders(self, directory):
@@ -1501,7 +1501,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gsc',
         description='SEGMENT:SPACING:COMMAND',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_command_tags(self, directory):
@@ -1515,7 +1515,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'gsm',
         description='SEGMENT:SPACING:MARKUP',
-        menu_section='tags',
+        menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_markup_tags(self, directory):
@@ -1529,7 +1529,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'sn',
         description='STAGE-NUMBER',
-        menu_section='tags',
+        menu_section='z:tags 1',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_stage_number_tags(self, directory):
@@ -1726,8 +1726,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'blx',
-        description='BUILDx',
-        menu_section='tags',
+        description='BUILD - hide',
+        menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_build_tags(self, directory):
@@ -1745,8 +1745,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ktx',
-        description='CLOCK-TIMEx',
-        menu_section='tags',
+        description='CLOCK-TIME - hide',
+        menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_clock_time_tags(self, directory):
@@ -1759,8 +1759,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fnx',
-        description='FIGURE-NAMEx',
-        menu_section='tags',
+        description='FIGURE-NAME - hide',
+        menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_figure_name_tags(self, directory):
@@ -1773,8 +1773,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gkx',
-        description='SEGMENT:BREAKx',
-        menu_section='tags',
+        description='SEGMENT:BREAK - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_breaks(self, directory):
@@ -1787,8 +1787,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gdx',
-        description='SEGMENT:DUPLICATEx',
-        menu_section='tags',
+        description='SEGMENT:DUPLICATE - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_duplicates(self, directory):
@@ -1801,8 +1801,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gebx',
-        description='SEGMENT:EMPTY-BARx',
-        menu_section='tags',
+        description='SEGMENT:EMPTY-BAR - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_empty_bars(self, directory):
@@ -1815,8 +1815,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gfmx',
-        description='SEGMENT:FERMATA-MEASURE-TREATMENTx',
-        menu_section='tags',
+        description='SEGMENT:FERMATA-MEASURE-TREATMENT - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_fermata_measure_treatments(self, directory):
@@ -1829,8 +1829,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'grx',
-        description='SEGMENT:REMINDERx',
-        menu_section='tags',
+        description='SEGMENT:REMINDER - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_reminders(self, directory):
@@ -1843,8 +1843,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gscx',
-        description='SEGMENT:SPACING:COMMANDx',
-        menu_section='tags',
+        description='SEGMENT:SPACING:COMMAND - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_command_tags(self, directory):
@@ -1857,8 +1857,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gsmx',
-        description='SEGMENT:SPACING:MARKUPx',
-        menu_section='tags',
+        description='SEGMENT:SPACING:MARKUP - hide',
+        menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_markup_tags(self, directory):
@@ -1871,8 +1871,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'snx',
-        description='STAGE-NUMBERx',
-        menu_section='tags',
+        description='STAGE-NUMBER - hide',
+        menu_section='z:tags 2',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_stage_number_tags(self, directory):
