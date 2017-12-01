@@ -12,7 +12,7 @@ def test_AbjadIDE_activate_segment_reminders_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red %let gr q')
+        abjad_ide('red %let sre q')
         transcript = abjad_ide.io.transcript
         tag = 'SEGMENT:REMINDER'
         for ly_path in ly_paths:
@@ -22,6 +22,6 @@ def test_AbjadIDE_activate_segment_reminders_01():
 
 def test_AbjadIDE_activate_segment_reminders_02():
 
-    abjad_ide('blu %let gr q')
+    abjad_ide('blu %let sre q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript

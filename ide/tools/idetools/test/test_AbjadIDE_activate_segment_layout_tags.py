@@ -12,7 +12,7 @@ def test_AbjadIDE_activate_segment_layout_tags_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red %let gl q')
+        abjad_ide('red %let sl q')
         transcript = abjad_ide.io.transcript
         tag = 'SEGMENT:LAYOUT'
         for ly_path in ly_paths:
@@ -22,6 +22,6 @@ def test_AbjadIDE_activate_segment_layout_tags_01():
 
 def test_AbjadIDE_activate_segment_layout_tags_02():
 
-    abjad_ide('blu %let gl q')
+    abjad_ide('blu %let sl q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript
