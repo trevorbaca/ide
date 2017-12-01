@@ -38,6 +38,7 @@ class Command(abjad.AbjadObject):
         'smart',
         'stylesheet',
         'text',
+        'y:clef',
         'z:tags 1',
         'z:tags 2',
         'z:tags 3',

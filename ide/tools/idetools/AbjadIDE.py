@@ -1747,6 +1747,90 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate_build_fermata_bar_line(directory)
 
     @Command(
+        'ccc',
+        description='CLEF - color',
+        menu_section='y:clef',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_clefs(self, directory):
+        r'''Colors clefs:
+
+        Activates EXPLICIT_CLEF_COMMAND.
+        Activates EXPLICIT_CLEF_COLOR.
+        Activates EXPLICIT_CLEF_SHADOW.
+        Deactivates EXPLICIT_CLEF_UNCOLOR.
+
+        Activates SEGMENT:RESTATED_CLEF_COMMAND.
+        Activates SEGMENT:RESTATED_CLEF_COLOR.
+        Activates SEGMENT:RESTATED_CLEF_SHADOW.
+        Deactivates SEGMENT:RESTATED_CLEF_UNCOLOR.
+
+        Activates DUPLICATE_CLEF_COMMAND.
+        Activates DUPLICATE_CLEF_COLOR.
+        Activates DUPLICATE_CLEF_SHADOW.
+        Deactivates DUPLICATE_CLEF_UNCOLOR
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
+
+        self._activate_tag(directory, 'SEGMENT:RESTATED_CLEF_COMMAND')
+        self._activate_tag(directory, 'SEGMENT:RESTATED_CLEF_COLOR')
+        self._activate_tag(directory, 'SEGMENT:RESTATED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_UNCOLOR')
+
+        self._activate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
+        self._activate_tag(directory, 'DUPLICATE_CLEF_COLOR')
+        self._activate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
+
+    @Command(
+        'cdd',
+        description='CLEF - color duplicates',
+        menu_section='y:clef',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_duplicate_clefs(self, directory):
+        r'''Colors duplicate clefs:
+
+        Activates EXPLICIT_CLEF_COMMAND.
+        Deactivates EXPLICIT_CLEF_COLOR.
+        Deactivates EXPLICIT_CLEF_SHADOW.
+        Activates EXPLICIT_CLEF_UNCOLOR.
+
+        Deactivates SEGMENT:RESTATED_CLEF_COMMAND.
+        Deactivates SEGMENT:RESTATED_CLEF_COLOR.
+        Deactivates SEGMENT:RESTATED_CLEF_SHADOW.
+        Activates SEGMENT:RESTATED_CLEF_UNCOLOR.
+
+        Activates DUPLICATE_CLEF_COMMAND.
+        Activates DUPLICATE_CLEF_COLOR.
+        Activates DUPLICATE_CLEF_SHADOW.
+        Deactivates DUPLICATE_CLEF_UNCOLOR.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
+
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_SHADOW')
+        self._activate_tag(directory, 'SEGMENT:RESTATED_CLEF_UNCOLOR')
+
+        self._activate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
+        self._activate_tag(directory, 'DUPLICATE_CLEF_COLOR')
+        self._activate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
+
+    @Command(
         'cp',
         description='clipboard - copy',
         external_directories=True,
@@ -4272,3 +4356,45 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         path = directory('stylesheet.ily')
         self._trash_file(path)
+
+    @Command(
+        'cbw',
+        description='CLEF - uncolor',
+        menu_section='y:clef',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def uncolor_clefs(self, directory):
+        r'''Uncolors clefs:
+
+        Activates EXPLICIT_CLEF_COMMAND.
+        Deactivates EXPLICIT_CLEF_COLOR.
+        Deactivates EXPLICIT_CLEF_SHADOW.
+        Deactivates EXPLICIT_CLEF_UNCOLOR.
+
+        Deactivates SEGMENT:RESTATED_CLEF_COMMAND.
+        Deactivates SEGMENT:RESTATED_CLEF_COLOR.
+        Deactivates SEGMENT:RESTATED_CLEF_SHADOW.
+        Deactivates SEGMENT:RESTATED_CLEF_UNCOLOR.
+
+        Deactivates DUPLICATE_CLEF_COMMAND.
+        Deactivates DUPLICATE_CLEF_COLOR.
+        Deactivates DUPLICATE_CLEF_SHADOW.
+        Deactivates DUPLICATE_CLEF_UNCOLOR
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
+
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'SEGMENT:RESTATED_CLEF_UNCOLOR')
+
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_COLOR')
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
