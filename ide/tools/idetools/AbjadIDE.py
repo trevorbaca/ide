@@ -1473,17 +1473,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'sd',
-        description='SEGMENT:DUPLICATE',
+        description='SEGMENT:REDUNDANT',
         menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_duplicate(self, directory):
-        r'''Activates SEGMENT:DUPLICATE tags.
+    def activate_segment_redundant(self, directory):
+        r'''Activates SEGMENT:REDUNDANT tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:DUPLICATE')
+        self._activate_tag(directory, 'SEGMENT:REDUNDANT')
 
     @Command(
         'sesb',
@@ -1765,10 +1765,10 @@ class AbjadIDE(abjad.AbjadObject):
         Activates SEGMENT:REAPPLIED_CLEF_SHADOW.
         Deactivates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
 
-        Activates DUPLICATE_CLEF_COMMAND.
-        Activates DUPLICATE_CLEF_COLOR.
-        Activates DUPLICATE_CLEF_SHADOW.
-        Deactivates DUPLICATE_CLEF_UNCOLOR
+        Activates REDUNDANT_CLEF_COMMAND.
+        Activates REDUNDANT_CLEF_COLOR.
+        Activates REDUNDANT_CLEF_SHADOW.
+        Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
         '''
@@ -1783,19 +1783,19 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
         self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
-        self._activate_tag(directory, 'DUPLICATE_CLEF_COLOR')
-        self._activate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
 
     @Command(
         'cdd',
-        description='CLEF - color duplicates',
+        description='CLEF - color redundant',
         menu_section='y:clef',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def color_duplicate_clefs(self, directory):
-        r'''Colors duplicate clefs:
+    def color_redundant_clefs(self, directory):
+        r'''Colors redundant clefs:
 
         Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_COLOR.
@@ -1807,10 +1807,10 @@ class AbjadIDE(abjad.AbjadObject):
         Deactivates SEGMENT:REAPPLIED_CLEF_SHADOW.
         Activates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
 
-        Activates DUPLICATE_CLEF_COMMAND.
-        Activates DUPLICATE_CLEF_COLOR.
-        Activates DUPLICATE_CLEF_SHADOW.
-        Deactivates DUPLICATE_CLEF_UNCOLOR.
+        Activates REDUNDANT_CLEF_COMMAND.
+        Activates REDUNDANT_CLEF_COLOR.
+        Activates REDUNDANT_CLEF_SHADOW.
+        Deactivates REDUNDANT_CLEF_UNCOLOR.
 
         Returns none.
         '''
@@ -1825,10 +1825,10 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
         self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
-        self._activate_tag(directory, 'DUPLICATE_CLEF_COLOR')
-        self._activate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
 
     @Command(
         'cp',
@@ -1942,17 +1942,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'sdx',
-        description='SEGMENT:DUPLICATE - hide',
+        description='SEGMENT:REDUNDANT - hide',
         menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_duplicate(self, directory):
-        r'''Deactivates SEGMENT:DUPLICATE tags.
+    def deactivate_segment_redundant(self, directory):
+        r'''Deactivates SEGMENT:REDUNDANT tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:DUPLICATE')
+        self._deactivate_tag(directory, 'SEGMENT:REDUNDANT')
 
     @Command(
         'sesbx',
@@ -4376,10 +4376,10 @@ class AbjadIDE(abjad.AbjadObject):
         Deactivates SEGMENT:REAPPLIED_CLEF_SHADOW.
         Deactivates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
 
-        Deactivates DUPLICATE_CLEF_COMMAND.
-        Deactivates DUPLICATE_CLEF_COLOR.
-        Deactivates DUPLICATE_CLEF_SHADOW.
-        Deactivates DUPLICATE_CLEF_UNCOLOR
+        Deactivates REDUNDANT_CLEF_COMMAND.
+        Deactivates REDUNDANT_CLEF_COLOR.
+        Deactivates REDUNDANT_CLEF_SHADOW.
+        Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
         '''
@@ -4394,7 +4394,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
         self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_COLOR')
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_SHADOW')
-        self._deactivate_tag(directory, 'DUPLICATE_CLEF_UNCOLOR')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')

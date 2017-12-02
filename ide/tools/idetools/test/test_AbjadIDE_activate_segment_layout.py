@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_activate_segment_layout_tags_01():
+def test_AbjadIDE_activate_segment_layout_01():
 
     ly_paths = []
     for name in ('_', 'A', 'B'):
@@ -20,7 +20,7 @@ def test_AbjadIDE_activate_segment_layout_tags_01():
             assert line in transcript
 
 
-def test_AbjadIDE_activate_segment_layout_tags_02():
+def test_AbjadIDE_activate_segment_layout_02():
 
     abjad_ide('blu %let sl q')
     transcript = abjad_ide.io.transcript

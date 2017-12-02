@@ -2,7 +2,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_deactivate_segment_duplicates_01():
+def test_AbjadIDE_activate_segment_empty_start_bar_01():
 
     ly_paths = []
     for name in ('_', 'A', 'B'):
@@ -12,16 +12,16 @@ def test_AbjadIDE_deactivate_segment_duplicates_01():
 
     with ide.Test(remove=[ly_paths]):
 
-        abjad_ide('red %let sdx q')
+        abjad_ide('red %let sesb q')
         transcript = abjad_ide.io.transcript
-        tag = 'SEGMENT:DUPLICATE'
+        tag = 'SEGMENT:EMPTY_START_BAR'
         for ly_path in ly_paths:
-            line = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
+            line = f'Activating 0 {tag} tags in {ly_path.name} ...'
             assert line in transcript
 
 
-def test_AbjadIDE_deactivate_segment_duplicates_02():
+def test_AbjadIDE_activate_segment_empty_start_bar_02():
 
-    abjad_ide('blu %let sdx q')
+    abjad_ide('blu %let sesb q')
     transcript = abjad_ide.io.transcript
     assert 'No _segments directory found ...' in transcript
