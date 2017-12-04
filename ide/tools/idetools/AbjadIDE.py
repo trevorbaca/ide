@@ -1458,6 +1458,20 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'CLOCK_TIME_MARKUP')
 
     @Command(
+        'esb',
+        description='EMPTY_START_BAR',
+        menu_section='z:tags 1',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_empty_start_bar(self, directory):
+        r'''Activates EMPTY_START_BAR tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'EMPTY_START_BAR')
+
+    @Command(
         'fnm',
         description='FIGURE_NAME_MARKUP',
         menu_section='z:tags 1',
@@ -1500,18 +1514,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'REDUNDANT', greedy=True)
 
     @Command(
-        'sesb',
-        description='SEGMENT:EMPTY_START_BAR',
-        menu_section='z:tags 5',
+        'rmn',
+        description='REMINDER* - show',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_empty_start_bar(self, directory):
-        r'''Activates SEGMENT:EMPTY_START_BAR tags.
+    def activate_reminder(self, directory):
+        r'''Activates REMINDER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
+        self._activate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'sfbl',
@@ -1540,20 +1554,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'SEGMENT:LAYOUT')
-
-    @Command(
-        'rmn',
-        description='REMINDER* - show',
-        menu_section='yy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_reminder(self, directory):
-        r'''Activates REMINDER tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'ssc',
@@ -1755,7 +1755,7 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self.deactivate_segment_empty_start_bar(directory)
+        self.deactivate_empty_start_bar(directory)
         self.deactivate_segment_fermata_bar_line(directory)
         self.deactivate_segment_layout(directory)
         self.activate_build_fermata_bar_line(directory)
@@ -1941,6 +1941,20 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'CLOCK_TIME_MARKUP')
 
     @Command(
+        'esbx',
+        description='EMPTY_START_BAR - hide',
+        menu_section='z:tags 2',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_empty_start_bar(self, directory):
+        r'''Deactivates EMPTY_START_BAR tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'EMPTY_START_BAR')
+
+    @Command(
         'fnmx',
         description='FIGURE_NAME_MARKUP - hide',
         menu_section='z:tags 2',
@@ -1983,18 +1997,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'REDUNDANT', greedy=True)
 
     @Command(
-        'sesbx',
-        description='SEGMENT:EMPTY_START_BAR - hide',
-        menu_section='z:tags 6',
+        'rmnx',
+        description='REMINDER* - hide',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_empty_start_bar(self, directory):
-        r'''Deactivates SEGMENT:EMPTY_START_BAR tags.
+    def deactivate_reminder(self, directory):
+        r'''Deactivates REMINDER* tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:EMPTY_START_BAR')
+        self._deactivate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'sfblx',
@@ -2023,20 +2037,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._deactivate_tag(directory, 'SEGMENT:LAYOUT')
-
-    @Command(
-        'rmnx',
-        description='REMINDER* - hide',
-        menu_section='yy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_reminder(self, directory):
-        r'''Deactivates REMINDER* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'sscx',
