@@ -1760,10 +1760,10 @@ class AbjadIDE(abjad.AbjadObject):
         Activates EXPLICIT_CLEF_SHADOW.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
-        Activates SEGMENT:REAPPLIED_CLEF_COMMAND.
-        Activates SEGMENT:REAPPLIED_CLEF_COLOR.
-        Activates SEGMENT:REAPPLIED_CLEF_SHADOW.
-        Deactivates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
+        Activates REAPPLIED_CLEF_COMMAND.
+        Activates REAPPLIED_CLEF_COLOR.
+        Activates REAPPLIED_CLEF_SHADOW.
+        Deactivates REAPPLIED_CLEF_UNCOLOR.
 
         Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
@@ -1778,10 +1778,10 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COMMAND')
-        self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COLOR')
-        self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
@@ -1802,10 +1802,10 @@ class AbjadIDE(abjad.AbjadObject):
         Deactivates EXPLICIT_CLEF_SHADOW.
         Activates EXPLICIT_CLEF_UNCOLOR.
 
-        Deactivates SEGMENT:REAPPLIED_CLEF_COMMAND.
-        Deactivates SEGMENT:REAPPLIED_CLEF_COLOR.
-        Deactivates SEGMENT:REAPPLIED_CLEF_SHADOW.
-        Activates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
+        Deactivates REAPPLIED_CLEF_COMMAND.
+        Deactivates REAPPLIED_CLEF_COLOR.
+        Deactivates REAPPLIED_CLEF_SHADOW.
+        Activates REAPPLIED_CLEF_UNCOLOR.
 
         Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
@@ -1820,10 +1820,10 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
         self._activate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
-        self._activate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
@@ -4371,10 +4371,10 @@ class AbjadIDE(abjad.AbjadObject):
         Deactivates EXPLICIT_CLEF_SHADOW.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
-        Deactivates SEGMENT:REAPPLIED_CLEF_COMMAND.
-        Deactivates SEGMENT:REAPPLIED_CLEF_COLOR.
-        Deactivates SEGMENT:REAPPLIED_CLEF_SHADOW.
-        Deactivates SEGMENT:REAPPLIED_CLEF_UNCOLOR.
+        Deactivates REAPPLIED_CLEF_COMMAND.
+        Deactivates REAPPLIED_CLEF_COLOR.
+        Deactivates REAPPLIED_CLEF_SHADOW.
+        Deactivates REAPPLIED_CLEF_UNCOLOR.
 
         Deactivates REDUNDANT_CLEF_COMMAND.
         Deactivates REDUNDANT_CLEF_COLOR.
@@ -4389,10 +4389,10 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_SHADOW')
-        self._deactivate_tag(directory, 'SEGMENT:REAPPLIED_CLEF_UNCOLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_COLOR')
