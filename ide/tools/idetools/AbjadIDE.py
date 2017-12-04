@@ -102,18 +102,18 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_tag(self, directory, tag):
+    def _activate_tag(self, directory, tag, greedy=False):
         if directory.is_build():
-            self._activate_tag_in_build_lys(directory, tag)
+            self._activate_tag_in_build_lys(directory, tag, greedy=greedy)
         elif directory.is_segment():
-            self._activate_tag_in_segment_ly(directory, tag)
+            self._activate_tag_in_segment_ly(directory, tag, greedy=greedy)
         elif directory.is_segments():
             for segment in directory.list_paths():
-                self._activate_tag_in_segment_ly(segment, tag)
+                self._activate_tag_in_segment_ly(segment, tag, greedy=greedy)
         else:
             raise ValueError(directory)
 
-    def _activate_tag_in_build_lys(self, directory, tag):
+    def _activate_tag_in_build_lys(self, directory, tag, greedy=False):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -129,17 +129,17 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = ly.uncomment_tag(tag)
+            text, count, skipped = ly.uncomment_tag(tag, greedy=greedy)
             messages = self._message_activate(ly, tag, count, skipped)
             self.io.display(messages)
             ly.write_text(text)
 
-    def _activate_tag_in_segment_ly(self, directory, tag):
+    def _activate_tag_in_segment_ly(self, directory, tag, greedy=False):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
-        text, count, skipped = ly.uncomment_tag(tag)
+        text, count, skipped = ly.uncomment_tag(tag, greedy=greedy)
         messages = self._message_activate(ly, tag, count, skipped)
         self.io.display(messages)
         ly.write_text(text)
@@ -215,18 +215,18 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _deactivate_tag(self, directory, tag):
+    def _deactivate_tag(self, directory, tag, greedy=False):
         if directory.is_build():
-            self._deactivate_tag_in_build_lys(directory, tag)
+            self._deactivate_tag_in_build_lys(directory, tag, greedy=greedy)
         elif directory.is_segment():
-            self._deactivate_tag_in_segment_ly(directory, tag)
+            self._deactivate_tag_in_segment_ly(directory, tag, greedy=greedy)
         elif directory.is_segments():
             for segment in directory.list_paths():
-                self._deactivate_tag_in_segment_ly(segment, tag)
+                self._deactivate_tag_in_segment_ly(segment, tag, greedy=greedy)
         else:
             raise ValueError(directory)
 
-    def _deactivate_tag_in_build_lys(self, directory, tag):
+    def _deactivate_tag_in_build_lys(self, directory, tag, greedy=False):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -242,17 +242,17 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = ly.comment_out_tag(tag)
+            text, count, skipped = ly.comment_out_tag(tag, greedy=greedy)
             messages = self._message_deactivate(ly, tag, count, skipped)
             self.io.display(messages)
             ly.write_text(text)
 
-    def _deactivate_tag_in_segment_ly(self, directory, tag):
+    def _deactivate_tag_in_segment_ly(self, directory, tag, greedy=False):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
-        text, count, skipped = ly.comment_out_tag(tag)
+        text, count, skipped = ly.comment_out_tag(tag, greedy=greedy)
         messages = self._message_deactivate(ly, tag, count, skipped)
         self.io.display(messages)
         ly.write_text(text)
@@ -1472,18 +1472,32 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'FIGURE_NAME_MARKUP')
 
     @Command(
-        'sd',
-        description='SEGMENT:REDUNDANT',
-        menu_section='z:tags 5',
+        'rpp',
+        description='REAPPLIED* - show',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_redundant(self, directory):
-        r'''Activates SEGMENT:REDUNDANT tags.
+    def activate_reapplied(self, directory):
+        r'''Activates REAPPLIED* tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:REDUNDANT')
+        self._activate_tag(directory, 'REAPPLIED', greedy=True)
+
+    @Command(
+        'rdn',
+        description='REDUNDANT* - show',
+        menu_section='yy:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_redundant(self, directory):
+        r'''Activates REDUNDANT* tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'REDUNDANT', greedy=True)
 
     @Command(
         'sesb',
@@ -1528,18 +1542,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'SEGMENT:LAYOUT')
 
     @Command(
-        'sre',
-        description='SEGMENT:REMINDER',
-        menu_section='z:tags 5',
+        'rmn',
+        description='REMINDER* - show',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_reminder(self, directory):
-        r'''Activates SEGMENT:REMINDER tags.
+    def activate_reminder(self, directory):
+        r'''Activates REMINDER tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:REMINDER')
+        self._activate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'ssc',
@@ -1941,18 +1955,32 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'FIGURE_NAME_MARKUP')
 
     @Command(
-        'sdx',
-        description='SEGMENT:REDUNDANT - hide',
-        menu_section='z:tags 6',
+        'rppx',
+        description='REAPPLIED* - hide',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_redundant(self, directory):
-        r'''Deactivates SEGMENT:REDUNDANT tags.
+    def deactivate_reapplied(self, directory):
+        r'''Deactivates REAPPLIED* tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:REDUNDANT')
+        self._deactivate_tag(directory, 'REAPPLIED', greedy=True)
+
+    @Command(
+        'rdnx',
+        description='REDUNDANT* - hide',
+        menu_section='yy:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_redundant(self, directory):
+        r'''Deactivates REDUNDANT* tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'REDUNDANT', greedy=True)
 
     @Command(
         'sesbx',
@@ -1997,18 +2025,18 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'SEGMENT:LAYOUT')
 
     @Command(
-        'srex',
-        description='SEGMENT:REMINDER - hide',
-        menu_section='z:tags 6',
+        'rmnx',
+        description='REMINDER* - hide',
+        menu_section='yy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_reminder(self, directory):
-        r'''Deactivates SEGMENT:REMINDER tags.
+    def deactivate_reminder(self, directory):
+        r'''Deactivates REMINDER* tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:REMINDER')
+        self._deactivate_tag(directory, 'REMINDER', greedy=True)
 
     @Command(
         'sscx',

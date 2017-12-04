@@ -39,6 +39,7 @@ class Command(abjad.AbjadObject):
         'stylesheet',
         'text',
         'y:clef',
+        'yy:indicators',
         'z:tags 1',
         'z:tags 2',
         'z:tags 3',
