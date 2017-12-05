@@ -994,9 +994,9 @@ class AbjadIDE(abjad.AbjadObject):
         return address, result
 
     @staticmethod
-    def _message_activate(ly, tag, count, skipped, skip_empty=False):
+    def _message_activate(ly, tag, count, skipped):
         messages = []
-        if 0 < count or (count == 0 and not skip_empty):
+        if 0 < count or (count == skipped == 0):
             counter = abjad.String('tag').pluralize(count)
             message = f'activating {count} {tag} {counter}'
             if ly is not None:
@@ -1013,9 +1013,9 @@ class AbjadIDE(abjad.AbjadObject):
         return messages
 
     @staticmethod
-    def _message_deactivate(ly, tag, count, skipped, skip_empty=False):
+    def _message_deactivate(ly, tag, count, skipped):
         messages = []
-        if 0 < count or (count == 0 and not skip_empty):
+        if 0 < count or (count == skipped == 0):
             counter = abjad.String('tag').pluralize(count)
             message = f'deactivating {count} {tag} {counter}'
             if ly is not None:
@@ -1488,7 +1488,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rpp',
         description='REAPPLIED* - show',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_reapplied(self, directory):
@@ -1502,7 +1502,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rdn',
         description='REDUNDANT* - show',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_redundant(self, directory):
@@ -1516,7 +1516,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rmn',
         description='REMINDER* - show',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_reminder(self, directory):
@@ -1762,87 +1762,195 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ccc',
-        description='CLEF - color',
+        description='CLEF* - color',
         menu_section='y:clef',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_clefs(self, directory):
         r'''Colors clefs:
 
-        Activates EXPLICIT_CLEF_COMMAND.
         Activates EXPLICIT_CLEF_COLOR.
+        Activates EXPLICIT_CLEF_COMMAND.
         Activates EXPLICIT_CLEF_SHADOW_COLOR.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
-        Activates REAPPLIED_CLEF_COMMAND.
         Activates REAPPLIED_CLEF_COLOR.
+        Activates REAPPLIED_CLEF_COMMAND.
         Activates REAPPLIED_CLEF_SHADOW_COLOR.
         Deactivates REAPPLIED_CLEF_UNCOLOR.
 
-        Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
+        Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._activate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._activate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._activate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
 
     @Command(
+        'icc',
+        description='INSTRUMENT* - color',
+        menu_section='yy:instrument',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_instruments(self, directory):
+        r'''Colors instruments:
+
+        Activates EXPLICIT_INSTRUMENT_COLOR.
+        Activates EXPLICIT_INSTRUMENT_COMMAND.
+        Activates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
+        Activates EXPLICIT_INSTRUMENT_SHADOW_COMMAND.
+        Deactivates EXPLICIT_INSTRUMENT_UNCOLOR.
+
+        Activates INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Deactivates INSTRUMENT_CHANGE_MARKUP.
+
+        Activates REAPPLIED_INSTRUMENT_COLOR.
+        Activates REAPPLIED_INSTRUMENT_COMMAND.
+        Activates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
+        Activates REAPPLIED_INSTRUMENT_SHADOW_COMMAND.
+        Deactivates REAPPLIED_INSTRUMENT_UNCOLOR.
+
+        Activates REDUNDANT_INSTRUMENT_COLOR.
+        Activates REDUNDANT_INSTRUMENT_COMMAND.
+        Activates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
+        Activates REDUNDANT_INSTRUMENT_SHADOW_COMMAND.
+        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
+
+        self._activate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
+        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
+
+        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
+        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
+        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
+
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
+
+    @Command(
         'cdd',
-        description='CLEF - color redundant',
+        description='CLEF* - color redundant',
         menu_section='y:clef',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_redundant_clefs(self, directory):
         r'''Colors redundant clefs:
 
-        Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_COLOR.
+        Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
         Activates EXPLICIT_CLEF_UNCOLOR.
 
-        Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_COLOR.
+        Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
         Activates REAPPLIED_CLEF_UNCOLOR.
 
-        Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
+        Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._activate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._activate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
+
+    @Command(
+        'idd',
+        description='INSTRUMENT* - color redundant',
+        menu_section='yy:instrument',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_redundant_instruments(self, directory):
+        r'''Colors redundant instruments:
+
+        Deactivates EXPLICIT_INSTRUMENT_COLOR.
+        Activates EXPLICIT_INSTRUMENT_COMMAND.
+        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
+        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COMMAND.
+        Activates EXPLICIT_INSTRUMENT_UNCOLOR.
+
+        Deactivates INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Activates INSTRUMENT_CHANGE_MARKUP.
+
+        Deactivates REAPPLIED_INSTRUMENT_COLOR.
+        Deactivates REAPPLIED_INSTRUMENT_COMMAND.
+        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
+        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COMMAND.
+        Activates REAPPLIED_INSTRUMENT_UNCOLOR.
+
+        Activates REDUNDANT_INSTRUMENT_COLOR.
+        Activates REDUNDANT_INSTRUMENT_COMMAND.
+        Activates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
+        Activates REDUNDANT_INSTRUMENT_SHADOW_COMMAND.
+        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
+
+        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
+        self._activate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
+
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
+        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
+
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
+        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
 
     @Command(
         'cp',
@@ -1971,7 +2079,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rppx',
         description='REAPPLIED* - hide',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_reapplied(self, directory):
@@ -1985,7 +2093,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rdnx',
         description='REDUNDANT* - hide',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_redundant(self, directory):
@@ -1999,7 +2107,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'rmnx',
         description='REMINDER* - hide',
-        menu_section='yy:indicators',
+        menu_section='yyy:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_reminder(self, directory):
@@ -4387,42 +4495,96 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'cbw',
-        description='CLEF - uncolor',
+        description='CLEF* - uncolor',
         menu_section='y:clef',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def uncolor_clefs(self, directory):
         r'''Uncolors clefs:
 
-        Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_COLOR.
+        Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
-        Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_COLOR.
+        Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
         Deactivates REAPPLIED_CLEF_UNCOLOR.
 
-        Deactivates REDUNDANT_CLEF_COMMAND.
         Deactivates REDUNDANT_CLEF_COLOR.
+        Deactivates REDUNDANT_CLEF_COMMAND.
         Deactivates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_COLOR')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
+
+    @Command(
+        'ibw',
+        description='INSTRUMENT* - uncolor',
+        menu_section='yy:instrument',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def uncolor_instruments(self, directory):
+        r'''Uncolors instruments:
+
+        Deactivates EXPLICIT_INSTRUMENT_COLOR.
+        Activates EXPLICIT_INSTRUMENT_COMMAND.
+        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
+        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COMMAND
+        Deactivates EXPLICIT_INSTRUMENT_UNCOLOR.
+
+        Deactivates REAPPLIED_INSTRUMENT_COLOR.
+        Deactivates REAPPLIED_INSTRUMENT_COMMAND.
+        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
+        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COMMAND
+        Deactivates REAPPLIED_INSTRUMENT_UNCOLOR.
+
+        Deactivates REDUNDANT_INSTRUMENT_COLOR.
+        Deactivates REDUNDANT_INSTRUMENT_COMMAND.
+        Deactivates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
+        Deactivates REDUNDANT_INSTRUMENT_SHADOW_COMMAND
+        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
+
+        Deactivates INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Activates INSTRUMENT_CHANGE_MARKUP.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
+
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
+
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
+
+        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
+        self._activate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
