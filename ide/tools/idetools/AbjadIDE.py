@@ -1771,17 +1771,17 @@ class AbjadIDE(abjad.AbjadObject):
 
         Activates EXPLICIT_CLEF_COMMAND.
         Activates EXPLICIT_CLEF_COLOR.
-        Activates EXPLICIT_CLEF_SHADOW.
+        Activates EXPLICIT_CLEF_SHADOW_COLOR.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
         Activates REAPPLIED_CLEF_COMMAND.
         Activates REAPPLIED_CLEF_COLOR.
-        Activates REAPPLIED_CLEF_SHADOW.
+        Activates REAPPLIED_CLEF_SHADOW_COLOR.
         Deactivates REAPPLIED_CLEF_UNCOLOR.
 
         Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
-        Activates REDUNDANT_CLEF_SHADOW.
+        Activates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
@@ -1789,17 +1789,17 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._activate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
         self._activate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._activate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._activate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._activate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
 
     @Command(
@@ -1813,17 +1813,17 @@ class AbjadIDE(abjad.AbjadObject):
 
         Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_COLOR.
-        Deactivates EXPLICIT_CLEF_SHADOW.
+        Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
         Activates EXPLICIT_CLEF_UNCOLOR.
 
         Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_COLOR.
-        Deactivates REAPPLIED_CLEF_SHADOW.
+        Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
         Activates REAPPLIED_CLEF_UNCOLOR.
 
         Activates REDUNDANT_CLEF_COMMAND.
         Activates REDUNDANT_CLEF_COLOR.
-        Activates REDUNDANT_CLEF_SHADOW.
+        Activates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR.
 
         Returns none.
@@ -1831,17 +1831,17 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._activate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._activate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
 
     @Command(
@@ -4396,17 +4396,17 @@ class AbjadIDE(abjad.AbjadObject):
 
         Activates EXPLICIT_CLEF_COMMAND.
         Deactivates EXPLICIT_CLEF_COLOR.
-        Deactivates EXPLICIT_CLEF_SHADOW.
+        Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
         Deactivates EXPLICIT_CLEF_UNCOLOR.
 
         Deactivates REAPPLIED_CLEF_COMMAND.
         Deactivates REAPPLIED_CLEF_COLOR.
-        Deactivates REAPPLIED_CLEF_SHADOW.
+        Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
         Deactivates REAPPLIED_CLEF_UNCOLOR.
 
         Deactivates REDUNDANT_CLEF_COMMAND.
         Deactivates REDUNDANT_CLEF_COLOR.
-        Deactivates REDUNDANT_CLEF_SHADOW.
+        Deactivates REDUNDANT_CLEF_SHADOW_COLOR.
         Deactivates REDUNDANT_CLEF_UNCOLOR
 
         Returns none.
@@ -4414,15 +4414,15 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
 
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
 
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_SHADOW')
+        self._deactivate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
