@@ -4544,47 +4544,62 @@ class AbjadIDE(abjad.AbjadObject):
     def uncolor_instruments(self, directory):
         r'''Uncolors instruments:
 
+        Deactivates EXPLICIT_INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Activates EXPLICIT_INSTRUMENT_CHANGE_MARKUP.
         Deactivates EXPLICIT_INSTRUMENT_COLOR.
         Activates EXPLICIT_INSTRUMENT_COMMAND.
         Deactivates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
         Deactivates EXPLICIT_INSTRUMENT_SHADOW_COMMAND
         Deactivates EXPLICIT_INSTRUMENT_UNCOLOR.
 
+        Deactivates REAPPLIED_INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Deactivates REAPPLIED_INSTRUMENT_CHANGE_MARKUP.
         Deactivates REAPPLIED_INSTRUMENT_COLOR.
         Deactivates REAPPLIED_INSTRUMENT_COMMAND.
         Deactivates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
         Deactivates REAPPLIED_INSTRUMENT_SHADOW_COMMAND
         Deactivates REAPPLIED_INSTRUMENT_UNCOLOR.
 
+        Deactivates REDUNDANT_INSTRUMENT_CHANGE_COLORED_MARKUP.
+        Deactivates REDUNDANT_INSTRUMENT_CHANGE_MARKUP.
         Deactivates REDUNDANT_INSTRUMENT_COLOR.
         Deactivates REDUNDANT_INSTRUMENT_COMMAND.
         Deactivates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
         Deactivates REDUNDANT_INSTRUMENT_SHADOW_COMMAND
         Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
 
-        Deactivates INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Activates INSTRUMENT_CHANGE_MARKUP.
-
         Returns none.
         '''
         assert directory.is_score_package_path()
+        self._deactivate_tag(
+            directory,
+            'EXPLICIT_INSTRUMENT_CHANGE_COLORED_MARKUP',
+            )
+        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_CHANGE_MARKUP')
         self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
         self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
         self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
         self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
 
+        self._deactivate_tag(
+            directory,
+            'REAPPLIED_INSTRUMENT_CHANGE_COLORED_MARKUP',
+            )
+        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_CHANGE_MARKUP')
         self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
         self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
 
+        self._deactivate_tag(
+            directory,
+            'REDUNDANT_INSTRUMENT_CHANGE_COLORED_MARKUP',
+            )
+        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_CHANGE_MARKUP')
         self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
         self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
         self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
-
-        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
-        self._activate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
