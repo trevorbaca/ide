@@ -63,7 +63,7 @@ class Path(abjad.Path):
     def _find_doctest_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in self.glob('**/*.py'):
+            for path in sorted(self.glob('**/*.py')):
                 if '__pycache__' in str(path):
                     continue
                 if not path.is_file():
@@ -87,7 +87,7 @@ class Path(abjad.Path):
     def _find_editable_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in self.glob('**/*'):
+            for path in sorted(self.glob('**/*')):
                 if '__pycache__' in str(path):
                     continue
                 if not path.is_file():
@@ -119,7 +119,7 @@ class Path(abjad.Path):
     def _find_pdfs(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in self.glob('**/*.pdf'):
+            for path in sorted(self.glob('**/*.pdf')):
                 if '__pycache__' in str(path):
                     continue
                 if not path.is_file():
@@ -142,7 +142,7 @@ class Path(abjad.Path):
     def _find_pytest_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in self.glob('**/test*.py'):
+            for path in sorted(self.glob('**/test*.py')):
                 if '__pycache__' in str(path):
                     continue
                 if not path.is_file():

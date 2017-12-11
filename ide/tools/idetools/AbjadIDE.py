@@ -371,9 +371,9 @@ class AbjadIDE(abjad.AbjadObject):
         command_called_twice = f'{command}; {command}'
         with self.change(tex.parent):
             abjad.IOManager.spawn_subprocess(command_called_twice)
-            for path in tex.parent.glob('*.aux'):
+            for path in sorted(tex.parent.glob('*.aux')):
                 path.remove()
-            for path in tex.parent.glob('*.log'):
+            for path in sorted(tex.parent.glob('*.log')):
                 path.remove()
         if pdf.is_file():
             self.io.display(f'writing {pdf.trim()} ...')
@@ -3239,7 +3239,7 @@ class AbjadIDE(abjad.AbjadObject):
             root = directory.contents
         else:
             root = directory
-        for path in root.glob('**/*'):
+        for path in sorted(root.glob('**/*')):
             if '__pycache__' in str(path):
                 continue
             if not path.is_dir():
