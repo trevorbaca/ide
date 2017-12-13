@@ -1741,7 +1741,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('... no segment lys found.')
             return
         if not directory._segments.is_dir():
-            _segments_directory.mkdir()
+            directory._segments.mkdir()
         time_signatures = abjad.TypedOrderedDict()
         for source, target in pairs:
             if target.exists():
