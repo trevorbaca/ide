@@ -1,7 +1,3 @@
-import abjad
-
-
-abjad.ImportManager.import_structured_package(
-    __path__[0],
-    globals(),
-    )
+from .RhythmMaker import RhythmMaker
+from .ScoreTemplate import ScoreTemplate
+from .adjust_spacing_sections import adjust_spacing_sections

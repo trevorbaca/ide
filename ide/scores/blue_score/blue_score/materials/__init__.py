@@ -1,7 +1,2 @@
-import abjad
-
-
-abjad.ImportManager.import_material_packages(
-    __path__[0],
-    globals(),
-    )
+from .blue_rhythm_1.definition import blue_rhythm_1
+from .blue_rhythm_2.definition import blue_rhythm_2
