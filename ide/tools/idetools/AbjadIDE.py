@@ -670,7 +670,6 @@ class AbjadIDE(abjad.AbjadObject):
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
             return
-        directory.update_order_dependent_segment_metadata()
         ly = directory('illustration.ly')
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
@@ -710,7 +709,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'can not find {definition.trim()} ...')
             return -1
         self.io.display('making MIDI ...')
-        directory.update_order_dependent_segment_metadata()
         ly = directory('midi.ly')
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
@@ -770,7 +768,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'can not find {definition.trim()} ...')
             return -1
         self.io.display(f'making segment {directory.name} PDF ...')
-        directory.update_order_dependent_segment_metadata()
         ly = directory('illustration.ly')
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
