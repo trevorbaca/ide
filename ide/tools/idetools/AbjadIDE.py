@@ -1,4 +1,5 @@
 import abjad
+import baca
 import collections
 import datetime
 import inspect
@@ -43,6 +44,90 @@ class AbjadIDE(abjad.AbjadObject):
         '_previous_directory',
         '_redraw',
         '_test',
+        )
+
+    _color_clef_tags = (
+        baca.Tags.DEFAULT_CLEF_COLOR,
+        baca.Tags.DEFAULT_CLEF_REDRAW_COLOR,
+        baca.Tags.EXPLICIT_CLEF_COLOR,
+        baca.Tags.EXPLICIT_CLEF_REDRAW_COLOR,
+        baca.Tags.REAPPLIED_CLEF_COLOR,
+        baca.Tags.REAPPLIED_CLEF_REDRAW_COLOR,
+        baca.Tags.REDUNDANT_CLEF_COLOR,
+        baca.Tags.REDUNDANT_CLEF_REDRAW_COLOR,
+        )
+
+    _color_dynamic_tags = (
+        baca.Tags.EXPLICIT_DYNAMIC_COLOR,
+        baca.Tags.EXPLICIT_DYNAMIC_REDRAW_COLOR,
+        baca.Tags.REAPPLIED_DYNAMIC,
+        baca.Tags.REAPPLIED_DYNAMIC_COLOR,
+        baca.Tags.REAPPLIED_DYNAMIC_REDRAW_COLOR,
+        baca.Tags.REDUNDANT_DYNAMIC_COLOR,
+        baca.Tags.REDUNDANT_DYNAMIC_REDRAW_COLOR,
+        )
+
+    _color_instrument_tags = {
+        'activate': (
+            baca.Tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.Tags.DEFAULT_INSTRUMENT_COLOR,
+            baca.Tags.REDRAWN_DEFAULT_INSTRUMENT_COLOR,
+            baca.Tags.EXPLICIT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.Tags.EXPLICIT_INSTRUMENT_COLOR,
+            baca.Tags.REDRAWN_EXPLICIT_INSTRUMENT_COLOR,
+            baca.Tags.REAPPLIED_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.Tags.REAPPLIED_INSTRUMENT_COLOR,
+            baca.Tags.REDRAWN_REAPPLIED_INSTRUMENT_COLOR,
+            baca.Tags.REDUNDANT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.Tags.REDUNDANT_INSTRUMENT_COLOR,
+            baca.Tags.REDRAWN_REDUNDANT_INSTRUMENT_COLOR,
+            ),
+        'deactivate': (
+            ),
+        }
+
+    _color_margin_markup_tags = {
+        'activate': (
+            baca.Tags.DEFAULT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.Tags.DEFAULT_MARGIN_MARKUP_COLOR,
+            baca.Tags.REDRAWN_DEFAULT_MARGIN_MARKUP_COLOR,
+            baca.Tags.EXPLICIT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.Tags.EXPLICIT_MARGIN_MARKUP_COLOR,
+            baca.Tags.REDRAWN_EXPLICIT_MARGIN_MARKUP_COLOR,
+            baca.Tags.REAPPLIED_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.Tags.REAPPLIED_MARGIN_MARKUP_COLOR,
+            baca.Tags.REDRAWN_REAPPLIED_MARGIN_MARKUP_COLOR,
+            baca.Tags.REDUNDANT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.Tags.REDUNDANT_MARGIN_MARKUP_COLOR,
+            baca.Tags.REDRAWN_REDUNDANT_MARGIN_MARKUP_COLOR,
+            ),
+        'deactivate': (
+            ),
+        }
+
+    _color_metronome_mark_tags = {
+        'activate': (
+            baca.Tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
+            baca.Tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
+            baca.Tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
+            ),
+        'deactivate': (
+            baca.Tags.EXPLICIT_METRONOME_MARK,
+            baca.Tags.REAPPLIED_METRONOME_MARK,
+            baca.Tags.REDUNDANT_METRONOME_MARK,
+            ),
+        }
+
+    _color_staff_line_tags = (
+        baca.Tags.EXPLICIT_STAFF_LINES_COLOR,
+        baca.Tags.REAPPLIED_STAFF_LINES_COLOR,
+        baca.Tags.REDUNDANT_STAFF_LINES_COLOR,
+        )
+
+    _color_time_signature_tags = (
+        baca.Tags.EXPLICIT_TIME_SIGNATURE_COLOR,
+        baca.Tags.REAPPLIED_TIME_SIGNATURE_COLOR,
+        baca.Tags.REDUNDANT_TIME_SIGNATURE_COLOR,
         )
 
     configuration = Configuration()
@@ -102,18 +187,19 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_tag(self, directory, tag, greedy=False):
+    def _activate_tag(self, directory, tag):
+        tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            self._activate_tag_in_build_lys(directory, tag, greedy=greedy)
+            self._activate_tag_in_build_lys(directory, tag)
         elif directory.is_segment():
-            self._activate_tag_in_segment_ly(directory, tag, greedy=greedy)
+            self._activate_tag_in_segment_ly(directory, tag)
         elif directory.is_segments():
             for segment in directory.list_paths():
-                self._activate_tag_in_segment_ly(segment, tag, greedy=greedy)
+                self._activate_tag_in_segment_ly(segment, tag)
         else:
             raise ValueError(directory)
 
-    def _activate_tag_in_build_lys(self, directory, tag, greedy=False):
+    def _activate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -129,19 +215,21 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = ly.uncomment_tag(tag, greedy=greedy)
-            messages = self._message_activate(ly, tag, count, skipped)
-            self.io.display(messages)
+            text, count = ly.activate_tag(tag)
+            if count:
+                messages = self._message_activate(ly, tag, count)
+                self.io.display(messages)
             ly.write_text(text)
 
-    def _activate_tag_in_segment_ly(self, directory, tag, greedy=False):
+    def _activate_tag_in_segment_ly(self, directory, tag):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
-        text, count, skipped = ly.uncomment_tag(tag, greedy=greedy)
-        messages = self._message_activate(ly, tag, count, skipped)
-        self.io.display(messages)
+        text, count = ly.activate_tag(tag)
+        if count:
+            messages = self._message_activate(ly, tag, count)
+            self.io.display(messages)
         ly.write_text(text)
 
     def _cache_commands(self):
@@ -215,18 +303,19 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _deactivate_tag(self, directory, tag, greedy=False):
+    def _deactivate_tag(self, directory, tag):
+        tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            self._deactivate_tag_in_build_lys(directory, tag, greedy=greedy)
+            self._deactivate_tag_in_build_lys(directory, tag)
         elif directory.is_segment():
-            self._deactivate_tag_in_segment_ly(directory, tag, greedy=greedy)
+            self._deactivate_tag_in_segment_ly(directory, tag)
         elif directory.is_segments():
             for segment in directory.list_paths():
-                self._deactivate_tag_in_segment_ly(segment, tag, greedy=greedy)
+                self._deactivate_tag_in_segment_ly(segment, tag)
         else:
             raise ValueError(directory)
 
-    def _deactivate_tag_in_build_lys(self, directory, tag, greedy=False):
+    def _deactivate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -242,19 +331,21 @@ class AbjadIDE(abjad.AbjadObject):
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
         for ly in lys:
-            text, count, skipped = ly.comment_out_tag(tag, greedy=greedy)
-            messages = self._message_deactivate(ly, tag, count, skipped)
-            self.io.display(messages)
+            text, count = ly.deactivate_tag(tag)
+            if count:
+                messages = self._message_deactivate(ly, tag, count)
+                self.io.display(messages)
             ly.write_text(text)
 
-    def _deactivate_tag_in_segment_ly(self, directory, tag, greedy=False):
+    def _deactivate_tag_in_segment_ly(self, directory, tag):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
-        text, count, skipped = ly.comment_out_tag(tag, greedy=greedy)
-        messages = self._message_deactivate(ly, tag, count, skipped)
-        self.io.display(messages)
+        text, count = ly.deactivate_tag(tag)
+        if count:
+            messages = self._message_deactivate(ly, tag, count)
+            self.io.display(messages)
         ly.write_text(text)
 
     @staticmethod
@@ -991,18 +1082,11 @@ class AbjadIDE(abjad.AbjadObject):
         return address, result
 
     @staticmethod
-    def _message_activate(ly, tag, count, skipped):
+    def _message_activate(ly, tag, count):
         messages = []
-        if 0 < count or (count == skipped == 0):
+        if 0 < count:
             counter = abjad.String('tag').pluralize(count)
             message = f'activating {count} {tag} {counter}'
-            if ly is not None:
-                message += f' in {ly.name}'
-            message += ' ...'
-            messages.append(message)
-        if 0 < skipped:
-            counter = abjad.String('tag').pluralize(skipped)
-            message = f'skipping {skipped} active {tag} {counter}'
             if ly is not None:
                 message += f' in {ly.name}'
             message += ' ...'
@@ -1010,18 +1094,11 @@ class AbjadIDE(abjad.AbjadObject):
         return messages
 
     @staticmethod
-    def _message_deactivate(ly, tag, count, skipped):
+    def _message_deactivate(ly, tag, count):
         messages = []
-        if 0 < count or (count == skipped == 0):
+        if 0 < count: 
             counter = abjad.String('tag').pluralize(count)
             message = f'deactivating {count} {tag} {counter}'
-            if ly is not None:
-                message += f' in {ly.name}'
-            message += ' ...'
-            messages.append(message)
-        if 0 < skipped:
-            counter = abjad.String('tag').pluralize(skipped)
-            message = f'skipping {skipped} inactive {tag} {counter}'
             if ly is not None:
                 message += f' in {ly.name}'
             message += ' ...'
@@ -1402,12 +1479,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bsc',
-        description='BUILD:SPACING_COMMAND',
+        description='BUILD:SPACING',
         menu_section='z:tags 3',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_build_spacing_command(self, directory):
-        r'''Activates BUILD:SPACING_COMMAND tags.
+        r'''Activates BUILD:SPACING tags.
 
         Returns none.
         '''
@@ -1417,7 +1494,7 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
-        tag += ':SPACING_COMMAND'
+        tag += ':SPACING'
         self._activate_tag(directory, tag)
 
     @Command(
@@ -1483,48 +1560,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, 'FIGURE_NAME_MARKUP')
 
     @Command(
-        'rpp',
-        description='REAPPLIED* - show',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_reapplied(self, directory):
-        r'''Activates REAPPLIED* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'REAPPLIED', greedy=True)
-
-    @Command(
-        'rdn',
-        description='REDUNDANT* - show',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_redundant(self, directory):
-        r'''Activates REDUNDANT* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'REDUNDANT', greedy=True)
-
-    @Command(
-        'rmn',
-        description='REMINDER* - show',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_reminder(self, directory):
-        r'''Activates REMINDER tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'REMINDER', greedy=True)
-
-    @Command(
         'sfbl',
         description='SEGMENT:FERMATA_BAR_LINE',
         menu_section='z:tags 5',
@@ -1554,17 +1589,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ssc',
-        description='SEGMENT:SPACING_COMMAND',
+        description='SEGMENT:SPACING',
         menu_section='z:tags 5',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_segment_spacing_command(self, directory):
-        r'''Activates SEGMENT:SPACING_COMMAND tags.
+        r'''Activates SEGMENT:SPACING tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:SPACING_COMMAND')
+        self._activate_tag(directory, 'SEGMENT:SPACING')
 
     @Command(
         'ssm',
@@ -1593,6 +1628,145 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._activate_tag(directory, 'STAGE_NUMBER_MARKUP')
+
+    @Command(
+        'bw*',
+        description='ALL - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_all(self, directory):
+        r'''Renders all persistent indicators in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        self.black_and_white_clefs(directory)
+        self.black_and_white_dynamics(directory)
+        self.black_and_white_instruments(directory)
+        self.black_and_white_margin_markup(directory)
+        self.black_and_white_metronome_marks(directory)
+        self.black_and_white_staff_lines(directory)
+        self.black_and_white_time_signatures(directory)
+
+    @Command(
+        'cbw',
+        description='CLEFS - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_clefs(self, directory):
+        r'''Renders clefs in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_clef_tags:
+            self._deactivate_tag(directory, tag)
+        # TODO: deactivate reapplied clefs when directory is build
+
+    @Command(
+        'dbw',
+        description='DYNAMICS - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_dynamics(self, directory):
+        r'''Renders dynamics in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_dynamic_tags:
+            self._deactivate_tag(directory, tag)
+
+    @Command(
+        'ibw',
+        description='INSTRUMENTS - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_instruments(self, directory):
+        r'''Renders instruments in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_instrument_tags['activate']:
+            self._deactivate_tag(directory, tag)
+        for tag in self._color_instrument_tags['deactivate']:
+            self._activate_tag(directory, tag)
+        # TODO: deactivate reapplied instruments when directory is build
+
+    @Command(
+        'ggbw',
+        description='MARGIN MARKUP - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_margin_markup(self, directory):
+        r'''Renders margin markup in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_margin_markup_tags:
+            self._deactivate_tag(directory, tag)
+
+    @Command(
+        'mmbw',
+        description='METRONOME MARKS - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_metronome_marks(self, directory):
+        r'''Renders metronome marks in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_metronome_mark_tags['activate']:
+            self._deactivate_tag(directory, tag)
+        for tag in self._color_metronome_mark_tags['deactivate']:
+            self._activate_tag(directory, tag)
+
+    @Command(
+        'slbw',
+        description='STAFF LINES - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_staff_lines(self, directory):
+        r'''Renders staff lines in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_staff_line_tags:
+            self._deactivate_tag(directory, tag)
+
+    @Command(
+        'tsbw',
+        description='TIME SIGNATURES - b&w',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def black_and_white_time_signatures(self, directory):
+        r'''Renders time signatures in black and white.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_time_signature_tags:
+            self._deactivate_tag(directory, tag)
 
     @Command(
         'bld',
@@ -1758,196 +1932,141 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate_build_fermata_bar_line(directory)
 
     @Command(
+        'cc*',
+        description='ALL - color',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_all(self, directory):
+        r'''Colors all persistent indicators.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        self.color_clefs(directory)
+        self.color_dynamics(directory)
+        self.color_instruments(directory)
+        self.color_margin_markup(directory)
+        self.color_metronome_marks(directory)
+        self.color_staff_lines(directory)
+        self.color_time_signatures(directory)
+
+    @Command(
         'ccc',
-        description='CLEF* - color',
-        menu_section='y:clef',
+        description='CLEFS - color',
+        menu_section='y:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_clefs(self, directory):
-        r'''Colors clefs:
-
-        Activates EXPLICIT_CLEF_COLOR.
-        Activates EXPLICIT_CLEF_COMMAND.
-        Activates EXPLICIT_CLEF_SHADOW_COLOR.
-        Deactivates EXPLICIT_CLEF_UNCOLOR.
-
-        Activates REAPPLIED_CLEF_COLOR.
-        Activates REAPPLIED_CLEF_COMMAND.
-        Activates REAPPLIED_CLEF_SHADOW_COLOR.
-        Deactivates REAPPLIED_CLEF_UNCOLOR.
-
-        Activates REDUNDANT_CLEF_COLOR.
-        Activates REDUNDANT_CLEF_COMMAND.
-        Activates REDUNDANT_CLEF_SHADOW_COLOR.
-        Deactivates REDUNDANT_CLEF_UNCOLOR
+        r'''Colors clefs.
 
         Returns none.
         '''
+        import baca
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
+        for tag in self._color_clef_tags:
+            self._activate_tag(directory, tag)
 
-        self._activate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._activate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
-        self._activate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
+    @Command(
+        'dcc',
+        description='DYNAMICS - color',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_dynamics(self, directory):
+        r'''Colors dynamics.
 
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_dynamic_tags:
+            self._activate_tag(directory, tag)
 
     @Command(
         'icc',
-        description='INSTRUMENT* - color',
-        menu_section='yy:instrument',
+        description='INSTRUMENTS - color',
+        menu_section='y:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_instruments(self, directory):
-        r'''Colors instruments:
-
-        Activates EXPLICIT_INSTRUMENT_COLOR.
-        Activates EXPLICIT_INSTRUMENT_COMMAND.
-        Activates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
-        Activates EXPLICIT_INSTRUMENT_SHADOW_COMMAND.
-        Deactivates EXPLICIT_INSTRUMENT_UNCOLOR.
-
-        Activates INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Deactivates INSTRUMENT_CHANGE_MARKUP.
-
-        Activates REAPPLIED_INSTRUMENT_COLOR.
-        Activates REAPPLIED_INSTRUMENT_COMMAND.
-        Activates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
-        Activates REAPPLIED_INSTRUMENT_SHADOW_COMMAND.
-        Deactivates REAPPLIED_INSTRUMENT_UNCOLOR.
-
-        Activates REDUNDANT_INSTRUMENT_COLOR.
-        Activates REDUNDANT_INSTRUMENT_COMMAND.
-        Activates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
-        Activates REDUNDANT_INSTRUMENT_SHADOW_COMMAND.
-        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
+        r'''Colors instruments.
 
         Returns none.
         '''
+        import baca
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
-
-        self._activate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
-        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
-
-        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
-        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
-        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
-
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
+        for tag in self._color_instrument_tags['activate']:
+            self._activate_tag(directory, tag)
+        for tag in self._color_instrument_tags['deactivate']:
+            self._deactivate_tag(directory, tag)
 
     @Command(
-        'cdd',
-        description='CLEF* - color redundant',
-        menu_section='y:clef',
+        'ggcc',
+        description='MARGIN MARKUP - color',
+        menu_section='y:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def color_redundant_clefs(self, directory):
-        r'''Colors redundant clefs:
-
-        Deactivates EXPLICIT_CLEF_COLOR.
-        Activates EXPLICIT_CLEF_COMMAND.
-        Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
-        Activates EXPLICIT_CLEF_UNCOLOR.
-
-        Deactivates REAPPLIED_CLEF_COLOR.
-        Deactivates REAPPLIED_CLEF_COMMAND.
-        Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
-        Activates REAPPLIED_CLEF_UNCOLOR.
-
-        Activates REDUNDANT_CLEF_COLOR.
-        Activates REDUNDANT_CLEF_COMMAND.
-        Activates REDUNDANT_CLEF_SHADOW_COLOR.
-        Deactivates REDUNDANT_CLEF_UNCOLOR.
+    def color_margin_markup(self, directory):
+        r'''Colors margin markup.
 
         Returns none.
         '''
+        import baca
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
-
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
-        self._activate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
-
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
-        self._activate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
+        for tag in self._color_margin_markup_tags:
+            self._activate_tag(directory, tag)
 
     @Command(
-        'idd',
-        description='INSTRUMENT* - color redundant',
-        menu_section='yy:instrument',
+        'mmcc',
+        description='METRONOME MARKS - color',
+        menu_section='y:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def color_redundant_instruments(self, directory):
-        r'''Colors redundant instruments:
-
-        Deactivates EXPLICIT_INSTRUMENT_COLOR.
-        Activates EXPLICIT_INSTRUMENT_COMMAND.
-        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
-        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COMMAND.
-        Activates EXPLICIT_INSTRUMENT_UNCOLOR.
-
-        Deactivates INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Activates INSTRUMENT_CHANGE_MARKUP.
-
-        Deactivates REAPPLIED_INSTRUMENT_COLOR.
-        Deactivates REAPPLIED_INSTRUMENT_COMMAND.
-        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
-        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COMMAND.
-        Activates REAPPLIED_INSTRUMENT_UNCOLOR.
-
-        Activates REDUNDANT_INSTRUMENT_COLOR.
-        Activates REDUNDANT_INSTRUMENT_COMMAND.
-        Activates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
-        Activates REDUNDANT_INSTRUMENT_SHADOW_COMMAND.
-        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
+    def color_metronome_marks(self, directory):
+        r'''Colors metronome marks.
 
         Returns none.
         '''
+        import baca
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
+        for tag in self._color_metronome_mark_tags['activate']:
+            self._activate_tag(directory, tag)
+        for tag in self._color_metronome_mark_tags['deactivate']:
+            self._deactivate_tag(directory, tag)
 
-        self._deactivate_tag(directory, 'INSTRUMENT_CHANGE_COLORED_MARKUP')
-        self._activate_tag(directory, 'INSTRUMENT_CHANGE_MARKUP')
+    @Command(
+        'slcc',
+        description='STAFF LINES - color',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_staff_lines(self, directory):
+        r'''Colors staff lines.
 
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
-        self._activate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_staff_line_tags:
+            self._activate_tag(directory, tag)
 
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
-        self._activate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')
+    @Command(
+        'tscc',
+        description='TIME SIGNATURES - color',
+        menu_section='y:indicators',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def color_time_signatures(self, directory):
+        r'''Colors time signatures.
+
+        Returns none.
+        '''
+        import baca
+        assert directory.is_score_package_path()
+        for tag in self._color_time_signature_tags:
+            self._activate_tag(directory, tag)
 
     @Command(
         'cp',
@@ -1993,12 +2112,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bscx',
-        description='BUILD:SPACING_COMMAND - hide',
+        description='BUILD:SPACING - hide',
         menu_section='z:tags 4',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_build_spacing_command(self, directory):
-        r'''Deactivates BUILD:SPACING_COMMAND tags.
+        r'''Deactivates BUILD:SPACING tags.
 
         Returns none.
         '''
@@ -2008,7 +2127,7 @@ class AbjadIDE(abjad.AbjadObject):
             tag = 'BUILD:' + build_name.upper()
         else:
             tag = 'BUILD'
-        tag += ':SPACING_COMMAND'
+        tag += ':SPACING'
         self._deactivate_tag(directory, tag)
 
     @Command(
@@ -2074,48 +2193,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, 'FIGURE_NAME_MARKUP')
 
     @Command(
-        'rppx',
-        description='REAPPLIED* - hide',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_reapplied(self, directory):
-        r'''Deactivates REAPPLIED* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'REAPPLIED', greedy=True)
-
-    @Command(
-        'rdnx',
-        description='REDUNDANT* - hide',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_redundant(self, directory):
-        r'''Deactivates REDUNDANT* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'REDUNDANT', greedy=True)
-
-    @Command(
-        'rmnx',
-        description='REMINDER* - hide',
-        menu_section='yyy:indicators',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_reminder(self, directory):
-        r'''Deactivates REMINDER* tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'REMINDER', greedy=True)
-
-    @Command(
         'sfblx',
         description='SEGMENT:FERMATA_BAR_LINE - hide',
         menu_section='z:tags 6',
@@ -2145,17 +2222,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'sscx',
-        description='SEGMENT:SPACING_COMMAND - hide',
+        description='SEGMENT:SPACING - hide',
         menu_section='z:tags 6',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_segment_spacing_command(self, directory):
-        r'''Deactivates SEGMENT:SPACING_COMMAND tags.
+        r'''Deactivates SEGMENT:SPACING tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:SPACING_COMMAND')
+        self._deactivate_tag(directory, 'SEGMENT:SPACING')
 
     @Command(
         'ssmx',
@@ -4489,114 +4566,3 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         path = directory('stylesheet.ily')
         self._trash_file(path)
-
-    @Command(
-        'cbw',
-        description='CLEF* - uncolor',
-        menu_section='y:clef',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def uncolor_clefs(self, directory):
-        r'''Uncolors clefs:
-
-        Deactivates EXPLICIT_CLEF_COLOR.
-        Activates EXPLICIT_CLEF_COMMAND.
-        Deactivates EXPLICIT_CLEF_SHADOW_COLOR.
-        Deactivates EXPLICIT_CLEF_UNCOLOR.
-
-        Deactivates REAPPLIED_CLEF_COLOR.
-        Deactivates REAPPLIED_CLEF_COMMAND.
-        Deactivates REAPPLIED_CLEF_SHADOW_COLOR.
-        Deactivates REAPPLIED_CLEF_UNCOLOR.
-
-        Deactivates REDUNDANT_CLEF_COLOR.
-        Deactivates REDUNDANT_CLEF_COMMAND.
-        Deactivates REDUNDANT_CLEF_SHADOW_COLOR.
-        Deactivates REDUNDANT_CLEF_UNCOLOR
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_CLEF_UNCOLOR')
-
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_CLEF_UNCOLOR')
-
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_COMMAND')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_CLEF_UNCOLOR')
-
-    @Command(
-        'ibw',
-        description='INSTRUMENT* - uncolor',
-        menu_section='yy:instrument',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def uncolor_instruments(self, directory):
-        r'''Uncolors instruments:
-
-        Deactivates EXPLICIT_INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Activates EXPLICIT_INSTRUMENT_CHANGE_MARKUP.
-        Deactivates EXPLICIT_INSTRUMENT_COLOR.
-        Activates EXPLICIT_INSTRUMENT_COMMAND.
-        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COLOR.
-        Deactivates EXPLICIT_INSTRUMENT_SHADOW_COMMAND
-        Deactivates EXPLICIT_INSTRUMENT_UNCOLOR.
-
-        Deactivates REAPPLIED_INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Deactivates REAPPLIED_INSTRUMENT_CHANGE_MARKUP.
-        Deactivates REAPPLIED_INSTRUMENT_COLOR.
-        Deactivates REAPPLIED_INSTRUMENT_COMMAND.
-        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COLOR.
-        Deactivates REAPPLIED_INSTRUMENT_SHADOW_COMMAND
-        Deactivates REAPPLIED_INSTRUMENT_UNCOLOR.
-
-        Deactivates REDUNDANT_INSTRUMENT_CHANGE_COLORED_MARKUP.
-        Deactivates REDUNDANT_INSTRUMENT_CHANGE_MARKUP.
-        Deactivates REDUNDANT_INSTRUMENT_COLOR.
-        Deactivates REDUNDANT_INSTRUMENT_COMMAND.
-        Deactivates REDUNDANT_INSTRUMENT_SHADOW_COLOR.
-        Deactivates REDUNDANT_INSTRUMENT_SHADOW_COMMAND
-        Deactivates REDUNDANT_INSTRUMENT_UNCOLOR.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(
-            directory,
-            'EXPLICIT_INSTRUMENT_CHANGE_COLORED_MARKUP',
-            )
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_CHANGE_MARKUP')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_COLOR')
-        self._activate_tag(directory, 'EXPLICIT_INSTRUMENT_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'EXPLICIT_INSTRUMENT_UNCOLOR')
-
-        self._deactivate_tag(
-            directory,
-            'REAPPLIED_INSTRUMENT_CHANGE_COLORED_MARKUP',
-            )
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_CHANGE_MARKUP')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'REAPPLIED_INSTRUMENT_UNCOLOR')
-
-        self._deactivate_tag(
-            directory,
-            'REDUNDANT_INSTRUMENT_CHANGE_COLORED_MARKUP',
-            )
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_CHANGE_MARKUP')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_COMMAND')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COLOR')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_SHADOW_COMMAND')
-        self._deactivate_tag(directory, 'REDUNDANT_INSTRUMENT_UNCOLOR')

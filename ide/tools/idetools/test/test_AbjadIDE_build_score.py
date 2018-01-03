@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-56:] == [
+        assert transcript.lines[-44:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Removing red_score/builds/_segments/segment-_.ly ...',
@@ -22,18 +22,6 @@ def test_AbjadIDE_build_score_01():
             'Writing red_score/builds/_segments/segment-A.ly ...',
             'Removing red_score/builds/_segments/segment-B.ly ...',
             'Writing red_score/builds/_segments/segment-B.ly ...',
-            'Deactivating 0 EMPTY_START_BAR tags in segment-_.ly ...',
-            'Deactivating 0 EMPTY_START_BAR tags in segment-A.ly ...',
-            'Deactivating 0 EMPTY_START_BAR tags in segment-B.ly ...',
-            'Deactivating 0 SEGMENT:FERMATA_BAR_LINE tags in segment-_.ly ...',
-            'Deactivating 0 SEGMENT:FERMATA_BAR_LINE tags in segment-A.ly ...',
-            'Deactivating 0 SEGMENT:FERMATA_BAR_LINE tags in segment-B.ly ...',
-            'Deactivating 0 SEGMENT:LAYOUT tags in segment-_.ly ...',
-            'Deactivating 0 SEGMENT:LAYOUT tags in segment-A.ly ...',
-            'Deactivating 0 SEGMENT:LAYOUT tags in segment-B.ly ...',
-            'Activating 0 BUILD:LETTER:FERMATA_BAR_LINE tags in segment-_.ly ...',
-            'Activating 0 BUILD:LETTER:FERMATA_BAR_LINE tags in segment-A.ly ...',
-            'Activating 0 BUILD:LETTER:FERMATA_BAR_LINE tags in segment-B.ly ...',
             '',
             'Generating music ...',
             'Removing red_score/builds/letter/music.ly ...',
