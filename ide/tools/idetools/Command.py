@@ -38,13 +38,9 @@ class Command(abjad.AbjadObject):
         'smart',
         'stylesheet',
         'text',
-        'y:indicators',
-        'z:tags 1',
-        'z:tags 2',
-        'z:tags 3',
-        'z:tags 4',
-        'z:tags 5',
-        'z:tags 6',
+        'x:indicators',
+        'y:analytics',
+        'z:build',
         )
 
     ### INITIALIZER ###

@@ -1458,181 +1458,141 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'bfbl',
-        description='BUILD:FERMATA_BAR_LINE',
-        menu_section='z:tags 3',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_build_fermata_bar_line(self, directory):
-        r'''Activates BUILD:FERMATA_BAR_LINE tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':FERMATA_BAR_LINE'
-        self._activate_tag(directory, tag)
-
-    @Command(
-        'bsc',
-        description='BUILD:SPACING',
-        menu_section='z:tags 3',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_build_spacing_command(self, directory):
-        r'''Activates BUILD:SPACING tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':SPACING'
-        self._activate_tag(directory, tag)
-
-    @Command(
-        'bsm',
-        description='BUILD:SPACING_MARKUP',
-        menu_section='z:tags 3',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_build_spacing_markup(self, directory):
-        r'''Activates BUILD:SPACING_MARKUP tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':SPACING_MARKUP'
-        self._activate_tag(directory, tag)
-
-    @Command(
         'ctm',
-        description='CLOCK_TIME_MARKUP',
-        menu_section='z:tags 1',
+        description=f'{baca.Tags.CLOCK_TIME_MARKUP.name} - activate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_clock_time_markup(self, directory):
-        r'''Activates CLOCK_TIME_MARKUP tags.
+    def activate_clock_time_markup_tags(self, directory):
+        r'''Activates clock time markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'CLOCK_TIME_MARKUP')
+        self._activate_tag(directory, baca.Tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'esb',
-        description='EMPTY_START_BAR',
-        menu_section='z:tags 1',
+        description=f'{baca.Tags.EMPTY_START_BAR.name} - activate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_empty_start_bar(self, directory):
-        r'''Activates EMPTY_START_BAR tags.
+    def activate_empty_start_bar_tags(self, directory):
+        r'''Activates empty start bar tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'EMPTY_START_BAR')
+        self._activate_tag(directory, baca.Tags.EMPTY_START_BAR)
+
+    @Command(
+        'fbl',
+        description=f'[{baca.Tags.FERMATA_BAR_LINE.name}] - activate',
+        menu_section='z:build',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def activate_fermata_bar_line_tags(self, directory):
+        r'''Activates fermata bar line tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
+        self._activate_tag(directory, tag)
 
     @Command(
         'fnm',
-        description='FIGURE_NAME_MARKUP',
-        menu_section='z:tags 1',
+        description=f'{baca.Tags.FIGURE_NAME_MARKUP.name} - activate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_figure_name_markup(self, directory):
-        r'''Activates FIGURE_NAME_MARKUP tags.
+    def activate_figure_name_markup_tags(self, directory):
+        r'''Activates figure name markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'FIGURE_NAME_MARKUP')
+        self._activate_tag(directory, baca.Tags.FIGURE_NAME_MARKUP)
 
     @Command(
-        'sfbl',
-        description='SEGMENT:FERMATA_BAR_LINE',
-        menu_section='z:tags 5',
+        'lo',
+        description=f'[{baca.Tags.LAYOUT.name}] - activate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_fermata_bar_line(self, directory):
-        r'''Activates SEGMENT:FERMATA_BAR_LINE tags.
+    def activate_layout_tags(self, directory):
+        r'''Activates layout tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:FERMATA_BAR_LINE')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
+        self._activate_tag(directory, tag)
 
     @Command(
-        'sl',
-        description='SEGMENT:LAYOUT',
-        menu_section='z:tags 5',
+        'spm',
+        description=f'[{baca.Tags.SPACING_MARKUP.name}] - activate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_layout(self, directory):
-        r'''Activates SEGMENT:LAYOUT tags.
+    def activate_spacing_markup_tags(self, directory):
+        r'''Activates spacing markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:LAYOUT')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
+        self._activate_tag(directory, tag)
 
     @Command(
-        'ssc',
-        description='SEGMENT:SPACING',
-        menu_section='z:tags 5',
+        'sp',
+        description=f'[{baca.Tags.SPACING.name}] - activate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_segment_spacing_command(self, directory):
-        r'''Activates SEGMENT:SPACING tags.
+    def activate_spacing_tags(self, directory):
+        r'''Activates spacing tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:SPACING')
-
-    @Command(
-        'ssm',
-        description='SEGMENT:SPACING_MARKUP',
-        menu_section='z:tags 5',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_segment_spacing_markup(self, directory):
-        r'''Activates SEGMENT:SPACING_MARKUP tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._activate_tag(directory, 'SEGMENT:SPACING_MARKUP')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.SPACING, build=build)
+        self._activate_tag(directory, tag)
 
     @Command(
         'snm',
-        description='STAGE_NUMBER_MARKUP',
-        menu_section='z:tags 1',
+        description=f'{baca.Tags.STAGE_NUMBER_MARKUP.name} - activate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def activate_stage_number_markup(self, directory):
-        r'''Activates STAGE_NUMBER_MARKUP tags.
+    def activate_stage_number_markup_tags(self, directory):
+        r'''Activates stage number markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, 'STAGE_NUMBER_MARKUP')
+        self._activate_tag(directory, baca.Tags.STAGE_NUMBER_MARKUP)
 
     @Command(
         'bw*',
         description='ALL - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_all(self, directory):
@@ -1653,7 +1613,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'cbw',
         description='CLEFS - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_clefs(self, directory):
@@ -1670,7 +1630,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'dbw',
         description='DYNAMICS - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_dynamics(self, directory):
@@ -1686,7 +1646,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ibw',
         description='INSTRUMENTS - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_instruments(self, directory):
@@ -1705,7 +1665,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ggbw',
         description='MARGIN MARKUP - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_margin_markup(self, directory):
@@ -1721,7 +1681,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mmbw',
         description='METRONOME MARKS - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_metronome_marks(self, directory):
@@ -1739,7 +1699,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'slbw',
         description='STAFF LINES - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_staff_lines(self, directory):
@@ -1755,7 +1715,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'tsbw',
         description='TIME SIGNATURES - b&w',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_time_signatures(self, directory):
@@ -1926,15 +1886,15 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self.deactivate_empty_start_bar(directory)
-        self.deactivate_segment_fermata_bar_line(directory)
-        self.deactivate_segment_layout(directory)
-        self.activate_build_fermata_bar_line(directory)
+        self.deactivate_empty_start_bar_tags(directory)
+        self.deactivate_fermata_bar_line_tags(directory) # segment
+        self.deactivate_layout_tags(directory) # segment
+        self.activate_fermata_bar_line_tags(directory) # build
 
     @Command(
         'cc*',
         description='ALL - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_all(self, directory):
@@ -1955,7 +1915,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ccc',
         description='CLEFS - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_clefs(self, directory):
@@ -1971,7 +1931,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'dcc',
         description='DYNAMICS - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_dynamics(self, directory):
@@ -1987,7 +1947,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'icc',
         description='INSTRUMENTS - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_instruments(self, directory):
@@ -2005,7 +1965,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ggcc',
         description='MARGIN MARKUP - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_margin_markup(self, directory):
@@ -2021,7 +1981,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mmcc',
         description='METRONOME MARKS - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_metronome_marks(self, directory):
@@ -2039,7 +1999,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'slcc',
         description='STAFF LINES - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_staff_lines(self, directory):
@@ -2055,7 +2015,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'tscc',
         description='TIME SIGNATURES - color',
-        menu_section='y:indicators',
+        menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_time_signatures(self, directory):
@@ -2091,176 +2051,136 @@ class AbjadIDE(abjad.AbjadObject):
             self.clipboard.append(path)
 
     @Command(
-        'bfblx',
-        description='BUILD:FERMATA_BAR_LINE - hide',
-        menu_section='z:tags 4',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_build_fermata_bar_line(self, directory):
-        r'''Deactivates BUILD:FERMATA_BAR_LINE tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':FERMATA_BAR_LINE'
-        self._deactivate_tag(directory, tag)
-
-    @Command(
-        'bscx',
-        description='BUILD:SPACING - hide',
-        menu_section='z:tags 4',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_build_spacing_command(self, directory):
-        r'''Deactivates BUILD:SPACING tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':SPACING'
-        self._deactivate_tag(directory, tag)
-
-    @Command(
-        'bsmx',
-        description='BUILD:SPACING_MARKUP - hide',
-        menu_section='z:tags 4',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_build_spacing_markup(self, directory):
-        r'''Deactivates BUILD:SPACING_MARKUP tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build_name = directory.name
-            tag = 'BUILD:' + build_name.upper()
-        else:
-            tag = 'BUILD'
-        tag += ':SPACING_MARKUP'
-        self._deactivate_tag(directory, tag)
-
-    @Command(
         'ctmx',
-        description='CLOCK_TIME_MARKUP - hide',
-        menu_section='z:tags 2',
+        description=f'{baca.Tags.CLOCK_TIME_MARKUP.name} - deactivate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_clock_time_markup(self, directory):
-        r'''Deactivates CLOCK_TIME_MARKUP tags.
+    def deactivate_clock_time_markup_tags(self, directory):
+        r'''Deactivates clock time markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'CLOCK_TIME_MARKUP')
+        self._deactivate_tag(directory, baca.Tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'esbx',
-        description='EMPTY_START_BAR - hide',
-        menu_section='z:tags 2',
+        description=f'{baca.Tags.EMPTY_START_BAR.name} - deactivate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_empty_start_bar(self, directory):
-        r'''Deactivates EMPTY_START_BAR tags.
+    def deactivate_empty_start_bar_tags(self, directory):
+        r'''Deactivates empty start bar tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'EMPTY_START_BAR')
+        self._deactivate_tag(directory, baca.Tags.EMPTY_START_BAR)
+
+    @Command(
+        'fblx',
+        description=f'[{baca.Tags.FERMATA_BAR_LINE.name}] - deactivate',
+        menu_section='z:build',
+        score_package_paths=('build', 'segment', 'segments'),
+        )
+    def deactivate_fermata_bar_line_tags(self, directory):
+        r'''Deactivates fermata bar line tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
+        self._deactivate_tag(directory, tag)
 
     @Command(
         'fnmx',
-        description='FIGURE_NAME_MARKUP - hide',
-        menu_section='z:tags 2',
+        description=f'{baca.Tags.FIGURE_NAME_MARKUP.name} - deactivate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_figure_name_markup(self, directory):
-        r'''Deactivates FIGURE_NAME tags.
+    def deactivate_figure_name_markup_tags(self, directory):
+        r'''Deactivates figure name markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'FIGURE_NAME_MARKUP')
+        self._deactivate_tag(directory, baca.Tags.FIGURE_NAME_MARKUP.name)
 
     @Command(
-        'sfblx',
-        description='SEGMENT:FERMATA_BAR_LINE - hide',
-        menu_section='z:tags 6',
+        'lox',
+        description=f'[{baca.Tags.LAYOUT.name}] - deactivate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_fermata_bar_line(self, directory):
-        r'''Deactivates SEGMENT:FERMATA_BAR_LINE tags.
+    def deactivate_layout_tags(self, directory):
+        r'''Deactivates layout tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:FERMATA_BAR_LINE')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
+        self._deactivate_tag(directory, tag)
 
     @Command(
-        'slx',
-        description='SEGMENT:LAYOUT - hide',
-        menu_section='z:tags 6',
+        'spmx',
+        description=f'[{baca.Tags.SPACING_MARKUP.name}] - deactivate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_layout(self, directory):
-        r'''Deactivates SEGMENT:LAYOUT tags.
+    def deactivate_spacing_markup_tags(self, directory):
+        r'''Deactivates spacing markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:LAYOUT')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
+        self._deactivate_tag(directory, tag)
 
     @Command(
-        'sscx',
-        description='SEGMENT:SPACING - hide',
-        menu_section='z:tags 6',
+        'spx',
+        description=f'[{baca.Tags.SPACING.name}] - deactivate',
+        menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_segment_spacing_command(self, directory):
-        r'''Deactivates SEGMENT:SPACING tags.
+    def deactivate_spacing_tags(self, directory):
+        r'''Deactivates spacing tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:SPACING')
-
-    @Command(
-        'ssmx',
-        description='SEGMENT:SPACING_MARKUP - hide',
-        menu_section='z:tags 6',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_segment_spacing_markup(self, directory):
-        r'''Deactivates SEGMENT:SPACING_MARKUP tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'SEGMENT:SPACING_MARKUP')
+        if directory.is_build():
+            build = directory.name
+        else:
+            build = None
+        tag = baca.Tags.build(baca.Tags.SPACING, build=build)
+        self._deactivate_tag(directory, tag)
 
     @Command(
         'snmx',
-        description='STAGE_NUMBER_MARKUP - hide',
-        menu_section='z:tags 2',
+        description=f'{baca.Tags.STAGE_NUMBER_MARKUP.name} - deactivate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_stage_number_markup(self, directory):
-        r'''Deactivates STAGE_NUMBER_MARKUP tags.
+    def deactivate_stage_number_markup_tags(self, directory):
+        r'''Deactivates stage number markup tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, 'STAGE_NUMBER_MARKUP')
+        self._deactivate_tag(directory, baca.Tags.STAGE_NUMBER_MARKUP.name)
 
     @Command(
         '^^',

@@ -35,6 +35,7 @@ before_install:
     - which xetex
 
 install:
+    - pip install -e git://github.com/trevorbaca/baca.git#egg=baca
     - pip install -r requirements.txt
     - pip install -e . 
 
