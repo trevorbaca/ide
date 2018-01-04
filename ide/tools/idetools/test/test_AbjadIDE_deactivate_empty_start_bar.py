@@ -16,8 +16,8 @@ def test_AbjadIDE_deactivate_empty_start_bar_01():
         transcript = abjad_ide.io.transcript
         tag = 'EMPTY_START_BAR'
         for ly_path in ly_paths:
-            line = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
-            #assert line in transcript
+            line = f'No {tag} tags to toggle ...'
+            assert line in transcript
 
 
 def test_AbjadIDE_deactivate_empty_start_bar_02():

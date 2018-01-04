@@ -190,14 +190,16 @@ class AbjadIDE(abjad.AbjadObject):
     def _activate_tag(self, directory, tag):
         tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            self._activate_tag_in_build_lys(directory, tag)
+            count = self._activate_tag_in_build_lys(directory, tag)
         elif directory.is_segment():
-            self._activate_tag_in_segment_ly(directory, tag)
+            count = self._activate_tag_in_segment_ly(directory, tag)
         elif directory.is_segments():
+            count = 0
             for segment in directory.list_paths():
-                self._activate_tag_in_segment_ly(segment, tag)
+                count += self._activate_tag_in_segment_ly(segment, tag)
         else:
             raise ValueError(directory)
+        return count
 
     def _activate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
@@ -214,12 +216,15 @@ class AbjadIDE(abjad.AbjadObject):
             names.remove(first_segment_name)
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
+        total = 0
         for ly in lys:
             text, count = ly.activate_tag(tag)
             if count:
                 messages = self._message_activate(ly, tag, count)
                 self.io.display(messages)
             ly.write_text(text)
+            total += count
+        return total
 
     def _activate_tag_in_segment_ly(self, directory, tag):
         ly = directory('illustration.ly')
@@ -231,6 +236,7 @@ class AbjadIDE(abjad.AbjadObject):
             messages = self._message_activate(ly, tag, count)
             self.io.display(messages)
         ly.write_text(text)
+        return count
 
     def _cache_commands(self):
         commands = {}
@@ -306,14 +312,16 @@ class AbjadIDE(abjad.AbjadObject):
     def _deactivate_tag(self, directory, tag):
         tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            self._deactivate_tag_in_build_lys(directory, tag)
+            count = self._deactivate_tag_in_build_lys(directory, tag)
         elif directory.is_segment():
-            self._deactivate_tag_in_segment_ly(directory, tag)
+            count = self._deactivate_tag_in_segment_ly(directory, tag)
         elif directory.is_segments():
+            count = 0
             for segment in directory.list_paths():
-                self._deactivate_tag_in_segment_ly(segment, tag)
+                count += self._deactivate_tag_in_segment_ly(segment, tag)
         else:
             raise ValueError(directory)
+        return count
 
     def _deactivate_tag_in_build_lys(self, directory, tag):
         assert directory.is_score_package_path()
@@ -330,12 +338,15 @@ class AbjadIDE(abjad.AbjadObject):
             names.remove(first_segment_name)
             names.insert(0, first_segment_name)
         lys = [directory._segments(_) for _ in names]
+        total = 0
         for ly in lys:
             text, count = ly.deactivate_tag(tag)
             if count:
                 messages = self._message_deactivate(ly, tag, count)
                 self.io.display(messages)
             ly.write_text(text)
+            total += count
+        return total
 
     def _deactivate_tag_in_segment_ly(self, directory, tag):
         ly = directory('illustration.ly')
@@ -347,6 +358,7 @@ class AbjadIDE(abjad.AbjadObject):
             messages = self._message_deactivate(ly, tag, count)
             self.io.display(messages)
         ly.write_text(text)
+        return count
 
     @staticmethod
     def _filter_files(files, strings, pattern):
@@ -1469,7 +1481,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, baca.Tags.CLOCK_TIME_MARKUP)
+        tag = baca.Tags.CLOCK_TIME_MARKUP.name
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esb',
@@ -1483,7 +1497,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, baca.Tags.EMPTY_START_BAR)
+        tag = baca.Tags.EMPTY_START_BAR.name
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fbl',
@@ -1502,8 +1518,9 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
-        self._activate_tag(directory, tag)
-
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
+            
     @Command(
         'fnm',
         description=f'{baca.Tags.FIGURE_NAME_MARKUP.name} - activate',
@@ -1516,7 +1533,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, baca.Tags.FIGURE_NAME_MARKUP)
+        tag = baca.Tags.FIGURE_NAME_MARKUP.name
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lo',
@@ -1535,7 +1554,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
-        self._activate_tag(directory, tag)
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spm',
@@ -1554,7 +1574,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
-        self._activate_tag(directory, tag)
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'sp',
@@ -1573,7 +1594,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.SPACING, build=build)
-        self._activate_tag(directory, tag)
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snm',
@@ -1587,7 +1609,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._activate_tag(directory, baca.Tags.STAGE_NUMBER_MARKUP)
+        tag = baca.Tags.STAGE_NUMBER_MARKUP.name
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'bw*',
@@ -1622,10 +1646,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         import baca
-        assert directory.is_score_package_path()
-        for tag in self._color_clef_tags:
-            self._deactivate_tag(directory, tag)
         # TODO: deactivate reapplied clefs when directory is build
+        assert directory.is_score_package_path()
+        count = 0
+        for tag in self._color_clef_tags:
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display('no clef tags to toggle ...')
 
     @Command(
         'dbw',
@@ -1640,8 +1667,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_dynamic_tags:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display('no dynamic tags to toggle ...')
 
     @Command(
         'ibw',
@@ -1655,15 +1685,18 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         import baca
-        assert directory.is_score_package_path()
-        for tag in self._color_instrument_tags['activate']:
-            self._deactivate_tag(directory, tag)
-        for tag in self._color_instrument_tags['deactivate']:
-            self._activate_tag(directory, tag)
         # TODO: deactivate reapplied instruments when directory is build
+        assert directory.is_score_package_path()
+        count = 0
+        for tag in self._color_instrument_tags['activate']:
+            count += self._deactivate_tag(directory, tag)
+        for tag in self._color_instrument_tags['deactivate']:
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display(f'no instrument tags to toggle ...')
 
     @Command(
-        'ggbw',
+        'rbw',
         description='MARGIN MARKUP - b&w',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1675,11 +1708,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_margin_markup_tags:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display(f'no margin markup tags to toggle ...')
 
     @Command(
-        'mmbw',
+        'mbw',
         description='METRONOME MARKS - b&w',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1691,10 +1727,13 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_metronome_mark_tags['activate']:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
         for tag in self._color_metronome_mark_tags['deactivate']:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display(f'no metronome mark tags to toggle ...')
 
     @Command(
         'slbw',
@@ -1709,8 +1748,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_staff_line_tags:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display(f'no staff line tags to toggle ...')
 
     @Command(
         'tsbw',
@@ -1725,8 +1767,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_time_signature_tags:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display(f'no time signature tags to toggle ...')
 
     @Command(
         'bld',
@@ -1892,7 +1937,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate_fermata_bar_line_tags(directory) # build
 
     @Command(
-        'cc*',
+        'cl*',
         description='ALL - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1913,7 +1958,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.color_time_signatures(directory)
 
     @Command(
-        'ccc',
+        'ccl',
         description='CLEFS - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1925,11 +1970,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_clef_tags:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display('no clef tags to toggle ...')
 
     @Command(
-        'dcc',
+        'dcl',
         description='DYNAMICS - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1941,11 +1989,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_dynamic_tags:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display('no dynamic tags to toggle ...')
 
     @Command(
-        'icc',
+        'icl',
         description='INSTRUMENTS - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1957,13 +2008,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_instrument_tags['activate']:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
         for tag in self._color_instrument_tags['deactivate']:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display('no instrument tags to toggle ...')
 
     @Command(
-        'ggcc',
+        'rcl',
         description='MARGIN MARKUP - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1975,11 +2029,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_margin_markup_tags:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display('no margin markup tags to toggle ...')
 
     @Command(
-        'mmcc',
+        'mcl',
         description='METRONOME MARKS - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -1991,13 +2048,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_metronome_mark_tags['activate']:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
         for tag in self._color_metronome_mark_tags['deactivate']:
-            self._deactivate_tag(directory, tag)
+            count += self._deactivate_tag(directory, tag)
+        if not count:
+            self.io.display('no metronome mark tags to toggle ...')
 
     @Command(
-        'slcc',
+        'slcl',
         description='STAFF LINES - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -2009,11 +2069,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_staff_line_tags:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display('no staff line tags to toggle ...')
 
     @Command(
-        'tscc',
+        'tscl',
         description='TIME SIGNATURES - color',
         menu_section='x:indicators',
         score_package_paths=('build', 'segment', 'segments'),
@@ -2025,8 +2088,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         import baca
         assert directory.is_score_package_path()
+        count = 0
         for tag in self._color_time_signature_tags:
-            self._activate_tag(directory, tag)
+            count += self._activate_tag(directory, tag)
+        if not count:
+            self.io.display('no time signature tags to toggle ...')
 
     @Command(
         'cp',
@@ -2062,7 +2128,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, baca.Tags.CLOCK_TIME_MARKUP)
+        tag = baca.Tags.CLOCK_TIME_MARKUP.name
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esbx',
@@ -2076,7 +2144,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, baca.Tags.EMPTY_START_BAR)
+        tag = baca.Tags.EMPTY_START_BAR.name
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fblx',
@@ -2095,7 +2165,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
-        self._deactivate_tag(directory, tag)
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fnmx',
@@ -2109,7 +2180,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, baca.Tags.FIGURE_NAME_MARKUP.name)
+        tag = baca.Tags.FIGURE_NAME_MARKUP.name
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lox',
@@ -2128,7 +2201,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
-        self._deactivate_tag(directory, tag)
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spmx',
@@ -2147,7 +2221,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
-        self._deactivate_tag(directory, tag)
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spx',
@@ -2166,7 +2241,8 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             build = None
         tag = baca.Tags.build(baca.Tags.SPACING, build=build)
-        self._deactivate_tag(directory, tag)
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snmx',
@@ -2180,7 +2256,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate_tag(directory, baca.Tags.STAGE_NUMBER_MARKUP.name)
+        tag = baca.Tags.STAGE_NUMBER_MARKUP.name
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         '^^',

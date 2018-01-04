@@ -14,10 +14,10 @@ def test_AbjadIDE_activate_layout_01():
 
         abjad_ide('red %let lo q')
         transcript = abjad_ide.io.transcript
-        tag = 'SEGMENT:LAYOUT'
+        tag = 'LETTER_LAYOUT'
         for ly_path in ly_paths:
-            line = f'Activating 0 {tag} tags in {ly_path.name} ...'
-            #assert line in transcript
+            line = f'No {tag} tags to toggle ...'
+            assert line in transcript
 
 
 def test_AbjadIDE_activate_layout_02():
