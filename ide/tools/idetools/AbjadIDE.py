@@ -46,6 +46,19 @@ class AbjadIDE(abjad.AbjadObject):
         '_test',
         )
 
+    _black_and_white_metronome_mark_tags = {
+        'activate': (
+            baca.Tags.EXPLICIT_METRONOME_MARK,
+            baca.Tags.REDUNDANT_METRONOME_MARK,
+            ),
+        'deactivate': (
+            baca.Tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
+            baca.Tags.REAPPLIED_METRONOME_MARK,
+            baca.Tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
+            baca.Tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
+            ),
+        }
+
     _color_clef_tags = (
         baca.Tags.DEFAULT_CLEF_COLOR,
         baca.Tags.DEFAULT_CLEF_REDRAW_COLOR,
@@ -1728,10 +1741,10 @@ class AbjadIDE(abjad.AbjadObject):
         import baca
         assert directory.is_score_package_path()
         count = 0
-        for tag in self._color_metronome_mark_tags['activate']:
-            count += self._deactivate_tag(directory, tag)
-        for tag in self._color_metronome_mark_tags['deactivate']:
+        for tag in self._black_and_white_metronome_mark_tags['activate']:
             count += self._activate_tag(directory, tag)
+        for tag in self._black_and_white_metronome_mark_tags['deactivate']:
+            count += self._deactivate_tag(directory, tag)
         if not count:
             self.io.display(f'no metronome mark tags to toggle ...')
 
