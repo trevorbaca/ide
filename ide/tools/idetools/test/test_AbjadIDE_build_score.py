@@ -13,15 +13,19 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-44:] == [
+        assert transcript.lines[-48:] == [
             'Building score ...',
             'Collecting segment lys ...',
-            'Removing red_score/builds/_segments/segment-_.ly ...',
-            'Writing red_score/builds/_segments/segment-_.ly ...',
-            'Removing red_score/builds/_segments/segment-A.ly ...',
-            'Writing red_score/builds/_segments/segment-A.ly ...',
-            'Removing red_score/builds/_segments/segment-B.ly ...',
-            'Writing red_score/builds/_segments/segment-B.ly ...',
+            'Removing red_score/builds/letter/_segments/segment-_.ly ...',
+            'Writing red_score/builds/letter/_segments/segment-_.ly ...',
+            'Removing red_score/builds/letter/_segments/segment-A.ly ...',
+            'Writing red_score/builds/letter/_segments/segment-A.ly ...',
+            'Removing red_score/builds/letter/_segments/segment-B.ly ...',
+            'Writing red_score/builds/letter/_segments/segment-B.ly ...',
+            'No EMPTY_START_BAR tags to toggle ...',
+            'No LETTER_FERMATA_BAR_LINE tags to toggle ...',
+            'No LETTER_LAYOUT tags to toggle ...',
+            'No LETTER_FERMATA_BAR_LINE tags to toggle ...',
             '',
             'Generating music ...',
             'Removing red_score/builds/letter/music.ly ...',

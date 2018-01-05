@@ -1923,7 +1923,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_build()
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segment_lys(directory)
         if not pairs:
@@ -2730,7 +2730,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('build',),
         )
     def generate_music(self, directory):
-        r'''Generates ``music.ly``.
+        r'''Generates build/``music.ly``.
 
         Returns none.
         '''
@@ -2765,9 +2765,9 @@ class AbjadIDE(abjad.AbjadObject):
             name = 'segment-' + name + '.ly'
             path = directory._segments(name)
             if path.is_file():
-                line = rf'\include "../_segments/{name}"'
+                line = rf'\include "_segments/{name}"'
             else:
-                line = rf'%\include "../_segments/{name}"'
+                line = rf'%\include "_segments/{name}"'
             if 0 < i:
                 line = 4 * ' ' + line
             lines.append(line)
@@ -3236,6 +3236,20 @@ class AbjadIDE(abjad.AbjadObject):
             self._manage_directory(self.current_directory)
 
     @Command(
+        'aa',
+        description='package - assets',
+        menu_section='package',
+        score_package_paths=True,
+        )
+    def go_to_assets_directory(self, directory):
+        r'''Goes to assets directory.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        self._manage_directory(directory._assets())
+
+    @Command(
         'bb',
         description='package - builds',
         menu_section='package',
@@ -3248,20 +3262,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self._manage_directory(directory.builds())
-
-    @Command(
-        'nn',
-        description='package - builds segments',
-        menu_section='package',
-        score_package_paths=True,
-        )
-    def go_to_builds_segments_directory(self, directory):
-        r'''Goes to builds/_segments directory.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._manage_directory(directory._segments())
 
     @Command(
         'cc',

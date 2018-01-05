@@ -335,6 +335,7 @@ class Path(abjad.Path):
         Returns true or false.
         '''
         if (not self.name[0].isalpha() and
+            not self.name == '_assets' and
             not self.name == '_segments' and
             not self.parent.name == 'segments'):
             return True

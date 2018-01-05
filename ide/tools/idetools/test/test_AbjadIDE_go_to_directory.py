@@ -21,21 +21,21 @@ def test_AbjadIDE_go_to_directory_01():
 
 
 def test_AbjadIDE_go_to_directory_02():
+    r'''Goes to assets directory.
+    '''
+
+    abjad_ide('red %_ass q')
+    transcript = abjad_ide.io.transcript 
+    assert 'Red Score (2017) : builds : _assets (empty)' in transcript.titles
+
+
+def test_AbjadIDE_go_to_directory_03():
     r'''Goes to build directory.
     '''
 
     abjad_ide('red %ette q')
     transcript = abjad_ide.io.transcript 
     assert 'Red Score (2017) : builds : letter' in transcript.titles
-
-
-def test_AbjadIDE_go_to_directory_03():
-    r'''Goes to builds segments directory.
-    '''
-
-    abjad_ide('red %_seg q')
-    transcript = abjad_ide.io.transcript 
-    assert 'Red Score (2017) : builds : _segments' in transcript.titles
 
 
 def test_AbjadIDE_go_to_directory_04():
