@@ -1500,7 +1500,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'esb',
-        description=f'{baca.Tags.EMPTY_START_BAR.name} - activate',
+        description=f'{baca.Tags.SEGMENT_EMPTY_START_BAR.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1510,7 +1510,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.EMPTY_START_BAR.name
+        tag = baca.Tags.SEGMENT_EMPTY_START_BAR.name
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1944,10 +1944,22 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self.deactivate_empty_start_bar_tags(directory)
-        self.deactivate_fermata_bar_line_tags(directory) # segment
-        self.deactivate_layout_tags(directory) # segment
-        self.activate_fermata_bar_line_tags(directory) # build
+        self._deactivate_tag(
+            directory,
+            baca.Tags.SEGMENT_EMPTY_START_BAR,
+            )
+        self._deactivate_tag(
+            directory,
+            baca.Tags.build(baca.Tags.FERMATA_BAR_LINE),
+            )
+        self._deactivate_tag(
+            directory,
+            baca.Tags.build(baca.Tags.LAYOUT),
+            )
+        self._activate_tag(
+            directory,
+            baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=directory.name),
+            )
 
     @Command(
         'cl*',
@@ -2147,17 +2159,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'esbx',
-        description=f'{baca.Tags.EMPTY_START_BAR.name} - deactivate',
+        description=f'{baca.Tags.SEGMENT_EMPTY_START_BAR.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
-    def deactivate_empty_start_bar_tags(self, directory):
-        r'''Deactivates empty start bar tags.
+    def deactivate_segment_empty_start_bar_tags(self, directory):
+        r'''Deactivates segment empty start bar tags.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.EMPTY_START_BAR.name
+        tag = baca.Tags.SEGMENT_EMPTY_START_BAR.name
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 

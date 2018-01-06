@@ -14,7 +14,7 @@ def test_AbjadIDE_deactivate_empty_start_bar_01():
 
         abjad_ide('red %let esbx q')
         transcript = abjad_ide.io.transcript
-        tag = 'EMPTY_START_BAR'
+        tag = 'SEGMENT_EMPTY_START_BAR'
         for ly_path in ly_paths:
             line = f'No {tag} tags to toggle ...'
             assert line in transcript
