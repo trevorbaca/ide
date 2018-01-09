@@ -1484,7 +1484,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctm',
-        description=f'{baca.Tags.CLOCK_TIME_MARKUP.name} - activate',
+        description=f'{abjad.Tags.CLOCK_TIME_MARKUP.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1494,13 +1494,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.CLOCK_TIME_MARKUP.name
+        tag = abjad.Tags.CLOCK_TIME_MARKUP.name
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esb',
-        description=f'{baca.Tags.SEGMENT_EMPTY_START_BAR.name} - activate',
+        description=f'{abjad.Tags.SEGMENT_EMPTY_START_BAR.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1510,13 +1510,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.SEGMENT_EMPTY_START_BAR.name
+        tag = abjad.Tags.SEGMENT_EMPTY_START_BAR.name
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fbl',
-        description=f'[{baca.Tags.FERMATA_BAR_LINE.name}] - activate',
+        description=f'[{abjad.Tags.FERMATA_BAR_LINE.name}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1530,13 +1530,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
+        tag = abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=build)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
             
     @Command(
         'fnm',
-        description=f'{baca.Tags.FIGURE_NAME_MARKUP.name} - activate',
+        description=f'{abjad.Tags.FIGURE_NAME_MARKUP.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1546,13 +1546,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.FIGURE_NAME_MARKUP.name
+        tag = abjad.Tags.FIGURE_NAME_MARKUP.name
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lo',
-        description=f'[{baca.Tags.LAYOUT.name}] - activate',
+        description=f'[{abjad.Tags.LAYOUT.name}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1566,13 +1566,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
+        tag = abjad.Tags.build(abjad.Tags.LAYOUT, build=build)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spm',
-        description=f'[{baca.Tags.SPACING_MARKUP.name}] - activate',
+        description=f'[{abjad.Tags.SPACING_MARKUP.name}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1586,13 +1586,16 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
+        tag = abjad.Tags.build(abjad.Tags.SPACING_MARKUP, build=build)
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
+        tag = abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE_MARKUP, build=build)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'sp',
-        description=f'[{baca.Tags.SPACING.name}] - activate',
+        description=f'[{abjad.Tags.SPACING.name}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1606,13 +1609,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.SPACING, build=build)
+        tag = abjad.Tags.build(abjad.Tags.SPACING, build=build)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snm',
-        description=f'{baca.Tags.STAGE_NUMBER_MARKUP.name} - activate',
+        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1622,7 +1625,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.STAGE_NUMBER_MARKUP.name
+        tag = abjad.Tags.STAGE_NUMBER_MARKUP.name
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1946,19 +1949,19 @@ class AbjadIDE(abjad.AbjadObject):
         path.write_text(text)
         self._deactivate_tag(
             directory,
-            baca.Tags.SEGMENT_EMPTY_START_BAR,
+            abjad.Tags.SEGMENT_EMPTY_START_BAR,
             )
         self._deactivate_tag(
             directory,
-            baca.Tags.build(baca.Tags.FERMATA_BAR_LINE),
+            abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE),
             )
         self._deactivate_tag(
             directory,
-            baca.Tags.build(baca.Tags.LAYOUT),
+            abjad.Tags.build(abjad.Tags.LAYOUT),
             )
         self._activate_tag(
             directory,
-            baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=directory.name),
+            abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=directory.name),
             )
 
     @Command(
@@ -2143,7 +2146,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctmx',
-        description=f'{baca.Tags.CLOCK_TIME_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.CLOCK_TIME_MARKUP.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2153,13 +2156,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.CLOCK_TIME_MARKUP.name
+        tag = abjad.Tags.CLOCK_TIME_MARKUP.name
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esbx',
-        description=f'{baca.Tags.SEGMENT_EMPTY_START_BAR.name} - deactivate',
+        description=f'{abjad.Tags.SEGMENT_EMPTY_START_BAR.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2169,13 +2172,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.SEGMENT_EMPTY_START_BAR.name
+        tag = abjad.Tags.SEGMENT_EMPTY_START_BAR.name
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fblx',
-        description=f'[{baca.Tags.FERMATA_BAR_LINE.name}] - deactivate',
+        description=f'[{abjad.Tags.FERMATA_BAR_LINE.name}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2189,13 +2192,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.FERMATA_BAR_LINE, build=build)
+        tag = abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=build)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fnmx',
-        description=f'{baca.Tags.FIGURE_NAME_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.FIGURE_NAME_MARKUP.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2205,13 +2208,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.FIGURE_NAME_MARKUP.name
+        tag = abjad.Tags.FIGURE_NAME_MARKUP.name
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lox',
-        description=f'[{baca.Tags.LAYOUT.name}] - deactivate',
+        description=f'[{abjad.Tags.LAYOUT.name}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2225,13 +2228,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.LAYOUT, build=build)
+        tag = abjad.Tags.build(abjad.Tags.LAYOUT, build=build)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spmx',
-        description=f'[{baca.Tags.SPACING_MARKUP.name}] - deactivate',
+        description=f'[{abjad.Tags.SPACING_MARKUP.name}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2245,13 +2248,16 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.SPACING_MARKUP, build=build)
+        tag = abjad.Tags.build(abjad.Tags.SPACING_MARKUP, build=build)
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
+        tag = abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE_MARKUP, build=build)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spx',
-        description=f'[{baca.Tags.SPACING.name}] - deactivate',
+        description=f'[{abjad.Tags.SPACING.name}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2265,13 +2271,13 @@ class AbjadIDE(abjad.AbjadObject):
             build = directory.name
         else:
             build = None
-        tag = baca.Tags.build(baca.Tags.SPACING, build=build)
+        tag = abjad.Tags.build(abjad.Tags.SPACING, build=build)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snmx',
-        description=f'{baca.Tags.STAGE_NUMBER_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2281,7 +2287,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = baca.Tags.STAGE_NUMBER_MARKUP.name
+        tag = abjad.Tags.STAGE_NUMBER_MARKUP.name
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
