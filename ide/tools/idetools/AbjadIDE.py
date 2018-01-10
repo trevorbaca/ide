@@ -1662,13 +1662,17 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         import baca
-        # TODO: deactivate reapplied clefs when directory is build
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_clef_tags:
             count += self._deactivate_tag(directory, tag)
         if not count:
             self.io.display('no clef tags to toggle ...')
+        if directory.is_build():
+            tag = baca.Tags.REAPPLIED_CLEF
+            count = self._deactivate_tag(directory, tag)
+            if not count:
+                self.io.display(f'no {tag} tags to deactivate ...')
 
     @Command(
         'dbw',
@@ -1701,7 +1705,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         import baca
-        # TODO: deactivate reapplied instruments when directory is build
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_instrument_tags['activate']:
@@ -1710,6 +1713,11 @@ class AbjadIDE(abjad.AbjadObject):
             count += self._activate_tag(directory, tag)
         if not count:
             self.io.display(f'no instrument tags to toggle ...')
+        if directory.is_build():
+            tag = baca.Tags.REAPPLIED_INSTRUMENT
+            count = self._deactivate_tag(directory, tag)
+            if not count:
+                self.io.display(f'no {tag} tags to deactivate ...')
 
     @Command(
         'rbw',
