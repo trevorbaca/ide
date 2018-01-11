@@ -15,7 +15,7 @@ def test_AbjadIDE_activate_layout_01():
 
         abjad_ide('red %let lo q')
         transcript = abjad_ide.io.transcript
-        tag = abjad.Tags.build('letter', abjad.Tags.LAYOUT)
+        tag = abjad.Tags.only('letter', abjad.Tags.LAYOUT)
         for ly_path in ly_paths:
             line = f'No {tag} tags to toggle ...'
             assert line in transcript
