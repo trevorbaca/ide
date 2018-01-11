@@ -14,7 +14,9 @@ class Command(abjad.AbjadObject):
         'all',
         'back cover',
         'build',
+        'bw',
         'clipboard',
+        'color',
         'definition',
         'definitions',
         'front cover',
@@ -38,9 +40,7 @@ class Command(abjad.AbjadObject):
         'smart',
         'stylesheet',
         'text',
-        'x:indicators',
         'y:analytics',
-        'z:build',
         )
 
     ### INITIALIZER ###

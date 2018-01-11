@@ -48,52 +48,52 @@ class AbjadIDE(abjad.AbjadObject):
 
     _black_and_white_metronome_mark_tags = {
         'activate': (
-            baca.Tags.EXPLICIT_METRONOME_MARK,
-            baca.Tags.REDUNDANT_METRONOME_MARK,
+            baca.tags.EXPLICIT_METRONOME_MARK,
+            baca.tags.REDUNDANT_METRONOME_MARK,
             ),
         'deactivate': (
-            baca.Tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
-            baca.Tags.REAPPLIED_METRONOME_MARK,
-            baca.Tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
-            baca.Tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
+            baca.tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
+            baca.tags.REAPPLIED_METRONOME_MARK,
+            baca.tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
+            baca.tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
             ),
         }
 
     _color_clef_tags = (
-        baca.Tags.DEFAULT_CLEF_COLOR,
-        baca.Tags.DEFAULT_CLEF_REDRAW_COLOR,
-        baca.Tags.EXPLICIT_CLEF_COLOR,
-        baca.Tags.EXPLICIT_CLEF_REDRAW_COLOR,
-        baca.Tags.REAPPLIED_CLEF_COLOR,
-        baca.Tags.REAPPLIED_CLEF_REDRAW_COLOR,
-        baca.Tags.REDUNDANT_CLEF_COLOR,
-        baca.Tags.REDUNDANT_CLEF_REDRAW_COLOR,
+        baca.tags.DEFAULT_CLEF_COLOR,
+        baca.tags.DEFAULT_CLEF_REDRAW_COLOR,
+        baca.tags.EXPLICIT_CLEF_COLOR,
+        baca.tags.EXPLICIT_CLEF_REDRAW_COLOR,
+        baca.tags.REAPPLIED_CLEF_COLOR,
+        baca.tags.REAPPLIED_CLEF_REDRAW_COLOR,
+        baca.tags.REDUNDANT_CLEF_COLOR,
+        baca.tags.REDUNDANT_CLEF_REDRAW_COLOR,
         )
 
     _color_dynamic_tags = (
-        baca.Tags.EXPLICIT_DYNAMIC_COLOR,
-        baca.Tags.EXPLICIT_DYNAMIC_REDRAW_COLOR,
-        baca.Tags.REAPPLIED_DYNAMIC,
-        baca.Tags.REAPPLIED_DYNAMIC_COLOR,
-        baca.Tags.REAPPLIED_DYNAMIC_REDRAW_COLOR,
-        baca.Tags.REDUNDANT_DYNAMIC_COLOR,
-        baca.Tags.REDUNDANT_DYNAMIC_REDRAW_COLOR,
+        baca.tags.EXPLICIT_DYNAMIC_COLOR,
+        baca.tags.EXPLICIT_DYNAMIC_REDRAW_COLOR,
+        baca.tags.REAPPLIED_DYNAMIC,
+        baca.tags.REAPPLIED_DYNAMIC_COLOR,
+        baca.tags.REAPPLIED_DYNAMIC_REDRAW_COLOR,
+        baca.tags.REDUNDANT_DYNAMIC_COLOR,
+        baca.tags.REDUNDANT_DYNAMIC_REDRAW_COLOR,
         )
 
     _color_instrument_tags = {
         'activate': (
-            baca.Tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.Tags.DEFAULT_INSTRUMENT_COLOR,
-            baca.Tags.REDRAWN_DEFAULT_INSTRUMENT_COLOR,
-            baca.Tags.EXPLICIT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.Tags.EXPLICIT_INSTRUMENT_COLOR,
-            baca.Tags.REDRAWN_EXPLICIT_INSTRUMENT_COLOR,
-            baca.Tags.REAPPLIED_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.Tags.REAPPLIED_INSTRUMENT_COLOR,
-            baca.Tags.REDRAWN_REAPPLIED_INSTRUMENT_COLOR,
-            baca.Tags.REDUNDANT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.Tags.REDUNDANT_INSTRUMENT_COLOR,
-            baca.Tags.REDRAWN_REDUNDANT_INSTRUMENT_COLOR,
+            baca.tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.tags.DEFAULT_INSTRUMENT_COLOR,
+            baca.tags.REDRAWN_DEFAULT_INSTRUMENT_COLOR,
+            baca.tags.EXPLICIT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.tags.EXPLICIT_INSTRUMENT_COLOR,
+            baca.tags.REDRAWN_EXPLICIT_INSTRUMENT_COLOR,
+            baca.tags.REAPPLIED_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.tags.REAPPLIED_INSTRUMENT_COLOR,
+            baca.tags.REDRAWN_REAPPLIED_INSTRUMENT_COLOR,
+            baca.tags.REDUNDANT_INSTRUMENT_ALERT_WITH_COLOR,
+            baca.tags.REDUNDANT_INSTRUMENT_COLOR,
+            baca.tags.REDRAWN_REDUNDANT_INSTRUMENT_COLOR,
             ),
         'deactivate': (
             ),
@@ -101,18 +101,18 @@ class AbjadIDE(abjad.AbjadObject):
 
     _color_margin_markup_tags = {
         'activate': (
-            baca.Tags.DEFAULT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.Tags.DEFAULT_MARGIN_MARKUP_COLOR,
-            baca.Tags.REDRAWN_DEFAULT_MARGIN_MARKUP_COLOR,
-            baca.Tags.EXPLICIT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.Tags.EXPLICIT_MARGIN_MARKUP_COLOR,
-            baca.Tags.REDRAWN_EXPLICIT_MARGIN_MARKUP_COLOR,
-            baca.Tags.REAPPLIED_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.Tags.REAPPLIED_MARGIN_MARKUP_COLOR,
-            baca.Tags.REDRAWN_REAPPLIED_MARGIN_MARKUP_COLOR,
-            baca.Tags.REDUNDANT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.Tags.REDUNDANT_MARGIN_MARKUP_COLOR,
-            baca.Tags.REDRAWN_REDUNDANT_MARGIN_MARKUP_COLOR,
+            baca.tags.DEFAULT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.tags.DEFAULT_MARGIN_MARKUP_COLOR,
+            baca.tags.REDRAWN_DEFAULT_MARGIN_MARKUP_COLOR,
+            baca.tags.EXPLICIT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.tags.EXPLICIT_MARGIN_MARKUP_COLOR,
+            baca.tags.REDRAWN_EXPLICIT_MARGIN_MARKUP_COLOR,
+            baca.tags.REAPPLIED_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.tags.REAPPLIED_MARGIN_MARKUP_COLOR,
+            baca.tags.REDRAWN_REAPPLIED_MARGIN_MARKUP_COLOR,
+            baca.tags.REDUNDANT_MARGIN_MARKUP_ALERT_WITH_COLOR,
+            baca.tags.REDUNDANT_MARGIN_MARKUP_COLOR,
+            baca.tags.REDRAWN_REDUNDANT_MARGIN_MARKUP_COLOR,
             ),
         'deactivate': (
             ),
@@ -120,27 +120,27 @@ class AbjadIDE(abjad.AbjadObject):
 
     _color_metronome_mark_tags = {
         'activate': (
-            baca.Tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
-            baca.Tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
-            baca.Tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
+            baca.tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
+            baca.tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
+            baca.tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
             ),
         'deactivate': (
-            baca.Tags.EXPLICIT_METRONOME_MARK,
-            baca.Tags.REAPPLIED_METRONOME_MARK,
-            baca.Tags.REDUNDANT_METRONOME_MARK,
+            baca.tags.EXPLICIT_METRONOME_MARK,
+            baca.tags.REAPPLIED_METRONOME_MARK,
+            baca.tags.REDUNDANT_METRONOME_MARK,
             ),
         }
 
     _color_staff_line_tags = (
-        baca.Tags.EXPLICIT_STAFF_LINES_COLOR,
-        baca.Tags.REAPPLIED_STAFF_LINES_COLOR,
-        baca.Tags.REDUNDANT_STAFF_LINES_COLOR,
+        baca.tags.EXPLICIT_STAFF_LINES_COLOR,
+        baca.tags.REAPPLIED_STAFF_LINES_COLOR,
+        baca.tags.REDUNDANT_STAFF_LINES_COLOR,
         )
 
     _color_time_signature_tags = (
-        baca.Tags.EXPLICIT_TIME_SIGNATURE_COLOR,
-        baca.Tags.REAPPLIED_TIME_SIGNATURE_COLOR,
-        baca.Tags.REDUNDANT_TIME_SIGNATURE_COLOR,
+        baca.tags.EXPLICIT_TIME_SIGNATURE_COLOR,
+        baca.tags.REAPPLIED_TIME_SIGNATURE_COLOR,
+        baca.tags.REDUNDANT_TIME_SIGNATURE_COLOR,
         )
 
     configuration = Configuration()
@@ -1504,7 +1504,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctm',
-        description=f'{abjad.Tags.CLOCK_TIME_MARKUP} - activate',
+        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1514,49 +1514,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.CLOCK_TIME_MARKUP
+        tag = abjad.tags.CLOCK_TIME_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
-    @Command(
-        'esb',
-        description=f'{abjad.Tags.EMPTY_START_BAR} - activate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_empty_start_bar_tags(self, directory):
-        r'''Activates empty start bar tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        tag = abjad.Tags.EMPTY_START_BAR
-        if not self._activate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'fbl',
-        description=f'[{abjad.Tags.FERMATA_BAR_LINE}] - activate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_fermata_bar_line_tags(self, directory):
-        r'''Activates fermata bar line tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.FERMATA_BAR_LINE)
-        if not self._activate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-            
     @Command(
         'fnm',
-        description=f'{abjad.Tags.FIGURE_NAME_MARKUP} - activate',
+        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1566,34 +1530,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.FIGURE_NAME_MARKUP
-        if not self._activate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'lo',
-        description=f'[{abjad.Tags.LAYOUT}] - activate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_layout_tags(self, directory):
-        r'''Activates layout tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.LAYOUT)
+        tag = abjad.tags.FIGURE_NAME_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spm',
-        description=f'[{abjad.Tags.SPACING_MARKUP}] - activate',
-        menu_section='z:build',
+        description=f'{abjad.tags.SPACING_MARKUP} - activate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def activate_spacing_markup_tags(self, directory):
@@ -1602,40 +1546,16 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.SPACING_MARKUP)
+        tag = abjad.tags.SPACING_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
-        tag = abjad.Tags.only(build, abjad.Tags.SPACING_OVERRIDE_MARKUP)
-        if not self._activate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'sp',
-        description=f'[{abjad.Tags.SPACING}] - activate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def activate_spacing_tags(self, directory):
-        r'''Activates spacing tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.SPACING)
+        tag = abjad.tags.SPACING_OVERRIDE_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snm',
-        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP} - activate',
+        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1645,14 +1565,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.STAGE_NUMBER_MARKUP
+        tag = abjad.tags.STAGE_NUMBER_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'bw*',
-        description='ALL - b&w',
-        menu_section='x:indicators',
+        description='b&w - ALL',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_all(self, directory):
@@ -1670,9 +1590,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.black_and_white_time_signatures(directory)
 
     @Command(
-        'cbw',
-        description='CLEFS - b&w',
-        menu_section='x:indicators',
+        'bwc',
+        description='b&w - CLEFS',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_clefs(self, directory):
@@ -1687,15 +1607,15 @@ class AbjadIDE(abjad.AbjadObject):
         if not count:
             self.io.display('no clef tags to toggle ...')
         if directory.is_build():
-            tag = baca.Tags.REAPPLIED_CLEF
+            tag = baca.tags.REAPPLIED_CLEF
             count = self._deactivate_tag(directory, tag)
             if not count:
                 self.io.display(f'no {tag} tags to deactivate ...')
 
     @Command(
-        'dbw',
-        description='DYNAMICS - b&w',
-        menu_section='x:indicators',
+        'bwd',
+        description='b&w - DYNAMICS',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_dynamics(self, directory):
@@ -1711,9 +1631,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no dynamic tags to toggle ...')
 
     @Command(
-        'ibw',
-        description='INSTRUMENTS - b&w',
-        menu_section='x:indicators',
+        'bwi',
+        description='b&w - INSTRUMENTS',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_instruments(self, directory):
@@ -1730,15 +1650,15 @@ class AbjadIDE(abjad.AbjadObject):
         if not count:
             self.io.display(f'no instrument tags to toggle ...')
         if directory.is_build():
-            tag = baca.Tags.REAPPLIED_INSTRUMENT
+            tag = baca.tags.REAPPLIED_INSTRUMENT
             count = self._deactivate_tag(directory, tag)
             if not count:
                 self.io.display(f'no {tag} tags to deactivate ...')
 
     @Command(
-        'rbw',
-        description='MARGIN MARKUP - b&w',
-        menu_section='x:indicators',
+        'bwmm',
+        description='b&w - MARGIN MARKUP',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_margin_markup(self, directory):
@@ -1754,9 +1674,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'no margin markup tags to toggle ...')
 
     @Command(
-        'mbw',
-        description='METRONOME MARKS - b&w',
-        menu_section='x:indicators',
+        'bwtm',
+        description='b&w - METRONOME MARKS',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_metronome_marks(self, directory):
@@ -1774,9 +1694,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'no metronome mark tags to toggle ...')
 
     @Command(
-        'slbw',
-        description='STAFF LINES - b&w',
-        menu_section='x:indicators',
+        'bwsl',
+        description='b&w - STAFF LINES',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_staff_lines(self, directory):
@@ -1792,9 +1712,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'no staff line tags to toggle ...')
 
     @Command(
-        'tsbw',
-        description='TIME SIGNATURES - b&w',
-        menu_section='x:indicators',
+        'bwts',
+        description='b&w - TIME SIGNATURES',
+        menu_section='bw',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def black_and_white_time_signatures(self, directory):
@@ -1968,13 +1888,13 @@ class AbjadIDE(abjad.AbjadObject):
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
         self._deactivate_tag(directory, '+')
-        self._deactivate_tag(directory, abjad.Tags.forbid(directory.name))
-        self._activate_tag(directory, abjad.Tags.only(directory.name))
+        self._deactivate_tag(directory, abjad.tags.forbid(directory.name))
+        self._activate_tag(directory, abjad.tags.only(directory.name))
 
     @Command(
         'cl*',
-        description='ALL - color',
-        menu_section='x:indicators',
+        description='color - ALL',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_all(self, directory):
@@ -1992,9 +1912,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.color_time_signatures(directory)
 
     @Command(
-        'ccl',
-        description='CLEFS - color',
-        menu_section='x:indicators',
+        'clc',
+        description='color - CLEFS',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_clefs(self, directory):
@@ -2010,9 +1930,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no clef tags to toggle ...')
 
     @Command(
-        'dcl',
-        description='DYNAMICS - color',
-        menu_section='x:indicators',
+        'cld',
+        description='color - DYNAMICS',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_dynamics(self, directory):
@@ -2028,9 +1948,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no dynamic tags to toggle ...')
 
     @Command(
-        'icl',
-        description='INSTRUMENTS - color',
-        menu_section='x:indicators',
+        'cli',
+        description='color - INSTRUMENTS',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_instruments(self, directory):
@@ -2048,9 +1968,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no instrument tags to toggle ...')
 
     @Command(
-        'rcl',
-        description='MARGIN MARKUP - color',
-        menu_section='x:indicators',
+        'clmm',
+        description='color - MARGIN MARKUP',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_margin_markup(self, directory):
@@ -2066,9 +1986,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no margin markup tags to toggle ...')
 
     @Command(
-        'mcl',
-        description='METRONOME MARKS - color',
-        menu_section='x:indicators',
+        'cltm',
+        description='color - METRONOME MARKS',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_metronome_marks(self, directory):
@@ -2086,9 +2006,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no metronome mark tags to toggle ...')
 
     @Command(
-        'slcl',
-        description='STAFF LINES - color',
-        menu_section='x:indicators',
+        'clsl',
+        description='color - STAFF LINES',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_staff_lines(self, directory):
@@ -2104,9 +2024,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('no staff line tags to toggle ...')
 
     @Command(
-        'tscl',
-        description='TIME SIGNATURES - color',
-        menu_section='x:indicators',
+        'clts',
+        description='color - TIME SIGNATURES',
+        menu_section='color',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def color_time_signatures(self, directory):
@@ -2145,7 +2065,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctmx',
-        description=f'{abjad.Tags.CLOCK_TIME_MARKUP} - deactivate',
+        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2155,49 +2075,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.CLOCK_TIME_MARKUP
-        if not self._deactivate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'esbx',
-        description=f'{abjad.Tags.EMPTY_START_BAR} - deactivate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_empty_start_bar_tags(self, directory):
-        r'''Deactivates segment empty start bar tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        tag = abjad.Tags.EMPTY_START_BAR
-        if not self._deactivate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'fblx',
-        description=f'[{abjad.Tags.FERMATA_BAR_LINE}] - deactivate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_fermata_bar_line_tags(self, directory):
-        r'''Deactivates fermata bar line tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.FERMATA_BAR_LINE)
+        tag = abjad.tags.CLOCK_TIME_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'fnmx',
-        description=f'{abjad.Tags.FIGURE_NAME_MARKUP} - deactivate',
+        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2207,34 +2091,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.FIGURE_NAME_MARKUP
-        if not self._deactivate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'lox',
-        description=f'[{abjad.Tags.LAYOUT}] - deactivate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_layout_tags(self, directory):
-        r'''Deactivates layout tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.LAYOUT)
+        tag = abjad.tags.FIGURE_NAME_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'spmx',
-        description=f'[{abjad.Tags.SPACING_MARKUP}] - deactivate',
-        menu_section='z:build',
+        description=f'{abjad.tags.SPACING_MARKUP} - deactivate',
+        menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
     def deactivate_spacing_markup_tags(self, directory):
@@ -2243,36 +2107,16 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.SPACING_MARKUP
+        tag = abjad.tags.SPACING_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
-        tag = abjad.Tags.SPACING_OVERRIDE_MARKUP
-        if not self._deactivate_tag(directory, tag):
-            self.io.display(f'no {tag} tags to toggle ...')
-
-    @Command(
-        'spx',
-        description=f'[{abjad.Tags.SPACING}] - deactivate',
-        menu_section='z:build',
-        score_package_paths=('build', 'segment', 'segments'),
-        )
-    def deactivate_spacing_tags(self, directory):
-        r'''Deactivates spacing tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.only(build, abjad.Tags.SPACING)
+        tag = abjad.tags.SPACING_OVERRIDE_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'snmx',
-        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP} - deactivate',
+        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2282,7 +2126,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.STAGE_NUMBER_MARKUP
+        tag = abjad.tags.STAGE_NUMBER_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
