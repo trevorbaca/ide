@@ -1510,7 +1510,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.build(abjad.Tags.EMPTY_START_BAR)
+        tag = abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.EMPTY_START_BAR)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1529,8 +1529,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.FERMATA_BAR_LINE)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
             
@@ -1565,8 +1565,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.LAYOUT, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.LAYOUT)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1585,11 +1585,11 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.SPACING_MARKUP, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING_MARKUP)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
-        tag = abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE_MARKUP, build=build)
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING_OVERRIDE_MARKUP)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1608,8 +1608,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.SPACING, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1957,37 +1957,31 @@ class AbjadIDE(abjad.AbjadObject):
         path.write_text(text)
         self._deactivate_tag(
             directory,
-            abjad.Tags.build(abjad.Tags.EMPTY_START_BAR),
+            abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.EMPTY_START_BAR),
             )
         self._deactivate_tag(
             directory,
-            abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE),
+            abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.FERMATA_BAR_LINE),
             )
         self._deactivate_tag(
             directory,
-            abjad.Tags.build(abjad.Tags.LAYOUT),
+            abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.LAYOUT),
             )
         self._activate_tag(
             directory,
-            abjad.Tags.build(
-                abjad.Tags.FERMATA_BAR_LINE,
-                build=directory.name,
-                ),
+            abjad.Tags.build(directory.name, abjad.Tags.FERMATA_BAR_LINE),
             )
         self._deactivate_tag(
             directory,
-            abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE),
+            abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.SPACING_OVERRIDE),
             )
         self._activate_tag(
             directory,
-            abjad.Tags.build(
-                abjad.Tags.SPACING_OVERRIDE,
-                build=directory.name,
-                ),
+            abjad.Tags.build(directory.name, abjad.Tags.SPACING_OVERRIDE),
             )
         self._activate_tag(
             directory,
-            abjad.Tags.build('', build=directory.name),
+            abjad.Tags.build(directory.name),
             )
 
     @Command(
@@ -2198,7 +2192,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.build(abjad.Tags.EMPTY_START_BAR)
+        tag = abjad.Tags.build(abjad.Tags.SEGMENT, abjad.Tags.EMPTY_START_BAR)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -2217,8 +2211,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.FERMATA_BAR_LINE)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -2253,8 +2247,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.LAYOUT, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.LAYOUT)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -2273,11 +2267,11 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.SPACING_MARKUP, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING_MARKUP)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
-        tag = abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE_MARKUP, build=build)
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING_OVERRIDE_MARKUP)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -2296,8 +2290,8 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             build = directory.name
         else:
-            build = None
-        tag = abjad.Tags.build(abjad.Tags.SPACING, build=build)
+            build = abjad.Tags.SEGMENT
+        tag = abjad.Tags.build(build, abjad.Tags.SPACING)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
