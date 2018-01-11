@@ -201,15 +201,23 @@ class AbjadIDE(abjad.AbjadObject):
     ### PRIVATE METHODS ###
 
     def _activate_tag(self, directory, tag):
-        tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            count = self._activate_tag_in_build_lys(directory, tag)
+            count = self._activate_tag_in_build_lys(
+                directory,
+                tag,
+                )
         elif directory.is_segment():
-            count = self._activate_tag_in_segment_ly(directory, tag)
+            count = self._activate_tag_in_segment_ly(
+                directory,
+                tag,
+                )
         elif directory.is_segments():
             count = 0
             for segment in directory.list_paths():
-                count += self._activate_tag_in_segment_ly(segment, tag)
+                count += self._activate_tag_in_segment_ly(
+                    segment,
+                    tag,
+                    )
         else:
             raise ValueError(directory)
         return count
@@ -323,15 +331,23 @@ class AbjadIDE(abjad.AbjadObject):
         target.write_text(template)
 
     def _deactivate_tag(self, directory, tag):
-        tag = getattr(tag, 'name', tag)
         if directory.is_build():
-            count = self._deactivate_tag_in_build_lys(directory, tag)
+            count = self._deactivate_tag_in_build_lys(
+                directory,
+                tag,
+                )
         elif directory.is_segment():
-            count = self._deactivate_tag_in_segment_ly(directory, tag)
+            count = self._deactivate_tag_in_segment_ly(
+                directory,
+                tag,
+                )
         elif directory.is_segments():
             count = 0
             for segment in directory.list_paths():
-                count += self._deactivate_tag_in_segment_ly(segment, tag)
+                count += self._deactivate_tag_in_segment_ly(
+                    segment,
+                    tag,
+                    )
         else:
             raise ValueError(directory)
         return count
@@ -361,7 +377,11 @@ class AbjadIDE(abjad.AbjadObject):
             total += count
         return total
 
-    def _deactivate_tag_in_segment_ly(self, directory, tag):
+    def _deactivate_tag_in_segment_ly(
+        self,
+        directory,
+        tag,
+        ):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
@@ -1640,7 +1660,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         self.black_and_white_clefs(directory)
         self.black_and_white_dynamics(directory)
@@ -1661,7 +1680,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_clef_tags:
@@ -1685,7 +1703,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_dynamic_tags:
@@ -1704,7 +1721,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_instrument_tags['activate']:
@@ -1730,7 +1746,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_margin_markup_tags:
@@ -1749,7 +1764,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._black_and_white_metronome_mark_tags['activate']:
@@ -1770,7 +1784,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_staff_line_tags:
@@ -1789,7 +1802,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_time_signature_tags:
@@ -1983,6 +1995,10 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             abjad.Tags.build(directory.name),
             )
+        self._deactivate_tag(
+            directory,
+            f'-{abjad.Tags.build(directory.name)}',
+            )
 
     @Command(
         'cl*',
@@ -1995,7 +2011,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         self.color_clefs(directory)
         self.color_dynamics(directory)
@@ -2016,7 +2031,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_clef_tags:
@@ -2035,7 +2049,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_dynamic_tags:
@@ -2054,7 +2067,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_instrument_tags['activate']:
@@ -2075,7 +2087,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_margin_markup_tags:
@@ -2094,7 +2105,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_metronome_mark_tags['activate']:
@@ -2115,7 +2125,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_staff_line_tags:
@@ -2134,7 +2143,6 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        import baca
         assert directory.is_score_package_path()
         count = 0
         for tag in self._color_time_signature_tags:
@@ -2264,14 +2272,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        if directory.is_build():
-            build = directory.name
-        else:
-            build = abjad.Tags.SEGMENT
-        tag = abjad.Tags.build(build, abjad.Tags.SPACING_MARKUP)
+        tag = abjad.Tags.SPACING_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
-        tag = abjad.Tags.build(build, abjad.Tags.SPACING_OVERRIDE_MARKUP)
+        tag = abjad.Tags.SPACING_OVERRIDE_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
