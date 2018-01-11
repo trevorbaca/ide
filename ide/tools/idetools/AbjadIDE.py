@@ -1484,7 +1484,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctm',
-        description=f'{abjad.Tags.CLOCK_TIME_MARKUP.name} - activate',
+        description=f'{abjad.Tags.CLOCK_TIME_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1494,13 +1494,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.CLOCK_TIME_MARKUP.name
+        tag = abjad.Tags.CLOCK_TIME_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esb',
-        description=f'{abjad.Tags.EMPTY_START_BAR.name} - activate',
+        description=f'{abjad.Tags.EMPTY_START_BAR} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1516,7 +1516,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fbl',
-        description=f'[{abjad.Tags.FERMATA_BAR_LINE.name}] - activate',
+        description=f'[{abjad.Tags.FERMATA_BAR_LINE}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1536,7 +1536,7 @@ class AbjadIDE(abjad.AbjadObject):
             
     @Command(
         'fnm',
-        description=f'{abjad.Tags.FIGURE_NAME_MARKUP.name} - activate',
+        description=f'{abjad.Tags.FIGURE_NAME_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1546,13 +1546,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.FIGURE_NAME_MARKUP.name
+        tag = abjad.Tags.FIGURE_NAME_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lo',
-        description=f'[{abjad.Tags.LAYOUT.name}] - activate',
+        description=f'[{abjad.Tags.LAYOUT}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1572,7 +1572,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'spm',
-        description=f'[{abjad.Tags.SPACING_MARKUP.name}] - activate',
+        description=f'[{abjad.Tags.SPACING_MARKUP}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1595,7 +1595,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'sp',
-        description=f'[{abjad.Tags.SPACING.name}] - activate',
+        description=f'[{abjad.Tags.SPACING}] - activate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1615,7 +1615,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'snm',
-        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP.name} - activate',
+        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1625,7 +1625,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.STAGE_NUMBER_MARKUP.name
+        tag = abjad.Tags.STAGE_NUMBER_MARKUP
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -2172,7 +2172,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctmx',
-        description=f'{abjad.Tags.CLOCK_TIME_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.CLOCK_TIME_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2182,13 +2182,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.CLOCK_TIME_MARKUP.name
+        tag = abjad.Tags.CLOCK_TIME_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'esbx',
-        description=f'{abjad.Tags.EMPTY_START_BAR.name} - deactivate',
+        description=f'{abjad.Tags.EMPTY_START_BAR} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2204,7 +2204,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fblx',
-        description=f'[{abjad.Tags.FERMATA_BAR_LINE.name}] - deactivate',
+        description=f'[{abjad.Tags.FERMATA_BAR_LINE}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2224,7 +2224,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fnmx',
-        description=f'{abjad.Tags.FIGURE_NAME_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.FIGURE_NAME_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2234,13 +2234,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.FIGURE_NAME_MARKUP.name
+        tag = abjad.Tags.FIGURE_NAME_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
         'lox',
-        description=f'[{abjad.Tags.LAYOUT.name}] - deactivate',
+        description=f'[{abjad.Tags.LAYOUT}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2260,7 +2260,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'spmx',
-        description=f'[{abjad.Tags.SPACING_MARKUP.name}] - deactivate',
+        description=f'[{abjad.Tags.SPACING_MARKUP}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2283,7 +2283,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'spx',
-        description=f'[{abjad.Tags.SPACING.name}] - deactivate',
+        description=f'[{abjad.Tags.SPACING}] - deactivate',
         menu_section='z:build',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2303,7 +2303,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'snmx',
-        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP.name} - deactivate',
+        description=f'{abjad.Tags.STAGE_NUMBER_MARKUP} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2313,7 +2313,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.STAGE_NUMBER_MARKUP.name
+        tag = abjad.Tags.STAGE_NUMBER_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
