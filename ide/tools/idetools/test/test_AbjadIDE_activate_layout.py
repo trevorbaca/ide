@@ -1,3 +1,4 @@
+import abjad
 import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
@@ -14,7 +15,7 @@ def test_AbjadIDE_activate_layout_01():
 
         abjad_ide('red %let lo q')
         transcript = abjad_ide.io.transcript
-        tag = 'LETTER_LAYOUT'
+        tag = abjad.Tags.build(abjad.Tags.LAYOUT, build='letter')
         for ly_path in ly_paths:
             line = f'No {tag} tags to toggle ...'
             assert line in transcript

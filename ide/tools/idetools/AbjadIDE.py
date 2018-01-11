@@ -1500,7 +1500,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'esb',
-        description=f'{abjad.Tags.SEGMENT_EMPTY_START_BAR.name} - activate',
+        description=f'{abjad.Tags.EMPTY_START_BAR.name} - activate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -1510,7 +1510,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.SEGMENT_EMPTY_START_BAR.name
+        tag = abjad.Tags.build(abjad.Tags.EMPTY_START_BAR)
         if not self._activate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
@@ -1957,7 +1957,7 @@ class AbjadIDE(abjad.AbjadObject):
         path.write_text(text)
         self._deactivate_tag(
             directory,
-            abjad.Tags.SEGMENT_EMPTY_START_BAR,
+            abjad.Tags.build(abjad.Tags.EMPTY_START_BAR),
             )
         self._deactivate_tag(
             directory,
@@ -1970,6 +1970,10 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(
             directory,
             abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=directory.name),
+            )
+        self._activate_tag(
+            directory,
+            abjad.Tags.build('', build=directory.name),
             )
 
     @Command(
@@ -2170,7 +2174,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'esbx',
-        description=f'{abjad.Tags.SEGMENT_EMPTY_START_BAR.name} - deactivate',
+        description=f'{abjad.Tags.EMPTY_START_BAR.name} - deactivate',
         menu_section='y:analytics',
         score_package_paths=('build', 'segment', 'segments'),
         )
@@ -2180,7 +2184,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.Tags.SEGMENT_EMPTY_START_BAR.name
+        tag = abjad.Tags.build(abjad.Tags.EMPTY_START_BAR)
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
