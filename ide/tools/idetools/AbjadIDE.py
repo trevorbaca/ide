@@ -1969,7 +1969,21 @@ class AbjadIDE(abjad.AbjadObject):
             )
         self._activate_tag(
             directory,
-            abjad.Tags.build(abjad.Tags.FERMATA_BAR_LINE, build=directory.name),
+            abjad.Tags.build(
+                abjad.Tags.FERMATA_BAR_LINE,
+                build=directory.name,
+                ),
+            )
+        self._deactivate_tag(
+            directory,
+            abjad.Tags.build(abjad.Tags.SPACING_OVERRIDE),
+            )
+        self._activate_tag(
+            directory,
+            abjad.Tags.build(
+                abjad.Tags.SPACING_OVERRIDE,
+                build=directory.name,
+                ),
             )
         self._activate_tag(
             directory,
