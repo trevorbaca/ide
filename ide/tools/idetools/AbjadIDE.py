@@ -1955,9 +1955,7 @@ class AbjadIDE(abjad.AbjadObject):
             segment = source.parent
             time_signatures_ = segment.get_metadatum('time_signatures')
             time_signatures[segment.name] = time_signatures_
-        path = directory._segments('time_signatures.py')
-        text = 'time_signatures = ' + format(time_signatures)
-        path.write_text(text)
+        directory.contents.add_metadatum('time_signatures', time_signatures)
         tag = name = '+'
         count = self._deactivate_tag(directory, tag, name=tag)
         if not count:
@@ -3674,7 +3672,7 @@ class AbjadIDE(abjad.AbjadObject):
         'yom',
         description='layout - make',
         menu_section='layout',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def make_layout(self, directory):
         r'''Makes layout ly.

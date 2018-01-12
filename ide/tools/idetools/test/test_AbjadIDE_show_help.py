@@ -273,6 +273,8 @@ def test_AbjadIDE_show_help_03():
         '    hop - next score (>>)',
         '    hop - previous score (<<)',
         '',
+        '    layout - make (yom)',
+        '',
         '    log - aliases (al)',
         '    log - latex (lx)',
         '    log - lilypond (lp)',
