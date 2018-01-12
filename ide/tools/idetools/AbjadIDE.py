@@ -2612,7 +2612,10 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self.io.display('generating back cover ...')
         values = {}
-        catalog_number = directory.get_metadatum('catalog_number', r'\null')
+        catalog_number = directory.contents.get_metadatum(
+            'catalog_number',
+            r'\null',
+            )
         if catalog_number:
             suffix = directory.get_metadatum('catalog_number_suffix')
             if suffix:
