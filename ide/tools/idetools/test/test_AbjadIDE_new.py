@@ -138,12 +138,24 @@ def test_AbjadIDE_new_04():
         assert 'Paper size (ex: letter landscape)> arch a' in transcript
         assert r'Price (ex: \$80 / \euro 72)> $80' in transcript
         assert 'Catalog number suffix (ex: ann.)> ARCH-A'in transcript
-        assert transcript.lines[-24:] == [
+        assert transcript.lines[-36:] == [
             'Generating back cover ...',
             'Writing red_score/builds/arch-a/back-cover.tex ...',
             '',
             'Generating front cover ...',
             'Writing red_score/builds/arch-a/front-cover.tex ...',
+            '',
+            'Writing red_score/builds/arch-a/layout.py ...',
+            '',
+            'Collecting segment lys ...',
+            'Writing red_score/builds/arch-a/_segments/segment-_.ly ...',
+            'Writing red_score/builds/arch-a/_segments/segment-A.ly ...',
+            'Writing red_score/builds/arch-a/_segments/segment-B.ly ...',
+            'No + tags to toggle ...',
+            'No -ARCH_A tags to toggle ...',
+            'No +ARCH_A tags to toggle ...',
+            'No persistent indicator tags to deactivate ...',
+            'No persistent indicator tags to activate ...',
             '',
             'Generating music ...',
             'Examining segments alphabetically ...',

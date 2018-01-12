@@ -150,11 +150,11 @@ class AbjadIDE(abjad.AbjadObject):
     paper_size_to_paper_dimensions = {
         'a3': '297 x 420 mm',
         'a4': '210 x 297 mm',
-        'arch a': '9 x 12 in',
-        'arch b': '12 x 18 in',
-        'arch c': '18 x 24 in',
-        'arch d': '24 x 36 in',
-        'arch e': '36 x 48 in',
+        'arch-a': '9 x 12 in',
+        'arch-b': '12 x 18 in',
+        'arch-c': '18 x 24 in',
+        'arch-d': '24 x 36 in',
+        'arch-e': '36 x 48 in',
         'legal': '8.5 x 14 in',
         'ledger': '17 x 11 in',
         'letter': '8.5 x 11 in',
@@ -629,6 +629,10 @@ class AbjadIDE(abjad.AbjadObject):
         self.generate_back_cover(build)
         self.io.display('')
         self.generate_front_cover(build)
+        self.io.display('')
+        self._copy_boilerplate(build, 'layout.py')
+        self.io.display('')
+        self.collect_segment_lys(build)
         self.io.display('')
         self.generate_music(build)
         self.io.display('')
@@ -1388,12 +1392,10 @@ class AbjadIDE(abjad.AbjadObject):
         return files
 
     def _to_paper_dimensions(self, paper_size, orientation='portrait'):
-        prototype = ('landscape', 'portrait', None)
-        assert orientation in prototype, repr(orientation)
-        try:
-            paper_dimensions = self.paper_size_to_paper_dimensions[paper_size]
-        except KeyError:
-            return 8.5, 11, 'in'
+        orientations = ('landscape', 'portrait', None)
+        assert orientation in orientations, repr(orientation)
+        paper_size = abjad.String(paper_size).to_dash_case()
+        paper_dimensions = self.paper_size_to_paper_dimensions[paper_size]
         paper_dimensions = paper_dimensions.replace(' x ', ' ')
         width, height, unit = paper_dimensions.split()
         if orientation == 'landscape':
@@ -1945,6 +1947,8 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not directory._segments.is_dir():
             directory._segments.mkdir()
+            gitignore = directory._segments / '.gitignore'
+            gitignore.write_text('*.ly')
         time_signatures = abjad.TypedOrderedDict()
         for source, target in pairs:
             if target.exists():
@@ -2608,23 +2612,22 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build()
         self.io.display('generating back cover ...')
         values = {}
-        contents = directory.contents
-        catalog_number = contents.get_metadatum('catalog_number')
-        name = 'catalog_number_suffix'
-        catalog_number_suffix = contents.get_metadatum(name)
-        if catalog_number_suffix:
-            catalog_number += f' / {catalog_number_suffix}'
+        catalog_number = directory.get_metadatum('catalog_number', r'\null')
+        if catalog_number:
+            suffix = directory.get_metadatum('catalog_number_suffix')
+            if suffix:
+                catalog_number = f'{catalog_number} / {suffix}'
         values['catalog_number'] = catalog_number
         composer_website = abjad.abjad_configuration.composer_website or ''
         if self.test or self.example:
             composer_website = 'www.composer-website.com'
         values['composer_website'] = composer_website
-        price = contents.get_metadatum('price', r'\null')
+        price = directory.get_metadatum('price', r'\null')
         values['price'] = price
-        paper_size = contents.get_metadatum('paper_size', 'letter')
-        orientation = contents.get_metadatum('orientation')
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
-        width, height, unit = paper_size
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        dimensions = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = dimensions
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
         self._copy_boilerplate(directory, 'back-cover.tex', values=values)
@@ -2641,23 +2644,22 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents
         self.io.display('generating front cover ...')
         file_name = 'front-cover.tex'
         values = {}
-        score_title = contents.get_title(year=False)
+        score_title = directory.contents.get_title(year=False)
         score_title = score_title.upper()
         values['score_title'] = score_title
-        forces_tagline = contents.get_metadatum('forces_tagline', '')
+        forces_tagline = directory.contents.get_metadatum('forces_tagline', '')
         values['forces_tagline'] = forces_tagline
-        year = contents.get_metadatum('year', '')
+        year = directory.contents.get_metadatum('year', '')
         values['year'] = str(year)
         composer = abjad.abjad_configuration.composer_uppercase_name
         if (self.test or self.example):
             composer = 'COMPOSER'
         values['composer'] = str(composer)
-        paper_size = contents.get_metadatum('paper_size', 'letter')
-        orientation = contents.get_metadatum('orientation')
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
         paper_size = self._to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
@@ -2676,15 +2678,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build()
-        contents = directory.contents
         self.io.display('generating music ...')
         target = directory('music.ly')
         if target.exists():
             self.io.display(f'removing {target.trim()} ...')
             target.remove()
-        paths = contents.segments.list_paths()
+        paths = directory.segments.list_paths()
         if paths:
-            view = contents.segments.get_metadatum('view')
+            view = directory.segments.get_metadatum('view')
             if bool(view):
                 self.io.display(f'examining segments in view order ...')
             else:
@@ -2716,21 +2717,19 @@ class AbjadIDE(abjad.AbjadObject):
             new = '\n'.join(lines)
             segment_include_statements = new
         stylesheet_include_statement = ''
-        if directory.is_builds():
-            line = r'\include "../stylesheets/stylesheet.ily"'
-        elif directory.is_build():
-            line = r'\include "stylesheet.ily"'
+        line = r'\include "stylesheet.ily"'
         stylesheet_include_statement = line
         language_token = abjad.LilyPondLanguageToken()
         lilypond_language_directive = format(language_token)
         version_token = abjad.LilyPondVersionToken()
         lilypond_version_directive = format(version_token)
-        annotated_title = contents.get_title(year=True)
+        annotated_title = directory.contents.get_title(year=True)
         if annotated_title:
             score_title = annotated_title
         else:
-            score_title = contents.get_title(year=False)
-        forces_tagline = contents.get_metadatum('forces_tagline', '')
+            score_title = directory.contents.get_title(year=False)
+        forces_tagline = directory.contents.get_metadatum('forces_tagline', '')
+        forces_tagline = forces_tagline.replace('\\', '')
         template = target.read_text()
         template = template.format(
             forces_tagline=forces_tagline,
