@@ -200,16 +200,18 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_tag(self, directory, tag):
+    def _activate_tag(self, directory, tag, name=None):
         if directory.is_build():
             count = self._activate_tag_in_build_lys(
                 directory,
                 tag,
+                name=name,
                 )
         elif directory.is_segment():
             count = self._activate_tag_in_segment_ly(
                 directory,
                 tag,
+                name=name,
                 )
         elif directory.is_segments():
             count = 0
@@ -217,12 +219,13 @@ class AbjadIDE(abjad.AbjadObject):
                 count += self._activate_tag_in_segment_ly(
                     segment,
                     tag,
+                    name=name,
                     )
         else:
             raise ValueError(directory)
         return count
 
-    def _activate_tag_in_build_lys(self, directory, tag):
+    def _activate_tag_in_build_lys(self, directory, tag, name=None):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -241,20 +244,20 @@ class AbjadIDE(abjad.AbjadObject):
         for ly in lys:
             text, count = ly.activate_tag(tag)
             if count:
-                messages = self._message_activate(ly, tag, count)
+                messages = self._message_activate(ly, tag, count, name=name)
                 self.io.display(messages)
             ly.write_text(text)
             total += count
         return total
 
-    def _activate_tag_in_segment_ly(self, directory, tag):
+    def _activate_tag_in_segment_ly(self, directory, tag, name=None):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
         text, count = ly.activate_tag(tag)
         if count:
-            messages = self._message_activate(ly, tag, count)
+            messages = self._message_activate(ly, tag, count, name=name)
             self.io.display(messages)
         ly.write_text(text)
         return count
@@ -330,16 +333,18 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _deactivate_tag(self, directory, tag):
+    def _deactivate_tag(self, directory, tag, name=None):
         if directory.is_build():
             count = self._deactivate_tag_in_build_lys(
                 directory,
                 tag,
+                name=name,
                 )
         elif directory.is_segment():
             count = self._deactivate_tag_in_segment_ly(
                 directory,
                 tag,
+                name=name,
                 )
         elif directory.is_segments():
             count = 0
@@ -347,12 +352,13 @@ class AbjadIDE(abjad.AbjadObject):
                 count += self._deactivate_tag_in_segment_ly(
                     segment,
                     tag,
+                    name=name,
                     )
         else:
             raise ValueError(directory)
         return count
 
-    def _deactivate_tag_in_build_lys(self, directory, tag):
+    def _deactivate_tag_in_build_lys(self, directory, tag, name=None):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -371,24 +377,20 @@ class AbjadIDE(abjad.AbjadObject):
         for ly in lys:
             text, count = ly.deactivate_tag(tag)
             if count:
-                messages = self._message_deactivate(ly, tag, count)
+                messages = self._message_deactivate(ly, tag, count, name=name)
                 self.io.display(messages)
             ly.write_text(text)
             total += count
         return total
 
-    def _deactivate_tag_in_segment_ly(
-        self,
-        directory,
-        tag,
-        ):
+    def _deactivate_tag_in_segment_ly(self, directory, tag, name=None):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
         text, count = ly.deactivate_tag(tag)
         if count:
-            messages = self._message_deactivate(ly, tag, count)
+            messages = self._message_deactivate(ly, tag, count, name=name)
             self.io.display(messages)
         ly.write_text(text)
         return count
@@ -407,6 +409,25 @@ class AbjadIDE(abjad.AbjadObject):
         if isinstance(self.test, str) and self.test.startswith('dimensions'):
             dimensions = eval(self.test.strip('dimensions='))
         return dimensions
+
+    def _get_persistent_indicator_color_activation_tags(self, directory):
+        tags = self._color_clef_tags
+        if directory.is_build():
+            tags += (baca.tags.REAPPLIED_CLEF,)
+        tags += self._color_dynamic_tags
+        tags += self._color_instrument_tags['activate']
+        tags += self._color_margin_markup_tags['activate']
+        tags += self._black_and_white_metronome_mark_tags['deactivate']
+        tags += self._color_staff_line_tags
+        tags += self._color_time_signature_tags
+        return tags
+
+    def _get_persistent_indicator_color_deactivation_tags(self, directory):
+        tags = self._color_instrument_tags['deactivate']
+        if directory.is_build():
+            tags += (baca.tags.REAPPLIED_INSTRUMENT,)
+        tags += self._black_and_white_metronome_mark_tags['activate']
+        return tags
 
     def _get_score_names(self):
         scores = self._get_scores_directory()
@@ -1127,11 +1148,12 @@ class AbjadIDE(abjad.AbjadObject):
         return address, result
 
     @staticmethod
-    def _message_activate(ly, tag, count):
+    def _message_activate(ly, tag, count, name=None):
         messages = []
+        name = name or tag
         if 0 < count:
             counter = abjad.String('tag').pluralize(count)
-            message = f'activating {count} {tag} {counter}'
+            message = f'activating {count} {name} {counter}'
             if ly is not None:
                 message += f' in {ly.name}'
             message += ' ...'
@@ -1139,11 +1161,12 @@ class AbjadIDE(abjad.AbjadObject):
         return messages
 
     @staticmethod
-    def _message_deactivate(ly, tag, count):
+    def _message_deactivate(ly, tag, count, name=None):
         messages = []
+        name = name or tag
         if 0 < count: 
             counter = abjad.String('tag').pluralize(count)
-            message = f'deactivating {count} {tag} {counter}'
+            message = f'deactivating {count} {name} {counter}'
             if ly is not None:
                 message += f' in {ly.name}'
             message += ' ...'
@@ -1581,13 +1604,16 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self.black_and_white_clefs(directory)
-        self.black_and_white_dynamics(directory)
-        self.black_and_white_instruments(directory)
-        self.black_and_white_margin_markup(directory)
-        self.black_and_white_metronome_marks(directory)
-        self.black_and_white_staff_lines(directory)
-        self.black_and_white_time_signatures(directory)
+        name = 'persistent indicator'
+        tags = self._get_persistent_indicator_color_activation_tags(directory)
+        count = self._deactivate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to deactivate ...')
+        tags = self._get_persistent_indicator_color_deactivation_tags(
+            directory)
+        count = self._activate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to activate ...')
 
     @Command(
         'bwc',
@@ -1601,16 +1627,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_clef_tags:
-            count += self._deactivate_tag(directory, tag)
-        if not count:
-            self.io.display('no clef tags to toggle ...')
+        name = 'clef'
+        tags = self._color_clef_tags
         if directory.is_build():
-            tag = baca.tags.REAPPLIED_CLEF
-            count = self._deactivate_tag(directory, tag)
-            if not count:
-                self.io.display(f'no {tag} tags to deactivate ...')
+            tags += (baca.tags.REAPPLIED_CLEF,)
+        count = self._deactivate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwd',
@@ -1624,11 +1647,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_dynamic_tags:
-            count += self._deactivate_tag(directory, tag)
+        name = 'dynamic'
+        tags = self._color_dynamic_tags
+        count = self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no dynamic tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwi',
@@ -1642,18 +1665,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_instrument_tags['activate']:
-            count += self._deactivate_tag(directory, tag)
-        for tag in self._color_instrument_tags['deactivate']:
-            count += self._activate_tag(directory, tag)
-        if not count:
-            self.io.display(f'no instrument tags to toggle ...')
+        name = 'instrument'
+        tags = self._color_instrument_tags['activate']
         if directory.is_build():
-            tag = baca.tags.REAPPLIED_INSTRUMENT
-            count = self._deactivate_tag(directory, tag)
-            if not count:
-                self.io.display(f'no {tag} tags to deactivate ...')
+            tags += (baca.tags.REAPPLIED_INSTRUMENT,)
+        count = self._deactivate_tag(directory, tags, name=name)
+        tags = self._color_instrument_tags['deactivate']
+        count += self._activate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwmm',
@@ -1667,11 +1687,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_margin_markup_tags:
-            count += self._deactivate_tag(directory, tag)
+        name = 'margin markup'
+        tags = self._color_margin_markup_tags['activate']
+        count = self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display(f'no margin markup tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwtm',
@@ -1685,13 +1705,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._black_and_white_metronome_mark_tags['activate']:
-            count += self._activate_tag(directory, tag)
-        for tag in self._black_and_white_metronome_mark_tags['deactivate']:
-            count += self._deactivate_tag(directory, tag)
+        name = 'metronome mark'
+        tags = self._black_and_white_metronome_mark_tags['activate']
+        count = self._activate_tag(directory, tags, name=name)
+        tags = self._black_and_white_metronome_mark_tags['deactivate']
+        count += self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display(f'no metronome mark tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwsl',
@@ -1705,11 +1725,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_staff_line_tags:
-            count += self._deactivate_tag(directory, tag)
+        name = 'staff line'
+        tags = self._color_staff_line_tags
+        count = self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display(f'no staff line tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bwts',
@@ -1723,11 +1743,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_time_signature_tags:
-            count += self._deactivate_tag(directory, tag)
+        name = 'time signature'
+        tags = self._color_time_signature_tags
+        count = self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display(f'no time signature tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'bld',
@@ -1887,9 +1907,18 @@ class AbjadIDE(abjad.AbjadObject):
         path = directory._segments('time_signatures.py')
         text = 'time_signatures = ' + format(time_signatures)
         path.write_text(text)
-        self._deactivate_tag(directory, '+')
-        self._deactivate_tag(directory, abjad.tags.forbid(directory.name))
-        self._activate_tag(directory, abjad.tags.only(directory.name))
+        tag = name = '+'
+        count = self._deactivate_tag(directory, tag, name=tag)
+        if not count:
+            self.io.display(f'no {name} tags to toggle ...')
+        tag = name = abjad.tags.forbid(directory.name)
+        count = self._deactivate_tag(directory, name, name=tag)
+        if not count:
+            self.io.display(f'no {name} tags to toggle ...')
+        tag = name = abjad.tags.only(directory.name)
+        count = self._activate_tag(directory, tag, name=tag)
+        if not count:
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'cl*',
@@ -1903,13 +1932,16 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self.color_clefs(directory)
-        self.color_dynamics(directory)
-        self.color_instruments(directory)
-        self.color_margin_markup(directory)
-        self.color_metronome_marks(directory)
-        self.color_staff_lines(directory)
-        self.color_time_signatures(directory)
+        name = 'persistent indicator'
+        tags = self._get_persistent_indicator_color_activation_tags(directory)
+        count = self._activate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to activate ...')
+        tags = self._get_persistent_indicator_color_deactivation_tags(
+            directory)
+        count = self._deactivate_tag(directory, tags, name=name)
+        if not count:
+            self.io.display(f'no {name} tags to deactivate ...')
 
     @Command(
         'clc',
@@ -1923,11 +1955,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_clef_tags:
-            count += self._activate_tag(directory, tag)
+        tags = self._color_clef_tags
+        if directory.is_build():
+            tags += (baca.tags.REAPPLIED_CLEF,)
+        name = 'clef'
+        count = self._activate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no clef tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'cld',
@@ -1941,11 +1975,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_dynamic_tags:
-            count += self._activate_tag(directory, tag)
+        tags = self._color_dynamic_tags
+        name = 'dynamic'
+        count = self._activate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no dynamic tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'cli',
@@ -1959,13 +1993,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_instrument_tags['activate']:
-            count += self._activate_tag(directory, tag)
-        for tag in self._color_instrument_tags['deactivate']:
-            count += self._deactivate_tag(directory, tag)
+        tags = self._color_instrument_tags['activate']
+        name = 'instrument'
+        count = self._activate_tag(directory, tags, name=name)
+        tags = self._color_instrument_tags['deactivate']
+        count += self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no instrument tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'clmm',
@@ -1979,11 +2013,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_margin_markup_tags:
-            count += self._activate_tag(directory, tag)
+        tags = self._color_margin_markup_tags['activate']
+        name = 'margin markup'
+        count = self._activate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no margin markup tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'cltm',
@@ -1997,13 +2031,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_metronome_mark_tags['activate']:
-            count += self._activate_tag(directory, tag)
-        for tag in self._color_metronome_mark_tags['deactivate']:
-            count += self._deactivate_tag(directory, tag)
+        name = 'metronome mark'
+        tags = self._color_metronome_mark_tags['activate']
+        count = self._activate_tag(directory, tags, name=name)
+        tags = self._color_metronome_mark_tags['deactivate']
+        count += self._deactivate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no metronome mark tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'clsl',
@@ -2017,11 +2051,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_staff_line_tags:
-            count += self._activate_tag(directory, tag)
+        name = 'staff line'
+        tags = self._color_staff_line_tags
+        count = self._activate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no staff line tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'clts',
@@ -2035,11 +2069,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        count = 0
-        for tag in self._color_time_signature_tags:
-            count += self._activate_tag(directory, tag)
+        name = 'time signature'
+        tags = self._color_time_signature_tags
+        count = self._activate_tag(directory, tags, name=name)
         if not count:
-            self.io.display('no time signature tags to toggle ...')
+            self.io.display(f'no {name} tags to toggle ...')
 
     @Command(
         'cp',
