@@ -200,17 +200,28 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate_tag(self, directory, tag, name=None):
+    def _activate_tag(
+        self,
+        directory,
+        tag,
+        allow_only=None,
+        forbid=None,
+        name=None,
+        ):
         if directory.is_build():
             count = self._activate_tag_in_build_lys(
                 directory,
                 tag,
+                allow_only=allow_only,
+                forbid=forbid,
                 name=name,
                 )
         elif directory.is_segment():
             count = self._activate_tag_in_segment_ly(
                 directory,
                 tag,
+                allow_only=allow_only,
+                forbid=forbid,
                 name=name,
                 )
         elif directory.is_segments():
@@ -219,13 +230,22 @@ class AbjadIDE(abjad.AbjadObject):
                 count += self._activate_tag_in_segment_ly(
                     segment,
                     tag,
+                    allow_only=allow_only,
+                    forbid=forbid,
                     name=name,
                     )
         else:
             raise ValueError(directory)
         return count
 
-    def _activate_tag_in_build_lys(self, directory, tag, name=None):
+    def _activate_tag_in_build_lys(
+        self,
+        directory,
+        tag,
+        allow_only=None,
+        forbid=None,
+        name=None,
+        ):
         assert directory.is_score_package_path()
         if not directory._segments.is_dir():
             self.io.display('no _segments directory found ...')
@@ -242,7 +262,11 @@ class AbjadIDE(abjad.AbjadObject):
         lys = [directory._segments(_) for _ in names]
         total = 0
         for ly in lys:
-            text, count = ly.activate_tag(tag)
+            text, count = ly.activate_tag(
+                tag,
+                allow_only=allow_only,
+                forbid=forbid,
+                )
             if count:
                 messages = self._message_activate(ly, tag, count, name=name)
                 self.io.display(messages)
@@ -250,12 +274,23 @@ class AbjadIDE(abjad.AbjadObject):
             total += count
         return total
 
-    def _activate_tag_in_segment_ly(self, directory, tag, name=None):
+    def _activate_tag_in_segment_ly(
+        self,
+        directory,
+        tag,
+        allow_only=None,
+        forbid=None,
+        name=None,
+        ):
         ly = directory('illustration.ly')
         if not ly.is_file():
             self.io.display(f'missing {ly.trim()} ...')
             return
-        text, count = ly.activate_tag(tag)
+        text, count = ly.activate_tag(
+            tag,
+            allow_only=allow_only,
+            forbid=forbid,
+            )
         if count:
             messages = self._message_activate(ly, tag, count, name=name)
             self.io.display(messages)
@@ -1570,10 +1605,26 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tag = abjad.tags.SPACING_MARKUP
-        if not self._activate_tag(directory, tag):
+        if directory.is_build():
+            allow_only = abjad.tags.only(directory.name)
+            forbid = abjad.tags.forbid(directory.name)
+        else:
+            allow_only = abjad.tags.only(abjad.tags.SEGMENT)
+            forbid = abjad.tags.forbid(abjad.tags.SEGMENT)
+        if not self._activate_tag(
+            directory,
+            tag,
+            allow_only=allow_only,
+            forbid=forbid,
+            ):
             self.io.display(f'no {tag} tags to toggle ...')
         tag = abjad.tags.SPACING_OVERRIDE_MARKUP
-        if not self._activate_tag(directory, tag):
+        if not self._activate_tag(
+            directory,
+            tag,
+            allow_only=allow_only,
+            forbid=forbid,
+            ):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
@@ -1919,6 +1970,7 @@ class AbjadIDE(abjad.AbjadObject):
         count = self._activate_tag(directory, tag, name=tag)
         if not count:
             self.io.display(f'no {name} tags to toggle ...')
+        self.black_and_white_all(directory)
 
     @Command(
         'cl*',
