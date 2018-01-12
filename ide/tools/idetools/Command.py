@@ -27,6 +27,7 @@ class Command(abjad.AbjadObject):
         'log',
         'ly',
         'lys',
+        'markup',
         'midi',
         'music',
         'package',
@@ -40,7 +41,6 @@ class Command(abjad.AbjadObject):
         'smart',
         'stylesheet',
         'text',
-        'y:analytics',
         )
 
     ### INITIALIZER ###

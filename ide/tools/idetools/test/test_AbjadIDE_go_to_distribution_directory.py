@@ -15,7 +15,7 @@ def test_AbjadIDE_go_to_distribution_directory_01():
         'Red Score (2017) : materials : metronome_marks',
         'Red Score (2017) : distribution',
         ]
-    assert '.gitignore' not in transcript
+    assert '.gitignore' in transcript
 
 
 def test_AbjadIDE_go_to_distribution_directory_02():

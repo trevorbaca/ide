@@ -16,11 +16,11 @@ def test_AbjadIDE_get_01():
         abjad_ide(f'blu %letter get red ont-co y q')
         assert target.is_file()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : builds : letter (empty)'
+        header = 'Blue Score (2017) : builds : letter'
         header += ' : get files from ...'
         assert header in transcript
         assert header in transcript
-        header = 'Blue Score (2017) : distribution (empty)'
+        header = 'Blue Score (2017) : distribution'
         header += ' : get Red Score (2017) files ...'
         assert f'> red' in transcript
         assert f'Getting {source.trim()} ...' in transcript
@@ -42,10 +42,10 @@ def test_AbjadIDE_get_02():
         abjad_ide(f'blu dd get red ore.pdf y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : distribution (empty)'
+        header = 'Blue Score (2017) : distribution'
         header += ' : get files from ...'
         assert header in transcript
-        header = 'Blue Score (2017) : distribution (empty)'
+        header = 'Blue Score (2017) : distribution'
         header += ' : get Red Score (2017) files ...'
         assert header in transcript
         assert '> red' in transcript
@@ -69,9 +69,9 @@ def test_AbjadIDE_get_03():
         abjad_ide(f'blu ee get red otes.txt y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : etc (empty) : get files from ...'
+        header = 'Blue Score (2017) : etc : get files from ...'
         assert header in transcript
-        header = 'Blue Score (2017) : etc (empty)'
+        header = 'Blue Score (2017) : etc'
         header += ' : get Red Score (2017) files ...'
         assert header in transcript
         assert '> red' in transcript

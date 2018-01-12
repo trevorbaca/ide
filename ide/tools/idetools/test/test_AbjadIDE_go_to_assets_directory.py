@@ -6,7 +6,6 @@ def test_AbjadIDE_go_to_assets_directory_01():
     r'''From material directory.
     '''
 
-
     abjad_ide('red mm metronome aa q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
@@ -14,9 +13,9 @@ def test_AbjadIDE_go_to_assets_directory_01():
         'Red Score (2017)',
         'Red Score (2017) : materials',
         'Red Score (2017) : materials : metronome_marks',
-        'Red Score (2017) : builds : _assets (empty)',
+        'Red Score (2017) : builds : _assets',
         ]
-    assert '.gitignore' not in transcript
+    assert '.gitignore' in transcript
 
 
 def test_AbjadIDE_go_to_assets_directory_02():
@@ -31,7 +30,7 @@ def test_AbjadIDE_go_to_assets_directory_02():
         'Red Score (2017)',
         'Red Score (2017) : segments',
         'Red Score (2017) : segments : A',
-        'Red Score (2017) : builds : _assets (empty)',
+        'Red Score (2017) : builds : _assets',
         ]
 
 
@@ -44,7 +43,7 @@ def test_AbjadIDE_go_to_assets_directory_03():
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) : builds : _assets (empty)',
+        'Red Score (2017) : builds : _assets',
         ]
 
 
@@ -57,15 +56,6 @@ def test_AbjadIDE_go_to_assets_directory_04():
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) : builds : _assets (empty)',
-        'Red Score (2017) : builds : _assets (empty)',
+        'Red Score (2017) : builds : _assets',
+        'Red Score (2017) : builds : _assets',
         ]
-
-
-def test_AbjadIDE_go_to_assets_directory_05():
-    r'''Git ignore file is hidden.
-    '''
-
-    abjad_ide('red aa q')
-    transcript = abjad_ide.io.transcript
-    assert '.gitignore' not in transcript

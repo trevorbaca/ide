@@ -15,7 +15,7 @@ def test_AbjadIDE_go_to_etc_directory_01():
         'Red Score (2017) : materials : metronome_marks',
         'Red Score (2017) : etc',
         ]
-    assert '.gitignore' not in transcript
+    assert '.gitignore' in transcript
 
 
 def test_AbjadIDE_go_to_etc_directory_02():

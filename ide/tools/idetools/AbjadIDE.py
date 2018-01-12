@@ -208,7 +208,7 @@ class AbjadIDE(abjad.AbjadObject):
         forbid=None,
         name=None,
         ):
-        if directory.is_build():
+        if directory.is_build() or directory.is__segments():
             count = self._activate_tag_in_build_lys(
                 directory,
                 tag,
@@ -369,7 +369,7 @@ class AbjadIDE(abjad.AbjadObject):
         target.write_text(template)
 
     def _deactivate_tag(self, directory, tag, name=None):
-        if directory.is_build():
+        if directory.is_build() or directory.is__segments():
             count = self._deactivate_tag_in_build_lys(
                 directory,
                 tag,
@@ -1563,8 +1563,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctm',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - activate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_clock_time_markup_tags(self, directory):
         r'''Activates clock time markup tags.
@@ -1579,8 +1579,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnm',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - activate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_figure_name_markup_tags(self, directory):
         r'''Activates figure name markup tags.
@@ -1595,8 +1595,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'spm',
         description=f'{abjad.tags.SPACING_MARKUP} - activate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_spacing_markup_tags(self, directory):
         r'''Activates spacing markup tags.
@@ -1630,8 +1630,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snm',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - activate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_stage_number_markup_tags(self, directory):
         r'''Activates stage number markup tags.
@@ -1647,7 +1647,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bw*',
         description='b&w - ALL',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_all(self, directory):
         r'''Renders all persistent indicators in black and white.
@@ -1670,7 +1670,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwc',
         description='b&w - CLEFS',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_clefs(self, directory):
         r'''Renders clefs in black and white.
@@ -1690,7 +1690,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwd',
         description='b&w - DYNAMICS',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_dynamics(self, directory):
         r'''Renders dynamics in black and white.
@@ -1708,7 +1708,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwi',
         description='b&w - INSTRUMENTS',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_instruments(self, directory):
         r'''Renders instruments in black and white.
@@ -1730,7 +1730,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwmm',
         description='b&w - MARGIN MARKUP',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_margin_markup(self, directory):
         r'''Renders margin markup in black and white.
@@ -1748,7 +1748,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwtm',
         description='b&w - METRONOME MARKS',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_metronome_marks(self, directory):
         r'''Renders metronome marks in black and white.
@@ -1768,7 +1768,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwsl',
         description='b&w - STAFF LINES',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_staff_lines(self, directory):
         r'''Renders staff lines in black and white.
@@ -1786,7 +1786,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bwts',
         description='b&w - TIME SIGNATURES',
         menu_section='bw',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def black_and_white_time_signatures(self, directory):
         r'''Renders time signatures in black and white.
@@ -1920,7 +1920,7 @@ class AbjadIDE(abjad.AbjadObject):
         'lyc*',
         description='lys - collect',
         menu_section='lys',
-        score_package_paths=('build',),
+        score_package_paths=('build', '_segments'),
         )
     def collect_segment_lys(self, directory):
         r'''Collects segment lys.
@@ -1937,7 +1937,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is_build() or directory.is__segments()
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segment_lys(directory)
         if not pairs:
@@ -1976,7 +1976,7 @@ class AbjadIDE(abjad.AbjadObject):
         'cl*',
         description='color - ALL',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_all(self, directory):
         r'''Colors all persistent indicators.
@@ -1999,7 +1999,7 @@ class AbjadIDE(abjad.AbjadObject):
         'clc',
         description='color - CLEFS',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_clefs(self, directory):
         r'''Colors clefs.
@@ -2019,7 +2019,7 @@ class AbjadIDE(abjad.AbjadObject):
         'cld',
         description='color - DYNAMICS',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_dynamics(self, directory):
         r'''Colors dynamics.
@@ -2037,7 +2037,7 @@ class AbjadIDE(abjad.AbjadObject):
         'cli',
         description='color - INSTRUMENTS',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_instruments(self, directory):
         r'''Colors instruments.
@@ -2057,7 +2057,7 @@ class AbjadIDE(abjad.AbjadObject):
         'clmm',
         description='color - MARGIN MARKUP',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_margin_markup(self, directory):
         r'''Colors margin markup.
@@ -2075,7 +2075,7 @@ class AbjadIDE(abjad.AbjadObject):
         'cltm',
         description='color - METRONOME MARKS',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_metronome_marks(self, directory):
         r'''Colors metronome marks.
@@ -2095,7 +2095,7 @@ class AbjadIDE(abjad.AbjadObject):
         'clsl',
         description='color - STAFF LINES',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_staff_lines(self, directory):
         r'''Colors staff lines.
@@ -2113,7 +2113,7 @@ class AbjadIDE(abjad.AbjadObject):
         'clts',
         description='color - TIME SIGNATURES',
         menu_section='color',
-        score_package_paths=('build', 'segment', 'segments'),
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def color_time_signatures(self, directory):
         r'''Colors time signatures.
@@ -2152,8 +2152,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctmx',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - deactivate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_clock_time_markup_tags(self, directory):
         r'''Deactivates clock time markup tags.
@@ -2168,8 +2168,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnmx',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - deactivate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_figure_name_markup_tags(self, directory):
         r'''Deactivates figure name markup tags.
@@ -2184,8 +2184,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'spmx',
         description=f'{abjad.tags.SPACING_MARKUP} - deactivate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_spacing_markup_tags(self, directory):
         r'''Deactivates spacing markup tags.
@@ -2203,8 +2203,8 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snmx',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - deactivate',
-        menu_section='y:analytics',
-        score_package_paths=('build', 'segment', 'segments'),
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_stage_number_markup_tags(self, directory):
         r'''Deactivates stage number markup tags.

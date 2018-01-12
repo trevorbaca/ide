@@ -4,33 +4,39 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_duplicate_01():
-    r'''In build directory. Directory is empty.
+    r'''In build directory.
     '''
 
-    abjad_ide(f'blu %letter dup q')
+    abjad_ide(f'blu %letter dup ignore q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('blue_score', 'builds', 'letter')
-    assert f'Missing {path.trim()} files ...' in transcript
+    assert 'Select files to duplicate> ignore' in transcript
+    assert 'Duplicating blue_score/builds/letter/.gitignore ...' in transcript
+    assert 'Enter new name> q' in transcript
 
 
 def test_AbjadIDE_duplicate_02():
-    r'''In distribution directory. Directory is empty.
+    r'''In distribution directory.
     '''
 
-    abjad_ide(f'blu dd dup q')
+    abjad_ide(f'blu dd dup ignore q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('blue_score', 'distribution')
-    assert f'Missing {path.trim()} files ...' in transcript
+    assert 'Select files to duplicate> ignore' in transcript
+    assert 'Duplicating blue_score/distribution/.gitignore ...' in transcript
+    assert 'Enter new name> q' in transcript
 
 
 def test_AbjadIDE_duplicate_03():
-    r'''In etc directory. Directory is empty.
+    r'''In etc directory.
     '''
 
-    abjad_ide(f'blu ee dup q')
+    abjad_ide(f'blu ee dup ignore q')
     transcript = abjad_ide.io.transcript
     path = ide.Path('blue_score', 'etc')
-    assert f'Missing {path.trim()} files ...' in transcript
+    assert 'Select files to duplicate> ignore' in transcript
+    assert 'Duplicating blue_score/etc/.gitignore ...' in transcript
+    assert 'Enter new name> q' in transcript
 
 
 def test_AbjadIDE_duplicate_04():

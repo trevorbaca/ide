@@ -10,7 +10,7 @@ def test_AbjadIDE_show_help_01():
     abjad_ide('red aa ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
-        'Red Score (2017) : builds : _assets (empty) : help',
+        'Red Score (2017) : builds : _assets : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',
@@ -154,6 +154,15 @@ def test_AbjadIDE_show_help_02():
         '',
         '    lys - collect (lyc*)',
         '',
+        '    CLOCK_TIME_MARKUP - activate (ctm)',
+        '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
+        '    FIGURE_NAME_MARKUP - activate (fnm)',
+        '    FIGURE_NAME_MARKUP - deactivate (fnmx)',
+        '    SPACING_MARKUP - activate (spm)',
+        '    SPACING_MARKUP - deactivate (spmx)',
+        '    STAGE_NUMBER_MARKUP - activate (snm)',
+        '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
+        '',
         '    music - edit (me)',
         '    music - generate (mg)',
         '    music - interpret (mi)',
@@ -208,6 +217,68 @@ def test_AbjadIDE_show_help_02():
         '    text - replace (rp)',
         '    text - search (sr)',
         '',
+        ]
+
+
+def test_AbjadIDE_show_help_03():
+    r'''In build _segments directory.
+    '''
+
+    abjad_ide('red %letter _segments ? q')
+    menu = abjad_ide.io.transcript.menus[-1]
+    assert menu == [
+        'Red Score (2017) : builds : letter : _segments : help',
+        '',
+        '    all - doctest (^^)',
+        '    all - edit (@@)',
+        '    all - pdfs (**)',
+        '    all - pytest (++)',
+        '',
+        '    b&w - ALL (bw*)',
+        '    b&w - CLEFS (bwc)',
+        '    b&w - DYNAMICS (bwd)',
+        '    b&w - INSTRUMENTS (bwi)',
+        '    b&w - MARGIN MARKUP (bwmm)',
+        '    b&w - METRONOME MARKS (bwtm)',
+        '    b&w - STAFF LINES (bwsl)',
+        '    b&w - TIME SIGNATURES (bwts)',
+        '',
+        '    clipboard - copy (cp)',
+        '    clipboard - empty (cx)',
+        '    clipboard - paste (cv)',
+        '    clipboard - show (cs)',
+        '',
+        '    color - ALL (cl*)',
+        '    color - CLEFS (clc)',
+        '    color - DYNAMICS (cld)',
+        '    color - INSTRUMENTS (cli)',
+        '    color - MARGIN MARKUP (clmm)',
+        '    color - METRONOME MARKS (cltm)',
+        '    color - STAFF LINES (clsl)',
+        '    color - TIME SIGNATURES (clts)',
+        '',
+        '    git - commit (ci)',
+        '    git - diff (diff)',
+        '    git - pull (pull)',
+        '    git - push (push)',
+        '    git - status (st)',
+        '',
+        '    go - back (-)',
+        '    go - directory (%)',
+        '    go - library (ll)',
+        '    go - quit (q)',
+        '    go - scores (ss)',
+        '    go - up (..)',
+        '',
+        '    hop - next score (>>)',
+        '    hop - previous score (<<)',
+        '',
+        '    log - aliases (al)',
+        '    log - latex (lx)',
+        '    log - lilypond (lp)',
+        '',
+        '    lys - collect (lyc*)',
+        '',
         '    CLOCK_TIME_MARKUP - activate (ctm)',
         '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
         '    FIGURE_NAME_MARKUP - activate (fnm)',
@@ -217,10 +288,46 @@ def test_AbjadIDE_show_help_02():
         '    STAGE_NUMBER_MARKUP - activate (snm)',
         '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
         '',
+        '    package - assets (aa)',
+        '    package - builds (bb)',
+        '    package - contents (cc)',
+        '    package - distribution (dd)',
+        '    package - etc (ee)',
+        '    package - materials (mm)',
+        '    package - segments (gg)',
+        '    package - stylesheets (yy)',
+        '    package - test (tt)',
+        '    package - tools (oo)',
+        '    package - wrapper (ww)',
+        '',
+        '    path - duplicate (dup)',
+        '    path - get (get)',
+        '    path - new (new)',
+        '    path - remove (rm)',
+        '    path - rename (ren)',
+        '',
+        '    score - open (ro)',
+        '',
+        '    shell - call (!)',
+        '',
+        '    show - column (;)',
+        '    show - help (?)',
+        '',
+        '    smart - doctest (^)',
+        '    smart - edit (@)',
+        '    smart - pdf (*)',
+        '    smart - pytest (+)',
+        '',
+        '    text - edit (it)',
+        '    text - replace (rp)',
+        '    text - search (sr)',
+        '',
         ]
 
 
-def test_AbjadIDE_show_help_03():
+
+
+def test_AbjadIDE_show_help_04():
     r'''In builds directory.
     '''
 
@@ -296,7 +403,7 @@ def test_AbjadIDE_show_help_03():
         ]
 
 
-def test_AbjadIDE_show_help_04():
+def test_AbjadIDE_show_help_05():
     r'''In contents directory.
     '''
 
@@ -366,7 +473,7 @@ def test_AbjadIDE_show_help_04():
         ]
 
 
-def test_AbjadIDE_show_help_05():
+def test_AbjadIDE_show_help_06():
     r'''In distribution directory.
     '''
 
@@ -442,7 +549,7 @@ def test_AbjadIDE_show_help_05():
         ]
 
 
-def test_AbjadIDE_show_help_06():
+def test_AbjadIDE_show_help_07():
     r'''In library.
     '''
 
@@ -503,7 +610,7 @@ def test_AbjadIDE_show_help_06():
         ]
 
 
-def test_AbjadIDE_show_help_07():
+def test_AbjadIDE_show_help_08():
     r'''In material directory.
     '''
 
@@ -593,7 +700,7 @@ def test_AbjadIDE_show_help_07():
         ]
 
 
-def test_AbjadIDE_show_help_08():
+def test_AbjadIDE_show_help_09():
     r'''In materials directory.
     '''
 
@@ -682,7 +789,7 @@ def test_AbjadIDE_show_help_08():
         ]
 
 
-def test_AbjadIDE_show_help_09():
+def test_AbjadIDE_show_help_10():
     r'''In scores directory.
     '''
 
@@ -745,7 +852,7 @@ def test_AbjadIDE_show_help_09():
         ]
 
 
-def test_AbjadIDE_show_help_10():
+def test_AbjadIDE_show_help_11():
     r'''In segment directory.
     '''
 
@@ -813,6 +920,15 @@ def test_AbjadIDE_show_help_10():
         '    ly - make (lym)',
         '    ly - trash (lyt)',
         '',
+        '    CLOCK_TIME_MARKUP - activate (ctm)',
+        '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
+        '    FIGURE_NAME_MARKUP - activate (fnm)',
+        '    FIGURE_NAME_MARKUP - deactivate (fnmx)',
+        '    SPACING_MARKUP - activate (spm)',
+        '    SPACING_MARKUP - deactivate (spmx)',
+        '    STAGE_NUMBER_MARKUP - activate (snm)',
+        '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
+        '',
         '    midi - make (midm)',
         '',
         '    package - assets (aa)',
@@ -852,19 +968,10 @@ def test_AbjadIDE_show_help_10():
         '    text - replace (rp)',
         '    text - search (sr)',
         '',
-        '    CLOCK_TIME_MARKUP - activate (ctm)',
-        '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
-        '    FIGURE_NAME_MARKUP - activate (fnm)',
-        '    FIGURE_NAME_MARKUP - deactivate (fnmx)',
-        '    SPACING_MARKUP - activate (spm)',
-        '    SPACING_MARKUP - deactivate (spmx)',
-        '    STAGE_NUMBER_MARKUP - activate (snm)',
-        '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
-        '',
         ]
 
 
-def test_AbjadIDE_show_help_11():
+def test_AbjadIDE_show_help_12():
     r'''In segments directory.
     '''
 
@@ -931,6 +1038,15 @@ def test_AbjadIDE_show_help_11():
         '    lys - make (lym*)',
         '    lys - trash (lyt*)',
         '',
+        '    CLOCK_TIME_MARKUP - activate (ctm)',
+        '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
+        '    FIGURE_NAME_MARKUP - activate (fnm)',
+        '    FIGURE_NAME_MARKUP - deactivate (fnmx)',
+        '    SPACING_MARKUP - activate (spm)',
+        '    SPACING_MARKUP - deactivate (spmx)',
+        '    STAGE_NUMBER_MARKUP - activate (snm)',
+        '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
+        '',
         '    package - assets (aa)',
         '    package - builds (bb)',
         '    package - contents (cc)',
@@ -968,19 +1084,10 @@ def test_AbjadIDE_show_help_11():
         '    text - replace (rp)',
         '    text - search (sr)',
         '',
-        '    CLOCK_TIME_MARKUP - activate (ctm)',
-        '    CLOCK_TIME_MARKUP - deactivate (ctmx)',
-        '    FIGURE_NAME_MARKUP - activate (fnm)',
-        '    FIGURE_NAME_MARKUP - deactivate (fnmx)',
-        '    SPACING_MARKUP - activate (spm)',
-        '    SPACING_MARKUP - deactivate (spmx)',
-        '    STAGE_NUMBER_MARKUP - activate (snm)',
-        '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
-        '',
         ]
 
 
-def test_AbjadIDE_show_help_12():
+def test_AbjadIDE_show_help_13():
     r'''In stylesheets directory.
     '''
 
@@ -1056,7 +1163,7 @@ def test_AbjadIDE_show_help_12():
         ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_14():
     r'''In test directory.
     '''
 
@@ -1132,7 +1239,7 @@ def test_AbjadIDE_show_help_13():
         ]
 
 
-def test_AbjadIDE_show_help_14():
+def test_AbjadIDE_show_help_15():
     r'''In tools directory.
     '''
 
@@ -1208,7 +1315,7 @@ def test_AbjadIDE_show_help_14():
         ]
 
 
-def test_AbjadIDE_show_help_15():
+def test_AbjadIDE_show_help_16():
     r'''In wrapper directory.
     '''
 
