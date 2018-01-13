@@ -126,58 +126,59 @@ def test_AbjadIDE_new_04():
     r'''Makes build directory.
     '''
 
-    build = ide.Path('red_score', 'builds', 'arch-a')
+    build = ide.Path('red_score', 'builds', 'arch-a-score')
     with ide.Test(remove=[build]):
 
-        abjad_ide('red bb new arch-a arch~a $80 ARCH-A y q')
+        abjad_ide('red bb new arch-a-score arch~a $80 ARCH-A y q')
         transcript = abjad_ide.io.transcript
         assert build.is_dir()
         assert build.get_metadatum('price') == '$80'
         assert build.get_metadatum('catalog_number_suffix') == 'ARCH-A'
-        assert 'Build name> arch-a' in transcript
+        assert 'Build name> arch-a-score' in transcript
         assert 'Paper size (ex: letter landscape)> arch a' in transcript
         assert r'Price (ex: \$80 / \euro 72)> $80' in transcript
         assert 'Catalog number suffix (ex: ann.)> ARCH-A'in transcript
-        assert transcript.lines[-36:] == [
+        assert transcript.lines[-37:] == [
             'Generating back cover ...',
-            'Writing red_score/builds/arch-a/back-cover.tex ...',
+            'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
             'Generating front cover ...',
-            'Writing red_score/builds/arch-a/front-cover.tex ...',
+            'Writing red_score/builds/arch-a-score/front-cover.tex ...',
             '',
-            'Writing red_score/builds/arch-a/layout.py ...',
+            'Writing red_score/builds/arch-a-score/layout.py ...',
             '',
             'Collecting segment lys ...',
-            'Writing red_score/builds/arch-a/_segments/segment-_.ly ...',
-            'Writing red_score/builds/arch-a/_segments/segment-A.ly ...',
-            'Writing red_score/builds/arch-a/_segments/segment-B.ly ...',
-            'No + tags to toggle ...',
-            'No -ARCH_A tags to toggle ...',
-            'No +ARCH_A tags to toggle ...',
+            'Writing red_score/builds/arch-a-score/_segments/segment-_.ly ...',
+            'Writing red_score/builds/arch-a-score/_segments/segment-A.ly ...',
+            'Writing red_score/builds/arch-a-score/_segments/segment-B.ly ...',
+            'No + tags to deactivate ...',
+            'No -ARCH_A_SCORE tags to deactivate ...',
+            'No +ARCH_A_SCORE tags to activate ...',
             'No persistent indicator tags to deactivate ...',
             'No persistent indicator tags to activate ...',
+            'No markup tags to deactivate ...',
             '',
             'Generating music ...',
             'Examining segments alphabetically ...',
             'Examining red_score/segments/_ ...',
             'Examining red_score/segments/A ...',
             'Examining red_score/segments/B ...',
-            'Writing red_score/builds/arch-a/music.ly ...',
+            'Writing red_score/builds/arch-a-score/music.ly ...',
             '',
             'Generating preface ...',
-            'Writing red_score/builds/arch-a/preface.tex ...',
+            'Writing red_score/builds/arch-a-score/preface.tex ...',
             '',
             'Generating score ...',
-            'Writing red_score/builds/arch-a/score.tex ...',
+            'Writing red_score/builds/arch-a-score/score.tex ...',
             '',
             'Generating stylesheet ...',
-            'Writing red_score/builds/arch-a/stylesheet.ily ...',
+            'Writing red_score/builds/arch-a-score/stylesheet.ily ...',
             '',
             '> q',
             '',
             ]
 
-        abjad_ide('red bb new arch-a q')
+        abjad_ide('red bb new arch-a-score q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {build.trim()} ...' in transcript
 
@@ -186,15 +187,15 @@ def test_AbjadIDE_new_05():
     r'''Makes build directory. Ignores empty metadata.
     '''
 
-    path = ide.Path('red_score', 'builds', 'arch-a')
+    path = ide.Path('red_score', 'builds', 'arch-a-score')
     with ide.Test(remove=[path]):
 
-        abjad_ide('red bb new arch-a arch~a <return> <return> y q')
+        abjad_ide('red bb new arch-a-score arch~a <return> <return> y q')
         transcript = abjad_ide.io.transcript
         assert path.is_dir()
         assert path.get_metadatum('price') is None
         assert path.get_metadatum('catalog_number_suffix') is None
-        assert 'Build name> arch-a' in transcript
+        assert 'Build name> arch-a-score' in transcript
         assert 'Paper size (ex: letter landscape)> arch a' in transcript
         assert r'Price (ex: \$80 / \euro 72)>' in transcript
         assert 'Catalog number suffix (ex: ann.)>'in transcript

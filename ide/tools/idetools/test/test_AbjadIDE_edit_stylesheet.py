@@ -6,5 +6,5 @@ def test_AbjadIDE_edit_stylesheet_01():
     
     abjad_ide('red %letter ye q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('red_score', 'builds', 'letter', 'stylesheet.ily')
+    path = ide.Path('red_score', 'builds', 'letter-score', 'stylesheet.ily')
     assert f'Editing {path.trim()} ...' in transcript

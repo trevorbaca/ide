@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_stylesheet_01():
 
     with ide.Test():
-        path = ide.Path('red_score', 'builds', 'letter', 'stylesheet.ily')
+        path = ide.Path('red_score', 'builds', 'letter-score', 'stylesheet.ily')
         assert path.is_file()
 
         abjad_ide('red %letter yt q')

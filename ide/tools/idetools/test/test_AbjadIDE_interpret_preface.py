@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_interpret_preface_01():
 
     with ide.Test():
-        source = ide.Path('red_score', 'builds', 'letter', 'preface.tex')
+        source = ide.Path('red_score', 'builds', 'letter-score', 'preface.tex')
         target = source.with_suffix('.pdf')
         target.remove()
 

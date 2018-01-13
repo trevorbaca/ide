@@ -9,6 +9,6 @@ def test_AbjadIDE_go_to_build_directory_01():
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
-        'Red Score (2017) : builds : letter',
+        'Red Score (2017) : builds : letter-score',
         ]
     assert '.gitignore' not in transcript

@@ -9,7 +9,7 @@ def test_AbjadIDE_generate_back_cover_01():
         text = source.read_text()
         assert 'paper_size' in text
         assert '{8.5in, 11in}' not in text
-        target = ide.Path('blue_score', 'builds', 'letter', 'back-cover.tex')
+        target = ide.Path('blue_score', 'builds', 'letter-score', 'back-cover.tex')
         target.remove()
 
         abjad_ide('blu %letter bcg q')

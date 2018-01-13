@@ -9,9 +9,9 @@ def test_AbjadIDE_duplicate_01():
 
     abjad_ide(f'blu %letter dup ignore q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score', 'builds', 'letter')
+    path = ide.Path('blue_score', 'builds', 'letter-score')
     assert 'Select files to duplicate> ignore' in transcript
-    assert 'Duplicating blue_score/builds/letter/.gitignore ...' in transcript
+    assert 'Duplicating blue_score/builds/letter-score/.gitignore ...' in transcript
     assert 'Enter new name> q' in transcript
 
 

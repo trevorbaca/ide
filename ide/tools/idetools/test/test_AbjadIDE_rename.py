@@ -99,7 +99,7 @@ def test_AbjadIDE_rename_05():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'builds', 'letter')
+        source = ide.Path('red_score', 'builds', 'letter-score')
         assert source.is_dir()
         target = source.with_name('standard-size')
         target.remove()

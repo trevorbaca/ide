@@ -12,7 +12,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_interpret_score_01():
 
     with ide.Test():
-        source = ide.Path('red_score', 'builds', 'letter', 'score.tex')
+        source = ide.Path('red_score', 'builds', 'letter-score', 'score.tex')
         target = source.with_suffix('.pdf')
         target.remove()
 
@@ -40,7 +40,7 @@ def test_AbjadIDE_interpret_score_02():
     '''
 
     with ide.Test():
-        pdf = ide.Path('red_score', 'builds', 'letter', 'front-cover.pdf')
+        pdf = ide.Path('red_score', 'builds', 'letter-score', 'front-cover.pdf')
         pdf.remove()
 
         abjad_ide('red %letter ri q')

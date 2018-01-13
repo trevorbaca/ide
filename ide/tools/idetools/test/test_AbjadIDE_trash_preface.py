@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_preface_01():
 
     with ide.Test():
-        path = ide.Path('red_score', 'builds', 'letter', 'preface.tex')
+        path = ide.Path('red_score', 'builds', 'letter-score', 'preface.tex')
         assert path.is_file()
 
         abjad_ide('red %letter pt q')

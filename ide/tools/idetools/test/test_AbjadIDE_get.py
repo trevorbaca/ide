@@ -8,7 +8,7 @@ def test_AbjadIDE_get_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'builds', 'letter', 'front-cover.tex')
+        source = ide.Path('red_score', 'builds', 'letter-score', 'front-cover.tex')
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -16,7 +16,7 @@ def test_AbjadIDE_get_01():
         abjad_ide(f'blu %letter get red ont-co y q')
         assert target.is_file()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : builds : letter'
+        header = 'Blue Score (2017) : builds : letter-score'
         header += ' : get files from ...'
         assert header in transcript
         assert header in transcript

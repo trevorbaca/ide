@@ -86,7 +86,7 @@ def test_AbjadIDE_show_help_02():
     abjad_ide('red %letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
-        'Red Score (2017) : builds : letter : help',
+        'Red Score (2017) : builds : letter-score : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',
@@ -229,7 +229,7 @@ def test_AbjadIDE_show_help_03():
     abjad_ide('red %letter _segments ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
-        'Red Score (2017) : builds : letter : _segments : help',
+        'Red Score (2017) : builds : letter-score : _segments : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',
