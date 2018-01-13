@@ -2446,6 +2446,21 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
+        'yoe',
+        description='layout - edit',
+        menu_section='layout',
+        score_package_paths=('_segments', 'build',),
+        )
+    def edit_layout(self, directory):
+        r'''Edits layout.py file.
+
+        Returns none.
+        '''
+        assert directory.is_build() or directory.is__segments()
+        path = directory('layout.py')
+        self._open_files([path])
+
+    @Command(
         'lp',
         description='log - lilypond',
         external_directories=True,
@@ -3677,7 +3692,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is_build() or directory.is__segments()
         self.io.display('making layout ...')
         layout_py = directory('layout.py')
         layout_ly = layout_py.with_suffix('.ly')
