@@ -17,7 +17,7 @@ def test_AbjadIDE_activate_markup_01():
         transcript = abjad_ide.io.transcript
         tag = abjad.tags.CLOCK_TIME_MARKUP
         for ly_path in ly_paths:
-            line = f'No {tag} tags to toggle ...'
+            line = f'No {tag} tags to activate ...'
             assert line in transcript
 
 
