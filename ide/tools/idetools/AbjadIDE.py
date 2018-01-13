@@ -1595,6 +1595,22 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'no {tag} tags to toggle ...')
 
     @Command(
+        'mim',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - activate',
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        )
+    def activate_measure_index_markup_tags(self, directory):
+        r'''Activates measure index markup tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        tag = abjad.tags.MEASURE_INDEX_MARKUP
+        if not self._activate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
+
+    @Command(
         'spm',
         description=f'{abjad.tags.SPACING_MARKUP} - activate',
         menu_section='markup',
@@ -2180,6 +2196,22 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tag = abjad.tags.FIGURE_NAME_MARKUP
+        if not self._deactivate_tag(directory, tag):
+            self.io.display(f'no {tag} tags to toggle ...')
+
+    @Command(
+        'mimx',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - deactivate',
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        )
+    def deactivate_measure_index_markup_tags(self, directory):
+        r'''Deactivates measure index markup tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        tag = abjad.tags.MEASURE_INDEX_MARKUP
         if not self._deactivate_tag(directory, tag):
             self.io.display(f'no {tag} tags to toggle ...')
 
