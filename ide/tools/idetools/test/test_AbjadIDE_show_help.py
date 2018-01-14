@@ -4,7 +4,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_show_help_01():
-    r'''In assets directory.
+    r'''In _assets directory.
     '''
 
     abjad_ide('red aa ? q')
@@ -80,13 +80,13 @@ def test_AbjadIDE_show_help_01():
 
 
 def test_AbjadIDE_show_help_02():
-    r'''In build directory.
+    r'''In _segments directory.
     '''
 
-    abjad_ide('red %letter ? q')
+    abjad_ide('red %letter _segments ? q')
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
-        'Red Score (2017) : builds : letter-score : help',
+        'Red Score (2017) : builds : letter-score : _segments : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',
@@ -224,18 +224,27 @@ def test_AbjadIDE_show_help_02():
 
 
 def test_AbjadIDE_show_help_03():
-    r'''In build _segments directory.
+    r'''In build directory.
     '''
 
-    abjad_ide('red %letter _segments ? q')
+    abjad_ide('red %letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
+
     assert menu == [
-        'Red Score (2017) : builds : letter-score : _segments : help',
+        'Red Score (2017) : builds : letter-score : help',
         '',
         '    all - doctest (^^)',
         '    all - edit (@@)',
         '    all - pdfs (**)',
         '    all - pytest (++)',
+        '',
+        '    back cover - edit (bce)',
+        '    back cover - generate (bcg)',
+        '    back cover - interpret (bci)',
+        '    back cover - open (bco)',
+        '    back cover - trash (bct)',
+        '',
+        '    build - build (bld)',
         '',
         '    b&w - ALL (bw*)',
         '    b&w - CLEFS (bwc)',
@@ -259,6 +268,12 @@ def test_AbjadIDE_show_help_03():
         '    color - METRONOME MARKS (cltm)',
         '    color - STAFF LINES (clsl)',
         '    color - TIME SIGNATURES (clts)',
+        '',
+        '    front cover - edit (fce)',
+        '    front cover - generate (fcg)',
+        '    front cover - interpret (fci)',
+        '    front cover - open (fco)',
+        '    front cover - trash (fct)',
         '',
         '    git - commit (ci)',
         '    git - diff (diff)',
@@ -296,6 +311,12 @@ def test_AbjadIDE_show_help_03():
         '    STAGE_NUMBER_MARKUP - activate (snm)',
         '    STAGE_NUMBER_MARKUP - deactivate (snmx)',
         '',
+        '    music - edit (me)',
+        '    music - generate (mg)',
+        '    music - interpret (mi)',
+        '    music - open (mo)',
+        '    music - trash (mt)',
+        '',
         '    package - assets (aa)',
         '    package - builds (bb)',
         '    package - contents (cc)',
@@ -314,7 +335,17 @@ def test_AbjadIDE_show_help_03():
         '    path - remove (rm)',
         '    path - rename (ren)',
         '',
+        '    preface - edit (pe)',
+        '    preface - generate (pg)',
+        '    preface - interpret (pi)',
+        '    preface - open (po)',
+        '    preface - trash (pt)',
+        '',
+        '    score - edit (re)',
+        '    score - generate (rg)',
+        '    score - interpret (ri)',
         '    score - open (ro)',
+        '    score - trash (rt)',
         '',
         '    shell - call (!)',
         '',
@@ -326,13 +357,15 @@ def test_AbjadIDE_show_help_03():
         '    smart - pdf (*)',
         '    smart - pytest (+)',
         '',
+        '    stylesheet - edit (ye)',
+        '    stylesheet - generate (yg)',
+        '    stylesheet - trash (yt)',
+        '',
         '    text - edit (it)',
         '    text - replace (rp)',
         '    text - search (sr)',
         '',
         ]
-
-
 
 
 def test_AbjadIDE_show_help_04():

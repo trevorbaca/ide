@@ -163,11 +163,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### INITIALIZER ###
 
-    def __init__(
-        self,
-        example=None,
-        test=None,
-        ):
+    def __init__(self, example=None, test=None):
         self._aliases = dict(self.configuration.aliases)
         self._clipboard = []
         self._current_directory = None
@@ -1816,7 +1812,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bld',
         description='build - build',
         menu_section='build',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def build_score(self, directory):
         r'''Builds score from the ground up.
@@ -1932,7 +1928,7 @@ class AbjadIDE(abjad.AbjadObject):
         'lyc*',
         description='lys - collect',
         menu_section='lys',
-        score_package_paths=('build', '_segments'),
+        score_package_paths=('_segments', 'build',),
         )
     def collect_segment_lys(self, directory):
         r'''Collects segment lys.
@@ -2374,7 +2370,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bce',
         description='back cover - edit',
         menu_section='back cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_back_cover_source(self, directory):
         r'''Edits ``back-cover.tex`` in `directory`.
@@ -2423,7 +2419,7 @@ class AbjadIDE(abjad.AbjadObject):
         'fce',
         description='front cover - edit',
         menu_section='front cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_front_cover_source(self, directory):
         r'''Edits ``front-cover.tex`` in `directory`.
@@ -2500,7 +2496,7 @@ class AbjadIDE(abjad.AbjadObject):
         'me',
         description='music - edit',
         menu_section='music',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_music_source(self, directory):
         r'''Edits ``music.ly`` in `directory`.
@@ -2515,7 +2511,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pe',
         description='preface - edit',
         menu_section='preface',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_preface_source(self, directory):
         r'''Edits ``preface.tex`` in `directory`.
@@ -2530,7 +2526,7 @@ class AbjadIDE(abjad.AbjadObject):
         're',
         description='score - edit',
         menu_section='score',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_score_source(self, directory):
         r'''Edits ``score.tex`` in `directory`.
@@ -2545,7 +2541,7 @@ class AbjadIDE(abjad.AbjadObject):
         'ye',
         description='stylesheet - edit',
         menu_section='stylesheet',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def edit_stylesheet(self, directory):
         r'''Edits ``stylesheet.ily`` in `directory`.
@@ -2618,7 +2614,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bcg',
         description='back cover - generate',
         menu_section='back cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_back_cover(self, directory):
         r'''Generates ``back-cover.tex``.
@@ -2655,7 +2651,7 @@ class AbjadIDE(abjad.AbjadObject):
         'fcg',
         description='front cover - generate',
         menu_section='front cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_front_cover(self, directory):
         r'''Generates ``front-cover.tex``.
@@ -2689,7 +2685,7 @@ class AbjadIDE(abjad.AbjadObject):
         'mg',
         description='music - generate',
         menu_section='music',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_music(self, directory):
         r'''Generates build/``music.ly``.
@@ -2764,7 +2760,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pg',
         description='preface - generate',
         menu_section='preface',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_preface(self, directory):
         r'''Generates ``preface.tex``.
@@ -2786,7 +2782,7 @@ class AbjadIDE(abjad.AbjadObject):
         'rg',
         description='score - generate',
         menu_section='score',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_score(self, directory):
         r'''Generates ``score.tex``.
@@ -2808,7 +2804,7 @@ class AbjadIDE(abjad.AbjadObject):
         'yg',
         description='stylesheet - generate',
         menu_section='stylesheet',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def generate_stylesheet(self, directory):
         r'''Generates build directory ``stylesheet.ily``.
@@ -3537,7 +3533,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bci',
         description='back cover - interpret',
         menu_section='back cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def interpret_back_cover(self, directory, open_after=True):
         r'''Interprets ``back-cover.tex``.
@@ -3556,7 +3552,7 @@ class AbjadIDE(abjad.AbjadObject):
         'fci',
         description='front cover - interpret',
         menu_section='front cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def interpret_front_cover(self, directory, open_after=True):
         r'''Interprets ``front-cover.tex``.
@@ -3630,7 +3626,7 @@ class AbjadIDE(abjad.AbjadObject):
         'mi',
         description='music - interpret',
         menu_section='music',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def interpret_music(self, directory, open_after=True):
         r'''Interprets ``music.ly``.
@@ -3652,7 +3648,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pi',
         description='preface - interpret',
         menu_section='preface',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def interpret_preface(self, directory, open_after=True):
         r'''Interprets ``preface.tex``.
@@ -3671,7 +3667,7 @@ class AbjadIDE(abjad.AbjadObject):
         'ri',
         description='score - interpret',
         menu_section='score',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def interpret_score(self, directory, open_after=True):
         r'''Interprets ``score.tex``.
@@ -3856,7 +3852,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bco',
         description='back cover - open',
         menu_section='back cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def open_back_cover_pdf(self, directory):
         r'''Opens ``back-cover.pdf`` in `directory`.
@@ -3871,7 +3867,7 @@ class AbjadIDE(abjad.AbjadObject):
         'fco',
         description='front cover - open',
         menu_section='front cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def open_front_cover_pdf(self, directory):
         r'''Opens ``front-cover.pdf`` in `directory`.
@@ -3886,7 +3882,7 @@ class AbjadIDE(abjad.AbjadObject):
         'mo',
         description='music - open',
         menu_section='music',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def open_music_pdf(self, directory):
         r'''Opens ``music.pdf`` in `directory`.
@@ -3916,7 +3912,7 @@ class AbjadIDE(abjad.AbjadObject):
         'po',
         description='preface - open',
         menu_section='preface',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def open_preface_pdf(self, directory):
         r'''Opens ``preface.pdf`` in `directory`.
@@ -4359,7 +4355,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bct',
         description='back cover - trash',
         menu_section='back cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_back_cover(self, directory):
         r'''Trashes back cover.
@@ -4404,7 +4400,7 @@ class AbjadIDE(abjad.AbjadObject):
         'fct',
         description='front cover - trash',
         menu_section='front cover',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_front_cover(self, directory):
         r'''Trashes front cover (source).
@@ -4450,7 +4446,7 @@ class AbjadIDE(abjad.AbjadObject):
         'mt',
         description='music - trash',
         menu_section='music',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_music(self, directory):
         r'''Trashes music (source).
@@ -4496,7 +4492,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pt',
         description='preface - trash',
         menu_section='preface',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_preface(self, directory):
         r'''Trashes preface (source).
@@ -4511,7 +4507,7 @@ class AbjadIDE(abjad.AbjadObject):
         'rt',
         description='score - trash',
         menu_section='score',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_score(self, directory):
         r'''Trashes score (source).
@@ -4526,7 +4522,7 @@ class AbjadIDE(abjad.AbjadObject):
         'yt',
         description='stylesheet - trash',
         menu_section='stylesheet',
-        score_package_paths=('build',),
+        score_package_paths=('_segments', 'build',),
         )
     def trash_stylesheet(self, directory):
         r'''Trashes stylesheet.
