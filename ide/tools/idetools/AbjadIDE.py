@@ -1819,7 +1819,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is_build() or directory.is__segments()
+        directory = directory.build
         self.io.display('building score ...')
         self.collect_segment_lys(directory)
         self.io.display('')
@@ -1946,6 +1947,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_build() or directory.is__segments()
+        directory = directory.build
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segment_lys(directory)
         if not pairs:
@@ -2377,7 +2379,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('back-cover.tex')
         self._open_files([path])
 
@@ -2426,7 +2429,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('front-cover.tex')
         self._open_files([path])
 
@@ -2457,7 +2461,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build() or directory.is__segments()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('layout.py')
         self._open_files([path])
 
@@ -2503,7 +2508,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('music.ly')
         self._open_files([path])
 
@@ -2518,7 +2524,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('preface.tex')
         self._open_files([path])
 
@@ -2533,7 +2540,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('score.tex')
         self._open_files([path])
 
@@ -2548,7 +2556,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('stylesheet.ily')
         self._open_files([path])
 
@@ -2621,7 +2630,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating back cover ...')
         values = {}
         catalog_number = directory.contents.get_metadatum(
@@ -2658,7 +2668,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating front cover ...')
         file_name = 'front-cover.tex'
         values = {}
@@ -2692,7 +2703,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating music ...')
         target = directory('music.ly')
         if target.exists():
@@ -2767,7 +2779,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating preface ...')
         values = {}
         paper_size = directory.get_metadatum('paper_size', 'letter')
@@ -2789,7 +2802,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating score ...')
         values = {}
         paper_size = directory.get_metadatum('paper_size', 'letter')
@@ -2811,7 +2825,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('generating stylesheet ...')
         values = {}
         paper_size = directory.get_metadatum('paper_size', 'letter')
@@ -3540,7 +3555,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('interpreting back cover ...')
         source = directory('back-cover.tex')
         target = source.with_suffix('.pdf')
@@ -3559,7 +3575,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('interpreting front cover ...')
         source = directory('front-cover.tex')
         target = source.with_suffix('.pdf')
@@ -3633,7 +3650,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('interpreting music ...')
         source = directory('music.ly')
         target = source.with_suffix('.pdf')
@@ -3655,7 +3673,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('interpreting preface ...')
         source = directory('preface.tex')
         target = source.with_suffix('.pdf')
@@ -3674,7 +3693,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('interpreting score ...')
         source = directory('score.tex')
         target = source.with_suffix('.pdf')
@@ -3693,7 +3713,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build() or directory.is__segments()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self.io.display('making layout ...')
         layout_py = directory('layout.py')
         layout_ly = layout_py.with_suffix('.ly')
@@ -3859,7 +3880,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('back-cover.pdf')
         self._open_files([path])
 
@@ -3874,7 +3896,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('front-cover.pdf')
         self._open_files([path])
 
@@ -3889,7 +3912,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('music.pdf')
         self._open_files([path])
 
@@ -3919,7 +3943,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('preface.pdf')
         self._open_files([path])
 
@@ -4362,7 +4387,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         self._trash_file(directory / 'back-cover.tex')
 
     @Command(
@@ -4407,7 +4433,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('front-cover.tex')
         self._trash_file(path)
 
@@ -4453,7 +4480,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('music.ly')
         self._trash_file(path)
 
@@ -4499,7 +4527,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('preface.tex')
         self._trash_file(path)
 
@@ -4514,7 +4543,8 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('score.tex')
         self._trash_file(path)
 
@@ -4529,6 +4559,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is_build()
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
         path = directory('stylesheet.ily')
         self._trash_file(path)
