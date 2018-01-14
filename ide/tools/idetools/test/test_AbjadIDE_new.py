@@ -138,7 +138,7 @@ def test_AbjadIDE_new_04():
         assert 'Paper size (ex: letter landscape)> arch a' in transcript
         assert r'Price (ex: \$80 / \euro 72)> $80' in transcript
         assert 'Catalog number suffix (ex: ann.)> ARCH-A'in transcript
-        assert transcript.lines[-37:] == [
+        assert transcript.lines[-38:] == [
             'Generating back cover ...',
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
@@ -154,6 +154,7 @@ def test_AbjadIDE_new_04():
             'No + tags to deactivate ...',
             'No -ARCH_A_SCORE tags to deactivate ...',
             'No +ARCH_A_SCORE tags to activate ...',
+            'No SPACING tags to activate ...',
             'No persistent indicator tags to deactivate ...',
             'No persistent indicator tags to activate ...',
             'No markup tags to deactivate ...',
