@@ -1976,6 +1976,11 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, name, name=tag)
         tag = name = abjad.tags.only(directory.name)
         self._activate_tag(directory, tag, name=tag)
+        #
+        tag = abjad.tags.SPACING
+        i_am_excluded = abjad.tags.forbid(directory.name)
+        self._activate_tag(directory, tag, name=tag, forbid=i_am_excluded)
+        #
         self.black_and_white_all(directory)
 
     @Command(
