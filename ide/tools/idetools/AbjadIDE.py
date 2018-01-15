@@ -1861,23 +1861,19 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.SPACING_MARKUP
         if directory.is_build():
             allow_only = abjad.tags.only(directory.name)
             forbid = abjad.tags.forbid(directory.name)
         else:
             allow_only = abjad.tags.only(abjad.tags.SEGMENT)
             forbid = abjad.tags.forbid(abjad.tags.SEGMENT)
-        self._activate_tag(
-            directory,
-            tag,
-            allow_only=allow_only,
-            forbid=forbid,
+        tags = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
-        tag = abjad.tags.SPACING_OVERRIDE_MARKUP
         self._activate_tag(
             directory,
-            tag,
+            tags,
             allow_only=allow_only,
             forbid=forbid,
             )
@@ -2429,10 +2425,26 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.SPACING_MARKUP
-        self._deactivate_tag(directory, tag)
-        tag = abjad.tags.SPACING_OVERRIDE_MARKUP
-        self._deactivate_tag(directory, tag)
+        tags = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
+            )
+        self._deactivate_tag(directory, tags)
+
+    @Command(
+        'spacingx',
+        description=f'spacing - deactivate',
+        menu_section='spacing',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        )
+    def deactivate_spacing_tags(self, directory):
+        r'''Deactivates spacing tags.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        tags = abjad.tags.spacing_tags
+        self._deactivate_tag(directory, tags, name='spacing')
 
     @Command(
         'snmx',
@@ -3848,16 +3860,41 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('making layout ...')
-        layout_py = directory('layout.py')
+        if directory.is_parts():
+            name = 'layout.py'
+            paths = directory.get_files_ending_with(name)
+            if not paths:
+                self.io.display(f'no files ending in {name} ...')
+            self.io.display('found ...')
+            for path in paths:
+                self.io.display(f'{path.trim()}', raw=True)
+            self.io.display('')
+            which = self.io.get('match name')
+            if which and self.is_navigation(which):
+                return
+            layout_py = None
+            for path in paths:
+                if path.name.startswith(which):
+                    layout_py = path
+                    break
+            if not layout_py:
+                self.io.display(f'no layout files starting with {which} ...')
+                return
+        else:
+            self.io.display('making layout ...')
+            layout_py = directory('layout.py')
         layout_ly = layout_py.with_suffix('.ly')
         if not layout_py.is_file():
             self.io.display(f'missing {layout_py.trim()} ...')
             return
-        boilerplate = '__make_layout_ly__.py'
-        maker = directory(boilerplate)
+        maker = '__make_layout_ly__.py'
+        maker = directory(maker)
         with self.cleanup([maker]):
-            self._copy_boilerplate(directory, boilerplate)
+            self._copy_boilerplate(
+                directory,
+                maker.name,
+                values={'layout_module_name':layout_py.stem},
+                )
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
             if layout_ly.is_file():
@@ -4258,7 +4295,8 @@ class AbjadIDE(abjad.AbjadObject):
                 prefix=dash_part_name,
                 )
             name = 'layout.py'
-            target_name = f'{dash_part_name}-{name}'
+            target_name = f'{dash_part_name}_{name}'
+            target_name = abjad.String(target_name).to_snake_case()
             self._copy_boilerplate(directory, name, target_name=target_name)
             self._generate_music(
                 directory,
