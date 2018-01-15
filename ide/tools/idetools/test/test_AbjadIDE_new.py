@@ -135,9 +135,9 @@ def test_AbjadIDE_new_04():
         assert build.get_metadatum('price') == '$80'
         assert build.get_metadatum('catalog_number_suffix') == 'ARCH-A'
         assert 'Build name> arch-a-score' in transcript
-        assert 'Paper size (ex: letter landscape)> arch a' in transcript
-        assert r'Price (ex: \$80 / \euro 72)> $80' in transcript
-        assert 'Catalog number suffix (ex: ann.)> ARCH-A'in transcript
+        assert 'Paper size> arch a' in transcript
+        assert r'Price> $80' in transcript
+        assert 'Catalog number suffix> ARCH-A'in transcript
         assert transcript.lines[-38:] == [
             'Generating back cover ...',
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
@@ -197,9 +197,9 @@ def test_AbjadIDE_new_05():
         assert path.get_metadatum('price') is None
         assert path.get_metadatum('catalog_number_suffix') is None
         assert 'Build name> arch-a-score' in transcript
-        assert 'Paper size (ex: letter landscape)> arch a' in transcript
-        assert r'Price (ex: \$80 / \euro 72)>' in transcript
-        assert 'Catalog number suffix (ex: ann.)>'in transcript
+        assert 'Paper size> arch a' in transcript
+        assert r'Price>' in transcript
+        assert 'Catalog number suffix>'in transcript
         assert 'Making ...' in transcript
         assert f'    {path.trim()}' in transcript
         paths = [path / _ for _ in (

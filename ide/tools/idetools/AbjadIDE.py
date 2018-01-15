@@ -146,21 +146,22 @@ class AbjadIDE(abjad.AbjadObject):
 
     configuration = Configuration()
 
-    # taken from:
-    # http://lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
+    # lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
     paper_size_to_paper_dimensions = {
         'a3': '297 x 420 mm',
         'a4': '210 x 297 mm',
-        'arch-a': '9 x 12 in',
-        'arch-b': '12 x 18 in',
-        'arch-c': '18 x 24 in',
-        'arch-d': '24 x 36 in',
-        'arch-e': '36 x 48 in',
+        'arch a': '9 x 12 in',
+        'arch b': '12 x 18 in',
+        'arch c': '18 x 24 in',
+        'arch d': '24 x 36 in',
+        'arch e': '36 x 48 in',
         'legal': '8.5 x 14 in',
         'ledger': '17 x 11 in',
         'letter': '8.5 x 11 in',
         'tabloid': '11 x 17 in',
         }
+
+    known_paper_sizes = list(paper_size_to_paper_dimensions.keys())
 
     ### INITIALIZER ###
 
@@ -439,6 +440,7 @@ class AbjadIDE(abjad.AbjadObject):
         return files
 
     def _generate_back_cover(self, directory, prefix=None, price=None):
+        assert directory.is_build()
         values = {}
         string = 'catalog_number'
         catalog_number = directory.contents.get_metadatum(string, r'\null')
@@ -457,6 +459,9 @@ class AbjadIDE(abjad.AbjadObject):
                 price = price.replace('$', r'\$')
         values['price'] = price
         paper_size = directory.get_metadatum('paper_size', 'letter')
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size {paper_size} ...')
+            return
         orientation = directory.get_metadatum('orientation')
         dimensions = self._to_paper_dimensions(paper_size, orientation)
         width, height, unit = dimensions
@@ -532,9 +537,10 @@ class AbjadIDE(abjad.AbjadObject):
     def _generate_music(
         self,
         directory,
-        silent=None,
         forces_tagline=None,
+        keep_with_tag=None,
         prefix=None,
+        silent=None,
         ):
         target_name = 'music.ly'
         if prefix is not None:
@@ -572,14 +578,11 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 line = rf'%\include "_segments/{name}"'
             if 0 < i:
-                line = 4 * ' ' + line
+                line = 8 * ' ' + line
             lines.append(line)
         if lines:
             new = '\n'.join(lines)
             segment_include_statements = new
-        stylesheet_include_statement = ''
-        line = r'\include "stylesheet.ily"'
-        stylesheet_include_statement = line
         language_token = abjad.LilyPondLanguageToken()
         lilypond_language_directive = format(language_token)
         version_token = abjad.LilyPondVersionToken()
@@ -594,14 +597,18 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = directory.contents.get_metadatum(string, '')
         if forces_tagline:
             forces_tagline = forces_tagline.replace('\\', '')
+        if keep_with_tag:
+            keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
+        else:
+            keep_with_tag_command = ''
         template = target.read_text()
         template = template.format(
             forces_tagline=forces_tagline,
+            keep_with_tag_command=keep_with_tag_command,
             lilypond_language_directive=lilypond_language_directive,
             lilypond_version_directive=lilypond_version_directive,
             score_title=score_title,
             segment_include_statements=segment_include_statements,
-            stylesheet_include_statement=stylesheet_include_statement,
             )
         target.write_text(template)
 
@@ -791,7 +798,7 @@ class AbjadIDE(abjad.AbjadObject):
         if build.exists():
             self.io.display(f'existing {build.trim()} ...')
             return
-        paper_size = self.io.get('paper size (ex: letter landscape)')
+        paper_size = self.io.get('paper size')
         if paper_size and self.is_navigation(paper_size):
             return
         paper_size = paper_size or 'letter'
@@ -803,10 +810,16 @@ class AbjadIDE(abjad.AbjadObject):
         elif paper_size.endswith(' portrait'):
             length = len(' portrait')
             paper_size = paper_size[:-length]
-        price = self.io.get('price (ex: \$80 / \euro 72)')
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size {paper_size!r} ...')
+            self.io.display('choose from ...')
+            for paper_size in self.known_paper_sizes:
+                self.io.display(f'    {paper_size}')
+            return
+        price = self.io.get('price')
         if price and self.is_navigation(price):
             return
-        suffix = self.io.get('catalog number suffix (ex: ann.)')
+        suffix = self.io.get('catalog number suffix')
         if suffix and self.is_navigation(suffix):
             return
         names = (
@@ -1606,7 +1619,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _to_paper_dimensions(paper_size, orientation='portrait'):
         orientations = ('landscape', 'portrait', None)
         assert orientation in orientations, repr(orientation)
-        paper_size = abjad.String(paper_size).to_dash_case()
+        #paper_size = abjad.String(paper_size).to_dash_case()
         paper_dimensions = AbjadIDE.paper_size_to_paper_dimensions[paper_size]
         paper_dimensions = paper_dimensions.replace(' x ', ' ')
         width, height, unit = paper_dimensions.split()
@@ -4112,7 +4125,7 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.exists():
             self.io.display(f'existing {directory.trim()} ...')
             return
-        paper_size = self.io.get('paper size (ex: letter landscape)')
+        paper_size = self.io.get('paper size')
         if self.is_navigation(paper_size):
             return
         orientation = 'portrait'
@@ -4123,7 +4136,13 @@ class AbjadIDE(abjad.AbjadObject):
         elif paper_size.endswith(' portrait'):
             length = len(' portrait')
             paper_size = paper_size[:-length]
-        suffix = self.io.get('catalog number suffix (ex: ann.)')
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size: {paper_size} ...')
+            self.io.display(f'choose from ...')
+            for paper_size in self.known_paper_sizes:
+                self.io.display(f'    {paper_size}')
+            return
+        suffix = self.io.get('catalog number suffix')
         if self.is_navigation(suffix):
             return
         names = (
@@ -4164,34 +4183,35 @@ class AbjadIDE(abjad.AbjadObject):
             part_name, part_abbreviation = pair
             part_number = i + 1
             price = f'{part_abbreviation} / ({part_number}/{total_parts})'
-            part_name = abjad.String(part_name).to_dash_case()
+            dash_part_name = abjad.String(part_name).to_dash_case()
             self._generate_back_cover(
                 directory,
-                prefix=part_name,
+                prefix=dash_part_name,
                 price=price,
                 ),
-            words = abjad.String(part_name).delimit_words()
+            words = abjad.String(dash_part_name).delimit_words()
             forces_tagline = f"{' '.join(words)} part"
             self._generate_front_cover(
                 directory,
                 forces_tagline=forces_tagline,
-                prefix=part_name,
+                prefix=dash_part_name,
                 )
             name = 'layout.py'
-            target_name = f'{part_name}-{name}'
+            target_name = f'{dash_part_name}-{name}'
             self._copy_boilerplate(directory, name, target_name=target_name)
             self._generate_music(
                 directory,
                 forces_tagline=forces_tagline,
-                prefix=part_name,
+                keep_with_tag=part_name,
+                prefix=dash_part_name,
                 silent=True,
                 )
             self._generate_document(
                 directory,
                 name='part.tex',
-                prefix=part_name,
+                prefix=dash_part_name,
                 )
-            self._generate_preface(directory, prefix=part_name)
+            self._generate_preface(directory, prefix=dash_part_name)
 
     @Command(
         'cv',
