@@ -472,6 +472,157 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
+    def _generate_document(self, directory, name='score.tex', prefix=None):
+        values = {}
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = paper_size
+        paper_size = f'{{{width}{unit}, {height}{unit}}}'
+        values['paper_size'] = paper_size
+        target_name = name
+        if prefix is not None:
+            target_name = f'{prefix}-{target_name}'
+        self._copy_boilerplate(
+            directory,
+            'score.tex',
+            target_name=target_name,
+            values=values,
+            )
+
+    def _generate_front_cover(
+        self,
+        directory,
+        forces_tagline=None,
+        prefix=None,
+        #price=None,
+        ):
+        values = {}
+        score_title = directory.contents.get_title(year=False)
+        score_title = score_title.upper()
+        values['score_title'] = score_title
+        if not forces_tagline:
+            string = 'forces_tagline'
+            forces_tagline = directory.contents.get_metadatum(string, '')
+        if forces_tagline:
+            forces_tagline = forces_tagline.replace('\\', '')
+        values['forces_tagline'] = forces_tagline
+        year = directory.contents.get_metadatum('year', '')
+        values['year'] = str(year)
+        composer = abjad.abjad_configuration.composer_uppercase_name
+        if (self.test or self.example):
+            composer = 'COMPOSER'
+        values['composer'] = str(composer)
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = paper_size
+        paper_size = f'{{{width}{unit}, {height}{unit}}}'
+        values['paper_size'] = paper_size
+        target_name = None
+        if prefix:
+            target_name = f'{prefix}-front-cover.tex'
+        self._copy_boilerplate(
+            directory,
+            'front-cover.tex',
+            target_name=target_name,
+            values=values,
+            )
+
+    def _generate_music(
+        self,
+        directory,
+        silent=None,
+        forces_tagline=None,
+        prefix=None,
+        ):
+        target_name = 'music.ly'
+        if prefix is not None:
+            target_name = f'{prefix}-{target_name}'
+        target = directory / target_name
+        if target.exists():
+            self.io.display(f'removing {target.trim()} ...')
+            target.remove()
+        paths = directory.segments.list_paths()
+        if not silent:
+            if paths:
+                view = directory.segments.get_metadatum('view')
+                if bool(view):
+                    self.io.display(f'examining segments in view order ...')
+                else:
+                    self.io.display('examining segments alphabetically ...')
+            else:
+                self.io.display('no segments found ...')
+            for path in paths:
+                self.io.display(f'examining {path.trim()} ...')
+        names = []
+        for path in paths:
+            name = path.stem
+            if path.stem != '_':
+                name = name.replace('_', '-')
+            names.append(name)
+        self._copy_boilerplate(directory, 'music.ly', target_name=target_name)
+        lines = []
+        segment_include_statements = ''
+        for i, name in enumerate(names):
+            name = 'segment-' + name + '.ly'
+            path = directory._segments(name)
+            if path.is_file():
+                line = rf'\include "_segments/{name}"'
+            else:
+                line = rf'%\include "_segments/{name}"'
+            if 0 < i:
+                line = 4 * ' ' + line
+            lines.append(line)
+        if lines:
+            new = '\n'.join(lines)
+            segment_include_statements = new
+        stylesheet_include_statement = ''
+        line = r'\include "stylesheet.ily"'
+        stylesheet_include_statement = line
+        language_token = abjad.LilyPondLanguageToken()
+        lilypond_language_directive = format(language_token)
+        version_token = abjad.LilyPondVersionToken()
+        lilypond_version_directive = format(version_token)
+        annotated_title = directory.contents.get_title(year=True)
+        if annotated_title:
+            score_title = annotated_title
+        else:
+            score_title = directory.contents.get_title(year=False)
+        if forces_tagline is None:
+            string = 'forces_tagline'
+            forces_tagline = directory.contents.get_metadatum(string, '')
+        if forces_tagline:
+            forces_tagline = forces_tagline.replace('\\', '')
+        template = target.read_text()
+        template = template.format(
+            forces_tagline=forces_tagline,
+            lilypond_language_directive=lilypond_language_directive,
+            lilypond_version_directive=lilypond_version_directive,
+            score_title=score_title,
+            segment_include_statements=segment_include_statements,
+            stylesheet_include_statement=stylesheet_include_statement,
+            )
+        target.write_text(template)
+
+    def _generate_preface(self, directory, prefix=None):
+        values = {}
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = paper_size
+        paper_size = f'{{{width}{unit}, {height}{unit}}}'
+        values['paper_size'] = paper_size
+        target_name = 'preface.tex'
+        if prefix is not None:
+            target_name = f'{prefix}-{target_name}'
+        self._copy_boilerplate(
+            directory,
+            'preface.tex',
+            target_name=target_name,
+            values=values,
+            )
+
     def _get_dimensions(self):
         dimensions = None
         if self.test is True:
@@ -2700,26 +2851,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating front cover ...')
-        file_name = 'front-cover.tex'
-        values = {}
-        score_title = directory.contents.get_title(year=False)
-        score_title = score_title.upper()
-        values['score_title'] = score_title
-        forces_tagline = directory.contents.get_metadatum('forces_tagline', '')
-        values['forces_tagline'] = forces_tagline
-        year = directory.contents.get_metadatum('year', '')
-        values['year'] = str(year)
-        composer = abjad.abjad_configuration.composer_uppercase_name
-        if (self.test or self.example):
-            composer = 'COMPOSER'
-        values['composer'] = str(composer)
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
-        width, height, unit = paper_size
-        paper_size = f'{{{width}{unit}, {height}{unit}}}'
-        values['paper_size'] = paper_size
-        self._copy_boilerplate(directory, file_name, values=values)
+        self._generate_front_cover(directory)
 
     @Command(
         'mg',
@@ -2735,67 +2867,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating music ...')
-        target = directory('music.ly')
-        if target.exists():
-            self.io.display(f'removing {target.trim()} ...')
-            target.remove()
-        paths = directory.segments.list_paths()
-        if paths:
-            view = directory.segments.get_metadatum('view')
-            if bool(view):
-                self.io.display(f'examining segments in view order ...')
-            else:
-                self.io.display('examining segments alphabetically ...')
-        else:
-            self.io.display('no segments found ...')
-        for path in paths:
-            self.io.display(f'examining {path.trim()} ...')
-        names = []
-        for path in paths:
-            name = path.stem
-            if path.stem != '_':
-                name = name.replace('_', '-')
-            names.append(name)
-        self._copy_boilerplate(directory, target.name)
-        lines = []
-        segment_include_statements = ''
-        for i, name in enumerate(names):
-            name = 'segment-' + name + '.ly'
-            path = directory._segments(name)
-            if path.is_file():
-                line = rf'\include "_segments/{name}"'
-            else:
-                line = rf'%\include "_segments/{name}"'
-            if 0 < i:
-                line = 4 * ' ' + line
-            lines.append(line)
-        if lines:
-            new = '\n'.join(lines)
-            segment_include_statements = new
-        stylesheet_include_statement = ''
-        line = r'\include "stylesheet.ily"'
-        stylesheet_include_statement = line
-        language_token = abjad.LilyPondLanguageToken()
-        lilypond_language_directive = format(language_token)
-        version_token = abjad.LilyPondVersionToken()
-        lilypond_version_directive = format(version_token)
-        annotated_title = directory.contents.get_title(year=True)
-        if annotated_title:
-            score_title = annotated_title
-        else:
-            score_title = directory.contents.get_title(year=False)
-        forces_tagline = directory.contents.get_metadatum('forces_tagline', '')
-        forces_tagline = forces_tagline.replace('\\', '')
-        template = target.read_text()
-        template = template.format(
-            forces_tagline=forces_tagline,
-            lilypond_language_directive=lilypond_language_directive,
-            lilypond_version_directive=lilypond_version_directive,
-            score_title=score_title,
-            segment_include_statements=segment_include_statements,
-            stylesheet_include_statement=stylesheet_include_statement,
-            )
-        target.write_text(template)
+        self._generate_music(directory)
 
     @Command(
         'pg',
@@ -2811,14 +2883,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating preface ...')
-        values = {}
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
-        width, height, unit = paper_size
-        paper_size = f'{{{width}{unit}, {height}{unit}}}'
-        values['paper_size'] = paper_size
-        self._copy_boilerplate(directory, 'preface.tex', values=values)
+        self._generate_preface(directory)
 
     @Command(
         'rg',
@@ -2834,14 +2899,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating score ...')
-        values = {}
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
-        width, height, unit = paper_size
-        paper_size = f'{{{width}{unit}, {height}{unit}}}'
-        values['paper_size'] = paper_size
-        self._copy_boilerplate(directory, 'score.tex', values=values)
+        self._generate_document(directory)
 
     @Command(
         'yg',
@@ -4069,16 +4127,17 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(suffix):
             return
         names = (
-            'back-cover.tex',
             'front-cover.tex',
-            'music.ly',
             'preface.tex',
-            'score.tex',
-            'stylesheet.ily',
+            'music.ly',
+            'back-cover.tex',
+            'part.tex',
             )
         paths = [directory / _ for _ in names]
         self.io.display('will make ...')
         self.io.display(f'    {directory.trim()}')
+        path = directory / 'stylesheet.ily'
+        self.io.display(f'    {path.trim()}')
         for part_name in part_names:
             part_name_ = abjad.String(part_name).to_dash_case()
             for name in names:
@@ -4098,21 +4157,41 @@ class AbjadIDE(abjad.AbjadObject):
             directory.add_metadatum('orientation', orientation)
         if bool(suffix):
             directory.add_metadatum('catalog_number_suffix', suffix)
+        self.collect_segment_lys(directory)
+        self.generate_stylesheet(directory)
         total_parts = len(part_name_pairs)
         for i, pair in enumerate(part_name_pairs):
             part_name, part_abbreviation = pair
             part_number = i + 1
             price = f'{part_abbreviation} / ({part_number}/{total_parts})'
             part_name = abjad.String(part_name).to_dash_case()
-            self._generate_back_cover(directory, part_name, price),
-#            self.generate_front_cover(directory)
-#            self._copy_boilerplate(directory, 'layout.py')
-#            self.collect_segment_lys(directory)
-#            self.generate_music(directory)
-#            self.generate_preface(directory)
-#            self.generate_score(directory)
-#            self.generate_stylesheet(directory)
-            self.io.display('')
+            self._generate_back_cover(
+                directory,
+                prefix=part_name,
+                price=price,
+                ),
+            words = abjad.String(part_name).delimit_words()
+            forces_tagline = f"{' '.join(words)} part"
+            self._generate_front_cover(
+                directory,
+                forces_tagline=forces_tagline,
+                prefix=part_name,
+                )
+            name = 'layout.py'
+            target_name = f'{part_name}-{name}'
+            self._copy_boilerplate(directory, name, target_name=target_name)
+            self._generate_music(
+                directory,
+                forces_tagline=forces_tagline,
+                prefix=part_name,
+                silent=True,
+                )
+            self._generate_document(
+                directory,
+                name='part.tex',
+                prefix=part_name,
+                )
+            self._generate_preface(directory, prefix=part_name)
 
     @Command(
         'cv',
