@@ -2,6 +2,7 @@ import abjad
 import baca
 import collections
 import datetime
+import importlib
 import inspect
 import io
 import os
@@ -437,6 +438,40 @@ class AbjadIDE(abjad.AbjadObject):
             files = abjad.Sequence(files).retain(indices)
         return files
 
+    def _generate_back_cover(self, directory, prefix=None, price=None):
+        values = {}
+        string = 'catalog_number'
+        catalog_number = directory.contents.get_metadatum(string, r'\null')
+        if catalog_number:
+            suffix = directory.get_metadatum('catalog_number_suffix')
+            if suffix:
+                catalog_number = f'{catalog_number} / {suffix}'
+        values['catalog_number'] = catalog_number
+        composer_website = abjad.abjad_configuration.composer_website or ''
+        if self.test or self.example:
+            composer_website = 'www.composer-website.com'
+        values['composer_website'] = composer_website
+        if price is None:
+            price = directory.get_metadatum('price', r'\null')
+            if '$' in price and r'\$' not in price:
+                price = price.replace('$', r'\$')
+        values['price'] = price
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        dimensions = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = dimensions
+        paper_size = f'{{{width}{unit}, {height}{unit}}}'
+        values['paper_size'] = paper_size
+        target_name = None
+        if prefix:
+            target_name = f'{prefix}-back-cover.tex'
+        self._copy_boilerplate(
+            directory,
+            'back-cover.tex',
+            target_name=target_name,
+            values=values,
+            )
+
     def _get_dimensions(self):
         dimensions = None
         if self.test is True:
@@ -445,16 +480,25 @@ class AbjadIDE(abjad.AbjadObject):
             dimensions = eval(self.test.strip('dimensions='))
         return dimensions
 
-    @staticmethod
-    def _get_markup_tags():
-        return (
-            abjad.tags.CLOCK_TIME_MARKUP,
-            abjad.tags.FIGURE_NAME_MARKUP,
-            abjad.tags.MEASURE_INDEX_MARKUP,
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            abjad.tags.STAGE_NUMBER_MARKUP,
-            )
+    def _get_part_names(self, directory):
+        assert directory.is_score_package_path()
+        score_package_name = directory.contents.name
+        try:
+            module = importlib.import_module(score_package_name)
+        except:
+            return -1, f'can not import {score_package_name!r}.'
+        if not hasattr(module, 'tools'):
+            return -1, f'{score_package_name} has no tools directory.'
+        tools = module.tools
+        if not hasattr(module.tools, 'ScoreTemplate'):
+            return -1, f'{score_package_name}.tools has no ScoreTemplate.py.'
+        score_template = tools.ScoreTemplate
+        if not hasattr(score_template, 'part_names'):
+            message = f'{score_package_name}.ScoreTemplate'
+            message += " has no 'part_names' property."
+            return -1, message
+        part_names = module.tools.ScoreTemplate.part_names
+        return part_names
 
     def _get_persistent_indicator_color_activation_tags(self, directory):
         tags = self._color_clef_tags
@@ -597,8 +641,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'existing {build.trim()} ...')
             return
         paper_size = self.io.get('paper size (ex: letter landscape)')
-        if self.is_navigation(paper_size):
+        if paper_size and self.is_navigation(paper_size):
             return
+        paper_size = paper_size or 'letter'
         orientation = 'portrait'
         if paper_size.endswith(' landscape'):
             orientation = 'landscape'
@@ -608,7 +653,11 @@ class AbjadIDE(abjad.AbjadObject):
             length = len(' portrait')
             paper_size = paper_size[:-length]
         price = self.io.get('price (ex: \$80 / \euro 72)')
+        if price and self.is_navigation(price):
+            return
         suffix = self.io.get('catalog number suffix (ex: ann.)')
+        if suffix and self.is_navigation(suffix):
+            return
         names = (
             'back-cover.tex',
             'front-cover.tex',
@@ -1402,11 +1451,12 @@ class AbjadIDE(abjad.AbjadObject):
                 files.append(path)
         return files
 
-    def _to_paper_dimensions(self, paper_size, orientation='portrait'):
+    @staticmethod
+    def _to_paper_dimensions(paper_size, orientation='portrait'):
         orientations = ('landscape', 'portrait', None)
         assert orientation in orientations, repr(orientation)
         paper_size = abjad.String(paper_size).to_dash_case()
-        paper_dimensions = self.paper_size_to_paper_dimensions[paper_size]
+        paper_dimensions = AbjadIDE.paper_size_to_paper_dimensions[paper_size]
         paper_dimensions = paper_dimensions.replace(' x ', ' ')
         width, height, unit = paper_dimensions.split()
         if orientation == 'landscape':
@@ -1685,7 +1735,8 @@ class AbjadIDE(abjad.AbjadObject):
             directory)
         self._activate_tag(directory, tags, name=name)
         name = 'markup'
-        tags = self._get_markup_tags()
+        #tags = self._get_markup_tags()
+        tags = abjad.tags.markup_tags
         self._deactivate_tag(directory, tags, name=name)
 
     @Command(
@@ -2633,29 +2684,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating back cover ...')
-        values = {}
-        catalog_number = directory.contents.get_metadatum(
-            'catalog_number',
-            r'\null',
-            )
-        if catalog_number:
-            suffix = directory.get_metadatum('catalog_number_suffix')
-            if suffix:
-                catalog_number = f'{catalog_number} / {suffix}'
-        values['catalog_number'] = catalog_number
-        composer_website = abjad.abjad_configuration.composer_website or ''
-        if self.test or self.example:
-            composer_website = 'www.composer-website.com'
-        values['composer_website'] = composer_website
-        price = directory.get_metadatum('price', r'\null')
-        values['price'] = price
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
-        dimensions = self._to_paper_dimensions(paper_size, orientation)
-        width, height, unit = dimensions
-        paper_size = f'{{{width}{unit}, {height}{unit}}}'
-        values['paper_size'] = paper_size
-        self._copy_boilerplate(directory, 'back-cover.tex', values=values)
+        self._generate_back_cover(directory)
 
     @Command(
         'fcg',
@@ -3992,6 +4021,98 @@ class AbjadIDE(abjad.AbjadObject):
             if pdf:
                 pdfs.append(pdf)
         self._open_files(pdfs)
+
+    @Command(
+        'parts',
+        description='parts - new',
+        menu_section='parts',
+        score_package_paths=('builds',),
+        )
+    def parts(self, directory):
+        r'''Makes new parts directory.
+
+        Returns none.
+        '''
+        assert directory.is_builds()
+        self.io.display('getting part names from score template ...')
+        result = self._get_part_names(directory)
+        if isinstance(result, tuple) and result[0] == -1:
+            message = result[-1]
+            self.io.display(message)
+            return
+        part_name_pairs = result
+        part_names = [_[0] for _ in result]
+        part_abbreviations = [_[1] for _ in result]
+        for part_name in part_names:
+            self.io.display(f'found {part_name} ...')
+        self.io.display('')
+        name = self.io.get('directory name')
+        if self.is_navigation(name):
+            return
+        name = directory.coerce(name)
+        directory = directory / name
+        if directory.exists():
+            self.io.display(f'existing {directory.trim()} ...')
+            return
+        paper_size = self.io.get('paper size (ex: letter landscape)')
+        if self.is_navigation(paper_size):
+            return
+        orientation = 'portrait'
+        if paper_size.endswith(' landscape'):
+            orientation = 'landscape'
+            length = len(' landscape')
+            paper_size = paper_size[:-length]
+        elif paper_size.endswith(' portrait'):
+            length = len(' portrait')
+            paper_size = paper_size[:-length]
+        suffix = self.io.get('catalog number suffix (ex: ann.)')
+        if self.is_navigation(suffix):
+            return
+        names = (
+            'back-cover.tex',
+            'front-cover.tex',
+            'music.ly',
+            'preface.tex',
+            'score.tex',
+            'stylesheet.ily',
+            )
+        paths = [directory / _ for _ in names]
+        self.io.display('will make ...')
+        self.io.display(f'    {directory.trim()}')
+        for part_name in part_names:
+            part_name_ = abjad.String(part_name).to_dash_case()
+            for name in names:
+                name = f'{part_name_}-{name}'
+                path = directory / name
+                self.io.display(f'    {path.trim()}')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        assert not directory.exists()
+        directory.mkdir()
+        if bool(paper_size):
+            directory.add_metadatum('paper_size', paper_size)
+        if not orientation == 'portrait':
+            directory.add_metadatum('orientation', orientation)
+        if bool(suffix):
+            directory.add_metadatum('catalog_number_suffix', suffix)
+        total_parts = len(part_name_pairs)
+        for i, pair in enumerate(part_name_pairs):
+            part_name, part_abbreviation = pair
+            part_number = i + 1
+            price = f'{part_abbreviation} / ({part_number}/{total_parts})'
+            part_name = abjad.String(part_name).to_dash_case()
+            self._generate_back_cover(directory, part_name, price),
+#            self.generate_front_cover(directory)
+#            self._copy_boilerplate(directory, 'layout.py')
+#            self.collect_segment_lys(directory)
+#            self.generate_music(directory)
+#            self.generate_preface(directory)
+#            self.generate_score(directory)
+#            self.generate_stylesheet(directory)
+            self.io.display('')
 
     @Command(
         'cv',

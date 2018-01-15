@@ -419,6 +419,8 @@ def test_AbjadIDE_show_help_04():
         '    package - tools (oo)',
         '    package - wrapper (ww)',
         '',
+        '    parts - new (parts)',
+        '',
         '    path - duplicate (dup)',
         '    path - get (get)',
         '    path - new (new)',

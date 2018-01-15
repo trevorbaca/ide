@@ -31,6 +31,7 @@ class Command(abjad.AbjadObject):
         'midi',
         'music',
         'package',
+        'parts',
         'path',
         'pdf',
         'pdfs',
