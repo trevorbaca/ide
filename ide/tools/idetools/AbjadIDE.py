@@ -789,6 +789,24 @@ class AbjadIDE(abjad.AbjadObject):
                 lines = [_.strip('\n') for _ in file_pointer.readlines()]
             self.io.display(lines)
 
+    def _interpret_tex_files_ending_with(self, directory, name):
+        paths = directory.get_files_ending_with(name)
+        if not paths:
+            self.io.display(f'no files ending in *{name} ...')
+            return
+        self.io.display('will interpret ...')
+        for path in paths:
+            self.io.display(path.trim(), raw=True)
+        self.io.display('')
+        ok = self.io.get('ok?')
+        if ok and self.is_navigation(ok):
+            return
+        if ok != 'y':
+            return
+        for source in paths:
+            target = source.with_suffix('.pdf')
+            self._interpret_tex_file(source)
+
     def _make_build_directory(self, builds):
         name = self.io.get('build name')
         if self.is_navigation(name):
@@ -1487,7 +1505,6 @@ class AbjadIDE(abjad.AbjadObject):
                 target = self.configuration.home_directory / source.name
                 if target.exists():
                     target.remove()
-                #with abjad.FilesystemState(remove=[target]):
                 with self.cleanup([target]):
                     target.write_text(template)
                     permissions = f'chmod 755 {target}'
@@ -3657,12 +3674,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('interpreting back cover ...')
-        source = directory('back-cover.tex')
-        target = source.with_suffix('.pdf')
-        self._interpret_tex_file(source)
-        if target.is_file() and open_after:
-            self._open_files([target])
+        name = 'back-cover.tex'
+        if directory.is_parts():
+            self._interpret_tex_files_ending_with(directory, name)
+        else:
+            self.io.display('interpreting back cover ...')
+            source = directory(name)
+            target = source.with_suffix('.pdf')
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_files([target])
 
     @Command(
         'fci',
@@ -3677,12 +3698,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('interpreting front cover ...')
-        source = directory('front-cover.tex')
-        target = source.with_suffix('.pdf')
-        self._interpret_tex_file(source)
-        if target.is_file() and open_after:
-            self._open_files([target])
+        name = 'front-cover.tex'
+        if directory.is_parts():
+            self._interpret_tex_files_ending_with(directory, name)
+        else:
+            self.io.display('interpreting front cover ...')
+            source = directory(name)
+            target = source.with_suffix('.pdf')
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_files([target])
 
     @Command(
         'lyi',
@@ -3775,12 +3800,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('interpreting preface ...')
-        source = directory('preface.tex')
-        target = source.with_suffix('.pdf')
-        self._interpret_tex_file(source)
-        if target.is_file() and open_after:
-            self._open_files([target])
+        name = 'preface.tex'
+        if directory.is_parts():
+            self._interpret_tex_files_ending_with(directory, name)
+        else:
+            self.io.display('interpreting preface ...')
+            source = directory(name)
+            target = source.with_suffix('.pdf')
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_files([target])
 
     @Command(
         'ri',
@@ -3795,12 +3824,16 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('interpreting score ...')
-        source = directory('score.tex')
-        target = source.with_suffix('.pdf')
-        self._interpret_tex_file(source)
-        if target.is_file() and open_after:
-            self._open_files([target])
+        name = 'score.tex'
+        if directory.is_parts():
+            self._interpret_tex_files_ending_with(directory, name)
+        else:
+            self.io.display('interpreting score ...')
+            source = directory(name)
+            target = source.with_suffix('.pdf')
+            self._interpret_tex_file(source)
+            if target.is_file() and open_after:
+                self._open_files([target])
 
     @Command(
         'yom',
@@ -3982,8 +4015,12 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        path = directory('back-cover.pdf')
-        self._open_files([path])
+        name = 'back-cover.pdf'
+        paths = directory.get_files_ending_with(name)
+        if paths:
+            self._open_files(paths)
+        else:
+            self.io.display(f'no files ending in *{name} ...')
 
     @Command(
         'fco',
@@ -3992,14 +4029,18 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def open_front_cover_pdf(self, directory):
-        r'''Opens ``front-cover.pdf`` in `directory`.
+        r'''Opens files ending in ``front-cover.pdf`` in `directory`.
 
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        path = directory('front-cover.pdf')
-        self._open_files([path])
+        name = 'front-cover.pdf'
+        paths = directory.get_files_ending_with(name)
+        if paths:
+            self._open_files(paths)
+        else:
+            self.io.display(f'no files ending in *{name} ...')
 
     @Command(
         'mo',
@@ -4014,8 +4055,12 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        path = directory('music.pdf')
-        self._open_files([path])
+        name = 'music.pdf'
+        paths = directory.get_files_ending_with(name)
+        if paths:
+            self._open_files(paths)
+        else:
+            self.io.display(f'no files ending in *{name} ...')
 
     @Command(
         'pdfo',
@@ -4045,8 +4090,12 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        path = directory('preface.pdf')
-        self._open_files([path])
+        name = 'preface.pdf'
+        paths = directory.get_files_ending_with(name)
+        if paths:
+            self._open_files(paths)
+        else:
+            self.io.display(f'no files ending in *{name} ...')
 
     @Command(
         'ro',
@@ -4061,9 +4110,20 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if directory.is_build():
-            path = directory('score.pdf')
-            self._open_files([path])
+        if directory.is_parts():
+            name = 'part.pdf'
+            paths = directory.get_files_ending_with(name)
+            if paths:
+                self._open_files(paths)
+            else:
+                self.io.display(f'no files ending in *{name} ...')
+        elif directory.is_build():
+            name = 'score.pdf'
+            paths = directory.get_files_ending_with(name)
+            if paths:
+                self._open_files(paths)
+            else:
+                self.io.display(f'no files ending in *{name} ...')
         else:
             assert directory.is_score_package_path()
             path = directory._get_score_pdf()
@@ -4170,6 +4230,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         assert not directory.exists()
         directory.mkdir()
+        directory.add_metadatum('parts_directory', True)
         if bool(paper_size):
             directory.add_metadatum('paper_size', paper_size)
         if not orientation == 'portrait':
