@@ -620,6 +620,27 @@ class AbjadIDE(abjad.AbjadObject):
             )
         target.write_text(template)
 
+    def _generate_part(self, path, dashed_part_name):
+        assert path.build.exists(), repr(path)
+        assert path.build.is_parts(), repr(path)
+        name = 'part.tex'
+        directory = path.build
+        values = {}
+        values['dashed_part_name'] = dashed_part_name
+        paper_size = directory.get_metadatum('paper_size', 'letter')
+        orientation = directory.get_metadatum('orientation')
+        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        width, height, unit = paper_size
+        paper_size = f'{{{width}{unit}, {height}{unit}}}'
+        values['paper_size'] = paper_size
+        target_name = path.name
+        self._copy_boilerplate(
+            directory,
+            name,
+            target_name=target_name,
+            values=values,
+            )
+
     def _generate_preface(self, path):
         assert path.build.exists(), repr(path)
         directory = path.build
@@ -2160,6 +2181,7 @@ class AbjadIDE(abjad.AbjadObject):
         'bld',
         description='build - build',
         menu_section='build',
+        score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def build_score(self, directory):
@@ -2882,6 +2904,24 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
+        'ae',
+        description='part - edit',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def edit_part_source(self, directory):
+        r'''Edits ``part.tex`` in `directory`.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        assert directory.is_parts()
+        name = 'part.tex'
+        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        if paths:
+            self._open_files(paths)
+
+    @Command(
         'pe',
         description='preface - edit',
         menu_section='preface',
@@ -2902,6 +2942,7 @@ class AbjadIDE(abjad.AbjadObject):
         're',
         description='score - edit',
         menu_section='score',
+        score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def edit_score_source(self, directory):
@@ -3016,7 +3057,7 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            price = f'{abbreviation} / ({number}/{total_parts})'
+            price = f'{abbreviation} ({number}/{total_parts})'
             self._generate_back_cover(path, price=price)
 
     @Command(
@@ -3089,6 +3130,30 @@ class AbjadIDE(abjad.AbjadObject):
                 )
 
     @Command(
+        'ag',
+        description='part - generate',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def generate_part(self, directory):
+        r'''Generates ``part.tex``.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.tex'
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        for part_name in part_names:
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self._generate_part(path, dashed_part_name)
+
+    @Command(
         'pg',
         description='preface - generate',
         menu_section='preface',
@@ -3100,10 +3165,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-#        directory = directory.build
-#        self.io.display('generating preface ...')
-#        self._generate_preface(directory)
-#        # HERE
         directory = directory.build
         name = 'preface.tex'
         if not directory.is_parts():
@@ -3125,6 +3186,7 @@ class AbjadIDE(abjad.AbjadObject):
         'rg',
         description='score - generate',
         menu_section='score',
+        score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def generate_score(self, directory):
@@ -3981,6 +4043,29 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
+        'ai',
+        description='part - interpret',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def interpret_part(self, directory, open_after=True):
+        r'''Interprets ``part.tex``.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.tex'
+        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        if not paths:
+            return
+        for path in paths:
+            self._interpret_tex_file(path)
+        if len(paths) == 1:
+            target = path.with_suffix('.pdf')
+            if target.is_file() and open_after:
+                self._open_files([target])
+
+    @Command(
         'pi',
         description='preface - interpret',
         menu_section='preface',
@@ -4008,6 +4093,7 @@ class AbjadIDE(abjad.AbjadObject):
         'ri',
         description='score - interpret',
         menu_section='score',
+        score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def interpret_score(self, directory, open_after=True):
@@ -4017,11 +4103,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        if directory.is_parts():
-            name = 'part.tex'
-        else:
-            name = 'score.tex'
-
+        name = 'score.tex'
         paths = self._get_matching_paths_in_build(directory, name, 'interpret')
         if not paths:
             return
@@ -4131,7 +4213,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pdfm',
         description='pdf - make',
         menu_section='pdf',
-        score_package_paths=('material', 'segment',),
+        score_package_paths=('material', 'parts', 'segment',),
         )
     def make_pdf(self, directory, open_after=True):
         r'''Makes illustration PDF.
@@ -4264,6 +4346,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
+        'ao',
+        description='part - open',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def open_part_pdf(self, directory):
+        r'''Opens ``part.pdf`` in `directory`.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.pdf'
+        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        if paths:
+            self._open_files(paths)
+
+    @Command(
         'pdfo',
         description='pdf - open',
         menu_section='pdf',
@@ -4309,14 +4408,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        if directory.is_parts():
-            name = 'part.pdf'
-            paths = directory.get_files_ending_with(name)
-            if paths:
-                self._open_files(paths)
-            else:
-                self.io.display(f'no files ending in *{name} ...')
-        elif directory.is_build():
+        if directory.is_build() and not directory.is_parts():
             name = 'score.pdf'
             paths = directory.get_files_ending_with(name)
             if paths:
@@ -4442,7 +4534,7 @@ class AbjadIDE(abjad.AbjadObject):
         for i, pair in enumerate(part_name_pairs):
             part_name, part_abbreviation = pair
             part_number = i + 1
-            price = f'{part_abbreviation} / ({part_number}/{total_parts})'
+            price = f'{part_abbreviation} ({part_number}/{total_parts})'
             dash_part_name = abjad.String(part_name).to_dash_case()
             path = directory(f'{dash_part_name}-back-cover.tex')
             self._generate_back_cover(path, price=price),
@@ -4968,6 +5060,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
+        'at',
+        description='part - trash',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def trash_part(self, directory):
+        r'''Trashes part (source).
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.tex'
+        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+    @Command(
         'pdft',
         description='pdf - trash',
         menu_section='pdf',
@@ -5020,6 +5129,7 @@ class AbjadIDE(abjad.AbjadObject):
         'rt',
         description='score - trash',
         menu_section='score',
+        score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def trash_score(self, directory):
