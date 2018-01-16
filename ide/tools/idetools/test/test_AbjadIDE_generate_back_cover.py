@@ -9,12 +9,12 @@ def test_AbjadIDE_generate_back_cover_01():
         text = source.read_text()
         assert 'paper_size' in text
         assert '{8.5in, 11in}' not in text
-        target = ide.Path('blue_score', 'builds', 'letter-score', 'back-cover.tex')
+        target = ide.Path(
+            'blue_score', 'builds', 'letter-score', 'back-cover.tex')
         target.remove()
 
         abjad_ide('blu %letter bcg q')
         transcript = abjad_ide.io.transcript
-        assert 'Generating back cover ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()
@@ -24,7 +24,6 @@ def test_AbjadIDE_generate_back_cover_01():
 
         abjad_ide('blu %letter bcg q')
         transcript = abjad_ide.io.transcript
-        assert 'Generating back cover ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()

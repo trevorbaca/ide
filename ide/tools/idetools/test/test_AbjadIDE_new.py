@@ -138,11 +138,9 @@ def test_AbjadIDE_new_04():
         assert 'Paper size> arch a' in transcript
         assert r'Price> $80' in transcript
         assert 'Catalog number suffix> ARCH-A'in transcript
-        assert transcript.lines[-38:] == [
-            'Generating back cover ...',
+        assert transcript.lines[-36:] == [
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
-            'Generating front cover ...',
             'Writing red_score/builds/arch-a-score/front-cover.tex ...',
             '',
             'Writing red_score/builds/arch-a-score/layout.py ...',
@@ -213,8 +211,8 @@ def test_AbjadIDE_new_05():
         for path in paths:
             assert f'    {path.trim()}' in transcript
         assert 'Ok?> y' in transcript
-        assert 'Generating back cover ...' in transcript
-        assert 'Generating front cover ...' in transcript
+        #assert 'Generating back cover ...' in transcript
+        #assert 'Generating front cover ...' in transcript
         assert 'Generating music ...' in transcript
         assert 'Generating preface ...' in transcript
         assert 'Generating score ...' in transcript

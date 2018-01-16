@@ -439,8 +439,10 @@ class AbjadIDE(abjad.AbjadObject):
             files = abjad.Sequence(files).retain(indices)
         return files
 
-    def _generate_back_cover(self, directory, prefix=None, price=None):
-        assert directory.is_build()
+    def _generate_back_cover(self, path, price=None):
+        assert path.build.exists(), repr(path)
+        assert path.name.endswith('back-cover.tex')
+        directory = path.build
         values = {}
         string = 'catalog_number'
         catalog_number = directory.contents.get_metadatum(string, r'\null')
@@ -467,9 +469,7 @@ class AbjadIDE(abjad.AbjadObject):
         width, height, unit = dimensions
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
-        target_name = None
-        if prefix:
-            target_name = f'{prefix}-back-cover.tex'
+        target_name = path.name
         self._copy_boilerplate(
             directory,
             'back-cover.tex',
@@ -495,13 +495,9 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_front_cover(
-        self,
-        directory,
-        forces_tagline=None,
-        prefix=None,
-        #price=None,
-        ):
+    def _generate_front_cover(self, path, forces_tagline=None):
+        assert path.build.exists(), repr(path)
+        directory = path.build
         values = {}
         score_title = directory.contents.get_title(year=False)
         score_title = score_title.upper()
@@ -525,8 +521,9 @@ class AbjadIDE(abjad.AbjadObject):
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
         target_name = None
-        if prefix:
-            target_name = f'{prefix}-front-cover.tex'
+#        if prefix:
+#            target_name = f'{prefix}-front-cover.tex'
+        target_name = path
         self._copy_boilerplate(
             directory,
             'front-cover.tex',
@@ -1645,6 +1642,52 @@ class AbjadIDE(abjad.AbjadObject):
             string = ' '.join([str(_) for _ in paths])
             command = f'py.test -xrf {string}; say "done"'
             abjad.IOManager.spawn_subprocess(command)
+
+    def _select_part_names(self, directory, name, verb):
+        part_names = self._get_part_names(directory)
+        if not part_names:
+            self.io.display('score template defines no part names.')
+            return
+        part_names_ = []
+        for i, part_name in enumerate(part_names):
+            part_name = part_name + (i + 1,)
+            part_names_.append(part_name)
+        part_names = part_names_
+        self.io.display('found ...')
+        for part_name in part_names:
+            self.io.display(part_name[0], raw=True)
+        self.io.display('')
+        pattern = self.io.get('match name')
+        if pattern and self.is_navigation(pattern):
+            return
+        if not pattern:
+            return
+        selected_part_names = []
+        if pattern == '*':
+            selected_part_names.extend(part_names)
+        else:
+            for part_name in part_names:
+                if part_name[0].startswith(pattern):
+                    selected_part_names.append(part_name)
+                elif part_name[0].lower().startswith(pattern):
+                    selected_part_names.append(part_name)
+        if not selected_part_names:
+            self.io.display(f'no part names starting with {pattern} ...')
+            return
+        if 1 < len(selected_part_names):
+            self.io.display(f'will {verb} {len(selected_part_names)} files ...')
+            for part_name in selected_part_names:
+                dashed_name = abjad.String(part_name[0]).to_dash_case()
+                file_name = f'{dashed_name}-{name}'
+                path = directory(file_name)
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            ok = self.io.get('ok?')
+            if ok and self.is_navigation(ok):
+                return
+            if ok != 'y':
+                return
+        return selected_part_names
 
     def _select_paths(self, directory, infinitive=''):
         counter = abjad.String(directory.get_asset_type()).pluralize()
@@ -2938,8 +2981,23 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('generating back cover ...')
-        self._generate_back_cover(directory)
+        name = 'back-cover.tex'
+        if not directory.is_parts():
+            path = directory(name)
+            self._generate_back_cover(path)
+            return
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        total_parts = len(self._get_part_names(directory))
+        for part_name in part_names:
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            price = f'{abbreviation} / ({number}/{total_parts})'
+            self._generate_back_cover(path, price=price)
 
     @Command(
         'fcg',
@@ -2954,8 +3012,25 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('generating front cover ...')
-        self._generate_front_cover(directory)
+        name = 'front-cover.tex'
+        if not directory.is_parts():
+            path = directory(name)
+            self._generate_front_cover(path)
+            return
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        for part_name in part_names:
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            words = abjad.String(part_name).delimit_words()
+            words = [_.lower() for _ in words]
+            forces_tagline = ' '.join(words) + ' part'
+            path = directory(file_name)
+            self._generate_front_cover(path, forces_tagline=forces_tagline)
 
     @Command(
         'mg',
@@ -4326,18 +4401,12 @@ class AbjadIDE(abjad.AbjadObject):
             part_number = i + 1
             price = f'{part_abbreviation} / ({part_number}/{total_parts})'
             dash_part_name = abjad.String(part_name).to_dash_case()
-            self._generate_back_cover(
-                directory,
-                prefix=dash_part_name,
-                price=price,
-                ),
+            path = directory(f'{dash_part_name}-back-cover.tex')
+            self._generate_back_cover(path, price=price),
+            path = directory(f'{dash_part_name}-front-cover.tex')
             words = abjad.String(dash_part_name).delimit_words()
             forces_tagline = f"{' '.join(words)} part"
-            self._generate_front_cover(
-                directory,
-                forces_tagline=forces_tagline,
-                prefix=dash_part_name,
-                )
+            self._generate_front_cover(path, forces_tagline=forces_tagline)
             name = 'layout.py'
             target_name = f'{dash_part_name}_{name}'
             target_name = abjad.String(target_name).to_snake_case()
