@@ -11,7 +11,6 @@ def test_AbjadIDE_interpret_music_01():
 
         abjad_ide('red %letter lyc* mi q')
         transcript = abjad_ide.io.transcript
-        assert 'Interpreting music ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
@@ -20,7 +19,6 @@ def test_AbjadIDE_interpret_music_01():
 
         abjad_ide('red %letter mi q')
         transcript = abjad_ide.io.transcript
-        assert 'Interpreting music ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript

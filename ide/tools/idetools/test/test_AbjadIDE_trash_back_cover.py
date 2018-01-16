@@ -5,7 +5,8 @@ abjad_ide = ide.AbjadIDE(test=True)
 def test_AbjadIDE_trash_back_cover_01():
 
     with ide.Test():
-        path = ide.Path('red_score', 'builds', 'letter-score', 'back-cover.tex')
+        path = ide.Path(
+            'red_score', 'builds', 'letter-score', 'back-cover.tex')
         assert path.is_file()
 
         abjad_ide('red %letter bct q')
@@ -15,4 +16,4 @@ def test_AbjadIDE_trash_back_cover_01():
 
         abjad_ide('red %letter bct q')
         transcript = abjad_ide.io.transcript
-        assert f'Missing {path.trim()} ...' in transcript
+        assert f'No files matching back-cover.tex ...' in transcript

@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-48:] == [
+        assert transcript.lines[-44:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
@@ -35,19 +35,15 @@ def test_AbjadIDE_build_score_01():
             'Examining red_score/segments/B ...',
             'Writing red_score/builds/letter-score/music.ly ...',
             '',
-            'Interpreting music ...',
             'Interpreting red_score/builds/letter-score/music.ly ...',
             'Writing red_score/builds/letter-score/music.pdf ...',
             '',
-            'Interpreting front cover ...',
             'Interpreting red_score/builds/letter-score/front-cover.tex ...',
             'Writing red_score/builds/letter-score/front-cover.pdf ...',
             '',
-            'Interpreting preface ...',
             'Interpreting red_score/builds/letter-score/preface.tex ...',
             'Writing red_score/builds/letter-score/preface.pdf ...',
             '',
-            'Interpreting back cover ...',
             'Interpreting red_score/builds/letter-score/back-cover.tex ...',
             'Writing red_score/builds/letter-score/back-cover.pdf ...',
             '',

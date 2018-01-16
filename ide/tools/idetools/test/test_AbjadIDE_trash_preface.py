@@ -15,4 +15,4 @@ def test_AbjadIDE_trash_preface_01():
 
         abjad_ide('red %letter pt q')
         transcript = abjad_ide.io.transcript
-        assert f'Missing {path.trim()} ...' in transcript
+        assert f'No files matching preface.tex ...' in transcript
