@@ -1836,7 +1836,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mim',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - activate',
+        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - activate',
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
@@ -1846,7 +1846,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.MEASURE_INDEX_MARKUP
+        tag = abjad.tags.MEASURE_NUMBER_MARKUP
         self._activate_tag(directory, tag)
 
     @Command(
@@ -2400,7 +2400,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mimx',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - deactivate',
+        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - deactivate',
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
@@ -2410,7 +2410,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.MEASURE_INDEX_MARKUP
+        tag = abjad.tags.MEASURE_NUMBER_MARKUP
         self._deactivate_tag(directory, tag)
 
     @Command(
@@ -2769,9 +2769,51 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
-        path = directory('preface.tex')
-        self._open_files([path])
+        is_glob = False
+        name = 'preface.tex'
+        selected_paths = []
+        if not directory.is_parts():
+            path = directory.build(name)
+            if path.is_file():
+                selected_paths.append(path)
+        else:
+            paths = directory.get_files_ending_with(name)
+            if not paths:
+                self.io.display(f'no files ending in {name} ...')
+            self.io.display('found ...')
+            for path in paths:
+                self.io.display(f'{path.trim()}', raw=True)
+            self.io.display('')
+            pattern = self.io.get('match name')
+            if pattern and self.is_navigation(pattern):
+                return
+            if '*' in pattern:
+                is_glob = True
+                matches = sorted(directory.glob(str(pattern)))
+                matches = list(matches)
+            selected_paths = []
+            for path in paths:
+                if is_glob and path in matches:
+                    selected_paths.append(path)
+                elif path.name.startswith(pattern):
+                    selected_paths.append(path)
+        if not selected_paths:
+            if is_glob:
+                self.io.display(f'no files matching {pattern} ...')
+            else:
+                self.io.display(f'no files starting with {pattern} ...')
+            return
+        if 1 < len(selected_paths):
+            self.io.display(f'will open {len(selected_paths)} files ...')
+            for path in selected_paths:
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            ok = self.io.get('ok?')
+            if ok and self.is_navigation(ok):
+                return
+            if ok != 'y':
+                return
+        self._open_files(selected_paths)
 
     @Command(
         're',
