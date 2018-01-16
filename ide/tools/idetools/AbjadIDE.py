@@ -2178,6 +2178,64 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, tags, name=name)
 
     @Command(
+        'ab',
+        description='part - build',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def build_part(self, directory):
+        r'''Builds part from the ground up.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.tex'
+        part_names = self._select_part_names(directory, name, 'build')
+        if not part_names:
+            return
+        total_parts = len(part_names)
+        for i, part_name in enumerate(part_names):
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            name = 'front-cover.tex'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self.io.display(f'interpreting {path.trim()} ...')
+            self._interpret_tex_file(path)
+            self.io.display('')
+            name = 'preface.tex'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self.io.display(f'interpreting {path.trim()} ...')
+            self._interpret_tex_file(path)
+            self.io.display('')
+            name = 'music.ly'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self.io.display(f'interpreting {path.trim()} ...')
+            self._run_lilypond(path)
+            self.io.display('')
+            name = 'back-cover.tex'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self.io.display(f'interpreting {path.trim()} ...')
+            self._interpret_tex_file(path)
+            self.io.display('')
+            name = 'part.tex'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self.io.display(f'interpreting {path.trim()} ...')
+            self._interpret_tex_file(path)
+            if 1 < total_parts and i < total_parts - 1:
+                self.io.display('')
+        if len(part_names) == 1:
+            name = 'part.pdf'
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self._open_files([path])
+
+    @Command(
         'bld',
         description='build - build',
         menu_section='build',
@@ -4213,7 +4271,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pdfm',
         description='pdf - make',
         menu_section='pdf',
-        score_package_paths=('material', 'parts', 'segment',),
+        score_package_paths=('material', 'segment',),
         )
     def make_pdf(self, directory, open_after=True):
         r'''Makes illustration PDF.
