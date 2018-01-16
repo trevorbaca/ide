@@ -3899,14 +3899,18 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'score.tex'
         if directory.is_parts():
-            self._interpret_tex_files_ending_with(directory, name)
+            name = 'part.tex'
         else:
-            self.io.display('interpreting score ...')
-            source = directory(name)
-            target = source.with_suffix('.pdf')
-            self._interpret_tex_file(source)
+            name = 'score.tex'
+
+        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        if not paths:
+            return
+        for path in paths:
+            self._interpret_tex_file(path)
+        if len(paths) == 1:
+            target = path.with_suffix('.pdf')
             if target.is_file() and open_after:
                 self._open_files([target])
 

@@ -18,7 +18,6 @@ def test_AbjadIDE_interpret_score_01():
 
         abjad_ide('red %letter fci pi mi bci ri q')
         transcript = abjad_ide.io.transcript
-        assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
@@ -27,7 +26,6 @@ def test_AbjadIDE_interpret_score_01():
 
         abjad_ide('red bb letter fci pi mi bci ri q')
         transcript = abjad_ide.io.transcript
-        assert 'Interpreting score ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
@@ -40,7 +38,8 @@ def test_AbjadIDE_interpret_score_02():
     '''
 
     with ide.Test():
-        pdf = ide.Path('red_score', 'builds', 'letter-score', 'front-cover.pdf')
+        pdf = ide.Path(
+            'red_score', 'builds', 'letter-score', 'front-cover.pdf')
         pdf.remove()
 
         abjad_ide('red %letter ri q')
