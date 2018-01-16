@@ -138,7 +138,7 @@ def test_AbjadIDE_new_04():
         assert 'Paper size> arch a' in transcript
         assert r'Price> $80' in transcript
         assert 'Catalog number suffix> ARCH-A'in transcript
-        assert transcript.lines[-36:] == [
+        assert transcript.lines[-34:] == [
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
             'Writing red_score/builds/arch-a-score/front-cover.tex ...',
@@ -157,14 +157,12 @@ def test_AbjadIDE_new_04():
             'No persistent indicator tags to activate ...',
             'No markup tags to deactivate ...',
             '',
-            'Generating music ...',
             'Examining segments alphabetically ...',
             'Examining red_score/segments/_ ...',
             'Examining red_score/segments/A ...',
             'Examining red_score/segments/B ...',
             'Writing red_score/builds/arch-a-score/music.ly ...',
             '',
-            'Generating preface ...',
             'Writing red_score/builds/arch-a-score/preface.tex ...',
             '',
             'Generating score ...',
@@ -211,10 +209,6 @@ def test_AbjadIDE_new_05():
         for path in paths:
             assert f'    {path.trim()}' in transcript
         assert 'Ok?> y' in transcript
-        #assert 'Generating back cover ...' in transcript
-        #assert 'Generating front cover ...' in transcript
-        assert 'Generating music ...' in transcript
-        assert 'Generating preface ...' in transcript
         assert 'Generating score ...' in transcript
         assert 'Generating stylesheet ...' in transcript
         for path in paths:

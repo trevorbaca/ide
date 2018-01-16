@@ -14,7 +14,6 @@ def test_AbjadIDE_generate_preface_01():
 
         abjad_ide('blu bb letter pg q')
         transcript = abjad_ide.io.transcript
-        assert 'Generating preface ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()
@@ -24,7 +23,6 @@ def test_AbjadIDE_generate_preface_01():
 
         abjad_ide('blu bb letter pg q')
         transcript = abjad_ide.io.transcript
-        assert 'Generating preface ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()

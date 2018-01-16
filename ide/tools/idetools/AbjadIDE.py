@@ -498,6 +498,20 @@ class AbjadIDE(abjad.AbjadObject):
     def _generate_front_cover(self, path, forces_tagline=None):
         assert path.build.exists(), repr(path)
         directory = path.build
+        name = 'front-cover.tex'
+        local_template = directory._assets(name)
+        if local_template.is_file():
+            self.io.display(f'removing {path.trim()} ...')
+            path.remove()
+            self.io.display(f'copying {local_template.trim()} ...')
+            self.io.display(f'writing {path.trim()} ...')
+            shutil.copyfile(str(local_template), str(path))
+            if forces_tagline is not None:
+                text = path.read_text()
+                if 'FORCES_TAGLINE' in text:
+                    text = text.replace('FORCES_TAGLINE', forces_tagline)
+                path.write_text(text)
+            return
         values = {}
         score_title = directory.contents.get_title(year=False)
         score_title = score_title.upper()
@@ -521,28 +535,25 @@ class AbjadIDE(abjad.AbjadObject):
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
         target_name = None
-#        if prefix:
-#            target_name = f'{prefix}-front-cover.tex'
         target_name = path
         self._copy_boilerplate(
             directory,
-            'front-cover.tex',
+            name,
             target_name=target_name,
             values=values,
             )
 
     def _generate_music(
         self,
-        directory,
+        path,
         forces_tagline=None,
         keep_with_tag=None,
-        prefix=None,
         silent=None,
         ):
-        target_name = 'music.ly'
-        if prefix is not None:
-            target_name = f'{prefix}-{target_name}'
-        target = directory / target_name
+        assert path.build.exists(), repr(path)
+        target = path
+        target_name = path.name
+        directory = path.build
         if target.exists():
             self.io.display(f'removing {target.trim()} ...')
             target.remove()
@@ -609,7 +620,18 @@ class AbjadIDE(abjad.AbjadObject):
             )
         target.write_text(template)
 
-    def _generate_preface(self, directory, prefix=None):
+    def _generate_preface(self, path):
+        assert path.build.exists(), repr(path)
+        directory = path.build
+        name = 'preface.tex'
+        local_template = directory._assets(name)
+        if local_template.is_file():
+            self.io.display(f'removing {path.trim()} ...')
+            path.remove()
+            self.io.display(f'copying {local_template.trim()} ...')
+            self.io.display(f'writing {path.trim()} ...')
+            shutil.copyfile(str(local_template), str(path))
+            return
         values = {}
         paper_size = directory.get_metadatum('paper_size', 'letter')
         orientation = directory.get_metadatum('orientation')
@@ -617,12 +639,10 @@ class AbjadIDE(abjad.AbjadObject):
         width, height, unit = paper_size
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
-        target_name = 'preface.tex'
-        if prefix is not None:
-            target_name = f'{prefix}-{target_name}'
+        target_name = path.name
         self._copy_boilerplate(
             directory,
-            'preface.tex',
+            name,
             target_name=target_name,
             values=values,
             )
@@ -3045,8 +3065,28 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        self.io.display('generating music ...')
-        self._generate_music(directory)
+        name = 'music.ly'
+        if not directory.is_parts():
+            path = directory(name)
+            self._generate_music(path)
+            return
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        for part_name in part_names:
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            forces_tagline = abjad.String(part_name).delimit_words()
+            forces_tagline = [_.lower() for _ in forces_tagline]
+            forces_tagline = ' '.join(forces_tagline) + ' part'
+            self._generate_music(
+                path,
+                forces_tagline=forces_tagline,
+                keep_with_tag=part_name,
+                )
 
     @Command(
         'pg',
@@ -3060,9 +3100,26 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
+#        directory = directory.build
+#        self.io.display('generating preface ...')
+#        self._generate_preface(directory)
+#        # HERE
         directory = directory.build
-        self.io.display('generating preface ...')
-        self._generate_preface(directory)
+        name = 'preface.tex'
+        if not directory.is_parts():
+            path = directory(name)
+            self._generate_preface(path)
+            return
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        for part_name in part_names:
+            assert len(part_name) == 3, repr(part_name)
+            part_name, abbreviation, number = part_name
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory(file_name)
+            self._generate_preface(path)
 
     @Command(
         'rg',
@@ -3470,20 +3527,6 @@ class AbjadIDE(abjad.AbjadObject):
             self._manage_directory(self.previous_directory)
         else:
             self._manage_directory(self.current_directory)
-
-    @Command(
-        'aa',
-        description='package - assets',
-        menu_section='package',
-        score_package_paths=True,
-        )
-    def go_to_assets_directory(self, directory):
-        r'''Goes to assets directory.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        self._manage_directory(directory._assets())
 
     @Command(
         'bb',
@@ -4411,11 +4454,11 @@ class AbjadIDE(abjad.AbjadObject):
             target_name = f'{dash_part_name}_{name}'
             target_name = abjad.String(target_name).to_snake_case()
             self._copy_boilerplate(directory, name, target_name=target_name)
+            path = directory(target_name)
             self._generate_music(
-                directory,
+                path,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
-                prefix=dash_part_name,
                 silent=True,
                 )
             self._generate_document(

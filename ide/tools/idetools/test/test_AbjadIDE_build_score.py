@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-43:] == [
+        assert transcript.lines[-42:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
@@ -27,7 +27,6 @@ def test_AbjadIDE_build_score_01():
             'No persistent indicator tags to activate ...',
             'No markup tags to deactivate ...',
             '',
-            'Generating music ...',
             'Removing red_score/builds/letter-score/music.ly ...',
             'Examining segments alphabetically ...',
             'Examining red_score/segments/_ ...',
