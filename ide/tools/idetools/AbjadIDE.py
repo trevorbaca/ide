@@ -232,6 +232,14 @@ class AbjadIDE(abjad.AbjadObject):
                     forbid=forbid,
                     name=name,
                     )
+        elif directory.is_file():
+            count = self._activate_tag_in_file(
+                directory,
+                tag,
+                allow_only=allow_only,
+                forbid=forbid,
+                name=name,
+                )
         else:
             raise ValueError(directory)
         if not count:
@@ -273,6 +281,28 @@ class AbjadIDE(abjad.AbjadObject):
             ly.write_text(text)
             total += count
         return total
+
+    def _activate_tag_in_file(
+        self,
+        path,
+        tag,
+        allow_only=None,
+        forbid=None,
+        name=None,
+        ):
+        if not path.is_file():
+            self.io.display(f'missing {path.trim()} ...')
+            return
+        text, count = path.activate_tag(
+            tag,
+            allow_only=allow_only,
+            forbid=forbid,
+            )
+        if count:
+            messages = self._message_activate(path, tag, count, name=name)
+            self.io.display(messages)
+        path.write_text(text)
+        return count
 
     def _activate_tag_in_segment_ly(
         self,
@@ -389,6 +419,8 @@ class AbjadIDE(abjad.AbjadObject):
                     tag,
                     name=name,
                     )
+        elif directory.is_file():
+            count = self._deactivate_tag_in_file( directory, tag, name=name)
         else:
             raise ValueError(directory)
         if not count:
@@ -419,6 +451,18 @@ class AbjadIDE(abjad.AbjadObject):
             ly.write_text(text)
             total += count
         return total
+
+    def _deactivate_tag_in_file(self, path, tag, name=None):
+        if not path.is_file():
+            self.io.display(f'missing {path.trim()} ...')
+            return
+        text, count = path.deactivate_tag(tag)
+        if count:
+            messages = self._message_deactivate(path, tag, count, name=name)
+            self.io.display(messages)
+        path.write_text(text)
+        return count
+
 
     def _deactivate_tag_in_segment_ly(self, directory, tag, name=None):
         ly = directory('illustration.ly')
@@ -2112,6 +2156,31 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, tags, name=name)
 
     @Command(
+        'ylb',
+        description='layout ly - b&w',
+        menu_section='layout',
+        score_package_paths=('_segments', 'build',),
+        )
+    def black_and_white_layout_ly(self, directory):
+        r'''Renders layout.ly file in black and white.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name, verb = 'layout.ly', 'color'
+        if directory.is_parts():
+            paths = self._get_matching_paths_in_build(directory, name, verb)
+        else:
+            paths = [directory(name)]
+        tags = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
+            )
+        name = 'spacing markup'
+        for path in paths:
+            self._deactivate_tag(path, tags, name=name)
+
+    @Command(
         'bwmm',
         description='b&w - MARGIN MARKUP',
         menu_section='bw',
@@ -2491,6 +2560,40 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, tags, name=name)
         tags = self._color_instrument_tags['deactivate']
         self._deactivate_tag(directory, tags, name=name)
+
+
+    @Command(
+        'ylc',
+        description='layout ly - color',
+        menu_section='layout',
+        score_package_paths=('_segments', 'build',),
+        )
+    def color_layout_ly(self, directory):
+        r'''Colors layout.ly file.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name, verb = 'layout.ly', 'color'
+        if directory.is_parts():
+            paths = self._get_matching_paths_in_build(directory, name, verb)
+        else:
+            paths = [directory(name)]
+        tags = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
+            )
+        name = 'spacing markup'
+        allow_only = abjad.tags.only(directory.name)
+        forbid = abjad.tags.forbid(directory.name)
+        for path in paths:
+            self._activate_tag(
+                path,
+                tags,
+                allow_only=allow_only,
+                forbid=forbid,
+                name=name,
+                )
 
     @Command(
         'clmm',
@@ -2910,7 +3013,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'yle',
-        description='layout - ly',
+        description='layout ly - edit',
         menu_section='layout',
         score_package_paths=('_segments', 'build',),
         )
@@ -2927,7 +3030,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ype',
-        description='layout - py',
+        description='layout py - edit',
         menu_section='layout',
         score_package_paths=('_segments', 'build',),
         )
@@ -4203,7 +4306,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ylm',
-        description='layout - make',
+        description='layout ly - make',
         menu_section='layout',
         score_package_paths=('_segments', 'build',),
         )
