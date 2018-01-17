@@ -2020,7 +2020,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._activate_tag(directory, tag)
 
     @Command(
-        'mim',
+        'mnm',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - activate',
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
@@ -2714,7 +2714,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, tag)
 
     @Command(
-        'mimx',
+        'mnmx',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - deactivate',
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
