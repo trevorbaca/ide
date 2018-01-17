@@ -2909,8 +2909,25 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'yoe',
-        description='layout - edit',
+        'yle',
+        description='layout - ly',
+        menu_section='layout',
+        score_package_paths=('_segments', 'build',),
+        )
+    def edit_layout_ly(self, directory):
+        r'''Edits layout.ly file.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name = 'layout.ly'
+        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        if paths:
+            self._open_files(paths)
+
+    @Command(
+        'ype',
+        description='layout - py',
         menu_section='layout',
         score_package_paths=('_segments', 'build',),
         )
@@ -4185,7 +4202,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'yom',
+        'ylm',
         description='layout - make',
         menu_section='layout',
         score_package_paths=('_segments', 'build',),
