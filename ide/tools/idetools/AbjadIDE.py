@@ -2381,10 +2381,15 @@ class AbjadIDE(abjad.AbjadObject):
         if not pairs:
             self.io.display('... no segment lys found.')
             return
+        if not directory._assets.is_dir():
+            directory._assets.mkdir()
+            gitignore = directory._assets / '.gitignore'
+            gitignore.write_text('')
         if not directory._segments.is_dir():
             directory._segments.mkdir()
             gitignore = directory._segments / '.gitignore'
             gitignore.write_text('*.ly')
+        fermata_measure_numbers = abjad.TypedOrderedDict()
         time_signatures = abjad.TypedOrderedDict()
         for source, target in pairs:
             if target.exists():
@@ -2395,7 +2400,14 @@ class AbjadIDE(abjad.AbjadObject):
             segment = source.parent
             time_signatures_ = segment.get_metadatum('time_signatures')
             time_signatures[segment.name] = time_signatures_
+            numbers = segment.get_metadatum('fermata_measure_numbers')
+            if numbers:
+                fermata_measure_numbers[segment.name] = numbers
         directory.contents.add_metadatum('time_signatures', time_signatures)
+        directory.contents.add_metadatum(
+            'fermata_measure_numbers',
+            fermata_measure_numbers,
+            )
         tag = name = '+'
         self._deactivate_tag(directory, tag, name=tag)
         tag = name = abjad.tags.forbid(directory.name)
