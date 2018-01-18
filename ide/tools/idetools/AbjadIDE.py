@@ -2027,11 +2027,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         if directory.is_build():
-            allow_only = abjad.tags.only(directory.name)
-            forbid = abjad.tags.forbid(directory.name)
+            allow_only = f'+{directory.name}'
+            forbid = f'-{directory.name}'
         else:
-            allow_only = abjad.tags.only(abjad.tags.SEGMENT)
-            forbid = abjad.tags.forbid(abjad.tags.SEGMENT)
+            allow_only = f'+{abjad.tags.SEGMENT}'
+            forbid = f'-{abjad.tags.SEGMENT}'
         tags = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
@@ -2568,8 +2568,8 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
         name = 'spacing markup'
-        allow_only = abjad.tags.only(directory.name)
-        forbid = abjad.tags.forbid(directory.name)
+        allow_only = f'+{directory.name}'
+        forbid = f'-{directory.name}'
         for path in paths:
             self._activate_tag(
                 path,
