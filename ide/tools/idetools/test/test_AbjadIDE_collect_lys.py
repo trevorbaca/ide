@@ -19,9 +19,3 @@ def test_AbjadIDE_collect_lys_01():
         for ly_path in ly_paths:
             assert ly_path.is_file()
             assert f'Writing {ly_path.trim()} ...' in transcript
-            #tag = 'SEGMENT_EMPTY_START_BAR'
-            #message = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
-            #assert message in transcript
-            #tag = 'SEGMENT:LAYOUT'
-            #message = f'Deactivating 0 {tag} tags in {ly_path.name} ...'
-            #assert message in transcript
