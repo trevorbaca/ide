@@ -349,6 +349,16 @@ class Path(abjad.Path):
             parts[-1] += ' (empty)'
         return ' : '.join(parts)
 
+    def is_buildspace(self):
+        r'''Is true when path is build directory, _segments directory or
+        segment directory.
+
+        Returns true or false.
+        '''
+        if self.is_build() or self.is__segments() or self.is_segment():
+            return True
+        return False
+
     def is_external(self):
         r'''Is true when path does not have form of score package path.
 

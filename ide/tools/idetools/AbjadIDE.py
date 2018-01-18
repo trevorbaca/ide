@@ -720,59 +720,6 @@ class AbjadIDE(abjad.AbjadObject):
             dimensions = eval(self.test.strip('dimensions='))
         return dimensions
 
-    def _get_matching_paths_in_build(self, directory, name, verb):
-        assert directory.is_build or directory.is__segments()
-        directory = directory.build()
-        is_glob = False
-        pattern = None
-        selected_paths = []
-        if not directory.is_parts():
-            path = directory.build(name)
-            if path.is_file():
-                selected_paths.append(path)
-        else:
-            paths = directory.get_files_ending_with(name)
-            if not paths:
-                self.io.display(f'no files ending in {name} ...')
-            self.io.display('found ...')
-            for path in paths:
-                self.io.display(f'{path.trim()}', raw=True)
-            self.io.display('')
-            pattern = self.io.get('match name')
-            if pattern and self.is_navigation(pattern):
-                return
-            if not pattern:
-                return
-            if '*' in pattern:
-                is_glob = True
-                matches = sorted(directory.glob(str(pattern)))
-                matches = list(matches)
-            selected_paths = []
-            for path in paths:
-                if is_glob and path in matches:
-                    selected_paths.append(path)
-                elif path.name.startswith(pattern):
-                    selected_paths.append(path)
-        if not selected_paths:
-            if pattern is None:
-                self.io.display(f'no files matching {name} ...')
-            elif is_glob:
-                self.io.display(f'no files matching {pattern} ...')
-            else:
-                self.io.display(f'no files starting with {pattern} ...')
-            return
-        if 1 < len(selected_paths):
-            self.io.display(f'will {verb} {len(selected_paths)} files ...')
-            for path in selected_paths:
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            ok = self.io.get('ok?')
-            if ok and self.is_navigation(ok):
-                return
-            if ok != 'y':
-                return
-        return selected_paths
-
     def _get_persistent_indicator_color_activation_tags(self, directory):
         tags = self._color_clef_tags
         if directory.is_build():
@@ -1543,6 +1490,62 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f"narrow search or use {2*prefix!r} for all ...")
         return address, result
 
+    def _match_paths_in_buildspace(self, directory, name, verb):
+        assert directory.is_buildspace()
+        is_glob = False
+        pattern = None
+        selected_paths = []
+        if directory.is_segment():
+            path = directory(name)
+            if path.is_file():
+                selected_paths.append(path)
+        elif not directory.is_parts():
+            path = directory.build(name)
+            if path.is_file():
+                selected_paths.append(path)
+        else:
+            paths = directory.get_files_ending_with(name)
+            if not paths:
+                self.io.display(f'no files ending in {name} ...')
+            self.io.display('found ...')
+            for path in paths:
+                self.io.display(f'{path.trim()}', raw=True)
+            self.io.display('')
+            pattern = self.io.get('match name')
+            if pattern and self.is_navigation(pattern):
+                return
+            if not pattern:
+                return
+            if '*' in pattern:
+                is_glob = True
+                matches = sorted(directory.glob(str(pattern)))
+                matches = list(matches)
+            selected_paths = []
+            for path in paths:
+                if is_glob and path in matches:
+                    selected_paths.append(path)
+                elif path.name.startswith(pattern):
+                    selected_paths.append(path)
+        if not selected_paths:
+            if pattern is None:
+                self.io.display(f'no files matching {name} ...')
+            elif is_glob:
+                self.io.display(f'no files matching {pattern} ...')
+            else:
+                self.io.display(f'no files starting with {pattern} ...')
+            return
+        if 1 < len(selected_paths):
+            self.io.display(f'will {verb} {len(selected_paths)} files ...')
+            for path in selected_paths:
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            ok = self.io.get('ok?')
+            if ok and self.is_navigation(ok):
+                return
+            if ok != 'y':
+                return
+        return selected_paths
+
     @staticmethod
     def _message_activate(ly, tag, count, name=None):
         messages = []
@@ -2149,7 +2152,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         name, verb = 'layout.ly', 'color'
         if directory.is_parts():
-            paths = self._get_matching_paths_in_build(directory, name, verb)
+            paths = self._match_paths_in_buildspace(directory, name, verb)
         else:
             paths = [directory(name)]
         tags = (
@@ -2560,7 +2563,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         name, verb = 'layout.ly', 'color'
         if directory.is_parts():
-            paths = self._get_matching_paths_in_build(directory, name, verb)
+            paths = self._match_paths_in_buildspace(directory, name, verb)
         else:
             paths = [directory(name)]
         tags = (
@@ -2924,7 +2927,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'back-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -2975,7 +2978,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'front-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -2999,16 +3002,16 @@ class AbjadIDE(abjad.AbjadObject):
         'yle',
         description='layout ly - edit',
         menu_section='layout',
-        score_package_paths=('_segments', 'build',),
+        score_package_paths=('_segments', 'build', 'segment',),
         )
     def edit_layout_ly(self, directory):
         r'''Edits layout.ly file.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
+        assert directory.is_buildspace()
         name = 'layout.ly'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -3016,16 +3019,16 @@ class AbjadIDE(abjad.AbjadObject):
         'ype',
         description='layout py - edit',
         menu_section='layout',
-        score_package_paths=('_segments', 'build',),
+        score_package_paths=('_segments', 'build', 'segment',),
         )
     def edit_layout(self, directory):
         r'''Edits layout.py file.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
+        assert directory.is_buildspace()
         name = 'layout.py'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -3073,7 +3076,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'music.ly'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -3091,7 +3094,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         assert directory.is_parts()
         name = 'part.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -3108,7 +3111,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'preface.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -4103,7 +4106,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'back-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4127,7 +4130,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'front-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4206,7 +4209,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'music.ly'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4229,7 +4232,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_parts()
         name = 'part.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4253,7 +4256,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'preface.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4278,7 +4281,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'score.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         for path in paths:
@@ -4292,17 +4295,18 @@ class AbjadIDE(abjad.AbjadObject):
         'ylm',
         description='layout ly - make',
         menu_section='layout',
-        score_package_paths=('_segments', 'build',),
+        score_package_paths=('_segments', 'build', 'segment',),
         )
     def make_layout(self, directory):
-        r'''Makes layout ly.
+        r'''Makes layout.ly.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
-        directory = directory.build
+        assert directory.is_buildspace()
+        if directory.is__segments():
+            directory = directory.build
         name = 'layout.py'
-        paths = self._get_matching_paths_in_build(directory, name, 'interpret')
+        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
         if not paths:
             return
         total = len(paths)
@@ -4479,7 +4483,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'back-cover.pdf'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -4497,7 +4501,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'front-cover.pdf'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -4515,7 +4519,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'music.pdf'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -4532,7 +4536,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_parts()
         name = 'part.pdf'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -4565,7 +4569,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'preface.pdf'
-        paths = self._get_matching_paths_in_build(directory, name, 'open')
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
 
@@ -5131,7 +5135,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'back-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5180,7 +5184,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'front-cover.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5229,7 +5233,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'music.ly'
-        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5246,7 +5250,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_parts()
         name = 'part.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5295,7 +5299,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         name = 'preface.tex'
-        paths = self._get_matching_paths_in_build(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
 
