@@ -773,26 +773,6 @@ class AbjadIDE(abjad.AbjadObject):
                 return
         return selected_paths
 
-    def _get_part_names(self, directory):
-        assert directory.is_score_package_path()
-        score_package_name = directory.contents.name
-        try:
-            module = importlib.import_module(score_package_name)
-        except:
-            return -1, f'can not import {score_package_name!r}.'
-        if not hasattr(module, 'tools'):
-            return -1, f'{score_package_name} has no tools directory.'
-        tools = module.tools
-        if not hasattr(module.tools, 'ScoreTemplate'):
-            return -1, f'{score_package_name}.tools has no ScoreTemplate.py.'
-        score_template = tools.ScoreTemplate
-        if not hasattr(score_template, 'part_names'):
-            message = f'{score_package_name}.ScoreTemplate'
-            message += " has no 'part_names' property."
-            return -1, message
-        part_names = module.tools.ScoreTemplate.part_names
-        return part_names
-
     def _get_persistent_indicator_color_activation_tags(self, directory):
         tags = self._color_clef_tags
         if directory.is_build():
@@ -1729,7 +1709,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(command)
 
     def _select_part_names(self, directory, name, verb):
-        part_names = self._get_part_names(directory)
+        part_names = directory._get_part_names()
         if not part_names:
             self.io.display('score template defines no part names.')
             return
@@ -2479,13 +2459,17 @@ class AbjadIDE(abjad.AbjadObject):
             )
         tag = name = '+'
         self._deactivate_tag(directory, tag, name=tag)
-        tag = name = abjad.tags.forbid(directory.name)
-        self._deactivate_tag(directory, name, name=tag)
-        tag = name = abjad.tags.only(directory.name)
-        self._activate_tag(directory, tag, name=tag)
+        stem = abjad.String(directory.name).to_shout_case()
+        if directory.is_parts():
+            stem += '*'
+        document_names = directory.document_names
+        tags = ['-' + _ for _ in document_names]
+        self._deactivate_tag(directory, tags, name=f'-{stem}')
+        tags = ['+' + _ for _ in document_names]
+        self._activate_tag(directory, tags, name=f'+{stem}')
         #
         tag = abjad.tags.SPACING
-        i_am_excluded = abjad.tags.forbid(directory.name)
+        i_am_excluded = ['-' + _ for _ in document_names]
         self._activate_tag(directory, tag, name=tag, forbid=i_am_excluded)
         #
         self.black_and_white_all(directory)
@@ -3240,7 +3224,7 @@ class AbjadIDE(abjad.AbjadObject):
         part_names = self._select_part_names(directory, name, 'generate')
         if not part_names:
             return
-        total_parts = len(self._get_part_names(directory))
+        total_parts = len(directory._get_part_names())
         for part_name in part_names:
             assert len(part_name) == 3, repr(part_name)
             part_name, abbreviation, number = part_name
@@ -4647,7 +4631,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_builds()
         self.io.display('getting part names from score template ...')
-        result = self._get_part_names(directory)
+        result = directory._get_part_names()
         if isinstance(result, tuple) and result[0] == -1:
             message = result[-1]
             self.io.display(message)

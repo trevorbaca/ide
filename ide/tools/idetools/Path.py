@@ -1,4 +1,5 @@
 import abjad
+import importlib
 import os
 import pathlib
 from ide.tools.idetools.Configuration import Configuration
@@ -173,6 +174,26 @@ class Path(abjad.Path):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
+    def _get_part_names(self):
+        assert self.is_score_package_path()
+        score_package_name = self.contents.name
+        try:
+            module = importlib.import_module(score_package_name)
+        except:
+            return -1, f'can not import {score_package_name!r}.'
+        if not hasattr(module, 'tools'):
+            return -1, f'{score_package_name} has no tools directory.'
+        tools = module.tools
+        if not hasattr(module.tools, 'ScoreTemplate'):
+            return -1, f'{score_package_name}.tools has no ScoreTemplate.py.'
+        score_template = tools.ScoreTemplate
+        if not hasattr(score_template, 'part_names'):
+            message = f'{score_package_name}.ScoreTemplate'
+            message += " has no 'part_names' property."
+            return -1, message
+        part_names = module.tools.ScoreTemplate.part_names
+        return part_names
+
     def _get_repository_root(self):
         if not self.exists():
             return
@@ -251,6 +272,27 @@ class Path(abjad.Path):
             abjad.IOManager.spawn_subprocess(command)
 
     ### PUBLIC PROPERTIES ###
+
+    @property
+    def document_names(self):
+        r'''Gets document names in path.
+
+        Returns list of shoutcase strings.
+        '''
+        if not self.is_build():
+            return
+        stem = abjad.String(self.name).to_shout_case()
+        if not self.is_parts():
+            return [stem]
+        assert self.is_parts()
+        result = []
+        part_names = self._get_part_names()
+        for pair in part_names:
+            part_name, abbreviation = pair
+            abbreviation = abjad.String(abbreviation).to_shout_case()
+            document_name = f'{stem}_{abbreviation}'
+            result.append(document_name)
+        return result
 
     @property
     def scores(self):
