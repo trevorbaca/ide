@@ -1280,7 +1280,6 @@ class AbjadIDE(abjad.AbjadObject):
         maker = directory('__make_segment_pdf__.py')
         maker.remove()
         with self.cleanup([maker]):
-            self.io.display(f'writing {maker.trim()} ...')
             self._copy_boilerplate(directory, maker.name)
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
@@ -4327,7 +4326,8 @@ class AbjadIDE(abjad.AbjadObject):
                     )
                 self.io.display(f'interpreting {maker.trim()} ...')
                 result = self._interpret_file(maker)
-                if layout_ly.is_file():
+                error_code = result[-1]
+                if error_code == 0 and layout_ly.is_file():
                     self.io.display(f'writing {layout_ly.trim()} ...')
                 self.io.display(f'removing {maker.trim()} ...')
             stdout_lines, stderr_lines, exit_code = result
