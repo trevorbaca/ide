@@ -1263,6 +1263,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _make_segment_pdf(self, directory, open_after=True):
         assert directory.is_segment()
+        self.make_layout_ly(directory)
         definition = directory('definition.py')
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
@@ -4297,7 +4298,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='layout',
         score_package_paths=('_segments', 'build', 'segment',),
         )
-    def make_layout(self, directory):
+    def make_layout_ly(self, directory):
         r'''Makes layout.ly.
 
         Returns none.
