@@ -25,9 +25,6 @@
         \context PianoStaff = "Piano Staff" <<
             \context Staff = "RH Staff" {
                 \context Voice = "RH Voice" {
-                    \set PianoStaff.instrumentName = \markup { Piano }
-                    \set PianoStaff.shortInstrumentName = \markup { Pf. }
-                    \clef "treble"
                     g''8
                     bf''8
                     d''8
@@ -50,7 +47,9 @@
             }
             \context Staff = "LH Staff" {
                 \context Voice = "LH Voice" {
-                    \clef "bass"
+                    \set PianoStaff.instrumentName = \markup { Piano }                   %! ST1
+                    \set PianoStaff.shortInstrumentName = \markup { Pf. }                %! ST1
+                    \clef "bass"                                                         %! ST3
                     fs4.
                     d,4.
                     a4.
