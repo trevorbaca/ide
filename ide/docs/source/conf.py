@@ -13,7 +13,7 @@ PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 ### CORE ###
 add_function_parentheses = True
-copyright = u'2008-2017, Trevor Bača & Josiah Wolf Oberholtzer'
+copyright = u'2008-2018, Trevor Bača'
 exclude_patterns = []
 extensions = [
     'sphinx.ext.autodoc',
@@ -22,6 +22,7 @@ extensions = [
     'sphinx.ext.graphviz',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
+    'sphinx_autodoc_typehints',
     'abjad.docs.ext.abjadbook',
     ]
 master_doc = 'index'
