@@ -4466,6 +4466,20 @@ class AbjadIDE(abjad.AbjadObject):
                 abjad.IOManager.spawn_subprocess('say "done"')
 
     @Command(
+        'pdfn',
+        description='pdf - nake',
+        menu_section='pdf',
+        score_package_paths=('material', 'segment',),
+        )
+    def nake_pdf(self, directory, open_after=True):
+        r'''Makes illustration PDF and does not open after.
+
+        Returns integer exit code for Travis tests.
+        '''
+        assert directory.is_material_or_segment()
+        return self.make_pdf(directory, open_after=False)
+
+    @Command(
         'new',
         description='path - new',
         external_directories=True,
