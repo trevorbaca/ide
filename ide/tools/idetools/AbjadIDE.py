@@ -200,27 +200,15 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _activate_tag(self, directory, tag, name=None):
         if directory.is_build() or directory.is__segments():
-            count = self._activate_tag_in_build_lys(
-                directory,
-                tag,
-                name=name,
-                )
+            count = self._activate_tag_in_build_lys(directory, tag, name)
         elif directory.is_segment():
-            count = self._activate_tag_in_segment_ly(
-                directory,
-                tag,
-                name=name,
-                )
+            count = self._activate_tag_in_segment_ly(directory, tag, name)
         elif directory.is_segments():
             count = 0
             for segment in directory.list_paths():
-                count += self._activate_tag_in_segment_ly(
-                    segment,
-                    tag,
-                    name=name,
-                    )
+                count += self._activate_tag_in_segment_ly(segment, tag, name)
         elif directory.is_file():
-            count = self._activate_tag_in_file(directory, tag, name=name)
+            count = self._activate_tag_in_file(directory, tag, name)
         else:
             raise ValueError(directory)
         if not count:
@@ -358,12 +346,14 @@ class AbjadIDE(abjad.AbjadObject):
         # don't need to worry about last measure in score
         # because segment-maker preserves barline after score-final fermata:
         eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
-        match = baca.Match(
-            match_all=[baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA],
-            forbid_any=eol_measure_numbers,
-            )
-        name = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
-        self._deactivate_tag(directory, match, name=name)
+        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
+        def match(tags):
+            if tag not in tags:
+                return False
+            if any(_ in tags for _ in eol_measure_numbers):
+                return False
+            return True
+        self._deactivate_tag(directory, match, tag)
 
     def _deactivate_shifted_clef_at_bol(self, directory):
         # activate all shifted clefs (to undo segment deactivations):
@@ -373,35 +363,25 @@ class AbjadIDE(abjad.AbjadObject):
         if not bol_measure_numbers:
             return
         bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
-        match = baca.Match(
-            match_all=[baca.tags.SHIFTED_CLEF],
-            match_any=bol_measure_numbers,
-            )
-        self._deactivate_tag(directory, match, name=baca.tags.SHIFTED_CLEF)
+        def match(tags):
+            if baca.tags.SHIFTED_CLEF not in tags:
+                return False
+            if any(_ in tags for _ in bol_measure_numbers):
+                return True
+            return False
+        self._deactivate_tag(directory, match, baca.tags.SHIFTED_CLEF)
 
     def _deactivate_tag(self, directory, tag, name=None):
         if directory.is_build() or directory.is__segments():
-            count = self._deactivate_tag_in_build_lys(
-                directory,
-                tag,
-                name=name,
-                )
+            count = self._deactivate_tag_in_build_lys(directory, tag, name)
         elif directory.is_segment():
-            count = self._deactivate_tag_in_segment_ly(
-                directory,
-                tag,
-                name=name,
-                )
+            count = self._deactivate_tag_in_segment_ly(directory, tag, name)
         elif directory.is_segments():
             count = 0
             for segment in directory.list_paths():
-                count += self._deactivate_tag_in_segment_ly(
-                    segment,
-                    tag,
-                    name=name,
-                    )
+                count += self._deactivate_tag_in_segment_ly(segment, tag, name)
         elif directory.is_file():
-            count = self._deactivate_tag_in_file( directory, tag, name=name)
+            count = self._deactivate_tag_in_file( directory, tag, name)
         else:
             raise ValueError(directory)
         if not count:
@@ -2011,11 +1991,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = (
+        target = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
-        self._activate_tag(directory, baca.Match(match_any=tags))
+        def match(tags):
+            bool(set(tags) ^ set(target))
+        self._activate_tag(directory, match)
 
     @Command(
         'snm',
@@ -2044,23 +2026,23 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._get_persistent_indicator_color_expression_tags(directory)
+        tags_ = self._get_persistent_indicator_color_expression_tags(directory)
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='persistent indicator color expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'persistent indicator color expression',
             )
-        tags = self._get_persistent_indicator_color_suppression_tags(
+        tags_ = self._get_persistent_indicator_color_suppression_tags(
             directory)
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='persistent indicator color suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'persistent indicator color suppression',
             )
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=abjad.tags.markup_tags),
-            name='colored markup',
+            lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
+            'colored markup',
             )
 
     @Command(
@@ -2075,13 +2057,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_clef_tags
+        tags_ = self._color_clef_tags
         if directory.is_build():
-            tags += (baca.tags.REAPPLIED_CLEF,)
+            tags_ += (baca.tags.REAPPLIED_CLEF,)
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='clef',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'clef',
             )
 
     @Command(
@@ -2098,8 +2080,8 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=self._color_dynamic_tags),
-            name='dynamic',
+            lambda tags: bool(set(tags) & set(self._color_dynamic_tags)),
+            'dynamic',
             )
 
     @Command(
@@ -2114,18 +2096,19 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_instrument_tags['activate']
+        tags_ = self._color_instrument_tags['activate']
         if directorty.is_build():
-            tags += (baca.tags.REAPPLIED_INSTRUMENT,)
+            tags_ += (baca.tags.REAPPLIED_INSTRUMENT,)
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='instrument color expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'instrument color expression',
             )
+        tags_ = self._color_instrument_tags['deactivate']
         self._activate_tag(
             directory,
-            baca.Match(match_any=self._color_instrument_tags['deactivate']),
-            name='instrument color suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'instrument color suppression',
             )
 
     @Command(
@@ -2145,15 +2128,15 @@ class AbjadIDE(abjad.AbjadObject):
             paths = self._match_paths_in_buildspace(directory, name, verb)
         else:
             paths = [directory(name)]
-        tags = (
+        tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
         for path in paths:
             self._deactivate_tag(
                 path,
-                baca.Match(match_any=tags),
-                name='spacing markup',
+                lambda tags: bool(set(tags) & set(tags_)),
+                'spacing markup',
                 )
 
     @Command(
@@ -2168,10 +2151,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_margin_markup_tags['activate']
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=self._color_margin_markup_tags['activate']),
-            name='margin markup',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'margin markup',
             )
 
     @Command(
@@ -2186,17 +2170,17 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._black_and_white_metronome_mark_tags['activate']
+        tags_ = self._black_and_white_metronome_mark_tags['activate']
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='b&w metronome mark expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'b&w metronome mark expression',
             )
-        tags = self._black_and_white_metronome_mark_tags['deactivate']
+        tags_ = self._black_and_white_metronome_mark_tags['deactivate']
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='b&w metrononme mark suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'b&w metrononme mark suppression',
             )
 
     @Command(
@@ -2211,10 +2195,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_staff_line_tags
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=self._color_staff_line_tags),
-            name='staff line color',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'staff line color',
             )
 
     @Command(
@@ -2229,10 +2214,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_time_signature_tags
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=self._color_time_signature_tags),
-            name='color time signature',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'color time signature',
             )
 
     @Command(
@@ -2469,21 +2455,23 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(
             directory,
             '+',
-            name='+',
+            '+',
             )
         stem = abjad.String(directory.name).to_shout_case()
         if directory.is_parts():
             stem += '*'
         document_names = directory.document_names
+        tags_ = ['-' + _ for _ in document_names]
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=['-' + _ for _ in document_names]),
-            name=f'-{stem}',
+            lambda tags: bool(set(tags) & set(tags_)),
+            f'-{stem}',
             )
+        tags_ = ['+' + _ for _ in document_names]
         self._activate_tag(
             directory,
-            baca.Match(match_any=['+' + _ for _ in document_names]),
-            name=f'+{stem}',
+            lambda tags: bool(set(tags) & set(tags_)),
+            f'+{stem}',
             )
         self._deactivate_bar_line_adjustment_after_noneol_fermata(directory)
         self._deactivate_shifted_clef_at_bol(directory)
@@ -2501,19 +2489,18 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._get_persistent_indicator_color_expression_tags(directory)
+        tags_ = self._get_persistent_indicator_color_expression_tags(directory)
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='persistent indicator color expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'persistent indicator color expression',
             )
-        tags = self._get_persistent_indicator_color_suppression_tags(
+        tags_ = self._get_persistent_indicator_color_suppression_tags(
             directory)
-        match = baca.Match(match_any=tags)
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='persistent indicator color suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'persistent indicator color suppression',
             )
 
     @Command(
@@ -2528,13 +2515,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_clef_tags
+        tags_ = self._color_clef_tags
         if directory.is_build():
-            tags += (baca.tags.REAPPLIED_CLEF,)
+            tags_ += (baca.tags.REAPPLIED_CLEF,)
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='color clef',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'color clef',
             )
 
     @Command(
@@ -2549,10 +2536,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_dynamic_tags
         self._activate_tag(
             directory,
-            baca.Match(match_any=self._color_dynamic_tags),
-            name='color dynamic',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'color dynamic',
             )
 
     @Command(
@@ -2567,17 +2555,17 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_instrument_tags['activate']
+        tags_ = self._color_instrument_tags['activate']
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='instrument color expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'instrument color expression',
             )
-        tags = self._color_instrument_tags['deactivate']
+        tags_ = self._color_instrument_tags['deactivate']
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='instrument color suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'instrument color suppression',
             )
 
     @Command(
@@ -2597,15 +2585,15 @@ class AbjadIDE(abjad.AbjadObject):
             paths = self._match_paths_in_buildspace(directory, name, verb)
         else:
             paths = [directory(name)]
-        tags = (
+        tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
         for path in paths:
             self._activate_tag(
                 path,
-                baca.Match(match_any=tags),
-                name='spacing markup',
+                lambda tags: bool(set(tags) & set(tags_)),
+                'spacing markup',
                 )
 
     @Command(
@@ -2620,11 +2608,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_margin_markup_tags['activate']
+        tags_ = self._color_margin_markup_tags['activate']
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='color margin markup',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'color margin markup',
             )
 
     @Command(
@@ -2639,17 +2627,17 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = self._color_metronome_mark_tags['activate']
+        tags_ = self._color_metronome_mark_tags['activate']
         self._activate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='metronome mark color expression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'metronome mark color expression',
             )
-        tags = self._color_metronome_mark_tags['deactivate']
+        tags_ = self._color_metronome_mark_tags['deactivate']
         self._deactivate_tag(
             directory,
-            baca.Match(match_any=tags),
-            name='metronome mark color suppression',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'metronome mark color suppression',
             )
 
     @Command(
@@ -2664,10 +2652,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_staff_line_tags
         self._activate_tag(
             directory,
-            baca.Match(match_any=self._color_staff_line_tags),
-            name='staff line color',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'staff line color',
             )
 
     @Command(
@@ -2682,10 +2671,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
+        tags_ = self._color_time_signature_tags
         self._activate_tag(
             directory,
-            baca.Match(match_any=self._color_time_signature_tags),
-            name='time signature color'
+            lambda tags: bool(set(tags) & set(tags_)),
+            'time signature color'
             )
 
     @Command(
