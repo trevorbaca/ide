@@ -13,7 +13,7 @@ def test_AbjadIDE_build_score_01():
     with ide.Test():
         abjad_ide('red %letter bld q')
         transcript = abjad_ide.io.transcript
-        assert transcript.lines[-41:] == [
+        assert transcript.lines[-43:] == [
             'Building score ...',
             'Collecting segment lys ...',
             'Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
@@ -22,6 +22,8 @@ def test_AbjadIDE_build_score_01():
             'No + tags to deactivate ...',
             'No -LETTER_SCORE tags to deactivate ...',
             'No +LETTER_SCORE tags to activate ...',
+            'No BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA tags to activate ...',
+            'No SHIFTED_CLEF tags to activate ...',
             'No persistent indicator color expression tags to deactivate ...',
             'No persistent indicator color suppression tags to activate ...',
             'No colored markup tags to deactivate ...',

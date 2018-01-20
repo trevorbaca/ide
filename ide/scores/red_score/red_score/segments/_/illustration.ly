@@ -12,6 +12,8 @@
 \paper {}
 
 \score {
+    <<
+    { \include "layout.ly" }
     \context Score = "Two-Staff Piano Score" <<
         \context GlobalContext = "Global Context" {
             { % measure
@@ -88,5 +90,6 @@
                 }
             }
         >>
+    >>
     >>
 }

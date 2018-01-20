@@ -138,7 +138,7 @@ def test_AbjadIDE_new_04():
         assert 'Paper size> arch a' in transcript
         assert r'Price> $80' in transcript
         assert 'Catalog number suffix> ARCH-A'in transcript
-        assert transcript.lines[-33:] == [
+        assert transcript.lines[-35:] == [
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
             'Writing red_score/builds/arch-a-score/front-cover.tex ...',
@@ -152,6 +152,8 @@ def test_AbjadIDE_new_04():
             'No + tags to deactivate ...',
             'No -ARCH_A_SCORE tags to deactivate ...',
             'No +ARCH_A_SCORE tags to activate ...',
+            'No BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA tags to activate ...',
+            'No SHIFTED_CLEF tags to activate ...',
             'No persistent indicator color expression tags to deactivate ...',
             'No persistent indicator color suppression tags to activate ...',
             'No colored markup tags to deactivate ...',

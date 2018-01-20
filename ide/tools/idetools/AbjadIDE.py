@@ -346,6 +346,39 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
+    def _deactivate_bar_line_adjustment_after_noneol_fermata(self, directory):
+        # activate all tags:
+        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
+        self._activate_tag(directory, tag)
+        # then deactivate non-EOL tags:
+        bol_measure_numbers = directory.get_metadatum('bol_measure_numbers')
+        if not bol_measure_numbers:
+            return
+        eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
+        # don't need to worry about last measure in score
+        # because segment-maker preserves barline after score-final fermata:
+        eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
+        match = baca.Match(
+            match_all=[baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA],
+            forbid_any=eol_measure_numbers,
+            )
+        name = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
+        self._deactivate_tag(directory, match, name=name)
+
+    def _deactivate_shifted_clef_at_bol(self, directory):
+        # activate all shifted clefs (to undo segment deactivations):
+        self._activate_tag(directory, baca.tags.SHIFTED_CLEF)
+        # then deactivate shifted clefs at BOL:
+        bol_measure_numbers = directory.get_metadatum('bol_measure_numbers')
+        if not bol_measure_numbers:
+            return
+        bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
+        match = baca.Match(
+            match_all=[baca.tags.SHIFTED_CLEF],
+            match_any=bol_measure_numbers,
+            )
+        self._deactivate_tag(directory, match, name=baca.tags.SHIFTED_CLEF)
+
     def _deactivate_tag(self, directory, tag, name=None):
         if directory.is_build() or directory.is__segments():
             count = self._deactivate_tag_in_build_lys(
@@ -2443,17 +2476,27 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        tag = name = '+'
-        self._deactivate_tag(directory, tag, name=tag)
+        self._deactivate_tag(
+            directory,
+            '+',
+            name='+',
+            )
         stem = abjad.String(directory.name).to_shout_case()
         if directory.is_parts():
             stem += '*'
         document_names = directory.document_names
-        match = baca.Match(match_any=['-' + _ for _ in document_names])
-        self._deactivate_tag(directory, match, name=f'-{stem}')
-        match = baca.Match(match_any=['+' + _ for _ in document_names])
-        self._activate_tag(directory, match, name=f'+{stem}')
-        #
+        self._deactivate_tag(
+            directory,
+            baca.Match(match_any=['-' + _ for _ in document_names]),
+            name=f'-{stem}',
+            )
+        self._activate_tag(
+            directory,
+            baca.Match(match_any=['+' + _ for _ in document_names]),
+            name=f'+{stem}',
+            )
+        self._deactivate_bar_line_adjustment_after_noneol_fermata(directory)
+        self._deactivate_shifted_clef_at_bol(directory)
         self.black_and_white_all(directory)
 
     @Command(
