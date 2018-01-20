@@ -2454,7 +2454,7 @@ class AbjadIDE(abjad.AbjadObject):
             )
         self._deactivate_tag(
             directory,
-            '+',
+            lambda tags: any(_ for _ in tags if _.startswith('+')),
             '+',
             )
         stem = abjad.String(directory.name).to_shout_case()
