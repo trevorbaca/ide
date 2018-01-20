@@ -1808,30 +1808,20 @@ class AbjadIDE(abjad.AbjadObject):
         assert ly.is_file()
         lines = []
         with ly.open() as file_pointer:
-            found_score_block = False
-            found_first_close_parallel = False
+            found_score_context_open = False
+            found_score_context_close = False
             for line in file_pointer.readlines():
-                if line.startswith(r'\score'):
-                    found_score_block = True
-                    continue
-                if line.startswith('}'):
-                    found_score_block = False
-                    lines.append('\n')
-                    continue
-                # first line after score block:
-                if line == '    <<\n':
-                    continue
-                # second line after score block:
-                if r'\include "layout.ly"' in line:
-                    continue
-                # antepenultimate line in file:
-                if line == '    >>\n' and not found_first_close_parallel:
-                    found_first_close_parallel = True
-                    continue
-                if found_score_block:
+                if r'\context Score' in line:
+                    found_score_context_open = True
+                if line == '        >>\n':
+                    found_score_context_close = True
+                if found_score_context_open:
                     lines.append(line)
+                if found_score_context_close:
+                    lines.append('\n')
+                    break
         if lines and lines[0].startswith('    '):
-            lines = [_[4:] for _ in lines]
+            lines = [_[8:] for _ in lines]
         if lines and lines[-1] == '\n':
             lines.pop()
         lines = ''.join(lines)
