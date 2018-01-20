@@ -17,7 +17,11 @@
             \include "layout.ly"
         }
         \context Score = "Two-Staff Piano Score" <<
-            \context GlobalContext = "Global Context" {
+            \context GlobalContext = "GlobalContext" <<
+                \context GlobalRests = "GlobalRests" {
+                }
+                \context GlobalSkips = "GlobalSkips" {
+                }
                 { % measure
                     \time 15/8
                     s1 * 15/8
@@ -26,7 +30,7 @@
                     \time 18/8
                     s1 * 9/4
                 } % measure
-            }
+            >>
             \context PianoStaff = "Piano Staff" <<
                 \context Staff = "RH Staff" {
                     \context Voice = "RH Voice" {
@@ -60,9 +64,9 @@
                 }
                 \context Staff = "LH Staff" {
                     \context Voice = "LH Voice" {
-                        \set PianoStaff.instrumentName = \markup { Piano }                   %! ST1
-                        \set PianoStaff.shortInstrumentName = \markup { Pf. }                %! ST1
-                        \clef "bass"                                                         %! ST3
+                        \set PianoStaff.instrumentName = \markup { Piano }               %! ST1
+                        \set PianoStaff.shortInstrumentName = \markup { Pf. }            %! ST1
+                        \clef "bass"                                                     %! ST3
                         fs4
                         ~
                         fs16

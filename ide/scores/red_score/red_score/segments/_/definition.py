@@ -16,6 +16,7 @@ divisions = {
     }
 
 maker = abjad.PianoStaffSegmentMaker(
-    time_signatures=time_signatures,
     divisions=divisions,
+    include_layout_ly=True,
+    time_signatures=time_signatures,
     )
