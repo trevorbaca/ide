@@ -2784,21 +2784,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._deactivate_tag(directory, tags)
 
     @Command(
-        'spacingx',
-        description=f'spacing - deactivate',
-        menu_section='spacing',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
-        )
-    def deactivate_spacing_tags(self, directory):
-        r'''Deactivates spacing tags.
-
-        Returns none.
-        '''
-        assert directory.is_score_package_path()
-        tags = abjad.tags.spacing_tags
-        self._deactivate_tag(directory, tags, name='spacing')
-
-    @Command(
         'snmx',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - deactivate',
         menu_section='markup',

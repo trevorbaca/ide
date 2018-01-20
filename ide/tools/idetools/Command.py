@@ -40,7 +40,6 @@ class Command(abjad.AbjadObject):
         'shell',
         'show',
         'smart',
-        'spacing',
         'stylesheet',
         'text',
         )
