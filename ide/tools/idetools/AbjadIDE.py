@@ -288,7 +288,7 @@ class AbjadIDE(abjad.AbjadObject):
             message = f'Empty test scores directory {directory} ...'
             raise Exception(message)
 
-    def _collect_segment_lys(self, directory):
+    def _collect_segments(self, directory):
         paths = sorted(directory.segments.iterdir())
         names = [_.name for _ in paths]
         if '_' in names:
@@ -557,42 +557,44 @@ class AbjadIDE(abjad.AbjadObject):
     def _generate_music(
         self,
         path,
+        dashed_part_name=None,
         forces_tagline=None,
         keep_with_tag=None,
         silent=None,
         ):
         assert path.build.exists(), repr(path)
-        target = path
-        target_name = path.name
-        directory = path.build
-        if target.exists():
-            self.io.display(f'removing {target.trim()} ...')
-            target.remove()
-        paths = directory.segments.list_paths()
+        if path.exists():
+            self.io.display(f'removing {path.trim()} ...')
+            path.remove()
+        segments = path.segments.list_paths()
         if not silent:
-            if paths:
-                view = directory.segments.get_metadatum('view')
+            if segments:
+                view = path.segments.get_metadatum('view')
                 if bool(view):
                     self.io.display(f'examining segments in view order ...')
                 else:
                     self.io.display('examining segments alphabetically ...')
             else:
                 self.io.display('no segments found ...')
-            for path in paths:
-                self.io.display(f'examining {path.trim()} ...')
+            for segment in segments:
+                self.io.display(f'examining {segment.trim()} ...')
         names = []
-        for path in paths:
-            name = path.stem
-            if path.stem != '_':
+        for segment in segments:
+            name = segment.stem
+            if segment.stem != '_':
                 name = name.replace('_', '-')
             names.append(name)
-        self._copy_boilerplate(directory, 'music.ly', target_name=target_name)
+        if path.name == 'music.ly':
+            name = 'score-music.ly'
+        else:
+            name = 'part-music.ly'
+        self._copy_boilerplate(path.build, name, target_name=path.name)
         lines = []
         segment_include_statements = ''
         for i, name in enumerate(names):
             name = 'segment-' + name + '.ly'
-            path = directory._segments(name)
-            if path.is_file():
+            ly = path.build._segments(name)
+            if ly.is_file():
                 line = rf'\include "_segments/{name}"'
             else:
                 line = rf'%\include "_segments/{name}"'
@@ -606,22 +608,24 @@ class AbjadIDE(abjad.AbjadObject):
         lilypond_language_directive = format(language_token)
         version_token = abjad.LilyPondVersionToken()
         lilypond_version_directive = format(version_token)
-        annotated_title = directory.contents.get_title(year=True)
+        annotated_title = path.contents.get_title(year=True)
         if annotated_title:
             score_title = annotated_title
         else:
-            score_title = directory.contents.get_title(year=False)
+            score_title = path.contents.get_title(year=False)
         if forces_tagline is None:
             string = 'forces_tagline'
-            forces_tagline = directory.contents.get_metadatum(string, '')
+            forces_tagline = path.contents.get_metadatum(string, '')
         if forces_tagline:
             forces_tagline = forces_tagline.replace('\\', '')
         if keep_with_tag:
             keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
         else:
             keep_with_tag_command = ''
-        template = target.read_text()
+        assert path.is_file(), repr(path)
+        template = path.read_text()
         template = template.format(
+            dashed_part_name=dashed_part_name,
             forces_tagline=forces_tagline,
             keep_with_tag_command=keep_with_tag_command,
             lilypond_language_directive=lilypond_language_directive,
@@ -629,7 +633,7 @@ class AbjadIDE(abjad.AbjadObject):
             score_title=score_title,
             segment_include_statements=segment_include_statements,
             )
-        target.write_text(template)
+        path.write_text(template)
 
     def _generate_part(self, path, dashed_part_name):
         assert path.build.exists(), repr(path)
@@ -903,7 +907,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('')
         self._copy_boilerplate(build, 'layout.py')
         self.io.display('')
-        self.collect_segment_lys(build)
+        self.collect_segments(build)
         self.io.display('')
         self.generate_music_ly(build)
         self.io.display('')
@@ -929,7 +933,7 @@ class AbjadIDE(abjad.AbjadObject):
                 commands.append(command)
         entries_by_section = {}
         navigations = {}
-        navigation_sections = ('go', 'package')
+        navigation_sections = ('go', 'directory')
         for command in commands:
             if command.menu_section not in entries_by_section:
                 entries_by_section[command.menu_section] = []
@@ -2228,12 +2232,12 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'ab',
+        'apb',
         description='part.pdf - build',
         menu_section='parts',
         score_package_paths=('parts',),
         )
-    def build_part(self, directory):
+    def build_part_pdf(self, directory):
         r'''Builds ``part.pdf`` from the ground up.
 
         Returns none.
@@ -2251,31 +2255,26 @@ class AbjadIDE(abjad.AbjadObject):
             name = 'front-cover.tex'
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self.io.display(f'interpreting {path.trim()} ...')
             self._interpret_tex_file(path)
             self.io.display('')
             name = 'preface.tex'
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self.io.display(f'interpreting {path.trim()} ...')
             self._interpret_tex_file(path)
             self.io.display('')
             name = 'music.ly'
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self.io.display(f'interpreting {path.trim()} ...')
             self._run_lilypond(path)
             self.io.display('')
             name = 'back-cover.tex'
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self.io.display(f'interpreting {path.trim()} ...')
             self._interpret_tex_file(path)
             self.io.display('')
             name = 'part.tex'
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self.io.display(f'interpreting {path.trim()} ...')
             self._interpret_tex_file(path)
             if 1 < total_parts and i < total_parts - 1:
                 self.io.display('')
@@ -2286,7 +2285,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files([path])
 
     @Command(
-        'rb',
+        'rpb',
         description='score.pdf - build',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -2300,7 +2299,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build() or directory.is__segments()
         directory = directory.build
         self.io.display('building score ...')
-        self.collect_segment_lys(directory)
+        self.collect_segments(directory)
         self.io.display('')
         self.generate_music_ly(directory)
         self.io.display('')
@@ -2404,12 +2403,12 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display('')
 
     @Command(
-        'lyc*',
-        description='segment lys - collect',
-        menu_section='segment lys',
+        'ggc',
+        description='segments - collect',
+        menu_section='segments',
         score_package_paths=('_segments', 'build',),
         )
-    def collect_segment_lys(self, directory):
+    def collect_segments(self, directory):
         r'''Collects segment lys.
 
         Copies from segment directories to build/_segments directory.
@@ -2427,7 +2426,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build() or directory.is__segments()
         directory = directory.build
         self.io.display('collecting segment lys ...')
-        pairs = self._collect_segment_lys(directory)
+        pairs = self._collect_segments(directory)
         if not pairs:
             self.io.display('... no segment lys found.')
             return
@@ -3292,6 +3291,33 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_front_cover(path, forces_tagline=forces_tagline)
 
     @Command(
+        'ypg',
+        description='layout.py - generate',
+        menu_section='layout',
+        score_package_paths=('buildspace',),
+        )
+    def generate_layout_py(self, directory):
+        r'''Generates ``layout.py``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
+        name = 'layout.py'
+        if not directory.is_parts():
+            path = directory(name)
+            self._copy_boilerplate(directory, name, target_name=path.name)
+            return
+        part_names = self._select_part_names(directory, name, 'generate')
+        if not part_names:
+            return
+        for part_name in part_names:
+            snake_part_name = abjad.String(part_name).to_snake_case()
+            target_name = f'{snake_name}-{name}'
+            path = directory(target_name)
+            self._copy_boilerplate(directory, name, target_name=path.name)
+
+    @Command(
         'mg',
         description='music.ly - generate',
         menu_section='music',
@@ -3323,6 +3349,7 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = ' '.join(forces_tagline) + ' part'
             self._generate_music(
                 path,
+                dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
                 )
@@ -3791,8 +3818,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bb',
-        description='package - builds',
-        menu_section='package',
+        description='directory - builds',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_builds_directory(self, directory):
@@ -3805,8 +3832,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'cc',
-        description='package - contents',
-        menu_section='package',
+        description='directory - contents',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_contents_directory(self, directory):
@@ -3887,8 +3914,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dd',
-        description='package - distribution',
-        menu_section='package',
+        description='directory - distribution',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_distribution_directory(self, directory):
@@ -3901,8 +3928,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ee',
-        description='package - etc',
-        menu_section='package',
+        description='directory - etc',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_etc_directory(self, directory):
@@ -3934,8 +3961,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mm',
-        description='package - materials',
-        menu_section='package',
+        description='directory - materials',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_materials_directory(self, directory):
@@ -4030,8 +4057,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'gg',
-        description='package - segments',
-        menu_section='package',
+        description='directory - segments',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_segments_directory(self, directory):
@@ -4044,8 +4071,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'yy',
-        description='package - stylesheets',
-        menu_section='package',
+        description='directory - stylesheets',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_stylesheets_directory(self, directory):
@@ -4058,8 +4085,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'tt',
-        description='package - test',
-        menu_section='package',
+        description='directory - test',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_test_directory(self, directory):
@@ -4072,8 +4099,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'oo',
-        description='package - tools',
-        menu_section='package',
+        description='directory - tools',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_tools_directory(self, directory):
@@ -4086,8 +4113,8 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ww',
-        description='package - wrapper',
-        menu_section='package',
+        description='directory - wrapper',
+        menu_section='directory',
         score_package_paths=True,
         )
     def go_to_wrapper_directory(self, directory):
@@ -4387,7 +4414,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_materials_or_segments()
         paths = directory.list_paths()
         for i, path in enumerate(paths):
-            self.make_pdf(path, open_after=False)
+            self.make_illustration_pdf(path, open_after=False)
             if i + 1 < len(paths):
                 self.io.display('')
             else:
@@ -4522,7 +4549,7 @@ class AbjadIDE(abjad.AbjadObject):
             directory.add_metadatum('orientation', orientation)
         if bool(suffix):
             directory.add_metadatum('catalog_number_suffix', suffix)
-        self.collect_segment_lys(directory)
+        self.collect_segments(directory)
         self.generate_stylesheet_ily(directory)
         total_parts = len(part_name_pairs)
         for i, pair in enumerate(part_name_pairs):
@@ -4542,6 +4569,7 @@ class AbjadIDE(abjad.AbjadObject):
                 )
             self._generate_music(
                 directory(f'{dashed_part_name}-music.ly'),
+                dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
                 silent=True,
@@ -4584,7 +4612,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns integer exit code for Travis tests.
         '''
         assert directory.is_material_or_segment()
-        return self.make_pdf(directory, open_after=False)
+        return self.make_illustration_pdf(directory, open_after=False)
 
     @Command(
         'new',
@@ -4627,7 +4655,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(files)
 
     @Command(
-        'bco',
+        'bcpo',
         description='back-cover.pdf - open',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
@@ -4645,7 +4673,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'fco',
+        'fcpo',
         description='front-cover.pdf - open',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
@@ -4663,7 +4691,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'mo',
+        'mpo',
         description='music.pdf - open',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
@@ -4681,7 +4709,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ao',
+        'apo',
         description='part.pdf - open',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -4713,7 +4741,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'po',
+        'ppo',
         description='preface.pdf - open',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -4731,7 +4759,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ro',
+        'rpo',
         description='score.pdf - open',
         menu_section='score',
         score_package_paths=True,
@@ -4759,7 +4787,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(message)
 
     @Command(
-        'ro*',
+        'rpo*',
         description='score.pdfs - open',
         menu_section='score',
         scores_directory=True,
@@ -5161,6 +5189,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._run_pytest([file_])
 
     @Command(
+        'bcpt',
+        description='back-cover.pdf - trash',
+        menu_section='back cover',
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_back_cover_pdf(self, directory):
+        r'''Trashes ``back-cover.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name = 'back-cover.pdf'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+    @Command(
         'bct',
         description='back-cover.tex - trash',
         menu_section='back cover',
@@ -5172,7 +5217,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
         name = 'back-cover.tex'
         paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
@@ -5210,6 +5254,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(path)
 
     @Command(
+        'fcpt',
+        description='front-cover.pdf - trash',
+        menu_section='front cover',
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_front_cover_pdf(self, directory):
+        r'''Trashes ``front-cover.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name = 'front-cover.pdf'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+    @Command(
         'fct',
         description='front-cover.tex - trash',
         menu_section='front cover',
@@ -5221,7 +5282,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
         name = 'front-cover.tex'
         paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
@@ -5307,6 +5367,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
+        'ypt',
+        description='layout.py - trash',
+        menu_section='layout',
+        score_package_paths=('buildspace',),
+        )
+    def trash_layout_py(self, directory):
+        r'''Trashes ``layout.py``.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        name = 'layout.py'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+    @Command(
         'mt',
         description='music.ly - trash',
         menu_section='music',
@@ -5318,11 +5395,28 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
         name = 'music.ly'
         paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
+
+    @Command(
+        'mpt',
+        description='music.pdf - trash',
+        menu_section='music',
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_music_pdf(self, directory):
+        r'''Trashes ``music.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name = 'music.pdf'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
 
     @Command(
         'at',
@@ -5342,6 +5436,24 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
+        'apt',
+        description='part.pdf - trash',
+        menu_section='parts',
+        score_package_paths=('parts',),
+        )
+    def trash_part_pdf(self, directory):
+        r'''Trashes ``part.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        name = 'part.pdf'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+
+    @Command(
         'pt',
         description='preface.tex - trash',
         menu_section='preface',
@@ -5353,11 +5465,28 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
         name = 'preface.tex'
         paths = self._match_paths_in_buildspace(directory, name, 'trash')
         if paths:
             self._trash_files(paths)
+
+    @Command(
+        'ppt',
+        description='preface.pdf - trash',
+        menu_section='preface',
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_preface_pdf(self, directory):
+        r'''Trashes ``preface.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        name = 'preface.pdf'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
 
     @Command(
         'rt',
@@ -5374,6 +5503,23 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         path = directory('score.tex')
+        self._trash_files(path)
+
+    @Command(
+        'rpt',
+        description='score.pdf - trash',
+        menu_section='score',
+        score_package_path_blacklist=('parts',),
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_score_pdf(self, directory):
+        r'''Trashes ``score.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        directory = directory.build
+        path = directory('score.pdf')
         self._trash_files(path)
 
     @Command(
