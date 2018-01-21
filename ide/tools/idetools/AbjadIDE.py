@@ -897,21 +897,21 @@ class AbjadIDE(abjad.AbjadObject):
             build.add_metadatum('price', price)
         if bool(suffix):
             build.add_metadatum('catalog_number_suffix', suffix)
-        self.generate_back_cover(build)
+        self.generate_back_cover_tex(build)
         self.io.display('')
-        self.generate_front_cover(build)
+        self.generate_front_cover_tex(build)
         self.io.display('')
         self._copy_boilerplate(build, 'layout.py')
         self.io.display('')
         self.collect_segment_lys(build)
         self.io.display('')
-        self.generate_music(build)
+        self.generate_music_ly(build)
         self.io.display('')
-        self.generate_preface(build)
+        self.generate_preface_tex(build)
         self.io.display('')
-        self.generate_score(build)
+        self.generate_score_tex(build)
         self.io.display('')
-        self.generate_stylesheet(build)
+        self.generate_stylesheet_ily(build)
 
     def _make_command_sections(self, directory):
         commands = []
@@ -2119,16 +2119,16 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ylb',
-        description='layout ly - b&w',
+        description='layout.ly - b&w',
         menu_section='layout',
-        score_package_paths=('_segments', 'build',),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_layout_ly(self, directory):
         r'''Renders layout.ly file in black and white.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
+        assert directory.is_buildspace()
         name, verb = 'layout.ly', 'color'
         if directory.is_parts():
             paths = self._match_paths_in_buildspace(directory, name, verb)
@@ -2229,12 +2229,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ab',
-        description='part - build',
+        description='part.pdf - build',
         menu_section='parts',
         score_package_paths=('parts',),
         )
     def build_part(self, directory):
-        r'''Builds part from the ground up.
+        r'''Builds ``part.pdf`` from the ground up.
 
         Returns none.
         '''
@@ -2286,14 +2286,14 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files([path])
 
     @Command(
-        'bld',
-        description='build - build',
-        menu_section='build',
+        'rb',
+        description='score.pdf - build',
+        menu_section='score',
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
     def build_score(self, directory):
-        r'''Builds score from the ground up.
+        r'''Builds ``score.pdf`` from the ground up.
 
         Returns none.
         '''
@@ -2302,14 +2302,14 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('building score ...')
         self.collect_segment_lys(directory)
         self.io.display('')
-        self.generate_music(directory)
+        self.generate_music_ly(directory)
         self.io.display('')
-        self.interpret_music(directory, open_after=False)
+        self.interpret_music_ly(directory, open_after=False)
         self.io.display('')
         tex = directory('front-cover.tex')
         pdf = directory('front-cover.pdf')
         if tex.is_file():
-            self.interpret_front_cover(directory, open_after=False)
+            self.interpret_front_cover_tex(directory, open_after=False)
         elif pdf.is_file():
             self.io.display(f'using existing {pdf.trim()} ...')
         else:
@@ -2319,7 +2319,7 @@ class AbjadIDE(abjad.AbjadObject):
         tex = directory('preface.tex')
         pdf = directory('preface.pdf')
         if tex.is_file():
-            self.interpret_preface(directory, open_after=False)
+            self.interpret_preface_tex(directory, open_after=False)
         elif pdf:
             self.io.display(f'using existing {pdf.trim()} ...')
         else:
@@ -2329,16 +2329,16 @@ class AbjadIDE(abjad.AbjadObject):
         tex = directory('back-cover.tex')
         pdf = directory('back-cover.pdf')
         if tex.is_file():
-            self.interpret_back_cover(directory, open_after=False)
+            self.interpret_back_cover_tex(directory, open_after=False)
         elif pdf.is_file():
             self.io.display(f'using existing {pdf.trim()} ...')
         else:
             self.io.display('missing back cover ...')
             return
         self.io.display('')
-        self.generate_score(directory)
+        self.generate_score_tex(directory)
         self.io.display('')
-        self.interpret_score(directory)
+        self.interpret_score_tex(directory)
 
     @Command(
         '!',
@@ -2359,12 +2359,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dfk',
-        description='definition - check',
+        description='definition.py - check',
         menu_section='definition',
         score_package_paths=('material', 'segment',),
         )
-    def check_definition(self, directory):
-        r'''Checks definition.
+    def check_definition_py(self, directory):
+        r'''Checks ``definition.py``.
 
         Returns integer exit code for Travis tests.
         '''
@@ -2387,26 +2387,26 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dfk*',
-        description='definitions - check',
+        description='definition.pys - check',
         menu_section='definitions',
         score_package_paths=('materials', 'segments'),
         )
-    def check_definitions(self, directory):
-        r'''Checks definitions.
+    def check_definition_pys(self, directory):
+        r'''Checks ``definition.py`` files.
 
         Returns none.
         '''
         assert directory.is_materials_or_segments()
         paths = directory.list_paths()
         for i, path in enumerate(paths):
-            self.check_definition(path)
+            self.check_definition_py(path)
             if i + 1 < len(paths):
                 self.io.display('')
 
     @Command(
         'lyc*',
-        description='lys - collect',
-        menu_section='lys',
+        description='segment lys - collect',
+        menu_section='segment lys',
         score_package_paths=('_segments', 'build',),
         )
     def collect_segment_lys(self, directory):
@@ -2576,16 +2576,16 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ylc',
-        description='layout ly - color',
+        description='layout.ly - color',
         menu_section='layout',
-        score_package_paths=('_segments', 'build',),
+        score_package_paths=('buildspace',),
         )
     def color_layout_ly(self, directory):
         r'''Colors layout.ly file.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
+        assert directory.is_buildspace()
         name, verb = 'layout.ly', 'color'
         if directory.is_parts():
             paths = self._match_paths_in_buildspace(directory, name, verb)
@@ -2812,7 +2812,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def duplicate(self, directory):
-        r'''Duplicates asset in `directory`.
+        r'''Duplicates asset.
 
         Returns none.
         '''
@@ -2906,8 +2906,8 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         scores_directory=True,
         )
-    def edit_aliases_file(self):
-        r'''Edits aliases file.
+    def edit_aliases_py(self):
+        r'''Edits ``__aliases__.py``.
 
         Returns none.
         '''
@@ -2927,7 +2927,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_all(self, directory, pattern=None):
-        r'''Edits all.
+        r'''Edits all files.
 
         Returns none.
         '''
@@ -2937,12 +2937,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bce',
-        description='back cover - edit',
+        description='back-cover.tex - edit',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
         )
-    def edit_back_cover_source(self, directory):
-        r'''Edits ``back-cover.tex`` in `directory`.
+    def edit_back_cover_tex(self, directory):
+        r'''Edits ``back-cover.tex``.
 
         Returns none.
         '''
@@ -2954,12 +2954,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dfe',
-        description='definition - edit',
+        description='definition.py - edit',
         menu_section='definition',
         score_package_paths=('material', 'segment',),
         )
-    def edit_definition(self, directory):
-        r'''Edits definition.
+    def edit_definition_py(self, directory):
+        r'''Edits ``definition.py``.
 
         Returns none.
         '''
@@ -2969,12 +2969,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dfe*',
-        description='definitions - edit',
+        description='definition.pys - edit',
         menu_section='definitions',
         score_package_paths=('materials', 'segments',),
         )
-    def edit_definitions(self, directory):
-        r'''Edits definitions.
+    def edit_definition_pys(self, directory):
+        r'''Edits ``definition.py`` files.
 
         Returns none.
         '''
@@ -2988,12 +2988,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fce',
-        description='front cover - edit',
+        description='front-cover.tex - edit',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
         )
-    def edit_front_cover_source(self, directory):
-        r'''Edits ``front-cover.tex`` in `directory`.
+    def edit_front_cover_tex(self, directory):
+        r'''Edits ``front-cover.tex``.
 
         Returns none.
         '''
@@ -3004,6 +3004,21 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
+        'lye',
+        description='illustration.ly - edit',
+        menu_section='illustration.ly',
+        score_package_paths=('material', 'segment',),
+        )
+    def edit_illustration_ly(self, directory):
+        r'''Edits ``illustration.ly``.
+
+        Returns none.
+        '''
+        assert directory.is_material_or_segment()
+        path = directory('illustration.ly')
+        self._open_files([path])
+
+    @Command(
         'lx',
         description='log - latex',
         external_directories=True,
@@ -3012,7 +3027,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_latex_log(self):
-        r'''Edits LaTeX log.
+        r'''Edits ``latex.log``.
 
         Returns none.
         '''
@@ -3020,35 +3035,35 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'ype',
-        description='layout py - edit',
-        menu_section='layout',
-        score_package_paths=('_segments', 'build', 'segment',),
-        )
-    def edit_layout(self, directory):
-        r'''Edits layout.py file.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        name = 'layout.py'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
-
-    @Command(
         'yle',
-        description='layout ly - edit',
+        description='layout.ly - edit',
         menu_section='layout',
-        score_package_paths=('_segments', 'build', 'segment',),
+        score_package_paths=('buildspace',),
         )
     def edit_layout_ly(self, directory):
-        r'''Edits layout.ly file.
+        r'''Edits ``layout.ly``.
 
         Returns none.
         '''
         assert directory.is_buildspace()
         name = 'layout.ly'
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
+        if paths:
+            self._open_files(paths)
+
+    @Command(
+        'ype',
+        description='layout.py - edit',
+        menu_section='layout',
+        score_package_paths=('buildspace',),
+        )
+    def edit_layout_py(self, directory):
+        r'''Edits ``layout.py``.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        name = 'layout.py'
         paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
@@ -3062,7 +3077,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_lilypond_log(self):
-        r'''Edits LilyPond log.
+        r'''Edits ``lily.log``.
 
         Returns none.
         '''
@@ -3070,28 +3085,13 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'lye',
-        description='ly - edit',
-        menu_section='ly',
-        score_package_paths=('material', 'segment',),
-        )
-    def edit_ly(self, directory):
-        r'''Edits ``illustration.ly`` in `directory`.
-
-        Returns none.
-        '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.ly')
-        self._open_files([path])
-
-    @Command(
         'me',
-        description='music - edit',
+        description='music.ly - edit',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
         )
-    def edit_music_source(self, directory):
-        r'''Edits ``music.ly`` in `directory`.
+    def edit_music_ly(self, directory):
+        r'''Edits ``music.ly``.
 
         Returns none.
         '''
@@ -3103,12 +3103,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ae',
-        description='part - edit',
+        description='part.tex - edit',
         menu_section='parts',
         score_package_paths=('parts',),
         )
-    def edit_part_source(self, directory):
-        r'''Edits ``part.tex`` in `directory`.
+    def edit_part_tex(self, directory):
+        r'''Edits ``part.tex``.
 
         Returns none.
         '''
@@ -3121,12 +3121,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pe',
-        description='preface - edit',
+        description='preface.tex - edit',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
-    def edit_preface_source(self, directory):
-        r'''Edits ``preface.tex`` in `directory`.
+    def edit_preface_tex(self, directory):
+        r'''Edits ``preface.tex``.
 
         Returns none.
         '''
@@ -3138,13 +3138,13 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         're',
-        description='score - edit',
+        description='score.tex - edit',
         menu_section='score',
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
-    def edit_score_source(self, directory):
-        r'''Edits ``score.tex`` in `directory`.
+    def edit_score_tex(self, directory):
+        r'''Edits ``score.tex``.
 
         Returns none.
         '''
@@ -3155,12 +3155,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ye',
-        description='stylesheet - edit',
+        description='stylesheet.ily - edit',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),
         )
-    def edit_stylesheet(self, directory):
-        r'''Edits ``stylesheet.ily`` in `directory`.
+    def edit_stylesheet_ily(self, directory):
+        r'''Edits ``stylesheet.ily``.
 
         Returns none.
         '''
@@ -3229,11 +3229,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bcg',
-        description='back cover - generate',
+        description='back-cover.tex - generate',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
         )
-    def generate_back_cover(self, directory):
+    def generate_back_cover_tex(self, directory):
         r'''Generates ``back-cover.tex``.
 
         Returns none.
@@ -3260,11 +3260,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fcg',
-        description='front cover - generate',
+        description='front-cover.tex - generate',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
         )
-    def generate_front_cover(self, directory):
+    def generate_front_cover_tex(self, directory):
         r'''Generates ``front-cover.tex``.
 
         Returns none.
@@ -3293,12 +3293,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mg',
-        description='music - generate',
+        description='music.ly - generate',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
         )
-    def generate_music(self, directory):
-        r'''Generates build/``music.ly``.
+    def generate_music_ly(self, directory):
+        r'''Generates ``music.ly``.
 
         Returns none.
         '''
@@ -3329,11 +3329,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ag',
-        description='part - generate',
+        description='part.tex - generate',
         menu_section='parts',
         score_package_paths=('parts',),
         )
-    def generate_part(self, directory):
+    def generate_part_tex(self, directory):
         r'''Generates ``part.tex``.
 
         Returns none.
@@ -3353,11 +3353,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pg',
-        description='preface - generate',
+        description='preface.tex - generate',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
-    def generate_preface(self, directory):
+    def generate_preface_tex(self, directory):
         r'''Generates ``preface.tex``.
 
         Returns none.
@@ -3382,12 +3382,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'rg',
-        description='score - generate',
+        description='score.tex - generate',
         menu_section='score',
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
-    def generate_score(self, directory):
+    def generate_score_tex(self, directory):
         r'''Generates ``score.tex``.
 
         Returns none.
@@ -3400,11 +3400,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'yg',
-        description='stylesheet - generate',
+        description='stylesheet.ily - generate',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),
         )
-    def generate_stylesheet(self, directory):
+    def generate_stylesheet_ily(self, directory):
         r'''Generates build directory ``stylesheet.ily``.
 
         Returns none.
@@ -4116,11 +4116,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bci',
-        description='back cover - interpret',
+        description='back-cover.tex - interpret',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
         )
-    def interpret_back_cover(self, directory, open_after=True):
+    def interpret_back_cover_tex(self, directory, open_after=True):
         r'''Interprets ``back-cover.tex``.
 
         Returns none.
@@ -4140,11 +4140,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fci',
-        description='front cover - interpret',
+        description='front-cover.tex - interpret',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
         )
-    def interpret_front_cover(self, directory, open_after=True):
+    def interpret_front_cover_tex(self, directory, open_after=True):
         r'''Interprets ``front-cover.tex``.
 
         Returns none.
@@ -4164,12 +4164,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lyi',
-        description='ly - interpret',
-        menu_section='ly',
+        description='illustration.ly - interpret',
+        menu_section='illustration.ly',
         score_package_paths=('material', 'segment',),
         )
-    def interpret_ly(self, directory, open_after=True):
-        r'''Interprets illustration ly in `directory`.
+    def interpret_illustration_ly(self, directory, open_after=True):
+        r'''Interprets ``illustration.ly``.
 
         Makes illustration PDF.
 
@@ -4188,12 +4188,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lyi*',
-        description='lys - interpret',
-        menu_section='lys',
+        description='illustration.lys - interpret',
+        menu_section='illustration.ly',
         score_package_paths=('materials', 'segments',),
         )
-    def interpret_lys(self, directory):
-        r'''Interprets LilyPond file in every directory.
+    def interpret_illustration_lys(self, directory):
+        r'''Interprets ``illustration.ly`` file in every directory.
 
         Makes PDF in every directory.
 
@@ -4212,18 +4212,18 @@ class AbjadIDE(abjad.AbjadObject):
             return
         with abjad.Timer() as timer:
             for i, source in enumerate(sources):
-                self.interpret_ly(source.parent, open_after=False)
+                self.interpret_illustration_ly(source.parent, open_after=False)
                 if i + 1 < len(sources):
                     self.io.display('')
             self.io.display(timer.total_time_message)
 
     @Command(
         'mi',
-        description='music - interpret',
+        description='music.ly - interpret',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
         )
-    def interpret_music(self, directory, open_after=True):
+    def interpret_music_ly(self, directory, open_after=True):
         r'''Interprets ``music.ly``.
 
         Returns none.
@@ -4243,11 +4243,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ai',
-        description='part - interpret',
+        description='part.tex - interpret',
         menu_section='parts',
         score_package_paths=('parts',),
         )
-    def interpret_part(self, directory, open_after=True):
+    def interpret_part_tex(self, directory, open_after=True):
         r'''Interprets ``part.tex``.
 
         Returns none.
@@ -4266,11 +4266,11 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pi',
-        description='preface - interpret',
+        description='preface.tex - interpret',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
-    def interpret_preface(self, directory, open_after=True):
+    def interpret_preface_tex(self, directory, open_after=True):
         r'''Interprets ``preface.tex``.
 
         Returns none.
@@ -4290,12 +4290,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ri',
-        description='score - interpret',
+        description='score.tex - interpret',
         menu_section='score',
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
-    def interpret_score(self, directory, open_after=True):
+    def interpret_score_tex(self, directory, open_after=True):
         r'''Interprets ``score.tex``.
 
         Returns none.
@@ -4314,13 +4314,33 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
+        'lym',
+        description='illustration.ly - make',
+        menu_section='illustration.ly',
+        score_package_paths=('material', 'segment',),
+        )
+    def make_illustration_ly(self, directory):
+        r'''Makes ``illustration.ly``.
+
+        Returns none.
+        '''
+        assert directory.is_material_or_segment()
+        self.io.display('making illustration.ly ...')
+        if directory.is_material():
+            self._make_material_ly(directory)
+        elif directory.is_segment():
+            self._make_segment_ly(directory)
+        else:
+            raise ValueError(directory)
+
+    @Command(
         'ylm',
-        description='layout ly - make',
+        description='layout.ly - make',
         menu_section='layout',
-        score_package_paths=('_segments', 'build', 'segment',),
+        score_package_paths=('buildspace',),
         )
     def make_layout_ly(self, directory):
-        r'''Makes layout.ly.
+        r'''Makes ``layout.ly``.
 
         Returns none.
         '''
@@ -4359,33 +4379,13 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display('')
 
     @Command(
-        'lym',
-        description='ly - make',
-        menu_section='ly',
-        score_package_paths=('material', 'segment',),
-        )
-    def make_ly(self, directory):
-        r'''Makes illustration ly.
-
-        Returns none.
-        '''
-        assert directory.is_material_or_segment()
-        self.io.display('making ly ...')
-        if directory.is_material():
-            self._make_material_ly(directory)
-        elif directory.is_segment():
-            self._make_segment_ly(directory)
-        else:
-            raise ValueError(directory)
-
-    @Command(
         'lym*',
-        description='lys - make',
-        menu_section='lys',
+        description='illustration.lys - make',
+        menu_section='illustration.ly',
         score_package_paths=('materials', 'segments',),
         )
     def make_lys(self, directory):
-        r'''Makes lys.
+        r'''Makes ``illustration.ly`` files.
 
         Returns none.
         '''
@@ -4395,20 +4395,6 @@ class AbjadIDE(abjad.AbjadObject):
             path.make_ly()
             if i + 1 < len(paths):
                 self.io.display('')
-
-    @Command(
-        'midm',
-        description='midi - make',
-        menu_section='midi',
-        score_package_paths=('segment',),
-        )
-    def make_midi(self, directory, open_after=True):
-        r'''Makes segment MIDI file.
-
-        Returns integer exit code for Travis tests.
-        '''
-        assert directory.is_segment()
-        return self._make_segment_midi(directory, open_after=open_after)
 
     @Command(
         'parts',
@@ -4495,7 +4481,7 @@ class AbjadIDE(abjad.AbjadObject):
         if bool(suffix):
             directory.add_metadatum('catalog_number_suffix', suffix)
         self.collect_segment_lys(directory)
-        self.generate_stylesheet(directory)
+        self.generate_stylesheet_ily(directory)
         total_parts = len(part_name_pairs)
         for i, pair in enumerate(part_name_pairs):
             part_name, part_abbreviation = pair
@@ -4532,12 +4518,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pdfm',
-        description='pdf - make',
-        menu_section='pdf',
+        description='illustration.pdf - make',
+        menu_section='illustration.pdf',
         score_package_paths=('material', 'segment',),
         )
     def make_pdf(self, directory, open_after=True):
-        r'''Makes illustration PDF.
+        r'''Makes ``illustration.pdf``.
 
         Returns integer exit code for Travis tests.
         '''
@@ -4554,12 +4540,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pdfm*',
-        description='pdfs - make',
-        menu_section='pdfs',
+        description='illustration.pdfs - make',
+        menu_section='illustration.pdf',
         score_package_paths=('materials', 'segments',),
         )
     def make_pdfs(self, directory):
-        r'''Makes PDF in every directory.
+        r'''Makes ``illustration.pdf`` files.
 
         Returns none.
         '''
@@ -4573,13 +4559,27 @@ class AbjadIDE(abjad.AbjadObject):
                 abjad.IOManager.spawn_subprocess('say "done"')
 
     @Command(
+        'midm',
+        description='segment.midi - make',
+        menu_section='segment.midi',
+        score_package_paths=('segment',),
+        )
+    def make_segment_midi(self, directory, open_after=True):
+        r'''Makes segment MIDI file.
+
+        Returns integer exit code for Travis tests.
+        '''
+        assert directory.is_segment()
+        return self._make_segment_midi(directory, open_after=open_after)
+
+    @Command(
         'pdfn',
-        description='pdf - nake',
-        menu_section='pdf',
+        description='illustration.pdf - nake',
+        menu_section='illustration.pdf',
         score_package_paths=('material', 'segment',),
         )
-    def nake_pdf(self, directory, open_after=True):
-        r'''Makes illustration PDF and does not open after.
+    def nake_illustration_pdf(self, directory, open_after=True):
+        r'''Makes ``illustration.pdf`` and does not open after.
 
         Returns integer exit code for Travis tests.
         '''
@@ -4628,12 +4628,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bco',
-        description='back cover - open',
+        description='back-cover.pdf - open',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
         )
     def open_back_cover_pdf(self, directory):
-        r'''Opens ``back-cover.pdf`` in `directory`.
+        r'''Opens ``back-cover.pdf``.
 
         Returns none.
         '''
@@ -4646,12 +4646,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fco',
-        description='front cover - open',
+        description='front-cover.pdf - open',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
         )
     def open_front_cover_pdf(self, directory):
-        r'''Opens files ending in ``front-cover.pdf`` in `directory`.
+        r'''Opens ``front-cover.pdf``.
 
         Returns none.
         '''
@@ -4664,12 +4664,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mo',
-        description='music - open',
+        description='music.pdf - open',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
         )
     def open_music_pdf(self, directory):
-        r'''Opens ``music.pdf`` in `directory`.
+        r'''Opens ``music.pdf``.
 
         Returns none.
         '''
@@ -4682,12 +4682,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ao',
-        description='part - open',
+        description='part.pdf - open',
         menu_section='parts',
         score_package_paths=('parts',),
         )
     def open_part_pdf(self, directory):
-        r'''Opens ``part.pdf`` in `directory`.
+        r'''Opens ``part.pdf``.
 
         Returns none.
         '''
@@ -4699,12 +4699,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'pdfo',
-        description='pdf - open',
-        menu_section='pdf',
+        description='illustration.pdf - open',
+        menu_section='illustration.pdf',
         score_package_paths=('material', 'segment',),
         )
     def open_pdf(self, directory):
-        r'''Opens illustration PDF.
+        r'''Opens ``illustration.pdf``.
 
         Returns none.
         '''
@@ -4714,12 +4714,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'po',
-        description='preface - open',
+        description='preface.pdf - open',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
     def open_preface_pdf(self, directory):
-        r'''Opens ``preface.pdf`` in `directory`.
+        r'''Opens ``preface.pdf``.
 
         Returns none.
         '''
@@ -4732,14 +4732,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ro',
-        description='score - open',
+        description='score.pdf - open',
         menu_section='score',
         score_package_paths=True,
         )
-    def open_score(self, directory):
-        r'''Opens ``score.pdf`` in build `directory`.
-
-        Opens score PDF in all other package directories.
+    def open_score_pdf(self, directory):
+        r'''Opens ``score.pdf``.
 
         Returns none.
         '''
@@ -4762,12 +4760,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ro*',
-        description='scores - open',
+        description='score.pdfs - open',
         menu_section='score',
         scores_directory=True,
         )
-    def open_scores(self, directory):
-        r'''Opens score PDF in all score packages.
+    def open_score_pdfs(self, directory):
+        r'''Opens ``score.pdf`` files.
 
         Returns none.
         '''
@@ -4862,7 +4860,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def remove(self, directory):
-        r'''Removes assets in `directory`.
+        r'''Removes assets.
 
         Returns none.
         '''
@@ -5164,12 +5162,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bct',
-        description='back cover - trash',
+        description='back-cover.tex - trash',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_back_cover(self, directory):
-        r'''Trashes back cover.
+    def trash_back_cover_tex(self, directory):
+        r'''Trashes ``back-cover.tex``.
 
         Returns none.
         '''
@@ -5182,12 +5180,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dft',
-        description='definition - trash',
+        description='definition.py - trash',
         menu_section='definition',
         score_package_paths=('material', 'segment'),
         )
-    def trash_definition(self, directory):
-        r'''Trashes definition.
+    def trash_definition_py(self, directory):
+        r'''Trashes ``definition.py``.
 
         Returns none.
         '''
@@ -5197,12 +5195,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'dft*',
-        description='definitions - trash',
+        description='definition.pys - trash',
         menu_section='definitions',
         score_package_paths=('materials', 'segments'),
         )
-    def trash_definitions(self, directory):
-        r'''Trashes definitions.
+    def trash_definition_pys(self, directory):
+        r'''Trashes ``definition.py`` files.
 
         Returns none.
         '''
@@ -5213,12 +5211,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fct',
-        description='front cover - trash',
+        description='front-cover.tex - trash',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_front_cover(self, directory):
-        r'''Trashes front cover (source).
+    def trash_front_cover_tex(self, directory):
+        r'''Trashes ``front-cover.tex``.
 
         Returns none.
         '''
@@ -5231,12 +5229,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lyt',
-        description='ly - trash',
-        menu_section='ly',
+        description='illustration.ly - trash',
+        menu_section='illustration.ly',
         score_package_paths=('material', 'segment',),
         )
-    def trash_ly(self, directory):
-        r'''Trashes LilyPond file.
+    def trash_illustration_ly(self, directory):
+        r'''Trashes ``illustration.ly``.
 
         Returns none.
         '''
@@ -5246,12 +5244,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'lyt*',
-        description='lys - trash',
-        menu_section='lys',
+        description='illustration.lys - trash',
+        menu_section='illustration.ly',
         score_package_paths=('materials', 'segments',),
         )
-    def trash_lys(self, directory):
-        r'''Trashes LilyPond files.
+    def trash_illustration_lys(self, directory):
+        r'''Trashes ``illustration.ly`` files.
 
         Returns none.
         '''
@@ -5261,13 +5259,61 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(path)
 
     @Command(
+        'pdft',
+        description='illustration.pdf - trash',
+        menu_section='illustration.pdf',
+        score_package_paths=('material', 'segment',),
+        )
+    def trash_illustration_pdf(self, directory):
+        r'''Trashes ``illustration.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is_material_or_segment()
+        path = directory('illustration.pdf')
+        self._trash_files(path)
+
+    @Command(
+        'pdft*',
+        description='illustration.pdfs - trash',
+        menu_section='illustration.pdf',
+        score_package_paths=('materials', 'segments',),
+        )
+    def trash_illustration_pdfs(self, directory):
+        r'''Trashes ``illustration.pdf`` files.
+
+        Returns none.
+        '''
+        assert directory.is_materials_or_segments()
+        for path in directory.list_paths():
+            path /= 'illustration.pdf'
+            self._trash_files(path)
+
+    @Command(
+        'ylt',
+        description='layout.ly - trash',
+        menu_section='layout',
+        score_package_paths=('buildspace',),
+        )
+    def trash_layout_ly(self, directory):
+        r'''Trashes ``layout.ly``.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        name = 'layout.ly'
+        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        if paths:
+            self._trash_files(paths)
+
+    @Command(
         'mt',
-        description='music - trash',
+        description='music.ly - trash',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_music(self, directory):
-        r'''Trashes music (source).
+    def trash_music_ly(self, directory):
+        r'''Trashes ``music.ly``.
 
         Returns none.
         '''
@@ -5280,12 +5326,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'at',
-        description='part - trash',
+        description='part.tex - trash',
         menu_section='parts',
         score_package_paths=('parts',),
         )
-    def trash_part(self, directory):
-        r'''Trashes part (source).
+    def trash_part_tex(self, directory):
+        r'''Trashes ``part.tex``.
 
         Returns none.
         '''
@@ -5296,44 +5342,13 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'pdft',
-        description='pdf - trash',
-        menu_section='pdf',
-        score_package_paths=('material', 'segment',),
-        )
-    def trash_pdf(self, directory):
-        r'''Trashes PDF.
-
-        Returns none.
-        '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.pdf')
-        self._trash_files(path)
-
-    @Command(
-        'pdft*',
-        description='pdfs - trash',
-        menu_section='pdfs',
-        score_package_paths=('materials', 'segments',),
-        )
-    def trash_pdfs(self, directory):
-        r'''Trashes PDFs.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        for path in directory.list_paths():
-            path /= 'illustration.pdf'
-            self._trash_files(path)
-
-    @Command(
         'pt',
-        description='preface - trash',
+        description='preface.tex - trash',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_preface(self, directory):
-        r'''Trashes preface (source).
+    def trash_preface_tex(self, directory):
+        r'''Trashes ``preface.tex``.
 
         Returns none.
         '''
@@ -5346,13 +5361,13 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'rt',
-        description='score - trash',
+        description='score.tex - trash',
         menu_section='score',
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
-    def trash_score(self, directory):
-        r'''Trashes score (source).
+    def trash_score_tex(self, directory):
+        r'''Trashes ``score.tex``.
 
         Returns none.
         '''
@@ -5363,12 +5378,12 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'yt',
-        description='stylesheet - trash',
+        description='stylesheet.ily - trash',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_stylesheet(self, directory):
-        r'''Trashes stylesheet.
+    def trash_stylesheet_ily(self, directory):
+        r'''Trashes ``stylesheet.ily``.
 
         Returns none.
         '''

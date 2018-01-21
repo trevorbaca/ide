@@ -16,7 +16,7 @@ def test_AbjadIDE_make_ly_01():
 
         abjad_ide('red %rpc lym q')
         transcript = abjad_ide.io.transcript
-        assert 'Making ly ...' in transcript
+        assert 'Making illustration.ly ...' in transcript
         assert f'Removing {ly.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
@@ -27,7 +27,7 @@ def test_AbjadIDE_make_ly_01():
 
         abjad_ide('red %rpc lym q')
         transcript = abjad_ide.io.transcript
-        assert 'Making ly ...' in transcript
+        assert 'Making illustration.ly ...' in transcript
         assert f'Removing {ly.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
@@ -50,7 +50,7 @@ def test_AbjadIDE_make_ly_02():
 
         abjad_ide('red %A lym q')
         transcript = abjad_ide.io.transcript
-        assert 'Making ly ...' in transcript
+        assert 'Making illustration.ly ...' in transcript
         assert f'Removing {ly.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
@@ -61,7 +61,7 @@ def test_AbjadIDE_make_ly_02():
 
         abjad_ide('red %A lym q')
         transcript = abjad_ide.io.transcript
-        assert 'Making ly ...' in transcript
+        assert 'Making illustration.ly ...' in transcript
         assert f'Removing {ly.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript

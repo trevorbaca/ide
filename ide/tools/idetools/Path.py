@@ -351,12 +351,14 @@ class Path(abjad.Path):
         return ' : '.join(parts)
 
     def is_buildspace(self):
-        r'''Is true when path is build directory, _segments directory or
-        segment directory.
+        r'''Is true when path is any of _segments, build, builds, segment or
+        segments directories.
 
         Returns true or false.
         '''
-        if self.is_build() or self.is__segments() or self.is_segment():
+        if self.is_build() or self.is_builds():
+            return True
+        if self.is__segments() or self.is_segment() or self.is_segments():
             return True
         return False
 
