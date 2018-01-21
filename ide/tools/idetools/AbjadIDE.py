@@ -1025,6 +1025,9 @@ class AbjadIDE(abjad.AbjadObject):
             target.write_text('')
 
     def _make_layout_ly(self, path):
+        assert path.suffix == '.py'
+        ly_name = abjad.String(path.stem).to_dash_case() + '.ly'
+        ly_path = path.parent(ly_name)
         maker = '__make_layout_ly__.py'
         maker = path.parent(maker)
         with self.cleanup([maker]):
@@ -1035,9 +1038,6 @@ class AbjadIDE(abjad.AbjadObject):
                 )
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
-            error_code = result[-1]
-            if error_code == 0 and path.is_file():
-                self.io.display(f'writing {path.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
@@ -2293,6 +2293,10 @@ class AbjadIDE(abjad.AbjadObject):
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             snake_part_name = abjad.String(part_name).to_snake_case()
+            file_name = f'{snake_part_name}_layout.py'
+            path = directory(file_name)
+            self._make_layout_ly(path)
+            self.io.display('')
             file_name = f'{dashed_part_name}-front-cover.tex'
             path = directory(file_name)
             self._interpret_tex_file(path)
@@ -2300,10 +2304,6 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-preface.tex'
             path = directory(file_name)
             self._interpret_tex_file(path)
-            self.io.display('')
-            file_name = f'{snake_part_name}_layout.py'
-            path = directory(file_name)
-            self._make_layout_ly(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-music.ly'
             path = directory(file_name)
@@ -4491,7 +4491,7 @@ class AbjadIDE(abjad.AbjadObject):
             if not layout_py.is_file():
                 self.io.display(f'missing {layout_py.trim()} ...')
                 continue
-            self._make_layout_ly(layout_ly)
+            self._make_layout_ly(layout_py)
             if 0 < total and i < total - 1:
                 self.io.display('')
 
