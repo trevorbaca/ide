@@ -482,7 +482,8 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_document(self, directory, name='score.tex', prefix=None):
+    def _generate_document(self, path):
+        directory = path.parent
         values = {}
         paper_size = directory.get_metadatum('paper_size', 'letter')
         orientation = directory.get_metadatum('orientation')
@@ -490,13 +491,18 @@ class AbjadIDE(abjad.AbjadObject):
         width, height, unit = paper_size
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
-        target_name = name
-        if prefix is not None:
-            target_name = f'{prefix}-{target_name}'
+        if path.name.endswith('score.tex'):
+            name = 'score.tex'
+        elif path.name.endswith('part.tex'):
+            name = 'part.tex'
+            dashed_part_name = path.name.strip('-part.tex')
+            values['dashed_part_name'] = dashed_part_name
+        else:
+            raise ValueError(path.name)
         self._copy_boilerplate(
             directory,
-            'score.tex',
-            target_name=target_name,
+            name,
+            target_name=path.name,
             values=values,
             )
 
@@ -1407,50 +1413,6 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(message)
         return files
 
-    def _match_smart_file(
-        self,
-        directory,
-        pattern,
-        paths,
-        prefix,
-        finder,
-        default_name=None,
-        ):
-        if not pattern:
-            self.io.display(f"missing {prefix!r} pattern ...")
-            return prefix, None
-        alias = ''
-        if self.aliases and pattern in self.aliases:
-            alias = pattern
-            path, pattern = Path(self.aliases[pattern]), None
-            if path.is_dir():
-                directory, paths = path, None
-            else:
-                paths = [path]
-        elif not (pattern and pattern[0].isdigit()):
-            paths = None
-        if isinstance(paths, Path):
-            paths = [paths]
-        if paths:
-            files = self._supply_name(paths, default_name)
-        else:
-            files, strings = finder(directory)
-            files = self._filter_files(files, strings, pattern)
-        address = prefix + (pattern or '') + alias
-        count = len(files)
-        counter = abjad.String('file').pluralize(count)
-        result = None
-        if not files:
-            self.io.display(f'matching {address!r} to {count} {counter} ...')
-        elif len(files) == 1:
-            result = files[0]
-        else:
-            self.io.display(f'matching {address!r} to {count} {counter} ...')
-            for file_ in files:
-                self.io.display(file_.trim(), raw=True)
-            self.io.display(f"narrow search or use {2*prefix!r} for all ...")
-        return address, result
-
     def _match_paths_in_buildspace(self, directory, name, verb):
         assert directory.is_buildspace()
         is_glob = False
@@ -1506,6 +1468,50 @@ class AbjadIDE(abjad.AbjadObject):
             if ok != 'y':
                 return
         return selected_paths
+
+    def _match_smart_file(
+        self,
+        directory,
+        pattern,
+        paths,
+        prefix,
+        finder,
+        default_name=None,
+        ):
+        if not pattern:
+            self.io.display(f"missing {prefix!r} pattern ...")
+            return prefix, None
+        alias = ''
+        if self.aliases and pattern in self.aliases:
+            alias = pattern
+            path, pattern = Path(self.aliases[pattern]), None
+            if path.is_dir():
+                directory, paths = path, None
+            else:
+                paths = [path]
+        elif not (pattern and pattern[0].isdigit()):
+            paths = None
+        if isinstance(paths, Path):
+            paths = [paths]
+        if paths:
+            files = self._supply_name(paths, default_name)
+        else:
+            files, strings = finder(directory)
+            files = self._filter_files(files, strings, pattern)
+        address = prefix + (pattern or '') + alias
+        count = len(files)
+        counter = abjad.String('file').pluralize(count)
+        result = None
+        if not files:
+            self.io.display(f'matching {address!r} to {count} {counter} ...')
+        elif len(files) == 1:
+            result = files[0]
+        else:
+            self.io.display(f'matching {address!r} to {count} {counter} ...')
+            for file_ in files:
+                self.io.display(file_.trim(), raw=True)
+            self.io.display(f"narrow search or use {2*prefix!r} for all ...")
+        return address, result
 
     @staticmethod
     def _message_activate(ly, tag, count, name=None):
@@ -3014,23 +3020,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'yle',
-        description='layout ly - edit',
-        menu_section='layout',
-        score_package_paths=('_segments', 'build', 'segment',),
-        )
-    def edit_layout_ly(self, directory):
-        r'''Edits layout.ly file.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        name = 'layout.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
-
-    @Command(
         'ype',
         description='layout py - edit',
         menu_section='layout',
@@ -3043,6 +3032,23 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         name = 'layout.py'
+        paths = self._match_paths_in_buildspace(directory, name, 'open')
+        if paths:
+            self._open_files(paths)
+
+    @Command(
+        'yle',
+        description='layout ly - edit',
+        menu_section='layout',
+        score_package_paths=('_segments', 'build', 'segment',),
+        )
+    def edit_layout_ly(self, directory):
+        r'''Edits layout.ly file.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        name = 'layout.ly'
         paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
@@ -3389,7 +3395,8 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
         self.io.display('generating score ...')
-        self._generate_document(directory)
+        path = directory('score.tex')
+        self._generate_document(path)
 
     @Command(
         'yg',
@@ -4404,6 +4411,126 @@ class AbjadIDE(abjad.AbjadObject):
         return self._make_segment_midi(directory, open_after=open_after)
 
     @Command(
+        'parts',
+        description='parts - new',
+        menu_section='parts',
+        score_package_paths=('builds',),
+        )
+    def make_parts_directory(self, directory):
+        r'''Makes parts directory.
+
+        Returns none.
+        '''
+        assert directory.is_builds()
+        self.io.display('getting part names from score template ...')
+        result = directory._get_part_names()
+        if isinstance(result, tuple) and result[0] == -1:
+            message = result[-1]
+            self.io.display(message)
+            return
+        part_name_pairs = result
+        part_names = [_[0] for _ in result]
+        part_abbreviations = [_[1] for _ in result]
+        for part_name in part_names:
+            self.io.display(f'found {part_name} ...')
+        self.io.display('')
+        name = self.io.get('directory name')
+        if self.is_navigation(name):
+            return
+        name = directory.coerce(name)
+        directory = directory / name
+        if directory.exists():
+            self.io.display(f'existing {directory.trim()} ...')
+            return
+        paper_size = self.io.get('paper size')
+        if self.is_navigation(paper_size):
+            return
+        orientation = 'portrait'
+        if paper_size.endswith(' landscape'):
+            orientation = 'landscape'
+            length = len(' landscape')
+            paper_size = paper_size[:-length]
+        elif paper_size.endswith(' portrait'):
+            length = len(' portrait')
+            paper_size = paper_size[:-length]
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size: {paper_size} ...')
+            self.io.display(f'choose from ...')
+            for paper_size in self.known_paper_sizes:
+                self.io.display(f'    {paper_size}')
+            return
+        suffix = self.io.get('catalog number suffix')
+        if self.is_navigation(suffix):
+            return
+        names = (
+            'front-cover.tex',
+            'preface.tex',
+            'music.ly',
+            'back-cover.tex',
+            'part.tex',
+            )
+        paths = [directory / _ for _ in names]
+        self.io.display('will make ...')
+        self.io.display(f'    {directory.trim()}')
+        path = directory / 'stylesheet.ily'
+        self.io.display(f'    {path.trim()}')
+        for part_name in part_names:
+            part_name_ = abjad.String(part_name).to_dash_case()
+            for name in names:
+                name = f'{part_name_}-{name}'
+                path = directory / name
+                self.io.display(f'    {path.trim()}')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        assert not directory.exists()
+        directory.mkdir()
+        directory.add_metadatum('parts_directory', True)
+        if bool(paper_size):
+            directory.add_metadatum('paper_size', paper_size)
+        if not orientation == 'portrait':
+            directory.add_metadatum('orientation', orientation)
+        if bool(suffix):
+            directory.add_metadatum('catalog_number_suffix', suffix)
+        self.collect_segment_lys(directory)
+        self.generate_stylesheet(directory)
+        total_parts = len(part_name_pairs)
+        for i, pair in enumerate(part_name_pairs):
+            part_name, part_abbreviation = pair
+            part_number = i + 1
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            snake_part_name = abjad.String(part_name).to_snake_case()
+            words = abjad.String(dashed_part_name).delimit_words()
+            forces_tagline = f"{' '.join(words)} part"
+            self._generate_back_cover(
+                directory(f'{dashed_part_name}-back-cover.tex'),
+                price=f'{part_abbreviation} ({part_number}/{total_parts})',
+                ),
+            self._generate_front_cover(
+                directory(f'{dashed_part_name}-front-cover.tex'),
+                forces_tagline=forces_tagline,
+                )
+            self._generate_music(
+                directory(f'{dashed_part_name}-music.ly'),
+                forces_tagline=forces_tagline,
+                keep_with_tag=part_name,
+                silent=True,
+                )
+            self._generate_document(
+                directory(f'{dashed_part_name}-part.tex')
+                )
+            self._generate_preface(
+                directory(f'{dashed_part_name}-preface.tex')
+                )
+            self._copy_boilerplate(
+                directory,
+                'layout.py',
+                target_name=f'{snake_part_name}_layout.py',
+                )
+
+    @Command(
         'pdfm',
         description='pdf - make',
         menu_section='pdf',
@@ -4651,122 +4778,6 @@ class AbjadIDE(abjad.AbjadObject):
             if pdf:
                 pdfs.append(pdf)
         self._open_files(pdfs)
-
-    @Command(
-        'parts',
-        description='parts - new',
-        menu_section='parts',
-        score_package_paths=('builds',),
-        )
-    def parts(self, directory):
-        r'''Makes new parts directory.
-
-        Returns none.
-        '''
-        assert directory.is_builds()
-        self.io.display('getting part names from score template ...')
-        result = directory._get_part_names()
-        if isinstance(result, tuple) and result[0] == -1:
-            message = result[-1]
-            self.io.display(message)
-            return
-        part_name_pairs = result
-        part_names = [_[0] for _ in result]
-        part_abbreviations = [_[1] for _ in result]
-        for part_name in part_names:
-            self.io.display(f'found {part_name} ...')
-        self.io.display('')
-        name = self.io.get('directory name')
-        if self.is_navigation(name):
-            return
-        name = directory.coerce(name)
-        directory = directory / name
-        if directory.exists():
-            self.io.display(f'existing {directory.trim()} ...')
-            return
-        paper_size = self.io.get('paper size')
-        if self.is_navigation(paper_size):
-            return
-        orientation = 'portrait'
-        if paper_size.endswith(' landscape'):
-            orientation = 'landscape'
-            length = len(' landscape')
-            paper_size = paper_size[:-length]
-        elif paper_size.endswith(' portrait'):
-            length = len(' portrait')
-            paper_size = paper_size[:-length]
-        if paper_size not in self.known_paper_sizes:
-            self.io.display(f'unknown paper size: {paper_size} ...')
-            self.io.display(f'choose from ...')
-            for paper_size in self.known_paper_sizes:
-                self.io.display(f'    {paper_size}')
-            return
-        suffix = self.io.get('catalog number suffix')
-        if self.is_navigation(suffix):
-            return
-        names = (
-            'front-cover.tex',
-            'preface.tex',
-            'music.ly',
-            'back-cover.tex',
-            'part.tex',
-            )
-        paths = [directory / _ for _ in names]
-        self.io.display('will make ...')
-        self.io.display(f'    {directory.trim()}')
-        path = directory / 'stylesheet.ily'
-        self.io.display(f'    {path.trim()}')
-        for part_name in part_names:
-            part_name_ = abjad.String(part_name).to_dash_case()
-            for name in names:
-                name = f'{part_name_}-{name}'
-                path = directory / name
-                self.io.display(f'    {path.trim()}')
-        response = self.io.get('ok?')
-        if self.is_navigation(response):
-            return
-        if response != 'y':
-            return
-        assert not directory.exists()
-        directory.mkdir()
-        directory.add_metadatum('parts_directory', True)
-        if bool(paper_size):
-            directory.add_metadatum('paper_size', paper_size)
-        if not orientation == 'portrait':
-            directory.add_metadatum('orientation', orientation)
-        if bool(suffix):
-            directory.add_metadatum('catalog_number_suffix', suffix)
-        self.collect_segment_lys(directory)
-        self.generate_stylesheet(directory)
-        total_parts = len(part_name_pairs)
-        for i, pair in enumerate(part_name_pairs):
-            part_name, part_abbreviation = pair
-            part_number = i + 1
-            price = f'{part_abbreviation} ({part_number}/{total_parts})'
-            dash_part_name = abjad.String(part_name).to_dash_case()
-            path = directory(f'{dash_part_name}-back-cover.tex')
-            self._generate_back_cover(path, price=price),
-            path = directory(f'{dash_part_name}-front-cover.tex')
-            words = abjad.String(dash_part_name).delimit_words()
-            forces_tagline = f"{' '.join(words)} part"
-            self._generate_front_cover(path, forces_tagline=forces_tagline)
-            name = 'layout.py'
-            target_name = f'{dash_part_name}_{name}'
-            target_name = abjad.String(target_name).to_snake_case()
-            self._copy_boilerplate(directory, name, target_name=target_name)
-            path = directory(target_name)
-            self._generate_music(
-                path,
-                forces_tagline=forces_tagline,
-                keep_with_tag=part_name,
-                silent=True,
-                )
-            self._generate_document(
-                directory,
-                name='part.tex',
-                prefix=dash_part_name,
-                )
-            self._generate_preface(directory, prefix=dash_part_name)
 
     @Command(
         'cv',

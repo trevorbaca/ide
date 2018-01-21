@@ -23,6 +23,7 @@ class Path(abjad.Path):
 
     test_score_names = (
         'blue_score',
+        'green_score',
         'red_score',
         )
 
