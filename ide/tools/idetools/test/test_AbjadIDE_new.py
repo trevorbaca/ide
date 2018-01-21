@@ -9,15 +9,15 @@ def test_AbjadIDE_new_01():
 
     with ide.Test():
 
-        abjad_ide('new Green~Score q')
+        abjad_ide('new Purple~Score q')
         transcript = abjad_ide.io.transcript
-        wrapper = ide.Path('test_scores') / 'green_score'
+        wrapper = ide.Path('test_scores') / 'purple_score'
         assert wrapper.is_dir()
         for name in [
             '.gitignore',
             '.travis.yml',
             'README.md',
-            'green_score',
+            'purple_score',
             'requirements.txt',
             'setup.cfg',
             'setup.py',
@@ -38,10 +38,10 @@ def test_AbjadIDE_new_01():
             assert wrapper.contents(name).exists()
         assert wrapper.materials('__init__.py').is_file()
         assert wrapper.segments('__init__.py').is_file()
-        assert 'Enter title> Green Score' in transcript
+        assert 'Enter title> Purple Score' in transcript
         assert f'Making {wrapper.trim()} ...' in transcript
 
-        abjad_ide('new Green~Score q')
+        abjad_ide('new Purple~Score q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {wrapper.trim()} ...' in transcript
 
@@ -51,7 +51,7 @@ def test_AbjadIDE_new_02():
     '''
 
     with ide.Test():
-        wrapper = ide.Path('test_scores') / 'green_score'
+        wrapper = ide.Path('test_scores') / 'purple_score'
         wrapper.remove()
         wrapper.mkdir()
         assert wrapper.is_dir()
@@ -59,7 +59,7 @@ def test_AbjadIDE_new_02():
         git.mkdir()
         assert git.is_dir()
 
-        abjad_ide('new y Green~Score q')
+        abjad_ide('new y Purple~Score q')
         transcript = abjad_ide.io.transcript
         assert wrapper.exists()
         for name in [
@@ -87,10 +87,10 @@ def test_AbjadIDE_new_02():
         assert wrapper.segments('__init__.py').is_file()
         assert f'Found {wrapper.trim()}.' in transcript
         assert f'Populate {wrapper.trim()}?>' in transcript
-        assert 'Enter title> Green Score' in transcript
+        assert 'Enter title> Purple Score' in transcript
         assert f'Making {wrapper.trim()} ...' in transcript
 
-        abjad_ide('new Green~Score q')
+        abjad_ide('new Purple~Score q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {wrapper.trim()} ...' in transcript
 
@@ -99,26 +99,26 @@ def test_AbjadIDE_new_03():
     r'''Coerces package name.
     '''
 
-    package = ide.Path('test_scores') / 'green_score'
+    package = ide.Path('test_scores') / 'purple_score'
 
     with ide.Test(remove=[package]):
 
-        abjad_ide('new GreenScore q')
+        abjad_ide('new PurpleScore q')
         assert package.is_dir()
 
     with ide.Test(remove=[package]):
 
-        abjad_ide('new greenScore q')
+        abjad_ide('new purpleScore q')
         assert package.is_dir()
 
     with ide.Test(remove=[package]):
 
-        abjad_ide('new Green_Score q')
+        abjad_ide('new Purple_Score q')
         assert package.is_dir()
 
     with ide.Test(remove=[package]):
 
-        abjad_ide('new green_score q')
+        abjad_ide('new purple_score q')
         assert package.is_dir()
 
 

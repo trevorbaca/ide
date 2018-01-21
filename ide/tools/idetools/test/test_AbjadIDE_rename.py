@@ -10,10 +10,10 @@ def test_AbjadIDE_rename_01():
     with ide.Test():
         source = ide.Path('blue_score')
         assert source.is_dir()
-        target = ide.Path('test_scores') / 'green_score'
+        target = ide.Path('test_scores') / 'purple_score'
         target.remove()
 
-        abjad_ide('ren blu Green~Score y q')
+        abjad_ide('ren blu Purple~Score y q')
         assert not source.exists()
         assert target.is_dir()
 

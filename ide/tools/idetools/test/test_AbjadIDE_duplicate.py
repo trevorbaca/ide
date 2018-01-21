@@ -92,18 +92,18 @@ def test_AbjadIDE_duplicate_06():
     with ide.Test():
         source = ide.Path('red_score').wrapper ()
         assert source.is_dir()
-        target = source.with_name('green_score')
+        target = source.with_name('purple_score')
         target.remove()
 
-        abjad_ide('dup red Green~Score y q')
+        abjad_ide('dup red Purple~Score y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
         assert 'Select packages to duplicate> red' in transcript
         assert f'Duplicating {source.trim()} ...' in transcript
-        assert 'Enter title> Green Score' in transcript 
+        assert 'Enter title> Purple Score' in transcript 
         assert 'Ok?> y' in transcript
-        assert "Replacing 'red_score' with 'green_score' ..." in transcript
-        assert "Replacing 'Red Score' with 'Green Score' ..." in transcript
+        assert "Replacing 'red_score' with 'purple_score' ..." in transcript
+        assert "Replacing 'Red Score' with 'Purple Score' ..." in transcript
 
 
 def test_AbjadIDE_duplicate_07():
