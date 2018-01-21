@@ -7,14 +7,22 @@ metadata = abjad.TypedOrderedDict(
         (
             'fermata_measure_numbers',
             abjad.TypedOrderedDict(
-                []
+                [
+                    (
+                        '_',
+                        [2],
+                        ),
+                    ]
                 ),
             ),
         (
             'time_signatures',
             abjad.TypedOrderedDict(
                 [
-                    ('_', None),
+                    (
+                        '_',
+                        ['7/4', '1/4'],
+                        ),
                     ]
                 ),
             ),

@@ -41,6 +41,10 @@ def test_AbjadIDE_new_01():
         assert 'Enter title> Purple Score' in transcript
         assert f'Making {wrapper.trim()} ...' in transcript
 
+        assert wrapper.builds._assets.exists()
+        assert wrapper.builds._assets('.gitignore').is_file()
+        assert wrapper.builds('__metadata__.py').is_file()
+
         abjad_ide('new Purple~Score q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {wrapper.trim()} ...' in transcript
@@ -131,14 +135,18 @@ def test_AbjadIDE_new_04():
 
         abjad_ide('red bb new arch-a-score arch~a $80 ARCH-A y q')
         transcript = abjad_ide.io.transcript
+        lines = transcript.lines
         assert build.is_dir()
         assert build.get_metadatum('price') == '$80'
         assert build.get_metadatum('catalog_number_suffix') == 'ARCH-A'
-        assert 'Build name> arch-a-score' in transcript
-        assert 'Paper size> arch a' in transcript
-        assert r'Price> $80' in transcript
-        assert 'Catalog number suffix> ARCH-A'in transcript
-        assert transcript.lines[-35:] == [
+        assert 'Build name> arch-a-score' in lines
+        assert 'Paper size> arch a' in lines
+        assert r'Price> $80' in lines
+        assert 'Catalog number suffix> ARCH-A'in lines
+        index = lines.index('Ok?> y')
+        assert lines[index:] == [
+            'Ok?> y',
+            '',
             'Writing red_score/builds/arch-a-score/back-cover.tex ...',
             '',
             'Writing red_score/builds/arch-a-score/front-cover.tex ...',
