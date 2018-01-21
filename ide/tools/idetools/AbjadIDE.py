@@ -4334,6 +4334,66 @@ class AbjadIDE(abjad.AbjadObject):
             raise ValueError(directory)
 
     @Command(
+        'lym*',
+        description='illustration.lys - make',
+        menu_section='illustration.ly',
+        score_package_paths=('materials', 'segments',),
+        )
+    def make_illustration_lys(self, directory):
+        r'''Makes ``illustration.ly`` files.
+
+        Returns none.
+        '''
+        assert directory.is_materials_or_segments()
+        paths = directory.list_paths()
+        for i, path in enumerate(paths):
+            path.make_ly()
+            if i + 1 < len(paths):
+                self.io.display('')
+
+    @Command(
+        'pdfm',
+        description='illustration.pdf - make',
+        menu_section='illustration.pdf',
+        score_package_paths=('material', 'segment',),
+        )
+    def make_illustration_pdf(self, directory, open_after=True):
+        r'''Makes ``illustration.pdf``.
+
+        Returns integer exit code for Travis tests.
+        '''
+        assert directory.is_material_or_segment()
+        if directory.is_material():
+            return self._make_material_pdf(
+                directory,
+                open_after=open_after,
+                )
+        elif directory.is_segment():
+            return self._make_segment_pdf(directory, open_after=open_after)
+        else:
+            raise ValueError(directory)
+
+    @Command(
+        'pdfm*',
+        description='illustration.pdfs - make',
+        menu_section='illustration.pdf',
+        score_package_paths=('materials', 'segments',),
+        )
+    def make_illustration_pdfs(self, directory):
+        r'''Makes ``illustration.pdf`` files.
+
+        Returns none.
+        '''
+        assert directory.is_materials_or_segments()
+        paths = directory.list_paths()
+        for i, path in enumerate(paths):
+            self.make_pdf(path, open_after=False)
+            if i + 1 < len(paths):
+                self.io.display('')
+            else:
+                abjad.IOManager.spawn_subprocess('say "done"')
+
+    @Command(
         'ylm',
         description='layout.ly - make',
         menu_section='layout',
@@ -4376,24 +4436,6 @@ class AbjadIDE(abjad.AbjadObject):
             if exit_code:
                 self.io.display(stderr_lines, raw=True)
             if 0 < total and i < total - 1:
-                self.io.display('')
-
-    @Command(
-        'lym*',
-        description='illustration.lys - make',
-        menu_section='illustration.ly',
-        score_package_paths=('materials', 'segments',),
-        )
-    def make_lys(self, directory):
-        r'''Makes ``illustration.ly`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            path.make_ly()
-            if i + 1 < len(paths):
                 self.io.display('')
 
     @Command(
@@ -4515,48 +4557,6 @@ class AbjadIDE(abjad.AbjadObject):
                 'layout.py',
                 target_name=f'{snake_part_name}_layout.py',
                 )
-
-    @Command(
-        'pdfm',
-        description='illustration.pdf - make',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
-        )
-    def make_pdf(self, directory, open_after=True):
-        r'''Makes ``illustration.pdf``.
-
-        Returns integer exit code for Travis tests.
-        '''
-        assert directory.is_material_or_segment()
-        if directory.is_material():
-            return self._make_material_pdf(
-                directory,
-                open_after=open_after,
-                )
-        elif directory.is_segment():
-            return self._make_segment_pdf(directory, open_after=open_after)
-        else:
-            raise ValueError(directory)
-
-    @Command(
-        'pdfm*',
-        description='illustration.pdfs - make',
-        menu_section='illustration.pdf',
-        score_package_paths=('materials', 'segments',),
-        )
-    def make_pdfs(self, directory):
-        r'''Makes ``illustration.pdf`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.make_pdf(path, open_after=False)
-            if i + 1 < len(paths):
-                self.io.display('')
-            else:
-                abjad.IOManager.spawn_subprocess('say "done"')
 
     @Command(
         'midm',
