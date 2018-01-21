@@ -12,9 +12,9 @@ def test_AbjadIDE_hop_to_previous_score_01():
         'Abjad IDE : scores',
         'Red Score (2017)',
         'Red Score (2017) : materials',
+        'Green Score (2018)',
         'Blue Score (2017)',
         'Red Score (2017)',
-        'Blue Score (2017)',
         ]
 
 
@@ -27,6 +27,6 @@ def test_AbjadIDE_hop_to_previous_score_02():
     assert transcript.titles == [
         'Abjad IDE : scores',
         'Red Score (2017)',
+        'Green Score (2018)',
         'Blue Score (2017)',
-        'Red Score (2017)',
         ]
