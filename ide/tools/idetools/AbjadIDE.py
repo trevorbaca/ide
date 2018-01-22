@@ -198,55 +198,26 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    @staticmethod
-    def _activate_segment_tags(illustration_ly):
-        assert illustration_ly.is_file()
-        assert illustration_ly.parent.is_segment()
-        messages = []
-        count = AbjadIDE._activate_tag_in_file(
-            illustration_ly,
-            '+SEGMENT',
-            '+SEGMENT',
-            )
-        if not count:
-            print(f'no +SEGMENT tags to activate ...')
-        count = AbjadIDE._deactivate_tag_in_file(
-            illustration_ly,
-            '-SEGMENT',
-            '-SEGMENT',
-            )
-        if not count:
-            print(f'no -SEGMENT tags to deactivate ...')
-        count = AbjadIDE._deactivate_tag_in_file(
-            illustration_ly,
-            lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
-            'markup',
-            )
-        if not count:
-            print(f'no markup tags to deactivate ...')
+#    @staticmethod
+#    def _activate_segment_tags(illustration_ly):
+#        assert illustration_ly.is_file()
+#        assert illustration_ly.parent.is_segment()
+#        illustration_ly.activate('+SEGMENT', message=True)
+#        illustration_ly.deactivate('-SEGMENT', message=True)
+#        illustration_ly.deactivate(
+#            lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
+#            message='markup',
+#            )
 
-    def _activate_tag(self, directory, tag, name=None):
-        self._smart_activate(directory, tag, name)
-
-    @staticmethod
-    def _activate_tag_in_file(path, tag, name=None, io=None):
-        if not path.is_file():
-            message = f'missing {path.trim()} ...'
-            if io:
-                io.display(message)
-            else:
-                print(message)
-            return
-        text, count = path.activate_tag(tag)
-        if count:
-            messages = self._message_activate(path, tag, count, name=name)
-            if io:
-                io.display(messages)
-            else:
-                for message in messages:
-                    print(message)
-        path.write_text(text)
-        return count
+    def _activate_tag(self, path, tag, name=None):
+        count = path.activate(tag)
+        name = name or tag
+        if count == 0:
+            message = f'no {name} tags to activate in {path.name} ...'
+        else:
+            tags = abjad.String('tag').pluralize(count)
+            message = f'activating {count} {name} {tags} in {path.name} ...'
+        self.io.display(message)
 
     def _cache_commands(self):
         commands = {}
@@ -355,28 +326,15 @@ class AbjadIDE(abjad.AbjadObject):
             return False
         self._deactivate_tag(directory, match, baca.tags.SHIFTED_CLEF)
 
-    def _deactivate_tag(self, directory, tag, name=None):
-        self._smart_deactivate(directory, tag, name)
-
-    @staticmethod
-    def _deactivate_tag_in_file(path, tag, name=None, io=None):
-        if not path.is_file():
-            message = f'missing {path.trim()} ...'
-            if io:
-                io.display(message)
-            else:
-                print(message)
-            return
-        text, count = path.deactivate_tag(tag)
-        if count:
-            messages = self._message_deactivate(path, tag, count, name=name)
-            if io:
-                io.display(messages)
-            else:
-                for message in messages:
-                    print(message)
-        path.write_text(text)
-        return count
+    def _deactivate_tag(self, path, tag, name=None):
+        count = path.deactivate(tag)
+        name = name or tag
+        if count == 0:
+            message = f'no {name} tags to deactivate in {path.name} ...'
+        else:
+            tags = abjad.String('tag').pluralize(count)
+            message = f'deactivating {count} {name} {tags} in {path.name} ...'
+        self.io.display(message)
 
     @staticmethod
     def _filter_files(files, strings, pattern):
@@ -1739,26 +1697,6 @@ class AbjadIDE(abjad.AbjadObject):
         assert isinstance(response.payload, list), response
         result = response.payload
         return result
-
-    def _smart_activate(self, path, tag, name=None):
-        count = path.smart_activate(tag)
-        name = name or tag
-        if count == 0:
-            message = f'no {name} tags to activate in {path.name} ...'
-        else:
-            tags = abjad.String('tag').pluralize(count)
-            message = f'activating {count} {name} {tags} in {path.name} ...'
-        self.io.display(message)
-
-    def _smart_deactivate(self, path, tag, name=None):
-        count = path.smart_deactivate(tag)
-        name = name or tag
-        if count == 0:
-            message = f'no {name} tags to deactivate in {path.name} ...'
-        else:
-            tags = abjad.String('tag').pluralize(count)
-            message = f'deactivating {count} {name} {tags} in {path.name} ...'
-        self.io.display(message)
 
     @staticmethod
     def _supply_name(paths, name):
