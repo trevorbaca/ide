@@ -60,7 +60,7 @@ def test_AbjadIDE_make_parts_directory_01():
             'No SHIFTED_CLEF tags to activate in arch-a-parts ...',
             'Deactivating 26 persistent indicator color expression tags in arch-a-parts ...',
             'Activating 1 persistent indicator color suppression tag in arch-a-parts ...',
-            'No colored markup tags to deactivate in arch-a-parts ...',
+            'Deactivating 1 colored markup tag in arch-a-parts ...',
             'Generating stylesheet ...',
             'Writing green_score/builds/arch-a-parts/stylesheet.ily ...',
             'Writing green_score/builds/arch-a-parts/bass-clarinet-back-cover.tex ...',

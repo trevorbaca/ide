@@ -22,10 +22,10 @@
                     \once \override Score.MultiMeasureRest.transparent = ##t             %! SM19
                     \once \override Score.TimeSignature.stencil = ##f                    %! SM19
                     R1 * 1/4
-                    ^ \markup {                                                          %! SM18
-                        \musicglyph                                                      %! SM18
-                            #"scripts.ulongfermata"                                      %! SM18
-                        }                                                                %! SM18
+                    ^ \markup {                                                          %! FIGURE_NAME_MARKUP:SM18
+                        \musicglyph                                                      %! FIGURE_NAME_MARKUP:SM18
+                            #"scripts.ulongfermata"                                      %! FIGURE_NAME_MARKUP:SM18
+                        }                                                                %! FIGURE_NAME_MARKUP:SM18
                     
                 }
                 \context GlobalSkips = "GlobalSkips" {

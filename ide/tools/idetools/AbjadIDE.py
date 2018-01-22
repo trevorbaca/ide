@@ -198,13 +198,6 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
-    def _activate(self, path, tag, name=None, deactivate=False):
-        if deactivate:
-            count, response = path.deactivate(tag, name=name)
-        else:
-            count, response = path.activate(tag, name=name)
-        self.io.display(response)
-
     def _cache_commands(self):
         commands = {}
         for name in dir(self):
@@ -275,9 +268,6 @@ class AbjadIDE(abjad.AbjadObject):
         template = target.read_text()
         template = template.format(**values)
         target.write_text(template)
-
-    def _deactivate(self, path, tag, name=None):
-        self._activate(path, tag, name=name, deactivate=True)
 
     @staticmethod
     def _filter_files(files, strings, pattern):
@@ -1785,6 +1775,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
+    def activate(self, path, tag, name=None, deactivate=False):
+        r'''Activates `tag` in `path`.
+
+        Returns none.
+        '''
+        if deactivate:
+            count, response = path.deactivate(tag, name=name)
+        else:
+            count, response = path.activate(tag, name=name)
+        self.io.display(response)
+
     @staticmethod
     def change(directory):
         r'''Makes temporary directory change context manager.
@@ -1796,6 +1797,13 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Makes filesystem state context manager.
         '''
         return abjad.FilesystemState(remove=remove)
+
+    def deactivate(self, path, tag, name=None):
+        r'''Deactivates `tag` in `path`.
+
+        Returns none.
+        '''
+        self.activate(path, tag, name=name, deactivate=True)
 
     def is_navigation(self, argument):
         r'''Is true when `argument` is navigation.
@@ -1835,13 +1843,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_clock_time_markup(self, directory):
-        r'''Activates clock time markup tags.
+        r'''Activates clock time markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.CLOCK_TIME_MARKUP
-        self._activate(directory, tag)
+        self.activate(directory, abjad.tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'fnm',
@@ -1850,13 +1857,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_figure_name_markup(self, directory):
-        r'''Activates figure name markup tags.
+        r'''Activates figure name markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.FIGURE_NAME_MARKUP
-        self._activate(directory, tag)
+        self.activate(directory, abjad.tags.FIGURE_NAME_MARKUP)
 
     @Command(
         'mnm',
@@ -1864,14 +1870,13 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_measure_index_markup(self, directory):
-        r'''Activates measure index markup tags.
+    def activate_measure_number_markup(self, directory):
+        r'''Activates measure number markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.MEASURE_NUMBER_MARKUP
-        self._activate(directory, tag)
+        self.activate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
 
     @Command(
         'spm',
@@ -1880,7 +1885,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_spacing_markup(self, directory):
-        r'''Activates spacing markup tags.
+        r'''Activates spacing markup.
 
         Returns none.
         '''
@@ -1889,7 +1894,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'spacing markup',
@@ -1902,13 +1907,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def activate_stage_number_markup(self, directory):
-        r'''Activates stage number markup tags.
+        r'''Activates stage number markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.STAGE_NUMBER_MARKUP
-        self._activate(directory, tag)
+        self.activate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
 
     @Command(
         'bw*',
@@ -1923,19 +1927,19 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._get_persistent_indicator_color_expression_tags(directory)
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'persistent indicator color expression',
             )
         tags_ = self._get_persistent_indicator_color_suppression_tags(
             directory)
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'persistent indicator color suppression',
             )
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
             'colored markup',
@@ -1956,7 +1960,7 @@ class AbjadIDE(abjad.AbjadObject):
         tags_ = self._color_clef_tags
         if directory.is_build():
             tags_ += (baca.tags.REAPPLIED_CLEF,)
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'clef',
@@ -1974,7 +1978,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(self._color_dynamic_tags)),
             'dynamic',
@@ -1995,13 +1999,13 @@ class AbjadIDE(abjad.AbjadObject):
         tags_ = self._color_instrument_tags['activate']
         if directorty.is_build():
             tags_ += (baca.tags.REAPPLIED_INSTRUMENT,)
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color expression',
             )
         tags_ = self._color_instrument_tags['deactivate']
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color suppression',
@@ -2029,7 +2033,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
         for path in paths:
-            self._deactivate(
+            self.deactivate(
                 path,
                 lambda tags: bool(set(tags) & set(tags_)),
                 'spacing markup',
@@ -2048,7 +2052,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_margin_markup_tags['activate']
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'margin markup',
@@ -2067,13 +2071,13 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._black_and_white_metronome_mark_tags['activate']
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'b&w metronome mark expression',
             )
         tags_ = self._black_and_white_metronome_mark_tags['deactivate']
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'b&w metrononme mark suppression',
@@ -2092,7 +2096,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_staff_line_tags
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'staff line color',
@@ -2111,7 +2115,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_time_signature_tags
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'color time signature',
@@ -2334,7 +2338,7 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: any(_ for _ in tags if _.startswith('+')),
             '+',
@@ -2344,13 +2348,13 @@ class AbjadIDE(abjad.AbjadObject):
             stem += '*'
         document_names = directory.document_names
         tags_ = ['-' + _ for _ in document_names]
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             f'-{stem}',
             )
         tags_ = ['+' + _ for _ in document_names]
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             f'+{stem}',
@@ -2376,14 +2380,14 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._get_persistent_indicator_color_expression_tags(directory)
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'persistent indicator color expression',
             )
         tags_ = self._get_persistent_indicator_color_suppression_tags(
             directory)
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'persistent indicator color suppression',
@@ -2404,7 +2408,7 @@ class AbjadIDE(abjad.AbjadObject):
         tags_ = self._color_clef_tags
         if directory.is_build():
             tags_ += (baca.tags.REAPPLIED_CLEF,)
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'color clef',
@@ -2423,7 +2427,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_dynamic_tags
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'color dynamic',
@@ -2442,13 +2446,13 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_instrument_tags['activate']
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color expression',
             )
         tags_ = self._color_instrument_tags['deactivate']
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color suppression',
@@ -2476,7 +2480,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
         for path in paths:
-            self._activate(
+            self.activate(
                 path,
                 lambda tags: bool(set(tags) & set(tags_)),
                 'spacing markup',
@@ -2495,7 +2499,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_margin_markup_tags['activate']
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'color margin markup',
@@ -2514,13 +2518,13 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_metronome_mark_tags['activate']
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'metronome mark color expression',
             )
         tags_ = self._color_metronome_mark_tags['deactivate']
-        self._deactivate(
+        self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'metronome mark color suppression',
@@ -2539,7 +2543,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_staff_line_tags
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'staff line color',
@@ -2558,7 +2562,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_time_signature_tags
-        self._activate(
+        self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'time signature color'
@@ -2593,13 +2597,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_clock_time_markup(self, directory):
-        r'''Deactivates clock time markup tags.
+        r'''Deactivates clock time markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.CLOCK_TIME_MARKUP
-        self._deactivate(directory, tag)
+        self.deactivate(directory, abjad.tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'fnmx',
@@ -2608,13 +2611,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_figure_name_markup(self, directory):
-        r'''Deactivates figure name markup tags.
+        r'''Deactivates figure name markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.FIGURE_NAME_MARKUP
-        self._deactivate(directory, tag)
+        self.deactivate(directory, abjad.tags.FIGURE_NAME_MARKUP)
 
     @Command(
         'mnmx',
@@ -2622,14 +2624,13 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_measure_index_markup(self, directory):
-        r'''Deactivates measure index markup tags.
+    def deactivate_measure_number_markup(self, directory):
+        r'''Deactivates measure number markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.MEASURE_NUMBER_MARKUP
-        self._deactivate(directory, tag)
+        self.deactivate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
 
     @Command(
         'spmx',
@@ -2638,16 +2639,20 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_spacing_markup(self, directory):
-        r'''Deactivates spacing markup tags.
+        r'''Deactivates spacing markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags = (
+        tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
-        self._deactivate(directory, tags)
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            'spacing markup',
+            )
 
     @Command(
         'snmx',
@@ -2656,13 +2661,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
     def deactivate_stage_number_markup(self, directory):
-        r'''Deactivates stage number markup tags.
+        r'''Deactivates stage number markup.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tag = abjad.tags.STAGE_NUMBER_MARKUP
-        self._deactivate(directory, tag)
+        self.deactivate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
 
     @Command(
         '^^',
