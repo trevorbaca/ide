@@ -14,8 +14,8 @@ def test_AbjadIDE_trash_illustration_lys_01():
         abjad_ide('red gg lyt* q')
         transcript = abjad_ide.io.transcript
         for path in paths:
-            assert not path.exists()
             assert f'Trashing {path.trim()} ...' in transcript
+            assert not path.exists()
 
         abjad_ide('red gg lyt* q')
         transcript = abjad_ide.io.transcript

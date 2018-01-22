@@ -7,18 +7,18 @@ def test_AbjadIDE_trash_illustration_ly_01():
     '''
 
     with ide.Test():
-        target = ide.Path(
-            'red_score', 'materials', 'red_pitch_classes', 'illustration.ly')
-        assert target.is_file()
+        path = ide.Path('red_score')
+        path = path('materials', 'red_pitch_classes', 'illustration.ly')
+        assert path.is_file()
 
         abjad_ide('red %rpc lyt q')
         transcript = abjad_ide.io.transcript
-        assert f'Trashing {target.trim()} ...' in transcript
-        assert not target.exists()
+        assert f'Trashing {path.trim()} ...' in transcript
+        assert not path.exists()
 
         abjad_ide('red %rpc lyt q')
         transcript = abjad_ide.io.transcript
-        assert f'Missing {target.trim()} ...' in transcript
+        assert f'Missing {path.trim()} ...' in transcript
 
 
 def test_AbjadIDE_trash_illustration_ly_02():
@@ -26,14 +26,14 @@ def test_AbjadIDE_trash_illustration_ly_02():
     '''
 
     with ide.Test():
-        target = ide.Path('red_score', 'segments', 'A', 'illustration.ly')
-        assert target.is_file()
+        path = ide.Path('red_score', 'segments', 'A', 'illustration.ly')
+        assert path.is_file()
 
         abjad_ide('red %A lyt q')
         transcript = abjad_ide.io.transcript
-        assert f'Trashing {target.trim()} ...' in transcript
-        assert not target.exists()
+        assert f'Trashing {path.trim()} ...' in transcript
+        assert not path.exists()
 
         abjad_ide('red %A lyt q')
         transcript = abjad_ide.io.transcript
-        assert f'Missing {target.trim()} ...' in transcript
+        assert f'Missing {path.trim()} ...' in transcript

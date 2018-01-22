@@ -2330,7 +2330,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_path_blacklist=('parts',),
         score_package_paths=('_segments', 'build',),
         )
-    def build_score(self, directory):
+    def build_score_pdf(self, directory):
         r'''Builds ``score.pdf`` from the ground up.
 
         Returns none.
@@ -3331,13 +3331,19 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
-        if not directory.build.is_parts():
-            path = directory.build('layout.py')
+        assert directory.is_buildspace()
+        if directory.is_segment():
+            self._copy_boilerplate(
+                directory,
+                'score_layout.py',
+                target_name='layout.py',
+                )
+            return
+        elif not directory.build.is_parts():
             self._copy_boilerplate(
                 directory.build,
                 'score_layout.py',
-                target_name=path.name,
+                target_name='layout.py',
                 )
             return
         triples = self._select_part_names(
@@ -4729,6 +4735,21 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
+        'pdfo',
+        description='illustration.pdf - open',
+        menu_section='illustration.pdf',
+        score_package_paths=('material', 'segment',),
+        )
+    def open_illustration_pdf(self, directory):
+        r'''Opens ``illustration.pdf``.
+
+        Returns none.
+        '''
+        assert directory.is_material_or_segment()
+        path = directory('illustration.pdf')
+        self._open_files([path])
+
+    @Command(
         'mpo',
         description='music.pdf - open',
         menu_section='music',
@@ -4762,21 +4783,6 @@ class AbjadIDE(abjad.AbjadObject):
         paths = self._match_paths_in_buildspace(directory, name, 'open')
         if paths:
             self._open_files(paths)
-
-    @Command(
-        'pdfo',
-        description='illustration.pdf - open',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
-        )
-    def open_pdf(self, directory):
-        r'''Opens ``illustration.pdf``.
-
-        Returns none.
-        '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.pdf')
-        self._open_files([path])
 
     @Command(
         'ppo',
@@ -5238,8 +5244,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'back-cover.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'back-cover.pdf',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5255,8 +5264,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'back-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'back-cover.tex',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5303,8 +5315,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'front-cover.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'front-cover.pdf',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5320,8 +5335,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'front-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'front-cover.tex',
+            'trash'
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5399,8 +5417,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        name = 'layout.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'layout.ly',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5436,8 +5457,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'music.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, 'music.ly', 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5453,26 +5473,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'music.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
-        if paths:
-            self._trash_files(paths)
-
-
-    @Command(
-        'at',
-        description='part.tex - trash',
-        menu_section='parts',
-        score_package_paths=('parts',),
-        )
-    def trash_part_tex(self, directory):
-        r'''Trashes ``part.tex``.
-
-        Returns none.
-        '''
-        assert directory.is_parts()
-        name = 'part.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'music.pdf',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
@@ -5488,26 +5493,23 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        name = 'part.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(directory, 'part.pdf', 'trash')
         if paths:
             self._trash_files(paths)
 
-
     @Command(
-        'pt',
-        description='preface.tex - trash',
-        menu_section='preface',
-        score_package_paths=('_segments', 'build',),
+        'at',
+        description='part.tex - trash',
+        menu_section='parts',
+        score_package_paths=('parts',),
         )
-    def trash_preface_tex(self, directory):
-        r'''Trashes ``preface.tex``.
+    def trash_part_tex(self, directory):
+        r'''Trashes ``part.tex``.
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
-        name = 'preface.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        assert directory.is_parts()
+        paths = self._match_paths_in_buildspace(directory, 'part.tex', 'trash')
         if paths:
             self._trash_files(paths)
 
@@ -5523,28 +5525,33 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'preface.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'trash')
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'preface.pdf',
+            'trash',
+            )
         if paths:
             self._trash_files(paths)
 
-
     @Command(
-        'rt',
-        description='score.tex - trash',
-        menu_section='score',
-        score_package_path_blacklist=('parts',),
+        'pt',
+        description='preface.tex - trash',
+        menu_section='preface',
         score_package_paths=('_segments', 'build',),
         )
-    def trash_score_tex(self, directory):
-        r'''Trashes ``score.tex``.
+    def trash_preface_tex(self, directory):
+        r'''Trashes ``preface.tex``.
 
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
-        path = directory('score.tex')
-        self._trash_files(path)
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'preface.tex',
+            'trash',
+            )
+        if paths:
+            self._trash_files(paths)
 
     @Command(
         'rpt',
@@ -5559,8 +5566,23 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
-        path = directory('score.pdf')
+        path = directory.build('score.pdf')
+        self._trash_files(path)
+
+    @Command(
+        'rt',
+        description='score.tex - trash',
+        menu_section='score',
+        score_package_path_blacklist=('parts',),
+        score_package_paths=('_segments', 'build',),
+        )
+    def trash_score_tex(self, directory):
+        r'''Trashes ``score.tex``.
+
+        Returns none.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        path = directory.build('score.tex')
         self._trash_files(path)
 
     @Command(
@@ -5575,6 +5597,5 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        directory = directory.build
-        path = directory('stylesheet.ily')
+        path = directory.build('stylesheet.ily')
         self._trash_files(path)

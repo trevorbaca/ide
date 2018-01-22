@@ -15,9 +15,9 @@ metadata = abjad.TypedOrderedDict(
             'time_signatures',
             abjad.TypedOrderedDict(
                 [
-                    ('_', None),
-                    ('A', None),
-                    ('B', None),
+                    ('_', ['18/4', '18/4']),
+                    ('A', ['3/4', '3/4', '3/4', '3/4', '3/4']),
+                    ('B', ['6/8', '6/8', '6/8', '6/8', '6/8']),
                     ]
                 ),
             ),
