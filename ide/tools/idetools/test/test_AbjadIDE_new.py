@@ -160,7 +160,7 @@ def test_AbjadIDE_new_04():
             'No + tags to deactivate in arch-a-score ...',
             'No -ARCH_A_SCORE tags to deactivate in arch-a-score ...',
             'No +ARCH_A_SCORE tags to activate in arch-a-score ...',
-            'No BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA tags to activate in arch-a-score ...',
+            'No EOL_FERMATA tags to activate in arch-a-score ...',
             'No SHIFTED_CLEF tags to activate in arch-a-score ...',
             'No persistent indicator color expression tags to deactivate in arch-a-score ...',
             'No persistent indicator color suppression tags to activate in arch-a-score ...',

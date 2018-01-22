@@ -56,7 +56,7 @@ def test_AbjadIDE_make_parts_directory_01():
             'No + tags to deactivate in arch-a-parts ...',
             'No -ARCH_A_PARTS* tags to deactivate in arch-a-parts ...',
             'No +ARCH_A_PARTS* tags to activate in arch-a-parts ...',
-            'No BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA tags to activate in arch-a-parts ...',
+            'No EOL_FERMATA tags to activate in arch-a-parts ...',
             'No SHIFTED_CLEF tags to activate in arch-a-parts ...',
             'Deactivating 26 persistent indicator color expression tags in arch-a-parts ...',
             'Activating 1 persistent indicator color suppression tag in arch-a-parts ...',

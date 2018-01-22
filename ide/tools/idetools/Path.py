@@ -66,7 +66,7 @@ class Path(abjad.Path):
     def _deactivate_bar_line_adjustment(self):
         counts, messages = [], []
         # activate all barline adjustment tags:
-        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
+        tag = baca.tags.EOL_FERMATA
         #self._activate(directory, tag)
         count, message = self.activate(tag)
         counts.append(count)
