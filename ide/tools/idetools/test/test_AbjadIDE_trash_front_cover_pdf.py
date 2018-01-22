@@ -9,7 +9,7 @@ def test_AbjadIDE_trash_front_cover_pdf_01():
         path = path('builds', 'letter-score', 'front-cover.pdf')
         assert not path.exists()
 
-        abjad_ide('red %let fci q')
+        path.write_text('')
         assert path.is_file()
 
         abjad_ide('red %letter fcpt q')

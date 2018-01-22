@@ -198,6 +198,33 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
+    @staticmethod
+    def _activate_segment_tags(illustration_ly):
+        assert illustration_ly.is_file()
+        assert illustration_ly.parent.is_segment()
+        messages = []
+        count = AbjadIDE._activate_tag_in_file(
+            illustration_ly,
+            '+SEGMENT',
+            '+SEGMENT',
+            )
+        if not count:
+            print(f'no +SEGMENT tags to activate ...')
+        count = AbjadIDE._deactivate_tag_in_file(
+            illustration_ly,
+            '-SEGMENT',
+            '-SEGMENT',
+            )
+        if not count:
+            print(f'no -SEGMENT tags to deactivate ...')
+        count = AbjadIDE._deactivate_tag_in_file(
+            illustration_ly,
+            lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
+            'markup',
+            )
+        if not count:
+            print(f'no markup tags to deactivate ...')
+
     def _activate_tag(self, directory, tag, name=None):
         if directory.is_build() or directory.is__segments():
             count = self._activate_tag_in_build_lys(directory, tag, name)
@@ -208,7 +235,7 @@ class AbjadIDE(abjad.AbjadObject):
             for segment in directory.list_paths():
                 count += self._activate_tag_in_segment_ly(segment, tag, name)
         elif directory.is_file():
-            count = self._activate_tag_in_file(directory, tag, name)
+            count = self._activate_tag_in_file(directory, tag, name, self.io)
         else:
             raise ValueError(directory)
         if not count:
@@ -240,14 +267,23 @@ class AbjadIDE(abjad.AbjadObject):
             total += count
         return total
 
-    def _activate_tag_in_file(self, path, tag, name=None):
+    @staticmethod
+    def _activate_tag_in_file(path, tag, name=None, io=None):
         if not path.is_file():
-            self.io.display(f'missing {path.trim()} ...')
+            message = f'missing {path.trim()} ...'
+            if io:
+                io.display(message)
+            else:
+                print(message)
             return
         text, count = path.activate_tag(tag)
         if count:
             messages = self._message_activate(path, tag, count, name=name)
-            self.io.display(messages)
+            if io:
+                io.display(messages)
+            else:
+                for message in messages:
+                    print(message)
         path.write_text(text)
         return count
 
@@ -347,13 +383,12 @@ class AbjadIDE(abjad.AbjadObject):
         # because segment-maker preserves barline after score-final fermata:
         eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
         tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
-        def match(tags):
-            if tag not in tags:
-                return False
-            if any(_ in tags for _ in eol_measure_numbers):
-                return False
-            return True
-        self._deactivate_tag(directory, match, tag)
+        tags_ = eol_measure_numbers
+        self._deactivate_tag(
+            directory,
+            lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
+            tag,
+            )
 
     def _deactivate_shifted_clef_at_bol(self, directory):
         # activate all shifted clefs (to undo segment deactivations):
@@ -381,7 +416,7 @@ class AbjadIDE(abjad.AbjadObject):
             for segment in directory.list_paths():
                 count += self._deactivate_tag_in_segment_ly(segment, tag, name)
         elif directory.is_file():
-            count = self._deactivate_tag_in_file( directory, tag, name)
+            count = self._deactivate_tag_in_file(directory, tag, name, self.io)
         else:
             raise ValueError(directory)
         if not count:
@@ -413,17 +448,25 @@ class AbjadIDE(abjad.AbjadObject):
             total += count
         return total
 
-    def _deactivate_tag_in_file(self, path, tag, name=None):
+    @staticmethod
+    def _deactivate_tag_in_file(path, tag, name=None, io=None):
         if not path.is_file():
-            self.io.display(f'missing {path.trim()} ...')
+            message = f'missing {path.trim()} ...'
+            if io:
+                io.display(message)
+            else:
+                print(message)
             return
         text, count = path.deactivate_tag(tag)
         if count:
             messages = self._message_deactivate(path, tag, count, name=name)
-            self.io.display(messages)
+            if io:
+                io.display(messages)
+            else:
+                for message in messages:
+                    print(message)
         path.write_text(text)
         return count
-
 
     def _deactivate_tag_in_segment_ly(self, directory, tag, name=None):
         ly = directory('illustration.ly')

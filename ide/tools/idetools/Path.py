@@ -325,6 +325,21 @@ class Path(abjad.Path):
 
     ### PUBLIC METHODS ###
 
+    def get_eol_measure_numbers(self):
+        r'''Gets EOL measure numbers from BOL measure numbers stored in
+        metadata.
+
+        Returns list or none.
+        '''
+        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
+        if bol_measure_numbers is None:
+            return
+        eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
+        last_measure_number = self.get_metadatum('last_measure_number')
+        if last_measure_number is not None:
+            eol_measure_numbers.append(last_measure_number)
+        return eol_measure_numbers
+
     def get_header(self):
         r'''Gets menu header.
 
