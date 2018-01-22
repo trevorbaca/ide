@@ -1834,7 +1834,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_clock_time_markup_tags(self, directory):
+    def activate_clock_time_markup(self, directory):
         r'''Activates clock time markup tags.
 
         Returns none.
@@ -1849,7 +1849,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_figure_name_markup_tags(self, directory):
+    def activate_figure_name_markup(self, directory):
         r'''Activates figure name markup tags.
 
         Returns none.
@@ -1864,7 +1864,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_measure_index_markup_tags(self, directory):
+    def activate_measure_index_markup(self, directory):
         r'''Activates measure index markup tags.
 
         Returns none.
@@ -1879,7 +1879,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_spacing_markup_tags(self, directory):
+    def activate_spacing_markup(self, directory):
         r'''Activates spacing markup tags.
 
         Returns none.
@@ -1901,7 +1901,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def activate_stage_number_markup_tags(self, directory):
+    def activate_stage_number_markup(self, directory):
         r'''Activates stage number markup tags.
 
         Returns none.
@@ -2592,7 +2592,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_clock_time_markup_tags(self, directory):
+    def deactivate_clock_time_markup(self, directory):
         r'''Deactivates clock time markup tags.
 
         Returns none.
@@ -2607,7 +2607,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_figure_name_markup_tags(self, directory):
+    def deactivate_figure_name_markup(self, directory):
         r'''Deactivates figure name markup tags.
 
         Returns none.
@@ -2622,7 +2622,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_measure_index_markup_tags(self, directory):
+    def deactivate_measure_index_markup(self, directory):
         r'''Deactivates measure index markup tags.
 
         Returns none.
@@ -2637,7 +2637,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_spacing_markup_tags(self, directory):
+    def deactivate_spacing_markup(self, directory):
         r'''Deactivates spacing markup tags.
 
         Returns none.
@@ -2655,7 +2655,7 @@ class AbjadIDE(abjad.AbjadObject):
         menu_section='markup',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def deactivate_stage_number_markup_tags(self, directory):
+    def deactivate_stage_number_markup(self, directory):
         r'''Deactivates stage number markup tags.
 
         Returns none.
