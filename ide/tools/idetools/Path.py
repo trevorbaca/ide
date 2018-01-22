@@ -1,4 +1,5 @@
 import abjad
+import baca
 import importlib
 import os
 import pathlib
@@ -61,6 +62,54 @@ class Path(abjad.Path):
         return self
 
     ### PRIVATE METHODS ###
+
+    def _deactivate_bar_line_adjustment(self):
+        counts, messages = [], []
+        # activate all barline adjustment tags:
+        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
+        #self._activate(directory, tag)
+        count, message = self.activate(tag)
+        counts.append(count)
+        messages.append(message)
+        # then deactivate non-EOL tags:
+        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
+        if not bol_measure_numbers:
+            return count, messages
+        eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
+        last_measure_number = self.get_metadatum('last_measure_number')
+        if last_measure_number is not None:
+            eol_measure_numbers.append(last_measure_number)
+        eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
+        tags_ = eol_measure_numbers
+        count, message = self.deactivate(
+            lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
+            tag,
+            )
+        counts.append(count)
+        messages.append(message)
+        return counts, messages
+
+    def _deactivate_shifted_clef_at_bol(self):
+        counts, messages = [], []
+        # activate all shifted clefs
+        count, message = self.activate(baca.tags.SHIFTED_CLEF)
+        counts.append(count)
+        messages.append(message)
+        # then deactivate shifted clefs at BOL:
+        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
+        if not bol_measure_numbers:
+            return counts, messages
+        bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
+        def match(tags):
+            if baca.tags.SHIFTED_CLEF not in tags:
+                return False
+            if any(_ in tags for _ in bol_measure_numbers):
+                return True
+            return False
+        count, message = self.deactivate(match, baca.tags.SHIFTED_CLEF)
+        counts.append(count)
+        messages.append(message)
+        return counts, messages
 
     def _find_doctest_files(self, force=False):
         files, strings = [], []

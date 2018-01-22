@@ -200,20 +200,10 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _activate(self, path, tag, name=None, deactivate=False):
         if deactivate:
-            count = path.deactivate(tag)
+            count, response = path.deactivate(tag, name=name)
         else:
-            count = path.activate(tag)
-        name = name or tag
-        if deactivate:
-            verb = 'deactivat'
-        else:
-            verb = 'activat'
-        if count == 0:
-            message = f'no {name} tags to {verb}e in {path.name} ...'
-        else:
-            tags = abjad.String('tag').pluralize(count)
-            message = f'{verb}ing {count} {name} {tags} in {path.name} ...'
-        self.io.display(message)
+            count, response = path.activate(tag, name=name)
+        self.io.display(response)
 
     def _cache_commands(self):
         commands = {}
@@ -285,42 +275,6 @@ class AbjadIDE(abjad.AbjadObject):
         template = target.read_text()
         template = template.format(**values)
         target.write_text(template)
-
-    def _deactivate_bar_line_adjustment_after_noneol_fermata(self, directory):
-        # activate all tags:
-        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
-        self._activate(directory, tag)
-        # then deactivate non-EOL tags:
-        bol_measure_numbers = directory.get_metadatum('bol_measure_numbers')
-        if not bol_measure_numbers:
-            return
-        eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
-        # don't need to worry about last measure in score
-        # because segment-maker preserves barline after score-final fermata:
-        eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
-        tag = baca.tags.BAR_LINE_ADJUSTMENT_AFTER_EOL_FERMATA
-        tags_ = eol_measure_numbers
-        self._deactivate(
-            directory,
-            lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
-            tag,
-            )
-
-    def _deactivate_shifted_clef_at_bol(self, directory):
-        # activate all shifted clefs (to undo segment deactivations):
-        self._activate(directory, baca.tags.SHIFTED_CLEF)
-        # then deactivate shifted clefs at BOL:
-        bol_measure_numbers = directory.get_metadatum('bol_measure_numbers')
-        if not bol_measure_numbers:
-            return
-        bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
-        def match(tags):
-            if baca.tags.SHIFTED_CLEF not in tags:
-                return False
-            if any(_ in tags for _ in bol_measure_numbers):
-                return True
-            return False
-        self._deactivate(directory, match, baca.tags.SHIFTED_CLEF)
 
     def _deactivate(self, path, tag, name=None):
         self._activate(path, tag, name=name, deactivate=True)
@@ -1931,13 +1885,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        target = (
+        tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
             )
-        def match(tags):
-            bool(set(tags) ^ set(target))
-        self._activate(directory, match)
+        self._activate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            'spacing markup',
+            )
 
     @Command(
         'snm',
@@ -2399,8 +2355,12 @@ class AbjadIDE(abjad.AbjadObject):
             lambda tags: bool(set(tags) & set(tags_)),
             f'+{stem}',
             )
-        self._deactivate_bar_line_adjustment_after_noneol_fermata(directory)
-        self._deactivate_shifted_clef_at_bol(directory)
+        result = directory._deactivate_bar_line_adjustment()
+        for message in result[-1]:
+            self.io.display(message)
+        result = directory._deactivate_shifted_clef_at_bol()
+        for message in result[-1]:
+            self.io.display(message)
         self.black_and_white_all(directory)
 
     @Command(
