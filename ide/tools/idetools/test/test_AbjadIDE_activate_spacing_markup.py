@@ -26,8 +26,7 @@ def test_AbjadIDE_activate_spacing_markup_01():
         
         abjad_ide('gre bb arch-a-score spm q')
         lines = abjad_ide.io.transcript.lines
-        line = f'No spacing markup tags to activate in arch-a-score ...' 
-        assert line in lines
+        assert f'Found no spacing markup tags in arch-a-score ...' in lines
         assert path.count(match) == ((0, 0), (0, 0))
 
 
@@ -43,10 +42,20 @@ def test_AbjadIDE_activate_spacing_markup_02():
         
         abjad_ide('gre %_ spm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 2 {name} tags in _ ...' in lines
         assert path.count(match) == ((2, 14), (0, 0))
+        for line in [
+            'Found 2 spacing markup tags in _ ...',
+            ' Activating 2 deactivated spacing markup tags in _ ...',
+            ' No already-active spacing markup tags to skip in _ ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre %_ spmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 2 {name} tags in _ ...' in lines
         assert path.count(match) == ((0, 0), (2, 14))
+        for line in [
+            'Found 2 spacing markup tags in _ ...',
+            ' Deactivating 2 active spacing markup tags in _ ...',
+            ' No already-deactivated spacing markup tags to skip in _ ...',
+            ]:
+            assert line in lines

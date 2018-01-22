@@ -19,13 +19,23 @@ def test_AbjadIDE_activate_measure_number_markup_01():
         
         abjad_ide('gre bb arch-a-score mnm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 2 {tag} tags in arch-a-score ...' in lines
         assert path.count(tag) == ((2, 16), (0, 0))
+        for line in [
+            'Found 2 MEASURE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Activating 2 deactivated MEASURE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' No already-active MEASURE_NUMBER_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre bb arch-a-score mnmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 2 {tag} tags in arch-a-score ...' in lines
         assert path.count(tag) == ((0, 0), (2, 16))
+        for line in [
+            'Found 2 MEASURE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Deactivating 2 active MEASURE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' No already-deactivated MEASURE_NUMBER_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
 
 def test_AbjadIDE_activate_measure_number_markup_02():
@@ -41,10 +51,20 @@ def test_AbjadIDE_activate_measure_number_markup_02():
         
         abjad_ide('gre %_ mnm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 2 {tag} tags in _ ...' in lines
         assert path.count(tag) == ((2, 16), (0, 0))
+        for line in [
+            'Found 2 MEASURE_NUMBER_MARKUP tags in _ ...',
+            ' Activating 2 deactivated MEASURE_NUMBER_MARKUP tags in _ ...',
+            ' No already-active MEASURE_NUMBER_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre %_ mnmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 2 {tag} tags in _ ...' in lines
         assert path.count(tag) == ((0, 0), (2, 16))
+        for line in [
+            'Found 2 MEASURE_NUMBER_MARKUP tags in _ ...',
+            ' Deactivating 2 active MEASURE_NUMBER_MARKUP tags in _ ...',
+            ' No already-deactivated MEASURE_NUMBER_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines

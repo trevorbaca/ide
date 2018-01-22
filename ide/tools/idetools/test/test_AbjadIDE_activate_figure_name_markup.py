@@ -20,13 +20,23 @@ def test_AbjadIDE_activate_figure_name_markup_01():
         
         abjad_ide('gre bb arch-a-score fnm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 1 {tag} tag in arch-a-score ...' in lines
         assert path.count(tag) == ((1, 4), (0, 0))
+        for line in [
+            'Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' Activating 1 deactivated FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' No already-active FIGURE_NAME_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre bb arch-a-score fnmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 1 {tag} tag in arch-a-score ...' in lines
         assert path.count(tag) == ((0, 0), (1, 4))
+        for line in [
+            'Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' Deactivating 1 active FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' No already-deactivated FIGURE_NAME_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
 
 def test_AbjadIDE_activate_figure_name_markup_02():
@@ -41,10 +51,20 @@ def test_AbjadIDE_activate_figure_name_markup_02():
         
         abjad_ide('gre %_ fnmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 1 {tag} tag in _ ...' in lines
         assert path.count(tag) == ((0, 0), (1, 4))
+        for line in [
+            'Found 1 FIGURE_NAME_MARKUP tag in _ ...',
+            ' Deactivating 1 active FIGURE_NAME_MARKUP tag in _ ...',
+            ' No already-deactivated FIGURE_NAME_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre %_ fnm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 1 {tag} tag in _ ...' in lines
         assert path.count(tag) == ((1, 4), (0, 0))
+        for line in [
+            'Found 1 FIGURE_NAME_MARKUP tag in _ ...',
+            ' Activating 1 deactivated FIGURE_NAME_MARKUP tag in _ ...',
+            ' No already-active FIGURE_NAME_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines

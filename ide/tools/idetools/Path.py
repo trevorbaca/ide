@@ -64,37 +64,43 @@ class Path(abjad.Path):
     ### PRIVATE METHODS ###
 
     def _deactivate_bar_line_adjustment(self):
-        counts, messages = [], []
+        counts, skippeds, messages = [], [], []
         # activate all barline adjustment tags:
-        tag = baca.tags.EOL_FERMATA
-        #self._activate(directory, tag)
-        count, message = self.activate(tag)
+        count, skipped, messages_ = self.activate(abjad.tags.EOL_FERMATA)
         counts.append(count)
-        messages.append(message)
+        skippeds.append(skipped)
+        messages.extend(messages_)
+        if count == skipped == 0:
+            return counts, skippeds, messages
         # then deactivate non-EOL tags:
         bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
         if not bol_measure_numbers:
-            return count, messages
+            return counts, skippeds, messages
         eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
         last_measure_number = self.get_metadatum('last_measure_number')
         if last_measure_number is not None:
             eol_measure_numbers.append(last_measure_number)
         eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
+        tag = abjad.tags.EOL_FERMATA
         tags_ = eol_measure_numbers
-        count, message = self.deactivate(
+        count, skipped, messages_ = self.deactivate(
             lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
-            tag,
+            f'{tag} (found at end-of-line)',
             )
         counts.append(count)
-        messages.append(message)
-        return counts, messages
+        skippeds.append(skipped)
+        messages.extend(messages_)
+        return counts, skippeds, messages
 
     def _deactivate_shifted_clef_at_bol(self):
-        counts, messages = [], []
+        counts, skippeds, messages = [], [], []
         # activate all shifted clefs
-        count, message = self.activate(baca.tags.SHIFTED_CLEF)
+        count, skipped, messages_ = self.activate(baca.tags.SHIFTED_CLEF)
         counts.append(count)
-        messages.append(message)
+        skippeds.append(skipped)
+        messages.extend(messages_)
+        if count == skipped == 0:
+            return counts, skippeds, messages
         # then deactivate shifted clefs at BOL:
         bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
         if not bol_measure_numbers:
@@ -106,10 +112,14 @@ class Path(abjad.Path):
             if any(_ in tags for _ in bol_measure_numbers):
                 return True
             return False
-        count, message = self.deactivate(match, baca.tags.SHIFTED_CLEF)
+        count, skipped, messages_ = self.deactivate(
+            match,
+            baca.tags.SHIFTED_CLEF,
+            )
         counts.append(count)
-        messages.append(message)
-        return counts, messages
+        skippeds.append(skipped)
+        messages.extend(messages_)
+        return counts, skippeds, messages
 
     def _find_doctest_files(self, force=False):
         files, strings = [], []

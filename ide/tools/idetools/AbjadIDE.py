@@ -60,17 +60,6 @@ class AbjadIDE(abjad.AbjadObject):
             ),
         }
 
-    _color_clef_tags = (
-        baca.tags.DEFAULT_CLEF_COLOR,
-        baca.tags.DEFAULT_CLEF_REDRAW_COLOR,
-        baca.tags.EXPLICIT_CLEF_COLOR,
-        baca.tags.EXPLICIT_CLEF_REDRAW_COLOR,
-        baca.tags.REAPPLIED_CLEF_COLOR,
-        baca.tags.REAPPLIED_CLEF_REDRAW_COLOR,
-        baca.tags.REDUNDANT_CLEF_COLOR,
-        baca.tags.REDUNDANT_CLEF_REDRAW_COLOR,
-        )
-
     _color_dynamic_tags = (
         baca.tags.EXPLICIT_DYNAMIC_COLOR,
         baca.tags.EXPLICIT_DYNAMIC_REDRAW_COLOR,
@@ -524,9 +513,10 @@ class AbjadIDE(abjad.AbjadObject):
         return dimensions
 
     def _get_persistent_indicator_color_expression_tags(self, directory):
-        tags = self._color_clef_tags
+        tags = baca.tags.clef_color_tags
         if directory.is_build():
-            tags += (baca.tags.REAPPLIED_CLEF,)
+            tags.append(baca.tags.REAPPLIED_CLEF)
+        tags = tuple(tags)
         tags += self._color_dynamic_tags
         tags += self._color_instrument_tags['activate']
         tags += self._color_margin_markup_tags['activate']
@@ -1781,10 +1771,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         if deactivate:
-            count, response = path.deactivate(tag, name=name)
+            count, skipped, messages = path.deactivate(tag, name=name)
         else:
-            count, response = path.activate(tag, name=name)
-        self.io.display(response)
+            count, skipped, messages = path.activate(tag, name=name)
+        self.io.display(messages)
 
     @staticmethod
     def change(directory):
@@ -1939,10 +1929,11 @@ class AbjadIDE(abjad.AbjadObject):
             lambda tags: bool(set(tags) & set(tags_)),
             'persistent indicator color suppression',
             )
+        tags_ = abjad.tags.score_annotation_tags
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(abjad.tags.markup_tags)),
-            'colored markup',
+            lambda tags: bool(set(tags) & set(tags_)),
+            'score annotation',
             )
 
     @Command(
@@ -1957,13 +1948,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_clef_tags
+        tags_ = baca.tags.clef_color_tags
         if directory.is_build():
-            tags_ += (baca.tags.REAPPLIED_CLEF,)
+            tags_.append(baca.tags.REAPPLIED_CLEF)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'clef',
+            'clef color',
             )
 
     @Command(
@@ -2405,13 +2396,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_clef_tags
+        tags_ = baca.tags.clef_color_tags
         if directory.is_build():
-            tags_ += (baca.tags.REAPPLIED_CLEF,)
+            tags_.append(baca.tags.REAPPLIED_CLEF)
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'color clef',
+            'clef color',
             )
 
     @Command(

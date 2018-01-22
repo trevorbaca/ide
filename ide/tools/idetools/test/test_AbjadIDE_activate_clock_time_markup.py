@@ -19,14 +19,24 @@ def test_AbjadIDE_activate_clock_time_markup_01():
         assert path.count(tag) == ((0, 0), (2, 16))
         
         abjad_ide('gre bb arch-a-score ctm q')
-        lines = abjad_ide.io.transcript.lines
-        assert f'Activating 2 {tag} tags in arch-a-score ...' in lines
         assert path.count(tag) == ((2, 16), (0, 0))
+        lines = abjad_ide.io.transcript.lines
+        for line in [
+            'Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Activating 2 deactivated CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' No already-active CLOCK_TIME_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre bb arch-a-score ctmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 2 {tag} tags in arch-a-score ...' in lines
         assert path.count(tag) == ((0, 0), (2, 16))
+        for line in [
+            'Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Deactivating 2 active CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' No already-deactivated CLOCK_TIME_MARKUP tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
 
 
 def test_AbjadIDE_activate_clock_time_markup_02():
@@ -41,10 +51,20 @@ def test_AbjadIDE_activate_clock_time_markup_02():
         
         abjad_ide('gre %_ ctm q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Activating 2 {tag} tags in _ ...' in lines
         assert path.count(tag) == ((2, 16), (0, 0))
+        for line in [
+            'Found 2 CLOCK_TIME_MARKUP tags in _ ...',
+            ' Activating 2 deactivated CLOCK_TIME_MARKUP tags in _ ...',
+            ' No already-active CLOCK_TIME_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines
 
         abjad_ide('gre %_ ctmx q')
         lines = abjad_ide.io.transcript.lines
-        assert f'Deactivating 2 {tag} tags in _ ...' in lines
         assert path.count(tag) == ((0, 0), (2, 16))
+        for line in [
+            'Found 2 CLOCK_TIME_MARKUP tags in _ ...',
+            ' Deactivating 2 active CLOCK_TIME_MARKUP tags in _ ...',
+            ' No already-deactivated CLOCK_TIME_MARKUP tags to skip in _ ...',
+            ]:
+            assert line in lines
