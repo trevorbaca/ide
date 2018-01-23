@@ -8,7 +8,7 @@ def test_AbjadIDE_smart_pdf_01():
 
     with ide.Test():
 
-        abjad_ide('red %metronome pdfm q')
+        abjad_ide('red %metronome ipm q')
         path = ide.Path(
             'red_score', 'materials', 'metronome_marks', 'illustration.pdf')
         assert path.is_file()
@@ -25,7 +25,7 @@ def test_AbjadIDE_smart_pdf_02():
     with ide.Test():
         path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
 
-        abjad_ide('red %A pdfm q')
+        abjad_ide('red %A ipm q')
         assert path.is_file()
 
         abjad_ide('red *A q')
@@ -40,7 +40,7 @@ def test_AbjadIDE_smart_pdf_03():
     with ide.Test():
         path = ide.Path('red_score', 'segments', '_', 'illustration.pdf')
 
-        abjad_ide('red %_ pdfm q')
+        abjad_ide('red %_ ipm q')
         assert path.is_file()
 
         abjad_ide('red gg *0 q')

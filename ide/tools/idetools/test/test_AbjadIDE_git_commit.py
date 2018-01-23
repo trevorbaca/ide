@@ -3,14 +3,10 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_commit_01():
-    r'''Available everywhere except scores directory.
+    r'''In score package directories.
     '''
 
     path = ide.Path('red_score')
-
-    abjad_ide('? q')
-    transcript = abjad_ide.io.transcript
-    assert 'git - commit (ci)' not in transcript
 
     abjad_ide('red ci q')
     transcript = abjad_ide.io.transcript
@@ -58,6 +54,17 @@ def test_AbjadIDE_git_commit_01():
 
 
 def test_AbjadIDE_git_commit_02():
+    r'''In scores directory.
+    '''
+
+    abjad_ide('ci Updated. q')
+    transcript = abjad_ide.io.transcript
+    assert 'Commit message> Updated.' in transcript
+    for path in [ide.Path('red_score'), ide.Path('blue_score')]:
+        assert f'Git commit {path.wrapper()} ...' in transcript
+
+
+def test_AbjadIDE_git_commit_03():
     r'''In library directory.
     '''
 

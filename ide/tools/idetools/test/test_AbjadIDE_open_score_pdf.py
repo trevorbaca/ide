@@ -28,3 +28,13 @@ def test_AbjadIDE_open_score_pdf_03():
     transcript = abjad_ide.io.transcript
     string = 'Missing score PDF in distribution and build directories ...'
     assert string in transcript
+
+
+def test_AbjadIDE_open_score_pdf_04():
+    r'''In scores directory.
+    '''
+
+    abjad_ide('rpo q')
+    transcript = abjad_ide.io.transcript
+    target = ide.Path('red_score', 'distribution', 'red-score.pdf')
+    assert f'Opening {target.trim()} ...' in transcript

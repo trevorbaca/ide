@@ -11,7 +11,7 @@ def test_AbjadIDE_open_all_pdfs_01():
     with ide.Test():
         path = ide.Path('red_score', 'segments', '_', 'illustration.pdf')
 
-        abjad_ide('red %_ pdfm q')
+        abjad_ide('red %_ ipm q')
         assert path.is_file()
 
         abjad_ide('red gg ** q')

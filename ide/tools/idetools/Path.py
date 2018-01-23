@@ -478,6 +478,22 @@ class Path(abjad.Path):
                 return False
         return True
 
+    def is_illustrationspace(self):
+        r'''Is true when path is any of material, materials, segment or
+        segments directories.
+
+        Returns true or false.
+        '''
+        if self.is_material():
+            return True
+        if self.is_materials():
+            return True
+        if self.is_segment():
+            return True
+        if self.is_segments():
+            return True
+        return False
+
     def is_prototype(self, prototype):
         r'''Is true when path is `prototype`.
 

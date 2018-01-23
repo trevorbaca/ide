@@ -3,14 +3,10 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_status_01():
-    r'''Available everwhere except scores directory.
+    r'''In score directories.
     '''
 
     path = ide.Path('red_score')
-
-    abjad_ide('? q')
-    transcript = abjad_ide.io.transcript
-    assert 'git - status (st)' not in transcript
 
     abjad_ide('red st q')
     transcript = abjad_ide.io.transcript
@@ -69,6 +65,16 @@ def test_AbjadIDE_git_status_01():
 
 
 def test_AbjadIDE_git_status_02():
+    r'''In scores directory.
+    '''
+
+    abjad_ide('st q')
+    transcript = abjad_ide.io.transcript
+    for path in [ide.Path('red_score'), ide.Path('blue_score')]:
+        assert f'Git status {path.wrapper()} ...' in transcript
+
+
+def test_AbjadIDE_git_status_03():
     r'''In library directory.
     '''
 

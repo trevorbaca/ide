@@ -4,14 +4,10 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_diff_01():
-    r'''Available everywhere except scores directory.
+    r'''In score package directories.
     '''
 
     path = ide.Path('red_score')
-
-    abjad_ide('? q')
-    transcript = abjad_ide.io.transcript
-    assert 'git - diff (diff)' not in transcript
 
     abjad_ide('red diff q')
     transcript = abjad_ide.io.transcript
@@ -60,6 +56,16 @@ def test_AbjadIDE_git_diff_01():
 
 
 def test_AbjadIDE_git_diff_02():
+    r'''In scores directory only.
+    '''
+
+    abjad_ide('diff q')
+    transcript = abjad_ide.io.transcript
+    for path in [ide.Path('red_score'), ide.Path('blue_score')]:
+        assert f'Git diff {path.wrapper().trim()} ...' in transcript
+
+
+def test_AbjadIDE_git_diff_03():
     r'''In library directory.
     '''
 

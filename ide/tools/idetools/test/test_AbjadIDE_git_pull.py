@@ -3,14 +3,10 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_pull_01():
-    r'''Available everywhere except scores directory.
+    r'''In score directories.
     '''
 
     path = ide.Path('red_score')
-
-    abjad_ide('? q')
-    transcript = abjad_ide.io.transcript
-    assert 'git - pull (pull)' not in transcript
 
     abjad_ide('red pull q')
     transcript = abjad_ide.io.transcript
@@ -58,6 +54,16 @@ def test_AbjadIDE_git_pull_01():
 
 
 def test_AbjadIDE_git_pull_02():
+    r'''In scores directory.
+    '''
+
+    abjad_ide('pull q')
+    transcript = abjad_ide.io.transcript
+    for path in [ide.Path('red_score'), ide.Path('blue_score')]:
+        assert f'Git pull {path.wrapper()} ...' in transcript
+
+
+def test_AbjadIDE_git_pull_03():
     r'''In library directory.
     '''
 

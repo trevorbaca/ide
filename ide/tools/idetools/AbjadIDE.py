@@ -2127,50 +2127,40 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(statement)
 
     @Command(
-        'dfk',
+        'dpk',
         description='definition.py - check',
         menu_section='definition',
-        score_package_paths=('material', 'segment',),
+        score_package_paths=('illustrationspace',),
         )
     def check_definition_py(self, directory):
         r'''Checks ``definition.py``.
 
         Returns integer exit code for Travis tests.
         '''
-        assert directory.is_material_or_segment()
-        self.io.display('checking definition ...')
-        definition = directory('definition.py')
-        if not definition.is_file():
-            self.io.display(f'missing {definition.trim()} ...')
-            return
-        with abjad.Timer() as timer:
-            result = self._interpret_file(definition)
-        stdout_lines, stderr_lines, exit_code = result
-        self.io.display(stdout_lines)
-        if exit_code:
-            self.io.display([f'{definition.trim()} FAILED:'] + stderr_lines)
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            self.io.display('checking definition ...')
+            definition = directory('definition.py')
+            if not definition.is_file():
+                self.io.display(f'missing {definition.trim()} ...')
+                return
+            with abjad.Timer() as timer:
+                result = self._interpret_file(definition)
+            stdout_lines, stderr_lines, exit = result
+            self.io.display(stdout_lines)
+            if exit:
+                self.io.display([f'{definition.trim()} FAILED:'] + stderr_lines)
+            else:
+                self.io.display(f'{definition.trim()} ... OK', raw=True)
+            self.io.display(timer.total_time_message)
+            return exit
         else:
-            self.io.display(f'{definition.trim()} ... OK', raw=True)
-        self.io.display(timer.total_time_message)
-        return exit_code
-
-    @Command(
-        'dfk*',
-        description='definition.pys - check',
-        menu_section='definitions',
-        score_package_paths=('materials', 'segments'),
-        )
-    def check_definition_pys(self, directory):
-        r'''Checks ``definition.py`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.check_definition_py(path)
-            if i + 1 < len(paths):
-                self.io.display('')
+            paths = directory.list_paths()
+            total = len(paths)
+            for i, path in enumerate(paths):
+                self.check_definition_py(path)
+                if i + 1 < total:
+                    self.io.display('')
 
     @Command(
         'ggc',
@@ -2724,38 +2714,26 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'dfe',
+        'dpe',
         description='definition.py - edit',
         menu_section='definition',
-        score_package_paths=('material', 'segment',),
+        score_package_paths=('illustrationspace',),
         )
     def edit_definition_py(self, directory):
         r'''Edits ``definition.py``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('definition.py')
-        self._open_files([path])
-
-    @Command(
-        'dfe*',
-        description='definition.pys - edit',
-        menu_section='definitions',
-        score_package_paths=('materials', 'segments',),
-        )
-    def edit_definition_pys(self, directory):
-        r'''Edits ``definition.py`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        definitions = []
-        for path in directory.list_paths():
-            definition = path('definition.py')
-            if definition.is_file():
-                definitions.append(definition)
-        self._open_files(definitions)
+        assert directory.is_illustrationspace()
+        paths = []
+        if directory.is_material() or directory.is_segment():
+            paths.append(directory('definition.py'))
+        else:
+            for path in directory.list_paths():
+                definition_py = path('definition.py')
+                if definition_py.is_file():
+                    paths.append(definition_py)
+        self._open_files(paths)
 
     @Command(
         'fce',
@@ -2775,19 +2753,26 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'lye',
+        'ile',
         description='illustration.ly - edit',
-        menu_section='illustration.ly',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def edit_illustration_ly(self, directory):
         r'''Edits ``illustration.ly``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.ly')
-        self._open_files([path])
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory('illustration.ly')]
+        else:
+            paths = []
+            for path in directory.list_paths():
+                illustration_ly = path('illustration.ly')
+                if illustration_ly.is_file():
+                    paths.append(illustration_ly)
+        self._open_files(paths)
 
     @Command(
         'lx',
@@ -3365,56 +3350,47 @@ class AbjadIDE(abjad.AbjadObject):
         external_directories=True,
         menu_section='git',
         score_package_paths=True,
+        scores_directory=True,
         )
     def git_commit(self, directory, commit_message=None):
         r'''Commits working copy.
 
         Returns none.
         '''
-        root = directory._get_repository_root()
-        if not root:
-            self.io.display(f'missing {directory.trim()} repository ...')
-            return
-        with self.change(root):
-            self.io.display(f'git commit {root} ...')
-            if not root._has_pending_commit():
-                self.io.display(f'{root} ... nothing to commit.')
+        if not directory.is_scores():
+            root = directory._get_repository_root()
+            if not root:
+                self.io.display(f'missing {directory.trim()} repository ...')
                 return
-            abjad.IOManager.spawn_subprocess('git status .')
-            if self.test:
-                return
-            command = f'git add -A {root}'
-            lines = abjad.IOManager.run_command(command)
-            self.io.display(lines, raw=True)
-            if commit_message is None:
-                commit_message = self.io.get('commit message')
-                if self.is_navigation(commit_message):
+            with self.change(root):
+                self.io.display(f'git commit {root} ...')
+                if not root._has_pending_commit():
+                    self.io.display(f'{root} ... nothing to commit.')
                     return
-            command = f'git commit -m "{commit_message}" {root}'
-            command += '; git push'
-            lines = abjad.IOManager.run_command(command)
-            self.io.display(lines, raw=True)
-
-    @Command(
-        'ci*',
-        description='git - commit',
-        menu_section='git',
-        scores_directory=True,
-        )
-    def git_commit_every_package(self, directory):
-        r'''Commits every working copy.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        commit_message = self.io.get('commit message')
-        if self.is_navigation(commit_message):
-            return
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.git_commit(path, commit_message=commit_message)
-            if i + 1 < len(paths):
-                self.io.display('')
+                abjad.IOManager.spawn_subprocess('git status .')
+                if self.test:
+                    return
+                command = f'git add -A {root}'
+                lines = abjad.IOManager.run_command(command)
+                self.io.display(lines, raw=True)
+                if commit_message is None:
+                    commit_message = self.io.get('commit message')
+                    if self.is_navigation(commit_message):
+                        return
+                command = f'git commit -m "{commit_message}" {root}'
+                command += '; git push'
+                lines = abjad.IOManager.run_command(command)
+                self.io.display(lines, raw=True)
+        else:
+            assert directory.is_scores()
+            commit_message = self.io.get('commit message')
+            if self.is_navigation(commit_message):
+                return
+            paths = directory.list_paths()
+            for i, path in enumerate(paths):
+                self.git_commit(path, commit_message=commit_message)
+                if i + 1 < len(paths):
+                    self.io.display('')
 
     @Command(
         'diff',
@@ -3422,36 +3398,27 @@ class AbjadIDE(abjad.AbjadObject):
         external_directories=True,
         menu_section='git',
         score_package_paths=True,
+        scores_directory=True,
         )
     def git_diff(self, directory):
         r'''Displays Git diff of working copy.
 
         Returns none.
         '''
-        if not directory._get_repository_root():
-            self.io.display(f'missing {directory.trim()} repository ...')
-            return
-        with self.change(directory):
-            self.io.display(f'git diff {directory.trim()} ...')
-            abjad.IOManager.spawn_subprocess(f'git diff {directory}')
-
-    @Command(
-        'diff*',
-        description='git - diff',
-        menu_section='git',
-        scores_directory=True,
-        )
-    def git_diff_every_package(self, directory):
-        r'''Displays Git diff of every working copy.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.git_diff(path)
-            if i + 1 < len(paths):
-                self.io.display('')
+        if not directory.is_scores():
+            if not directory._get_repository_root():
+                self.io.display(f'missing {directory.trim()} repository ...')
+                return
+            with self.change(directory):
+                self.io.display(f'git diff {directory.trim()} ...')
+                abjad.IOManager.spawn_subprocess(f'git diff {directory}')
+        else:
+            assert directory.is_scores()
+            paths = directory.list_paths()
+            for i, path in enumerate(paths):
+                self.git_diff(path)
+                if i + 1 < len(paths):
+                    self.io.display('')
 
     @Command(
         'pull',
@@ -3459,86 +3426,68 @@ class AbjadIDE(abjad.AbjadObject):
         external_directories=True,
         menu_section='git',
         score_package_paths=True,
+        scores_directory=True,
         )
     def git_pull(self, directory):
         r'''Pulls working copy.
 
         Returns none.
         '''
-        root = directory._get_repository_root()
-        if not root:
-            self.io.display(f'missing {directory.trim()} repository ...')
-            return
-        with self.change(root):
-            self.io.display(f'git pull {root} ...')
-            if not self.test:
-                lines = abjad.IOManager.run_command('git pull .')
-                if lines and 'Already up-to-date' in lines[-1]:
-                    lines = lines[-1:]
-                self.io.display(lines)
-                command = 'git submodule foreach git pull origin master'
-                self.io.display(f'{command} ...')
-                lines = abjad.IOManager.run_command(command)
-                if lines and 'Already up-to-date' in lines[-1]:
-                    lines = lines[-1:]
-                self.io.display(lines)
-
-    @Command(
-        'pull*',
-        description='git - pull',
-        menu_section='git',
-        scores_directory=True,
-        )
-    def git_pull_every_package(self, directory):
-        r'''Pulls every working copy.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.git_pull(path)
-            if i + 1 < len(paths):
-                self.io.display('')
-
+        if not directory.is_scores():
+            root = directory._get_repository_root()
+            if not root:
+                self.io.display(f'missing {directory.trim()} repository ...')
+                return
+            with self.change(root):
+                self.io.display(f'git pull {root} ...')
+                if not self.test:
+                    lines = abjad.IOManager.run_command('git pull .')
+                    if lines and 'Already up-to-date' in lines[-1]:
+                        lines = lines[-1:]
+                    self.io.display(lines)
+                    command = 'git submodule foreach git pull origin master'
+                    self.io.display(f'{command} ...')
+                    lines = abjad.IOManager.run_command(command)
+                    if lines and 'Already up-to-date' in lines[-1]:
+                        lines = lines[-1:]
+                    self.io.display(lines)
+        else:
+            assert directory.is_scores()
+            paths = directory.list_paths()
+            for i, path in enumerate(paths):
+                self.git_pull(path)
+                if i + 1 < len(paths):
+                    self.io.display('')
+        
     @Command(
         'push',
         description='git - push',
         external_directories=True,
         menu_section='git',
         score_package_paths=True,
+        scores_directory=True,
         )
     def git_push(self, directory):
         r'''Pushes working copy.
 
         Returns none.
         '''
-        root = directory._get_repository_root()
-        if not root:
-            self.io.display(f'missing {directory.trim()} repository ...')
-            return
-        with self.change(root):
-            self.io.display(f'git push {root} ...')
-            if not self.test:
-                abjad.IOManager.spawn_subprocess('git push .')
-
-    @Command(
-        'push*',
-        description='git - push',
-        menu_section='git',
-        scores_directory=True,
-        )
-    def git_push_every_package(self, directory):
-        r'''Pushes every package.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.git_push(path)
-            if i + 1 < len(paths):
-                self.io.display('')
+        if not directory.is_scores():
+            root = directory._get_repository_root()
+            if not root:
+                self.io.display(f'missing {directory.trim()} repository ...')
+                return
+            with self.change(root):
+                self.io.display(f'git push {root} ...')
+                if not self.test:
+                    abjad.IOManager.spawn_subprocess('git push .')
+        else:
+            assert directory.is_scores()
+            paths = directory.list_paths()
+            for i, path in enumerate(paths):
+                self.git_push(path)
+                if i + 1 < len(paths):
+                    self.io.display('')
 
     @Command(
         'st',
@@ -3546,41 +3495,32 @@ class AbjadIDE(abjad.AbjadObject):
         external_directories=True,
         menu_section='git',
         score_package_paths=True,
+        scores_directory=True,
         )
     def git_status(self, directory):
         r'''Displays Git status of working copy.
 
         Returns none.
         '''
-        root = directory._get_repository_root()
-        if not root:
-            self.io.display(f'missing {directory.trim()} repository ...')
-            return
-        with self.change(root):
-            self.io.display(f'git status {root} ...')
-            abjad.IOManager.spawn_subprocess('git status .')
-            self.io.display('')
-            command = 'git submodule foreach git fetch'
-            self.io.display(f'{command} ...')
-            abjad.IOManager.spawn_subprocess(command)
-
-    @Command(
-        'st*',
-        description='git - status',
-        menu_section='git',
-        scores_directory=True,
-        )
-    def git_status_every_package(self, directory):
-        r'''Displays Git status of every working copy.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.git_status(path)
-            if i + 1 < len(paths):
+        if not directory.is_scores():
+            root = directory._get_repository_root()
+            if not root:
+                self.io.display(f'missing {directory.trim()} repository ...')
+                return
+            with self.change(root):
+                self.io.display(f'git status {root} ...')
+                abjad.IOManager.spawn_subprocess('git status .')
                 self.io.display('')
+                command = 'git submodule foreach git fetch'
+                self.io.display(f'{command} ...')
+                abjad.IOManager.spawn_subprocess(command)
+        else:
+            assert directory.is_scores()
+            paths = directory.list_paths()
+            for i, path in enumerate(paths):
+                self.git_status(path)
+                if i + 1 < len(paths):
+                    self.io.display('')
 
     @Command(
         '-',
@@ -3978,58 +3918,37 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'lyi',
+        'ili',
         description='illustration.ly - interpret',
-        menu_section='illustration.ly',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def interpret_illustration_ly(self, directory, open_after=True):
         r'''Interprets ``illustration.ly``.
 
-        Makes illustration PDF.
+        Makes ``illustration.pdf``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        self.io.display('interpreting ly ...')
-        source = directory('illustration.ly')
-        target = source.with_suffix('.pdf')
-        if source.is_file():
-            self._run_lilypond(source)
-        else:
-            self.io.display(f'missing {source.trim()} ...')
-        if target.is_file() and open_after:
-            self._open_files([target])
-
-    @Command(
-        'lyi*',
-        description='illustration.lys - interpret',
-        menu_section='illustration.ly',
-        score_package_paths=('materials', 'segments',),
-        )
-    def interpret_illustration_lys(self, directory):
-        r'''Interprets ``illustration.ly`` file in every directory.
-
-        Makes PDF in every directory.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        self.io.display('interpreting every ly ...')
-        paths = directory.list_paths()
-        sources = []
-        for path in paths:
-            source = path('illustration.ly')
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            self.io.display('interpreting ly ...')
+            source = directory('illustration.ly')
+            target = source.with_suffix('.pdf')
             if source.is_file():
-                sources.append(source)
-        if not sources:
-            self.io.display('missing LilyPond files ...')
-            return
-        with abjad.Timer() as timer:
-            for i, source in enumerate(sources):
-                self.interpret_illustration_ly(source.parent, open_after=False)
-                if i + 1 < len(sources):
-                    self.io.display('')
+                self._run_lilypond(source)
+            else:
+                self.io.display(f'missing {source.trim()} ...')
+            if target.is_file() and open_after:
+                self._open_files([target])
+        else:
+            paths = directory.list_paths()
+            total = len(paths)
+            with abjad.Timer() as timer:
+                for i, path in enumerate(paths):
+                    self.interpret_illustration_ly(path, open_after=False)
+                    if i + 1 < total:
+                        self.io.display('')
             self.io.display(timer.total_time_message)
 
     @Command(
@@ -4129,84 +4048,64 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'lym',
+        'ilm',
         description='illustration.ly - make',
-        menu_section='illustration.ly',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def make_illustration_ly(self, directory):
         r'''Makes ``illustration.ly``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        self.io.display('making illustration.ly ...')
-        if directory.is_material():
-            self._make_material_ly(directory)
-        elif directory.is_segment():
-            self._make_segment_ly(directory)
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            if directory.is_material():
+                self._make_material_ly(directory)
+            else:
+                assert directory.is_segment()
+                self._make_segment_ly(directory)
         else:
-            raise ValueError(directory)
+            paths = directory.list_paths()
+            total = len(paths)
+            with abjad.Timer() as timer:
+                for i, path in enumerate(paths):
+                    self.make_illustration_ly(path)
+                    if i + 1 < total:
+                        self.io.display('')
+            self.io.display(timer.total_time_message)
 
     @Command(
-        'lym*',
-        description='illustration.lys - make',
-        menu_section='illustration.ly',
-        score_package_paths=('materials', 'segments',),
-        )
-    def make_illustration_lys(self, directory):
-        r'''Makes ``illustration.ly`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            path.make_ly()
-            if i + 1 < len(paths):
-                self.io.display('')
-
-    @Command(
-        'pdfm',
+        'ipm',
         description='illustration.pdf - make',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def make_illustration_pdf(self, directory, open_after=True):
         r'''Makes ``illustration.pdf``.
 
         Returns integer exit code for Travis tests.
         '''
-        assert directory.is_material_or_segment()
+        assert directory.is_illustrationspace()
         if directory.is_material():
-            return self._make_material_pdf(
-                directory,
-                open_after=open_after,
-                )
+            return self._make_material_pdf(directory, open_after=open_after)
         elif directory.is_segment():
             return self._make_segment_pdf(directory, open_after=open_after)
         else:
-            raise ValueError(directory)
-
-    @Command(
-        'pdfm*',
-        description='illustration.pdfs - make',
-        menu_section='illustration.pdf',
-        score_package_paths=('materials', 'segments',),
-        )
-    def make_illustration_pdfs(self, directory):
-        r'''Makes ``illustration.pdf`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        paths = directory.list_paths()
-        for i, path in enumerate(paths):
-            self.make_illustration_pdf(path, open_after=False)
-            if i + 1 < len(paths):
-                self.io.display('')
-            else:
-                abjad.IOManager.spawn_subprocess('say "done"')
+            assert directory.is_materials() or directory.is_segments()
+            exit = 0
+            paths = directory.list_paths()
+            paths = [_ for _ in paths if _.is_dir()]
+            total = len(paths)
+            for i, path in enumerate(paths):
+                exit_ = self.make_illustration_pdf(path, open_after=False)
+                if i + 1 < len(paths):
+                    self.io.display('')
+                else:
+                    abjad.IOManager.spawn_subprocess('say "done"')
+                if exit_ != 0:
+                    exit = -1
+            return exit
 
     @Command(
         'ylm',
@@ -4384,17 +4283,17 @@ class AbjadIDE(abjad.AbjadObject):
         return self._make_segment_midi(directory, open_after=open_after)
 
     @Command(
-        'pdfn',
+        'ipn',
         description='illustration.pdf - nake',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def nake_illustration_pdf(self, directory, open_after=True):
         r'''Makes ``illustration.pdf`` and does not open after.
 
         Returns integer exit code for Travis tests.
         '''
-        assert directory.is_material_or_segment()
+        assert directory.is_illustrationspace()
         return self.make_illustration_pdf(directory, open_after=False)
 
     @Command(
@@ -4474,19 +4373,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'pdfo',
+        'ipo',
         description='illustration.pdf - open',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def open_illustration_pdf(self, directory):
         r'''Opens ``illustration.pdf``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.pdf')
-        self._open_files([path])
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            path = directory('illustration.pdf')
+            self._open_files([path])
+        else:
+            for path in directory.list_paths():
+                self.open_illustration_pdf(path)
 
     @Command(
         'mpo',
@@ -4546,13 +4449,21 @@ class AbjadIDE(abjad.AbjadObject):
         description='score.pdf - open',
         menu_section='score',
         score_package_paths=True,
+        scores_directory=True,
         )
     def open_score_pdf(self, directory):
         r'''Opens ``score.pdf``.
 
         Returns none.
         '''
-        if directory.is_build() and not directory.is_parts():
+        if directory.is_scores():
+            score_pdfs = []
+            for path in directory.list_paths():
+                score_pdf = path._get_score_pdf()
+                if score_pdf:
+                    score_pdfs.append(score_pdf)
+            self._open_files(score_pdfs)
+        elif directory.is_build() and not directory.is_parts():
             name = 'score.pdf'
             paths = directory.get_files_ending_with(name)
             if paths:
@@ -4568,25 +4479,6 @@ class AbjadIDE(abjad.AbjadObject):
                 message = 'missing score PDF'
                 message += ' in distribution and build directories ...'
                 self.io.display(message)
-
-    @Command(
-        'rpo*',
-        description='score.pdfs - open',
-        menu_section='score',
-        scores_directory=True,
-        )
-    def open_score_pdfs(self, directory):
-        r'''Opens ``score.pdf`` files.
-
-        Returns none.
-        '''
-        assert directory.is_scores()
-        pdfs = []
-        for path in directory.list_paths():
-            pdf = path._get_score_pdf()
-            if pdf:
-                pdfs.append(pdf)
-        self._open_files(pdfs)
 
     @Command(
         'cv',
@@ -5012,35 +4904,23 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'dft',
+        'dpt',
         description='definition.py - trash',
         menu_section='definition',
-        score_package_paths=('material', 'segment'),
+        score_package_paths=('illustrationspace',),
         )
     def trash_definition_py(self, directory):
         r'''Trashes ``definition.py``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('definition.py')
-        self._trash_files(path)
-
-    @Command(
-        'dft*',
-        description='definition.pys - trash',
-        menu_section='definitions',
-        score_package_paths=('materials', 'segments'),
-        )
-    def trash_definition_pys(self, directory):
-        r'''Trashes ``definition.py`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        for path in directory.list_paths():
-            path /= 'definition.py'
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            path = directory('definition.py')
             self._trash_files(path)
+        else:
+            for path in directory.list_paths():
+                self.trash_definition_py(path)
 
     @Command(
         'fcpt',
@@ -5083,66 +4963,42 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'lyt',
+        'ilt',
         description='illustration.ly - trash',
-        menu_section='illustration.ly',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def trash_illustration_ly(self, directory):
         r'''Trashes ``illustration.ly``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.ly')
-        self._trash_files(path)
-
-    @Command(
-        'lyt*',
-        description='illustration.lys - trash',
-        menu_section='illustration.ly',
-        score_package_paths=('materials', 'segments',),
-        )
-    def trash_illustration_lys(self, directory):
-        r'''Trashes ``illustration.ly`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        for path in directory.list_paths():
-            path /= 'illustration.ly'
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            path = directory('illustration.ly')
             self._trash_files(path)
+        else:
+            for path in directory.list_paths():
+                self.trash_illustration_ly(path)
 
     @Command(
-        'pdft',
+        'ipt',
         description='illustration.pdf - trash',
-        menu_section='illustration.pdf',
-        score_package_paths=('material', 'segment',),
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
         )
     def trash_illustration_pdf(self, directory):
         r'''Trashes ``illustration.pdf``.
 
         Returns none.
         '''
-        assert directory.is_material_or_segment()
-        path = directory('illustration.pdf')
-        self._trash_files(path)
-
-    @Command(
-        'pdft*',
-        description='illustration.pdfs - trash',
-        menu_section='illustration.pdf',
-        score_package_paths=('materials', 'segments',),
-        )
-    def trash_illustration_pdfs(self, directory):
-        r'''Trashes ``illustration.pdf`` files.
-
-        Returns none.
-        '''
-        assert directory.is_materials_or_segments()
-        for path in directory.list_paths():
-            path /= 'illustration.pdf'
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            path = directory('illustration.pdf')
             self._trash_files(path)
+        else:
+            for path in directory.list_paths():
+                self.trash_illustration_pdf(path)
 
     @Command(
         'ylt',
