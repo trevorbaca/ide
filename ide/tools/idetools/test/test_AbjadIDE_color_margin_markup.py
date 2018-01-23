@@ -22,7 +22,7 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
-            'Found no margin markup color expression tags in arch-a-score ...',
+            'Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -30,7 +30,7 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
-            'Found no margin markup color expression tags in arch-a-score ...',
+            'Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -38,7 +38,7 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
-            'Found no margin markup color expression tags in arch-a-score ...',
+            'Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -58,7 +58,7 @@ def test_AbjadIDE_color_margin_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
-            'Found no margin markup color expression tags in _ ...',
+            'Found no margin markup color tags in _ ...',
             ]:
             assert line in lines
         
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_margin_markup_02():
         assert path.count(match) == ((0, 0), (0, 0))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Found no margin markup color expression tags in _ ...',
+            'Found no margin markup color tags in _ ...',
             ]:
             assert line in lines
 
@@ -74,6 +74,6 @@ def test_AbjadIDE_color_margin_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
-            'Found no margin markup color expression tags in _ ...',
+            'Found no margin markup color tags in _ ...',
             ]:
             assert line in lines

@@ -426,25 +426,6 @@ class AbjadIDE(abjad.AbjadObject):
             dimensions = eval(self.test.strip('dimensions='))
         return dimensions
 
-    def _get_persistent_indicator_color_expression_tags(self, directory):
-        tags = baca.tags.clef_color_tags()
-        if directory.is_build():
-            tags.append(baca.tags.REAPPLIED_CLEF)
-        tags += baca.tags.dynamic_color_tags()
-        tags += list(baca.tags.instrument_color_tags())
-        tags += list(baca.tags.margin_markup_color_tags()['activate'])
-        tags += list(baca.tags.metronome_mark_color_tags()['activate'])
-        tags += list(baca.tags.staff_lines_color_tags())
-        tags += list(baca.tags.time_signature_color_tags())
-        return tags
-
-    def _get_persistent_indicator_color_suppression_tags(self, directory):
-        tags = []
-        if directory.is_build():
-            tags.append(baca.tags.REAPPLIED_INSTRUMENT)
-        tags.extend(baca.tags.metronome_mark_color_tags()['deactivate'])
-        return tags
-
     def _get_score_names(self):
         scores = self._get_scores_directory()
         names = [_.name for _ in scores.list_paths()]
@@ -1740,6 +1721,25 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
+        'ann',
+        description=f'all score annotations - activate',
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        )
+    def activate_all_score_annotations(self, directory):
+        r'''Activates all score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        tags_ = abjad.tags.all_score_annotation_tags()
+        self.activate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            'score annotation',
+            )
+
+    @Command(
         'ctm',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - activate',
         menu_section='markup',
@@ -1819,34 +1819,26 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'bw*',
-        description='b&w - ALL',
+        description='b&w - all persistent indicators',
         menu_section='bw',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def black_and_white_all(self, directory):
+    def black_and_white_all_persistent_indicators(self, directory):
         r'''Renders all persistent indicators in black and white.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._get_persistent_indicator_color_expression_tags(directory)
+        tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            lambda tags: bool(set(tags) & set(tags_['activate'])),
             'persistent indicator color expression',
             )
-        tags_ = self._get_persistent_indicator_color_suppression_tags(
-            directory)
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
             'persistent indicator color suppression',
-            )
-        tags_ = abjad.tags.score_annotation_tags
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'score annotation',
             )
 
     @Command(
@@ -1861,9 +1853,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = baca.tags.clef_color_tags()
-        if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_CLEF)
+        tags_ = baca.tags.clef_color_tags(directory)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -1952,7 +1942,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             baca.tags.margin_markup_color_expression_match,
-            'margin markup color expression',
+            'margin markup color',
             )
 
     @Command(
@@ -2258,31 +2248,30 @@ class AbjadIDE(abjad.AbjadObject):
         result = directory._deactivate_shifted_clef_at_bol()
         for message in result[-1]:
             self.io.display(message)
-        self.black_and_white_all(directory)
+        self.black_and_white_all_persistent_indicators(directory)
+        self.deactivate_all_score_annotations(directory)
 
     @Command(
         'cl*',
-        description='color - ALL',
+        description='color - all persistent indicators',
         menu_section='color',
         score_package_paths=('_segments', 'build', 'segment', 'segments'),
         )
-    def color_all(self, directory):
+    def color_all_persistent_indicators(self, directory):
         r'''Colors all persistent indicators.
 
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._get_persistent_indicator_color_expression_tags(directory)
+        tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            lambda tags: bool(set(tags) & set(tags_['activate'])),
             'persistent indicator color expression',
             )
-        tags_ = self._get_persistent_indicator_color_suppression_tags(
-            directory)
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
             'persistent indicator color suppression',
             )
 
@@ -2298,9 +2287,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = baca.tags.clef_color_tags()
-        if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_CLEF)
+        tags_ = baca.tags.clef_color_tags(directory)
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -2387,7 +2374,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.margin_markup_color_expression_match,
-            'margin markup color expression',
+            'margin markup color',
             )
 
     @Command(
@@ -2470,6 +2457,25 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
+
+    @Command(
+        'annx',
+        description=f'all score annotations - deactivate',
+        menu_section='markup',
+        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        )
+    def deactivate_all_score_annotations(self, directory):
+        r'''Deactivates all score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_score_package_path()
+        tags_ = abjad.tags.all_score_annotation_tags()
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            'score annotation',
+            )
 
     @Command(
         'ctmx',
