@@ -1,0 +1,91 @@
+import abjad
+import baca
+import ide
+abjad_ide = ide.AbjadIDE(test=True)
+
+
+def test_AbjadIDE_color_dynamics_01():
+    r'''In build directory.
+    '''
+
+    with ide.Test():
+
+        match = baca.tags.dynamic_color_match
+        build = ide.Path('green_score', 'builds', 'arch-a-score')
+        path = build('_segments', 'segment-_.ly')
+
+        abjad_ide('gre bb arch-a-score ggc q')
+        assert path.is_file()
+        assert path.count(match) == ((0, 0), (2, 2))
+        
+        abjad_ide('gre bb arch-a-score cld q')
+        lines = abjad_ide.io.transcript.lines
+        assert path.count(match) == ((2, 2), (0, 0))
+        for line in [
+            'Found 2 color dynamic tags in arch-a-score ...',
+            ' Activating 2 deactivated color dynamic tags in arch-a-score ...',
+            ' No already-active color dynamic tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
+
+        abjad_ide('gre bb arch-a-score bwd q')
+        lines = abjad_ide.io.transcript.lines
+        assert path.count(match) == ((0, 0), (2, 2))
+        for line in [
+            'Found 2 dynamic tags in arch-a-score ...',
+            ' Deactivating 2 active dynamic tags in arch-a-score ...',
+            ' No already-deactivated dynamic tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
+
+        abjad_ide('gre bb arch-a-score cld q')
+        lines = abjad_ide.io.transcript.lines
+        assert path.count(match) == ((2, 2), (0, 0))
+        for line in [
+            'Found 2 color dynamic tags in arch-a-score ...',
+            ' Activating 2 deactivated color dynamic tags in arch-a-score ...',
+            ' No already-active color dynamic tags to skip in arch-a-score ...',
+            ]:
+            assert line in lines
+
+
+def test_AbjadIDE_color_dynamics_02():
+    r'''In segment directory.
+    '''
+
+    with ide.Test():
+
+        match = baca.tags.dynamic_color_match
+        path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
+        assert path.is_file()
+        assert path.count(match) == ((2, 2), (0, 0))
+        
+        abjad_ide('gre %_ cld q')
+        lines = abjad_ide.io.transcript.lines
+        assert path.count(match) == ((2, 2), (0, 0))
+        for line in [
+            'Found 2 color dynamic tags in _ ...',
+            ' No deactivated color dynamic tags to activate in _ ...',
+            ' Skipping 2 already-active color dynamic tags in _ ...',
+            ]:
+            assert line in lines
+        
+        abjad_ide('gre %_ bwd q')
+        assert path.count(match) == ((0, 0), (2, 2))
+        lines = abjad_ide.io.transcript.lines
+        for line in [
+            'Found 2 dynamic tags in _ ...',
+            ' Deactivating 2 active dynamic tags in _ ...',
+            ' No already-deactivated dynamic tags to skip in _ ...',
+            ]:
+            assert line in lines
+
+        abjad_ide('gre %_ cld q')
+        lines = abjad_ide.io.transcript.lines
+        assert path.count(match) == ((2, 2), (0, 0))
+        for line in [
+            'Found 2 color dynamic tags in _ ...',
+            ' Activating 2 deactivated color dynamic tags in _ ...',
+            ' No already-active color dynamic tags to skip in _ ...',
+            ]:
+            assert line in lines

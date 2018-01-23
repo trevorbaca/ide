@@ -60,16 +60,6 @@ class AbjadIDE(abjad.AbjadObject):
             ),
         }
 
-    _color_dynamic_tags = (
-        baca.tags.EXPLICIT_DYNAMIC_COLOR,
-        baca.tags.EXPLICIT_DYNAMIC_REDRAW_COLOR,
-        baca.tags.REAPPLIED_DYNAMIC,
-        baca.tags.REAPPLIED_DYNAMIC_COLOR,
-        baca.tags.REAPPLIED_DYNAMIC_REDRAW_COLOR,
-        baca.tags.REDUNDANT_DYNAMIC_COLOR,
-        baca.tags.REDUNDANT_DYNAMIC_REDRAW_COLOR,
-        )
-
     _color_instrument_tags = {
         'activate': (
             baca.tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
@@ -88,50 +78,6 @@ class AbjadIDE(abjad.AbjadObject):
         'deactivate': (
             ),
         }
-
-    _color_margin_markup_tags = {
-        'activate': (
-            baca.tags.DEFAULT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.tags.DEFAULT_MARGIN_MARKUP_COLOR,
-            baca.tags.REDRAWN_DEFAULT_MARGIN_MARKUP_COLOR,
-            baca.tags.EXPLICIT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.tags.EXPLICIT_MARGIN_MARKUP_COLOR,
-            baca.tags.REDRAWN_EXPLICIT_MARGIN_MARKUP_COLOR,
-            baca.tags.REAPPLIED_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.tags.REAPPLIED_MARGIN_MARKUP_COLOR,
-            baca.tags.REDRAWN_REAPPLIED_MARGIN_MARKUP_COLOR,
-            baca.tags.REDUNDANT_MARGIN_MARKUP_ALERT_WITH_COLOR,
-            baca.tags.REDUNDANT_MARGIN_MARKUP_COLOR,
-            baca.tags.REDRAWN_REDUNDANT_MARGIN_MARKUP_COLOR,
-            ),
-        'deactivate': (
-            ),
-        }
-
-    _color_metronome_mark_tags = {
-        'activate': (
-            baca.tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
-            baca.tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
-            baca.tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
-            ),
-        'deactivate': (
-            baca.tags.EXPLICIT_METRONOME_MARK,
-            baca.tags.REAPPLIED_METRONOME_MARK,
-            baca.tags.REDUNDANT_METRONOME_MARK,
-            ),
-        }
-
-    _color_staff_line_tags = (
-        baca.tags.EXPLICIT_STAFF_LINES_COLOR,
-        baca.tags.REAPPLIED_STAFF_LINES_COLOR,
-        baca.tags.REDUNDANT_STAFF_LINES_COLOR,
-        )
-
-    _color_time_signature_tags = (
-        baca.tags.EXPLICIT_TIME_SIGNATURE_COLOR,
-        baca.tags.REAPPLIED_TIME_SIGNATURE_COLOR,
-        baca.tags.REDUNDANT_TIME_SIGNATURE_COLOR,
-        )
 
     configuration = Configuration()
 
@@ -513,16 +459,15 @@ class AbjadIDE(abjad.AbjadObject):
         return dimensions
 
     def _get_persistent_indicator_color_expression_tags(self, directory):
-        tags = baca.tags.clef_color_tags
+        tags = baca.tags.clef_color_tags()
         if directory.is_build():
             tags.append(baca.tags.REAPPLIED_CLEF)
-        tags = tuple(tags)
-        tags += self._color_dynamic_tags
-        tags += self._color_instrument_tags['activate']
-        tags += self._color_margin_markup_tags['activate']
-        tags += self._black_and_white_metronome_mark_tags['deactivate']
-        tags += self._color_staff_line_tags
-        tags += self._color_time_signature_tags
+        tags += baca.tags.dynamic_color_tags()
+        tags += list(self._color_instrument_tags['activate'])
+        tags += list(baca.tags.margin_markup_color_tags()['activate'])
+        tags += list(self._black_and_white_metronome_mark_tags['deactivate'])
+        tags += list(baca.tags.staff_lines_color_tags())
+        tags += list(baca.tags.time_signature_color_tags())
         return tags
 
     def _get_persistent_indicator_color_suppression_tags(self, directory):
@@ -1948,7 +1893,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = baca.tags.clef_color_tags
+        tags_ = baca.tags.clef_color_tags()
         if directory.is_build():
             tags_.append(baca.tags.REAPPLIED_CLEF)
         self.deactivate(
@@ -1971,7 +1916,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_score_package_path()
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(self._color_dynamic_tags)),
+            baca.tags.dynamic_color_match,
             'dynamic',
             )
 
@@ -2042,11 +1987,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_margin_markup_tags['activate']
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'margin markup',
+            baca.tags.margin_markup_color_expression_match,
+            'margin markup color expression',
             )
 
     @Command(
@@ -2071,7 +2015,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'b&w metrononme mark suppression',
+            'b&w metronome mark suppression',
             )
 
     @Command(
@@ -2086,11 +2030,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_staff_line_tags
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'staff line color',
+            baca.tags.staff_lines_color_match,
+            'staff lines color',
             )
 
     @Command(
@@ -2105,11 +2048,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_time_signature_tags
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'color time signature',
+            baca.tags.time_signature_color_match,
+            'time signature color',
             )
 
     @Command(
@@ -2396,7 +2338,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = baca.tags.clef_color_tags
+        tags_ = baca.tags.clef_color_tags()
         if directory.is_build():
             tags_.append(baca.tags.REAPPLIED_CLEF)
         self.activate(
@@ -2417,10 +2359,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_dynamic_tags
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.dynamic_color_match,
             'color dynamic',
             )
 
@@ -2489,11 +2430,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_margin_markup_tags['activate']
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'color margin markup',
+            baca.tags.margin_markup_color_expression_match,
+            'margin markup color expression',
             )
 
     @Command(
@@ -2508,16 +2448,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_metronome_mark_tags['activate']
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.metronome_mark_color_expression_match,
             'metronome mark color expression',
             )
-        tags_ = self._color_metronome_mark_tags['deactivate']
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.metronome_mark_color_suppression_match,
             'metronome mark color suppression',
             )
 
@@ -2533,11 +2471,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_staff_line_tags
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'staff line color',
+            baca.tags.staff_lines_color_match,
+            'staff lines color',
             )
 
     @Command(
@@ -2552,10 +2489,9 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_time_signature_tags
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.time_signature_color_match,
             'time signature color'
             )
 
