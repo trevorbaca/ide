@@ -47,19 +47,6 @@ class AbjadIDE(abjad.AbjadObject):
         '_test',
         )
 
-    _black_and_white_metronome_mark_tags = {
-        'activate': (
-            baca.tags.EXPLICIT_METRONOME_MARK,
-            baca.tags.REDUNDANT_METRONOME_MARK,
-            ),
-        'deactivate': (
-            baca.tags.EXPLICIT_METRONOME_MARK_WITH_COLOR,
-            baca.tags.REAPPLIED_METRONOME_MARK,
-            baca.tags.REAPPLIED_METRONOME_MARK_WITH_COLOR,
-            baca.tags.REDUNDANT_METRONOME_MARK_WITH_COLOR,
-            ),
-        }
-
     _color_instrument_tags = {
         'activate': (
             baca.tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
@@ -465,7 +452,7 @@ class AbjadIDE(abjad.AbjadObject):
         tags += baca.tags.dynamic_color_tags()
         tags += list(self._color_instrument_tags['activate'])
         tags += list(baca.tags.margin_markup_color_tags()['activate'])
-        tags += list(self._black_and_white_metronome_mark_tags['deactivate'])
+        tags += list(baca.tags.metronome_mark_color_tags()['activate'])
         tags += list(baca.tags.staff_lines_color_tags())
         tags += list(baca.tags.time_signature_color_tags())
         return tags
@@ -474,7 +461,7 @@ class AbjadIDE(abjad.AbjadObject):
         tags = self._color_instrument_tags['deactivate']
         if directory.is_build():
             tags += (baca.tags.REAPPLIED_INSTRUMENT,)
-        tags += self._black_and_white_metronome_mark_tags['activate']
+        tags += tuple(baca.tags.metronome_mark_color_tags()['deactivate'])
         return tags
 
     def _get_score_names(self):
@@ -2005,16 +1992,14 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._black_and_white_metronome_mark_tags['activate']
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.metronome_mark_color_suppression_match,
             'b&w metronome mark expression',
             )
-        tags_ = self._black_and_white_metronome_mark_tags['deactivate']
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            baca.tags.metronome_mark_color_expression_match,
             'b&w metronome mark suppression',
             )
 
