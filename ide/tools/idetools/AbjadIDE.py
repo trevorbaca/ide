@@ -458,10 +458,10 @@ class AbjadIDE(abjad.AbjadObject):
         return tags
 
     def _get_persistent_indicator_color_suppression_tags(self, directory):
-        tags = self._color_instrument_tags['deactivate']
+        tags = []
         if directory.is_build():
-            tags += (baca.tags.REAPPLIED_INSTRUMENT,)
-        tags += tuple(baca.tags.metronome_mark_color_tags()['deactivate'])
+            tags.append(baca.tags.REAPPLIED_INSTRUMENT)
+        tags.extend(baca.tags.metronome_mark_color_tags()['deactivate'])
         return tags
 
     def _get_score_names(self):
@@ -1920,18 +1920,12 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         tags_ = self._color_instrument_tags['activate']
-        if directorty.is_build():
+        if directory.is_build():
             tags_ += (baca.tags.REAPPLIED_INSTRUMENT,)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color expression',
-            )
-        tags_ = self._color_instrument_tags['deactivate']
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color suppression',
             )
 
     @Command(
@@ -2367,12 +2361,6 @@ class AbjadIDE(abjad.AbjadObject):
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color expression',
-            )
-        tags_ = self._color_instrument_tags['deactivate']
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color suppression',
             )
 
     @Command(
