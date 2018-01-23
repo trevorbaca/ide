@@ -14,7 +14,7 @@ def test_AbjadIDE_paste_from_clipboard_01():
         target_2 = target_1.with_name('new-notes.txt')
         target_2.remove()
 
-        abjad_ide('red dd cp gram-no ss blue dd cv q')
+        abjad_ide('red dd cbc gram-no ss blue dd cbv q')
         transcript = abjad_ide.io.transcript
         assert source in abjad_ide.clipboard
         assert target_1.is_file()
@@ -24,7 +24,7 @@ def test_AbjadIDE_paste_from_clipboard_01():
         assert 'Pasting from clipboard ...' in transcript
         assert target_1.trim() in transcript
 
-        abjad_ide('red dd cp gram-no ss blue dd cv new-notes.txt q')
+        abjad_ide('red dd cbc gram-no ss blue dd cbv new-notes.txt q')
         transcript = abjad_ide.io.transcript
         assert target_2.is_file()
         assert 'Select files for clipboard> gram-no' in transcript

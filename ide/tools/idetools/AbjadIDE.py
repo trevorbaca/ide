@@ -2427,7 +2427,7 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'cp',
+        'cbc',
         description='clipboard - copy',
         external_directories=True,
         menu_section='clipboard',
@@ -2447,6 +2447,29 @@ class AbjadIDE(abjad.AbjadObject):
         for path in paths:
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
+
+    @Command(
+        'cbx',
+        description='clipboard - cut',
+        external_directories=True,
+        menu_section='clipboard',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def cut_to_clipboard(self, directory):
+        r'''Cuts to clipboard.
+
+        Returns none.
+        '''
+        paths = self._select_paths(directory, infinitive='for clipboard')
+        if self.is_navigation(paths):
+            return
+        assert isinstance(paths, list)
+        self.io.display('cutting to clipboard ...')
+        for path in paths:
+            self.io.display(path.trim(), raw=True)
+            self.clipboard.append(path)
+            path.remove()
 
     @Command(
         'annx',
@@ -2947,7 +2970,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(command)
 
     @Command(
-        'cx',
+        'cbe',
         description='clipboard - empty',
         external_directories=True,
         menu_section='clipboard',
@@ -4481,7 +4504,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(message)
 
     @Command(
-        'cv',
+        'cbv',
         description='clipboard - paste',
         external_directories=True,
         menu_section='clipboard',
@@ -4731,7 +4754,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(lines, raw=True)
 
     @Command(
-        'cs',
+        'cbs',
         description='clipboard - show',
         external_directories=True,
         menu_section='clipboard',
