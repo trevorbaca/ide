@@ -47,25 +47,6 @@ class AbjadIDE(abjad.AbjadObject):
         '_test',
         )
 
-    _color_instrument_tags = {
-        'activate': (
-            baca.tags.DEFAULT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.tags.DEFAULT_INSTRUMENT_COLOR,
-            baca.tags.REDRAWN_DEFAULT_INSTRUMENT_COLOR,
-            baca.tags.EXPLICIT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.tags.EXPLICIT_INSTRUMENT_COLOR,
-            baca.tags.REDRAWN_EXPLICIT_INSTRUMENT_COLOR,
-            baca.tags.REAPPLIED_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.tags.REAPPLIED_INSTRUMENT_COLOR,
-            baca.tags.REDRAWN_REAPPLIED_INSTRUMENT_COLOR,
-            baca.tags.REDUNDANT_INSTRUMENT_ALERT_WITH_COLOR,
-            baca.tags.REDUNDANT_INSTRUMENT_COLOR,
-            baca.tags.REDRAWN_REDUNDANT_INSTRUMENT_COLOR,
-            ),
-        'deactivate': (
-            ),
-        }
-
     configuration = Configuration()
 
     # lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
@@ -450,7 +431,7 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_build():
             tags.append(baca.tags.REAPPLIED_CLEF)
         tags += baca.tags.dynamic_color_tags()
-        tags += list(self._color_instrument_tags['activate'])
+        tags += list(baca.tags.instrument_color_tags())
         tags += list(baca.tags.margin_markup_color_tags()['activate'])
         tags += list(baca.tags.metronome_mark_color_tags()['activate'])
         tags += list(baca.tags.staff_lines_color_tags())
@@ -1919,13 +1900,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_instrument_tags['activate']
+        tags_ = baca.tags.instrument_color_tags()
         if directory.is_build():
-            tags_ += (baca.tags.REAPPLIED_INSTRUMENT,)
+            tags_.append(baca.tags.REAPPLIED_INSTRUMENT)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color expression',
+            'instrument color',
             )
 
     @Command(
@@ -2356,11 +2337,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        tags_ = self._color_instrument_tags['activate']
+        tags_ = baca.tags.instrument_color_tags()
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color expression',
+            'instrument color',
             )
 
     @Command(
