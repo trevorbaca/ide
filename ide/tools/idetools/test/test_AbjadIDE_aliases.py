@@ -10,7 +10,7 @@ def test_AbjadIDE_aliases_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('fab mm metronome sti q')
+    abjad_ide('fab mm metronome str q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
@@ -28,7 +28,7 @@ def test_AbjadIDE_aliases_02():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('sti q')
+    abjad_ide('str q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

@@ -12,7 +12,7 @@ def test_AbjadIDE_generate_part_tex_01():
         path = parts('bass-clarinet-part.tex')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-parts ag bass q')
+        abjad_ide('gre bb arch-a-parts ptg bass q')
         transcript = abjad_ide.io.transcript
         assert f'Writing {path.trim()} ...' in transcript
         assert path.is_file()

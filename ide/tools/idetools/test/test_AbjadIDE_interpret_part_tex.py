@@ -25,7 +25,7 @@ def test_AbjadIDE_interpret_part_tex_01():
             ]:
             abjad_ide._copy_boilerplate(parts, 'blank.pdf', name)
 
-        abjad_ide('gre bb arch ai bass q')
+        abjad_ide('gre bb arch pti bass q')
         transcript = abjad_ide.io.transcript
         assert f'Interpreting {part_tex.trim()} ...' in transcript
         assert parts.exists()

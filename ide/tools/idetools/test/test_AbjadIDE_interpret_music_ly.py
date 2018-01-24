@@ -9,7 +9,7 @@ def test_AbjadIDE_interpret_music_ly_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red %letter ggc mi q')
+        abjad_ide('red %letter ggc mli q')
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -17,7 +17,7 @@ def test_AbjadIDE_interpret_music_ly_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red %letter mi q')
+        abjad_ide('red %letter mli q')
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript

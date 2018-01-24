@@ -16,7 +16,7 @@ def test_AbjadIDE_build_part_pdf_01():
 
         abjad_ide(
             'gre bb parts arch-a-parts arch~a ARCH-A y'
-            ' arch-a-parts apb bass q'
+            ' arch-a-parts ppb bass q'
             )
         lines = abjad_ide.io.transcript.lines
         index = lines.index('Match name> bass')

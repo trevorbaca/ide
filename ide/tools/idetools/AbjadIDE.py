@@ -1900,34 +1900,6 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'ylb',
-        description='layout.ly - b&w',
-        menu_section='layout',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_layout_ly(self, directory):
-        r'''Renders layout.ly file in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        name, verb = 'layout.ly', 'color'
-        if directory.is_parts():
-            paths = self._match_paths_in_buildspace(directory, name, verb)
-        else:
-            paths = [directory(name)]
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
-        for path in paths:
-            self.deactivate(
-                path,
-                lambda tags: bool(set(tags) & set(tags_)),
-                'spacing markup',
-                )
-
-    @Command(
         'bwmm',
         description='b&w - MARGIN MARKUP',
         menu_section='bw',
@@ -2005,7 +1977,7 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'apb',
+        'ppb',
         description='part.pdf - build',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -2055,7 +2027,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files([path])
 
     @Command(
-        'rpb',
+        'spb',
         description='score.pdf - build',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -2320,34 +2292,6 @@ class AbjadIDE(abjad.AbjadObject):
             lambda tags: bool(set(tags) & set(tags_)),
             'instrument color',
             )
-
-    @Command(
-        'ylc',
-        description='layout.ly - color',
-        menu_section='layout',
-        score_package_paths=('buildspace',),
-        )
-    def color_layout_ly(self, directory):
-        r'''Colors layout.ly file.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        name, verb = 'layout.ly', 'color'
-        if directory.is_parts():
-            paths = self._match_paths_in_buildspace(directory, name, verb)
-        else:
-            paths = [directory(name)]
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
-        for path in paths:
-            self.activate(
-                path,
-                lambda tags: bool(set(tags) & set(tags_)),
-                'spacing markup',
-                )
 
     @Command(
         'clmm',
@@ -2720,7 +2664,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(files)
 
     @Command(
-        'bce',
+        'bcte',
         description='back-cover.tex - edit',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
@@ -2759,7 +2703,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(paths)
 
     @Command(
-        'fce',
+        'fcte',
         description='front-cover.tex - edit',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
@@ -2814,7 +2758,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'yle',
+        'lle',
         description='layout.ly - edit',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -2831,7 +2775,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ype',
+        'lpe',
         description='layout.py - edit',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -2863,7 +2807,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'me',
+        'mle',
         description='music.ly - edit',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
@@ -2880,7 +2824,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ae',
+        'pte',
         description='part.tex - edit',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -2898,7 +2842,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'pe',
+        'pfte',
         description='preface.tex - edit',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -2915,7 +2859,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        're',
+        'ste',
         description='score.tex - edit',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -2932,7 +2876,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files([path])
 
     @Command(
-        'ye',
+        'ssie',
         description='stylesheet.ily - edit',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),
@@ -3006,7 +2950,7 @@ class AbjadIDE(abjad.AbjadObject):
         pass
 
     @Command(
-        'bcg',
+        'bctg',
         description='back-cover.tex - generate',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
@@ -3036,7 +2980,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_back_cover(path, price=price)
 
     @Command(
-        'fcg',
+        'fctg',
         description='front-cover.tex - generate',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
@@ -3068,7 +3012,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_front_cover(path, forces_tagline=forces_tagline)
 
     @Command(
-        'ypg',
+        'lpg',
         description='layout.py - generate',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -3113,7 +3057,7 @@ class AbjadIDE(abjad.AbjadObject):
                 )
 
     @Command(
-        'mg',
+        'mlg',
         description='music.ly - generate',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
@@ -3149,7 +3093,7 @@ class AbjadIDE(abjad.AbjadObject):
                 )
 
     @Command(
-        'ag',
+        'ptg',
         description='part.tex - generate',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -3172,7 +3116,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_part(path, dashed_part_name)
 
     @Command(
-        'pg',
+        'pftg',
         description='preface.tex - generate',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -3200,7 +3144,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_preface(path)
 
     @Command(
-        'rg',
+        'stg',
         description='score.tex - generate',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -3218,7 +3162,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._generate_document(path)
 
     @Command(
-        'yg',
+        'ssig',
         description='stylesheet.ily - generate',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),
@@ -3893,7 +3837,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
-        'bci',
+        'bcti',
         description='back-cover.tex - interpret',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
@@ -3917,7 +3861,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'fci',
+        'fcti',
         description='front-cover.tex - interpret',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
@@ -3975,7 +3919,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(timer.total_time_message)
 
     @Command(
-        'mi',
+        'mli',
         description='music.ly - interpret',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
@@ -3999,7 +3943,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'ai',
+        'pti',
         description='part.tex - interpret',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -4022,7 +3966,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'pi',
+        'pfti',
         description='preface.tex - interpret',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -4046,7 +3990,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
 
     @Command(
-        'ri',
+        'sti',
         description='score.tex - interpret',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -4131,7 +4075,7 @@ class AbjadIDE(abjad.AbjadObject):
             return exit
 
     @Command(
-        'ylm',
+        'llm',
         description='layout.ly - make',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -4433,7 +4377,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'apo',
+        'ppo',
         description='part.pdf - open',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -4450,7 +4394,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'ppo',
+        'pfpo',
         description='preface.pdf - open',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -4468,7 +4412,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._open_files(paths)
 
     @Command(
-        'rpo',
+        'spo',
         description='score.pdf - open',
         menu_section='score',
         score_package_paths=True,
@@ -4907,7 +4851,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'bct',
+        'bctt',
         description='back-cover.tex - trash',
         menu_section='back cover',
         score_package_paths=('_segments', 'build',),
@@ -4966,7 +4910,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'fct',
+        'fctt',
         description='front-cover.tex - trash',
         menu_section='front cover',
         score_package_paths=('_segments', 'build',),
@@ -5024,7 +4968,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.trash_illustration_pdf(path)
 
     @Command(
-        'ylt',
+        'llt',
         description='layout.ly - trash',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -5044,7 +4988,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'ypt',
+        'lpt',
         description='layout.py - trash',
         menu_section='layout',
         score_package_paths=('buildspace',),
@@ -5064,7 +5008,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'mt',
+        'mlt',
         description='music.ly - trash',
         menu_section='music',
         score_package_paths=('_segments', 'build',),
@@ -5100,7 +5044,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'apt',
+        'ppt',
         description='part.pdf - trash',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -5116,7 +5060,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'at',
+        'ptt',
         description='part.tex - trash',
         menu_section='parts',
         score_package_paths=('parts',),
@@ -5132,7 +5076,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'ppt',
+        'pfpt',
         description='preface.pdf - trash',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -5152,7 +5096,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'pt',
+        'pftt',
         description='preface.tex - trash',
         menu_section='preface',
         score_package_paths=('_segments', 'build',),
@@ -5172,7 +5116,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._trash_files(paths)
 
     @Command(
-        'rpt',
+        'spt',
         description='score.pdf - trash',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -5188,7 +5132,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._trash_files(path)
 
     @Command(
-        'rt',
+        'stt',
         description='score.tex - trash',
         menu_section='score',
         score_package_path_blacklist=('parts',),
@@ -5204,7 +5148,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._trash_files(path)
 
     @Command(
-        'yt',
+        'ssit',
         description='stylesheet.ily - trash',
         menu_section='stylesheet',
         score_package_paths=('_segments', 'build',),

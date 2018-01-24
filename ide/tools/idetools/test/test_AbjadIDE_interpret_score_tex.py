@@ -16,7 +16,7 @@ def test_AbjadIDE_interpret_score_tex_01():
         target = source.with_suffix('.pdf')
         target.remove()
 
-        abjad_ide('red %letter fci pi mi bci ri q')
+        abjad_ide('red %letter fcti pfti mli bcti sti q')
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -24,7 +24,7 @@ def test_AbjadIDE_interpret_score_tex_01():
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
-        abjad_ide('red bb letter fci pi mi bci ri q')
+        abjad_ide('red bb letter fcti pfti mli bcti sti q')
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
@@ -34,14 +34,14 @@ def test_AbjadIDE_interpret_score_tex_01():
 
 
 def test_AbjadIDE_interpret_score_tex_02():
-    r'''LaTeX error does not freeze IDE.
+    r'''LaTeX error does not freeze IDE; runs in nonstop mode.
     '''
 
     with ide.Test():
-        pdf = ide.Path(
-            'red_score', 'builds', 'letter-score', 'front-cover.pdf')
-        pdf.remove()
+        path = ide.Path('red_score', 'builds', 'letter-score')
+        path /= 'front-cover.pdf'
+        path.remove()
 
-        abjad_ide('red %letter ri q')
+        abjad_ide('red %letter sti q')
         transcript = abjad_ide.io.transcript
         assert 'ERROR IN LATEX LOG FILE ...' in transcript

@@ -17,6 +17,6 @@ def test_AbjadIDE_open_part_pdf_01():
         path.write_text('')
         assert path.is_file()
 
-        abjad_ide('gre bb arch-a-parts apo bass q')
+        abjad_ide('gre bb arch-a-parts ppo bass q')
         transcript = abjad_ide.io.transcript
         assert f'Opening {path.trim()} ...' in transcript

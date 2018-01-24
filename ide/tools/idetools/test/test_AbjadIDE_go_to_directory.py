@@ -9,7 +9,7 @@ def test_AbjadIDE_go_to_directory_01():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('ll %sti q')
+    abjad_ide('ll %str q')
     transcript = abjad_ide.io.transcript 
     assert 'Abjad IDE : library' in transcript.titles
     assert 'Stirrings Still (2017)' in transcript.titles
