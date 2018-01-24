@@ -1272,7 +1272,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'matching {address!r} to {count} {counter} ...')
             for file_ in files:
                 self.io.display(file_.trim(), raw=True)
-            self.io.display(f"narrow search or use {2*prefix!r} for all ...")
+            result = files[0]
         return address, result
 
     @staticmethod

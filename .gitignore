@@ -57,3 +57,6 @@ illustration.pdf
 music.pdf
 preface.pdf
 score.pdf
+
+# mypy
+.mypy_cache

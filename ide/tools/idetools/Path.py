@@ -155,8 +155,6 @@ class Path(abjad.Path):
                     continue
                 if path.suffix in self.configuration.noneditor_suffixes:
                     continue
-                if path.name.startswith('test'):
-                    continue
                 files.append(path)
                 strings.append(path.name)
         else:

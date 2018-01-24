@@ -161,4 +161,3 @@ def test_AbjadIDE_smart_edit_12():
     transcript = abjad_ide.io.transcript 
     path = ide.Path('akasha')
     assert "Matching '@aka' to " in transcript
-    assert "Narrow search or use '@@' for all ..." in transcript
