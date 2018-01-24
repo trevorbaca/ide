@@ -1,12 +1,12 @@
 import abjad
 
 
-metadata = abjad.TypedOrderedDict(
+metadata = abjad.OrderedDict(
     [
         ('composer', 'Bača'),
         (
             'fermata_measure_numbers',
-            abjad.TypedOrderedDict(
+            abjad.OrderedDict(
                 [
                     (
                         '_',
@@ -17,7 +17,7 @@ metadata = abjad.TypedOrderedDict(
             ),
         (
             'time_signatures',
-            abjad.TypedOrderedDict(
+            abjad.OrderedDict(
                 [
                     (
                         '_',

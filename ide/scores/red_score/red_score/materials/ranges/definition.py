@@ -1,7 +1,7 @@
 import abjad
 
 
-ranges = abjad.TypedOrderedDict(
+ranges = abjad.OrderedDict(
     [
         (
             'low',

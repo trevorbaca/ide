@@ -8,7 +8,7 @@ class ScoreTemplate(abjad.AbjadObject):
     ### INITIALIZER ###
 
     def __init__(self):
-        dictionary = abjad.TypedOrderedDict()
+        dictionary = abjad.OrderedDict()
         self.context_name_abbreviations = dictionary
 
     ### SPECIAL METHODS ###

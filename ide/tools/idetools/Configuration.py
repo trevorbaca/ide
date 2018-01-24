@@ -97,7 +97,7 @@ class Configuration(abjad.Configuration):
         if path.is_file():
             text = path.read_text()
             exec(text, globals_)
-        aliases = globals_.get('aliases') or abjad.TypedOrderedDict()
+        aliases = globals_.get('aliases') or abjad.OrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
@@ -109,7 +109,7 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().aliases
-            TypedOrderedDict(...)
+            OrderedDict(...)
 
         Returns ordered dictionary.
         '''

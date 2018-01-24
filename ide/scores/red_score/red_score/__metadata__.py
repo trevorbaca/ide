@@ -1,19 +1,19 @@
 import abjad
 
 
-metadata = abjad.TypedOrderedDict(
+metadata = abjad.OrderedDict(
     [
         ('catalog_number', '\\#165'),
         (
             'fermata_measure_numbers',
-            abjad.TypedOrderedDict(
+            abjad.OrderedDict(
                 []
                 ),
             ),
         ('forces_tagline', 'for piano'),
         (
             'time_signatures',
-            abjad.TypedOrderedDict(
+            abjad.OrderedDict(
                 [
                     ('_', ['18/4', '18/4']),
                     ('A', ['3/4', '3/4', '3/4', '3/4', '3/4']),

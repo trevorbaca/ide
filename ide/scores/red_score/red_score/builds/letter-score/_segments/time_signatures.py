@@ -1,4 +1,4 @@
-time_signatures = abjad.TypedOrderedDict(
+time_signatures = abjad.OrderedDict(
     [
         ('_', None),
         ('A', None),

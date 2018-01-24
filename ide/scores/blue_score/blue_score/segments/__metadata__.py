@@ -1,6 +1,6 @@
 import abjad
 
 
-metadata = abjad.TypedOrderedDict([
+metadata = abjad.OrderedDict([
     ('view', ['A', '_']),
     ])

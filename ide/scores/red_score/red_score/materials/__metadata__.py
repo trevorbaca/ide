@@ -1,6 +1,6 @@
 import abjad
 
 
-metadata = abjad.TypedOrderedDict([
+metadata = abjad.OrderedDict([
     ('view', ["'inventory' in :ds:", "'inventory' not in :ds:"]),
     ])

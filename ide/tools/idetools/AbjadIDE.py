@@ -835,7 +835,7 @@ class AbjadIDE(abjad.AbjadObject):
         if path.is_segment():
             target = path('__metadata__.py')
             self.io.display(f'writing {target.trim()} ...')
-            text = 'import abjad\n\n\nmetadata = abjad.TypedOrderedDict()'
+            text = 'import abjad\n\n\nmetadata = abjad.OrderedDict()'
             target.write_text(text)
         target = path('definition.py')
         self.io.display(f'writing {target.trim()} ...')
@@ -891,7 +891,7 @@ class AbjadIDE(abjad.AbjadObject):
         if not score.builds._assets.exists():
             self._make__assets_directory(score.builds)
         if not score.builds('__metadata__.py').is_file():
-            score.builds.write_metadata_py(abjad.TypedOrderedDict())
+            score.builds.write_metadata_py(abjad.OrderedDict())
 
     def _make_segment_ly(self, directory):
         assert directory.is_segment()
@@ -2164,8 +2164,8 @@ class AbjadIDE(abjad.AbjadObject):
             return
         self._make__assets_directory(directory)
         self._make__segments_directory(directory)
-        fermata_measure_numbers = abjad.TypedOrderedDict()
-        time_signatures = abjad.TypedOrderedDict()
+        fermata_measure_numbers = abjad.OrderedDict()
+        time_signatures = abjad.OrderedDict()
         for source, target in pairs:
             if target.exists():
                 self.io.display(f'removing {target.trim()} ...')
@@ -3522,7 +3522,7 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory.builds._assets.exists():
             self._make__assets_directory(directory.builds)
         if not directory.builds('__metadata__.py').is_file():
-            directory.builds.write_metadata_py(abjad.TypedOrderedDict())
+            directory.builds.write_metadata_py(abjad.OrderedDict())
         self._manage_directory(directory.builds())
 
     @Command(

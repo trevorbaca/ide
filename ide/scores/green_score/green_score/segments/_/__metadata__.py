@@ -1,7 +1,7 @@
 import abjad
 
 
-metadata = abjad.TypedOrderedDict(
+metadata = abjad.OrderedDict(
     [
         (
             'bol_measure_numbers',
@@ -17,7 +17,7 @@ metadata = abjad.TypedOrderedDict(
         ('last_measure_number', 2),
         (
             'persistent_indicators',
-            abjad.TypedOrderedDict(
+            abjad.OrderedDict(
                 [
                     (
                         'BassClarinetMusicStaff',
