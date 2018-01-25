@@ -1724,14 +1724,14 @@ class AbjadIDE(abjad.AbjadObject):
         'ann',
         description=f'all score annotations - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_all_score_annotations(self, directory):
         r'''Activates all score annotations.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = abjad.tags.all_score_annotation_tags()
         self.activate(
             directory,
@@ -1743,56 +1743,70 @@ class AbjadIDE(abjad.AbjadObject):
         'ctm',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_clock_time_markup(self, directory):
         r'''Activates clock time markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(directory, abjad.tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'fnm',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_figure_name_markup(self, directory):
         r'''Activates figure name markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(directory, abjad.tags.FIGURE_NAME_MARKUP)
+
+    @Command(
+        'mim',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - activate',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def activate_measure_index_markup(self, directory):
+        r'''Activates measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(directory, abjad.tags.MEASURE_INDEX_MARKUP)
 
     @Command(
         'mnm',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_measure_number_markup(self, directory):
         r'''Activates measure number markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
 
     @Command(
         'spm',
         description=f'{abjad.tags.SPACING_MARKUP} - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_spacing_markup(self, directory):
         r'''Activates spacing markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
@@ -1807,28 +1821,28 @@ class AbjadIDE(abjad.AbjadObject):
         'snm',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - activate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def activate_stage_number_markup(self, directory):
         r'''Activates stage number markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
 
     @Command(
         'bw*',
         description='b&w - all persistent indicators',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_all_persistent_indicators(self, directory):
         r'''Renders all persistent indicators in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
         self.deactivate(
             directory,
@@ -1845,14 +1859,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwc',
         description='b&w - CLEFS',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_clefs(self, directory):
         r'''Renders clefs in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.clef_color_tags(directory)
         self.deactivate(
             directory,
@@ -1864,14 +1878,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwd',
         description='b&w - DYNAMICS',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_dynamics(self, directory):
         r'''Renders dynamics in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(
             directory,
             baca.tags.dynamic_color_match,
@@ -1882,14 +1896,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwi',
         description='b&w - INSTRUMENTS',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_instruments(self, directory):
         r'''Renders instruments in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.instrument_color_tags()
         if directory.is_build():
             tags_.append(baca.tags.REAPPLIED_INSTRUMENT)
@@ -1903,14 +1917,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwmm',
         description='b&w - MARGIN MARKUP',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_margin_markup(self, directory):
         r'''Renders margin markup in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(
             directory,
             baca.tags.margin_markup_color_expression_match,
@@ -1921,14 +1935,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwtm',
         description='b&w - METRONOME MARKS',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_metronome_marks(self, directory):
         r'''Renders metronome marks in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(
             directory,
             baca.tags.metronome_mark_color_suppression_match,
@@ -1944,14 +1958,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwsl',
         description='b&w - STAFF LINES',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_staff_lines(self, directory):
         r'''Renders staff lines in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(
             directory,
             baca.tags.staff_lines_color_match,
@@ -1962,14 +1976,14 @@ class AbjadIDE(abjad.AbjadObject):
         'bwts',
         description='b&w - TIME SIGNATURES',
         menu_section='bw',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def black_and_white_time_signatures(self, directory):
         r'''Renders time signatures in black and white.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(
             directory,
             baca.tags.time_signature_color_match,
@@ -2217,14 +2231,14 @@ class AbjadIDE(abjad.AbjadObject):
         'cl*',
         description='color - all persistent indicators',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_all_persistent_indicators(self, directory):
         r'''Colors all persistent indicators.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
         self.activate(
             directory,
@@ -2241,14 +2255,14 @@ class AbjadIDE(abjad.AbjadObject):
         'clc',
         description='color - CLEFS',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_clefs(self, directory):
         r'''Colors clefs.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.clef_color_tags(directory)
         self.activate(
             directory,
@@ -2260,14 +2274,14 @@ class AbjadIDE(abjad.AbjadObject):
         'cld',
         description='color - DYNAMICS',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_dynamics(self, directory):
         r'''Colors dynamics.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(
             directory,
             baca.tags.dynamic_color_match,
@@ -2278,14 +2292,14 @@ class AbjadIDE(abjad.AbjadObject):
         'cli',
         description='color - INSTRUMENTS',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_instruments(self, directory):
         r'''Colors instruments.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = baca.tags.instrument_color_tags()
         self.activate(
             directory,
@@ -2297,7 +2311,7 @@ class AbjadIDE(abjad.AbjadObject):
         'clmm',
         description='color - MARGIN MARKUP',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_margin_markup(self, directory):
         r'''Colors margin markup.
@@ -2315,14 +2329,14 @@ class AbjadIDE(abjad.AbjadObject):
         'cltm',
         description='color - METRONOME MARKS',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_metronome_marks(self, directory):
         r'''Colors metronome marks.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(
             directory,
             baca.tags.metronome_mark_color_expression_match,
@@ -2338,14 +2352,14 @@ class AbjadIDE(abjad.AbjadObject):
         'clsl',
         description='color - STAFF LINES',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_staff_lines(self, directory):
         r'''Colors staff lines.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(
             directory,
             baca.tags.staff_lines_color_match,
@@ -2356,14 +2370,14 @@ class AbjadIDE(abjad.AbjadObject):
         'clts',
         description='color - TIME SIGNATURES',
         menu_section='color',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def color_time_signatures(self, directory):
         r'''Colors time signatures.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.activate(
             directory,
             baca.tags.time_signature_color_match,
@@ -2419,14 +2433,14 @@ class AbjadIDE(abjad.AbjadObject):
         'annx',
         description=f'all score annotations - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_all_score_annotations(self, directory):
         r'''Deactivates all score annotations.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = abjad.tags.all_score_annotation_tags()
         self.deactivate(
             directory,
@@ -2438,56 +2452,70 @@ class AbjadIDE(abjad.AbjadObject):
         'ctmx',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_clock_time_markup(self, directory):
         r'''Deactivates clock time markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(directory, abjad.tags.CLOCK_TIME_MARKUP)
 
     @Command(
         'fnmx',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_figure_name_markup(self, directory):
         r'''Deactivates figure name markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(directory, abjad.tags.FIGURE_NAME_MARKUP)
+
+    @Command(
+        'mimx',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - deactivate',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def deactivate_measure_index_markup(self, directory):
+        r'''Deactivates measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(directory, abjad.tags.MEASURE_INDEX_MARKUP)
 
     @Command(
         'mnmx',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_measure_number_markup(self, directory):
         r'''Deactivates measure number markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
 
     @Command(
         'spmx',
         description=f'{abjad.tags.SPACING_MARKUP} - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_spacing_markup(self, directory):
         r'''Deactivates spacing markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         tags_ = (
             abjad.tags.SPACING_MARKUP,
             abjad.tags.SPACING_OVERRIDE_MARKUP,
@@ -2502,14 +2530,14 @@ class AbjadIDE(abjad.AbjadObject):
         'snmx',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - deactivate',
         menu_section='markup',
-        score_package_paths=('_segments', 'build', 'segment', 'segments'),
+        score_package_paths=('buildspace',),
         )
     def deactivate_stage_number_markup(self, directory):
         r'''Deactivates stage number markup.
 
         Returns none.
         '''
-        assert directory.is_score_package_path()
+        assert directory.is_buildspace()
         self.deactivate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
 
     @Command(
