@@ -33,7 +33,7 @@ def test_AbjadIDE_make_layout_ly_02():
         assert not parts.exists()
         path = parts('bass-clarinet-layout.ly')
 
-        abjad_ide('gre bb parts arch-a-parts arch~a ARCH-A y q')
+        abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
         assert parts.exists()
         assert not path.exists()
 

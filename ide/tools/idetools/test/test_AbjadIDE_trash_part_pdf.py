@@ -9,7 +9,7 @@ def test_AbjadIDE_trash_part_pdf_01():
         path = parts('bass-clarinet-part.pdf')
         assert not parts.exists()
 
-        abjad_ide('gre bb parts arch-a-parts arch~a ARCH-A y q')
+        abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
         assert parts.exists()
 
         path.write_text('')

@@ -4106,17 +4106,7 @@ class AbjadIDE(abjad.AbjadObject):
             if 0 < total and i < total - 1:
                 self.io.display('')
 
-    @Command(
-        'parts',
-        description='parts - new',
-        menu_section='parts',
-        score_package_paths=('builds',),
-        )
-    def make_parts_directory(self, directory):
-        r'''Makes parts directory.
-
-        Returns none.
-        '''
+    def _make_parts_directory(self, directory):
         assert directory.is_builds()
         self.io.display('getting part names from score template ...')
         result = directory._get_part_names()
@@ -4278,7 +4268,13 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         if directory.is_builds():
-            self._make_build_directory(directory)
+            type_ = self.io.get('score or parts?')
+            if self.is_navigation(type_):
+                return
+            if type_ == 'score':
+                self._make_build_directory(directory)
+            elif type_ == 'parts':
+                self._make_parts_directory(directory)
         elif directory.is_materials_or_segments():
             self._make_package(directory)
         elif directory.is_scores():

@@ -8,7 +8,7 @@ def test_AbjadIDE_generate_part_tex_01():
         parts = ide.Path('green_score', 'builds', 'arch-a-parts')
         assert not parts.exists()
 
-        abjad_ide('gre bb parts arch-a-parts arch~a ARCH-A y q')
+        abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
         path = parts('bass-clarinet-part.tex')
         assert path.is_file()
         

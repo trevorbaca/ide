@@ -9,7 +9,7 @@ def test_AbjadIDE_edit_part_tex_01():
         assert not parts.exists()
 
         abjad_ide(
-            'gre bb parts arch-a-parts arch~a ARCH-A y arch-a pte bass q'
+            'gre bb new parts arch-a-parts arch~a ARCH-A y arch-a pte bass q'
             )
         transcript = abjad_ide.io.transcript
         path = parts('bass-clarinet-part.tex')

@@ -12,7 +12,7 @@ def test_AbjadIDE_interpret_part_tex_01():
         assert not part_tex.exists()
         assert not part_pdf.exists()
 
-        abjad_ide('gre bb parts arch-a-parts arch~a ARCH-A y q')
+        abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
         assert parts.exists()
         assert part_tex.is_file()
         assert not part_pdf.exists()

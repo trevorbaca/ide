@@ -15,7 +15,7 @@ def test_AbjadIDE_build_part_pdf_01():
         assert not parts.exists()
 
         abjad_ide(
-            'gre bb parts arch-a-parts arch~a ARCH-A y'
+            'gre bb new parts arch-a-parts arch~a ARCH-A y'
             ' arch-a-parts ppb bass q'
             )
         lines = abjad_ide.io.transcript.lines

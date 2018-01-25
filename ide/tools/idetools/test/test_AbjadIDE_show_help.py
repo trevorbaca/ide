@@ -446,8 +446,6 @@ def test_AbjadIDE_show_help_04():
         '    log - latex (lx)',
         '    log - lilypond (lp)',
         '',
-        '    parts - new (parts)',
-        '',
         '    path - duplicate (dup)',
         '    path - get (get)',
         '    path - new (new)',
