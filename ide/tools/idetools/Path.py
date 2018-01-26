@@ -422,18 +422,6 @@ class Path(abjad.Path):
             parts[-1] += ' (empty)'
         return ' : '.join(parts)
 
-    def is_buildspace(self):
-        r'''Is true when path is any of _segments, build, builds, segment or
-        segments directories.
-
-        Returns true or false.
-        '''
-        if self.is_build() or self.is_builds():
-            return True
-        if self.is__segments() or self.is_segment() or self.is_segments():
-            return True
-        return False
-
     def is_external(self):
         r'''Is true when path does not have form of score package path.
 
@@ -475,22 +463,6 @@ class Path(abjad.Path):
             if str(self).startswith(str(scores)):
                 return False
         return True
-
-    def is_illustrationspace(self):
-        r'''Is true when path is any of material, materials, segment or
-        segments directories.
-
-        Returns true or false.
-        '''
-        if self.is_material():
-            return True
-        if self.is_materials():
-            return True
-        if self.is_segment():
-            return True
-        if self.is_segments():
-            return True
-        return False
 
     def is_prototype(self, prototype):
         r'''Is true when path is `prototype`.
