@@ -128,10 +128,14 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _collect_segments(self, directory):
         paths = sorted(directory.segments.iterdir())
-        names = [_.name for _ in paths]
-        if '_' in names:
-            names.remove('_')
-            names.insert(0, '_')
+        introduction_names, other_names = [], []
+        for path in paths:
+            name = path.name
+            if name.startswith('_'):
+                introduction_names.append(name)
+            else:
+                other_names.append(name)
+        names = introduction_names + other_names
         sources, targets = [], []
         for name in names:
             source = directory.segments(name, 'illustration.ly')
