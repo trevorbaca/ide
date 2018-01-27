@@ -1,6 +1,6 @@
 import abjad
-from ide.tools.idetools.Configuration import Configuration
-from ide.tools.idetools.MenuEntry import MenuEntry
+from .Configuration import Configuration
+from .MenuEntry import MenuEntry
 
 
 class MenuSection(abjad.AbjadObject):

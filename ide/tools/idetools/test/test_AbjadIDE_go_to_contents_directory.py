@@ -70,7 +70,7 @@ def test_AbjadIDE_go_to_contents_directory_05():
         'Blue Score (2017)',
         ]
 
-    abjad_ide('BS q')
+    abjad_ide('BSc q')
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',

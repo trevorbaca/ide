@@ -2,7 +2,7 @@ import abjad
 import collections
 import os
 import shutil
-from ide.tools.idetools.Configuration import Configuration
+from .Configuration import Configuration
 
 
 class Test(abjad.FilesystemState):

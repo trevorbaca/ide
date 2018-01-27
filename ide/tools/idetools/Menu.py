@@ -1,10 +1,10 @@
 import abjad
 import os
-from ide.tools.idetools.IO import IO
-from ide.tools.idetools.MenuEntry import MenuEntry
-from ide.tools.idetools.MenuSection import MenuSection
-from ide.tools.idetools.Path import Path
-from ide.tools.idetools.Response import Response
+from .IO import IO
+from .MenuEntry import MenuEntry
+from .MenuSection import MenuSection
+from .Path import Path
+from .Response import Response
 
 
 class Menu(abjad.AbjadObject):
@@ -115,7 +115,8 @@ class Menu(abjad.AbjadObject):
             string = prefix + string
         elif prefix:
             string = prefix
-        return Response(payload=payload, source=source, string=string)
+        #return Response(payload=payload, source=source, string=string)
+        return Response(payload=payload, string=string)
 
     def __getitem__(self, argument):
         r'''Gets section in menu.

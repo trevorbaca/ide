@@ -3,7 +3,7 @@ import baca
 import importlib
 import os
 import pathlib
-from ide.tools.idetools.Configuration import Configuration
+from .Configuration import Configuration
 
 
 class Path(abjad.Path):

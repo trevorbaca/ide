@@ -1122,6 +1122,8 @@ class AbjadIDE(abjad.AbjadObject):
         response = menu(dimensions=dimensions, redraw=redraw)
         if self.is_navigation(response.string):
             pass
+        elif response.is_segment_name():
+            self.go_to_directory(directory, response.string)
         elif response.is_address():
             self._handle_address(directory, response)
         elif response.is_command(self.commands):
@@ -3596,7 +3598,10 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_dir()
-        address = '%' + (pattern or '')
+        if Path.is_segment_name(pattern):
+            address = pattern
+        else:
+            address = '%' + (pattern or '')
         if self.aliases and pattern in self.aliases:
             path = Path(self.aliases[pattern])
             self.io.display(f'matching {address!r} to {path.trim()} ...')

@@ -1,6 +1,6 @@
 import abjad
 import os
-from ide.tools.idetools.Transcript import Transcript
+from .Transcript import Transcript
 
 
 class IO(abjad.AbjadObject):

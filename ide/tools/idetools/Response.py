@@ -1,16 +1,22 @@
 import abjad
-from ide.tools.idetools.Path import Path
+from typing import Optional
+from typing import Tuple
+from typing import Union as U
+from .Path import Path
 
 
 class Response(abjad.AbjadObject):
     r'''Response.
+
+    :param payload: delivered to IDE.
+
+    :param string: user input.
     '''
 
     ### CLASS VARIABLES ###
 
     __slots__ = (
         '_payload',
-        '_source',
         '_string',
         )
 
@@ -18,16 +24,11 @@ class Response(abjad.AbjadObject):
 
     def __init__(
         self,
-        payload=None,
-        source=None,
-        string=None,
-        ):
-        assert isinstance(payload, (str, list, Path, type(None)))
-        self._payload = payload
-        assert isinstance(source, (str, type(None))), repr(source)
-        self._source = source
-        assert isinstance(string, (str, type(None))), repr(string)
-        self._string = string
+        payload: Optional[U[str, list, Path]] = None,
+        string: str = None,
+        ) -> None:
+        self._payload: Optional[U[str, list, Path]] = payload
+        self._string: str = string
 
     ### PRIVATE METHODS ###
 
@@ -51,18 +52,14 @@ class Response(abjad.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def pair(self):
+    def pair(self) -> Tuple[str, str]:
         r'''Gets prefix / pattern pair.
-
-        Returns tuple.
         '''
         return self.prefix, self.pattern
 
     @property
-    def pattern(self):
+    def pattern(self) -> Optional[str]:
         r'''Gets pattern.
-
-        Returns string or none.
         '''
         if self._is_single_address():
             return self.string[1:]
@@ -71,18 +68,14 @@ class Response(abjad.AbjadObject):
         return self.string
 
     @property
-    def payload(self):
+    def payload(self) -> Optional[U[str, list, Path]]:
         r'''Gets payload.
-
-        Returns object or none.
         '''
         return self._payload
 
     @property
-    def prefix(self):
+    def prefix(self) -> str:
         r'''Gets prefix.
-
-        Returns string.
         '''
         if self._is_single_address():
             return self.string[:1]
@@ -91,52 +84,35 @@ class Response(abjad.AbjadObject):
         return ''
 
     @property
-    def source(self):
-        r'''Gets source.
-
-        Returns string or none.
-        '''
-        return self._source
-
-    @property
-    def string(self):
+    def string(self) -> str:
         r'''Gets string.
-
-        Returns string.
         '''
         return self._string
 
     ### PUBLIC METHODS ###
 
-    def get_path(self):
+    def get_path(self) -> Optional[Path]:
         r'''Gets path.
-
-        Returns path or none.
         '''
         if isinstance(self.payload, Path):
             return self.payload
         if (isinstance(self.payload, list) and
             isinstance(self.payload[0], Path)):
             return self.payload[0]
+        return None
 
-    def is_address(self):
+    def is_address(self) -> bool:
         r'''Is true when response is address.
-
-        Returns true or false.
         '''
         return bool(self.prefix)
 
-    def is_command(self, commands):
+    def is_command(self, commands) -> bool:
         r'''Is true when response is command.
-
-        Returns true or false.
         '''
         return str(self.payload) in commands
 
-    def is_path(self):
+    def is_path(self) -> bool:
         r'''Is true when response is path.
-
-        Returns true or false.
         '''
         if isinstance(self.payload, Path):
             return True
@@ -145,10 +121,13 @@ class Response(abjad.AbjadObject):
             return True
         return False
 
-    def is_shell(self):
-        r'''Is true when response is shell command.
+    def is_segment_name(self) -> bool:
+        r'''Is true when response is segment name.
+        '''
+        return Path.is_segment_name(self.string)
 
-        Returns true or false.
+    def is_shell(self) -> bool:
+        r'''Is true when response is shell command.
         '''
         if (self.string and
             self.string.startswith('!') and
