@@ -2197,6 +2197,8 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_build() or directory.is__segments()
         directory = directory.build
         self.io.display('collecting segment lys ...')
+        if not directory.is_parts():
+            self.generate_music_ly(directory)
         pairs = self._collect_segments(directory)
         if not pairs:
             self.io.display('... no segment lys found.')

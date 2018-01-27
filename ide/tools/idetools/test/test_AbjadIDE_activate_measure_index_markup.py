@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_measure_index_markup_01():
+def test_AbjadIDE_activate_measure_index_markup_01():
     r'''In build directory.
     '''
 
@@ -38,7 +38,7 @@ def test_AbjadIDE_measure_index_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_measure_index_markup_02():
+def test_AbjadIDE_activate_measure_index_markup_02():
     r'''In segment directory.
     '''
 

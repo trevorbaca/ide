@@ -17,6 +17,12 @@ def test_AbjadIDE_build_score_pdf_01():
         assert lines[index:] == [
             'Building score ...',
             'Collecting segment lys ...',
+            'Removing red_score/builds/letter-score/music.ly ...',
+            'Examining segments alphabetically ...',
+            'Examining red_score/segments/_ ...',
+            'Examining red_score/segments/A ...',
+            'Examining red_score/segments/B ...',
+            'Writing red_score/builds/letter-score/music.ly ...',
             'Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
             'Writing red_score/builds/letter-score/_segments/segment-A.ly ...',
             'Writing red_score/builds/letter-score/_segments/segment-B.ly ...',
