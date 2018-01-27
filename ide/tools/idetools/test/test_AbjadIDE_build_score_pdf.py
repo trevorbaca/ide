@@ -28,6 +28,8 @@ def test_AbjadIDE_build_score_pdf_01():
             'Found no persistent indicator color expression tags in letter-score ...',
             'Found no persistent indicator color suppression tags in letter-score ...',
             'Found no score annotation tags in letter-score ...',
+            'Found no broken spanner expression tags in letter-score ...',
+            'Found no broken spanner suppression tags in letter-score ...',
             '',
             'Removing red_score/builds/letter-score/music.ly ...',
             'Examining segments alphabetically ...',
