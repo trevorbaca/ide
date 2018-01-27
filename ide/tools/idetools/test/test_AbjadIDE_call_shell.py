@@ -49,3 +49,12 @@ def test_AbjadIDE_call_shell_05():
     abjad_ide('!ls~-a q')
     transcript = abjad_ide.io.transcript
     assert "Calling shell on 'ls -a' ..." in transcript
+
+
+def test_AbjadIDE_call_shell_06():
+    r'''Empty excalamation raises no exception.
+    '''
+
+    abjad_ide('! q')
+    transcript = abjad_ide.io.transcript
+    assert "Calling shell on '' ..." in transcript

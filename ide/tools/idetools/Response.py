@@ -109,7 +109,7 @@ class Response(abjad.AbjadObject):
     def is_command(self, commands) -> bool:
         r'''Is true when response is command.
         '''
-        return str(self.payload) in commands
+        return str(self.payload) in commands and self.string != '!'
 
     def is_path(self) -> bool:
         r'''Is true when response is path.
