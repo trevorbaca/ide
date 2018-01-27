@@ -557,6 +557,20 @@ class AbjadIDE(abjad.AbjadObject):
             target = source.with_suffix('.pdf')
             self._interpret_tex_file(source)
 
+    def _join_broken_spanners(self, directory):
+        assert directory.build is not None, repr(directory)
+        tags_ = baca.tags.all_broken_spanner_tags()
+        self.activate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_['activate'])),
+            'broken spanner expression',
+            )
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
+            'broken spanner suppression',
+            )
+
     @staticmethod
     def _make__assets_directory(directory):
         if directory._assets.exists():
@@ -2226,6 +2240,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(message)
         self.black_and_white_all_persistent_indicators(directory)
         self.deactivate_all_score_annotations(directory)
+        self._join_broken_spanners(directory)
 
     @Command(
         'cl*',
