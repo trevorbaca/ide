@@ -858,6 +858,11 @@ class AbjadIDE(abjad.AbjadObject):
         target = path('definition.py')
         self.io.display(f'writing {target.trim()} ...')
         target.write_text('')
+        self._copy_boilerplate(
+            path,
+            'segment_layout.py',
+            target_name='layout.py',
+            )
         paths = path.parent.list_paths()
         if path not in paths:
             view = path.parent.get_metadatum('view')

@@ -400,6 +400,7 @@ def test_AbjadIDE_new_08():
             '__init__.py',
             '__metadata__.py',
             'definition.py',
+            'layout.py',
             ]
         for name in names:
             assert (path / name).is_file()
