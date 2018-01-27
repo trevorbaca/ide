@@ -2157,15 +2157,15 @@ class AbjadIDE(abjad.AbjadObject):
     def collect_segments(self, directory):
         r'''Collects segment lys.
 
-        Copies from segment directories to build/_segments directory.
+        Copies from illustration.ly files from segment directories to
+        build/_segments directory.
 
-        Trims top-level comments.
+        Trims top-level comments, head block, paper block from each
+        illustration.ly file.
 
-        Keeps includes and directives from each ly.
+        Keeps score block in each illustration.ly file.
 
-        Trims header and paper block from each ly.
-
-        Keeps score block in each ly.
+        Activates and deactivates build-appropriate tags.
 
         Returns none.
         '''

@@ -29,7 +29,6 @@ before_install:
     - echo `git branch`
     - cd ..
     - pip install --upgrade pip
-    - pip install coveralls
     - pip install coverage
     - which latex
     - which xetex
@@ -51,7 +50,8 @@ script:
     - coverage run -a `which ajv` doctest ide
     - coverage run -a `which py.test` -rf ide
     - ajv api -RI
-    - mypy ide
+    #- mypy ide
 
 after_success:
-    coveralls
+    - pip install coveralls
+    - coveralls
