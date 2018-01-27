@@ -3609,6 +3609,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_dir()
         if Path.is_segment_name(pattern):
             address = pattern
+            #raise Exception(pattern, payload)
         else:
             address = '%' + (pattern or '')
         if self.aliases and pattern in self.aliases:
@@ -3653,6 +3654,11 @@ class AbjadIDE(abjad.AbjadObject):
         if isinstance(pattern, str):
             indices = abjad.String.match_strings(strings, pattern)
             paths = abjad.Sequence(paths).retain(indices)
+            for index, path in zip(indices, paths):
+                if path.name == address:
+                    indices = [index]
+                    paths = [path]
+                    break
         if len(paths) == 1:
             self.io.display(f'matching {address!r} to {paths[0].trim()} ...')
         else:
