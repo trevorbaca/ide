@@ -138,7 +138,7 @@ class ScoreTemplate(baca.ScoreTemplate):
 
     __documentation_section__ = None
 
-    part_names = (
+    _part_manifest = (
         ('BassClarinet', 'BCL'),
         ('Violin', 'VN'),
         ('Viola', 'VA'),

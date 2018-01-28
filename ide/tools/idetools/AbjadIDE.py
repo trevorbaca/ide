@@ -9,6 +9,7 @@ import os
 import pathlib
 import platform
 import re
+import roman
 import shutil
 import subprocess
 from .Command import Command
@@ -1461,15 +1462,14 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(command)
 
     def _select_part_names(self, directory, name, verb):
-        part_names = directory._get_part_names()
-        if not part_names:
-            self.io.display('score template defines no part names.')
+        part_manifest = directory._get_part_manifest()
+        if not part_manifest:
+            self.io.display('score template defines no part manifest.')
             return
-        part_names_ = []
-        for i, part_name in enumerate(part_names):
+        part_names = []
+        for i, part_name in enumerate(part_manifest):
             part_name = part_name + (i + 1,)
-            part_names_.append(part_name)
-        part_names = part_names_
+            part_names.append(part_name)
         self.io.display('found ...')
         for part_name in part_names:
             self.io.display(part_name[0], raw=True)
@@ -3021,7 +3021,7 @@ class AbjadIDE(abjad.AbjadObject):
         triples = self._select_part_names(directory, name, 'generate')
         if not triples:
             return
-        total_parts = len(directory._get_part_names())
+        total_parts = len(directory._get_part_manifest())
         for triple in triples:
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
@@ -3049,7 +3049,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_front_cover(path)
             return
         triples = self._select_part_names(directory, name, 'generate')
-        if not triple:
+        if not triples:
             return
         for triple in triples:
             part_name, part_abbreviation, number = triple
@@ -3057,8 +3057,15 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
             words = abjad.String(part_name).delimit_words()
+            last_word = words[-1]
+            try:
+                last_word = roman.fromRoman(last_word)
+                last_word = str(last_word)
+            except roman.InvalidRomanNumeralError:
+                pass
+            words[-1] = last_word
             words = [_.lower() for _ in words]
-            forces_tagline = ' '.join(words) + ' part'
+            forces_tagline = ' '.join(words)
             path = directory(file_name)
             self._generate_front_cover(path, forces_tagline=forces_tagline)
 
@@ -4169,7 +4176,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _make_parts_directory(self, directory):
         assert directory.is_builds()
         self.io.display('getting part names from score template ...')
-        result = directory._get_part_names()
+        result = directory._get_part_manifest()
         if isinstance(result, tuple) and result[0] == -1:
             message = result[-1]
             self.io.display(message)

@@ -232,7 +232,7 @@ class Path(abjad.Path):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
-    def _get_part_names(self):
+    def _get_part_manifest(self):
         assert self.is_score_package_path()
         score_package_name = self.contents.name
         try:
@@ -247,10 +247,11 @@ class Path(abjad.Path):
         score_template = tools.ScoreTemplate
         if not hasattr(score_template, 'part_names'):
             message = f'{score_package_name}.ScoreTemplate'
-            message += " has no 'part_names' property."
+            message += " has no 'part_manifest' property."
             return -1, message
-        part_names = module.tools.ScoreTemplate.part_names
-        return part_names
+        score_template = module.tools.ScoreTemplate()
+        part_manifest = score_template.part_manifest
+        return part_manifest
 
     def _get_repository_root(self):
         if not self.exists():
@@ -344,8 +345,8 @@ class Path(abjad.Path):
             return [stem]
         assert self.is_parts()
         result = []
-        part_names = self._get_part_names()
-        for pair in part_names:
+        part_manifest = self._get_part_manifest()
+        for pair in part_manifest:
             part_name, abbreviation = pair
             abbreviation = abjad.String(abbreviation).to_shout_case()
             document_name = f'{stem}_{abbreviation}'
