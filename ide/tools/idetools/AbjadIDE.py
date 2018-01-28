@@ -1436,16 +1436,17 @@ class AbjadIDE(abjad.AbjadObject):
         backup_pdf = ly.with_suffix('._backup.pdf')
         if backup_pdf.exists():
             backup_pdf.remove()
+        if pdf.exists():
+            self.io.display(f'removing {pdf.trim()} ...')
+            pdf.remove()
+        assert not pdf.exists()
         with self.change(directory):
-            if pdf.exists():
-                self.io.display(f'removing {pdf.trim()} ...')
-                pdf.remove()
-            assert not pdf.exists()
             self.io.display(f'interpreting {ly.trim()} ...')
             abjad.IOManager.run_lilypond(str(ly))
-            if not pdf.is_file():
+            if pdf.is_file():
+                self.io.display(f'writing {pdf.trim()} ...')
+            else:
                 self.io.display(f'can not produce {pdf.trim()} ...')
-            self.io.display(f'writing {pdf.trim()} ...')
 
     def _run_pytest(self, paths):
         assert isinstance(paths, collections.Iterable), repr(paths)
