@@ -1430,27 +1430,21 @@ class AbjadIDE(abjad.AbjadObject):
     def _run_lilypond(self, ly):
         assert ly.exists()
         if not abjad.IOManager.find_executable('lilypond'):
-            message = 'cannot find LilyPond executable.'
-            raise ValueError(message)
+            raise ValueError('cannot find LilyPond executable.')
         directory = ly.parent
         pdf = ly.with_suffix('.pdf')
         backup_pdf = ly.with_suffix('._backup.pdf')
         if backup_pdf.exists():
             backup_pdf.remove()
-        with self.change(directory), self.cleanup([backup_pdf]):
+        with self.change(directory):
             if pdf.exists():
                 self.io.display(f'removing {pdf.trim()} ...')
-                shutil.move(str(pdf), str(backup_pdf))
-                assert not pdf.exists()
-            else:
-                backup_pdf = None
+                pdf.remove()
+            assert not pdf.exists()
             self.io.display(f'interpreting {ly.trim()} ...')
             abjad.IOManager.run_lilypond(str(ly))
             if not pdf.is_file():
                 self.io.display(f'can not produce {pdf.trim()} ...')
-                if backup_pdf:
-                    self.io.display(f'restoring {backup_pdf.trim()} ...')
-                    shutil.move(str(backup_pdf), str(pdf))
             self.io.display(f'writing {pdf.trim()} ...')
 
     def _run_pytest(self, paths):
