@@ -33,6 +33,7 @@ def test_AbjadIDE_build_score_pdf_01():
             'Found no SHIFTED_CLEF tags in letter-score ...',
             'Found no persistent indicator color expression tags in letter-score ...',
             'Found no persistent indicator color suppression tags in letter-score ...',
+            'Found no reapplied margin markup tags in letter-score ...',
             'Found no score annotation tags in letter-score ...',
             'Found no broken spanner expression tags in letter-score ...',
             'Found no broken spanner suppression tags in letter-score ...',

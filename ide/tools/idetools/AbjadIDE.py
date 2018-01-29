@@ -1874,6 +1874,15 @@ class AbjadIDE(abjad.AbjadObject):
             lambda tags: bool(set(tags) & set(tags_['deactivate'])),
             'persistent indicator color suppression',
             )
+        tags_ = (
+            baca.tags.REAPPLIED_MARGIN_MARKUP,
+            baca.tags.REDRAWN_REAPPLIED_MARGIN_MARKUP,
+            )
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            'reapplied margin markup',
+            )
 
     @Command(
         'bwc',
@@ -1945,9 +1954,12 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
+        tags_ = baca.tags.margin_markup_color_tags()
+        if directory.is_build():
+            tags_.append(baca.tags.REAPPLIED_MARGIN_MARKUP)
         self.deactivate(
             directory,
-            baca.tags.margin_markup_color_expression_match,
+            lambda tags: bool(set(tags) & set(tags_)),
             'margin markup color',
             )
 

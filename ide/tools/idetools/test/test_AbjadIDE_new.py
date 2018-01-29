@@ -46,6 +46,7 @@ def test_AbjadIDE_new_01():
             'Found no SHIFTED_CLEF tags in arch-a-score ...',
             'Found no persistent indicator color expression tags in arch-a-score ...',
             'Found no persistent indicator color suppression tags in arch-a-score ...',
+            'Found no reapplied margin markup tags in arch-a-score ...',
             'Found no score annotation tags in arch-a-score ...',
             'Found no broken spanner expression tags in arch-a-score ...',
             'Found no broken spanner suppression tags in arch-a-score ...',
