@@ -64,8 +64,8 @@ def test_AbjadIDE_color_instruments_02():
         lines = abjad_ide.io.transcript.lines
         #assert path.count(match) == ((12, 12), (0, 0))
         for line in [
-            'Found 12 instrument color tags in _ ...',
-            ' No deactivated instrument color tags to activate in _ ...',
+            'Found 16 instrument color tags in _ ...',
+            ' Activating 4 deactivated instrument color tags in _ ...',
             ' Skipping 12 already-active instrument color tags in _ ...',
             ]:
             assert line in lines

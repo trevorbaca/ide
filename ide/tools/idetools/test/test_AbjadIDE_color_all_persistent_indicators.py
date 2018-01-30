@@ -67,12 +67,12 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
         abjad_ide('gre %_ cl* q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Found 26 persistent indicator color expression tags in _ ...',
-            ' No deactivated persistent indicator color expression tags to activate in _ ...',
+            'Found 30 persistent indicator color expression tags in _ ...',
+            ' Activating 4 deactivated persistent indicator color expression tags in _ ...',
             ' Skipping 26 already-active persistent indicator color expression tags in _ ...',
             'Found 1 persistent indicator color suppression tag in _ ...',
-            ' No active persistent indicator color suppression tags to deactivate in _ ...',
-            ' Skipping 1 already-deactivated persistent indicator color suppression tag in _ ...',
+            #' No active persistent indicator color suppression tags to deactivate in _ ...'
+            ' Skipping 1 already-deactivated persistent indicator color suppression tag in _ ...'
             ]:
             assert line in lines
         
