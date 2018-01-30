@@ -9,7 +9,7 @@ import os
 import pathlib
 import platform
 import re
-import roman
+import roman # type: ignore
 import shutil
 import subprocess
 from .Command import Command
