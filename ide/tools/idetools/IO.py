@@ -40,7 +40,7 @@ class IO(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
-    def display(self, lines, is_menu=False, raw=False):
+    def display(self, lines, indent=0, is_menu=False, raw=False):
         r'''Displays lines.
 
         Returns none.
@@ -50,6 +50,9 @@ class IO(abjad.AbjadObject):
             lines = [lines]
         if not raw:
             lines = [abjad.String(_).capitalize_start() for _ in lines]
+        if indent:
+            whitespace = indent * ' '
+            lines = [whitespace + _ for _ in lines]
         if lines:
             self.transcript.append(lines, is_menu=is_menu)
         result = os.popen('stty size', 'r').read().split()

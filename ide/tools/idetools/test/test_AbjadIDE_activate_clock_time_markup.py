@@ -22,9 +22,9 @@ def test_AbjadIDE_activate_clock_time_markup_01():
         assert path.count(tag) == ((2, 16), (0, 0))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Activating 2 deactivated CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' No already-active CLOCK_TIME_MARKUP tags to skip in arch-a-score ...',
+            'Activating CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Activating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +32,9 @@ def test_AbjadIDE_activate_clock_time_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Deactivating 2 active CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' No already-deactivated CLOCK_TIME_MARKUP tags to skip in arch-a-score ...',
+            'Deactivating CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            ' Deactivating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -53,9 +53,9 @@ def test_AbjadIDE_activate_clock_time_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Activating 2 deactivated CLOCK_TIME_MARKUP tags in _ ...',
-            ' No already-active CLOCK_TIME_MARKUP tags to skip in _ ...',
+            'Activating CLOCK_TIME_MARKUP tags in _ ...',
+            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
+            ' Activating 2 CLOCK_TIME_MARKUP tags in _ ...',
             ]:
             assert line in lines
 
@@ -63,8 +63,8 @@ def test_AbjadIDE_activate_clock_time_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Deactivating 2 active CLOCK_TIME_MARKUP tags in _ ...',
-            ' No already-deactivated CLOCK_TIME_MARKUP tags to skip in _ ...',
+            'Deactivating CLOCK_TIME_MARKUP tags in _ ...',
+            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
+            ' Deactivating 2 CLOCK_TIME_MARKUP tags in _ ...',
             ]:
             assert line in lines

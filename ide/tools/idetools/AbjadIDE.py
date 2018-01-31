@@ -157,14 +157,15 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory,
         source_name,
+        indent=0,
         target_name=None,
         values=None,
         ):
         target_name = target_name or source_name
         target = directory / target_name
         if target.exists():
-            self.io.display(f'removing {target.trim()} ...')
-        self.io.display(f'writing {target.trim()} ...')
+            self.io.display(f'removing {target.trim()} ...', indent=indent)
+        self.io.display(f'writing {target.trim()} ...', indent=indent)
         values = values or {}
         boilerplate = Path(abjad.abjad_configuration.boilerplate_directory)
         source = boilerplate / source_name
@@ -299,25 +300,30 @@ class AbjadIDE(abjad.AbjadObject):
         path,
         dashed_part_name=None,
         forces_tagline=None,
+        indent=0,
         keep_with_tag=None,
         silent=None,
         ):
         assert path.build.exists(), repr(path)
         if path.exists():
-            self.io.display(f'removing {path.trim()} ...')
+            self.io.display(f'removing {path.trim()} ...', indent=indent)
             path.remove()
         segments = path.segments.list_paths()
         if not silent:
             if segments:
                 view = path.segments.get_metadatum('view')
                 if bool(view):
-                    self.io.display(f'examining segments in view order ...')
-                else:
-                    self.io.display('examining segments alphabetically ...')
+                    self.io.display(
+                        f'examining segments in view order ...',
+                        indent=indent,
+                        )
             else:
-                self.io.display('no segments found ...')
+                self.io.display('no segments found ...', indent=indent)
             for segment in segments:
-                self.io.display(f'examining {segment.trim()} ...')
+                self.io.display(
+                    f'examining {segment.trim()} ...',
+                    indent=indent,
+                    )
         names = []
         for segment in segments:
             name = segment.stem
@@ -328,7 +334,12 @@ class AbjadIDE(abjad.AbjadObject):
             name = 'score-music.ly'
         else:
             name = 'part-music.ly'
-        self._copy_boilerplate(path.build, name, target_name=path.name)
+        self._copy_boilerplate(
+            path.build,
+            name,
+            indent=indent,
+            target_name=path.name,
+            )
         lines = []
         segment_include_statements = ''
         for i, name in enumerate(names):
@@ -564,16 +575,16 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _join_broken_spanners(self, directory):
         assert directory.build is not None, repr(directory)
-        tags_ = baca.tags.all_broken_spanner_tags()
+        self.io.display('joining broken spanners ...')
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['activate'])),
-            'broken spanner expression',
+            baca.tags.match_broken_spanner_expression_tags,
+            indent=1,
             )
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
-            'broken spanner suppression',
+            baca.tags.match_broken_spanner_suppression_tags,
+            indent=1,
             )
 
     @staticmethod
@@ -657,7 +668,11 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('')
         self.generate_front_cover_tex(build)
         self.io.display('')
-        self._copy_boilerplate(build, 'score_layout.py', 'layout.py')
+        self._copy_boilerplate(
+            build,
+            'score_layout.py',
+            target_name='layout.py',
+            )
         self.io.display('')
         self.collect_segments(build)
         self.io.display('')
@@ -745,12 +760,20 @@ class AbjadIDE(abjad.AbjadObject):
                 return
         if directory.is_tools():
             if abjad.String(name).is_classfile_name():
-                self._copy_boilerplate(directory, 'Maker.py', target.name)
+                self._copy_boilerplate(
+                    directory,
+                    'Maker.py',
+                    target_name=target.name,
+                    )
                 template = target.read_text()
                 template = template.format(class_name=target.stem)
                 target.write_text(template)
             else:
-                self._copy_boilerplate(directory, 'function.py', target.name)
+                self._copy_boilerplate(
+                    directory,
+                    'function.py',
+                    target_name=target.name,
+                    )
                 template = target.read_text()
                 template = template.format(function_name=target.stem)
                 target.write_text(template)
@@ -1679,15 +1702,33 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PUBLIC METHODS ###
 
-    def activate(self, path, tag, name=None, deactivate=False):
+    def activate(
+        self,
+        path,
+        tag,
+        deactivate=False,
+        indent=0,
+        message_zero=False,
+        name=None,
+        ):
         r'''Activates `tag` in `path`.
 
         Returns none.
         '''
         if deactivate:
-            count, skipped, messages = path.deactivate(tag, name=name)
+            count, skipped, messages = path.deactivate(
+                tag,
+                indent=indent,
+                message_zero=message_zero,
+                name=name,
+                )
         else:
-            count, skipped, messages = path.activate(tag, name=name)
+            count, skipped, messages = path.activate(
+                tag,
+                indent=indent,
+                message_zero=message_zero,
+                name=name,
+                )
         self.io.display(messages)
 
     @staticmethod
@@ -1702,12 +1743,19 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         return abjad.FilesystemState(remove=remove)
 
-    def deactivate(self, path, tag, name=None):
+    def deactivate(self, path, tag, indent=0, message_zero=False, name=None):
         r'''Deactivates `tag` in `path`.
 
         Returns none.
         '''
-        self.activate(path, tag, name=name, deactivate=True)
+        self.activate(
+            path,
+            tag,
+            name=name,
+            deactivate=True,
+            indent=indent,
+            message_zero=message_zero,
+            )
 
     def is_navigation(self, argument):
         r'''Is true when `argument` is navigation.
@@ -1756,7 +1804,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'score annotation',
+            message_zero=True,
+            name='score annotation',
             )
 
     @Command(
@@ -1771,7 +1820,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(directory, abjad.tags.CLOCK_TIME_MARKUP)
+        self.activate(
+            directory,
+            abjad.tags.CLOCK_TIME_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'fnm',
@@ -1785,7 +1838,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(directory, abjad.tags.FIGURE_NAME_MARKUP)
+        self.activate(
+            directory,
+            abjad.tags.FIGURE_NAME_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'mim',
@@ -1799,7 +1856,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(directory, abjad.tags.MEASURE_INDEX_MARKUP)
+        self.activate(
+            directory,
+            abjad.tags.MEASURE_INDEX_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'mnm',
@@ -1813,7 +1874,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
+        self.activate(
+            directory,
+            abjad.tags.MEASURE_NUMBER_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'spm',
@@ -1834,7 +1899,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'spacing markup',
+            message_zero=True,
+            name='spacing markup',
             )
 
     @Command(
@@ -1849,7 +1915,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
+        self.activate(
+            directory,
+            abjad.tags.STAGE_NUMBER_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'bw*',
@@ -1863,25 +1933,21 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
+        self.io.display('rendering persistent indicators b&w ...')
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['activate'])),
-            'persistent indicator color expression',
+            baca.tags.match_persistent_indicator_color_expression,
+            indent=1,
             )
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
-            'persistent indicator color suppression',
-            )
-        tags_ = (
-            baca.tags.REAPPLIED_MARGIN_MARKUP,
-            baca.tags.REDRAWN_REAPPLIED_MARGIN_MARKUP,
+            baca.tags.match_persistent_indicator_color_suppression,
+            indent=1,
             )
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'reapplied margin markup',
+            baca.tags.match_reapplied_margin_markup_tags,
+            indent=1,
             )
 
     @Command(
@@ -1900,7 +1966,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'clef color',
+            name='clef color',
+            message_zero=True,
             )
 
     @Command(
@@ -1918,7 +1985,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             baca.tags.dynamic_color_match,
-            'dynamic',
+            name='dynamic',
+            message_zero=True,
             )
 
     @Command(
@@ -1939,7 +2007,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color',
+            name='instrument color',
+            message_zero=True,
             )
 
     @Command(
@@ -1960,7 +2029,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'margin markup color',
+            name='margin markup color',
+            message_zero=True,
             )
 
     @Command(
@@ -1978,12 +2048,12 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.metronome_mark_color_suppression_match,
-            'b&w metronome mark expression',
+            name='b&w metronome mark expression',
             )
         self.deactivate(
             directory,
             baca.tags.metronome_mark_color_expression_match,
-            'b&w metronome mark suppression',
+            name='b&w metronome mark suppression',
             )
 
     @Command(
@@ -2001,7 +2071,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             baca.tags.staff_lines_color_match,
-            'staff lines color',
+            name='staff lines color',
+            message_zero=True,
             )
 
     @Command(
@@ -2019,7 +2090,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             baca.tags.time_signature_color_match,
-            'time signature color',
+            name='time signature color',
+            message_zero=True,
             )
 
     @Command(
@@ -2203,9 +2275,9 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_build() or directory.is__segments()
         directory = directory.build
-        self.io.display('collecting segment lys ...')
         if not directory.is_parts():
             self.generate_music_ly(directory)
+        self.io.display('collecting segment lys ...')
         pairs = self._collect_segments(directory)
         if not pairs:
             self.io.display('... no segment lys found.')
@@ -2216,8 +2288,8 @@ class AbjadIDE(abjad.AbjadObject):
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
             if target.exists():
-                self.io.display(f'removing {target.trim()} ...')
-            self.io.display(f'writing {target.trim()} ...')
+                self.io.display(f' Removing {target.trim()} ...')
+            self.io.display(f' Writing {target.trim()} ...')
             text = self._trim_ly(source)
             target.write_text(text)
             segment = source.parent
@@ -2231,27 +2303,22 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        self.deactivate(
-            directory,
-            lambda tags: any(_ for _ in tags if _.startswith('+')),
-            '+',
-            )
-        stem = abjad.String(directory.name).to_shout_case()
-        if directory.is_parts():
-            stem += '*'
-        document_names = directory.document_names
-        tags_ = ['-' + _ for _ in document_names]
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            f'-{stem}',
-            )
-        tags_ = ['+' + _ for _ in document_names]
+        self.deactivate(directory, baca.tags.match_document_specific_tags)
+
+        this_document = f'+{abjad.String(directory.name).to_shout_case()}'
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            f'+{stem}',
+            lambda tags: bool(set(tags) & set([this_document])),
+            name=this_document,
             )
+
+        not_this_document = f'-{abjad.String(directory.name).to_shout_case()}'
+        self.activate(
+            directory,
+            lambda tags: bool(set(tags) & set([not_this_document])),
+            name=not_this_document,
+            )
+
         result = directory._deactivate_bar_line_adjustment()
         for message in result[-1]:
             self.io.display(message)
@@ -2274,16 +2341,16 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = baca.tags.all_persistent_indicator_color_tags(directory)
+        self.io.display('coloring persistent indicators ...')
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['activate'])),
-            'persistent indicator color expression',
+            baca.tags.match_persistent_indicator_color_expression,
+            indent=1,
             )
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_['deactivate'])),
-            'persistent indicator color suppression',
+            baca.tags.match_persistent_indicator_color_suppression,
+            indent=1,
             )
 
     @Command(
@@ -2302,7 +2369,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'clef color',
+            name='clef color',
+            message_zero=True,
             )
 
     @Command(
@@ -2320,7 +2388,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.dynamic_color_match,
-            'color dynamic',
+            name='color dynamic',
+            message_zero=True,
             )
 
     @Command(
@@ -2339,7 +2408,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'instrument color',
+            name='instrument color',
+            message_zero=True,
             )
 
     @Command(
@@ -2357,7 +2427,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.margin_markup_color_expression_match,
-            'margin markup color',
+            name='margin markup color',
+            message_zero=True,
             )
 
     @Command(
@@ -2375,12 +2446,14 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.metronome_mark_color_expression_match,
-            'metronome mark color expression',
+            name='metronome mark color expression',
+            message_zero=True,
             )
         self.deactivate(
             directory,
             baca.tags.metronome_mark_color_suppression_match,
-            'metronome mark color suppression',
+            name='metronome mark color suppression',
+            message_zero=True,
             )
 
     @Command(
@@ -2398,7 +2471,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.staff_lines_color_match,
-            'staff lines color',
+            name='staff lines color',
+            message_zero=True,
             )
 
     @Command(
@@ -2416,7 +2490,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.activate(
             directory,
             baca.tags.time_signature_color_match,
-            'time signature color'
+            name='time signature color',
+            message_zero=True,
             )
 
     @Command(
@@ -2476,11 +2551,12 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = abjad.tags.all_score_annotation_tags()
+        self.io.display('hiding score annotations ...')
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            'score annotation',
+            abjad.tags.match_score_annotation_tags,
+            indent=1,
+            message_zero=True,
             )
 
     @Command(
@@ -2495,7 +2571,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(directory, abjad.tags.CLOCK_TIME_MARKUP)
+        self.deactivate(
+            directory,
+            abjad.tags.CLOCK_TIME_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'fnmx',
@@ -2509,7 +2589,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(directory, abjad.tags.FIGURE_NAME_MARKUP)
+        self.deactivate(
+            directory,
+            abjad.tags.FIGURE_NAME_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'mimx',
@@ -2523,7 +2607,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(directory, abjad.tags.MEASURE_INDEX_MARKUP)
+        self.deactivate(
+            directory,
+            abjad.tags.MEASURE_INDEX_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'mnmx',
@@ -2537,7 +2625,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(directory, abjad.tags.MEASURE_NUMBER_MARKUP)
+        self.deactivate(
+            directory,
+            abjad.tags.MEASURE_NUMBER_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         'spmx',
@@ -2558,7 +2650,8 @@ class AbjadIDE(abjad.AbjadObject):
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
-            'spacing markup',
+            message_zero=True,
+            name='spacing markup',
             )
 
     @Command(
@@ -2573,7 +2666,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(directory, abjad.tags.STAGE_NUMBER_MARKUP)
+        self.deactivate(
+            directory,
+            abjad.tags.STAGE_NUMBER_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         '^^',
@@ -3142,7 +3239,8 @@ class AbjadIDE(abjad.AbjadObject):
         name = 'music.ly'
         if not directory.is_parts():
             path = directory(name)
-            self._generate_music(path)
+            self.io.display(f'generating {path.trim()} ...')
+            self._generate_music(path, indent=1)
             return
         triples = self._select_part_names(directory, name, 'generate')
         if not triples:

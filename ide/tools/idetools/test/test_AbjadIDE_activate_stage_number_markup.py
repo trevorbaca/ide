@@ -22,9 +22,9 @@ def test_AbjadIDE_activate_stage_number_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Found 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
-            ' Activating 2 deactivated STAGE_NUMBER_MARKUP tags in arch-a-score ...',
-            ' No already-active STAGE_NUMBER_MARKUP tags to skip in arch-a-score ...',
+            'Activating STAGE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Found 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Activating 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +32,9 @@ def test_AbjadIDE_activate_stage_number_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Found 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
-            ' Deactivating 2 active STAGE_NUMBER_MARKUP tags in arch-a-score ...',
-            ' No already-deactivated STAGE_NUMBER_MARKUP tags to skip in arch-a-score ...',
+            'Deactivating STAGE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Found 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
+            ' Deactivating 2 STAGE_NUMBER_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -53,9 +53,9 @@ def test_AbjadIDE_activate_stage_number_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Found 2 STAGE_NUMBER_MARKUP tags in _ ...',
-            ' Activating 2 deactivated STAGE_NUMBER_MARKUP tags in _ ...',
-            ' No already-active STAGE_NUMBER_MARKUP tags to skip in _ ...',
+            'Activating STAGE_NUMBER_MARKUP tags in _ ...',
+            ' Found 2 STAGE_NUMBER_MARKUP tags in _ ...',
+            ' Activating 2 STAGE_NUMBER_MARKUP tags in _ ...',
             ]:
             assert line in lines
 
@@ -63,8 +63,8 @@ def test_AbjadIDE_activate_stage_number_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Found 2 STAGE_NUMBER_MARKUP tags in _ ...',
-            ' Deactivating 2 active STAGE_NUMBER_MARKUP tags in _ ...',
-            ' No already-deactivated STAGE_NUMBER_MARKUP tags to skip in _ ...',
+            'Deactivating STAGE_NUMBER_MARKUP tags in _ ...',
+            ' Found 2 STAGE_NUMBER_MARKUP tags in _ ...',
+            ' Deactivating 2 STAGE_NUMBER_MARKUP tags in _ ...',
             ]:
             assert line in lines

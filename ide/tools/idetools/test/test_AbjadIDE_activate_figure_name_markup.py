@@ -22,9 +22,9 @@ def test_AbjadIDE_activate_figure_name_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
-            'Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' Activating 1 deactivated FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' No already-active FIGURE_NAME_MARKUP tags to skip in arch-a-score ...',
+            'Activating FIGURE_NAME_MARKUP tags in arch-a-score ...',
+            ' Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' Activating 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +32,9 @@ def test_AbjadIDE_activate_figure_name_markup_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
-            'Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' Deactivating 1 active FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' No already-deactivated FIGURE_NAME_MARKUP tags to skip in arch-a-score ...',
+            'Deactivating FIGURE_NAME_MARKUP tags in arch-a-score ...',
+            ' Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            ' Deactivating 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -53,9 +53,9 @@ def test_AbjadIDE_activate_figure_name_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
-            'Found 1 FIGURE_NAME_MARKUP tag in _ ...',
-            ' Deactivating 1 active FIGURE_NAME_MARKUP tag in _ ...',
-            ' No already-deactivated FIGURE_NAME_MARKUP tags to skip in _ ...',
+            'Deactivating FIGURE_NAME_MARKUP tags in _ ...',
+            ' Found 1 FIGURE_NAME_MARKUP tag in _ ...',
+            ' Deactivating 1 FIGURE_NAME_MARKUP tag in _ ...',
             ]:
             assert line in lines
 
@@ -63,8 +63,8 @@ def test_AbjadIDE_activate_figure_name_markup_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
-            'Found 1 FIGURE_NAME_MARKUP tag in _ ...',
-            ' Activating 1 deactivated FIGURE_NAME_MARKUP tag in _ ...',
-            ' No already-active FIGURE_NAME_MARKUP tags to skip in _ ...',
+            'Activating FIGURE_NAME_MARKUP tags in _ ...',
+            ' Found 1 FIGURE_NAME_MARKUP tag in _ ...',
+            ' Activating 1 FIGURE_NAME_MARKUP tag in _ ...',
             ]:
             assert line in lines

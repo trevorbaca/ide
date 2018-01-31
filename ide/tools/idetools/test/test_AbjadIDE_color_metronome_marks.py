@@ -25,12 +25,12 @@ def test_AbjadIDE_color_metronome_marks_01():
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
         for line in [
-            'Found 1 metronome mark color expression tag in arch-a-score ...',
-            ' Activating 1 deactivated metronome mark color expression tag in arch-a-score ...',
-            ' No already-active metronome mark color expression tags to skip in arch-a-score ...',
-            'Found 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Deactivating 1 active metronome mark color suppression tag in arch-a-score ...',
-            ' No already-deactivated metronome mark color suppression tags to skip in arch-a-score ...',
+            'Activating metronome mark color expression tags in arch-a-score ...',
+            ' Found 1 metronome mark color expression tag in arch-a-score ...',
+            ' Activating 1 metronome mark color expression tag in arch-a-score ...',
+            'Deactivating metronome mark color suppression tags in arch-a-score ...',
+            ' Found 1 metronome mark color suppression tag in arch-a-score ...',
+            ' Deactivating 1 metronome mark color suppression tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -39,12 +39,12 @@ def test_AbjadIDE_color_metronome_marks_01():
         assert path.count(expression) == ((0, 0), (1, 23))
         assert path.count(suppression) == ((1, 19), (0, 0))
         for line in [
-            'Found 1 b&w metronome mark expression tag in arch-a-score ...',
-            ' Activating 1 deactivated b&w metronome mark expression tag in arch-a-score ...',
-            ' No already-active b&w metronome mark expression tags to skip in arch-a-score ...',
-            'Found 1 b&w metronome mark suppression tag in arch-a-score ...',
-            ' Deactivating 1 active b&w metronome mark suppression tag in arch-a-score ...',
-            ' No already-deactivated b&w metronome mark suppression tags to skip in arch-a-score ...',
+            'Activating b&w metronome mark expression tags in arch-a-score ...',
+            ' Found 1 b&w metronome mark expression tag in arch-a-score ...',
+            ' Activating 1 b&w metronome mark expression tag in arch-a-score ...',
+            'Deactivating b&w metronome mark suppression tags in arch-a-score ...',
+            ' Found 1 b&w metronome mark suppression tag in arch-a-score ...',
+            ' Deactivating 1 b&w metronome mark suppression tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -53,12 +53,12 @@ def test_AbjadIDE_color_metronome_marks_01():
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
         for line in [
-            'Found 1 metronome mark color expression tag in arch-a-score ...',
-            ' Activating 1 deactivated metronome mark color expression tag in arch-a-score ...',
-            ' No already-active metronome mark color expression tags to skip in arch-a-score ...',
-            'Found 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Deactivating 1 active metronome mark color suppression tag in arch-a-score ...',
-            ' No already-deactivated metronome mark color suppression tags to skip in arch-a-score ...',
+            'Activating metronome mark color expression tags in arch-a-score ...',
+            ' Found 1 metronome mark color expression tag in arch-a-score ...',
+            ' Activating 1 metronome mark color expression tag in arch-a-score ...',
+            'Deactivating metronome mark color suppression tags in arch-a-score ...',
+            ' Found 1 metronome mark color suppression tag in arch-a-score ...',
+            ' Deactivating 1 metronome mark color suppression tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -81,12 +81,12 @@ def test_AbjadIDE_color_metronome_marks_02():
         assert path.count(suppression) == ((0, 0), (1, 19))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Found 1 metronome mark color expression tag in _ ...',
-            ' No deactivated metronome mark color expression tags to activate in _ ...',
-            ' Skipping 1 already-active metronome mark color expression tag in _ ...',
-            'Found 1 metronome mark color suppression tag in _ ...',
-            ' No active metronome mark color suppression tags to deactivate in _ ...',
-            ' Skipping 1 already-deactivated metronome mark color suppression tag in _ ...',
+            'Activating metronome mark color expression tags in _ ...',
+            ' Found 1 metronome mark color expression tag in _ ...',
+            ' Skipping 1 (active) metronome mark color expression tags in _ ...',
+            'Deactivating metronome mark color suppression tags in _ ...',
+            ' Found 1 metronome mark color suppression tag in _ ...',
+            ' Skipping 1 (inactive) metronome mark color suppression tags in _ ...',
             ]:
             assert line in lines
         
@@ -95,12 +95,12 @@ def test_AbjadIDE_color_metronome_marks_02():
         assert path.count(suppression) == ((1, 19), (0, 0))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Found 1 b&w metronome mark expression tag in _ ...',
-            ' Activating 1 deactivated b&w metronome mark expression tag in _ ...',
-            ' No already-active b&w metronome mark expression tags to skip in _ ...',
-            'Found 1 b&w metronome mark suppression tag in _ ...',
-            ' Deactivating 1 active b&w metronome mark suppression tag in _ ...',
-            ' No already-deactivated b&w metronome mark suppression tags to skip in _ ...',
+            'Activating b&w metronome mark expression tags in _ ...',
+            ' Found 1 b&w metronome mark expression tag in _ ...',
+            ' Activating 1 b&w metronome mark expression tag in _ ...',
+            'Deactivating b&w metronome mark suppression tags in _ ...',
+            ' Found 1 b&w metronome mark suppression tag in _ ...',
+            ' Deactivating 1 b&w metronome mark suppression tag in _ ...',
             ]:
             assert line in lines
 
@@ -109,11 +109,11 @@ def test_AbjadIDE_color_metronome_marks_02():
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
         for line in [
-            'Found 1 metronome mark color expression tag in _ ...',
-            ' Activating 1 deactivated metronome mark color expression tag in _ ...',
-            ' No already-active metronome mark color expression tags to skip in _ ...',
-            'Found 1 metronome mark color suppression tag in _ ...',
-            ' Deactivating 1 active metronome mark color suppression tag in _ ...',
-            ' No already-deactivated metronome mark color suppression tags to skip in _ ...',
+            'Activating metronome mark color expression tags in _ ...',
+            ' Found 1 metronome mark color expression tag in _ ...',
+            ' Activating 1 metronome mark color expression tag in _ ...',
+            'Deactivating metronome mark color suppression tags in _ ...',
+            ' Found 1 metronome mark color suppression tag in _ ...',
+            ' Deactivating 1 metronome mark color suppression tag in _ ...',
             ]:
             assert line in lines
