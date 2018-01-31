@@ -318,15 +318,25 @@ class Path(abjad.Path):
             return True
         return False
 
-    def _parse_part_abbreviation_from_ly(self):
-        assert self.suffix == '.ly', repr(self)
-        part_abbreviation = None
-        with self.open('r') as pointer:
-            for line in pointer.readlines():
-                if line.startswith('% part_abbreviation = '):
-                    line = line.strip('% part_abbreviation = ')
-                    part_abbreviation = eval(line)
-                    return part_abbreviation
+    def _parse_part_abbreviation(self):
+        if self.suffix == '.ly':
+            part_abbreviation = None
+            with self.open('r') as pointer:
+                for line in pointer.readlines():
+                    if line.startswith('% part_abbreviation = '):
+                        line = line.strip('% part_abbreviation = ')
+                        part_abbreviation = eval(line)
+                        return part_abbreviation
+        elif self.name.endswith('layout.py'):
+            part_abbreviation = None
+            with self.open('r') as pointer:
+                for line in pointer.readlines():
+                    if line.startswith('part_abbreviation = '):
+                        line = line.strip('part_abbreviation = ')
+                        part_abbreviation = eval(line)
+                        return part_abbreviation
+        else:
+            raise TypeError(self)
 
     def _unadd_added_assets(self):
         paths = []

@@ -109,7 +109,7 @@ class AbjadIDE(abjad.AbjadObject):
             parts_directory,
             baca.tags.match_document_specific_tags,
             )
-        part_abbreviation = path._parse_part_abbreviation_from_ly()
+        part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {path.name} ...')
         else:
@@ -4391,6 +4391,50 @@ class AbjadIDE(abjad.AbjadObject):
                 shutil.copy(str(source), str(target))
             if i < len(self.clipboard) - 1:
                 self.io.display('')
+
+    @Command(
+        'lpp',
+        description='layout.py - propagate',
+        menu_section='layout',
+        score_package_paths=('parts',),
+        )
+    def propagate_layout_py(self, directory):
+        r'''Propagates ``layout.py``.
+
+        Returns none.
+        '''
+        assert directory.is_parts()
+        paths = self._match_paths_in_buildspace(
+            directory,
+            'layout.py',
+            'select',
+            )
+        if not paths:
+            return
+        if 1 < len(paths):
+            self.io.display('select just 1 layout.py to propagate ...')
+            return
+        assert len(paths) == 1
+        source = paths[0]
+        source_part_abbreviation = source._parse_part_abbreviation()
+        if source_part_abbreviation is None:
+            self.io.display(f'no part abbreviation found in {source.name} ...')
+            return
+        source_text = source.read_text()
+        triples = self._select_part_names(directory, 'layout.py', 'propagate')
+        if not triples:
+            return
+        for triple in triples:
+            part_name, part_abbreviation, number = triple
+            snake_part_name = abjad.String(part_name).to_snake_case()
+            target_name = f'{snake_part_name}_layout.py'
+            target = directory.build(target_name)
+            target_text = source_text.replace(
+                source_part_abbreviation,
+                part_abbreviation,
+                )
+            self.io.display(f'writing {target.trim()} ...')
+            target.write_text(target_text)
 
     @Command(
         '++',

@@ -895,6 +895,168 @@ def test_AbjadIDE_show_help_09():
 
 
 def test_AbjadIDE_show_help_10():
+    r'''In parts directory.
+    '''
+
+    with ide.Test():
+
+        abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
+        abjad_ide('gre bb arch-a-parts ? q')
+
+    menu = abjad_ide.io.transcript.menus[-1]
+    assert menu == [
+        'Green Score (2018) : builds : arch-a-parts : help',
+        '',
+        '    all - doctest (^^)',
+        '    all - edit (@@)',
+        '    all - pdfs (**)',
+        '    all - pytest (++)',
+        '',
+        '    back-cover.pdf - open (bcpo)',
+        '    back-cover.pdf - trash (bcpt)',
+        '    back-cover.tex - edit (bcte)',
+        '    back-cover.tex - generate (bctg)',
+        '    back-cover.tex - interpret (bcti)',
+        '    back-cover.tex - trash (bctt)',
+        '',
+        '    clipboard - copy (cbc)',
+        '    clipboard - cut (cbx)',
+        '    clipboard - empty (cbe)',
+        '    clipboard - paste (cbv)',
+        '    clipboard - show (cbs)',
+        '',
+        '    directory - builds (bb)',
+        '    directory - contents (cc)',
+        '    directory - distribution (dd)',
+        '    directory - etc (ee)',
+        '    directory - materials (mm)',
+        '    directory - segments (gg)',
+        '    directory - stylesheets (yy)',
+        '    directory - test (tt)',
+        '    directory - tools (oo)',
+        '    directory - wrapper (ww)',
+        '',
+        '    front-cover.pdf - open (fcpo)',
+        '    front-cover.pdf - trash (fcpt)',
+        '    front-cover.tex - edit (fcte)',
+        '    front-cover.tex - generate (fctg)',
+        '    front-cover.tex - interpret (fcti)',
+        '    front-cover.tex - trash (fctt)',
+        '',
+        '    git - commit (ci)',
+        '    git - diff (diff)',
+        '    git - pull (pull)',
+        '    git - push (push)',
+        '    git - status (st)',
+        '',
+        '    go - back (-)',
+        '    go - directory (%)',
+        '    go - library (ll)',
+        '    go - quit (q)',
+        '    go - scores (ss)',
+        '    go - up (..)',
+        '',
+        '    hop - next score (>>)',
+        '    hop - previous score (<<)',
+        '',
+        '    layout.ly - edit (lle)',
+        '    layout.ly - make (llm)',
+        '    layout.ly - trash (llt)',
+        '    layout.py - edit (lpe)',
+        '    layout.py - generate (lpg)',
+        '    layout.py - propagate (lpp)',
+        '    layout.py - trash (lpt)',
+        '',
+        '    log - aliases (al)',
+        '    log - latex (lx)',
+        '    log - lilypond (lp)',
+        '',
+        '    music.ly - edit (mle)',
+        '    music.ly - generate (mlg)',
+        '    music.ly - interpret (mli)',
+        '    music.ly - trash (mlt)',
+        '    music.pdf - open (mpo)',
+        '    music.pdf - trash (mpt)',
+        '',
+        '    part.pdf - build (ppb)',
+        '    part.pdf - open (ppo)',
+        '    part.pdf - trash (ppt)',
+        '    part.tex - edit (pte)',
+        '    part.tex - generate (ptg)',
+        '    part.tex - interpret (pti)',
+        '    part.tex - trash (ptt)',
+        '',
+        '    path - duplicate (dup)',
+        '    path - get (get)',
+        '    path - new (new)',
+        '    path - remove (rm)',
+        '    path - rename (ren)',
+        '',
+        '    clefs - color (ccl)',
+        '    clefs - uncolor (cuc)',
+        '    dynamics - color (dcl)',
+        '    dynamics - uncolor (duc)',
+        '    instruments - color (icl)',
+        '    instruments - uncolor (iuc)',
+        '    margin markup - color (mmcl)',
+        '    margin markup - uncolor (mmuc)',
+        '    metronome marks - color (tmcl)',
+        '    metronome marks - uncolor (tmuc)',
+        '    persistent indicators - color (picl)',
+        '    persistent indicators - uncolor (piuc)',
+        '    staff lines - color (slcl)',
+        '    staff lines - uncolor (sluc)',
+        '    time signatures - color (tscl)',
+        '    time signatures - uncolor (tsuc)',
+        '',
+        '    preface.pdf - open (pfpo)',
+        '    preface.pdf - trash (pfpt)',
+        '    preface.tex - edit (pfte)',
+        '    preface.tex - generate (pftg)',
+        '    preface.tex - interpret (pfti)',
+        '    preface.tex - trash (pftt)',
+        '',
+        '    score.pdf - open (spo)',
+        '',
+        '    CLOCK_TIME_MARKUP - hide (ctmh)',
+        '    CLOCK_TIME_MARKUP - show (ctms)',
+        '    FIGURE_NAME_MARKUP - hide (fnmh)',
+        '    FIGURE_NAME_MARKUP - show (fnms)',
+        '    MEASURE_INDEX_MARKUP - hide (mimh)',
+        '    MEASURE_INDEX_MARKUP - show (mims)',
+        '    MEASURE_NUMBER_MARKUP - hide (mnmh)',
+        '    MEASURE_NUMBER_MARKUP - show (mnms)',
+        '    SPACING_MARKUP - hide (spmh)',
+        '    SPACING_MARKUP - show (spms)',
+        '    STAGE_NUMBER_MARKUP - hide (snmh)',
+        '    STAGE_NUMBER_MARKUP - show (snms)',
+        '    all score annotations - hide (annh)',
+        '    all score annotations - show (anns)',
+        '',
+        '    segments - collect (ggc)',
+        '',
+        '    shell - call (!)',
+        '',
+        '    show - column (;)',
+        '    show - help (?)',
+        '',
+        '    smart - doctest (^)',
+        '    smart - edit (@)',
+        '    smart - pdf (*)',
+        '    smart - pytest (+)',
+        '',
+        '    stylesheet.ily - edit (ssie)',
+        '    stylesheet.ily - generate (ssig)',
+        '    stylesheet.ily - trash (ssit)',
+        '',
+        '    text - edit (it)',
+        '    text - replace (rp)',
+        '    text - search (sr)',
+        '',
+        ]
+
+
+def test_AbjadIDE_show_help_11():
     r'''In scores directory.
     '''
 
@@ -958,7 +1120,7 @@ def test_AbjadIDE_show_help_10():
         ]
 
 
-def test_AbjadIDE_show_help_11():
+def test_AbjadIDE_show_help_12():
     r'''In segment directory.
     '''
 
@@ -1089,7 +1251,7 @@ def test_AbjadIDE_show_help_11():
         ]
 
 
-def test_AbjadIDE_show_help_12():
+def test_AbjadIDE_show_help_13():
     r'''In segments directory.
     '''
 
@@ -1219,7 +1381,7 @@ def test_AbjadIDE_show_help_12():
         ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_14():
     r'''In stylesheets directory.
     '''
 
@@ -1295,7 +1457,7 @@ def test_AbjadIDE_show_help_13():
         ]
 
 
-def test_AbjadIDE_show_help_14():
+def test_AbjadIDE_show_help_15():
     r'''In test directory.
     '''
 
@@ -1371,7 +1533,7 @@ def test_AbjadIDE_show_help_14():
         ]
 
 
-def test_AbjadIDE_show_help_15():
+def test_AbjadIDE_show_help_16():
     r'''In tools directory.
     '''
 
@@ -1447,7 +1609,7 @@ def test_AbjadIDE_show_help_15():
         ]
 
 
-def test_AbjadIDE_show_help_16():
+def test_AbjadIDE_show_help_17():
     r'''In wrapper directory.
     '''
 
