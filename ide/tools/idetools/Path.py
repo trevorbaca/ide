@@ -232,6 +232,16 @@ class Path(abjad.Path):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
+    def _parse_part_abbreviation_from_ly(self):
+        assert self.suffix == '.ly', repr(self)
+        part_abbreviation = None
+        with self.open('r') as pointer:
+            for line in pointer.readlines():
+                if line.startswith('% part_abbreviation = '):
+                    line = line.strip('% part_abbreviation = ')
+                    part_abbreviation = eval(line)
+                    return part_abbreviation
+
     def _get_part_manifest(self):
         assert self.is_score_package_path()
         score_package_name = self.contents.name

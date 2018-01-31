@@ -102,6 +102,23 @@ class AbjadIDE(abjad.AbjadObject):
 
     ### PRIVATE METHODS ###
 
+    def _activate_part_specific_tags(self, path):
+        parts_directory = path.parent
+        assert parts_directory.is_parts()
+        self.deactivate(
+            parts_directory,
+            baca.tags.match_document_specific_tags,
+            )
+        part_abbreviation = path._parse_part_abbreviation_from_ly()
+        if part_abbreviation is None:
+            self.io.display(f'no part abbreviation found in {path.name} ...')
+        else:
+            parts_directory_name = abjad.String(parts_directory.name)
+            parts_directory_name = parts_directory_name.to_shout_case()
+            tag = f'+{parts_directory_name}_{part_abbreviation}'
+            self.activate(parts_directory, tag, message_zero=True)
+        self.black_and_white_all_persistent_indicators(parts_directory)
+        
     def _cache_commands(self):
         commands = {}
         for name in dir(self):
@@ -302,6 +319,7 @@ class AbjadIDE(abjad.AbjadObject):
         forces_tagline=None,
         indent=0,
         keep_with_tag=None,
+        part_abbreviation=None,
         silent=None,
         ):
         assert path.build.exists(), repr(path)
@@ -381,6 +399,7 @@ class AbjadIDE(abjad.AbjadObject):
             keep_with_tag_command=keep_with_tag_command,
             lilypond_language_directive=lilypond_language_directive,
             lilypond_version_directive=lilypond_version_directive,
+            part_abbreviation=repr(part_abbreviation),
             score_title=score_title,
             segment_include_statements=segment_include_statements,
             )
@@ -3258,6 +3277,7 @@ class AbjadIDE(abjad.AbjadObject):
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
+                part_abbreviation=part_abbreviation,
                 )
 
     @Command(
@@ -4113,6 +4133,8 @@ class AbjadIDE(abjad.AbjadObject):
         if not paths:
             return
         for path in paths:
+            if path.parent.is_parts():
+                self._activate_part_specific_tags(path)
             self._run_lilypond(path)
         if len(paths) == 1:
             target = path.with_suffix('.pdf')
