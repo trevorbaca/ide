@@ -913,6 +913,125 @@ class AbjadIDE(abjad.AbjadObject):
                 path.parent.add_metadatum('_view', view) 
                 path.parent.remove_metadatum('view')
 
+    def _make_parts_directory(self, directory):
+        assert directory.is_builds()
+        self.io.display('getting part names from score template ...')
+        result = directory._get_part_manifest()
+        if isinstance(result, tuple) and result[0] == -1:
+            message = result[-1]
+            self.io.display(message)
+            return
+        part_name_pairs = result
+        part_names = [_[0] for _ in result]
+        part_abbreviations = [_[1] for _ in result]
+        for part_name in part_names:
+            self.io.display(f'found {part_name} ...')
+        self.io.display('')
+        name = self.io.get('directory name')
+        if self.is_navigation(name):
+            return
+        name = directory.coerce(name)
+        directory = directory / name
+        if directory.exists():
+            self.io.display(f'existing {directory.trim()} ...')
+            return
+        paper_size = self.io.get('paper size')
+        if self.is_navigation(paper_size):
+            return
+        orientation = 'portrait'
+        if paper_size.endswith(' landscape'):
+            orientation = 'landscape'
+            length = len(' landscape')
+            paper_size = paper_size[:-length]
+        elif paper_size.endswith(' portrait'):
+            length = len(' portrait')
+            paper_size = paper_size[:-length]
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size: {paper_size} ...')
+            self.io.display(f'choose from ...')
+            for paper_size in self.known_paper_sizes:
+                self.io.display(f'    {paper_size}')
+            return
+        suffix = self.io.get('catalog number suffix')
+        if self.is_navigation(suffix):
+            return
+        names = (
+            'front-cover.tex',
+            'preface.tex',
+            'music.ly',
+            'back-cover.tex',
+            'part.tex',
+            )
+        paths = [directory / _ for _ in names]
+        self.io.display('will make ...')
+        self.io.display(f'    {directory.trim()}')
+        path = directory / 'stylesheet.ily'
+        self.io.display(f'    {path.trim()}')
+        for part_name in part_names:
+            part_name_ = abjad.String(part_name).to_dash_case()
+            for name in names:
+                name = f'{part_name_}-{name}'
+                path = directory / name
+                self.io.display(f'    {path.trim()}')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        assert not directory.exists()
+        directory.mkdir()
+        directory.add_metadatum('parts_directory', True)
+        if bool(paper_size):
+            directory.add_metadatum('paper_size', paper_size)
+        if not orientation == 'portrait':
+            directory.add_metadatum('orientation', orientation)
+        if bool(suffix):
+            directory.add_metadatum('catalog_number_suffix', suffix)
+        self.collect_segments(directory)
+        stub = directory.builds._assets('preface-body.tex')
+        if not stub.is_file():
+            stub.write_text('')
+        stub = directory.builds._assets('preface-colophon.tex')
+        if not stub.is_file():
+            stub.write_text('')
+        self.generate_stylesheet_ily(directory)
+        total_parts = len(part_name_pairs)
+        for i, pair in enumerate(part_name_pairs):
+            part_name, part_abbreviation = pair
+            part_number = i + 1
+            dashed_part_name = abjad.String(part_name).to_dash_case()
+            snake_part_name = abjad.String(part_name).to_snake_case()
+            words = abjad.String(dashed_part_name).delimit_words()
+            forces_tagline = f"{' '.join(words)} part"
+            self._generate_back_cover(
+                directory(f'{dashed_part_name}-back-cover.tex'),
+                price=f'{part_abbreviation} ({part_number}/{total_parts})',
+                ),
+            self._generate_front_cover(
+                directory(f'{dashed_part_name}-front-cover.tex'),
+                forces_tagline=forces_tagline,
+                )
+            self._generate_music(
+                directory(f'{dashed_part_name}-music.ly'),
+                dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                keep_with_tag=part_name,
+                silent=True,
+                )
+            self._generate_part(
+                directory(f'{dashed_part_name}-part.tex'),
+                dashed_part_name,
+                )
+            self._generate_preface(
+                directory(f'{dashed_part_name}-preface.tex')
+                )
+            self._copy_boilerplate(
+                directory,
+                'part_layout.py',
+                target_name=f'{snake_part_name}_layout.py',
+                values={'part_abbreviation':part_abbreviation},
+                )
+
     def _make_score_package(self):
         scores = self._get_scores_directory()
         wrapper = scores._find_empty_wrapper()
@@ -3612,7 +3731,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'annh',
         description=f'all score annotations - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_all_score_annotations(self, directory):
@@ -3632,7 +3751,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctmh',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_clock_time_markup(self, directory):
@@ -3650,7 +3769,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnmh',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_figure_name_markup(self, directory):
@@ -3668,7 +3787,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mimh',
         description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_measure_index_markup(self, directory):
@@ -3686,7 +3805,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mnmh',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_measure_number_markup(self, directory):
@@ -3704,7 +3823,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'spmh',
         description=f'{abjad.tags.SPACING_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_spacing_markup(self, directory):
@@ -3727,7 +3846,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snmh',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - hide',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def hide_stage_number_markup(self, directory):
@@ -4013,125 +4132,6 @@ class AbjadIDE(abjad.AbjadObject):
             self._make_layout_ly(layout_py)
             if 0 < total and i < total - 1:
                 self.io.display('')
-
-    def _make_parts_directory(self, directory):
-        assert directory.is_builds()
-        self.io.display('getting part names from score template ...')
-        result = directory._get_part_manifest()
-        if isinstance(result, tuple) and result[0] == -1:
-            message = result[-1]
-            self.io.display(message)
-            return
-        part_name_pairs = result
-        part_names = [_[0] for _ in result]
-        part_abbreviations = [_[1] for _ in result]
-        for part_name in part_names:
-            self.io.display(f'found {part_name} ...')
-        self.io.display('')
-        name = self.io.get('directory name')
-        if self.is_navigation(name):
-            return
-        name = directory.coerce(name)
-        directory = directory / name
-        if directory.exists():
-            self.io.display(f'existing {directory.trim()} ...')
-            return
-        paper_size = self.io.get('paper size')
-        if self.is_navigation(paper_size):
-            return
-        orientation = 'portrait'
-        if paper_size.endswith(' landscape'):
-            orientation = 'landscape'
-            length = len(' landscape')
-            paper_size = paper_size[:-length]
-        elif paper_size.endswith(' portrait'):
-            length = len(' portrait')
-            paper_size = paper_size[:-length]
-        if paper_size not in self.known_paper_sizes:
-            self.io.display(f'unknown paper size: {paper_size} ...')
-            self.io.display(f'choose from ...')
-            for paper_size in self.known_paper_sizes:
-                self.io.display(f'    {paper_size}')
-            return
-        suffix = self.io.get('catalog number suffix')
-        if self.is_navigation(suffix):
-            return
-        names = (
-            'front-cover.tex',
-            'preface.tex',
-            'music.ly',
-            'back-cover.tex',
-            'part.tex',
-            )
-        paths = [directory / _ for _ in names]
-        self.io.display('will make ...')
-        self.io.display(f'    {directory.trim()}')
-        path = directory / 'stylesheet.ily'
-        self.io.display(f'    {path.trim()}')
-        for part_name in part_names:
-            part_name_ = abjad.String(part_name).to_dash_case()
-            for name in names:
-                name = f'{part_name_}-{name}'
-                path = directory / name
-                self.io.display(f'    {path.trim()}')
-        response = self.io.get('ok?')
-        if self.is_navigation(response):
-            return
-        if response != 'y':
-            return
-        assert not directory.exists()
-        directory.mkdir()
-        directory.add_metadatum('parts_directory', True)
-        if bool(paper_size):
-            directory.add_metadatum('paper_size', paper_size)
-        if not orientation == 'portrait':
-            directory.add_metadatum('orientation', orientation)
-        if bool(suffix):
-            directory.add_metadatum('catalog_number_suffix', suffix)
-        self.collect_segments(directory)
-        stub = directory.builds._assets('preface-body.tex')
-        if not stub.is_file():
-            stub.write_text('')
-        stub = directory.builds._assets('preface-colophon.tex')
-        if not stub.is_file():
-            stub.write_text('')
-        self.generate_stylesheet_ily(directory)
-        total_parts = len(part_name_pairs)
-        for i, pair in enumerate(part_name_pairs):
-            part_name, part_abbreviation = pair
-            part_number = i + 1
-            dashed_part_name = abjad.String(part_name).to_dash_case()
-            snake_part_name = abjad.String(part_name).to_snake_case()
-            words = abjad.String(dashed_part_name).delimit_words()
-            forces_tagline = f"{' '.join(words)} part"
-            self._generate_back_cover(
-                directory(f'{dashed_part_name}-back-cover.tex'),
-                price=f'{part_abbreviation} ({part_number}/{total_parts})',
-                ),
-            self._generate_front_cover(
-                directory(f'{dashed_part_name}-front-cover.tex'),
-                forces_tagline=forces_tagline,
-                )
-            self._generate_music(
-                directory(f'{dashed_part_name}-music.ly'),
-                dashed_part_name=dashed_part_name,
-                forces_tagline=forces_tagline,
-                keep_with_tag=part_name,
-                silent=True,
-                )
-            self._generate_part(
-                directory(f'{dashed_part_name}-part.tex'),
-                dashed_part_name,
-                )
-            self._generate_preface(
-                directory(f'{dashed_part_name}-preface.tex')
-                )
-            self._copy_boilerplate(
-                directory,
-                'part_layout.py',
-                target_name=f'{snake_part_name}_layout.py',
-                values={'part_abbreviation':part_abbreviation},
-                )
 
     @Command(
         'midm',
@@ -4604,7 +4604,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'anns',
         description=f'all score annotations - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_all_score_annotations(self, directory):
@@ -4644,7 +4644,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctms',
         description=f'{abjad.tags.CLOCK_TIME_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_clock_time_markup(self, directory):
@@ -4662,7 +4662,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnms',
         description=f'{abjad.tags.FIGURE_NAME_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_figure_name_markup(self, directory):
@@ -4678,9 +4678,24 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
+        '?',
+        description='show - help',
+        external_directories=True,
+        menu_section='show',
+        score_package_paths=True,
+        scores_directory=True,
+        )
+    def show_help(self):
+        r'''Shows help.
+
+        Returns none.
+        '''
+        pass
+
+    @Command(
         'mims',
         description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_measure_index_markup(self, directory):
@@ -4698,7 +4713,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mnms',
         description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_measure_number_markup(self, directory):
@@ -4716,7 +4731,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'spms',
         description=f'{abjad.tags.SPACING_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_spacing_markup(self, directory):
@@ -4739,7 +4754,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snms',
         description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - show',
-        menu_section='markup',
+        menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
     def show_stage_number_markup(self, directory):
@@ -4753,21 +4768,6 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.tags.STAGE_NUMBER_MARKUP,
             message_zero=True,
             )
-
-    @Command(
-        '?',
-        description='show - help',
-        external_directories=True,
-        menu_section='show',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def show_help(self):
-        r'''Shows help.
-
-        Returns none.
-        '''
-        pass
 
     @Command(
         '^',
