@@ -18,7 +18,7 @@ def test_AbjadIDE_color_staff_lines_01():
         assert path.is_file()
         assert path.count(match) == ((0, 0), (4, 4))
         
-        abjad_ide('gre bb arch-a-score clsl q')
+        abjad_ide('gre bb arch-a-score slcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
@@ -28,7 +28,7 @@ def test_AbjadIDE_color_staff_lines_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score bwsl q')
+        abjad_ide('gre bb arch-a-score sluc q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (4, 4))
         for line in [
@@ -38,7 +38,7 @@ def test_AbjadIDE_color_staff_lines_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score clsl q')
+        abjad_ide('gre bb arch-a-score slcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
@@ -60,7 +60,7 @@ def test_AbjadIDE_color_staff_lines_02():
         assert path.is_file()
         assert path.count(match) == ((4, 4), (0, 0))
         
-        abjad_ide('gre %_ clsl q')
+        abjad_ide('gre %_ slcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
@@ -70,7 +70,7 @@ def test_AbjadIDE_color_staff_lines_02():
             ]:
             assert line in lines
         
-        abjad_ide('gre %_ bwsl q')
+        abjad_ide('gre %_ sluc q')
         assert path.count(match) == ((0, 0), (4, 4))
         lines = abjad_ide.io.transcript.lines
         for line in [
@@ -80,7 +80,7 @@ def test_AbjadIDE_color_staff_lines_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ clsl q')
+        abjad_ide('gre %_ slcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [

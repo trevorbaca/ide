@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 tag = abjad.tags.STAGE_NUMBER_MARKUP
 
-def test_AbjadIDE_activate_stage_number_markup_01():
+def test_AbjadIDE_show_stage_number_markup_01():
     r'''In build directory.
     '''
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_activate_stage_number_markup_01():
         assert path.is_file()
         assert path.count(tag) == ((0, 0), (2, 16))
         
-        abjad_ide('gre bb arch-a-score snm q')
+        abjad_ide('gre bb arch-a-score snms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
@@ -28,7 +28,7 @@ def test_AbjadIDE_activate_stage_number_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score snmx q')
+        abjad_ide('gre bb arch-a-score snmh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
@@ -39,7 +39,7 @@ def test_AbjadIDE_activate_stage_number_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_activate_stage_number_markup_02():
+def test_AbjadIDE_show_stage_number_markup_02():
     r'''In segment directory.
     '''
 
@@ -49,7 +49,7 @@ def test_AbjadIDE_activate_stage_number_markup_02():
         assert path.is_file()
         assert path.count(tag) == ((0, 0), (2, 16))
         
-        abjad_ide('gre %_ snm q')
+        abjad_ide('gre %_ snms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
@@ -59,7 +59,7 @@ def test_AbjadIDE_activate_stage_number_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ snmx q')
+        abjad_ide('gre %_ snmh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [

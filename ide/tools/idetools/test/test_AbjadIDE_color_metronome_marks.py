@@ -20,7 +20,7 @@ def test_AbjadIDE_color_metronome_marks_01():
         assert path.count(expression) == ((0, 0), (1, 23))
         assert path.count(suppression) == ((1, 19), (0, 0))
         
-        abjad_ide('gre bb arch-a-score cltm q')
+        abjad_ide('gre bb arch-a-score tmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
@@ -34,7 +34,7 @@ def test_AbjadIDE_color_metronome_marks_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score bwtm q')
+        abjad_ide('gre bb arch-a-score tmuc q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(expression) == ((0, 0), (1, 23))
         assert path.count(suppression) == ((1, 19), (0, 0))
@@ -48,7 +48,7 @@ def test_AbjadIDE_color_metronome_marks_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score cltm q')
+        abjad_ide('gre bb arch-a-score tmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
@@ -76,7 +76,7 @@ def test_AbjadIDE_color_metronome_marks_02():
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
         
-        abjad_ide('gre %_ cltm q')
+        abjad_ide('gre %_ tmcl q')
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))
         lines = abjad_ide.io.transcript.lines
@@ -90,7 +90,7 @@ def test_AbjadIDE_color_metronome_marks_02():
             ]:
             assert line in lines
         
-        abjad_ide('gre %_ bwtm q')
+        abjad_ide('gre %_ tmuc q')
         assert path.count(expression) == ((0, 0), (1, 23))
         assert path.count(suppression) == ((1, 19), (0, 0))
         lines = abjad_ide.io.transcript.lines
@@ -104,7 +104,7 @@ def test_AbjadIDE_color_metronome_marks_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ cltm q')
+        abjad_ide('gre %_ tmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(expression) == ((1, 23), (0, 0))
         assert path.count(suppression) == ((0, 0), (1, 19))

@@ -11,7 +11,7 @@ match = lambda tags: bool(set(tags) & set(tags_))
 
 name = 'spacing markup'
 
-def test_AbjadIDE_activate_spacing_markup_01():
+def test_AbjadIDE_show_spacing_markup_01():
     r'''In build directory.
     '''
 
@@ -24,7 +24,7 @@ def test_AbjadIDE_activate_spacing_markup_01():
         assert path.is_file()
         assert path.count(match) == ((0, 0), (0, 0))
         
-        abjad_ide('gre bb arch-a-score spm q')
+        abjad_ide('gre bb arch-a-score spms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
@@ -34,7 +34,7 @@ def test_AbjadIDE_activate_spacing_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_activate_spacing_markup_02():
+def test_AbjadIDE_show_spacing_markup_02():
     r'''In segment directory.
     '''
 
@@ -44,7 +44,7 @@ def test_AbjadIDE_activate_spacing_markup_02():
         assert path.is_file()
         assert path.count(match) == ((0, 0), (2, 14))
         
-        abjad_ide('gre %_ spm q')
+        abjad_ide('gre %_ spms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 14), (0, 0))
         for line in [
@@ -54,7 +54,7 @@ def test_AbjadIDE_activate_spacing_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ spmx q')
+        abjad_ide('gre %_ spmh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (2, 14))
         for line in [

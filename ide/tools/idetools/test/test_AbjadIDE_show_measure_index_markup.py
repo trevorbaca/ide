@@ -3,14 +3,13 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.tags.CLOCK_TIME_MARKUP
-
-def test_AbjadIDE_activate_clock_time_markup_01():
+def test_AbjadIDE_show_measure_index_markup_01():
     r'''In build directory.
     '''
 
     with ide.Test():
 
+        tag = abjad.tags.MEASURE_INDEX_MARKUP
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -18,53 +17,54 @@ def test_AbjadIDE_activate_clock_time_markup_01():
         assert path.is_file()
         assert path.count(tag) == ((0, 0), (2, 16))
         
-        abjad_ide('gre bb arch-a-score ctm q')
-        assert path.count(tag) == ((2, 16), (0, 0))
+        abjad_ide('gre bb arch-a-score mims q')
         lines = abjad_ide.io.transcript.lines
+        assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Activating CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Activating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            'Activating MEASURE_INDEX_MARKUP tags in arch-a-score ...',
+            ' Found 2 MEASURE_INDEX_MARKUP tags in arch-a-score ...',
+            ' Activating 2 MEASURE_INDEX_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score ctmx q')
+        abjad_ide('gre bb arch-a-score mimh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Deactivating CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Deactivating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            'Deactivating MEASURE_INDEX_MARKUP tags in arch-a-score ...',
+            ' Found 2 MEASURE_INDEX_MARKUP tags in arch-a-score ...',
+            ' Deactivating 2 MEASURE_INDEX_MARKUP tags in arch-a-score ...',
             ]:
             assert line in lines
 
 
-def test_AbjadIDE_activate_clock_time_markup_02():
+def test_AbjadIDE_show_measure_index_markup_02():
     r'''In segment directory.
     '''
 
     with ide.Test():
 
+        tag = abjad.tags.MEASURE_INDEX_MARKUP
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         assert path.count(tag) == ((0, 0), (2, 16))
         
-        abjad_ide('gre %_ ctm q')
+        abjad_ide('gre %_ mims q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Activating CLOCK_TIME_MARKUP tags in _ ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Activating 2 CLOCK_TIME_MARKUP tags in _ ...',
+            'Activating MEASURE_INDEX_MARKUP tags in _ ...',
+            ' Found 2 MEASURE_INDEX_MARKUP tags in _ ...',
+            ' Activating 2 MEASURE_INDEX_MARKUP tags in _ ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ ctmx q')
+        abjad_ide('gre %_ mimh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Deactivating CLOCK_TIME_MARKUP tags in _ ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Deactivating 2 CLOCK_TIME_MARKUP tags in _ ...',
+            'Deactivating MEASURE_INDEX_MARKUP tags in _ ...',
+            ' Found 2 MEASURE_INDEX_MARKUP tags in _ ...',
+            ' Deactivating 2 MEASURE_INDEX_MARKUP tags in _ ...',
             ]:
             assert line in lines

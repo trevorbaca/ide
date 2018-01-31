@@ -18,7 +18,7 @@ def test_AbjadIDE_color_margin_markup_01():
         assert path.is_file()
         assert path.count(match) == ((0, 0), (0, 0))
         
-        abjad_ide('gre bb arch-a-score clmm q')
+        abjad_ide('gre bb arch-a-score mmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
@@ -27,7 +27,7 @@ def test_AbjadIDE_color_margin_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score bwmm q')
+        abjad_ide('gre bb arch-a-score mmuc q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
@@ -36,7 +36,7 @@ def test_AbjadIDE_color_margin_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score clmm q')
+        abjad_ide('gre bb arch-a-score mmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
@@ -57,7 +57,7 @@ def test_AbjadIDE_color_margin_markup_02():
         assert path.is_file()
         assert path.count(match) == ((0, 0), (0, 0))
         
-        abjad_ide('gre %_ clmm q')
+        abjad_ide('gre %_ mmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_margin_markup_02():
             ]:
             assert line in lines
         
-        abjad_ide('gre %_ bwmm q')
+        abjad_ide('gre %_ mmuc q')
         assert path.count(match) == ((0, 0), (0, 0))
         lines = abjad_ide.io.transcript.lines
         for line in [
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_margin_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ clmm q')
+        abjad_ide('gre %_ mmcl q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (0, 0))
         for line in [

@@ -16,7 +16,7 @@ def test_AbjadIDE_color_instruments_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score cli q')
+        abjad_ide('gre bb arch-a-score icl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Activating instrument color tags in arch-a-score ...',
@@ -25,7 +25,7 @@ def test_AbjadIDE_color_instruments_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score bwi q')
+        abjad_ide('gre bb arch-a-score iuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Deactivating instrument color tags in arch-a-score ...',
@@ -34,7 +34,7 @@ def test_AbjadIDE_color_instruments_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score cli q')
+        abjad_ide('gre bb arch-a-score icl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Activating instrument color tags in arch-a-score ...',
@@ -53,7 +53,7 @@ def test_AbjadIDE_color_instruments_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ cli q')
+        abjad_ide('gre %_ icl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Activating instrument color tags in _ ...',
@@ -63,7 +63,7 @@ def test_AbjadIDE_color_instruments_02():
             ]:
             assert line in lines
         
-        abjad_ide('gre %_ bwi q')
+        abjad_ide('gre %_ iuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Deactivating instrument color tags in _ ...',
@@ -72,7 +72,7 @@ def test_AbjadIDE_color_instruments_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ cli q')
+        abjad_ide('gre %_ icl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Activating instrument color tags in _ ...',

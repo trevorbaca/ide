@@ -117,7 +117,7 @@ class AbjadIDE(abjad.AbjadObject):
             parts_directory_name = parts_directory_name.to_shout_case()
             tag = f'+{parts_directory_name}_{part_abbreviation}'
             self.activate(parts_directory, tag, message_zero=True)
-        self.black_and_white_all_persistent_indicators(parts_directory)
+        self.uncolor_all_persistent_indicators(parts_directory)
         
     def _cache_commands(self):
         commands = {}
@@ -1808,312 +1808,6 @@ class AbjadIDE(abjad.AbjadObject):
     ### USER METHODS ###
 
     @Command(
-        'ann',
-        description=f'all score annotations - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_all_score_annotations(self, directory):
-        r'''Activates all score annotations.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = abjad.tags.all_score_annotation_tags()
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            message_zero=True,
-            name='score annotation',
-            )
-
-    @Command(
-        'ctm',
-        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_clock_time_markup(self, directory):
-        r'''Activates clock time markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.CLOCK_TIME_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'fnm',
-        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_figure_name_markup(self, directory):
-        r'''Activates figure name markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.FIGURE_NAME_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'mim',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_measure_index_markup(self, directory):
-        r'''Activates measure number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.MEASURE_INDEX_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'mnm',
-        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_measure_number_markup(self, directory):
-        r'''Activates measure number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.MEASURE_NUMBER_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'spm',
-        description=f'{abjad.tags.SPACING_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_spacing_markup(self, directory):
-        r'''Activates spacing markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            message_zero=True,
-            name='spacing markup',
-            )
-
-    @Command(
-        'snm',
-        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - activate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def activate_stage_number_markup(self, directory):
-        r'''Activates stage number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.STAGE_NUMBER_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'bw*',
-        description='b&w - all persistent indicators',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_all_persistent_indicators(self, directory):
-        r'''Renders all persistent indicators in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.io.display('rendering persistent indicators b&w ...')
-        self.deactivate(
-            directory,
-            baca.tags.match_persistent_indicator_color_expression,
-            indent=1,
-            )
-        self.activate(
-            directory,
-            baca.tags.match_persistent_indicator_color_suppression,
-            indent=1,
-            )
-        self.deactivate(
-            directory,
-            baca.tags.match_reapplied_margin_markup_tags,
-            indent=1,
-            )
-
-    @Command(
-        'bwc',
-        description='b&w - CLEFS',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_clefs(self, directory):
-        r'''Renders clefs in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = baca.tags.clef_color_tags(directory)
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            name='clef color',
-            message_zero=True,
-            )
-
-    @Command(
-        'bwd',
-        description='b&w - DYNAMICS',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_dynamics(self, directory):
-        r'''Renders dynamics in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            baca.tags.dynamic_color_match,
-            name='dynamic',
-            message_zero=True,
-            )
-
-    @Command(
-        'bwi',
-        description='b&w - INSTRUMENTS',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_instruments(self, directory):
-        r'''Renders instruments in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = baca.tags.instrument_color_tags()
-        if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_INSTRUMENT)
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            name='instrument color',
-            message_zero=True,
-            )
-
-    @Command(
-        'bwmm',
-        description='b&w - MARGIN MARKUP',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_margin_markup(self, directory):
-        r'''Renders margin markup in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = baca.tags.margin_markup_color_tags()
-        if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_MARGIN_MARKUP)
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            name='margin markup color',
-            message_zero=True,
-            )
-
-    @Command(
-        'bwtm',
-        description='b&w - METRONOME MARKS',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_metronome_marks(self, directory):
-        r'''Renders metronome marks in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.activate(
-            directory,
-            baca.tags.metronome_mark_color_suppression_match,
-            name='b&w metronome mark expression',
-            )
-        self.deactivate(
-            directory,
-            baca.tags.metronome_mark_color_expression_match,
-            name='b&w metronome mark suppression',
-            )
-
-    @Command(
-        'bwsl',
-        description='b&w - STAFF LINES',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_staff_lines(self, directory):
-        r'''Renders staff lines in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            baca.tags.staff_lines_color_match,
-            name='staff lines color',
-            message_zero=True,
-            )
-
-    @Command(
-        'bwts',
-        description='b&w - TIME SIGNATURES',
-        menu_section='bw',
-        score_package_paths=('buildspace',),
-        )
-    def black_and_white_time_signatures(self, directory):
-        r'''Renders time signatures in black and white.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            baca.tags.time_signature_color_match,
-            name='time signature color',
-            message_zero=True,
-            )
-
-    @Command(
         'ppb',
         description='part.pdf - build',
         menu_section='parts',
@@ -2288,7 +1982,7 @@ class AbjadIDE(abjad.AbjadObject):
 
         Keeps score block in each illustration.ly file.
 
-        Activates and deactivates build-appropriate tags.
+        Shows and deactivates build-appropriate tags.
 
         Returns none.
         '''
@@ -2344,18 +2038,18 @@ class AbjadIDE(abjad.AbjadObject):
         result = directory._deactivate_shifted_clef_at_bol()
         for message in result[-1]:
             self.io.display(message)
-        self.black_and_white_all_persistent_indicators(directory)
-        self.deactivate_all_score_annotations(directory)
+        self.uncolor_all_persistent_indicators(directory)
+        self.hide_all_score_annotations(directory)
         self._join_broken_spanners(directory)
 
     @Command(
-        'cl*',
-        description='color - all persistent indicators',
-        menu_section='color',
+        'picl',
+        description='persistent indicators - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_all_persistent_indicators(self, directory):
-        r'''Colors all persistent indicators.
+        r'''Colors persistent indicators.
 
         Returns none.
         '''
@@ -2373,9 +2067,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'clc',
-        description='color - CLEFS',
-        menu_section='color',
+        'ccl',
+        description='clefs - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_clefs(self, directory):
@@ -2393,9 +2087,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'cld',
-        description='color - DYNAMICS',
-        menu_section='color',
+        'dcl',
+        description='dynamics - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_dynamics(self, directory):
@@ -2412,9 +2106,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'cli',
-        description='color - INSTRUMENTS',
-        menu_section='color',
+        'icl',
+        description='instruments - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_instruments(self, directory):
@@ -2432,9 +2126,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'clmm',
-        description='color - MARGIN MARKUP',
-        menu_section='color',
+        'mmcl',
+        description='margin markup - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_margin_markup(self, directory):
@@ -2451,9 +2145,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'cltm',
-        description='color - METRONOME MARKS',
-        menu_section='color',
+        'tmcl',
+        description='metronome marks - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_metronome_marks(self, directory):
@@ -2476,9 +2170,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'clsl',
-        description='color - STAFF LINES',
-        menu_section='color',
+        'slcl',
+        description='staff lines - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_staff_lines(self, directory):
@@ -2495,9 +2189,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
-        'clts',
-        description='color - TIME SIGNATURES',
-        menu_section='color',
+        'tscl',
+        description='time signatures - color',
+        menu_section='persistent indicators',
         score_package_paths=('buildspace',),
         )
     def color_time_signatures(self, directory):
@@ -2557,139 +2251,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(path.trim(), raw=True)
             self.clipboard.append(path)
             path.remove()
-
-    @Command(
-        'annx',
-        description=f'all score annotations - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_all_score_annotations(self, directory):
-        r'''Deactivates all score annotations.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.io.display('hiding score annotations ...')
-        self.deactivate(
-            directory,
-            abjad.tags.match_score_annotation_tags,
-            indent=1,
-            message_zero=True,
-            )
-
-    @Command(
-        'ctmx',
-        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_clock_time_markup(self, directory):
-        r'''Deactivates clock time markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.CLOCK_TIME_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'fnmx',
-        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_figure_name_markup(self, directory):
-        r'''Deactivates figure name markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.FIGURE_NAME_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'mimx',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_measure_index_markup(self, directory):
-        r'''Deactivates measure number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.MEASURE_INDEX_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'mnmx',
-        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_measure_number_markup(self, directory):
-        r'''Deactivates measure number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.MEASURE_NUMBER_MARKUP,
-            message_zero=True,
-            )
-
-    @Command(
-        'spmx',
-        description=f'{abjad.tags.SPACING_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_spacing_markup(self, directory):
-        r'''Deactivates spacing markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
-        self.deactivate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            message_zero=True,
-            name='spacing markup',
-            )
-
-    @Command(
-        'snmx',
-        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - deactivate',
-        menu_section='markup',
-        score_package_paths=('buildspace',),
-        )
-    def deactivate_stage_number_markup(self, directory):
-        r'''Deactivates stage number markup.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.STAGE_NUMBER_MARKUP,
-            message_zero=True,
-            )
 
     @Command(
         '^^',
@@ -4034,6 +3595,139 @@ class AbjadIDE(abjad.AbjadObject):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
+        'annh',
+        description=f'all score annotations - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_all_score_annotations(self, directory):
+        r'''Hides all score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.io.display('hiding score annotations ...')
+        self.deactivate(
+            directory,
+            abjad.tags.match_score_annotation_tags,
+            indent=1,
+            message_zero=True,
+            )
+
+    @Command(
+        'ctmh',
+        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_clock_time_markup(self, directory):
+        r'''Hides clock time markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            abjad.tags.CLOCK_TIME_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'fnmh',
+        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_figure_name_markup(self, directory):
+        r'''Hides figure name markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            abjad.tags.FIGURE_NAME_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'mimh',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_measure_index_markup(self, directory):
+        r'''Hides measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            abjad.tags.MEASURE_INDEX_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'mnmh',
+        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_measure_number_markup(self, directory):
+        r'''Hides measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            abjad.tags.MEASURE_NUMBER_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'spmh',
+        description=f'{abjad.tags.SPACING_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_spacing_markup(self, directory):
+        r'''Hides spacing markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
+            )
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            message_zero=True,
+            name='spacing markup',
+            )
+
+    @Command(
+        'snmh',
+        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - hide',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def hide_stage_number_markup(self, directory):
+        r'''Hides stage number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            abjad.tags.STAGE_NUMBER_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
         'bcti',
         description='back-cover.tex - interpret',
         menu_section='back cover',
@@ -4893,6 +4587,26 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(lines, raw=True)
 
     @Command(
+        'anns',
+        description=f'all score annotations - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_all_score_annotations(self, directory):
+        r'''Shows all score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = abjad.tags.all_score_annotation_tags()
+        self.activate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            message_zero=True,
+            name='score annotation',
+            )
+
+    @Command(
         'cbs',
         description='clipboard - show',
         external_directories=True,
@@ -4911,6 +4625,119 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('showing clipboard ...')
         for path in self.clipboard:
             self.io.display(path.trim(), raw=True)
+
+    @Command(
+        'ctms',
+        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_clock_time_markup(self, directory):
+        r'''Shows clock time markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            abjad.tags.CLOCK_TIME_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'fnms',
+        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_figure_name_markup(self, directory):
+        r'''Shows figure name markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            abjad.tags.FIGURE_NAME_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'mims',
+        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_measure_index_markup(self, directory):
+        r'''Shows measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            abjad.tags.MEASURE_INDEX_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'mnms',
+        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_measure_number_markup(self, directory):
+        r'''Shows measure number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            abjad.tags.MEASURE_NUMBER_MARKUP,
+            message_zero=True,
+            )
+
+    @Command(
+        'spms',
+        description=f'{abjad.tags.SPACING_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_spacing_markup(self, directory):
+        r'''Shows spacing markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = (
+            abjad.tags.SPACING_MARKUP,
+            abjad.tags.SPACING_OVERRIDE_MARKUP,
+            )
+        self.activate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            message_zero=True,
+            name='spacing markup',
+            )
+
+    @Command(
+        'snms',
+        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - show',
+        menu_section='markup',
+        score_package_paths=('buildspace',),
+        )
+    def show_stage_number_markup(self, directory):
+        r'''Shows stage number markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            abjad.tags.STAGE_NUMBER_MARKUP,
+            message_zero=True,
+            )
 
     @Command(
         '?',
@@ -5356,3 +5183,176 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is__segments() or directory.is_build()
         path = directory.build('stylesheet.ily')
         self._trash_files(path)
+
+    @Command(
+        'piuc',
+        description='persistent indicators - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_all_persistent_indicators(self, directory):
+        r'''Uncolors persistent indicators.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.io.display('rendering persistent indicators b&w ...')
+        self.deactivate(
+            directory,
+            baca.tags.match_persistent_indicator_color_expression,
+            indent=1,
+            )
+        self.activate(
+            directory,
+            baca.tags.match_persistent_indicator_color_suppression,
+            indent=1,
+            )
+        self.deactivate(
+            directory,
+            baca.tags.match_reapplied_margin_markup_tags,
+            indent=1,
+            )
+
+    @Command(
+        'cuc',
+        description='clefs - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_clefs(self, directory):
+        r'''Uncolors clefs.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = baca.tags.clef_color_tags(directory)
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            name='clef color',
+            message_zero=True,
+            )
+
+    @Command(
+        'duc',
+        description='dynamics - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_dynamics(self, directory):
+        r'''Uncolors dynamics.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            baca.tags.dynamic_color_match,
+            name='dynamic',
+            message_zero=True,
+            )
+
+    @Command(
+        'iuc',
+        description='instruments - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_instruments(self, directory):
+        r'''Uncolors instruments.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = baca.tags.instrument_color_tags()
+        if directory.is_build():
+            tags_.append(baca.tags.REAPPLIED_INSTRUMENT)
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            name='instrument color',
+            message_zero=True,
+            )
+
+    @Command(
+        'mmuc',
+        description='margin markup - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_margin_markup(self, directory):
+        r'''Uncolors margin markup.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = baca.tags.margin_markup_color_tags()
+        if directory.is_build():
+            tags_.append(baca.tags.REAPPLIED_MARGIN_MARKUP)
+        self.deactivate(
+            directory,
+            lambda tags: bool(set(tags) & set(tags_)),
+            name='margin markup color',
+            message_zero=True,
+            )
+
+    @Command(
+        'tmuc',
+        description='metronome marks - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_metronome_marks(self, directory):
+        r'''Uncolors metornome marks.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.activate(
+            directory,
+            baca.tags.metronome_mark_color_suppression_match,
+            name='b&w metronome mark expression',
+            )
+        self.deactivate(
+            directory,
+            baca.tags.metronome_mark_color_expression_match,
+            name='b&w metronome mark suppression',
+            )
+
+    @Command(
+        'sluc',
+        description='staff lines - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_staff_lines(self, directory):
+        r'''Uncolors staff lines.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            baca.tags.staff_lines_color_match,
+            name='staff lines color',
+            message_zero=True,
+            )
+
+    @Command(
+        'tsuc',
+        description='time signatures - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_time_signatures(self, directory):
+        r'''Uncolors time signatures.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.deactivate(
+            directory,
+            baca.tags.time_signature_color_match,
+            name='time signature color',
+            message_zero=True,
+            )

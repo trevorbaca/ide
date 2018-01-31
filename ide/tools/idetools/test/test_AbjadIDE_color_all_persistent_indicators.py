@@ -17,7 +17,7 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score cl* q')
+        abjad_ide('gre bb arch-a-score picl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
@@ -30,7 +30,7 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score bw* q')
+        abjad_ide('gre bb arch-a-score piuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Rendering persistent indicators b&w ...',
@@ -43,7 +43,7 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score cl* q')
+        abjad_ide('gre bb arch-a-score picl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
@@ -67,7 +67,7 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ cl* q')
+        abjad_ide('gre %_ picl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
@@ -81,7 +81,7 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
             ]:
             assert line in lines
         
-        abjad_ide('gre %_ bw* q')
+        abjad_ide('gre %_ piuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Rendering persistent indicators b&w ...',
@@ -94,7 +94,7 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ cl* q')
+        abjad_ide('gre %_ picl q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',

@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 tag = abjad.tags.FIGURE_NAME_MARKUP
 
-def test_AbjadIDE_activate_figure_name_markup_01():
+def test_AbjadIDE_show_figure_name_markup_01():
     r'''In build directory.
     '''
 
@@ -18,7 +18,7 @@ def test_AbjadIDE_activate_figure_name_markup_01():
         assert path.is_file()
         assert path.count(tag) == ((0, 0), (1, 4))
         
-        abjad_ide('gre bb arch-a-score fnm q')
+        abjad_ide('gre bb arch-a-score fnms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
@@ -28,7 +28,7 @@ def test_AbjadIDE_activate_figure_name_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score fnmx q')
+        abjad_ide('gre bb arch-a-score fnmh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
@@ -39,7 +39,7 @@ def test_AbjadIDE_activate_figure_name_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_activate_figure_name_markup_02():
+def test_AbjadIDE_show_figure_name_markup_02():
     r'''In segment directory.
     '''
 
@@ -49,7 +49,7 @@ def test_AbjadIDE_activate_figure_name_markup_02():
         assert path.is_file()
         assert path.count(tag) == ((1, 4), (0, 0))
         
-        abjad_ide('gre %_ fnmx q')
+        abjad_ide('gre %_ fnmh q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
@@ -59,7 +59,7 @@ def test_AbjadIDE_activate_figure_name_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ fnm q')
+        abjad_ide('gre %_ fnms q')
         lines = abjad_ide.io.transcript.lines
         assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
