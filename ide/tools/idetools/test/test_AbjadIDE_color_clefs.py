@@ -22,9 +22,10 @@ def test_AbjadIDE_color_clefs_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((14, 14), (0, 0))
         for line in [
-            'Activating clef color tags in arch-a-score ...',
-            ' Found 14 clef color tags in arch-a-score ...',
-            ' Activating 14 clef color tags in arch-a-score ...',
+            'Coloring clefs ...',
+            ' Activating clef color tags in arch-a-score ...',
+            '  Found 14 clef color tags in arch-a-score ...',
+            '  Activating 14 clef color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +33,10 @@ def test_AbjadIDE_color_clefs_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (14, 14))
         for line in [
-            'Deactivating clef color tags in arch-a-score ...',
-            ' Found 14 clef color tags in arch-a-score ...',
-            ' Deactivating 14 clef color tags in arch-a-score ...',
+            'Uncoloring clefs ...',
+            ' Deactivating clef color tags in arch-a-score ...',
+            '  Found 14 clef color tags in arch-a-score ...',
+            '  Deactivating 14 clef color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -42,9 +44,10 @@ def test_AbjadIDE_color_clefs_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((14, 14), (0, 0))
         for line in [
-            'Activating clef color tags in arch-a-score ...',
-            ' Found 14 clef color tags in arch-a-score ...',
-            ' Activating 14 clef color tags in arch-a-score ...',
+            'Coloring clefs ...',
+            ' Activating clef color tags in arch-a-score ...',
+            '  Found 14 clef color tags in arch-a-score ...',
+            '  Activating 14 clef color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -64,9 +67,10 @@ def test_AbjadIDE_color_clefs_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((14, 14), (0, 0))
         for line in [
-            'Activating clef color tags in _ ...',
-            ' Found 14 clef color tags in _ ...',
-            ' Skipping 14 (active) clef color tags in _ ...',
+            'Coloring clefs ...',
+            ' Activating clef color tags in _ ...',
+            '  Found 14 clef color tags in _ ...',
+            '  Skipping 14 (active) clef color tags in _ ...',
             ]:
             assert line in lines
         
@@ -74,9 +78,10 @@ def test_AbjadIDE_color_clefs_02():
         assert path.count(match) == ((0, 0), (14, 14))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Deactivating clef color tags in _ ...',
-            ' Found 14 clef color tags in _ ...',
-            ' Deactivating 14 clef color tags in _ ...',
+            'Uncoloring clefs ...',
+            ' Deactivating clef color tags in _ ...',
+            '  Found 14 clef color tags in _ ...',
+            '  Deactivating 14 clef color tags in _ ...',
             ]:
             assert line in lines
 
@@ -84,8 +89,9 @@ def test_AbjadIDE_color_clefs_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((14, 14), (0, 0))
         for line in [
-            'Activating clef color tags in _ ...',
-            ' Found 14 clef color tags in _ ...',
-            ' Activating 14 clef color tags in _ ...',
+            'Coloring clefs ...',
+            ' Activating clef color tags in _ ...',
+            '  Found 14 clef color tags in _ ...',
+            '  Activating 14 clef color tags in _ ...',
             ]:
             assert line in lines

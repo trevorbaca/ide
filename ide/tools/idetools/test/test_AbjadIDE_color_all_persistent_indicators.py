@@ -33,7 +33,7 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
         abjad_ide('gre bb arch-a-score piuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Rendering persistent indicators b&w ...',
+            'Uncoloring persistent indicators ...',
             ' Deactivating persistent indicator color expression tags in arch-a-score ...',
             '  Found 26 persistent indicator color expression tags in arch-a-score ...',
             '  Deactivating 26 persistent indicator color expression tags in arch-a-score ...',
@@ -84,7 +84,7 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
         abjad_ide('gre %_ piuc q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Rendering persistent indicators b&w ...',
+            'Uncoloring persistent indicators ...',
             ' Deactivating persistent indicator color expression tags in _ ...',
             '  Found 26 persistent indicator color expression tags in _ ...',
             '  Deactivating 26 persistent indicator color expression tags in _ ...',

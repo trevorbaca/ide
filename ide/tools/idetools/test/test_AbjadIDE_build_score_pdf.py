@@ -26,7 +26,7 @@ def test_AbjadIDE_build_score_pdf_01():
             ' Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
             ' Writing red_score/builds/letter-score/_segments/segment-A.ly ...',
             ' Writing red_score/builds/letter-score/_segments/segment-B.ly ...',
-            'Rendering persistent indicators b&w ...',
+            'Uncoloring persistent indicators ...',
             'Hiding score annotations ...',
             ' Deactivating score annotation tags in letter-score ...',
             '  Found no score annotation tags in letter-score ...',

@@ -22,9 +22,10 @@ def test_AbjadIDE_color_staff_lines_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
-            'Activating staff lines color tags in arch-a-score ...',
-            ' Found 4 staff lines color tags in arch-a-score ...',
-            ' Activating 4 staff lines color tags in arch-a-score ...',
+            'Coloring staff lines ...',
+            ' Activating staff lines color tags in arch-a-score ...',
+            '  Found 4 staff lines color tags in arch-a-score ...',
+            '  Activating 4 staff lines color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +33,10 @@ def test_AbjadIDE_color_staff_lines_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (4, 4))
         for line in [
-            'Deactivating staff lines color tags in arch-a-score ...',
-            ' Found 4 staff lines color tags in arch-a-score ...',
-            ' Deactivating 4 staff lines color tags in arch-a-score ...',
+            'Uncoloring staff lines ...',
+            ' Deactivating staff lines color tags in arch-a-score ...',
+            '  Found 4 staff lines color tags in arch-a-score ...',
+            '  Deactivating 4 staff lines color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -42,9 +44,10 @@ def test_AbjadIDE_color_staff_lines_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
-            'Activating staff lines color tags in arch-a-score ...',
-            ' Found 4 staff lines color tags in arch-a-score ...',
-            ' Activating 4 staff lines color tags in arch-a-score ...',
+            'Coloring staff lines ...',
+            ' Activating staff lines color tags in arch-a-score ...',
+            '  Found 4 staff lines color tags in arch-a-score ...',
+            '  Activating 4 staff lines color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -64,9 +67,10 @@ def test_AbjadIDE_color_staff_lines_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
-            'Activating staff lines color tags in _ ...',
-            ' Found 4 staff lines color tags in _ ...',
-            ' Skipping 4 (active) staff lines color tags in _ ...',
+            'Coloring staff lines ...',
+            ' Activating staff lines color tags in _ ...',
+            '  Found 4 staff lines color tags in _ ...',
+            '  Skipping 4 (active) staff lines color tags in _ ...',
             ]:
             assert line in lines
         
@@ -74,9 +78,10 @@ def test_AbjadIDE_color_staff_lines_02():
         assert path.count(match) == ((0, 0), (4, 4))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Deactivating staff lines color tags in _ ...',
-            ' Found 4 staff lines color tags in _ ...',
-            ' Deactivating 4 staff lines color tags in _ ...',
+            'Uncoloring staff lines ...',
+            ' Deactivating staff lines color tags in _ ...',
+            '  Found 4 staff lines color tags in _ ...',
+            '  Deactivating 4 staff lines color tags in _ ...',
             ]:
             assert line in lines
 
@@ -84,8 +89,9 @@ def test_AbjadIDE_color_staff_lines_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((4, 4), (0, 0))
         for line in [
-            'Activating staff lines color tags in _ ...',
-            ' Found 4 staff lines color tags in _ ...',
-            ' Activating 4 staff lines color tags in _ ...',
+            'Coloring staff lines ...',
+            ' Activating staff lines color tags in _ ...',
+            '  Found 4 staff lines color tags in _ ...',
+            '  Activating 4 staff lines color tags in _ ...',
             ]:
             assert line in lines

@@ -22,9 +22,10 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating time signature color tags in arch-a-score ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Activating 2 time signature color tags in arch-a-score ...',
+            'Coloring time signatures ...',
+            ' Activating time signature color tags in arch-a-score ...',
+            '  Found 2 time signature color tags in arch-a-score ...',
+            '  Activating 2 time signature color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +33,10 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (2, 2))
         for line in [
-            'Deactivating time signature color tags in arch-a-score ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Deactivating 2 time signature color tags in arch-a-score ...',
+            'Uncoloring time signatures ...',
+            ' Deactivating time signature color tags in arch-a-score ...',
+            '  Found 2 time signature color tags in arch-a-score ...',
+            '  Deactivating 2 time signature color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -42,9 +44,10 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating time signature color tags in arch-a-score ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Activating 2 time signature color tags in arch-a-score ...',
+            'Coloring time signatures ...',
+            ' Activating time signature color tags in arch-a-score ...',
+            '  Found 2 time signature color tags in arch-a-score ...',
+            '  Activating 2 time signature color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -64,9 +67,10 @@ def test_AbjadIDE_color_time_signatures_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating time signature color tags in _ ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Skipping 2 (active) time signature color tags in _ ...',
+            'Coloring time signatures ...',
+            ' Activating time signature color tags in _ ...',
+            '  Found 2 time signature color tags in _ ...',
+            '  Skipping 2 (active) time signature color tags in _ ...',
             ]:
             assert line in lines
         
@@ -74,9 +78,10 @@ def test_AbjadIDE_color_time_signatures_02():
         assert path.count(match) == ((0, 0), (2, 2))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Deactivating time signature color tags in _ ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Deactivating 2 time signature color tags in _ ...',
+            'Uncoloring time signatures ...',
+            ' Deactivating time signature color tags in _ ...',
+            '  Found 2 time signature color tags in _ ...',
+            '  Deactivating 2 time signature color tags in _ ...',
             ]:
             assert line in lines
 
@@ -84,8 +89,9 @@ def test_AbjadIDE_color_time_signatures_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating time signature color tags in _ ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Activating 2 time signature color tags in _ ...',
+            'Coloring time signatures ...',
+            ' Activating time signature color tags in _ ...',
+            '  Found 2 time signature color tags in _ ...',
+            '  Activating 2 time signature color tags in _ ...',
             ]:
             assert line in lines

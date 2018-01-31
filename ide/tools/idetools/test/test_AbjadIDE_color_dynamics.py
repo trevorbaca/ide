@@ -22,9 +22,10 @@ def test_AbjadIDE_color_dynamics_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating color dynamic tags in arch-a-score ...',
-            ' Found 2 color dynamic tags in arch-a-score ...',
-            ' Activating 2 color dynamic tags in arch-a-score ...',
+            'Coloring dynamics ...',
+            ' Activating color dynamic tags in arch-a-score ...',
+            '  Found 2 color dynamic tags in arch-a-score ...',
+            '  Activating 2 color dynamic tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -32,9 +33,10 @@ def test_AbjadIDE_color_dynamics_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((0, 0), (2, 2))
         for line in [
-            'Deactivating dynamic tags in arch-a-score ...',
-            ' Found 2 dynamic tags in arch-a-score ...',
-            ' Deactivating 2 dynamic tags in arch-a-score ...',
+            'Uncoloring dynamics ...',
+            ' Deactivating dynamic tags in arch-a-score ...',
+            '  Found 2 dynamic tags in arch-a-score ...',
+            '  Deactivating 2 dynamic tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -42,9 +44,10 @@ def test_AbjadIDE_color_dynamics_01():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating color dynamic tags in arch-a-score ...',
-            ' Found 2 color dynamic tags in arch-a-score ...',
-            ' Activating 2 color dynamic tags in arch-a-score ...',
+            'Coloring dynamics ...',
+            ' Activating color dynamic tags in arch-a-score ...',
+            '  Found 2 color dynamic tags in arch-a-score ...',
+            '  Activating 2 color dynamic tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -64,9 +67,10 @@ def test_AbjadIDE_color_dynamics_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating color dynamic tags in _ ...',
-            ' Found 2 color dynamic tags in _ ...',
-            ' Skipping 2 (active) color dynamic tags in _ ...',
+            'Coloring dynamics ...',
+            ' Activating color dynamic tags in _ ...',
+            '  Found 2 color dynamic tags in _ ...',
+            '  Skipping 2 (active) color dynamic tags in _ ...',
             ]:
             assert line in lines
         
@@ -74,9 +78,10 @@ def test_AbjadIDE_color_dynamics_02():
         assert path.count(match) == ((0, 0), (2, 2))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Deactivating dynamic tags in _ ...',
-            ' Found 2 dynamic tags in _ ...',
-            ' Deactivating 2 dynamic tags in _ ...',
+            'Uncoloring dynamics ...',
+            ' Deactivating dynamic tags in _ ...',
+            '  Found 2 dynamic tags in _ ...',
+            '  Deactivating 2 dynamic tags in _ ...',
             ]:
             assert line in lines
 
@@ -84,8 +89,9 @@ def test_AbjadIDE_color_dynamics_02():
         lines = abjad_ide.io.transcript.lines
         assert path.count(match) == ((2, 2), (0, 0))
         for line in [
-            'Activating color dynamic tags in _ ...',
-            ' Found 2 color dynamic tags in _ ...',
-            ' Activating 2 color dynamic tags in _ ...',
+            'Coloring dynamics ...',
+            ' Activating color dynamic tags in _ ...',
+            '  Found 2 color dynamic tags in _ ...',
+            '  Activating 2 color dynamic tags in _ ...',
             ]:
             assert line in lines
