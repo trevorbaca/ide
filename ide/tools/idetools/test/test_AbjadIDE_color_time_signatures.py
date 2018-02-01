@@ -10,17 +10,14 @@ def test_AbjadIDE_color_time_signatures_01():
 
     with ide.Test():
 
-        match = abjad.tags.time_signature_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
-        assert path.count(match) == ((0, 0), (2, 2))
         
         abjad_ide('gre bb arch-a-score tscl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((2, 2), (0, 0))
         for line in [
             'Coloring time signatures ...',
             ' Activating time signature color tags in arch-a-score ...',
@@ -31,7 +28,6 @@ def test_AbjadIDE_color_time_signatures_01():
 
         abjad_ide('gre bb arch-a-score tsuc q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((0, 0), (2, 2))
         for line in [
             'Uncoloring time signatures ...',
             ' Deactivating time signature color tags in arch-a-score ...',
@@ -42,7 +38,6 @@ def test_AbjadIDE_color_time_signatures_01():
 
         abjad_ide('gre bb arch-a-score tscl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((2, 2), (0, 0))
         for line in [
             'Coloring time signatures ...',
             ' Activating time signature color tags in arch-a-score ...',
@@ -58,14 +53,11 @@ def test_AbjadIDE_color_time_signatures_02():
 
     with ide.Test():
 
-        match = abjad.tags.time_signature_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
-        assert path.count(match) == ((2, 2), (0, 0))
         
         abjad_ide('gre %_ tscl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((2, 2), (0, 0))
         for line in [
             'Coloring time signatures ...',
             ' Activating time signature color tags in _ ...',
@@ -75,7 +67,6 @@ def test_AbjadIDE_color_time_signatures_02():
             assert line in lines
         
         abjad_ide('gre %_ tsuc q')
-        assert path.count(match) == ((0, 0), (2, 2))
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring time signatures ...',
@@ -87,7 +78,6 @@ def test_AbjadIDE_color_time_signatures_02():
 
         abjad_ide('gre %_ tscl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((2, 2), (0, 0))
         for line in [
             'Coloring time signatures ...',
             ' Activating time signature color tags in _ ...',

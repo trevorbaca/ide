@@ -10,17 +10,14 @@ def test_AbjadIDE_color_clefs_01():
 
     with ide.Test():
 
-        match = abjad.tags.clef_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
-        assert path.count(match) == ((0, 0), (14, 14))
         
         abjad_ide('gre bb arch-a-score ccl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((14, 14), (0, 0))
         for line in [
             'Coloring clefs ...',
             ' Activating clef color tags in arch-a-score ...',
@@ -31,7 +28,6 @@ def test_AbjadIDE_color_clefs_01():
 
         abjad_ide('gre bb arch-a-score cuc q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((0, 0), (14, 14))
         for line in [
             'Uncoloring clefs ...',
             ' Deactivating clef color tags in arch-a-score ...',
@@ -42,7 +38,6 @@ def test_AbjadIDE_color_clefs_01():
 
         abjad_ide('gre bb arch-a-score ccl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((14, 14), (0, 0))
         for line in [
             'Coloring clefs ...',
             ' Activating clef color tags in arch-a-score ...',
@@ -58,14 +53,11 @@ def test_AbjadIDE_color_clefs_02():
 
     with ide.Test():
 
-        match = abjad.tags.clef_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
-        assert path.count(match) == ((14, 14), (0, 0))
         
         abjad_ide('gre %_ ccl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((14, 14), (0, 0))
         for line in [
             'Coloring clefs ...',
             ' Activating clef color tags in _ ...',
@@ -75,7 +67,6 @@ def test_AbjadIDE_color_clefs_02():
             assert line in lines
         
         abjad_ide('gre %_ cuc q')
-        assert path.count(match) == ((0, 0), (14, 14))
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring clefs ...',
@@ -87,7 +78,6 @@ def test_AbjadIDE_color_clefs_02():
 
         abjad_ide('gre %_ ccl q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(match) == ((14, 14), (0, 0))
         for line in [
             'Coloring clefs ...',
             ' Activating clef color tags in _ ...',

@@ -117,7 +117,7 @@ class AbjadIDE(abjad.AbjadObject):
             parts_directory_name = parts_directory_name.to_shout_case()
             tag = f'+{parts_directory_name}_{part_abbreviation}'
             self.activate(parts_directory, tag, message_zero=True)
-        self.uncolor_all_persistent_indicators(parts_directory)
+        self.uncolor_persistent_indicators(parts_directory)
         
     def _cache_commands(self):
         commands = {}
@@ -597,12 +597,12 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('joining broken spanners ...')
         self.activate(
             directory,
-            abjad.tags.match_broken_spanner_expression_tags,
+            abjad.tags.match_broken_spanner_expression,
             indent=1,
             )
         self.deactivate(
             directory,
-            abjad.tags.match_broken_spanner_suppression_tags,
+            abjad.tags.match_broken_spanner_suppression,
             indent=1,
             )
 
@@ -2207,33 +2207,9 @@ class AbjadIDE(abjad.AbjadObject):
         result = directory._deactivate_shifted_clef_at_bol()
         for message in result[-1]:
             self.io.display(message)
-        self.uncolor_all_persistent_indicators(directory)
-        self.hide_all_score_annotations(directory)
+        self.uncolor_persistent_indicators(directory)
+        self.hide_score_annotations(directory)
         self._join_broken_spanners(directory)
-
-    @Command(
-        'picl',
-        description='persistent indicators - color',
-        menu_section='persistent indicators',
-        score_package_paths=('buildspace',),
-        )
-    def color_all_persistent_indicators(self, directory):
-        r'''Colors persistent indicators.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.io.display('coloring persistent indicators ...')
-        self.activate(
-            directory,
-            abjad.tags.match_persistent_indicator_color_expression,
-            indent=1,
-            )
-        self.deactivate(
-            directory,
-            abjad.tags.match_persistent_indicator_color_suppression,
-            indent=1,
-            )
 
     @Command(
         'ccl',
@@ -2251,10 +2227,9 @@ class AbjadIDE(abjad.AbjadObject):
         tags_ = abjad.tags.clef_color_tags(directory)
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_clef_color,
             indent=1,
             message_zero=True,
-            name='clef color',
             )
 
     @Command(
@@ -2272,10 +2247,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring dynamics ...')
         self.activate(
             directory,
-            abjad.tags.dynamic_color_match,
+            abjad.tags.match_dynamic_color,
             indent=1,
             message_zero=True,
-            name='color dynamic',
             )
 
     @Command(
@@ -2294,10 +2268,9 @@ class AbjadIDE(abjad.AbjadObject):
         tags_ = abjad.tags.instrument_color_tags()
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_instrument_color,
             indent=1,
             message_zero=True,
-            name='instrument color',
             )
 
     @Command(
@@ -2315,10 +2288,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring margin markup ...')
         self.activate(
             directory,
-            abjad.tags.margin_markup_color_expression_match,
+            abjad.tags.match_margin_markup_color_expression,
             indent=1,
             message_zero=True,
-            name='margin markup color',
             )
 
     @Command(
@@ -2336,17 +2308,39 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring metronome marks ...')
         self.activate(
             directory,
-            abjad.tags.metronome_mark_color_expression_match,
+            abjad.tags.match_metronome_mark_color_expression,
             indent=1,
             message_zero=True,
-            name='metronome mark color expression',
             )
         self.deactivate(
             directory,
-            abjad.tags.metronome_mark_color_suppression_match,
+            abjad.tags.match_metronome_mark_color_suppression,
             indent=1,
             message_zero=True,
-            name='metronome mark color suppression',
+            )
+
+    @Command(
+        'picl',
+        description='persistent indicators - color',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def color_persistent_indicators(self, directory):
+        r'''Colors persistent indicators.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.io.display('coloring persistent indicators ...')
+        self.activate(
+            directory,
+            abjad.tags.match_persistent_indicator_color_expression,
+            indent=1,
+            )
+        self.deactivate(
+            directory,
+            abjad.tags.match_persistent_indicator_color_suppression,
+            indent=1,
             )
 
     @Command(
@@ -2364,10 +2358,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring staff lines ...')
         self.activate(
             directory,
-            abjad.tags.staff_lines_color_match,
+            abjad.tags.match_staff_lines_color,
             indent=1,
             message_zero=True,
-            name='staff lines color',
             )
 
     @Command(
@@ -2385,10 +2378,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring time signatures ...')
         self.activate(
             directory,
-            abjad.tags.time_signature_color_match,
+            abjad.tags.match_time_signature_color,
             indent=1,
             message_zero=True,
-            name='time signature color',
             )
 
     @Command(
@@ -3781,28 +3773,8 @@ class AbjadIDE(abjad.AbjadObject):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
-        'annh',
-        description=f'all score annotations - hide',
-        menu_section='score annotations',
-        score_package_paths=('buildspace',),
-        )
-    def hide_all_score_annotations(self, directory):
-        r'''Hides all score annotations.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.io.display('hiding score annotations ...')
-        self.deactivate(
-            directory,
-            abjad.tags.match_score_annotation_tags,
-            indent=1,
-            message_zero=True,
-            )
-
-    @Command(
         'ctmh',
-        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - hide',
+        description=f'clock time markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -3820,7 +3792,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fnmh',
-        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - hide',
+        description=f'figure name markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -3838,7 +3810,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mimh',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - hide',
+        description=f'measure index markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -3856,7 +3828,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mnmh',
-        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - hide',
+        description=f'measure number markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -3873,8 +3845,28 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
+        'sah',
+        description=f'score annotations - hide',
+        menu_section='score annotations',
+        score_package_paths=('buildspace',),
+        )
+    def hide_score_annotations(self, directory):
+        r'''Hides score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.io.display('hiding score annotations ...')
+        self.deactivate(
+            directory,
+            abjad.tags.match_score_annotation,
+            indent=1,
+            message_zero=True,
+            )
+
+    @Command(
         'spmh',
-        description=f'{abjad.tags.SPACING_MARKUP} - hide',
+        description=f'spacing markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -3884,20 +3876,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_spacing_markup,
             message_zero=True,
-            name='spacing markup',
             )
 
     @Command(
         'snmh',
-        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - hide',
+        description=f'stage number markup - hide',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4728,26 +4715,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(lines, raw=True)
 
     @Command(
-        'anns',
-        description=f'all score annotations - show',
-        menu_section='score annotations',
-        score_package_paths=('buildspace',),
-        )
-    def show_all_score_annotations(self, directory):
-        r'''Shows all score annotations.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        tags_ = abjad.tags.all_score_annotation_tags()
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set(tags_)),
-            message_zero=True,
-            name='score annotation',
-            )
-
-    @Command(
         'cbs',
         description='clipboard - show',
         external_directories=True,
@@ -4769,7 +4736,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'ctms',
-        description=f'{abjad.tags.CLOCK_TIME_MARKUP} - show',
+        description=f'clock time markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4787,7 +4754,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'fnms',
-        description=f'{abjad.tags.FIGURE_NAME_MARKUP} - show',
+        description=f'figure name markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4820,7 +4787,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mims',
-        description=f'{abjad.tags.MEASURE_INDEX_MARKUP} - show',
+        description=f'measure index markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4838,7 +4805,7 @@ class AbjadIDE(abjad.AbjadObject):
 
     @Command(
         'mnms',
-        description=f'{abjad.tags.MEASURE_NUMBER_MARKUP} - show',
+        description=f'measure number markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4855,8 +4822,27 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     @Command(
+        'sas',
+        description=f'score annotations - show',
+        menu_section='score annotations',
+        score_package_paths=('buildspace',),
+        )
+    def show_score_annotations(self, directory):
+        r'''Shows score annotations.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        tags_ = abjad.tags.score_annotation_tags()
+        self.activate(
+            directory,
+            abjad.tags.match_score_annotation,
+            message_zero=True,
+            )
+
+    @Command(
         'spms',
-        description=f'{abjad.tags.SPACING_MARKUP} - show',
+        description=f'spacing markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -4866,20 +4852,15 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = (
-            abjad.tags.SPACING_MARKUP,
-            abjad.tags.SPACING_OVERRIDE_MARKUP,
-            )
         self.activate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_spacing_markup,
             message_zero=True,
-            name='spacing markup',
             )
 
     @Command(
         'snms',
-        description=f'{abjad.tags.STAGE_NUMBER_MARKUP} - show',
+        description=f'stage number markup - show',
         menu_section='score annotations',
         score_package_paths=('buildspace',),
         )
@@ -5326,35 +5307,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._trash_files(path)
 
     @Command(
-        'piuc',
-        description='persistent indicators - uncolor',
-        menu_section='persistent indicators',
-        score_package_paths=('buildspace',),
-        )
-    def uncolor_all_persistent_indicators(self, directory):
-        r'''Uncolors persistent indicators.
-
-        Returns none.
-        '''
-        assert directory.is_buildspace()
-        self.io.display('uncoloring persistent indicators ...')
-        self.deactivate(
-            directory,
-            abjad.tags.match_persistent_indicator_color_expression,
-            indent=1,
-            )
-        self.activate(
-            directory,
-            abjad.tags.match_persistent_indicator_color_suppression,
-            indent=1,
-            )
-        self.deactivate(
-            directory,
-            abjad.tags.match_reapplied_margin_markup_tags,
-            indent=1,
-            )
-
-    @Command(
         'cuc',
         description='clefs - uncolor',
         menu_section='persistent indicators',
@@ -5367,13 +5319,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring clefs ...')
-        tags_ = abjad.tags.clef_color_tags(directory)
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_clef_color,
             indent=1,
             message_zero=True,
-            name='clef color',
             )
 
     @Command(
@@ -5391,10 +5341,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring dynamics ...')
         self.deactivate(
             directory,
-            abjad.tags.dynamic_color_match,
+            abjad.tags.match_dynamic_color,
             indent=1,
             message_zero=True,
-            name='dynamic',
             )
 
     @Command(
@@ -5409,6 +5358,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
+        # TODO: harmonize
         self.io.display('uncoloring instruments ...')
         tags_ = abjad.tags.instrument_color_tags()
         if directory.is_build():
@@ -5434,6 +5384,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring margin markup ...')
+        # TODO: harmonize
         tags_ = abjad.tags.margin_markup_color_tags()
         if directory.is_build():
             tags_.append(abjad.tags.REAPPLIED_MARGIN_MARKUP)
@@ -5442,7 +5393,7 @@ class AbjadIDE(abjad.AbjadObject):
             lambda tags: bool(set(tags) & set(tags_)),
             indent=1,
             message_zero=True,
-            name='margin markup color',
+            name='margin markup color expression',
             )
 
     @Command(
@@ -5460,15 +5411,42 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring metronome marks ...')
         self.activate(
             directory,
-            abjad.tags.metronome_mark_color_suppression_match,
+            abjad.tags.match_metronome_mark_color_suppression,
             indent=1,
-            name='b&w metronome mark expression',
             )
         self.deactivate(
             directory,
-            abjad.tags.metronome_mark_color_expression_match,
+            abjad.tags.match_metronome_mark_color_expression,
             indent=1,
-            name='b&w metronome mark suppression',
+            )
+
+    @Command(
+        'piuc',
+        description='persistent indicators - uncolor',
+        menu_section='persistent indicators',
+        score_package_paths=('buildspace',),
+        )
+    def uncolor_persistent_indicators(self, directory):
+        r'''Uncolors persistent indicators.
+
+        Returns none.
+        '''
+        assert directory.is_buildspace()
+        self.io.display('uncoloring persistent indicators ...')
+        self.deactivate(
+            directory,
+            abjad.tags.match_persistent_indicator_color_expression,
+            indent=1,
+            )
+        self.activate(
+            directory,
+            abjad.tags.match_persistent_indicator_color_suppression,
+            indent=1,
+            )
+        self.deactivate(
+            directory,
+            abjad.tags.match_reapplied_margin_markup,
+            indent=1,
             )
 
     @Command(
@@ -5486,10 +5464,9 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring staff lines ...')
         self.deactivate(
             directory,
-            abjad.tags.staff_lines_color_match,
+            abjad.tags.match_staff_lines_color,
             indent=1,
             message_zero=True,
-            name='staff lines color',
             )
 
     @Command(
@@ -5507,8 +5484,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring time signatures ...')
         self.deactivate(
             directory,
-            abjad.tags.time_signature_color_match,
+            abjad.tags.match_time_signature_color,
             indent=1,
             message_zero=True,
-            name='time signature color',
             )

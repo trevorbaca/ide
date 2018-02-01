@@ -4,13 +4,12 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_color_all_persistent_indicators_01():
+def test_AbjadIDE_color_persistent_indicators_01():
     r'''In build directory.
     '''
 
     with ide.Test():
 
-        match = abjad.tags.clef_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -57,13 +56,12 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
             assert line in lines
 
 
-def test_AbjadIDE_color_all_persistent_indicators_02():
+def test_AbjadIDE_color_persistent_indicators_02():
     r'''In segment directory.
     '''
 
     with ide.Test():
 
-        match = abjad.tags.clef_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
