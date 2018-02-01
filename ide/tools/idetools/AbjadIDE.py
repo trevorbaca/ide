@@ -596,16 +596,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _join_broken_spanners(self, directory):
         assert directory.build is not None, repr(directory)
         self.io.display('joining broken spanners ...')
-        self.activate(
-            directory,
-            abjad.tags.match_broken_spanner_expression,
-            indent=1,
-            )
-        self.deactivate(
-            directory,
-            abjad.tags.match_broken_spanner_suppression,
-            indent=1,
-            )
+        self.run(abjad.tags.make_broken_spanner_join_job(directory))
 
     @staticmethod
     def _make__assets_directory(directory):
