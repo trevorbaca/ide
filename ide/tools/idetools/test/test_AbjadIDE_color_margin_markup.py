@@ -20,8 +20,8 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring margin markup ...',
-            ' Activating margin markup color expression tags in arch-a-score ...',
-            '  Found no margin markup color expression tags in arch-a-score ...',
+            ' Activating margin markup color tags in arch-a-score ...',
+            '  Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -29,8 +29,8 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring margin markup ...',
-            ' Deactivating margin markup color expression tags in arch-a-score ...',
-            '  Found no margin markup color expression tags in arch-a-score ...',
+            ' Deactivating margin markup color tags in arch-a-score ...',
+            '  Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -38,8 +38,8 @@ def test_AbjadIDE_color_margin_markup_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring margin markup ...',
-            ' Activating margin markup color expression tags in arch-a-score ...',
-            '  Found no margin markup color expression tags in arch-a-score ...',
+            ' Activating margin markup color tags in arch-a-score ...',
+            '  Found no margin markup color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -57,8 +57,8 @@ def test_AbjadIDE_color_margin_markup_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring margin markup ...',
-            ' Activating margin markup color expression tags in _ ...',
-            '  Found no margin markup color expression tags in _ ...',
+            ' Activating margin markup color tags in _ ...',
+            '  Found no margin markup color tags in _ ...',
             ]:
             assert line in lines
         
@@ -66,8 +66,8 @@ def test_AbjadIDE_color_margin_markup_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring margin markup ...',
-            ' Deactivating margin markup color expression tags in _ ...',
-            '  Found no margin markup color expression tags in _ ...',
+            ' Deactivating margin markup color tags in _ ...',
+            '  Found no margin markup color tags in _ ...',
             ]:
             assert line in lines
 
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_margin_markup_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring margin markup ...',
-            ' Activating margin markup color expression tags in _ ...',
-            '  Found no margin markup color expression tags in _ ...',
+            ' Activating margin markup color tags in _ ...',
+            '  Found no margin markup color tags in _ ...',
             ]:
             assert line in lines

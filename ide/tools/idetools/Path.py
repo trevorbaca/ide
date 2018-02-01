@@ -114,7 +114,7 @@ class Path(abjad.Path):
             return False
         count, skipped, messages_ = self.deactivate(
             match,
-            abjad.tags.SHIFTED_CLEF,
+            name=abjad.tags.SHIFTED_CLEF,
             )
         counts.append(count)
         skippeds.append(skipped)
