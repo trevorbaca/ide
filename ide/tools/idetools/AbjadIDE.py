@@ -596,7 +596,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _join_broken_spanners(self, directory):
         assert directory.build is not None, repr(directory)
         self.io.display('joining broken spanners ...')
-        self.run(abjad.tags.make_broken_spanner_join_job(directory))
+        self.run(abjad.Job.make_broken_spanner_join_job(directory))
 
     @staticmethod
     def _make__assets_directory(directory):
@@ -2236,7 +2236,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring clefs ...')
-        self.run(abjad.tags.make_clef_color_job(directory))
+        self.run(abjad.Job.make_clef_color_job(directory))
 
     @Command(
         'dcl',
@@ -2251,7 +2251,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring dynamics ...')
-        self.run(abjad.tags.make_dynamic_color_job(directory))
+        self.run(abjad.Job.make_dynamic_color_job(directory))
 
     @Command(
         'icl',
@@ -2266,7 +2266,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring instruments ...')
-        self.run(abjad.tags.make_instrument_color_job(directory))
+        self.run(abjad.Job.make_instrument_color_job(directory))
 
     @Command(
         'mmcl',
@@ -2281,7 +2281,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path()
         self.io.display('coloring margin markup ...')
-        self.run(abjad.tags.make_margin_markup_color_job(directory))
+        self.run(abjad.Job.make_margin_markup_color_job(directory))
 
     @Command(
         'tmcl',
@@ -2296,7 +2296,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring metronome marks ...')
-        self.run(abjad.tags.make_metronome_mark_color_job(directory))
+        self.run(abjad.Job.make_metronome_mark_color_job(directory))
 
     @Command(
         'picl',
@@ -2311,7 +2311,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring persistent indicators ...')
-        self.run(abjad.tags.make_persistent_indicator_color_job(directory))
+        self.run(abjad.Job.make_persistent_indicator_color_job(directory))
 
     @Command(
         'slcl',
@@ -2326,7 +2326,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring staff lines ...')
-        self.run(abjad.tags.make_staff_lines_color_job(directory))
+        self.run(abjad.Job.make_staff_lines_color_job(directory))
 
     @Command(
         'tscl',
@@ -2341,7 +2341,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring time signatures ...')
-        self.run(abjad.tags.make_time_signature_color_job(directory))
+        self.run(abjad.Job.make_time_signature_color_job(directory))
 
     @Command(
         'cbc',
@@ -5279,7 +5279,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring clefs ...')
-        self.run(abjad.tags.make_clef_uncolor_job(directory))
+        self.run(abjad.Job.make_clef_uncolor_job(directory))
 
     @Command(
         'duc',
@@ -5294,7 +5294,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring dynamics ...')
-        self.run(abjad.tags.make_dynamic_uncolor_job(directory))
+        self.run(abjad.Job.make_dynamic_uncolor_job(directory))
 
     @Command(
         'iuc',
@@ -5309,7 +5309,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring instruments ...')
-        self.run(abjad.tags.make_instrument_uncolor_job(directory))
+        self.run(abjad.Job.make_instrument_uncolor_job(directory))
 
     @Command(
         'mmuc',
@@ -5324,7 +5324,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring margin markup ...')
-        self.run(abjad.tags.make_margin_markup_uncolor_job(directory))
+        self.run(abjad.Job.make_margin_markup_uncolor_job(directory))
 
     @Command(
         'tmuc',
@@ -5339,7 +5339,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring metronome marks ...')
-        self.run(abjad.tags.make_metronome_mark_uncolor_job(directory))
+        self.run(abjad.Job.make_metronome_mark_uncolor_job(directory))
 
     @Command(
         'piuc',
@@ -5354,7 +5354,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring persistent indicators ...')
-        self.run(abjad.tags.make_persistent_indicator_uncolor_job(directory))
+        self.run(abjad.Job.make_persistent_indicator_uncolor_job(directory))
 
     @Command(
         'sluc',
@@ -5369,7 +5369,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring staff lines ...')
-        self.run(abjad.tags.make_staff_lines_uncolor_job(directory))
+        self.run(abjad.Job.make_staff_lines_uncolor_job(directory))
 
     @Command(
         'tsuc',
@@ -5384,4 +5384,4 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring time signatures ...')
-        self.run(abjad.tags.make_time_signature_uncolor_job(directory))
+        self.run(abjad.Job.make_time_signature_uncolor_job(directory))
