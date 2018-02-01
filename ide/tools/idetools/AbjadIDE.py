@@ -106,10 +106,10 @@ class AbjadIDE(abjad.AbjadObject):
     def _activate_part_specific_tags(self, path):
         parts_directory = path.parent
         assert parts_directory.is_parts()
-        self.deactivate(
-            parts_directory,
-            abjad.tags.match_document_specific_tags,
+        job = abjad.Job.make_document_specific_deactivation_job(
+            parts_directory
             )
+        self.run(job)
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {path.name} ...')
@@ -1958,21 +1958,21 @@ class AbjadIDE(abjad.AbjadObject):
     def run(self, job) -> None:
         r'''Runs `job` on `path`.
         '''
-        messages: List[str] = []
-        if job.activate is not None:
-            count, skipped, messages_ = job.path.activate(
-                job.activate,
-                indent=1,
-                message_zero=True,
-                )
-            messages.extend(messages_)
-        if job.deactivate is not None:
-            count, skipped, messages_ = job.path.deactivate(
-                job.deactivate,
-                indent=1,
-                message_zero=True,
-                )
-            messages.extend(messages_)
+#        if job.activate is not None:
+#            count, skipped, messages_ = job.path.activate(
+#                job.activate,
+#                indent=1,
+#                message_zero=True,
+#                )
+#            messages.extend(messages_)
+#        if job.deactivate is not None:
+#            count, skipped, messages_ = job.path.deactivate(
+#                job.deactivate,
+#                indent=1,
+#                message_zero=True,
+#                )
+#            messages.extend(messages_)
+        messages: List[str] = job()
         self.io.display(messages)
 
     def test_baca_directories(self):
@@ -2197,7 +2197,8 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        self.deactivate(directory, abjad.tags.match_document_specific_tags)
+        job = abjad.Job.make_document_specific_deactivation_job(directory)
+        self.run(job)
 
         this_document = f'+{abjad.String(directory.name).to_shout_case()}'
         self.activate(
@@ -3744,11 +3745,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.CLOCK_TIME_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_clock_time_markup_job(directory, undo=True))
 
     @Command(
         'fnmh',
@@ -3762,11 +3759,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.FIGURE_NAME_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_figure_name_markup_job(directory, undo=True))
 
     @Command(
         'mimh',
@@ -3780,11 +3773,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.MEASURE_INDEX_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_measure_index_markup_job(directory, undo=True))
 
     @Command(
         'mnmh',
@@ -3798,11 +3787,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.MEASURE_NUMBER_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_measure_number_markup_job(directory, undo=True))
 
     @Command(
         'sah',
@@ -3816,13 +3801,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('hiding score annotations ...')
-        self.deactivate(
-            directory,
-            abjad.tags.match_score_annotation,
-            indent=1,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_score_annotation_job(directory, undo=True))
 
     @Command(
         'spmh',
@@ -3836,11 +3815,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.match_spacing_markup,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_spacing_markup_job(directory, undo=True))
 
     @Command(
         'snmh',
@@ -3854,11 +3829,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.deactivate(
-            directory,
-            abjad.tags.STAGE_NUMBER_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_stage_number_markup_job(directory, undo=True))
 
     @Command(
         'bcti',
@@ -4706,11 +4677,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.CLOCK_TIME_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_clock_time_markup_job(directory))
 
     @Command(
         'fnms',
@@ -4724,11 +4691,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.FIGURE_NAME_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_figure_name_markup_job(directory))
 
     @Command(
         '?',
@@ -4757,11 +4720,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.MEASURE_INDEX_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_measure_index_markup_job(directory))
 
     @Command(
         'mnms',
@@ -4775,11 +4734,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.MEASURE_NUMBER_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_measure_number_markup_job(directory))
 
     @Command(
         'sas',
@@ -4793,12 +4748,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        tags_ = abjad.tags.score_annotation_tags()
-        self.activate(
-            directory,
-            abjad.tags.match_score_annotation,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_score_annotation_job(directory))
 
     @Command(
         'spms',
@@ -4812,11 +4762,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.match_spacing_markup,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_spacing_markup_job(directory))
 
     @Command(
         'snms',
@@ -4830,11 +4776,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.activate(
-            directory,
-            abjad.tags.STAGE_NUMBER_MARKUP,
-            message_zero=True,
-            )
+        self.run(abjad.Job.make_stage_number_markup_job(directory))
 
     @Command(
         '^',

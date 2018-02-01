@@ -16,25 +16,22 @@ def test_AbjadIDE_show_clock_time_markup_01():
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
-        assert path.count(tag) == ((0, 0), (2, 16))
         
         abjad_ide('gre bb arch-a-score ctms q')
-        assert path.count(tag) == ((2, 16), (0, 0))
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Activating CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Activating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            'Showing clock time markup ...',
+            ' Found 2 clock time markup tags in arch-a-score ...',
+            ' Activating 2 clock time markup tags in arch-a-score ...',
             ]:
             assert line in lines
 
         abjad_ide('gre bb arch-a-score ctmh q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Deactivating CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
-            ' Deactivating 2 CLOCK_TIME_MARKUP tags in arch-a-score ...',
+            'Hiding clock time markup ...',
+            ' Found 2 clock time markup tags in arch-a-score ...',
+            ' Deactivating 2 clock time markup tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -47,24 +44,21 @@ def test_AbjadIDE_show_clock_time_markup_02():
 
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
-        assert path.count(tag) == ((0, 0), (2, 16))
         
         abjad_ide('gre %_ ctms q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((2, 16), (0, 0))
         for line in [
-            'Activating CLOCK_TIME_MARKUP tags in _ ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Activating 2 CLOCK_TIME_MARKUP tags in _ ...',
+            'Showing clock time markup ...',
+            ' Found 2 clock time markup tags in _ ...',
+            ' Activating 2 clock time markup tags in _ ...',
             ]:
             assert line in lines
 
         abjad_ide('gre %_ ctmh q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((0, 0), (2, 16))
         for line in [
-            'Deactivating CLOCK_TIME_MARKUP tags in _ ...',
-            ' Found 2 CLOCK_TIME_MARKUP tags in _ ...',
-            ' Deactivating 2 CLOCK_TIME_MARKUP tags in _ ...',
+            'Hiding clock time markup ...',
+            ' Found 2 clock time markup tags in _ ...',
+            ' Deactivating 2 clock time markup tags in _ ...',
             ]:
             assert line in lines

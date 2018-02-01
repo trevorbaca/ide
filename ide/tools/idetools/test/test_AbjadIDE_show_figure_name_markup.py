@@ -16,25 +16,22 @@ def test_AbjadIDE_show_figure_name_markup_01():
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
-        assert path.count(tag) == ((0, 0), (1, 4))
         
         abjad_ide('gre bb arch-a-score fnms q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
-            'Activating FIGURE_NAME_MARKUP tags in arch-a-score ...',
-            ' Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' Activating 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            'Showing figure name markup ...',
+            ' Found 1 figure name markup tag in arch-a-score ...',
+            ' Activating 1 figure name markup tag in arch-a-score ...',
             ]:
             assert line in lines
 
         abjad_ide('gre bb arch-a-score fnmh q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
-            'Deactivating FIGURE_NAME_MARKUP tags in arch-a-score ...',
-            ' Found 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
-            ' Deactivating 1 FIGURE_NAME_MARKUP tag in arch-a-score ...',
+            'Hiding figure name markup ...',
+            ' Found 1 figure name markup tag in arch-a-score ...',
+            ' Deactivating 1 figure name markup tag in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -47,24 +44,21 @@ def test_AbjadIDE_show_figure_name_markup_02():
 
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
-        assert path.count(tag) == ((1, 4), (0, 0))
         
         abjad_ide('gre %_ fnmh q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((0, 0), (1, 4))
         for line in [
-            'Deactivating FIGURE_NAME_MARKUP tags in _ ...',
-            ' Found 1 FIGURE_NAME_MARKUP tag in _ ...',
-            ' Deactivating 1 FIGURE_NAME_MARKUP tag in _ ...',
+            'Hiding figure name markup ...',
+            ' Found 1 figure name markup tag in _ ...',
+            ' Deactivating 1 figure name markup tag in _ ...',
             ]:
             assert line in lines
 
         abjad_ide('gre %_ fnms q')
         lines = abjad_ide.io.transcript.lines
-        assert path.count(tag) == ((1, 4), (0, 0))
         for line in [
-            'Activating FIGURE_NAME_MARKUP tags in _ ...',
-            ' Found 1 FIGURE_NAME_MARKUP tag in _ ...',
-            ' Activating 1 FIGURE_NAME_MARKUP tag in _ ...',
+            'Showing figure name markup ...',
+            ' Found 1 figure name markup tag in _ ...',
+            ' Activating 1 figure name markup tag in _ ...',
             ]:
             assert line in lines

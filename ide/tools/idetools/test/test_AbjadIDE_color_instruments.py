@@ -20,9 +20,8 @@ def test_AbjadIDE_color_instruments_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring instruments ...',
-            ' Activating instrument color tags in arch-a-score ...',
-            '  Found 12 instrument color tags in arch-a-score ...',
-            '  Activating 12 instrument color tags in arch-a-score ...',
+            ' Found 12 instrument color tags in arch-a-score ...',
+            ' Activating 12 instrument color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -30,9 +29,8 @@ def test_AbjadIDE_color_instruments_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring instruments ...',
-            ' Deactivating instrument color tags in arch-a-score ...',
-            '  Found 12 instrument color tags in arch-a-score ...',
-            '  Deactivating 12 instrument color tags in arch-a-score ...',
+            ' Found 12 instrument color tags in arch-a-score ...',
+            ' Deactivating 12 instrument color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -40,9 +38,8 @@ def test_AbjadIDE_color_instruments_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring instruments ...',
-            ' Activating instrument color tags in arch-a-score ...',
-            '  Found 12 instrument color tags in arch-a-score ...',
-            '  Activating 12 instrument color tags in arch-a-score ...',
+            ' Found 12 instrument color tags in arch-a-score ...',
+            ' Activating 12 instrument color tags in arch-a-score ...',
             ]:
             assert line in lines
 
@@ -60,10 +57,9 @@ def test_AbjadIDE_color_instruments_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring instruments ...',
-            ' Activating instrument color tags in _ ...',
-            '  Found 16 instrument color tags in _ ...',
-            '  Activating 4 instrument color tags in _ ...',
-            '  Skipping 12 (active) instrument color tags in _ ...',
+            ' Found 16 instrument color tags in _ ...',
+            ' Activating 4 instrument color tags in _ ...',
+            ' Skipping 12 (active) instrument color tags in _ ...',
             ]:
             assert line in lines
         
@@ -71,9 +67,8 @@ def test_AbjadIDE_color_instruments_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring instruments ...',
-            ' Deactivating instrument color tags in _ ...',
-            '  Found 12 instrument color tags in _ ...',
-            '  Deactivating 12 instrument color tags in _ ...',
+            ' Found 12 instrument color tags in _ ...',
+            ' Deactivating 12 instrument color tags in _ ...',
             ]:
             assert line in lines
 
@@ -81,8 +76,7 @@ def test_AbjadIDE_color_instruments_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring instruments ...',
-            ' Activating instrument color tags in _ ...',
-            '  Found 12 instrument color tags in _ ...',
-            '  Activating 12 instrument color tags in _ ...',
+            ' Found 12 instrument color tags in _ ...',
+            ' Activating 12 instrument color tags in _ ...',
             ]:
             assert line in lines
