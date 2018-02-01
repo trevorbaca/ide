@@ -2265,10 +2265,9 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring instruments ...')
-        tags_ = abjad.tags.instrument_color_tags()
         self.activate(
             directory,
-            abjad.tags.match_instrument_color,
+            abjad.tags.make_instrument_color_match(directory),
             indent=1,
             message_zero=True,
             )
@@ -5361,16 +5360,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring instruments ...')
         self.deactivate(
             directory,
-            abjad.tags.match_instrument_color,
-            indent=1,
-            message_zero=True,
-            )
-        # TODO: parameterize behind factory
-        if directory.is_segment():
-            return
-        self.deactivate(
-            directory,
-            abjad.tags.REAPPLIED_INSTRUMENT,
+            abjad.tags.make_instrument_color_match(directory),
             indent=1,
             message_zero=True,
             )

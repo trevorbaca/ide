@@ -85,7 +85,7 @@ class Path(abjad.Path):
         tags_ = eol_measure_numbers
         count, skipped, messages_ = self.deactivate(
             lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
-            f'{tag} (found at end-of-line)',
+            name=f'{tag} (found at end-of-line)',
             )
         counts.append(count)
         skippeds.append(skipped)
