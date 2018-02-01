@@ -2288,7 +2288,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring margin markup ...')
         self.activate(
             directory,
-            abjad.tags.match_margin_markup_color_expression,
+            abjad.tags.make_margin_markup_color_expression_match(directory),
             indent=1,
             message_zero=True,
             )
@@ -5358,17 +5358,21 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        # TODO: harmonize
         self.io.display('uncoloring instruments ...')
-        tags_ = abjad.tags.instrument_color_tags()
-        if directory.is_build():
-            tags_.append(abjad.tags.REAPPLIED_INSTRUMENT)
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.match_instrument_color,
             indent=1,
             message_zero=True,
-            name='instrument color',
+            )
+        # TODO: parameterize behind factory
+        if directory.is_segment():
+            return
+        self.deactivate(
+            directory,
+            abjad.tags.REAPPLIED_INSTRUMENT,
+            indent=1,
+            message_zero=True,
             )
 
     @Command(
@@ -5384,16 +5388,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring margin markup ...')
-        # TODO: harmonize
-        tags_ = abjad.tags.margin_markup_color_tags()
-        if directory.is_build():
-            tags_.append(abjad.tags.REAPPLIED_MARGIN_MARKUP)
         self.deactivate(
             directory,
-            lambda tags: bool(set(tags) & set(tags_)),
+            abjad.tags.make_margin_markup_color_expression_match(directory),
             indent=1,
             message_zero=True,
-            name='margin markup color expression',
             )
 
     @Command(
