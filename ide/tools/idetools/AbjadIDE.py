@@ -1362,7 +1362,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(message)
         return files
 
-    def _match_paths_in_buildspace(self, directory, name, verb):
+    def _match_paths_in_buildspace(self, directory, name, verb, count=None):
         assert directory.is_buildspace()
         is_glob = False
         pattern = None
@@ -1379,9 +1379,13 @@ class AbjadIDE(abjad.AbjadObject):
             paths = directory.get_files_ending_with(name)
             if not paths:
                 self.io.display(f'no files ending in {name} ...')
-            self.io.display('found ...')
+            if count is not None:
+                files = abjad.String('file').pluralize(count)
+            else:
+                files = 'files'
+            self.io.display(f'select {files} to {verb} ...')
             for path in paths:
-                self.io.display(f'{path.trim()}', raw=True)
+                self.io.display(f'{path.name}', raw=True)
             self.io.display('')
             pattern = self.io.get('match name')
             if pattern and self.is_navigation(pattern):
@@ -1622,7 +1626,7 @@ class AbjadIDE(abjad.AbjadObject):
             command = f'py.test -xrf {string}; say "done"'
             abjad.IOManager.spawn_subprocess(command)
 
-    def _select_part_names(self, directory, name, verb):
+    def _select_part_names(self, directory, verb=''):
         part_manifest = directory._get_part_manifest()
         if not part_manifest:
             self.io.display('score template defines no part manifest.')
@@ -1631,41 +1635,30 @@ class AbjadIDE(abjad.AbjadObject):
         for i, part_name in enumerate(part_manifest):
             part_name = part_name + (i + 1,)
             part_names.append(part_name)
-        self.io.display('found ...')
-        for part_name in part_names:
-            self.io.display(part_name[0], raw=True)
-        self.io.display('')
-        pattern = self.io.get('match name')
-        if pattern and self.is_navigation(pattern):
-            return
-        if not pattern:
-            return
-        selected_part_names = []
-        if pattern == '*':
-            selected_part_names.extend(part_names)
+        items = [(_, _) for _ in part_names]
+        if verb:
+            header = f'available parts to {verb}'
+            prompt = f'select parts to {verb}'
         else:
-            for part_name in part_names:
-                if part_name[0].startswith(pattern):
-                    selected_part_names.append(part_name)
-                elif part_name[0].lower().startswith(pattern):
-                    selected_part_names.append(part_name)
-        if not selected_part_names:
-            self.io.display(f'no part names starting with {pattern} ...')
+            header = 'available parts'
+            prompt = f'select parts'
+        selector = self._make_selector(
+            aliases=None,
+            header=header,
+            items=items,
+            navigations=self.navigations,
+            prompt=prompt,
+            )
+        response = selector(redraw=True)
+        if self.is_navigation(response.string):
+            return response.string
+        if response.payload is None:
+            if bool(response.string):
+                self.io.display(f'matches no part {response.string!r} ...')
             return
-        if 1 < len(selected_part_names):
-            self.io.display(f'will {verb} {len(selected_part_names)} files ...')
-            for part_name in selected_part_names:
-                dashed_name = abjad.String(part_name[0]).to_dash_case()
-                file_name = f'{dashed_name}-{name}'
-                path = directory(file_name)
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            ok = self.io.get('ok?')
-            if ok and self.is_navigation(ok):
-                return
-            if ok != 'y':
-                return
-        return selected_part_names
+        assert isinstance(response.payload, list), response
+        result = response.payload
+        return result
 
     def _select_paths(self, directory, infinitive=''):
         counter = abjad.String(directory.get_asset_type()).pluralize()
@@ -1695,6 +1688,62 @@ class AbjadIDE(abjad.AbjadObject):
         assert isinstance(response.payload, list), response
         result = response.payload
         return result
+
+    def _select_paths_in_buildspace(self, directory, name, verb, count=None):
+        assert directory.is_buildspace()
+        selected_paths = []
+        if directory.is_segment():
+            path = directory(name)
+            if path.is_file():
+                selected_paths.append(path)
+            if not selected_paths:
+                self.io.display(f'no files matching {name} ...')
+            return selected_paths
+        if not directory.is_parts():
+            path = directory.build(name)
+            if path.is_file():
+                selected_paths.append(path)
+            if not selected_paths:
+                self.io.display(f'no files matching {name} ...')
+            return selected_paths
+        paths = directory.get_files_ending_with(name)
+        if not paths:
+            self.io.display(f'no files ending in {name} ...')
+        if count is not None:
+            files = abjad.String('file').pluralize(count)
+        else:
+            files = 'files'
+        header = f'available {files} to {verb}:'
+        items = [(_.name, _) for _ in paths]
+        prompt = f'select {files} to {verb}'
+        selector = self._make_selector(
+            aliases=None,
+            header=header,
+            items=items,
+            navigations=self.navigations,
+            prompt=prompt,
+            )
+        response = selector()
+        if self.is_navigation(response.string):
+            return response.string
+        if response.payload is None:
+            if bool(response.string):
+                self.io.display(f'matches no path {response.string!r} ...')
+            return
+        assert isinstance(response.payload, list), response
+        paths = response.payload
+        if len(paths) <= 1:
+            return paths
+        self.io.display(f'will {verb} ...')
+        for path in paths:
+            self.io.display(path.trim(), raw=True)
+        self.io.display('')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        return paths
 
     @staticmethod
     def _supply_name(paths, name):
@@ -1938,7 +1987,8 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        triples = self._select_part_names(directory, 'part.tex', 'build')
+        #triples = self._select_part_names(directory, 'part.tex', 'build')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         total_parts = len(triples)
@@ -2841,7 +2891,8 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_back_cover(path)
             return
-        triples = self._select_part_names(directory, name, 'generate')
+        #triples = self._select_part_names(directory, name, 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         total_parts = len(directory._get_part_manifest())
@@ -2871,7 +2922,8 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_front_cover(path)
             return
-        triples = self._select_part_names(directory, name, 'generate')
+        #triples = self._select_part_names(directory, name, 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         for triple in triples:
@@ -2918,11 +2970,8 @@ class AbjadIDE(abjad.AbjadObject):
                 target_name='layout.py',
                 )
             return
-        triples = self._select_part_names(
-            directory,
-            'layout.py',
-            'generate',
-            )
+        #triples = self._select_part_names(directory, 'layout.py', 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         for triple in triples:
@@ -2956,7 +3005,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'generating {path.trim()} ...')
             self._generate_music(path, indent=1)
             return
-        triples = self._select_part_names(directory, name, 'generate')
+        #triples = self._select_part_names(directory, name, 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         for triple in triples:
@@ -2988,7 +3038,8 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_parts()
         name = 'part.tex'
-        triples = self._select_part_names(directory, name, 'generate')
+        #triples = self._select_part_names(directory, name, 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         for triple in triples:
@@ -3016,7 +3067,8 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_preface(path)
             return
-        triples = self._select_part_names(directory, name, 'generate')
+        #triples = self._select_part_names(directory, name, 'generate')
+        triples = self._select_part_names(directory)
         if not triples:
             return
         for triple in triples:
@@ -3956,14 +4008,20 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'music.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'music.ly', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
         if not paths:
             return
-        for path in paths:
+        total = len(paths)
+        for i, path in enumerate(paths):
+            self.io.display(f'preparing {path.trim()} ...')
             if path.parent.is_parts():
                 self._activate_part_specific_tags(path)
             self._run_lilypond(path)
+            if i + 1 < total:
+                self.io.display('')
         if len(paths) == 1:
             target = path.with_suffix('.pdf')
             if target.is_file() and open_after:
@@ -4115,22 +4173,21 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_buildspace()
         if directory.is__segments():
             directory = directory.build
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'layout.py',
-            'interpret',
-            )
+        name, verb = 'layout.py', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
         if not paths:
             return
         total = len(paths)
         for i, layout_py in enumerate(paths):
-            self.io.display(f'interpreting {layout_py.trim()} ...')
+            self.io.display(f'{verb}ing {layout_py.trim()} ...')
             layout_ly = layout_py.with_suffix('.ly')
             if not layout_py.is_file():
                 self.io.display(f'missing {layout_py.trim()} ...')
                 continue
             self._make_layout_ly(layout_py)
-            if 0 < total and i < total - 1:
+            if i < total - 1:
                 self.io.display('')
 
     @Command(
@@ -4275,10 +4332,13 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'music.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'music.pdf', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        if not paths:
+            return
+        self._open_files(paths)
 
     @Command(
         'ppo',
@@ -4404,37 +4464,59 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        paths = self._match_paths_in_buildspace(
+        name, verb = 'layout.py', 'use as source'
+        paths = self._select_paths_in_buildspace(
             directory,
-            'layout.py',
-            'select',
+            name,
+            verb,
+            count=1,
             )
+        if self.is_navigation(paths):
+            return
         if not paths:
             return
         if 1 < len(paths):
-            self.io.display('select just 1 layout.py to propagate ...')
+            self.io.display('select just 1 layout.py to use as source ...')
             return
         assert len(paths) == 1
         source = paths[0]
+        self.io.display(f'using {source.trim()} as source ...')
+        self.io.display('')
         source_part_abbreviation = source._parse_part_abbreviation()
         if source_part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {source.name} ...')
             return
         source_text = source.read_text()
-        triples = self._select_part_names(directory, 'layout.py', 'propagate')
+        triples = self._select_part_names(
+            directory,
+            infinitive='to use as targets',
+            )
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
+        target_pairs = []
+        self.io.display(f'will write ...')
         for triple in triples:
             part_name, part_abbreviation, number = triple
             snake_part_name = abjad.String(part_name).to_snake_case()
             target_name = f'{snake_part_name}_layout.py'
-            target = directory.build(target_name)
+            target_path = directory.build(target_name)
+            target_pairs.append((target_path, part_abbreviation))
+            self.io.display(target_path.trim(), raw=True)
+        self.io.display('')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        for target_path, part_abbreviation in target_pairs:
             target_text = source_text.replace(
                 source_part_abbreviation,
                 part_abbreviation,
                 )
-            self.io.display(f'writing {target.trim()} ...')
-            target.write_text(target_text)
+            self.io.display(f'writing {target_path.trim()} ...')
+            target_path.write_text(target_text)
 
     @Command(
         '++',

@@ -19,9 +19,9 @@ def test_AbjadIDE_build_part_pdf_01():
             ' arch-a-parts ppb bass q'
             )
         lines = abjad_ide.io.transcript.lines
-        index = lines.index('Match name> bass')
+        index = lines.index('Select parts> bass')
         assert lines[index:] == [
-            'Match name> bass',
+            'Select parts> bass',
             '',
             'Writing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
             'Interpreting green_score/builds/arch-a-parts/__make_layout_ly__.py ...',

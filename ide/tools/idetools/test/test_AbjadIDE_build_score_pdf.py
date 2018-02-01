@@ -39,6 +39,7 @@ def test_AbjadIDE_build_score_pdf_01():
             ' Examining red_score/segments/B ...',
             ' Writing red_score/builds/letter-score/music.ly ...',
             '',
+            'Preparing red_score/builds/letter-score/music.ly ...',
             'Interpreting red_score/builds/letter-score/music.ly ...',
             'Writing red_score/builds/letter-score/music.pdf ...',
             '',
