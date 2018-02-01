@@ -63,64 +63,6 @@ class Path(abjad.Path):
 
     ### PRIVATE METHODS ###
 
-    def _deactivate_bar_line_adjustment(self):
-        counts, skippeds, messages = [], [], []
-        # activate all barline adjustment tags:
-        count, skipped, messages_ = self.activate(abjad.tags.EOL_FERMATA)
-        counts.append(count)
-        skippeds.append(skipped)
-        messages.extend(messages_)
-        if count == skipped == 0:
-            return counts, skippeds, messages
-        # then deactivate non-EOL tags:
-        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
-        if not bol_measure_numbers:
-            return counts, skippeds, messages
-        eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
-        last_measure_number = self.get_metadatum('last_measure_number')
-        if last_measure_number is not None:
-            eol_measure_numbers.append(last_measure_number)
-        eol_measure_numbers = [f'MEASURE_{_}' for _ in eol_measure_numbers]
-        tag = abjad.tags.EOL_FERMATA
-        tags_ = eol_measure_numbers
-        count, skipped, messages_ = self.deactivate(
-            lambda tags: tag in tags and not bool(set(tags) & set(tags_)),
-            name=f'{tag} (found at end-of-line)',
-            )
-        counts.append(count)
-        skippeds.append(skipped)
-        messages.extend(messages_)
-        return counts, skippeds, messages
-
-    def _deactivate_shifted_clef_at_bol(self):
-        counts, skippeds, messages = [], [], []
-        # activate all shifted clefs
-        count, skipped, messages_ = self.activate(abjad.tags.SHIFTED_CLEF)
-        counts.append(count)
-        skippeds.append(skipped)
-        messages.extend(messages_)
-        if count == skipped == 0:
-            return counts, skippeds, messages
-        # then deactivate shifted clefs at BOL:
-        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
-        if not bol_measure_numbers:
-            return counts, messages
-        bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
-        def match(tags):
-            if abjad.tags.SHIFTED_CLEF not in tags:
-                return False
-            if any(_ in tags for _ in bol_measure_numbers):
-                return True
-            return False
-        count, skipped, messages_ = self.deactivate(
-            match,
-            name=abjad.tags.SHIFTED_CLEF,
-            )
-        counts.append(count)
-        skippeds.append(skipped)
-        messages.extend(messages_)
-        return counts, skippeds, messages
-
     def _find_doctest_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():

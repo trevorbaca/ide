@@ -106,10 +106,9 @@ class AbjadIDE(abjad.AbjadObject):
     def _activate_part_specific_tags(self, path):
         parts_directory = path.parent
         assert parts_directory.is_parts()
-        job = abjad.Job.make_document_specific_deactivation_job(
-            parts_directory
-            )
-        self.run(job)
+
+        self.run(abjad.Job.make_document_specific_job(parts_directory))
+
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {path.name} ...')
@@ -592,11 +591,6 @@ class AbjadIDE(abjad.AbjadObject):
         for source in paths:
             target = source.with_suffix('.pdf')
             self._interpret_tex_file(source)
-
-    def _join_broken_spanners(self, directory):
-        assert directory.build is not None, repr(directory)
-        self.io.display('joining broken spanners ...')
-        self.run(abjad.Job.make_broken_spanner_join_job(directory))
 
     @staticmethod
     def _make__assets_directory(directory):
@@ -1958,20 +1952,6 @@ class AbjadIDE(abjad.AbjadObject):
     def run(self, job) -> None:
         r'''Runs `job` on `path`.
         '''
-#        if job.activate is not None:
-#            count, skipped, messages_ = job.path.activate(
-#                job.activate,
-#                indent=1,
-#                message_zero=True,
-#                )
-#            messages.extend(messages_)
-#        if job.deactivate is not None:
-#            count, skipped, messages_ = job.path.deactivate(
-#                job.deactivate,
-#                indent=1,
-#                message_zero=True,
-#                )
-#            messages.extend(messages_)
         messages: List[str] = job()
         self.io.display(messages)
 
@@ -2197,32 +2177,12 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        job = abjad.Job.make_document_specific_deactivation_job(directory)
-        self.run(job)
-
-        this_document = f'+{abjad.String(directory.name).to_shout_case()}'
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set([this_document])),
-            name=this_document,
-            )
-
-        not_this_document = f'-{abjad.String(directory.name).to_shout_case()}'
-        self.activate(
-            directory,
-            lambda tags: bool(set(tags) & set([not_this_document])),
-            name=not_this_document,
-            )
-
-        result = directory._deactivate_bar_line_adjustment()
-        for message in result[-1]:
-            self.io.display(message)
-        result = directory._deactivate_shifted_clef_at_bol()
-        for message in result[-1]:
-            self.io.display(message)
+        self.run(abjad.Job.make_document_specific_job(directory))
+        self.run(abjad.Job.make_bar_line_adjustment_job(directory))
+        self.run(abjad.Job.make_bol_shifted_clef_job(directory))
         self.uncolor_persistent_indicators(directory)
         self.hide_score_annotations(directory)
-        self._join_broken_spanners(directory)
+        self.run(abjad.Job.make_broken_spanner_join_job(directory))
 
     @Command(
         'ccl',
