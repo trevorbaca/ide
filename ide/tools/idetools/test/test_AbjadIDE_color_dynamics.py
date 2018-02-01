@@ -10,7 +10,7 @@ def test_AbjadIDE_color_dynamics_01():
 
     with ide.Test():
 
-        match = baca.tags.dynamic_color_match
+        match = abjad.tags.dynamic_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -58,7 +58,7 @@ def test_AbjadIDE_color_dynamics_02():
 
     with ide.Test():
 
-        match = baca.tags.dynamic_color_match
+        match = abjad.tags.dynamic_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         assert path.count(match) == ((2, 2), (0, 0))

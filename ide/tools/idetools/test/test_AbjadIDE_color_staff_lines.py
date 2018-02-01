@@ -10,7 +10,7 @@ def test_AbjadIDE_color_staff_lines_01():
 
     with ide.Test():
 
-        match = baca.tags.staff_lines_color_match
+        match = abjad.tags.staff_lines_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -58,7 +58,7 @@ def test_AbjadIDE_color_staff_lines_02():
 
     with ide.Test():
 
-        match = baca.tags.staff_lines_color_match
+        match = abjad.tags.staff_lines_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         assert path.count(match) == ((4, 4), (0, 0))

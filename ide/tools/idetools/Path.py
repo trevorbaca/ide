@@ -95,7 +95,7 @@ class Path(abjad.Path):
     def _deactivate_shifted_clef_at_bol(self):
         counts, skippeds, messages = [], [], []
         # activate all shifted clefs
-        count, skipped, messages_ = self.activate(baca.tags.SHIFTED_CLEF)
+        count, skipped, messages_ = self.activate(abjad.tags.SHIFTED_CLEF)
         counts.append(count)
         skippeds.append(skipped)
         messages.extend(messages_)
@@ -107,14 +107,14 @@ class Path(abjad.Path):
             return counts, messages
         bol_measure_numbers = [f'MEASURE_{_}' for _ in bol_measure_numbers]
         def match(tags):
-            if baca.tags.SHIFTED_CLEF not in tags:
+            if abjad.tags.SHIFTED_CLEF not in tags:
                 return False
             if any(_ in tags for _ in bol_measure_numbers):
                 return True
             return False
         count, skipped, messages_ = self.deactivate(
             match,
-            baca.tags.SHIFTED_CLEF,
+            abjad.tags.SHIFTED_CLEF,
             )
         counts.append(count)
         skippeds.append(skipped)

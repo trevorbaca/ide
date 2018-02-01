@@ -107,7 +107,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert parts_directory.is_parts()
         self.deactivate(
             parts_directory,
-            baca.tags.match_document_specific_tags,
+            abjad.tags.match_document_specific_tags,
             )
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
@@ -597,12 +597,12 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('joining broken spanners ...')
         self.activate(
             directory,
-            baca.tags.match_broken_spanner_expression_tags,
+            abjad.tags.match_broken_spanner_expression_tags,
             indent=1,
             )
         self.deactivate(
             directory,
-            baca.tags.match_broken_spanner_suppression_tags,
+            abjad.tags.match_broken_spanner_suppression_tags,
             indent=1,
             )
 
@@ -2185,7 +2185,7 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        self.deactivate(directory, baca.tags.match_document_specific_tags)
+        self.deactivate(directory, abjad.tags.match_document_specific_tags)
 
         this_document = f'+{abjad.String(directory.name).to_shout_case()}'
         self.activate(
@@ -2226,12 +2226,12 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring persistent indicators ...')
         self.activate(
             directory,
-            baca.tags.match_persistent_indicator_color_expression,
+            abjad.tags.match_persistent_indicator_color_expression,
             indent=1,
             )
         self.deactivate(
             directory,
-            baca.tags.match_persistent_indicator_color_suppression,
+            abjad.tags.match_persistent_indicator_color_suppression,
             indent=1,
             )
 
@@ -2248,7 +2248,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring clefs ...')
-        tags_ = baca.tags.clef_color_tags(directory)
+        tags_ = abjad.tags.clef_color_tags(directory)
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -2272,7 +2272,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring dynamics ...')
         self.activate(
             directory,
-            baca.tags.dynamic_color_match,
+            abjad.tags.dynamic_color_match,
             indent=1,
             message_zero=True,
             name='color dynamic',
@@ -2291,7 +2291,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('coloring instruments ...')
-        tags_ = baca.tags.instrument_color_tags()
+        tags_ = abjad.tags.instrument_color_tags()
         self.activate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -2315,7 +2315,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring margin markup ...')
         self.activate(
             directory,
-            baca.tags.margin_markup_color_expression_match,
+            abjad.tags.margin_markup_color_expression_match,
             indent=1,
             message_zero=True,
             name='margin markup color',
@@ -2336,14 +2336,14 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring metronome marks ...')
         self.activate(
             directory,
-            baca.tags.metronome_mark_color_expression_match,
+            abjad.tags.metronome_mark_color_expression_match,
             indent=1,
             message_zero=True,
             name='metronome mark color expression',
             )
         self.deactivate(
             directory,
-            baca.tags.metronome_mark_color_suppression_match,
+            abjad.tags.metronome_mark_color_suppression_match,
             indent=1,
             message_zero=True,
             name='metronome mark color suppression',
@@ -2364,7 +2364,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring staff lines ...')
         self.activate(
             directory,
-            baca.tags.staff_lines_color_match,
+            abjad.tags.staff_lines_color_match,
             indent=1,
             message_zero=True,
             name='staff lines color',
@@ -2385,7 +2385,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('coloring time signatures ...')
         self.activate(
             directory,
-            baca.tags.time_signature_color_match,
+            abjad.tags.time_signature_color_match,
             indent=1,
             message_zero=True,
             name='time signature color',
@@ -5340,17 +5340,17 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring persistent indicators ...')
         self.deactivate(
             directory,
-            baca.tags.match_persistent_indicator_color_expression,
+            abjad.tags.match_persistent_indicator_color_expression,
             indent=1,
             )
         self.activate(
             directory,
-            baca.tags.match_persistent_indicator_color_suppression,
+            abjad.tags.match_persistent_indicator_color_suppression,
             indent=1,
             )
         self.deactivate(
             directory,
-            baca.tags.match_reapplied_margin_markup_tags,
+            abjad.tags.match_reapplied_margin_markup_tags,
             indent=1,
             )
 
@@ -5367,7 +5367,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring clefs ...')
-        tags_ = baca.tags.clef_color_tags(directory)
+        tags_ = abjad.tags.clef_color_tags(directory)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -5391,7 +5391,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring dynamics ...')
         self.deactivate(
             directory,
-            baca.tags.dynamic_color_match,
+            abjad.tags.dynamic_color_match,
             indent=1,
             message_zero=True,
             name='dynamic',
@@ -5410,9 +5410,9 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring instruments ...')
-        tags_ = baca.tags.instrument_color_tags()
+        tags_ = abjad.tags.instrument_color_tags()
         if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_INSTRUMENT)
+            tags_.append(abjad.tags.REAPPLIED_INSTRUMENT)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -5434,9 +5434,9 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.io.display('uncoloring margin markup ...')
-        tags_ = baca.tags.margin_markup_color_tags()
+        tags_ = abjad.tags.margin_markup_color_tags()
         if directory.is_build():
-            tags_.append(baca.tags.REAPPLIED_MARGIN_MARKUP)
+            tags_.append(abjad.tags.REAPPLIED_MARGIN_MARKUP)
         self.deactivate(
             directory,
             lambda tags: bool(set(tags) & set(tags_)),
@@ -5460,13 +5460,13 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring metronome marks ...')
         self.activate(
             directory,
-            baca.tags.metronome_mark_color_suppression_match,
+            abjad.tags.metronome_mark_color_suppression_match,
             indent=1,
             name='b&w metronome mark expression',
             )
         self.deactivate(
             directory,
-            baca.tags.metronome_mark_color_expression_match,
+            abjad.tags.metronome_mark_color_expression_match,
             indent=1,
             name='b&w metronome mark suppression',
             )
@@ -5486,7 +5486,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring staff lines ...')
         self.deactivate(
             directory,
-            baca.tags.staff_lines_color_match,
+            abjad.tags.staff_lines_color_match,
             indent=1,
             message_zero=True,
             name='staff lines color',
@@ -5507,7 +5507,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('uncoloring time signatures ...')
         self.deactivate(
             directory,
-            baca.tags.time_signature_color_match,
+            abjad.tags.time_signature_color_match,
             indent=1,
             message_zero=True,
             name='time signature color',

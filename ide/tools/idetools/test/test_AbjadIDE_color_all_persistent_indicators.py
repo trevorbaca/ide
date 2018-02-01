@@ -10,7 +10,7 @@ def test_AbjadIDE_color_all_persistent_indicators_01():
 
     with ide.Test():
 
-        match = baca.tags.clef_color_match
+        match = abjad.tags.clef_color_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -63,7 +63,7 @@ def test_AbjadIDE_color_all_persistent_indicators_02():
 
     with ide.Test():
 
-        match = baca.tags.clef_color_match
+        match = abjad.tags.clef_color_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         

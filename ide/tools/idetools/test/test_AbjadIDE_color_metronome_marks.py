@@ -10,8 +10,8 @@ def test_AbjadIDE_color_metronome_marks_01():
 
     with ide.Test():
 
-        expression = baca.tags.metronome_mark_color_expression_match
-        suppression = baca.tags.metronome_mark_color_suppression_match
+        expression = abjad.tags.metronome_mark_color_expression_match
+        suppression = abjad.tags.metronome_mark_color_suppression_match
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build('_segments', 'segment-_.ly')
 
@@ -72,8 +72,8 @@ def test_AbjadIDE_color_metronome_marks_02():
 
     with ide.Test():
 
-        expression = baca.tags.metronome_mark_color_expression_match
-        suppression = baca.tags.metronome_mark_color_suppression_match
+        expression = abjad.tags.metronome_mark_color_expression_match
+        suppression = abjad.tags.metronome_mark_color_suppression_match
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         assert path.count(expression) == ((1, 23), (0, 0))
