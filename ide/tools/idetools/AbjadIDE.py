@@ -2117,10 +2117,10 @@ class AbjadIDE(abjad.AbjadObject):
             fermata_measure_numbers,
             )
         self.run(abjad.Job.document_specific_job(directory))
-        self.run(abjad.Job.bar_line_adjustment_job(directory))
-        self.run(abjad.Job.bol_shifted_clef_job(directory))
+        self.run(abjad.Job.fermata_bar_line_job(directory))
+        self.run(abjad.Job.shifted_clef_job(directory))
         self.uncolor_persistent_indicators(directory)
-        self.hide_score_annotations(directory)
+        self.hide_music_annotations(directory)
         self.run(abjad.Job.broken_spanner_join_job(directory))
 
     @Command(
@@ -3628,7 +3628,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctmh',
         description=f'clock time markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_clock_time_markup(self, directory):
@@ -3642,7 +3642,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnmh',
         description=f'figure name markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_figure_name_markup(self, directory):
@@ -3656,7 +3656,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mimh',
         description=f'measure index markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_measure_index_markup(self, directory):
@@ -3670,7 +3670,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mnmh',
         description=f'measure number markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_measure_number_markup(self, directory):
@@ -3682,23 +3682,23 @@ class AbjadIDE(abjad.AbjadObject):
         self.run(abjad.Job.measure_number_markup_job(directory, undo=True))
 
     @Command(
-        'sah',
-        description=f'score annotations - hide',
-        menu_section='score annotations',
+        'mah',
+        description=f'music annotations - hide',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_score_annotations(self, directory):
-        r'''Hides score annotations.
+    def hide_music_annotations(self, directory):
+        r'''Hides music annotations.
 
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.score_annotation_job(directory, undo=True))
+        self.run(abjad.Job.music_annotation_job(directory, undo=True))
 
     @Command(
         'spmh',
         description=f'spacing markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_spacing_markup(self, directory):
@@ -3712,7 +3712,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snmh',
         description=f'stage number markup - hide',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def hide_stage_number_markup(self, directory):
@@ -4566,7 +4566,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'ctms',
         description=f'clock time markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_clock_time_markup(self, directory):
@@ -4580,7 +4580,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'fnms',
         description=f'figure name markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_figure_name_markup(self, directory):
@@ -4609,7 +4609,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mims',
         description=f'measure index markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_measure_index_markup(self, directory):
@@ -4623,7 +4623,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'mnms',
         description=f'measure number markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_measure_number_markup(self, directory):
@@ -4635,23 +4635,23 @@ class AbjadIDE(abjad.AbjadObject):
         self.run(abjad.Job.measure_number_markup_job(directory))
 
     @Command(
-        'sas',
-        description=f'score annotations - show',
-        menu_section='score annotations',
+        'mas',
+        description=f'music annotations - show',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_score_annotations(self, directory):
-        r'''Shows score annotations.
+    def show_music_annotations(self, directory):
+        r'''Shows music annotations.
 
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.score_annotation_job(directory))
+        self.run(abjad.Job.music_annotation_job(directory))
 
     @Command(
         'spms',
         description=f'spacing markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_spacing_markup(self, directory):
@@ -4665,7 +4665,7 @@ class AbjadIDE(abjad.AbjadObject):
     @Command(
         'snms',
         description=f'stage number markup - show',
-        menu_section='score annotations',
+        menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
     def show_stage_number_markup(self, directory):

@@ -67,7 +67,7 @@ def test_AbjadIDE_color_persistent_indicators_02():
             ' Activating 4 persistent indicator color expression tags ...',
             ' Skipping 26 (active) persistent indicator color expression tags ...',
             ' Found 1 persistent indicator color suppression tag ...',
-            ' Skipping 1 (inactive) persistent indicator color suppression tags ...',
+            ' Skipping 1 (inactive) persistent indicator color suppression tag ...',
             ]:
             assert line in lines
         

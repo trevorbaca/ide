@@ -64,9 +64,9 @@ def test_AbjadIDE_color_metronome_marks_02():
         for line in [
             'Coloring metronome marks ...',
             ' Found 1 metronome mark color expression tag ...',
-            ' Skipping 1 (active) metronome mark color expression tags ...',
+            ' Skipping 1 (active) metronome mark color expression tag ...',
             ' Found 1 metronome mark color suppression tag ...',
-            ' Skipping 1 (inactive) metronome mark color suppression tags ...',
+            ' Skipping 1 (inactive) metronome mark color suppression tag ...',
             ]:
             assert line in lines
         
