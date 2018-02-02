@@ -107,7 +107,7 @@ class AbjadIDE(abjad.AbjadObject):
         parts_directory = path.parent
         assert parts_directory.is_parts()
 
-        self.run(abjad.Job.make_document_specific_job(parts_directory))
+        self.run(abjad.Job.document_specific_job(parts_directory))
 
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
@@ -2177,12 +2177,12 @@ class AbjadIDE(abjad.AbjadObject):
             'fermata_measure_numbers',
             fermata_measure_numbers,
             )
-        self.run(abjad.Job.make_document_specific_job(directory))
-        self.run(abjad.Job.make_bar_line_adjustment_job(directory))
-        self.run(abjad.Job.make_bol_shifted_clef_job(directory))
+        self.run(abjad.Job.document_specific_job(directory))
+        self.run(abjad.Job.bar_line_adjustment_job(directory))
+        self.run(abjad.Job.bol_shifted_clef_job(directory))
         self.uncolor_persistent_indicators(directory)
         self.hide_score_annotations(directory)
-        self.run(abjad.Job.make_broken_spanner_join_job(directory))
+        self.run(abjad.Job.broken_spanner_join_job(directory))
 
     @Command(
         'ccl',
@@ -2196,8 +2196,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring clefs ...')
-        self.run(abjad.Job.make_clef_color_job(directory))
+        self.run(abjad.Job.clef_color_job(directory))
 
     @Command(
         'dcl',
@@ -2211,8 +2210,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring dynamics ...')
-        self.run(abjad.Job.make_dynamic_color_job(directory))
+        self.run(abjad.Job.dynamic_color_job(directory))
 
     @Command(
         'icl',
@@ -2226,8 +2224,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring instruments ...')
-        self.run(abjad.Job.make_instrument_color_job(directory))
+        self.run(abjad.Job.instrument_color_job(directory))
 
     @Command(
         'mmcl',
@@ -2241,8 +2238,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_score_package_path()
-        self.io.display('coloring margin markup ...')
-        self.run(abjad.Job.make_margin_markup_color_job(directory))
+        self.run(abjad.Job.margin_markup_color_job(directory))
 
     @Command(
         'tmcl',
@@ -2256,8 +2252,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring metronome marks ...')
-        self.run(abjad.Job.make_metronome_mark_color_job(directory))
+        self.run(abjad.Job.metronome_mark_color_job(directory))
 
     @Command(
         'picl',
@@ -2271,8 +2266,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring persistent indicators ...')
-        self.run(abjad.Job.make_persistent_indicator_color_job(directory))
+        self.run(abjad.Job.persistent_indicator_color_job(directory))
 
     @Command(
         'slcl',
@@ -2286,8 +2280,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring staff lines ...')
-        self.run(abjad.Job.make_staff_lines_color_job(directory))
+        self.run(abjad.Job.staff_lines_color_job(directory))
 
     @Command(
         'tscl',
@@ -2301,8 +2294,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('coloring time signatures ...')
-        self.run(abjad.Job.make_time_signature_color_job(directory))
+        self.run(abjad.Job.time_signature_color_job(directory))
 
     @Command(
         'cbc',
@@ -3705,7 +3697,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_clock_time_markup_job(directory, undo=True))
+        self.run(abjad.Job.clock_time_markup_job(directory, undo=True))
 
     @Command(
         'fnmh',
@@ -3719,7 +3711,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_figure_name_markup_job(directory, undo=True))
+        self.run(abjad.Job.figure_name_markup_job(directory, undo=True))
 
     @Command(
         'mimh',
@@ -3733,7 +3725,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_measure_index_markup_job(directory, undo=True))
+        self.run(abjad.Job.measure_index_markup_job(directory, undo=True))
 
     @Command(
         'mnmh',
@@ -3747,7 +3739,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_measure_number_markup_job(directory, undo=True))
+        self.run(abjad.Job.measure_number_markup_job(directory, undo=True))
 
     @Command(
         'sah',
@@ -3761,7 +3753,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_score_annotation_job(directory, undo=True))
+        self.run(abjad.Job.score_annotation_job(directory, undo=True))
 
     @Command(
         'spmh',
@@ -3775,7 +3767,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_spacing_markup_job(directory, undo=True))
+        self.run(abjad.Job.spacing_markup_job(directory, undo=True))
 
     @Command(
         'snmh',
@@ -3789,7 +3781,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_stage_number_markup_job(directory, undo=True))
+        self.run(abjad.Job.stage_number_markup_job(directory, undo=True))
 
     @Command(
         'bcti',
@@ -4637,7 +4629,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_clock_time_markup_job(directory))
+        self.run(abjad.Job.clock_time_markup_job(directory))
 
     @Command(
         'fnms',
@@ -4651,7 +4643,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_figure_name_markup_job(directory))
+        self.run(abjad.Job.figure_name_markup_job(directory))
 
     @Command(
         '?',
@@ -4680,7 +4672,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_measure_index_markup_job(directory))
+        self.run(abjad.Job.measure_index_markup_job(directory))
 
     @Command(
         'mnms',
@@ -4694,7 +4686,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_measure_number_markup_job(directory))
+        self.run(abjad.Job.measure_number_markup_job(directory))
 
     @Command(
         'sas',
@@ -4708,7 +4700,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_score_annotation_job(directory))
+        self.run(abjad.Job.score_annotation_job(directory))
 
     @Command(
         'spms',
@@ -4722,7 +4714,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_spacing_markup_job(directory))
+        self.run(abjad.Job.spacing_markup_job(directory))
 
     @Command(
         'snms',
@@ -4736,7 +4728,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.make_stage_number_markup_job(directory))
+        self.run(abjad.Job.stage_number_markup_job(directory))
 
     @Command(
         '^',
@@ -5180,8 +5172,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring clefs ...')
-        self.run(abjad.Job.make_clef_uncolor_job(directory))
+        self.run(abjad.Job.clef_color_job(directory, undo=True))
 
     @Command(
         'duc',
@@ -5195,8 +5186,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring dynamics ...')
-        self.run(abjad.Job.make_dynamic_uncolor_job(directory))
+        self.run(abjad.Job.dynamic_color_job(directory, undo=True))
 
     @Command(
         'iuc',
@@ -5210,8 +5200,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring instruments ...')
-        self.run(abjad.Job.make_instrument_uncolor_job(directory))
+        self.run(abjad.Job.instrument_color_job(directory, undo=True))
 
     @Command(
         'mmuc',
@@ -5225,8 +5214,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring margin markup ...')
-        self.run(abjad.Job.make_margin_markup_uncolor_job(directory))
+        self.run(abjad.Job.margin_markup_color_job(directory, undo=True))
 
     @Command(
         'tmuc',
@@ -5240,8 +5228,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring metronome marks ...')
-        self.run(abjad.Job.make_metronome_mark_uncolor_job(directory))
+        self.run(abjad.Job.metronome_mark_color_job(directory, undo=True))
 
     @Command(
         'piuc',
@@ -5255,8 +5242,8 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring persistent indicators ...')
-        self.run(abjad.Job.make_persistent_indicator_uncolor_job(directory))
+        job = abjad.Job.persistent_indicator_color_job(directory, undo=True)
+        self.run(job)
 
     @Command(
         'sluc',
@@ -5270,8 +5257,7 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring staff lines ...')
-        self.run(abjad.Job.make_staff_lines_uncolor_job(directory))
+        self.run(abjad.Job.staff_lines_color_job(directory, undo=True))
 
     @Command(
         'tsuc',
@@ -5285,5 +5271,4 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        self.io.display('uncoloring time signatures ...')
-        self.run(abjad.Job.make_time_signature_uncolor_job(directory))
+        self.run(abjad.Job.time_signature_color_job(directory, undo=True))
