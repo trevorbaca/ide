@@ -1348,66 +1348,6 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display(message)
         return files
 
-    def _match_paths_in_buildspace(self, directory, name, verb, count=None):
-        assert directory.is_buildspace()
-        is_glob = False
-        pattern = None
-        selected_paths = []
-        if directory.is_segment():
-            path = directory(name)
-            if path.is_file():
-                selected_paths.append(path)
-        elif not directory.is_parts():
-            path = directory.build(name)
-            if path.is_file():
-                selected_paths.append(path)
-        else:
-            paths = directory.get_files_ending_with(name)
-            if not paths:
-                self.io.display(f'no files ending in {name} ...')
-            if count is not None:
-                files = abjad.String('file').pluralize(count)
-            else:
-                files = 'files'
-            self.io.display(f'select {files} to {verb} ...')
-            for path in paths:
-                self.io.display(f'{path.name}', raw=True)
-            self.io.display('')
-            pattern = self.io.get('match name')
-            if pattern and self.is_navigation(pattern):
-                return
-            if not pattern:
-                return
-            if '*' in pattern:
-                is_glob = True
-                matches = sorted(directory.glob(str(pattern)))
-                matches = list(matches)
-            selected_paths = []
-            for path in paths:
-                if is_glob and path in matches:
-                    selected_paths.append(path)
-                elif path.name.startswith(pattern):
-                    selected_paths.append(path)
-        if not selected_paths:
-            if pattern is None:
-                self.io.display(f'no files matching {name} ...')
-            elif is_glob:
-                self.io.display(f'no files matching {pattern} ...')
-            else:
-                self.io.display(f'no files starting with {pattern} ...')
-            return
-        if 1 < len(selected_paths):
-            self.io.display(f'will {verb} {len(selected_paths)} files ...')
-            for path in selected_paths:
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            ok = self.io.get('ok?')
-            if ok and self.is_navigation(ok):
-                return
-            if ok != 'y':
-                return
-        return selected_paths
-
     def _match_smart_file(
         self,
         directory,
@@ -1979,7 +1919,6 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        #triples = self._select_part_names(directory, 'part.tex', 'build')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2504,10 +2443,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'back-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'back-cover.tex', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'dpe',
@@ -2543,10 +2483,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'front-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'front-cover.tex', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'ile',
@@ -2598,10 +2539,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        name = 'layout.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'layout.ly', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'lpe',
@@ -2615,9 +2557,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        paths = self._match_paths_in_buildspace(directory, 'layout.py', 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'layout.py', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'lp',
@@ -2647,10 +2591,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'music.ly'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'music.ly', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'pte',
@@ -2663,12 +2608,12 @@ class AbjadIDE(abjad.AbjadObject):
 
         Returns none.
         '''
-        assert directory.is__segments() or directory.is_build()
         assert directory.is_parts()
-        name = 'part.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'part.tex', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'pfte',
@@ -2682,10 +2627,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'preface.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'preface.tex', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'ste',
@@ -2796,7 +2742,6 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_back_cover(path)
             return
-        #triples = self._select_part_names(directory, name, 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2827,7 +2772,6 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_front_cover(path)
             return
-        #triples = self._select_part_names(directory, name, 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2875,7 +2819,6 @@ class AbjadIDE(abjad.AbjadObject):
                 target_name='layout.py',
                 )
             return
-        #triples = self._select_part_names(directory, 'layout.py', 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2910,7 +2853,6 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'generating {path.trim()} ...')
             self._generate_music(path, indent=1)
             return
-        #triples = self._select_part_names(directory, name, 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2943,7 +2885,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_parts()
         name = 'part.tex'
-        #triples = self._select_part_names(directory, name, 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -2972,7 +2913,6 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory(name)
             self._generate_preface(path)
             return
-        #triples = self._select_part_names(directory, name, 'generate')
         triples = self._select_part_names(directory)
         if not triples:
             return
@@ -3796,8 +3736,10 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'back-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'back-cover.tex', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
         if not paths:
             return
         for path in paths:
@@ -3820,8 +3762,8 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'front-cover.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'front-cover.tex', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
         for path in paths:
@@ -3909,8 +3851,8 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        name = 'part.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'part.tex', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
         for path in paths:
@@ -3933,8 +3875,8 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'preface.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'preface.tex', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
         for path in paths:
@@ -3958,8 +3900,8 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'score.tex'
-        paths = self._match_paths_in_buildspace(directory, name, 'interpret')
+        name, verb = 'score.tex', 'interpret'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
         for path in paths:
@@ -4147,10 +4089,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'back-cover.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'back-cover.pdf', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'fcpo',
@@ -4165,10 +4108,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'front-cover.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'front-cover.pdf', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'ipo',
@@ -4222,10 +4166,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        name = 'part.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'part.pdf', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'pfpo',
@@ -4240,10 +4185,11 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         directory = directory.build
-        name = 'preface.pdf'
-        paths = self._match_paths_in_buildspace(directory, name, 'open')
-        if paths:
-            self._open_files(paths)
+        name, verb = 'preface.pdf', 'open'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._open_files(paths)
 
     @Command(
         'spo',
@@ -4840,13 +4786,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'back-cover.pdf',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'back-cover.pdf', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'bctt',
@@ -4860,13 +4804,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'back-cover.tex',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'back-cover.tex', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'dpt',
@@ -4899,13 +4841,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'front-cover.pdf',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'front-cover.pdf', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'fctt',
@@ -4919,13 +4859,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'front-cover.tex',
-            'trash'
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'front-cover.tex', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'ilt',
@@ -4977,13 +4915,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'layout.ly',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'layout.ly', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'lpt',
@@ -4997,13 +4933,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_buildspace()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'layout.py',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'layout.py', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'mlt',
@@ -5017,9 +4951,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(directory, 'music.ly', 'trash')
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'music.ly', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'mpt',
@@ -5033,13 +4969,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'music.pdf',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'music.pdf', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'ppt',
@@ -5053,9 +4987,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        paths = self._match_paths_in_buildspace(directory, 'part.pdf', 'trash')
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'part.pdf', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'ptt',
@@ -5069,9 +5005,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is_parts()
-        paths = self._match_paths_in_buildspace(directory, 'part.tex', 'trash')
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'part.tex', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'pfpt',
@@ -5085,13 +5023,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'preface.pdf',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'preface.pdf', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'pftt',
@@ -5105,13 +5041,11 @@ class AbjadIDE(abjad.AbjadObject):
         Returns none.
         '''
         assert directory.is__segments() or directory.is_build()
-        paths = self._match_paths_in_buildspace(
-            directory,
-            'preface.tex',
-            'trash',
-            )
-        if paths:
-            self._trash_files(paths)
+        name, verb = 'preface.tex', 'trash'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        self._trash_files(paths)
 
     @Command(
         'spt',
