@@ -20,10 +20,10 @@ def test_AbjadIDE_color_metronome_marks_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring metronome marks ...',
-            ' Found 1 metronome mark color expression tag in arch-a-score ...',
-            ' Activating 1 metronome mark color expression tag in arch-a-score ...',
-            ' Found 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Deactivating 1 metronome mark color suppression tag in arch-a-score ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Activating 1 metronome mark color expression tag ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Deactivating 1 metronome mark color suppression tag ...',
             ]:
             assert line in lines
 
@@ -31,10 +31,10 @@ def test_AbjadIDE_color_metronome_marks_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring metronome marks ...',
-            ' Found 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Activating 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Found 1 metronome mark color expression tag in arch-a-score ...',
-            ' Deactivating 1 metronome mark color expression tag in arch-a-score ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Activating 1 metronome mark color suppression tag ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Deactivating 1 metronome mark color expression tag ...',
             ]:
             assert line in lines
 
@@ -42,10 +42,10 @@ def test_AbjadIDE_color_metronome_marks_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring metronome marks ...',
-            ' Found 1 metronome mark color expression tag in arch-a-score ...',
-            ' Activating 1 metronome mark color expression tag in arch-a-score ...',
-            ' Found 1 metronome mark color suppression tag in arch-a-score ...',
-            ' Deactivating 1 metronome mark color suppression tag in arch-a-score ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Activating 1 metronome mark color expression tag ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Deactivating 1 metronome mark color suppression tag ...',
             ]:
             assert line in lines
 
@@ -63,10 +63,10 @@ def test_AbjadIDE_color_metronome_marks_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring metronome marks ...',
-            ' Found 1 metronome mark color expression tag in _ ...',
-            ' Skipping 1 (active) metronome mark color expression tags in _ ...',
-            ' Found 1 metronome mark color suppression tag in _ ...',
-            ' Skipping 1 (inactive) metronome mark color suppression tags in _ ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Skipping 1 (active) metronome mark color expression tags ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Skipping 1 (inactive) metronome mark color suppression tags ...',
             ]:
             assert line in lines
         
@@ -74,10 +74,10 @@ def test_AbjadIDE_color_metronome_marks_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring metronome marks ...',
-            ' Found 1 metronome mark color suppression tag in _ ...',
-            ' Activating 1 metronome mark color suppression tag in _ ...',
-            ' Found 1 metronome mark color expression tag in _ ...',
-            ' Deactivating 1 metronome mark color expression tag in _ ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Activating 1 metronome mark color suppression tag ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Deactivating 1 metronome mark color expression tag ...',
             ]:
             assert line in lines
 
@@ -85,9 +85,9 @@ def test_AbjadIDE_color_metronome_marks_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring metronome marks ...',
-            ' Found 1 metronome mark color expression tag in _ ...',
-            ' Activating 1 metronome mark color expression tag in _ ...',
-            ' Found 1 metronome mark color suppression tag in _ ...',
-            ' Deactivating 1 metronome mark color suppression tag in _ ...',
+            ' Found 1 metronome mark color expression tag ...',
+            ' Activating 1 metronome mark color expression tag ...',
+            ' Found 1 metronome mark color suppression tag ...',
+            ' Deactivating 1 metronome mark color suppression tag ...',
             ]:
             assert line in lines

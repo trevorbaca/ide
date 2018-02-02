@@ -20,8 +20,8 @@ def test_AbjadIDE_show_measure_index_markup_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing measure index markup ...',
-            ' Found 2 measure index markup tags in arch-a-score ...',
-            ' Activating 2 measure index markup tags in arch-a-score ...',
+            ' Found 2 measure index markup tags ...',
+            ' Activating 2 measure index markup tags ...',
             ]:
             assert line in lines
 
@@ -29,8 +29,8 @@ def test_AbjadIDE_show_measure_index_markup_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding measure index markup ...',
-            ' Found 2 measure index markup tags in arch-a-score ...',
-            ' Deactivating 2 measure index markup tags in arch-a-score ...',
+            ' Found 2 measure index markup tags ...',
+            ' Deactivating 2 measure index markup tags ...',
             ]:
             assert line in lines
 
@@ -49,8 +49,8 @@ def test_AbjadIDE_show_measure_index_markup_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing measure index markup ...',
-            ' Found 2 measure index markup tags in _ ...',
-            ' Activating 2 measure index markup tags in _ ...',
+            ' Found 2 measure index markup tags ...',
+            ' Activating 2 measure index markup tags ...',
             ]:
             assert line in lines
 
@@ -58,7 +58,7 @@ def test_AbjadIDE_show_measure_index_markup_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding measure index markup ...',
-            ' Found 2 measure index markup tags in _ ...',
-            ' Deactivating 2 measure index markup tags in _ ...',
+            ' Found 2 measure index markup tags ...',
+            ' Deactivating 2 measure index markup tags ...',
             ]:
             assert line in lines

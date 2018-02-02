@@ -20,8 +20,8 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring time signatures ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Activating 2 time signature color tags in arch-a-score ...',
+            ' Found 2 time signature color tags ...',
+            ' Activating 2 time signature color tags ...',
             ]:
             assert line in lines
 
@@ -29,8 +29,8 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring time signatures ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Deactivating 2 time signature color tags in arch-a-score ...',
+            ' Found 2 time signature color tags ...',
+            ' Deactivating 2 time signature color tags ...',
             ]:
             assert line in lines
 
@@ -38,8 +38,8 @@ def test_AbjadIDE_color_time_signatures_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring time signatures ...',
-            ' Found 2 time signature color tags in arch-a-score ...',
-            ' Activating 2 time signature color tags in arch-a-score ...',
+            ' Found 2 time signature color tags ...',
+            ' Activating 2 time signature color tags ...',
             ]:
             assert line in lines
 
@@ -57,8 +57,8 @@ def test_AbjadIDE_color_time_signatures_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring time signatures ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Skipping 2 (active) time signature color tags in _ ...',
+            ' Found 2 time signature color tags ...',
+            ' Skipping 2 (active) time signature color tags ...',
             ]:
             assert line in lines
         
@@ -66,8 +66,8 @@ def test_AbjadIDE_color_time_signatures_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring time signatures ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Deactivating 2 time signature color tags in _ ...',
+            ' Found 2 time signature color tags ...',
+            ' Deactivating 2 time signature color tags ...',
             ]:
             assert line in lines
 
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_time_signatures_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring time signatures ...',
-            ' Found 2 time signature color tags in _ ...',
-            ' Activating 2 time signature color tags in _ ...',
+            ' Found 2 time signature color tags ...',
+            ' Activating 2 time signature color tags ...',
             ]:
             assert line in lines

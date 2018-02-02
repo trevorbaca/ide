@@ -20,10 +20,10 @@ def test_AbjadIDE_color_persistent_indicators_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
-            ' Found 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Activating 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Found 1 persistent indicator color suppression tag in arch-a-score ...',
-            ' Deactivating 1 persistent indicator color suppression tag in arch-a-score ...',
+            ' Found 26 persistent indicator color expression tags ...',
+            ' Activating 26 persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Deactivating 1 persistent indicator color suppression tag ...',
             ]:
             assert line in lines
 
@@ -31,10 +31,10 @@ def test_AbjadIDE_color_persistent_indicators_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring persistent indicators ...',
-            ' Found 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Deactivating 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Found 1 persistent indicator color suppression tag in arch-a-score ...',
-            ' Activating 1 persistent indicator color suppression tag in arch-a-score ...',
+            ' Found 26 persistent indicator color expression tags ...',
+            ' Deactivating 26 persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Activating 1 persistent indicator color suppression tag ...',
             ]:
             assert line in lines
 
@@ -42,10 +42,10 @@ def test_AbjadIDE_color_persistent_indicators_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
-            ' Found 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Activating 26 persistent indicator color expression tags in arch-a-score ...',
-            ' Found 1 persistent indicator color suppression tag in arch-a-score ...',
-            ' Deactivating 1 persistent indicator color suppression tag in arch-a-score ...',
+            ' Found 26 persistent indicator color expression tags ...',
+            ' Activating 26 persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Deactivating 1 persistent indicator color suppression tag ...',
             ]:
             assert line in lines
 
@@ -63,11 +63,11 @@ def test_AbjadIDE_color_persistent_indicators_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
-            ' Found 30 persistent indicator color expression tags in _ ...',
-            ' Activating 4 persistent indicator color expression tags in _ ...',
-            ' Skipping 26 (active) persistent indicator color expression tags in _ ...',
-            ' Found 1 persistent indicator color suppression tag in _ ...',
-            ' Skipping 1 (inactive) persistent indicator color suppression tags in _ ...',
+            ' Found 30 persistent indicator color expression tags ...',
+            ' Activating 4 persistent indicator color expression tags ...',
+            ' Skipping 26 (active) persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Skipping 1 (inactive) persistent indicator color suppression tags ...',
             ]:
             assert line in lines
         
@@ -75,10 +75,10 @@ def test_AbjadIDE_color_persistent_indicators_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Uncoloring persistent indicators ...',
-            ' Found 26 persistent indicator color expression tags in _ ...',
-            ' Deactivating 26 persistent indicator color expression tags in _ ...',
-            ' Found 1 persistent indicator color suppression tag in _ ...',
-            ' Activating 1 persistent indicator color suppression tag in _ ...',
+            ' Found 26 persistent indicator color expression tags ...',
+            ' Deactivating 26 persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Activating 1 persistent indicator color suppression tag ...',
             ]:
             assert line in lines
 
@@ -86,9 +86,9 @@ def test_AbjadIDE_color_persistent_indicators_02():
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Coloring persistent indicators ...',
-            ' Found 26 persistent indicator color expression tags in _ ...',
-            ' Activating 26 persistent indicator color expression tags in _ ...',
-            ' Found 1 persistent indicator color suppression tag in _ ...',
-            ' Deactivating 1 persistent indicator color suppression tag in _ ...',
+            ' Found 26 persistent indicator color expression tags ...',
+            ' Activating 26 persistent indicator color expression tags ...',
+            ' Found 1 persistent indicator color suppression tag ...',
+            ' Deactivating 1 persistent indicator color suppression tag ...',
             ]:
             assert line in lines
