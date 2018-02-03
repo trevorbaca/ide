@@ -159,11 +159,8 @@ class AbjadIDE(abjad.AbjadObject):
             source = directory.segments(name, 'illustration.ly')
             if not source.is_file():
                 continue
-            if name == '_':
-                name = 'segment-_.ly'
-            else:
-                name = 'segment-' + name.replace('_', '-') + '.ly'
-            target = directory._segments(name)
+            target = 'segment-' + name.replace('_', '-') + '.ly'
+            target = directory._segments(target)
             sources.append(source)
             targets.append(target)
         if not directory.builds.is_dir():
@@ -342,12 +339,7 @@ class AbjadIDE(abjad.AbjadObject):
                     f'examining {segment.trim()} ...',
                     indent=indent,
                     )
-        names = []
-        for segment in segments:
-            name = segment.stem
-            if segment.stem != '_':
-                name = name.replace('_', '-')
-            names.append(name)
+        names = [_.stem.replace('_', '-') for _ in segments]
         if path.name == 'music.ly':
             name = 'score-music.ly'
         else:
@@ -358,8 +350,7 @@ class AbjadIDE(abjad.AbjadObject):
             indent=indent,
             target_name=path.name,
             )
-        lines = []
-        segment_include_statements = ''
+        lines, ily_lines = [], []
         for i, name in enumerate(names):
             name = 'segment-' + name + '.ly'
             ly = path.build._segments(name)
@@ -367,12 +358,16 @@ class AbjadIDE(abjad.AbjadObject):
                 line = rf'\include "_segments/{name}"'
             else:
                 line = rf'%\include "_segments/{name}"'
+            ily_lines.append(line.replace('.ly', '.ily'))
             if 0 < i:
                 line = 8 * ' ' + line
             lines.append(line)
         if lines:
-            new = '\n'.join(lines)
-            segment_include_statements = new
+            segment_ly_include_statements = '\n'.join(lines)
+            segment_ily_include_statements = '\n'.join(ily_lines)
+        else:
+            segment_ly_include_statements = ''
+            segment_ily_include_statements = ''
         language_token = abjad.LilyPondLanguageToken()
         lilypond_language_directive = format(language_token)
         version_token = abjad.LilyPondVersionToken()
@@ -401,7 +396,8 @@ class AbjadIDE(abjad.AbjadObject):
             lilypond_version_directive=lilypond_version_directive,
             part_abbreviation=repr(part_abbreviation),
             score_title=score_title,
-            segment_include_statements=segment_include_statements,
+            segment_ily_include_statements=segment_ily_include_statements,
+            segment_ly_include_statements=segment_ly_include_statements,
             )
         path.write_text(template)
 
@@ -1708,7 +1704,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'missing {path.trim()} ...')
 
     @staticmethod
-    def _trim_ly(ly):
+    def _trim_illustration_ly(ly):
         assert ly.is_file()
         lines = []
         with ly.open() as file_pointer:
@@ -2100,10 +2096,17 @@ class AbjadIDE(abjad.AbjadObject):
         fermata_measure_numbers = abjad.OrderedDict()
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
+            source_ily = source.with_suffix('.ily')
+            target_ily = target.with_suffix('.ily')
+            if target_ily.exists():
+                self.io.display(f' Removing {target_ily.trim()} ...')
+            if source_ily.is_file():
+                self.io.display(f' Writing {target_ily.trim()} ...')
+                shutil.copyfile(str(source_ily), target_ily)
             if target.exists():
                 self.io.display(f' Removing {target.trim()} ...')
             self.io.display(f' Writing {target.trim()} ...')
-            text = self._trim_ly(source)
+            text = self._trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
             time_signatures_ = segment.get_metadatum('time_signatures')

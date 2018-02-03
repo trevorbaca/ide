@@ -11,7 +11,7 @@ def test_AbjadIDE_show_measure_index_markup_01():
 
         tag = abjad.tags.MEASURE_INDEX_MARKUP
         build = ide.Path('green_score', 'builds', 'arch-a-score')
-        path = build('_segments', 'segment-_.ly')
+        path = build('_segments', 'segment--.ly')
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()

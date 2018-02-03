@@ -11,7 +11,7 @@ def test_AbjadIDE_color_time_signatures_01():
     with ide.Test():
 
         build = ide.Path('green_score', 'builds', 'arch-a-score')
-        path = build('_segments', 'segment-_.ly')
+        path = build('_segments', 'segment--.ly')
 
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()

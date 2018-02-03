@@ -23,7 +23,7 @@ def test_AbjadIDE_build_score_pdf_01():
             ' Examining red_score/segments/B ...',
             ' Writing red_score/builds/letter-score/music.ly ...',
             'Collecting segment lys ...',
-            ' Writing red_score/builds/letter-score/_segments/segment-_.ly ...',
+            ' Writing red_score/builds/letter-score/_segments/segment--.ly ...',
             ' Writing red_score/builds/letter-score/_segments/segment-A.ly ...',
             ' Writing red_score/builds/letter-score/_segments/segment-B.ly ...',
             'Handling document-specific tags ...',

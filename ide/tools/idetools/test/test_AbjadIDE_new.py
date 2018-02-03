@@ -36,7 +36,7 @@ def test_AbjadIDE_new_01():
             ' Examining red_score/segments/B ...',
             ' Writing red_score/builds/arch-a-score/music.ly ...',
             'Collecting segment lys ...',
-            ' Writing red_score/builds/arch-a-score/_segments/segment-_.ly ...',
+            ' Writing red_score/builds/arch-a-score/_segments/segment--.ly ...',
             ' Writing red_score/builds/arch-a-score/_segments/segment-A.ly ...',
             ' Writing red_score/builds/arch-a-score/_segments/segment-B.ly ...',
             'Handling document-specific tags ...',
@@ -192,7 +192,7 @@ def test_AbjadIDE_new_04():
         for line in [
             'Ok?> y',
             'Collecting segment lys ...',
-            ' Writing green_score/builds/arch-a-parts/_segments/segment-_.ly ...',
+            ' Writing green_score/builds/arch-a-parts/_segments/segment--.ly ...',
             'Handling document-specific tags ...',
             ' Found no document-specific tags ...',
             ' Found no this-document tags ...',
@@ -251,7 +251,7 @@ def test_AbjadIDE_new_04():
         assert directory._assets('.gitignore').is_file()
         assert directory._segments.exists()
         assert directory._segments('.gitignore').is_file()
-        assert directory._segments('segment-_.ly').is_file()
+        assert directory._segments('segment--.ly').is_file()
 
         for name in [
             'bass-clarinet-back-cover.tex',

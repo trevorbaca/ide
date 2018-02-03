@@ -7,7 +7,7 @@ def test_AbjadIDE_collect_segments_01():
     '''
 
     ly_paths = []
-    for name in ('_', 'A', 'B'):
+    for name in ('-', 'A', 'B'):
         ly_name = f'segment-{name}.ly'
         ly_path = ide.Path(
             'red_score', 'builds', 'letter-score')._segments(ly_name)
