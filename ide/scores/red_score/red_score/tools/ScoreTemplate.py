@@ -22,17 +22,21 @@ class ScoreTemplate(abjad.AbjadObject):
             >>> template = tools.ScoreTemplate()
             >>> score = template()
 
-        ::
-
             >>> f(score)
-            \context Score = "Red Score" <<
-                \context StaffGroup = "Piano Staff Group" <<
-                    \context RHStaff = "RH Staff" {
-                        \context RHVoice = "RH Voice" {
+            \context Score = "RedScore"
+            <<
+                \context StaffGroup = "PianoStaffGroup"
+                <<
+                    \context RHStaff = "RHStaff"
+                    {
+                        \context RHVoice = "RHVoice"
+                        {
                         }
                     }
-                    \context LHStaff = "LH Staff" {
-                        \context LHVoice = "LH Voice" {
+                    \context LHStaff = "LHStaff"
+                    {
+                        \context LHVoice = "LHVoice"
+                        {
                         }
                     }
                 >>
@@ -41,34 +45,29 @@ class ScoreTemplate(abjad.AbjadObject):
         Returns score.
         '''
         rh_voice = abjad.Voice(
-            context_name='RHVoice',
-            name='RH Voice',
+            lilypond_type='RHVoice',
+            name='RHVoice',
             )
         rh_staff = abjad.Staff(
             [rh_voice],
-            context_name='RHStaff',
-            name='RH Staff',
+            lilypond_type='RHStaff',
+            name='RHStaff',
             )
         lh_voice = abjad.Voice(
-            context_name='LHVoice',
-            name='LH Voice',
+            lilypond_type='LHVoice',
+            name='LHVoice',
             )
         lh_staff = abjad.Staff(
             [lh_voice],
-            context_name='LHStaff',
-            name='LH Staff',
+            lilypond_type='LHStaff',
+            name='LHStaff',
             )
         piano_staff_group = abjad.StaffGroup(
-            [
-                rh_staff,
-                lh_staff,
-                ],
-            name='Piano Staff Group',
+            [rh_staff, lh_staff],
+            name='PianoStaffGroup',
             )
         score = abjad.Score(
-            [
-                piano_staff_group,
-            ],
-            name='Red Score',
+            [piano_staff_group],
+            name='RedScore',
             )
         return score

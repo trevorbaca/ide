@@ -1868,9 +1868,11 @@ class AbjadIDE(abjad.AbjadObject):
                 return True
         return False
 
-    def run(self, job: abjad.Job) -> None:
+    def run(self, job: abjad.Job, quiet: bool = False) -> None:
         r'''Runs `job` on `path`.
         '''
+        message_zero = not bool(quiet)
+        job = abjad.new(job, message_zero=message_zero)
         messages: List[str] = job()
         self.io.display(messages)
 
@@ -2088,17 +2090,29 @@ class AbjadIDE(abjad.AbjadObject):
             numbers = segment.get_metadatum('fermata_measure_numbers')
             if numbers:
                 fermata_measure_numbers[segment.name] = numbers
-        directory.contents.add_metadatum('time_signatures', time_signatures)
-        directory.contents.add_metadatum(
-            'fermata_measure_numbers',
-            fermata_measure_numbers,
-            )
-        self.run(abjad.Job.document_specific_job(directory))
-        self.run(abjad.Job.fermata_bar_line_job(directory))
-        self.run(abjad.Job.shifted_clef_job(directory))
-        self.uncolor_persistent_indicators(directory)
-        self.hide_music_annotations(directory)
-        self.run(abjad.Job.broken_spanner_join_job(directory))
+        if bool (time_signatures):
+            directory.contents.add_metadatum(
+                'time_signatures',
+                time_signatures,
+                )
+        else:
+            directory.contents.remove_metadatum('time_signatures')
+        if bool(fermata_measure_numbers):
+            directory.contents.add_metadatum(
+                'fermata_measure_numbers',
+                fermata_measure_numbers,
+                )
+        else:
+            directory.contents.remove_metadatum('fermata_measure_numbers')
+        for job in [
+            abjad.Job.document_specific_job(directory),
+            abjad.Job.fermata_bar_line_job(directory),
+            abjad.Job.shifted_clef_job(directory),
+            abjad.Job.persistent_indicator_color_job(directory, undo=True),
+            abjad.Job.music_annotation_job(directory, undo=True),
+            abjad.Job.broken_spanner_join_job(directory),
+            ]:
+            self.run(job, quiet=True)
 
     @Command(
         'ccl',

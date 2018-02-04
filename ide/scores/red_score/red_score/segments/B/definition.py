@@ -13,8 +13,8 @@ lh_divisions.extend(6 * [(2, 16)])
 lh_divisions.extend(3 * [(3, 8)])
 lh_divisions.extend(6 * [(2, 16)])
 divisions = {
-    'RH Voice': rh_divisions,
-    'LH Voice': lh_divisions,
+    'RHVoice': rh_divisions,
+    'LHVoice': lh_divisions,
     }
 
 maker = abjad.PianoStaffSegmentMaker(
