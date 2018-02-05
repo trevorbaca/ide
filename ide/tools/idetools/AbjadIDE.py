@@ -2069,6 +2069,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         self._make__assets_directory(directory)
         self._make__segments_directory(directory)
+        container_to_part = abjad.OrderedDict()
         fermata_measure_numbers = abjad.OrderedDict()
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
@@ -2085,25 +2086,30 @@ class AbjadIDE(abjad.AbjadObject):
             text = self._trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
-            time_signatures_ = segment.get_metadatum('time_signatures')
-            time_signatures[segment.name] = time_signatures_
-            numbers = segment.get_metadatum('fermata_measure_numbers')
-            if numbers:
-                fermata_measure_numbers[segment.name] = numbers
-        if bool (time_signatures):
-            directory.contents.add_metadatum(
-                'time_signatures',
-                time_signatures,
-                )
+            value = segment.get_metadatum('container_to_part')
+            if value:
+                container_to_part[segment.name] = value
+            value = segment.get_metadatum('fermata_measure_numbers')
+            if value:
+                fermata_measure_numbers[segment.name] = value
+            value = segment.get_metadatum('time_signatures')
+            if value:
+                time_signatures[segment.name] = value
+        key = 'container_to_part'
+        if bool(container_to_part):
+            directory.contents.add_metadatum(key, container_to_part)
         else:
-            directory.contents.remove_metadatum('time_signatures')
+            directory.contents.remove_metadatum(key)
+        key = 'fermata_measure_numbers'
         if bool(fermata_measure_numbers):
-            directory.contents.add_metadatum(
-                'fermata_measure_numbers',
-                fermata_measure_numbers,
-                )
+            directory.contents.add_metadatum(key, fermata_measure_numbers)
         else:
-            directory.contents.remove_metadatum('fermata_measure_numbers')
+            directory.contents.remove_metadatum(key)
+        key = 'time_signatures'
+        if bool(time_signatures):
+            directory.contents.add_metadatum(key, time_signatures)
+        else:
+            directory.contents.remove_metadatum(key)
         for job in [
             abjad.Job.document_specific_job(directory),
             abjad.Job.fermata_bar_line_job(directory),
