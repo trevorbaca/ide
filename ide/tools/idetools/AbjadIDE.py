@@ -201,7 +201,7 @@ class AbjadIDE(abjad.AbjadObject):
             files = abjad.Sequence(files).retain(indices)
         return files
 
-    def _generate_back_cover(self, path, price=None):
+    def _generate_back_cover_tex(self, path, price=None):
         assert path.build.exists(), repr(path)
         assert path.name.endswith('back-cover.tex')
         directory = path.build
@@ -263,7 +263,7 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_front_cover(self, path, forces_tagline=None):
+    def _generate_front_cover_tex(self, path, forces_tagline=None):
         assert path.build.exists(), repr(path)
         directory = path.build
         name = 'front-cover.tex'
@@ -311,7 +311,7 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_music(
+    def _generate_music_ly(
         self,
         path,
         dashed_part_name=None,
@@ -319,6 +319,8 @@ class AbjadIDE(abjad.AbjadObject):
         indent=0,
         keep_with_tag=None,
         part_abbreviation=None,
+        part_name=None,
+        part_subtitle=None,
         silent=None,
         ):
         assert path.build.exists(), repr(path)
@@ -384,26 +386,48 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = path.contents.get_metadatum(string, '')
         if forces_tagline:
             forces_tagline = forces_tagline.replace('\\', '')
-        if keep_with_tag:
-            keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
-        else:
-            keep_with_tag_command = ''
+        #if keep_with_tag:
+        #    keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
+        #else:
+        #    keep_with_tag_command = ''
         assert path.is_file(), repr(path)
         template = path.read_text()
-        template = template.format(
-            dashed_part_name=dashed_part_name,
-            forces_tagline=forces_tagline,
-            keep_with_tag_command=keep_with_tag_command,
-            lilypond_language_directive=lilypond_language_directive,
-            lilypond_version_directive=lilypond_version_directive,
-            part_abbreviation=repr(part_abbreviation),
-            score_title=score_title,
-            segment_ily_include_statements=segment_ily_include_statements,
-            segment_ly_include_statements=segment_ly_include_statements,
-            )
+        if path.parent.is_parts():
+            identifiers = path.global_skip_identifiers()
+            identifiers = ['\\' + _ for _ in identifiers]
+            newline = '\n' + 20 * ' '
+            global_skip_identifiers = newline.join(identifiers)
+            identifiers = path.part_name_to_identifiers(part_name)
+            identifiers = ['\\' + _ for _ in identifiers]
+            newline = '\n' + 20 * ' '
+            segment_ly_include_statements = newline.join(identifiers)
+            template = template.format(
+                dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                global_skip_identifiers=global_skip_identifiers,
+                lilypond_language_directive=lilypond_language_directive,
+                lilypond_version_directive=lilypond_version_directive,
+                part_abbreviation=repr(part_abbreviation),
+                part_subtitle=part_subtitle,
+                score_title=score_title,
+                segment_ily_include_statements=segment_ily_include_statements,
+                segment_ly_include_statements=segment_ly_include_statements,
+                )
+        else:
+            assert path.parent.is_score_build()
+            template = template.format(
+                dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                lilypond_language_directive=lilypond_language_directive,
+                lilypond_version_directive=lilypond_version_directive,
+                part_abbreviation=repr(part_abbreviation),
+                score_title=score_title,
+                segment_ily_include_statements=segment_ily_include_statements,
+                segment_ly_include_statements=segment_ly_include_statements,
+                )
         path.write_text(template)
 
-    def _generate_part(self, path, dashed_part_name):
+    def _generate_part_tex(self, path, dashed_part_name):
         assert path.build.exists(), repr(path)
         assert path.build.is_parts(), repr(path)
         name = 'part.tex'
@@ -424,7 +448,7 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_preface(self, path):
+    def _generate_preface_tex(self, path):
         assert path.build.exists(), repr(path)
         directory = path.build
         name = 'preface.tex'
@@ -987,26 +1011,28 @@ class AbjadIDE(abjad.AbjadObject):
             snake_part_name = abjad.String(part_name).to_snake_case()
             words = abjad.String(dashed_part_name).delimit_words()
             forces_tagline = f"{' '.join(words)} part"
-            self._generate_back_cover(
+            self._generate_back_cover_tex(
                 directory(f'{dashed_part_name}-back-cover.tex'),
                 price=f'{part_abbreviation} ({part_number}/{total_parts})',
                 ),
-            self._generate_front_cover(
+            self._generate_front_cover_tex(
                 directory(f'{dashed_part_name}-front-cover.tex'),
                 forces_tagline=forces_tagline,
                 )
-            self._generate_music(
+            self._generate_music_ly(
                 directory(f'{dashed_part_name}-music.ly'),
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
+                part_name=part_name,
+                part_subtitle=part_subtitle,
                 silent=True,
                 )
-            self._generate_part(
+            self._generate_part_tex(
                 directory(f'{dashed_part_name}-part.tex'),
                 dashed_part_name,
                 )
-            self._generate_preface(
+            self._generate_preface_tex(
                 directory(f'{dashed_part_name}-preface.tex')
                 )
             self._copy_boilerplate(
@@ -2697,7 +2723,7 @@ class AbjadIDE(abjad.AbjadObject):
         name = 'back-cover.tex'
         if not directory.is_parts():
             path = directory(name)
-            self._generate_back_cover(path)
+            self._generate_back_cover_tex(path)
             return
         triples = self._select_part_names(directory)
         if not triples:
@@ -2709,7 +2735,7 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
             price = f'{part_abbreviation} ({number}/{total_parts})'
-            self._generate_back_cover(path, price=price)
+            self._generate_back_cover_tex(path, price=price)
 
     @Command(
         'fctg',
@@ -2725,7 +2751,7 @@ class AbjadIDE(abjad.AbjadObject):
         name = 'front-cover.tex'
         if not directory.is_parts():
             path = directory(name)
-            self._generate_front_cover(path)
+            self._generate_front_cover_tex(path)
             return
         triples = self._select_part_names(directory)
         if not triples:
@@ -2746,7 +2772,7 @@ class AbjadIDE(abjad.AbjadObject):
             words = [_.lower() for _ in words]
             forces_tagline = ' '.join(words)
             path = directory(file_name)
-            self._generate_front_cover(path, forces_tagline=forces_tagline)
+            self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
 
     @Command(
         'lpg',
@@ -2802,7 +2828,7 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory.is_parts():
             path = directory(name)
             self.io.display(f'generating {path.trim()} ...')
-            self._generate_music(path, indent=1)
+            self._generate_music_ly(path, indent=1)
             return
         triples = self._select_part_names(directory)
         if not triples:
@@ -2815,12 +2841,19 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = abjad.String(part_name).delimit_words()
             forces_tagline = [_.lower() for _ in forces_tagline]
             forces_tagline = ' '.join(forces_tagline) + ' part'
-            self._generate_music(
+            words = abjad.String(part_name).delimit_words()
+            number = roman.fromRoman(words[-1])
+            words[-1] = f'({number})'
+            words = [_.lower() for _ in words]
+            part_subtitle = ' '.join(words)
+            self._generate_music_ly(
                 path,
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
                 part_abbreviation=part_abbreviation,
+                part_name=part_name,
+                part_subtitle=part_subtitle,
                 )
 
     @Command(
@@ -2842,7 +2875,7 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self._generate_part(path, dashed_part_name)
+            self._generate_part_tex(path, dashed_part_name)
 
     @Command(
         'pftg',
@@ -2858,7 +2891,7 @@ class AbjadIDE(abjad.AbjadObject):
         name = 'preface.tex'
         if not directory.is_parts():
             path = directory(name)
-            self._generate_preface(path)
+            self._generate_preface_tex(path)
             return
         triples = self._select_part_names(directory)
         if not triples:
@@ -2868,7 +2901,7 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            self._generate_preface(path)
+            self._generate_preface_tex(path)
 
     @Command(
         'stg',
