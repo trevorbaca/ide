@@ -2786,7 +2786,6 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
             forces_tagline = self._part_subtitle(part_name, parentheses=False)
-            forces_tagline = ' '.join(words)
             path = directory(file_name)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
 
@@ -2855,8 +2854,7 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            forces_tagline = self._part_subtitle(part_name)
-            forces_tagline = ' '.join(forces_tagline) + ' part'
+            forces_tagline = self._part_subtitle(part_name) + ' part'
             part_subtitle = self._part_subtitle(part_name, parentheses=True)
             self._generate_music_ly(
                 path,
