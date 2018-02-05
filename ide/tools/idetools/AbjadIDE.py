@@ -1949,6 +1949,9 @@ class AbjadIDE(abjad.AbjadObject):
         for i, triple in enumerate(triples):
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
+            part_pdf_path = directory / dashed_part_name
+            part_pdf_path = part_pdf_path.with_suffix('.pdf')
+            self.io.display(f'building {part_pdf_path.trim()} ...')
             snake_part_name = abjad.String(part_name).to_snake_case()
             file_name = f'{snake_part_name}_layout.py'
             path = directory(file_name)
@@ -1973,6 +1976,7 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-part.tex'
             path = directory(file_name)
             self._interpret_tex_file(path)
+            self.io.display('')
             if 1 < total_parts and i < total_parts - 1:
                 self.io.display('')
         if len(triples) == 1:
@@ -2845,7 +2849,8 @@ class AbjadIDE(abjad.AbjadObject):
         triples = self._select_part_names(directory)
         if not triples:
             return
-        for triple in triples:
+        total = len(triples)
+        for i, triple in enumerate(triples):
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
@@ -2862,6 +2867,8 @@ class AbjadIDE(abjad.AbjadObject):
                 part_name=part_name,
                 part_subtitle=part_subtitle,
                 )
+            if 0 < total and i < total - 1:
+                self.io.display('')
 
     @Command(
         'ptg',
