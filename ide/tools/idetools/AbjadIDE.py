@@ -397,10 +397,13 @@ class AbjadIDE(abjad.AbjadObject):
             identifiers = ['\\' + _ for _ in identifiers]
             newline = '\n' + 20 * ' '
             global_skip_identifiers = newline.join(identifiers)
-            identifiers = path.part_name_to_identifiers(part_name)
-            identifiers = ['\\' + _ for _ in identifiers]
-            newline = '\n' + 20 * ' '
-            segment_ly_include_statements = newline.join(identifiers)
+            if self.test:
+                segment_ly_include_statements = r'\FOO'
+            else:
+                identifiers = path.part_name_to_identifiers(part_name)
+                identifiers = ['\\' + _ for _ in identifiers]
+                newline = '\n' + 20 * ' '
+                segment_ly_include_statements = newline.join(identifiers)
             template = template.format(
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
@@ -1009,8 +1012,8 @@ class AbjadIDE(abjad.AbjadObject):
             part_number = i + 1
             dashed_part_name = abjad.String(part_name).to_dash_case()
             snake_part_name = abjad.String(part_name).to_snake_case()
-            words = abjad.String(dashed_part_name).delimit_words()
-            forces_tagline = f"{' '.join(words)} part"
+            part_subtitle = self._part_subtitle(part_name, parentheses=True)
+            forces_tagline = self._part_subtitle(part_name) + ' part'
             self._generate_back_cover_tex(
                 directory(f'{dashed_part_name}-back-cover.tex'),
                 price=f'{part_abbreviation} ({part_number}/{total_parts})',
@@ -1499,6 +1502,23 @@ class AbjadIDE(abjad.AbjadObject):
                     abjad.IOManager.spawn_subprocess(permissions)
                     abjad.IOManager.spawn_subprocess(str(target))
         abjad.IOManager.spawn_subprocess(command)
+
+    @staticmethod
+    def _part_subtitle(part_name, parentheses=False):
+        words = abjad.String(part_name).delimit_words()
+        number = None
+        try:
+            number = roman.fromRoman(words[-1])
+        except roman.InvalidRomanNumeralError:
+            pass
+        if number is not None:
+            if parentheses:
+                words[-1] = f'({number})'
+            else:
+                words[-1] = str(number)
+        words = [_.lower() for _ in words]
+        part_subtitle = ' '.join(words)
+        return part_subtitle
 
     @staticmethod
     def _replace_in_file(file_path, old, new, whole_words=False):
@@ -2761,15 +2781,7 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            words = abjad.String(part_name).delimit_words()
-            last_word = words[-1]
-            try:
-                last_word = roman.fromRoman(last_word)
-                last_word = str(last_word)
-            except roman.InvalidRomanNumeralError:
-                pass
-            words[-1] = last_word
-            words = [_.lower() for _ in words]
+            forces_tagline = self._part_subtitle(part_name, parentheses=False)
             forces_tagline = ' '.join(words)
             path = directory(file_name)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
@@ -2838,14 +2850,9 @@ class AbjadIDE(abjad.AbjadObject):
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory(file_name)
-            forces_tagline = abjad.String(part_name).delimit_words()
-            forces_tagline = [_.lower() for _ in forces_tagline]
+            forces_tagline = self._part_subtitle(part_name)
             forces_tagline = ' '.join(forces_tagline) + ' part'
-            words = abjad.String(part_name).delimit_words()
-            number = roman.fromRoman(words[-1])
-            words[-1] = f'({number})'
-            words = [_.lower() for _ in words]
-            part_subtitle = ' '.join(words)
+            part_subtitle = self._part_subtitle(part_name, parentheses=True)
             self._generate_music_ly(
                 path,
                 dashed_part_name=dashed_part_name,
