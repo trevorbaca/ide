@@ -3769,8 +3769,11 @@ class AbjadIDE(abjad.AbjadObject):
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
-        for path in paths:
+        total = len(paths)
+        for i, path in enumerate(paths):
             self._interpret_tex_file(path)
+            if 1 < total and i < total - 1:
+                self.io.display('')
         if len(paths) == 1:
             target = path.with_suffix('.pdf')
             if target.is_file() and open_after:

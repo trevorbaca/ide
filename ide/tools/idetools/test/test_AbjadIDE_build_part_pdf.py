@@ -23,6 +23,7 @@ def test_AbjadIDE_build_part_pdf_01():
         assert lines[index:] == [
             'Select parts> bass',
             '',
+            'Building green_score/builds/arch-a-parts/bass-clarinet.pdf ...',
             'Writing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
             'Interpreting green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
             'Removing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
@@ -41,6 +42,7 @@ def test_AbjadIDE_build_part_pdf_01():
             '',
             'Interpreting green_score/builds/arch-a-parts/bass-clarinet-part.tex ...',
             'Writing green_score/builds/arch-a-parts/bass-clarinet-part.pdf ...',
+            '',
             'Opening green_score/builds/arch-a-parts/bass-clarinet-part.pdf ...',
             '',
             '> q',
