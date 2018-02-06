@@ -3749,6 +3749,15 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'preparing {path.trim()} ...')
             if path.parent.is_parts():
                 self._activate_part_specific_tags(path)
+            _, music_measure_count = path.parent.get_measure_count_pair()
+            layout_ly = path.name.replace('music.ly', 'layout.ly')
+            layout_ly = path.parent(layout_ly)
+            if layout_ly.exists():
+                layout_measure_count = layout_ly.get_preamble_measure_count()
+                if music_measure_count != layout_measure_count:
+                    message = f'music measure count ({music_measure_count})'
+                    message += ' does not match layout measure count'
+                    message += f' ({layout_measure_count}).'
             self._run_lilypond(path)
             if i + 1 < total:
                 self.io.display('')
