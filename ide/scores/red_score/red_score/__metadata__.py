@@ -4,12 +4,6 @@ import abjad
 metadata = abjad.OrderedDict(
     [
         ('catalog_number', '\\#165'),
-        (
-            'fermata_measure_numbers',
-            abjad.OrderedDict(
-                []
-                ),
-            ),
         ('forces_tagline', 'for piano'),
         (
             'time_signatures',
