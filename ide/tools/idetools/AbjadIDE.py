@@ -381,6 +381,7 @@ class AbjadIDE(abjad.AbjadObject):
             score_title = annotated_title
         else:
             score_title = path.contents.get_title(year=False)
+        score_title_without_year = path.contents.get_title(year=False)
         if forces_tagline is None:
             string = 'forces_tagline'
             forces_tagline = path.contents.get_metadatum(string, '')
@@ -413,6 +414,7 @@ class AbjadIDE(abjad.AbjadObject):
                 part_abbreviation=repr(part_abbreviation),
                 part_subtitle=part_subtitle,
                 score_title=score_title,
+                score_title_without_year=score_title_without_year,
                 segment_ily_include_statements=segment_ily_include_statements,
                 segment_ly_include_statements=segment_ly_include_statements,
                 )
