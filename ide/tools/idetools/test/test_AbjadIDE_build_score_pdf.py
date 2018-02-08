@@ -36,6 +36,7 @@ def test_AbjadIDE_build_score_pdf_01():
             '',
             'Preparing red_score/builds/letter-score/music.ly ...',
             'Interpreting red_score/builds/letter-score/music.ly ...',
+            'ERROR IN LILYPOND LOG FILE ...',
             'Writing red_score/builds/letter-score/music.pdf ...',
             '',
             'Interpreting red_score/builds/letter-score/front-cover.tex ...',

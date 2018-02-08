@@ -411,14 +411,18 @@ class AbjadIDE(abjad.AbjadObject):
             newline = '\n' + 20 * ' '
             global_skip_identifiers = newline.join(identifiers)
             if self.test:
+                defaults_include_statement = ''
                 segment_ly_include_statements = r'\FOO'
             else:
+                name = 'first-segment-defaults.ily'
+                defaults_include_statement = rf'\include "_segments/{name}"'
                 identifiers = path.part_name_to_identifiers(part_name)
                 identifiers = ['\\' + _ for _ in identifiers]
                 newline = '\n' + 20 * ' '
                 segment_ly_include_statements = newline.join(identifiers)
             template = template.format(
                 dashed_part_name=dashed_part_name,
+                defaults_include_statement=defaults_include_statement,
                 forces_tagline=forces_tagline,
                 global_skip_identifiers=global_skip_identifiers,
                 lilypond_language_directive=lilypond_language_directive,
@@ -1622,11 +1626,16 @@ class AbjadIDE(abjad.AbjadObject):
         if not part_manifest:
             self.io.display('score template defines no part manifest.')
             return
-        part_names = []
-        for i, part_name in enumerate(part_manifest):
-            part_name = part_name + (i + 1,)
-            part_names.append(part_name)
-        items = [(_, _) for _ in part_names]
+        part_tuples = []
+        for i, part_tuple in enumerate(part_manifest):
+            assert isinstance(part_tuple, tuple), repr(part_tuple)
+            assert len(part_tuple) in [2, 3], repr(part_tuple)
+            if len(part_tuple) == 3:
+                part_tuple = part_tuple[:2]
+            part_number = i + 1
+            part_tuple = part_tuple + (part_number,)
+            part_tuples.append(part_tuple)
+        items = [(_, _) for _ in part_tuples]
         if verb:
             header = f'available parts to {verb}'
             prompt = f'select parts to {verb}'
@@ -2129,7 +2138,6 @@ class AbjadIDE(abjad.AbjadObject):
         Shows and deactivates build-appropriate tags.
         '''
         assert directory.is_build() or directory.is__segments()
-        #directory = directory.build
         if not directory.build.is_parts():
             self.generate_music_ly(directory.build)
         self.io.display('collecting segment lys ...')
@@ -2180,6 +2188,10 @@ class AbjadIDE(abjad.AbjadObject):
             directory.contents.add_metadatum(key, time_signatures)
         else:
             directory.contents.remove_metadatum(key)
+        if directory.build.is_parts() and not self.test:
+            defaults = directory.build._segments('first-segment-defaults.ily')
+            self.io.display(f'writing {defaults.trim()} ...')
+            directory.build._segments.write_first_segment_part_defaults()
         for job in [
             abjad.Job.document_specific_job(directory.build),
             abjad.Job.fermata_bar_line_job(directory.build),
