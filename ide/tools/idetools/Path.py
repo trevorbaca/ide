@@ -174,27 +174,6 @@ class Path(abjad.Path):
             command = f'git status --porcelain {self}'
             return abjad.IOManager.run_command(command)
 
-    def _get_part_manifest(self):
-        assert self.is_score_package_path()
-        score_package_name = self.contents.name
-        try:
-            module = importlib.import_module(score_package_name)
-        except:
-            return -1, f'can not import {score_package_name!r}.'
-        if not hasattr(module, 'tools'):
-            return -1, f'{score_package_name} has no tools directory.'
-        tools = module.tools
-        if not hasattr(module.tools, 'ScoreTemplate'):
-            return -1, f'{score_package_name}.tools has no ScoreTemplate.py.'
-        score_template = tools.ScoreTemplate
-        if not hasattr(score_template, 'part_names'):
-            message = f'{score_package_name}.ScoreTemplate'
-            message += " has no 'part_manifest' property."
-            return -1, message
-        score_template = module.tools.ScoreTemplate()
-        part_manifest = score_template.part_manifest
-        return part_manifest
-
     def _get_repository_root(self):
         if not self.exists():
             return
