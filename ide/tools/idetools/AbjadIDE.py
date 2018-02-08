@@ -194,6 +194,18 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
+    def _display_lilypond_log_errors(self):
+        log = abjad.abjad_configuration.lilypond_log_file_path
+        log = Path(log)
+        with log.open() as file_pointer:
+            lines = file_pointer.readlines()
+        for line in lines:
+            if ('fatal' in line or
+                ('error' in line and 'programming error' not in line) or
+                'failed' in line):
+                self.io.display('ERROR IN LILYPOND LOG FILE ...')
+                break
+
     @staticmethod
     def _filter_files(files, strings, pattern):
         if isinstance(pattern, str):
@@ -387,10 +399,10 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = path.contents.get_metadatum(string, '')
         if forces_tagline:
             forces_tagline = forces_tagline.replace('\\', '')
-        #if keep_with_tag:
-        #    keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
-        #else:
-        #    keep_with_tag_command = ''
+        if keep_with_tag:
+            keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
+        else:
+            keep_with_tag_command = ''
         assert path.is_file(), repr(path)
         template = path.read_text()
         if path.parent.is_parts():
@@ -556,6 +568,7 @@ class AbjadIDE(abjad.AbjadObject):
             stderr_lines = abjad.IOManager._read_from_pipe(process.stderr)
             stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
+        self._display_lilypond_log_errors()
         return stdout_lines, stderr_lines, exit_code
 
     def _interpret_tex_file(self, tex):
@@ -1176,16 +1189,18 @@ class AbjadIDE(abjad.AbjadObject):
         if exit_code:
             self.io.display(stderr_lines, raw=True)
             return exit_code
-        log = abjad.abjad_configuration.lilypond_log_file_path
-        log = Path(log)
-        with log.open() as file_pointer:
-            lines = file_pointer.readlines()
-        for line in lines:
-            if ('fatal' in line or
-                ('error' in line and 'programming error' not in line) or
-                'failed' in line):
-                self.io.display('ERROR IN LILYPOND LOG FILE ...')
-                break
+
+#        log = abjad.abjad_configuration.lilypond_log_file_path
+#        log = Path(log)
+#        with log.open() as file_pointer:
+#            lines = file_pointer.readlines()
+#        for line in lines:
+#            if ('fatal' in line or
+#                ('error' in line and 'programming error' not in line) or
+#                'failed' in line):
+#                self.io.display('ERROR IN LILYPOND LOG FILE ...')
+#                break
+
         if midi.is_file() and open_after:
             self._open_files([midi])
         return 0
@@ -1237,16 +1252,18 @@ class AbjadIDE(abjad.AbjadObject):
         if exit_code:
             self.io.display(stderr_lines, raw=True)
             return exit_code
-        log = abjad.abjad_configuration.lilypond_log_file_path
-        log = Path(log)
-        with log.open() as file_pointer:
-            lines = file_pointer.readlines()
-        for line in lines:
-            if ('fatal' in line or
-                ('error' in line and 'programming error' not in line) or
-                'failed' in line):
-                self.io.display('ERROR IN LILYPOND LOG FILE ...')
-                break
+
+#        log = abjad.abjad_configuration.lilypond_log_file_path
+#        log = Path(log)
+#        with log.open() as file_pointer:
+#            lines = file_pointer.readlines()
+#        for line in lines:
+#            if ('fatal' in line or
+#                ('error' in line and 'programming error' not in line) or
+#                'failed' in line):
+#                self.io.display('ERROR IN LILYPOND LOG FILE ...')
+#                break
+
         if pdf.is_file() and open_after:
             self._open_files([pdf])
         return 0
@@ -1582,6 +1599,7 @@ class AbjadIDE(abjad.AbjadObject):
         with self.change(directory):
             self.io.display(f'interpreting {ly.trim()} ...')
             abjad.IOManager.run_lilypond(str(ly))
+            self._display_lilypond_log_errors()
             if pdf.is_file():
                 self.io.display(f'writing {pdf.trim()} ...')
             else:
