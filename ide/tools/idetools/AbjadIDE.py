@@ -419,7 +419,7 @@ class AbjadIDE(abjad.AbjadObject):
         if path.parent.is_parts():
             identifiers = path.global_skip_identifiers()
             identifiers = ['\\' + _ for _ in identifiers]
-            newline = '\n' + 20 * ' '
+            newline = '\n' + 24 * ' '
             global_skip_identifiers = newline.join(identifiers)
             if self.test:
                 defaults_include_statement = ''
@@ -429,7 +429,7 @@ class AbjadIDE(abjad.AbjadObject):
                 defaults_include_statement = rf'\include "_segments/{name}"'
                 identifiers = path.part_name_to_identifiers(part_name)
                 identifiers = ['\\' + _ for _ in identifiers]
-                newline = '\n' + 20 * ' '
+                newline = '\n' + 24 * ' '
                 segment_ly_include_statements = newline.join(identifiers)
             template = template.format(
                 dashed_part_name=dashed_part_name,

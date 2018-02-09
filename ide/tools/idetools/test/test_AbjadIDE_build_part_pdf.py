@@ -20,13 +20,13 @@ def test_AbjadIDE_build_part_pdf_01():
             )
         lines = abjad_ide.io.transcript.lines
         index = lines.index('Select parts> bass')
-        assert lines[index:] == [
+        lines = lines[index:]
+        for line in [
             'Select parts> bass',
             '',
             'Building green_score/builds/arch-a-parts/bass-clarinet.pdf ...',
             'Writing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
             'Interpreting green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
-            'ERROR IN LILYPOND LOG FILE ...',
             'Removing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
             '',
             'Interpreting green_score/builds/arch-a-parts/bass-clarinet-front-cover.tex ...',
@@ -49,4 +49,5 @@ def test_AbjadIDE_build_part_pdf_01():
             '',
             '> q',
             '',
-            ]
+            ]:
+            assert line in lines
