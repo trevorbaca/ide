@@ -357,12 +357,23 @@ class AbjadIDE(abjad.AbjadObject):
                     )
         names = [_.stem.replace('_', '-') for _ in segments]
         if path.name == 'music.ly':
-            name = 'score-music.ly'
+            try:
+                score_skeleton = path.score_skeleton()
+            except AttributeError:
+                score_skeleton = None
+            if score_skeleton is None:
+                boilerplate = 'score-music.ly'
+            else:
+                boilerplate = 'full-score-music.ly'
+                text = format(score_skeleton)
+                lines = text.split('\n')
+                lines = [lines[0]] + [8 * ' ' + _ for _ in lines[1:]]
+                score_skeleton = '\n'.join(lines)
         else:
-            name = 'part-music.ly'
+            boilerplate = 'part-music.ly'
         self._copy_boilerplate(
             path.build,
-            name,
+            boilerplate,
             indent=indent,
             target_name=path.name,
             )
@@ -434,7 +445,7 @@ class AbjadIDE(abjad.AbjadObject):
                 segment_ily_include_statements=segment_ily_include_statements,
                 segment_ly_include_statements=segment_ly_include_statements,
                 )
-        else:
+        elif boilerplate == 'score-music.ly':
             assert path.parent.is_score_build()
             template = template.format(
                 dashed_part_name=dashed_part_name,
@@ -445,6 +456,18 @@ class AbjadIDE(abjad.AbjadObject):
                 score_title=score_title,
                 segment_ily_include_statements=segment_ily_include_statements,
                 segment_ly_include_statements=segment_ly_include_statements,
+                )
+        elif boilerplate == 'full-score-music.ly':
+            assert path.parent.is_score_build()
+            template = template.format(
+                dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                lilypond_language_directive=lilypond_language_directive,
+                lilypond_version_directive=lilypond_version_directive,
+                part_abbreviation=repr(part_abbreviation),
+                score_title=score_title,
+                segment_ily_include_statements=segment_ily_include_statements,
+                score_skeleton=score_skeleton,
                 )
         path.write_text(template)
 
