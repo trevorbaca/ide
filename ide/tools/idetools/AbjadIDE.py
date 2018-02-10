@@ -2895,12 +2895,19 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'generating {path.trim()} ...')
             self._generate_music_ly(path, indent=1)
             return
-        triples = self._select_part_names(directory.build)
-        if not triples:
+        name, verb = 'music.ly', 'generate'
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
             return
-        total = len(triples)
-        for i, triple in enumerate(triples):
-            part_name, part_abbreviation, number = triple
+        if not paths:
+            return
+        total = len(paths)
+        for i, path in enumerate(paths):
+            tuple_ = path.part_tuple()
+            if len(tuple_) == 3:
+                part_name, part_abbreviation, number = tuple_
+            else:
+                part_name, part_abbreviation, number, instrument = tuple_
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
             path = directory.build(file_name)
