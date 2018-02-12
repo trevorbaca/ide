@@ -357,10 +357,7 @@ class AbjadIDE(abjad.AbjadObject):
                     )
         names = [_.stem.replace('_', '-') for _ in segments]
         if path.name == 'music.ly':
-            try:
-                score_skeleton = path.score_skeleton()
-            except AttributeError:
-                score_skeleton = None
+            score_skeleton = path.score_skeleton()
             if score_skeleton is None:
                 boilerplate = 'score-music.ly'
             else:
