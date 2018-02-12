@@ -3811,6 +3811,9 @@ class AbjadIDE(abjad.AbjadObject):
         total = len(paths)
         for i, path in enumerate(paths):
             self.io.display(f'preparing {path.trim()} ...')
+            if path.parent.is_score_build():
+                self.collect_segments(path.parent)
+                self.generate_music_ly(path.parent)
             if path.parent.is_parts():
                 self._activate_part_specific_tags(path)
             _, music_measure_count = path.parent.get_measure_count_pair()
