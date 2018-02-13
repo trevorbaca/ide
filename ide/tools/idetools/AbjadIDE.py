@@ -2161,7 +2161,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.spawn_subprocess(statement)
 
     @Command(
-        'dpk',
+        'dpc',
         description='definition.py - check',
         menu_section='definition',
         score_package_paths=('illustrationspace',),
