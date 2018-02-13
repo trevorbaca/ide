@@ -6,17 +6,17 @@ def test_AbjadIDE_collect_segments_01():
     r'''In build directory.
     '''
 
-    ly_paths = []
-    for name in ('-', 'A', 'B'):
-        ly_name = f'segment-{name}.ly'
-        ly_path = ide.Path(
-            'red_score', 'builds', 'letter-score')._segments(ly_name)
-        ly_paths.append(ly_path)
-
-    with ide.Test(remove=[ly_paths]):
+    with ide.Test():
 
         abjad_ide('red %let ggc q')
-        transcript = abjad_ide.io.transcript
-        for ly_path in ly_paths:
-            assert ly_path.is_file()
-            assert f'Writing {ly_path.trim()} ...' in transcript
+        lines = abjad_ide.io.transcript.lines
+        index = lines.index('Collecting segment lys ...')
+        assert lines[index:] == [
+            'Collecting segment lys ...',
+            ' Writing red_score/builds/letter-score/_segments/segment--.ly ...',
+            ' Writing red_score/builds/letter-score/_segments/segment-A.ly ...',
+            ' Writing red_score/builds/letter-score/_segments/segment-B.ly ...',
+            '',
+            '> q',
+            '',
+            ]

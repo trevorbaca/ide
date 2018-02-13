@@ -323,7 +323,7 @@ class AbjadIDE(abjad.AbjadObject):
             values=values,
             )
 
-    def _generate_music_ly(
+    def _generate_part_music_ly(
         self,
         path,
         dashed_part_name=None,
@@ -356,18 +356,7 @@ class AbjadIDE(abjad.AbjadObject):
                     indent=indent,
                     )
         names = [_.stem.replace('_', '-') for _ in segments]
-        if path.name == 'music.ly':
-            score_skeleton = path.score_skeleton()
-            if score_skeleton is None:
-                boilerplate = 'score-music.ly'
-            else:
-                boilerplate = 'full-score-music.ly'
-                text = format(score_skeleton)
-                lines = text.split('\n')
-                lines = [lines[0]] + [8 * ' ' + _ for _ in lines[1:]]
-                score_skeleton = '\n'.join(lines)
-        else:
-            boilerplate = 'part-music.ly'
+        boilerplate = 'part-music.ly'
         self._copy_boilerplate(
             path.build,
             boilerplate,
@@ -407,10 +396,6 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = path.contents.get_metadatum(string, '')
         if forces_tagline:
             forces_tagline = forces_tagline.replace('\\', '')
-        if keep_with_tag:
-            keep_with_tag_command = rf'\keepWithTag {keep_with_tag} '
-        else:
-            keep_with_tag_command = ''
         assert path.is_file(), repr(path)
         template = path.read_text()
         if path.parent.is_parts():
@@ -438,30 +423,6 @@ class AbjadIDE(abjad.AbjadObject):
                 score_title_without_year=score_title_without_year,
                 segment_ily_include_statements=segment_ily_include_statements,
                 segment_ly_include_statements=segment_ly_include_statements,
-                )
-        elif boilerplate == 'score-music.ly':
-            assert path.parent.is_score_build()
-            template = template.format(
-                dashed_part_name=dashed_part_name,
-                forces_tagline=forces_tagline,
-                lilypond_language_directive=lilypond_language_directive,
-                lilypond_version_directive=lilypond_version_directive,
-                part_abbreviation=repr(part_abbreviation),
-                score_title=score_title,
-                segment_ily_include_statements=segment_ily_include_statements,
-                segment_ly_include_statements=segment_ly_include_statements,
-                )
-        elif boilerplate == 'full-score-music.ly':
-            assert path.parent.is_score_build()
-            template = template.format(
-                dashed_part_name=dashed_part_name,
-                forces_tagline=forces_tagline,
-                lilypond_language_directive=lilypond_language_directive,
-                lilypond_version_directive=lilypond_version_directive,
-                part_abbreviation=repr(part_abbreviation),
-                score_title=score_title,
-                segment_ily_include_statements=segment_ily_include_statements,
-                score_skeleton=score_skeleton,
                 )
         path.write_text(template)
 
@@ -512,6 +473,110 @@ class AbjadIDE(abjad.AbjadObject):
             target_name=target_name,
             values=values,
             )
+
+    def _generate_score_music_ly(
+        self,
+        path,
+        forces_tagline=None,
+        indent=0,
+        silent=None,
+        ):
+        assert path.build.exists(), repr(path)
+        if path.exists():
+            self.io.display(f'removing {path.trim()} ...', indent=indent)
+            path.remove()
+        segments = path.segments.list_paths()
+        if not silent:
+            if segments:
+                view = path.segments.get_metadatum('view')
+                if bool(view):
+                    self.io.display(
+                        f'examining segments in view order ...',
+                        indent=indent,
+                        )
+            else:
+                self.io.display('no segments found ...', indent=indent)
+            for segment in segments:
+                self.io.display(
+                    f'examining {segment.trim()} ...',
+                    indent=indent,
+                    )
+        names = [_.stem.replace('_', '-') for _ in segments]
+        score_skeleton = path.score_skeleton()
+        if score_skeleton is None:
+            boilerplate = 'score-music.ly'
+        else:
+            boilerplate = 'full-score-music.ly'
+            text = format(score_skeleton)
+            lines = text.split('\n')
+            lines = [lines[0]] + [8 * ' ' + _ for _ in lines[1:]]
+            score_skeleton = '\n'.join(lines)
+        self._copy_boilerplate(
+            path.build,
+            boilerplate,
+            indent=indent,
+            target_name=path.name,
+            )
+        lines, ily_lines = [], []
+        for i, name in enumerate(names):
+            name = 'segment-' + name + '.ly'
+            ly = path.build._segments(name)
+            if ly.is_file():
+                line = rf'\include "_segments/{name}"'
+            else:
+                line = rf'%\include "_segments/{name}"'
+            ily_lines.append(line.replace('.ly', '.ily'))
+            if 0 < i:
+                line = 8 * ' ' + line
+            lines.append(line)
+        if lines:
+            segment_ly_include_statements = '\n'.join(lines)
+            segment_ily_include_statements = '\n'.join(ily_lines)
+        else:
+            segment_ly_include_statements = ''
+            segment_ily_include_statements = ''
+        language_token = abjad.LilyPondLanguageToken()
+        lilypond_language_directive = format(language_token)
+        version_token = abjad.LilyPondVersionToken()
+        lilypond_version_directive = format(version_token)
+        annotated_title = path.contents.get_title(year=True)
+        if annotated_title:
+            score_title = annotated_title
+        else:
+            score_title = path.contents.get_title(year=False)
+        score_title_without_year = path.contents.get_title(year=False)
+        if forces_tagline is None:
+            string = 'forces_tagline'
+            forces_tagline = path.contents.get_metadatum(string, '')
+        if forces_tagline:
+            forces_tagline = forces_tagline.replace('\\', '')
+        assert path.is_file(), repr(path)
+        template = path.read_text()
+        if boilerplate == 'score-music.ly':
+            assert path.parent.is_score_build()
+            template = template.format(
+                #dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                lilypond_language_directive=lilypond_language_directive,
+                lilypond_version_directive=lilypond_version_directive,
+                #part_abbreviation=repr(part_abbreviation),
+                score_title=score_title,
+                segment_ily_include_statements=segment_ily_include_statements,
+                segment_ly_include_statements=segment_ly_include_statements,
+                )
+        elif boilerplate == 'full-score-music.ly':
+            assert path.parent.is_score_build()
+            template = template.format(
+                #dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                lilypond_language_directive=lilypond_language_directive,
+                lilypond_version_directive=lilypond_version_directive,
+                #part_abbreviation=repr(part_abbreviation),
+                score_title=score_title,
+                segment_ily_include_statements=segment_ily_include_statements,
+                score_skeleton=score_skeleton,
+                )
+        path.write_text(template)
 
     def _get_dimensions(self):
         dimensions = None
@@ -668,87 +733,6 @@ class AbjadIDE(abjad.AbjadObject):
         directory._segments.mkdir()
         gitignore = directory._segments / '.gitignore'
         gitignore.write_text('*.ly')
-
-    def _make_build_directory(self, builds):
-        name = self.io.get('build name')
-        if self.is_navigation(name):
-            return
-        name = builds.coerce(name)
-        build = builds / name
-        if build.exists():
-            self.io.display(f'existing {build.trim()} ...')
-            return
-        paper_size = self.io.get('paper size')
-        if paper_size and self.is_navigation(paper_size):
-            return
-        paper_size = paper_size or 'letter'
-        orientation = 'portrait'
-        if paper_size.endswith(' landscape'):
-            orientation = 'landscape'
-            length = len(' landscape')
-            paper_size = paper_size[:-length]
-        elif paper_size.endswith(' portrait'):
-            length = len(' portrait')
-            paper_size = paper_size[:-length]
-        if paper_size not in self.known_paper_sizes:
-            self.io.display(f'unknown paper size {paper_size!r} ...')
-            self.io.display('choose from ...')
-            for paper_size in self.known_paper_sizes:
-                self.io.display(f'    {paper_size}')
-            return
-        price = self.io.get('price')
-        if price and self.is_navigation(price):
-            return
-        suffix = self.io.get('catalog number suffix')
-        if suffix and self.is_navigation(suffix):
-            return
-        names = (
-            'back-cover.tex',
-            'front-cover.tex',
-            'music.ly',
-            'preface.tex',
-            'score.tex',
-            'stylesheet.ily',
-            )
-        paths = [build / _ for _ in names]
-        self.io.display('making ...')
-        self.io.display(f'    {build.trim()}')
-        for path in paths:
-            self.io.display(f'    {path.trim()}')
-        response = self.io.get('ok?')
-        if self.is_navigation(response):
-            return
-        if response != 'y':
-            return
-        assert not build.exists()
-        build.mkdir()
-        if bool(paper_size):
-            build.add_metadatum('paper_size', paper_size)
-        if not orientation == 'portrait':
-            build.add_metadatum('orientation', orientation)
-        if bool(price):
-            build.add_metadatum('price', price)
-        if bool(suffix):
-            build.add_metadatum('catalog_number_suffix', suffix)
-        self.generate_back_cover_tex(build)
-        self.io.display('')
-        self.generate_front_cover_tex(build)
-        self.io.display('')
-        self._copy_boilerplate(
-            build,
-            'score_layout.py',
-            target_name='layout.py',
-            )
-        self.io.display('')
-        self.collect_segments(build)
-        self.io.display('')
-        self.generate_music_ly(build)
-        self.io.display('')
-        self.generate_preface_tex(build)
-        self.io.display('')
-        self.generate_score_tex(build)
-        self.io.display('')
-        self.generate_stylesheet_ily(build)
 
     def _make_command_sections(self, directory):
         commands = []
@@ -1058,7 +1042,8 @@ class AbjadIDE(abjad.AbjadObject):
                 directory(f'{dashed_part_name}-front-cover.tex'),
                 forces_tagline=forces_tagline,
                 )
-            self._generate_music_ly(
+            #self._generate_music_ly(
+            self._generate_part_music_ly(
                 directory(f'{dashed_part_name}-music.ly'),
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
@@ -1080,6 +1065,87 @@ class AbjadIDE(abjad.AbjadObject):
                 target_name=f'{snake_part_name}_layout.py',
                 values={'part_abbreviation':part_abbreviation},
                 )
+
+    def _make_score_build_directory(self, builds):
+        name = self.io.get('build name')
+        if self.is_navigation(name):
+            return
+        name = builds.coerce(name)
+        build = builds / name
+        if build.exists():
+            self.io.display(f'existing {build.trim()} ...')
+            return
+        paper_size = self.io.get('paper size')
+        if paper_size and self.is_navigation(paper_size):
+            return
+        paper_size = paper_size or 'letter'
+        orientation = 'portrait'
+        if paper_size.endswith(' landscape'):
+            orientation = 'landscape'
+            length = len(' landscape')
+            paper_size = paper_size[:-length]
+        elif paper_size.endswith(' portrait'):
+            length = len(' portrait')
+            paper_size = paper_size[:-length]
+        if paper_size not in self.known_paper_sizes:
+            self.io.display(f'unknown paper size {paper_size!r} ...')
+            self.io.display('choose from ...')
+            for paper_size in self.known_paper_sizes:
+                self.io.display(f'    {paper_size}')
+            return
+        price = self.io.get('price')
+        if price and self.is_navigation(price):
+            return
+        suffix = self.io.get('catalog number suffix')
+        if suffix and self.is_navigation(suffix):
+            return
+        names = (
+            'back-cover.tex',
+            'front-cover.tex',
+            'music.ly',
+            'preface.tex',
+            'score.tex',
+            'stylesheet.ily',
+            )
+        paths = [build / _ for _ in names]
+        self.io.display('making ...')
+        self.io.display(f'    {build.trim()}')
+        for path in paths:
+            self.io.display(f'    {path.trim()}')
+        response = self.io.get('ok?')
+        if self.is_navigation(response):
+            return
+        if response != 'y':
+            return
+        assert not build.exists()
+        build.mkdir()
+        if bool(paper_size):
+            build.add_metadatum('paper_size', paper_size)
+        if not orientation == 'portrait':
+            build.add_metadatum('orientation', orientation)
+        if bool(price):
+            build.add_metadatum('price', price)
+        if bool(suffix):
+            build.add_metadatum('catalog_number_suffix', suffix)
+        self.generate_back_cover_tex(build)
+        self.io.display('')
+        self.generate_front_cover_tex(build)
+        self.io.display('')
+        self._copy_boilerplate(
+            build,
+            'score_layout.py',
+            target_name='layout.py',
+            )
+        self.io.display('')
+        self.collect_segments(build)
+        self.io.display('')
+        self.generate_music_ly(build)
+        self.io.display('')
+        self.generate_preface_tex(build)
+        self.io.display('')
+        self.generate_score_tex(build)
+        self.io.display('')
+        self.generate_stylesheet_ily(build)
 
     def _make_score_package(self):
         scores = self._get_scores_directory()
@@ -2043,10 +2109,6 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_build() or directory.is__segments()
         self.io.display('building score ...')
-        self.collect_segments(directory.build)
-        self.io.display('')
-        self.generate_music_ly(directory.build)
-        self.io.display('')
         self.interpret_music_ly(directory.build, open_after=False)
         self.io.display('')
         tex = directory.build('front-cover.tex')
@@ -2155,8 +2217,6 @@ class AbjadIDE(abjad.AbjadObject):
         Shows and deactivates build-appropriate tags.
         '''
         assert directory.is_build() or directory.is__segments()
-        if not directory.build.is_parts():
-            self.generate_music_ly(directory.build)
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segments(directory.build)
         if not pairs:
@@ -2883,37 +2943,43 @@ class AbjadIDE(abjad.AbjadObject):
         if not directory.build.is_parts():
             path = directory.build(name)
             self.io.display(f'generating {path.trim()} ...')
-            self._generate_music_ly(path, indent=1)
+            #self._generate_music_ly(path, indent=1)
+            self._generate_score_music_ly(path, indent=1)
             return
-        name, verb = 'music.ly', 'generate'
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        if not paths:
-            return
-        total = len(paths)
-        for i, path in enumerate(paths):
-            tuple_ = path.part_tuple()
-            if len(tuple_) == 3:
-                part_name, part_abbreviation, number = tuple_
-            else:
-                part_name, part_abbreviation, number, instrument = tuple_
-            dashed_part_name = abjad.String(part_name).to_dash_case()
-            file_name = f'{dashed_part_name}-{name}'
-            path = directory.build(file_name)
-            forces_tagline = self._part_subtitle(part_name) + ' part'
-            part_subtitle = self._part_subtitle(part_name, parentheses=True)
-            self._generate_music_ly(
-                path,
-                dashed_part_name=dashed_part_name,
-                forces_tagline=forces_tagline,
-                keep_with_tag=part_name,
-                part_abbreviation=part_abbreviation,
-                part_name=part_name,
-                part_subtitle=part_subtitle,
-                )
-            if 0 < total and i < total - 1:
-                self.io.display('')
+        else:
+            name, verb = 'music.ly', 'generate'
+            paths = self._select_paths_in_buildspace(directory, name, verb)
+            if self.is_navigation(paths):
+                return
+            if not paths:
+                return
+            total = len(paths)
+            for i, path in enumerate(paths):
+                tuple_ = path.part_tuple()
+                if len(tuple_) == 3:
+                    part_name, part_abbreviation, number = tuple_
+                else:
+                    part_name, part_abbreviation, number, instrument = tuple_
+                dashed_part_name = abjad.String(part_name).to_dash_case()
+                file_name = f'{dashed_part_name}-{name}'
+                path = directory.build(file_name)
+                forces_tagline = self._part_subtitle(part_name) + ' part'
+                part_subtitle = self._part_subtitle(
+                    part_name,
+                    parentheses=True,
+                    )
+                #self._generate_music_ly(
+                self._generate_part_music_ly(
+                    path,
+                    dashed_part_name=dashed_part_name,
+                    forces_tagline=forces_tagline,
+                    keep_with_tag=part_name,
+                    part_abbreviation=part_abbreviation,
+                    part_name=part_name,
+                    part_subtitle=part_subtitle,
+                    )
+                if 0 < total and i < total - 1:
+                    self.io.display('')
 
     @Command(
         'ptg',
@@ -4065,7 +4131,7 @@ class AbjadIDE(abjad.AbjadObject):
             if self.is_navigation(type_):
                 return
             if type_ == 'score':
-                self._make_build_directory(directory)
+                self._make_score_build_directory(directory)
             elif type_ == 'parts':
                 self._make_parts_directory(directory)
         elif directory.is_materials_or_segments():

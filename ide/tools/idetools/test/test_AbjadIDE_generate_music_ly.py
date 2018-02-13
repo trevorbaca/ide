@@ -10,7 +10,8 @@ def test_AbjadIDE_generate_music_ly_01():
 
         abjad_ide('red %letter ggc mlg q')
         transcript = abjad_ide.io.transcript
-        assert f'Removing {target.trim()} ...' in transcript
+        assert f'Generating {target.trim()} ...' in transcript
+        #assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()
         text = target.read_text()
@@ -23,7 +24,8 @@ def test_AbjadIDE_generate_music_ly_01():
 
         abjad_ide('red %letter mlg q')
         transcript = abjad_ide.io.transcript
-        assert f'Removing {target.trim()} ...' in transcript
+        assert f'Generating {target.trim()} ...' in transcript
+        #assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()
         text = target.read_text()
@@ -45,7 +47,8 @@ def test_AbjadIDE_generate_music_ly_02():
 
         abjad_ide('red gg new C %letter ggc mlg q')
         transcript = abjad_ide.io.transcript
-        assert f'Removing {target.trim()} ...' in transcript
+        assert f'Generating {target.trim()} ...' in transcript
+        #assert f'Removing {target.trim()} ...' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert target.is_file()
         text = target.read_text()
