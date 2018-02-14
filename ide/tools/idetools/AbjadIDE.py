@@ -108,9 +108,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _activate_part_specific_tags(self, path):
         parts_directory = path.parent
         assert parts_directory.is_parts()
-
-        self.run(abjad.Job.document_specific_job(parts_directory))
-
+        self.run(abjad.Job.edition_specific_job(parts_directory))
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {path.name} ...')
@@ -2243,10 +2241,13 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             directory.contents.remove_metadatum(key)
         for job in [
-            abjad.Job.document_specific_job(directory.build),
+            abjad.Job.edition_specific_job(directory.build),
             abjad.Job.fermata_bar_line_job(directory.build),
             abjad.Job.shifted_clef_job(directory.build),
-            abjad.Job.persistent_indicator_color_job(directory.build, undo=True),
+            abjad.Job.persistent_indicator_color_job(
+                directory.build,
+                undo=True,
+                ),
             abjad.Job.music_annotation_job(directory.build, undo=True),
             abjad.Job.broken_spanner_join_job(directory.build),
             ]:
