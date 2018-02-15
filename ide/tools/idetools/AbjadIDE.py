@@ -4508,10 +4508,10 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if response != 'y':
             complete_words = True
-        if directory == directory.scores:
-            target = directory
-        elif directory.is_score_package_path():
+        if directory.is_score_package_path():
             target = Path(directory.wrapper)
+        else:
+            target = directory
         lines = self._replace_in_tree(
             target,
             search_string,
