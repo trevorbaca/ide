@@ -3868,9 +3868,10 @@ class AbjadIDE(abjad.AbjadObject):
                 if music_measure_count != layout_measure_count:
                     message = f'music measure count ({music_measure_count})'
                     message += ' does not match layout measure count'
-                    message += f' ({layout_measure_count}).'
+                    message += f' ({layout_measure_count}) ...'
                     if not self.test:
-                        raise Exception(message)
+                        self.io.display(message)
+                        return
             self._run_lilypond(path)
             if i + 1 < total:
                 self.io.display('')
@@ -4341,33 +4342,20 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'no part abbreviation found in {source.name} ...')
             return
         source_text = source.read_text()
-        triples = self._select_part_names(directory, verb='use as targets')
-        if self.is_navigation(triples):
+        name, verb = 'layout.py', 'use as targets'
+        paths = self._select_paths_in_buildspace(directory, name, verb,)
+        if self.is_navigation(paths):
             return
-        if not triples:
+        if not paths:
             return
-        target_pairs = []
-        self.io.display(f'will write ...')
-        for triple in triples:
-            part_name, part_abbreviation, number = triple
-            snake_part_name = abjad.String(part_name).to_snake_case()
-            target_name = f'{snake_part_name}_layout.py'
-            target_path = directory.build(target_name)
-            target_pairs.append((target_path, part_abbreviation))
-            self.io.display(target_path.trim(), raw=True)
-        self.io.display('')
-        response = self.io.get('ok?')
-        if self.is_navigation(response):
-            return
-        if response != 'y':
-            return
-        for target_path, part_abbreviation in target_pairs:
+        for path in paths:
+            part_abbreviation = path.get_part_abbreviation()
             target_text = source_text.replace(
                 source_part_abbreviation,
                 part_abbreviation,
                 )
-            self.io.display(f'writing {target_path.trim()} ...')
-            target_path.write_text(target_text)
+            self.io.display(f'writing {path.trim()} ...')
+            path.write_text(target_text)
 
     @Command(
         '++',
