@@ -2007,7 +2007,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         message_zero = not bool(quiet)
         job = abjad.new(job, message_zero=message_zero)
-        messages: List[str] = job()
+        messages: List[abjad.String] = job()
         self.io.display(messages)
 
     def test_baca_directories(self) -> bool:
