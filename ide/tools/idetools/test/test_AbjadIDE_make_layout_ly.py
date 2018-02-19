@@ -31,7 +31,8 @@ def test_AbjadIDE_make_layout_ly_02():
     with ide.Test():
         parts = ide.Path('green_score', 'builds', 'arch-a-parts')
         assert not parts.exists()
-        path = parts('bass-clarinet-layout.ly')
+        part_directory = parts / 'bass-clarinet'
+        path = part_directory / 'bass-clarinet-layout.ly'
 
         abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')
         assert parts.exists()
@@ -41,10 +42,10 @@ def test_AbjadIDE_make_layout_ly_02():
         lines = abjad_ide.io.transcript.lines
         assert path.is_file()
         for line in [
-            'Interpreting green_score/builds/arch-a-parts/bass_clarinet_layout.py ...',
-            'Writing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
-            'Interpreting green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
-            'Removing green_score/builds/arch-a-parts/__make_layout_ly__.py ...',
+            'Interpreting green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...',
+            'Interpreting green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...',
+            'Removing green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...',
             ]:
             assert line in lines
 

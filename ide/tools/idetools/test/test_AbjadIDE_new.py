@@ -143,26 +143,26 @@ def test_AbjadIDE_new_04():
         for line in [
             '    green_score/builds/arch-a-parts',
             '    green_score/builds/arch-a-parts/stylesheet.ily',
-            '    green_score/builds/arch-a-parts/bass-clarinet-front-cover.tex',
-            '    green_score/builds/arch-a-parts/bass-clarinet-preface.tex',
-            '    green_score/builds/arch-a-parts/bass-clarinet-music.ly',
-            '    green_score/builds/arch-a-parts/bass-clarinet-back-cover.tex',
-            '    green_score/builds/arch-a-parts/bass-clarinet-part.tex',
-            '    green_score/builds/arch-a-parts/violin-front-cover.tex',
-            '    green_score/builds/arch-a-parts/violin-preface.tex',
-            '    green_score/builds/arch-a-parts/violin-music.ly',
-            '    green_score/builds/arch-a-parts/violin-back-cover.tex',
-            '    green_score/builds/arch-a-parts/violin-part.tex',
-            '    green_score/builds/arch-a-parts/viola-front-cover.tex',
-            '    green_score/builds/arch-a-parts/viola-preface.tex',
-            '    green_score/builds/arch-a-parts/viola-music.ly',
-            '    green_score/builds/arch-a-parts/viola-back-cover.tex',
-            '    green_score/builds/arch-a-parts/viola-part.tex',
-            '    green_score/builds/arch-a-parts/cello-front-cover.tex',
-            '    green_score/builds/arch-a-parts/cello-preface.tex',
-            '    green_score/builds/arch-a-parts/cello-music.ly',
-            '    green_score/builds/arch-a-parts/cello-back-cover.tex',
-            '    green_score/builds/arch-a-parts/cello-part.tex',
+            '    green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-front-cover.tex',
+            '    green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-preface.tex',
+            '    green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly',
+            '    green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-back-cover.tex',
+            '    green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-part.tex',
+            '    green_score/builds/arch-a-parts/violin/violin-front-cover.tex',
+            '    green_score/builds/arch-a-parts/violin/violin-preface.tex',
+            '    green_score/builds/arch-a-parts/violin/violin-music.ly',
+            '    green_score/builds/arch-a-parts/violin/violin-back-cover.tex',
+            '    green_score/builds/arch-a-parts/violin/violin-part.tex',
+            '    green_score/builds/arch-a-parts/viola/viola-front-cover.tex',
+            '    green_score/builds/arch-a-parts/viola/viola-preface.tex',
+            '    green_score/builds/arch-a-parts/viola/viola-music.ly',
+            '    green_score/builds/arch-a-parts/viola/viola-back-cover.tex',
+            '    green_score/builds/arch-a-parts/viola/viola-part.tex',
+            '    green_score/builds/arch-a-parts/cello/cello-front-cover.tex',
+            '    green_score/builds/arch-a-parts/cello/cello-preface.tex',
+            '    green_score/builds/arch-a-parts/cello/cello-music.ly',
+            '    green_score/builds/arch-a-parts/cello/cello-back-cover.tex',
+            '    green_score/builds/arch-a-parts/cello/cello-part.tex',
             ]:
             assert line in lines, repr(line)
 
@@ -184,30 +184,30 @@ def test_AbjadIDE_new_04():
             ' Skipping 2 (inactive) music annotation tags ...',
             'Generating stylesheet ...',
             'Writing green_score/builds/arch-a-parts/stylesheet.ily ...',
-            'Writing green_score/builds/arch-a-parts/bass-clarinet-back-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/bass-clarinet-front-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/bass-clarinet-music.ly ...',
-            'Writing green_score/builds/arch-a-parts/bass-clarinet-part.tex ...',
-            'Writing green_score/builds/arch-a-parts/bass-clarinet-preface.tex ...',
-            'Writing green_score/builds/arch-a-parts/bass_clarinet_layout.py ...',
-            'Writing green_score/builds/arch-a-parts/violin-back-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/violin-front-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/violin-music.ly ...',
-            'Writing green_score/builds/arch-a-parts/violin-part.tex ...',
-            'Writing green_score/builds/arch-a-parts/violin-preface.tex ...',
-            'Writing green_score/builds/arch-a-parts/violin_layout.py ...',
-            'Writing green_score/builds/arch-a-parts/viola-back-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/viola-front-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/viola-music.ly ...',
-            'Writing green_score/builds/arch-a-parts/viola-part.tex ...',
-            'Writing green_score/builds/arch-a-parts/viola-preface.tex ...',
-            'Writing green_score/builds/arch-a-parts/viola_layout.py ...',
-            'Writing green_score/builds/arch-a-parts/cello-back-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/cello-front-cover.tex ...',
-            'Writing green_score/builds/arch-a-parts/cello-music.ly ...',
-            'Writing green_score/builds/arch-a-parts/cello-part.tex ...',
-            'Writing green_score/builds/arch-a-parts/cello-preface.tex ...',
-            'Writing green_score/builds/arch-a-parts/cello_layout.py ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-back-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-front-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-part.tex ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-preface.tex ...',
+            'Writing green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin-back-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin-front-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin-music.ly ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin-part.tex ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin-preface.tex ...',
+            'Writing green_score/builds/arch-a-parts/violin/violin_layout.py ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola-back-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola-front-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola-music.ly ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola-part.tex ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola-preface.tex ...',
+            'Writing green_score/builds/arch-a-parts/viola/viola_layout.py ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello-back-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello-front-cover.tex ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello-music.ly ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello-part.tex ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello-preface.tex ...',
+            'Writing green_score/builds/arch-a-parts/cello/cello_layout.py ...',
             '',
             '> q',
             '',
@@ -229,19 +229,33 @@ def test_AbjadIDE_new_04():
             'bass-clarinet-part.tex',
             'bass-clarinet-preface.tex',
             'bass_clarinet_layout.py',
+            ]:
+            path = directory / 'bass-clarinet' / name
+            assert path.is_file()
+
+        for name in [
             'cello-back-cover.tex',
             'cello-front-cover.tex',
             'cello-music.ly',
             'cello-part.tex',
             'cello-preface.tex',
             'cello_layout.py',
-            'stylesheet.ily',
+            ]:
+            path = directory / 'cello' / name
+            assert path.is_file()
+
+        for name in [
             'viola-back-cover.tex',
             'viola-front-cover.tex',
             'viola-music.ly',
             'viola-part.tex',
             'viola-preface.tex',
             'viola_layout.py',
+            ]:
+            path = directory / 'viola' / name
+            assert path.is_file()
+
+        for name in [
             'violin-back-cover.tex',
             'violin-front-cover.tex',
             'violin-music.ly',
@@ -249,8 +263,11 @@ def test_AbjadIDE_new_04():
             'violin-preface.tex',
             'violin_layout.py',
             ]:
-            path = directory(name)
+            path = directory / 'violin' / name
             assert path.is_file(), repr(path)
+
+        stylesheet = directory / 'stylesheet.ily'
+        assert stylesheet.is_file()
 
 
 def test_AbjadIDE_new_05():

@@ -6,7 +6,7 @@ def test_AbjadIDE_trash_part_pdf_01():
 
     with ide.Test():
         parts = ide.Path('green_score', 'builds', 'arch-a-parts')
-        path = parts('bass-clarinet-part.pdf')
+        path = parts / 'bass-clarinet' / 'bass-clarinet-part.pdf'
         assert not parts.exists()
 
         abjad_ide('gre bb new parts arch-a-parts arch~a ARCH-A y q')

@@ -106,7 +106,7 @@ class AbjadIDE(abjad.AbjadObject):
     ### PRIVATE METHODS ###
 
     def _activate_part_specific_tags(self, path):
-        parts_directory = path.parent
+        parts_directory = path.parent.parent
         assert parts_directory.is_parts()
         self.run(abjad.Job.edition_specific_job(parts_directory))
         part_abbreviation = path._parse_part_abbreviation()
@@ -212,14 +212,18 @@ class AbjadIDE(abjad.AbjadObject):
         return files
 
     def _generate_back_cover_tex(self, path, price=None):
-        assert path.build.exists(), repr(path)
+        assert path.build.exists(), repr((path, path.build))
         assert path.name.endswith('back-cover.tex')
         directory = path.build
         values = {}
         string = 'catalog_number'
         catalog_number = directory.contents.get_metadatum(string, r'\null')
+        if path.build.is_part():
+            metadata = path.build.parent.get_metadata()
+        else:
+            metadata = path.build.get_metadata()
         if catalog_number:
-            suffix = directory.get_metadatum('catalog_number_suffix')
+            suffix = metadata.get('catalog_number_suffix')
             if suffix:
                 catalog_number = f'{catalog_number} / {suffix}'
         values['catalog_number'] = catalog_number
@@ -228,15 +232,15 @@ class AbjadIDE(abjad.AbjadObject):
             composer_website = 'www.composer-website.com'
         values['composer_website'] = composer_website
         if price is None:
-            price = directory.get_metadatum('price', r'\null')
+            price = metadata.get('price', r'\null')
             if '$' in price and r'\$' not in price:
                 price = price.replace('$', r'\$')
         values['price'] = price
-        paper_size = directory.get_metadatum('paper_size', 'letter')
+        paper_size = metadata.get('paper_size', 'letter')
         if paper_size not in self.known_paper_sizes:
             self.io.display(f'unknown paper size {paper_size} ...')
             return
-        orientation = directory.get_metadatum('orientation')
+        orientation = metadata.get('orientation')
         dimensions = self._to_paper_dimensions(paper_size, orientation)
         width, height, unit = dimensions
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
@@ -349,6 +353,8 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 self.io.display('no segments found ...', indent=indent)
             for segment in segments:
+                if not segment.is_segment():
+                    continue
                 self.io.display(
                     f'examining {segment.trim()} ...',
                     indent=indent,
@@ -366,18 +372,16 @@ class AbjadIDE(abjad.AbjadObject):
             name = 'segment-' + name + '.ly'
             ly = path.build._segments(name)
             if ly.is_file():
-                line = rf'\include "_segments/{name}"'
+                line = rf'\include "../_segments/{name}"'
             else:
-                line = rf'%\include "_segments/{name}"'
+                line = rf'%\include "../_segments/{name}"'
             ily_lines.append(line.replace('.ly', '.ily'))
             if 0 < i:
                 line = 8 * ' ' + line
             lines.append(line)
         if lines:
-            segment_ly_include_statements = '\n'.join(lines)
             segment_ily_include_statements = '\n'.join(ily_lines)
         else:
-            segment_ly_include_statements = ''
             segment_ily_include_statements = ''
         language_token = abjad.LilyPondLanguageToken()
         lilypond_language_directive = format(language_token)
@@ -396,7 +400,7 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = forces_tagline.replace('\\', '')
         assert path.is_file(), repr(path)
         template = path.read_text()
-        if path.parent.is_parts():
+        if path.parent.is_part():
             identifiers = path.global_skip_identifiers()
             identifiers = ['\\' + _ for _ in identifiers]
             newline = '\n' + 24 * ' '
@@ -426,13 +430,17 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _generate_part_tex(self, path, dashed_part_name):
         assert path.build.exists(), repr(path)
-        assert path.build.is_parts(), repr(path)
+        assert path.build.is_parts() or path.build.is_part(), repr(path)
         name = 'part.tex'
         directory = path.build
         values = {}
         values['dashed_part_name'] = dashed_part_name
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
+        if path.build.is_part():
+            metadata = path.build.parent.get_metadata()
+        else:
+            metadata = path.build.get_metadata()
+        paper_size = metadata.get('paper_size', 'letter')
+        orientation = metadata.get('orientation')
         paper_size = self._to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
@@ -458,13 +466,22 @@ class AbjadIDE(abjad.AbjadObject):
             shutil.copyfile(str(local_template), str(path))
             return
         values = {}
-        paper_size = directory.get_metadatum('paper_size', 'letter')
-        orientation = directory.get_metadatum('orientation')
+        if path.build.is_part():
+            metadata = path.build.parent.get_metadata()
+        else:
+            metadata = path.build.get_metadata()
+        paper_size = metadata.get('paper_size', 'letter')
+        orientation = metadata.get('orientation')
         paper_size = self._to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f'{{{width}{unit}, {height}{unit}}}'
         values['paper_size'] = paper_size
-        target_name = path.name
+        if path.build.is_part():
+            name = 'part-preface.tex'
+            target_name = f'{path.build.name}-preface.tex'
+        else:
+            name = 'score-preface.tex'
+            target_name = path.name
         self._copy_boilerplate(
             directory,
             name,
@@ -495,6 +512,8 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 self.io.display('no segments found ...', indent=indent)
             for segment in segments:
+                if not segment.is_segment():
+                    continue
                 self.io.display(
                     f'examining {segment.trim()} ...',
                     indent=indent,
@@ -946,14 +965,9 @@ class AbjadIDE(abjad.AbjadObject):
     def _make_parts_directory(self, directory):
         assert directory.is_builds()
         self.io.display('getting part names from score template ...')
-        result = directory._get_part_manifest()
-        if isinstance(result, tuple) and result[0] == -1:
-            message = result[-1]
-            self.io.display(message)
-            return
-        part_name_pairs = result
-        part_names = [_[0] for _ in result]
-        part_abbreviations = [_[1] for _ in result]
+        part_manifest = directory._get_part_manifest()
+        part_names = [_[0] for _ in part_manifest]
+        part_abbreviations = [_[1] for _ in part_manifest]
         for part_name in part_names:
             self.io.display(f'found {part_name} ...')
         self.io.display('')
@@ -961,9 +975,9 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(name):
             return
         name = directory.coerce(name)
-        directory = directory / name
-        if directory.exists():
-            self.io.display(f'existing {directory.trim()} ...')
+        parts_directory = directory / name
+        if parts_directory.exists():
+            self.io.display(f'existing {parts_directory.trim()} ...')
             return
         paper_size = self.io.get('paper size')
         if self.is_navigation(paper_size):
@@ -992,58 +1006,59 @@ class AbjadIDE(abjad.AbjadObject):
             'back-cover.tex',
             'part.tex',
             )
-        paths = [directory / _ for _ in names]
+        paths = [parts_directory / _ for _ in names]
         self.io.display('will make ...')
-        self.io.display(f'    {directory.trim()}')
-        path = directory / 'stylesheet.ily'
+        self.io.display(f'    {parts_directory.trim()}')
+        path = parts_directory / 'stylesheet.ily'
         self.io.display(f'    {path.trim()}')
         for part_name in part_names:
-            part_name_ = abjad.String(part_name).to_dash_case()
+            dashed_part_name = abjad.String(part_name).to_dash_case()
             for name in names:
-                name = f'{part_name_}-{name}'
-                path = directory / name
+                name = f'{dashed_part_name}-{name}'
+                path = parts_directory / dashed_part_name / name
                 self.io.display(f'    {path.trim()}')
         response = self.io.get('ok?')
         if self.is_navigation(response):
             return
         if response != 'y':
             return
-        assert not directory.exists()
-        directory.mkdir()
-        directory.add_metadatum('parts_directory', True)
+        assert not parts_directory.exists()
+        parts_directory.mkdir()
+        parts_directory.add_metadatum('parts_directory', True)
         if bool(paper_size):
-            directory.add_metadatum('paper_size', paper_size)
+            parts_directory.add_metadatum('paper_size', paper_size)
         if not orientation == 'portrait':
-            directory.add_metadatum('orientation', orientation)
+            parts_directory.add_metadatum('orientation', orientation)
         if bool(suffix):
-            directory.add_metadatum('catalog_number_suffix', suffix)
-        self.collect_segments(directory)
-        stub = directory.builds._assets('preface-body.tex')
+            parts_directory.add_metadatum('catalog_number_suffix', suffix)
+        self.collect_segments(parts_directory)
+        stub = parts_directory.builds._assets('preface-body.tex')
         if not stub.is_file():
             stub.write_text('')
-        stub = directory.builds._assets('preface-colophon.tex')
+        stub = parts_directory.builds._assets('preface-colophon.tex')
         if not stub.is_file():
             stub.write_text('')
-        self.generate_stylesheet_ily(directory)
-        total_parts = len(part_name_pairs)
-        for i, pair in enumerate(part_name_pairs):
-            part_name, part_abbreviation = pair
+        self.generate_stylesheet_ily(parts_directory)
+        total_parts = len(part_manifest)
+        for i, tuple_ in enumerate(part_manifest):
+            part_name, part_abbreviation = tuple_[:2]
             part_number = i + 1
             dashed_part_name = abjad.String(part_name).to_dash_case()
+            part_directory = parts_directory / dashed_part_name
+            part_directory.mkdir()
             snake_part_name = abjad.String(part_name).to_snake_case()
             part_subtitle = self._part_subtitle(part_name, parentheses=True)
             forces_tagline = self._part_subtitle(part_name) + ' part'
             self._generate_back_cover_tex(
-                directory(f'{dashed_part_name}-back-cover.tex'),
+                part_directory(f'{dashed_part_name}-back-cover.tex'),
                 price=f'{part_abbreviation} ({part_number}/{total_parts})',
                 ),
             self._generate_front_cover_tex(
-                directory(f'{dashed_part_name}-front-cover.tex'),
+                part_directory(f'{dashed_part_name}-front-cover.tex'),
                 forces_tagline=forces_tagline,
                 )
-            #self._generate_music_ly(
             self._generate_part_music_ly(
-                directory(f'{dashed_part_name}-music.ly'),
+                part_directory(f'{dashed_part_name}-music.ly'),
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part_name,
@@ -1052,14 +1067,14 @@ class AbjadIDE(abjad.AbjadObject):
                 silent=True,
                 )
             self._generate_part_tex(
-                directory(f'{dashed_part_name}-part.tex'),
+                part_directory(f'{dashed_part_name}-part.tex'),
                 dashed_part_name,
                 )
             self._generate_preface_tex(
-                directory(f'{dashed_part_name}-preface.tex')
+                part_directory(f'{dashed_part_name}-preface.tex')
                 )
             self._copy_boilerplate(
-                directory,
+                part_directory,
                 'part_layout.py',
                 target_name=f'{snake_part_name}_layout.py',
                 values={'part_abbreviation':part_abbreviation},
@@ -1590,8 +1605,8 @@ class AbjadIDE(abjad.AbjadObject):
         words = abjad.String(part_name).delimit_words()
         number = None
         try:
-            number = roman.fromRoman(words[-1])
-        except roman.InvalidRomanNumeralError:
+            number = int(words[-1])
+        except ValueError:
             pass
         if number is not None:
             if parentheses:
@@ -1757,6 +1772,16 @@ class AbjadIDE(abjad.AbjadObject):
             if not selected_paths:
                 self.io.display(f'no files matching {name} ...')
             return selected_paths
+        if directory.is_part():
+            paths = directory.get_files_ending_with(name)
+            if not paths:
+                self.io.display(f'no file ending {name} ...')
+                return
+            if 1 < len(paths):
+                self.io.display(f'too many files ending in {name} ...')
+                return
+            assert len(paths) == 1, repr(paths)
+            return paths
         if not directory.is_parts():
             path = directory.build(name)
             if path.is_file():
@@ -1764,7 +1789,14 @@ class AbjadIDE(abjad.AbjadObject):
             if not selected_paths:
                 self.io.display(f'no files matching {name} ...')
             return selected_paths
-        paths = directory.get_files_ending_with(name)
+        paths = []
+        for part_directory in directory.list_paths():
+            if not part_directory.is_dir():
+                continue
+            if part_directory.name in ('_assets', '_segments'):
+                continue
+            paths_ = part_directory.get_files_ending_with(name)
+            paths.extend(paths_)
         if not paths:
             self.io.display(f'no files ending in {name} ...')
         if count is not None:
@@ -2024,52 +2056,58 @@ class AbjadIDE(abjad.AbjadObject):
         'ppb',
         description='part.pdf - build',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def build_part_pdf(self, directory: Path) -> None:
         r'''Builds ``part.pdf`` from the ground up.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
+        # TODO:
+        if directory.is_part():
+            raise NotImplementedError()
         triples = self._select_part_names(directory)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
         total_parts = len(triples)
         for i, triple in enumerate(triples):
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
-            part_pdf_path = directory / dashed_part_name
+            part_directory = directory / dashed_part_name
+            part_pdf_path = part_directory / dashed_part_name
             part_pdf_path = part_pdf_path.with_suffix('.pdf')
             self.io.display(f'building {part_pdf_path.trim()} ...')
             snake_part_name = abjad.String(part_name).to_snake_case()
             file_name = f'{snake_part_name}_layout.py'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._make_layout_ly(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-front-cover.tex'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._interpret_tex_file(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-preface.tex'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._interpret_tex_file(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-music.ly'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._run_lilypond(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-back-cover.tex'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._interpret_tex_file(path)
             self.io.display('')
             file_name = f'{dashed_part_name}-part.tex'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._interpret_tex_file(path)
             self.io.display('')
             if 1 < total_parts and i < total_parts - 1:
                 self.io.display('')
         if len(triples) == 1:
             file_name = f'{dashed_part_name}-part.pdf'
-            path = directory(file_name)
+            path = part_directory / file_name
             self._open_files([path])
 
     @Command(
@@ -2707,12 +2745,12 @@ class AbjadIDE(abjad.AbjadObject):
         'pte',
         description='part.tex - edit',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def edit_part_tex(self, directory: Path) -> None:
         r'''Edits ``part.tex``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if self.is_navigation(paths):
@@ -2825,19 +2863,49 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'back-cover.tex'
-        if not directory.build.is_parts():
+        # TODO:
+        #if directory.is_part():
+        #    file_name = f'{directory.name}-{name}'
+        #    path = directory / file_name
+        #    self._generate_back_cover_tex(path)
+        #    return
+        if not (directory.build.is_parts() or directory.build.is_part()):
             path = directory.build(name)
             self._generate_back_cover_tex(path)
             return
         triples = self._select_part_names(directory.build)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
+        if 1 < len(triples):
+            self.io.display('will generate ...')
+            for triple in triples:
+                part_name, part_abbreviation, number = triple
+                dashed_part_name = abjad.String(part_name).to_dash_case()
+                file_name = f'{dashed_part_name}-{name}'
+                if directory.is_parts():
+                    path = directory / dashed_part_name / file_name
+                else:
+                    assert directory.is_part()
+                    path = directory / file_name
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            response = self.io.get('ok?')
+            if self.is_navigation(response):
+                return
+            if response != 'y':
+                return
         total_parts = len(directory.build._get_part_manifest())
         for triple in triples:
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
-            path = directory.build(file_name)
+            if directory.is_parts():
+                path = directory / dashed_part_name / file_name
+            else:
+                assert directory.is_part()
+                path = directory / file_name
             price = f'{part_abbreviation} ({number}/{total_parts})'
             self._generate_back_cover_tex(path, price=price)
 
@@ -2852,20 +2920,50 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'front-cover.tex'
+        # TODO:
+        if directory.is_part():
+            raise NotImplementedError()
+            #file_name = f'{directory.name}-{name}'
+            #path = directory / file_name
+            #self._generate_front_cover_tex(path)
+            #return
         if not directory.build.is_parts():
             path = directory.build(name)
             self._generate_front_cover_tex(path)
             return
         triples = self._select_part_names(directory.build)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
+        if 1 < len(triples):
+            self.io.display('will generate ...')
+            for triple in triples:
+                part_name, part_abbreviation, number = triple
+                dashed_part_name = abjad.String(part_name).to_dash_case()
+                file_name = f'{dashed_part_name}-{name}'
+                if directory.is_parts():
+                    path = directory / dashed_part_name / file_name
+                else:
+                    assert directory.is_part()
+                    path = directory / file_name
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            response = self.io.get('ok?')
+            if self.is_navigation(response):
+                return
+            if response != 'y':
+                return
         for triple in triples:
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
-            path = directory.build(file_name)
+            if directory.is_parts():
+                path = directory / dashed_part_name / file_name
+            else:
+                assert directory.is_part()
+                path = directory / file_name
             forces_tagline = self._part_subtitle(part_name, parentheses=False)
-            path = directory.build(file_name)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
 
     @Command(
@@ -2893,6 +2991,8 @@ class AbjadIDE(abjad.AbjadObject):
                 )
             return
         triples = self._select_part_names(directory)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
         for triple in triples:
@@ -2918,10 +3018,9 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'music.ly'
-        if not directory.build.is_parts():
+        if not (directory.build.is_parts() or directory.is_part()):
             path = directory.build(name)
             self.io.display(f'generating {path.trim()} ...')
-            #self._generate_music_ly(path, indent=1)
             self._generate_score_music_ly(path, indent=1)
             return
         else:
@@ -2940,13 +3039,12 @@ class AbjadIDE(abjad.AbjadObject):
                     part_name, part_abbreviation, number, instrument = tuple_
                 dashed_part_name = abjad.String(part_name).to_dash_case()
                 file_name = f'{dashed_part_name}-{name}'
-                path = directory.build(file_name)
+                path = path.build / file_name
                 forces_tagline = self._part_subtitle(part_name) + ' part'
                 part_subtitle = self._part_subtitle(
                     part_name,
                     parentheses=True,
                     )
-                #self._generate_music_ly(
                 self._generate_part_music_ly(
                     path,
                     dashed_part_name=dashed_part_name,
@@ -2963,21 +3061,47 @@ class AbjadIDE(abjad.AbjadObject):
         'ptg',
         description='part.tex - generate',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def generate_part_tex(self, directory: Path) -> None:
         r'''Generates ``part.tex``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name = 'part.tex'
+        if directory.is_part():
+            dashed_part_name = directory.name
+            file_name = f'{dashed_part_name}-{name}'
+            path = directory / file_name
+            self._generate_part_tex(path, dashed_part_name)
+            return
         triples = self._select_part_names(directory)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
+        if 1 < len(triples):
+            self.io.display('will generate ...')
+            for triple in triples:
+                part_name, part_abbreviation, number = triple
+                dashed_part_name = abjad.String(part_name).to_dash_case()
+                file_name = f'{dashed_part_name}-{name}'
+                if directory.is_parts():
+                    path = directory / dashed_part_name / file_name
+                else:
+                    assert directory.is_part()
+                    path = directory / file_name
+                self.io.display(path.trim(), raw=True)
+            self.io.display('')
+            response = self.io.get('ok?')
+            if self.is_navigation(response):
+                return
+            if response != 'y':
+                return
         for triple in triples:
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
-            path = directory(file_name)
+            path = directory / dashed_part_name / file_name
             self._generate_part_tex(path, dashed_part_name)
 
     @Command(
@@ -2991,18 +3115,25 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is__segments() or directory.is_build()
         name = 'preface.tex'
+        if directory.is_part():
+            file_name = f'{directory.name}-{name}'
+            path = directory / file_name
+            self._generate_preface_tex(path)
+            return
         if not directory.build.is_parts():
             path = directory.build(name)
             self._generate_preface_tex(path)
             return
         triples = self._select_part_names(directory.build)
+        if self.is_navigation(triples):
+            return
         if not triples:
             return
         for triple in triples:
             part_name, part_abbreviation, number = triple
             dashed_part_name = abjad.String(part_name).to_dash_case()
             file_name = f'{dashed_part_name}-{name}'
-            path = directory.build(file_name)
+            path = directory / dashed_part_name / file_name
             self._generate_preface_tex(path)
 
     @Command(
@@ -3858,7 +3989,7 @@ class AbjadIDE(abjad.AbjadObject):
             if path.parent.is_score_build():
                 self.collect_segments(path.parent)
                 self.generate_music_ly(path.parent)
-            if path.parent.is_parts():
+            if path.parent.is_part():
                 self._activate_part_specific_tags(path)
             _, music_measure_count = path.parent.get_measure_count_pair()
             layout_ly = path.name.replace('music.ly', 'layout.ly')
@@ -3884,7 +4015,7 @@ class AbjadIDE(abjad.AbjadObject):
         'pti',
         description='part.tex - interpret',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def interpret_part_tex(
         self,
@@ -3893,7 +4024,7 @@ class AbjadIDE(abjad.AbjadObject):
         ) -> None:
         r'''Interprets ``part.tex``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
@@ -4208,12 +4339,12 @@ class AbjadIDE(abjad.AbjadObject):
         'ppo',
         description='part.pdf - open',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def open_part_pdf(self, directory: Path) -> None:
         r'''Opens ``part.pdf``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'part.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if self.is_navigation(paths):
@@ -4318,7 +4449,7 @@ class AbjadIDE(abjad.AbjadObject):
     def propagate_layout_py(self, directory: Path) -> None:
         r'''Propagates ``layout.py``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'layout.py', 'use as source'
         paths = self._select_paths_in_buildspace(
             directory,
@@ -4981,12 +5112,12 @@ class AbjadIDE(abjad.AbjadObject):
         'ppt',
         description='part.pdf - trash',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def trash_part_pdf(self, directory: Path) -> None:
         r'''Trashes ``part.pdf``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'part.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if self.is_navigation(paths):
@@ -4997,12 +5128,12 @@ class AbjadIDE(abjad.AbjadObject):
         'ptt',
         description='part.tex - trash',
         menu_section='parts',
-        score_package_paths=('parts',),
+        score_package_paths=('part', 'parts',),
         )
     def trash_part_tex(self, directory: Path) -> None:
         r'''Trashes ``part.tex``.
         '''
-        assert directory.is_parts()
+        assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if self.is_navigation(paths):
