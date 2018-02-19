@@ -572,11 +572,9 @@ class AbjadIDE(abjad.AbjadObject):
         if boilerplate == 'score-music.ly':
             assert path.parent.is_score_build()
             template = template.format(
-                #dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 lilypond_language_directive=lilypond_language_directive,
                 lilypond_version_directive=lilypond_version_directive,
-                #part_abbreviation=repr(part_abbreviation),
                 score_title=score_title,
                 segment_ily_include_statements=segment_ily_include_statements,
                 segment_ly_include_statements=segment_ly_include_statements,
@@ -584,11 +582,9 @@ class AbjadIDE(abjad.AbjadObject):
         elif boilerplate == 'full-score-music.ly':
             assert path.parent.is_score_build()
             template = template.format(
-                #dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 lilypond_language_directive=lilypond_language_directive,
                 lilypond_version_directive=lilypond_version_directive,
-                #part_abbreviation=repr(part_abbreviation),
                 score_title=score_title,
                 segment_ily_include_statements=segment_ily_include_statements,
                 score_skeleton=score_skeleton,
