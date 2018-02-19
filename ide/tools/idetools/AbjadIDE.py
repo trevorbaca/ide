@@ -3972,6 +3972,8 @@ class AbjadIDE(abjad.AbjadObject):
     def interpret_music_ly(
         self,
         directory: Path,
+        do_not_collect_segments: bool = False,
+        do_not_generate_music: bool = False,
         open_after: bool = True,
         ) -> None:
         r'''Interprets ``music.ly``.
@@ -3985,11 +3987,15 @@ class AbjadIDE(abjad.AbjadObject):
             return
         total = len(paths)
         for i, path in enumerate(paths):
-            self.io.display(f'preparing {path.trim()} ...')
             if path.parent.is_score_build():
-                self.collect_segments(path.parent)
-                self.generate_music_ly(path.parent)
+                if not do_not_collect_segments or not do_not_generate_music:
+                    self.io.display(f'preparing {path.trim()} ...')
+                if not do_not_collect_segments:
+                    self.collect_segments(path.parent)
+                if not do_not_generate_music:
+                    self.generate_music_ly(path.parent)
             if path.parent.is_part():
+                self.io.display(f'preparing {path.trim()} ...')
                 self._activate_part_specific_tags(path)
             _, music_measure_count = path.parent.get_measure_count_pair()
             layout_ly = path.name.replace('music.ly', 'layout.ly')
@@ -5309,3 +5315,26 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_buildspace()
         self.run(abjad.Job.time_signature_color_job(directory, undo=True))
+
+
+    @Command(
+        'mlx',
+        description='music.ly - xinterpret',
+        menu_section='music',
+        score_package_paths=('_segments', 'build',),
+        )
+    def xinterpret_music_ly(
+        self,
+        directory: Path,
+        open_after: bool = True,
+        ) -> None:
+        r'''Interprets ``music.ly`` without collecting segments, handling
+        tags or generating music.
+        '''
+        assert directory.is__segments() or directory.is_build()
+        self.interpret_music_ly(
+            directory,
+            do_not_collect_segments=True,
+            do_not_generate_music=True,
+            open_after=open_after,
+            )
