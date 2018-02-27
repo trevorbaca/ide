@@ -2282,7 +2282,7 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             directory.contents.remove_metadatum(key)
         for job in [
-            abjad.Job.handle_edition_specific_tags(directory.build),
+            abjad.Job.handle_edition_tags(directory.build),
             abjad.Job.handle_fermata_bar_lines(directory.build),
             abjad.Job.handle_shifted_clefs(directory.build),
             abjad.Job.color_persistent_indicators(directory.build, undo=True),
