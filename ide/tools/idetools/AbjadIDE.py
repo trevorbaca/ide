@@ -2282,6 +2282,7 @@ class AbjadIDE(abjad.AbjadObject):
                 directory.build,
                 undo=True,
                 ),
+            abjad.Job.hide_default_clefs(directory.build),
             abjad.Job.music_annotation_job(directory.build, undo=True),
             abjad.Job.broken_spanner_join_job(directory.build),
             ]:
