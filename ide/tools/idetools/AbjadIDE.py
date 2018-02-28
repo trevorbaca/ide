@@ -4009,7 +4009,19 @@ class AbjadIDE(abjad.AbjadObject):
                     message += f' ({layout_measure_count}) ...'
                     if not self.test:
                         self.io.display(message)
-                        return
+                        self.io.display(f'remaking {layout_ly.trim()} ...')
+                        layout_py = layout_ly.with_suffix('.py')
+                        self._make_layout_ly(layout_py)
+                        layout_measure_count = \
+                            layout_ly.get_preamble_measure_count()
+                        if music_measure_count != layout_measure_count:
+                            message = f'music measure count'
+                            message += f' ({music_measure_count})'
+                            message += ' stil does not match'
+                            message += ' layout measure count'
+                            message += f' ({layout_measure_count}) ...'
+                            self.io.display(message)
+                            return
             self._run_lilypond(path)
             if i + 1 < total:
                 self.io.display('')
