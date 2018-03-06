@@ -40,7 +40,7 @@ def test_AbjadIDE_smart_edit_03():
 
     abjad_ide('ll @PAC q')
     transcript = abjad_ide.io.transcript 
-    assert f"Matching '@PAC' to 2 files ..." in transcript
+    assert f"Matching '@PAC' to 3 files ..." in transcript
     assert path_1.trim() in transcript.lines
     assert path_2.trim() in transcript.lines
 
