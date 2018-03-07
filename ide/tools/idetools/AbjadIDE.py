@@ -4695,7 +4695,8 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(search_string):
             return
         if executable.name == 'ack':
-            command = r'{!s} --ignore-dir=_docs {} --type=python | sort'
+            options = '--ignore-dir=_docs --sort-files --type=python'
+            command = rf'{executable!s} {options} {search_string}'
             command = command.format(executable, search_string)
         elif executable.name == 'grep':
             command = rf'{executable!s} -r {search_string!r} *'
