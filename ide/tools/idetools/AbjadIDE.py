@@ -2815,10 +2815,11 @@ class AbjadIDE(abjad.AbjadObject):
         search_string = self.io.get('enter search string')
         if self.is_navigation(search_string):
             return
-        command = rf'vim -c "grep {search_string!s} --type=python"'
         if self.test:
             return
         with self.change(directory):
+            options = '--sort-files --type=python'
+            command = rf'vim -c "grep {search_string!s} {options}"'
             abjad.IOManager.spawn_subprocess(command)
 
     @Command(
@@ -4694,7 +4695,7 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(search_string):
             return
         if executable.name == 'ack':
-            command = r'{!s} --ignore-dir=_docs {} --type=python'
+            command = r'{!s} --ignore-dir=_docs {} --type=python | sort'
             command = command.format(executable, search_string)
         elif executable.name == 'grep':
             command = rf'{executable!s} -r {search_string!r} *'
