@@ -4582,7 +4582,7 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def rename(self, directory: Path) -> None:
-        r'''Renames asset.
+        r'''Renames file or directory.
         '''
         paths = self._select_paths(directory, infinitive='to rename')
         if self.is_navigation(paths):
