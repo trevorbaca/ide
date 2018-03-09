@@ -3990,28 +3990,26 @@ class AbjadIDE(abjad.AbjadObject):
             if path.parent.is_part():
                 self.io.display(f'preparing {path.trim()} ...')
                 self._activate_part_specific_tags(path)
-            _, music_measure_count = path.parent.get_measure_count_pair()
+            music_time_signatures = path.parent.get_time_signature_metadata()
+            music_time_signatures = [str(_) for _ in music_time_signatures]
             layout_ly = path.name.replace('music.ly', 'layout.ly')
             layout_ly = path.parent(layout_ly)
             if layout_ly.exists():
-                layout_measure_count = layout_ly.get_preamble_measure_count()
-                if music_measure_count != layout_measure_count:
-                    message = f'music measure count ({music_measure_count})'
-                    message += ' does not match layout measure count'
-                    message += f' ({layout_measure_count}) ...'
+                layout_time_signatures = \
+                    layout_ly.get_preamble_time_signatures()
+                if music_time_signatures != layout_time_signatures:
+                    message = f'music time signatures do not match'
+                    message += ' layout time signatures ...'
                     if not self.test:
                         self.io.display(message)
                         self.io.display(f'remaking {layout_ly.trim()} ...')
                         layout_py = layout_ly.with_suffix('.py')
                         self._make_layout_ly(layout_py)
-                        layout_measure_count = \
-                            layout_ly.get_preamble_measure_count()
-                        if music_measure_count != layout_measure_count:
-                            message = f'music measure count'
-                            message += f' ({music_measure_count})'
-                            message += ' stil does not match'
-                            message += ' layout measure count'
-                            message += f' ({layout_measure_count}) ...'
+                        layout_time_signatures = \
+                            layout_ly.get_preamble_time_signatures()
+                        if music_time_signatures != layout_time_signatures:
+                            message = 'music time signatures still do not'
+                            message += 'match layout time signatures ...'
                             self.io.display(message)
                             return
             self._run_lilypond(path)
