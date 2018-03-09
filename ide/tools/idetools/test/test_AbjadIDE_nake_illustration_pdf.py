@@ -23,7 +23,6 @@ def test_AbjadIDE_nake_illustration_pdf_01():
         assert f'Removing {pdf.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Writing {ly.trim()} ...' in transcript
         assert f'Writing {pdf.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript
         assert f'Opening {pdf.trim()} ...' not in transcript

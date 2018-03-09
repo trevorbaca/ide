@@ -131,7 +131,6 @@ def test_AbjadIDE_make_illustration_pdf_03():
         assert f'Removing {pdf.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Writing {ly.trim()} ...' in transcript
         assert f'Writing {pdf.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript
         assert f'Opening {pdf.trim()} ...' in transcript
@@ -146,7 +145,6 @@ def test_AbjadIDE_make_illustration_pdf_03():
         assert f'Removing {pdf.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Writing {ly.trim()} ...' in transcript
         assert f'Writing {pdf.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript
         assert f'Opening {pdf.trim()} ...' in transcript
@@ -179,7 +177,6 @@ def test_AbjadIDE_make_illustration_pdf_04():
             assert f'Making segment {name} PDF ...' in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
-            assert f'Writing {ly.trim()} ...' in transcript
             assert f'Writing {pdf.trim()} ...' in transcript
             assert f'Removing {maker.trim()} ...' in transcript
             assert f'Opening' not in transcript

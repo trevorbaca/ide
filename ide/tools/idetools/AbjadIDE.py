@@ -1321,8 +1321,6 @@ class AbjadIDE(abjad.AbjadObject):
             maker.write_text(completed_template)
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
-            if ly.is_file():
-                self.io.display(f'writing {ly.trim()} ...')
             if pdf.is_file():
                 self.io.display(f'writing {pdf.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
