@@ -145,15 +145,8 @@ class AbjadIDE(abjad.AbjadObject):
             raise Exception(message)
 
     def _collect_segments(self, directory):
-        paths = sorted(directory.segments.iterdir())
-        introduction_names, other_names = [], []
-        for path in paths:
-            name = path.name
-            if name.startswith('_'):
-                introduction_names.append(name)
-            else:
-                other_names.append(name)
-        names = introduction_names + other_names
+        paths = directory.segments._list_paths()
+        names = [_.name for _ in paths]
         sources, targets = [], []
         for name in names:
             source = directory.segments(name, 'illustration.ly')
