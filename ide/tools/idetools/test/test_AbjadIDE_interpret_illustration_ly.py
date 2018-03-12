@@ -17,7 +17,7 @@ def test_AbjadIDE_interpret_illustration_ly_01():
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
@@ -26,7 +26,7 @@ def test_AbjadIDE_interpret_illustration_ly_01():
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
@@ -50,7 +50,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
             assert 'Interpreting ly ...' in transcript
             assert f'Removing {target.trim()} ...' not in transcript
             assert f'Interpreting {source.trim()} ...' in transcript
-            assert f'Writing {target.trim()} ...' in transcript
+            assert f'Found {target.trim()} ...' in transcript
             assert f'Opening {target.trim()} ...' not in transcript
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
@@ -61,7 +61,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
             assert 'Interpreting ly ...' in transcript
             assert f'Removing {target.trim()} ...' in transcript
             assert f'Interpreting {source.trim()} ...' in transcript
-            assert f'Writing {target.trim()} ...' in transcript
+            assert f'Found {target.trim()} ...' in transcript
             assert f'Opening {target.trim()} ...' not in transcript
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
@@ -86,7 +86,7 @@ def test_AbjadIDE_interpret_illustration_ly_03():
             assert 'Interpreting ly ...' in transcript
             assert f'Removing {target.trim()} ...' not in transcript
             assert f'Interpreting {source.trim()} ...' in transcript
-            assert f'Writing {target.trim()} ...' in transcript
+            assert f'Found {target.trim()} ...' in transcript
             assert f'Opening {target.trim()} ...' not in transcript
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
@@ -97,7 +97,7 @@ def test_AbjadIDE_interpret_illustration_ly_03():
             assert 'Interpreting ly ...' in transcript
             assert f'Removing {target.trim()} ...' in transcript
             assert f'Interpreting {source.trim()} ...' in transcript
-            assert f'Writing {target.trim()} ...' in transcript
+            assert f'Found {target.trim()} ...' in transcript
             assert f'Opening {target.trim()} ...' not in transcript
         assert 'Total time' in transcript
         assert all(_.is_file() for _ in targets)
@@ -117,7 +117,7 @@ def test_AbjadIDE_interpret_illustration_ly_04():
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Removing {target.trim()} ...' not in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
@@ -126,6 +126,6 @@ def test_AbjadIDE_interpret_illustration_ly_04():
         assert 'Interpreting ly ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
         assert f'Removing {target.trim()} ...' in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()

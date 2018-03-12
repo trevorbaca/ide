@@ -18,7 +18,7 @@ def test_AbjadIDE_make_segment_midi_01():
         assert f'Removing {midi.trim()} ...' not in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Writing {midi.trim()} ...' in transcript
+        assert f'Found {midi.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript
         assert f'Opening {midi.trim()} ...' in transcript
         assert midi.is_file()
@@ -30,7 +30,7 @@ def test_AbjadIDE_make_segment_midi_01():
         assert f'Removing {midi.trim()} ...' in transcript
         assert f'Writing {maker.trim()} ...' in transcript
         assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Writing {midi.trim()} ...' in transcript
+        assert f'Found {midi.trim()} ...' in transcript
         assert f'Removing {maker.trim()} ...' in transcript
         assert f'Opening {midi.trim()} ...' in transcript
         assert midi.is_file()

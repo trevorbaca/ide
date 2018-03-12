@@ -699,7 +699,7 @@ class AbjadIDE(abjad.AbjadObject):
             for path in sorted(tex.parent.glob('*.log')):
                 path.remove()
         if pdf.is_file():
-            self.io.display(f'writing {pdf.trim()} ...')
+            self.io.display(f'found {pdf.trim()} ...')
         else:
             self.io.display('ERROR IN LATEX LOG FILE ...')
             log_file = self.configuration.latex_log_file_path
@@ -804,7 +804,6 @@ class AbjadIDE(abjad.AbjadObject):
             suffix = suffix or '.py'
             name = stem + suffix
         target = directory / name
-        #boilerplate = self.configuration.boilerplate_directory
         if target.exists():
             self.io.display(f'existing {target.trim()} ...')
             return
@@ -905,9 +904,9 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
             if ly.is_file():
-                self.io.display(f'writing {ly.trim()} ...')
+                self.io.display(f'found {ly.trim()} ...')
             if pdf.is_file():
-                self.io.display(f'writing {pdf.trim()} ...')
+                self.io.display(f'found {pdf.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
@@ -1228,7 +1227,7 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
             if ly.is_file():
-                self.io.display(f'writing {ly.trim()} ...')
+                self.io.display(f'found {ly.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
@@ -1273,7 +1272,7 @@ class AbjadIDE(abjad.AbjadObject):
             result = self._interpret_file(maker)
             self.io.display(f'removing {maker.trim()} ...')
             if midi.is_file():
-                self.io.display(f'writing {midi.trim()} ...')
+                self.io.display(f'found {midi.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
@@ -1321,8 +1320,10 @@ class AbjadIDE(abjad.AbjadObject):
             maker.write_text(completed_template)
             self.io.display(f'interpreting {maker.trim()} ...')
             result = self._interpret_file(maker)
+            if ly.is_file():
+                self.io.display(f'found {ly.trim()} ...')
             if pdf.is_file():
-                self.io.display(f'writing {pdf.trim()} ...')
+                self.io.display(f'found {pdf.trim()} ...')
             self.io.display(f'removing {maker.trim()} ...')
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
@@ -1665,7 +1666,7 @@ class AbjadIDE(abjad.AbjadObject):
             abjad.IOManager.run_lilypond(str(ly))
             self._display_lilypond_log_errors()
             if pdf.is_file():
-                self.io.display(f'writing {pdf.trim()} ...')
+                self.io.display(f'found {pdf.trim()} ...')
             else:
                 self.io.display(f'can not produce {pdf.trim()} ...')
 

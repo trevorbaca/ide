@@ -20,7 +20,7 @@ def test_AbjadIDE_interpret_front_cover_tex_01():
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' not in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
 
@@ -28,6 +28,6 @@ def test_AbjadIDE_interpret_front_cover_tex_01():
         transcript = abjad_ide.io.transcript
         assert f'Removing {target.trim()} ...' in transcript
         assert f'Interpreting {source.trim()} ...' in transcript
-        assert f'Writing {target.trim()} ...' in transcript
+        assert f'Found {target.trim()} ...' in transcript
         assert f'Opening {target.trim()} ...' in transcript
         assert target.is_file()
