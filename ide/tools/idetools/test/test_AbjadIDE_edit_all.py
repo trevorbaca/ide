@@ -38,7 +38,7 @@ def test_AbjadIDE_edit_all_02():
 
     abjad_ide('red gg @@ q')
     transcript = abjad_ide.io.transcript 
-    assert "Matching '@@' to 12 files ..." in transcript
+    assert "Matching '@@' to 15 files ..." in transcript
 
 
 def test_AbjadIDE_edit_all_03():

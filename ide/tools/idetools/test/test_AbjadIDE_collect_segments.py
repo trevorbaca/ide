@@ -10,13 +10,13 @@ def test_AbjadIDE_collect_segments_01():
 
         abjad_ide('red %let ggc q')
         lines = abjad_ide.io.transcript.lines
-        index = lines.index('Collecting segment lys ...')
-        assert lines[index:] == [
+        for line in [
             'Collecting segment lys ...',
+            ' Writing red_score/builds/letter-score/_segments/segment--.ily ...',
             ' Writing red_score/builds/letter-score/_segments/segment--.ly ...',
+            ' Writing red_score/builds/letter-score/_segments/segment-A.ily ...',
             ' Writing red_score/builds/letter-score/_segments/segment-A.ly ...',
+            ' Writing red_score/builds/letter-score/_segments/segment-B.ily ...',
             ' Writing red_score/builds/letter-score/_segments/segment-B.ly ...',
-            '',
-            '> q',
-            '',
-            ]
+            ]:
+          assert line in lines, repr(line)

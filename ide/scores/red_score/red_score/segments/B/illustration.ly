@@ -10,29 +10,31 @@
 \layout {}
 
 \paper {}
+\include "illustration.ily"
+
 
 \score {
     <<
         {
             \include "layout.ly"
         }
-        \context Score = "Two-Staff Piano Score" <<
-            \context GlobalContext = "GlobalContext" <<
-                \context GlobalRests = "GlobalRests" {
+        \context Score = "TwoStaffPianoScore"
+        <<
+            \context GlobalContext = "GlobalContext"
+            <<
+                \context GlobalRests = "GlobalRests"
+                {
                 }
-                \context GlobalSkips = "GlobalSkips" {
+                \context GlobalSkips = "GlobalSkips"
+                {
                 }
-                { % measure
-                    \time 6/8
-                    s1 * 3/4
-                } % measure
-                { % measure
-                    s1 * 3/4
-                } % measure
             >>
-            \context PianoStaff = "Piano Staff" <<
-                \context Staff = "RH Staff" {
-                    \context Voice = "RH Voice" {
+            \context PianoStaff = "PianoStaff"
+            <<
+                \context Staff = "RHStaff"
+                {
+                    \context Voice = "RHVoice"
+                    {
                         g''8
                         bf''8
                         d''8
@@ -53,8 +55,10 @@
                         bf'4.
                     }
                 }
-                \context Staff = "LH Staff" {
-                    \context Voice = "LH Voice" {
+                \context Staff = "LHStaff"
+                {
+                    \context Voice = "LHVoice"
+                    {
                         \set PianoStaff.instrumentName = \markup { Piano }               %! ST1
                         \set PianoStaff.shortInstrumentName = \markup { Pf. }            %! ST1
                         \clef "bass"                                                     %! ST3
