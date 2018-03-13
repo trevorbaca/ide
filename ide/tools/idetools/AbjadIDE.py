@@ -78,6 +78,7 @@ class AbjadIDE(abjad.AbjadObject):
         self._current_directory = None
         self._example = example
         self._navigation = None
+        self._navigations: abjad.OrderedDict = abjad.OrderedDict()
         self._previous_directory = None
         self._redraw = None
         self._test = test
