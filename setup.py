@@ -19,7 +19,6 @@ install_requires = ('abjad',)
 setuptools.setup(
     author=author,
     author_email=author_email,
-    entry_points=entry_points,
     include_package_data=True,
     install_requires=[
         'abjad[development]',
