@@ -48,6 +48,9 @@ install:
 before_script:
     - ide/scr/prime-parser-tables
     - echo `which start-abjad-ide`
+    - pwd
+    - ls
+    - echo $MYPYPATH
 
 script:
     - start-abjad-ide q
