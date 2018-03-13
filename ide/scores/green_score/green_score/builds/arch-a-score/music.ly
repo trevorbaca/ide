@@ -1,6 +1,6 @@
 % Green Score (2018) 
 
-\version "2.19.81"
+\version "2.19.80"
 \language "english"
 
 #(ly:set-option 'relative-includes #t)
