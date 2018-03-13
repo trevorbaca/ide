@@ -30,19 +30,15 @@ before_install:
     - cd ..
     - pip install --upgrade pip
     - pip install coverage
+    - IDE_SCORES=`pwd`/ide/scores
+    - export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
+    - echo $PYTHONPATH
+    - export PATH=$PATH:`pwd`/ide/scr
+    - echo $PATH
+    - export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca
+    - echo $MYPYPATH
     - which latex
     - which xetex
-    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/blue_score:$PYTHONPATH
-    - export PYTHONPATH=/home/travis/build/Abjad/ide/ide/scores/red_score:$PYTHONPATH
-    - echo $PYTHONPATH
-    - pwd
-    - ls
-    - echo $PATH
-    - PATH=$PATH:`pwd`:`pwd`/ide/scr
-    - echo $PATH
-    - MYPYPATH=$PYTHONPATH:`pwd`:`pwd`/abjad
-    - export MYPYPATH
-    - echo $MYPYPATH
 
 install:
     - pip install -e git://github.com/trevorbaca/baca.git#egg=baca
