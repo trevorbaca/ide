@@ -14,12 +14,6 @@ author_email = [
     ]
 author_email = ', '.join(author_email)
 
-entry_points = {
-    'console_scripts': [
-        'start-abjad-ide = ide.tools.idetools:AbjadIDE._entry_point',
-        ],
-    }
-
 install_requires = ('abjad',)
 
 setuptools.setup(
