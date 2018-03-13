@@ -28,29 +28,31 @@ before_install:
     - cd abjad; git checkout trevor/dev; pip install -e .[development]
     - echo `git branch`
     - cd ..
-    - pip install --upgrade pip
-    - pip install coverage
-    - IDE_SCORES=`pwd`/ide/scores
-    - export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
-    - echo $PYTHONPATH
-    - export PATH=$PATH:`pwd`/ide/scr
-    - echo $PATH
-    - export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca
-    - echo $MYPYPATH
-    - which latex
-    - which xetex
+    - pwd
 
 install:
+    - pip install --upgrade pip
+    - pip install coverage
     - pip install -e git://github.com/trevorbaca/baca.git#egg=baca
     - pip install -r requirements.txt
     - pip install -e . 
 
 before_script:
-    - ide/scr/prime-parser-tables
-    - echo `which start-abjad-ide`
     - pwd
     - ls
+    - IDE_SCORES=`pwd`/ide/scores
+    - export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
+    - echo $PYTHONPATH
+    - export PATH=$PATH:`pwd`/ide/scr
+    - echo $PATH
+    - which latex
+    - which xetex
+    - export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca
+    - export MYPYPATH=$MYPYPATH:/home/travis/virtualenv/python3.6.3/src/baca
     - echo $MYPYPATH
+    - ls /home/travis/virtualenv/python3.6.3/src
+    - echo `which start-abjad-ide`
+    - ide/scr/prime-parser-tables
 
 script:
     - start-abjad-ide q
