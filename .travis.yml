@@ -40,7 +40,7 @@ before_install:
     - echo $PATH
     - PATH=$PATH:`pwd`:`pwd`/ide/scr
     - echo $PATH
-    - MYPYPATH=$PYTHONPATH:`pwd`
+    - MYPYPATH=$PYTHONPATH:`pwd`:`pwd`/abjad
     - export MYPYPATH
     - echo $MYPYPATH
 
