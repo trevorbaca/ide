@@ -2225,7 +2225,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         self._make__assets_directory(directory.build)
         self._make__segments_directory(directory.build)
-        container_to_part = abjad.OrderedDict()
+        container_to_part_assignment = abjad.OrderedDict()
         fermata_measure_numbers = abjad.OrderedDict()
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
@@ -2242,18 +2242,18 @@ class AbjadIDE(abjad.AbjadObject):
             text = self._trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
-            value = segment.get_metadatum('container_to_part')
+            value = segment.get_metadatum('container_to_part_assignment')
             if value:
-                container_to_part[segment.name] = value
+                container_to_part_assignment[segment.name] = value
             value = segment.get_metadatum('fermata_measure_numbers')
             if value:
                 fermata_measure_numbers[segment.name] = value
             value = segment.get_metadatum('time_signatures')
             if value:
                 time_signatures[segment.name] = value
-        key = 'container_to_part'
-        if bool(container_to_part):
-            directory.contents.add_metadatum(key, container_to_part)
+        key = 'container_to_part_assignment'
+        if bool(container_to_part_assignment):
+            directory.contents.add_metadatum(key, container_to_part_assignment)
         else:
             directory.contents.remove_metadatum(key)
         key = 'fermata_measure_numbers'
