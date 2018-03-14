@@ -109,7 +109,7 @@ class AbjadIDE(abjad.AbjadObject):
     def _activate_part_specific_tags(self, path):
         parts_directory = path.parent.parent
         assert parts_directory.is_parts()
-        self.run(abjad.Job.handle_edition_specific_tags(parts_directory))
+        self.run(abjad.Job.handle_edition_tags(parts_directory))
         part_abbreviation = path._parse_part_abbreviation()
         if part_abbreviation is None:
             self.io.display(f'no part abbreviation found in {path.name} ...')
@@ -3014,26 +3014,23 @@ class AbjadIDE(abjad.AbjadObject):
                 return
             total = len(paths)
             for i, path in enumerate(paths):
-                tuple_ = path.part_tuple()
-                if len(tuple_) == 3:
-                    part_name, part_abbreviation, number = tuple_
-                else:
-                    part_name, part_abbreviation, number, instrument = tuple_
-                dashed_part_name = abjad.String(part_name).to_dash_case()
+                part = path.to_part()
+                assert isinstance(part, abjad.Part)
+                dashed_part_name = abjad.String(part.name).to_dash_case()
                 file_name = f'{dashed_part_name}-{name}'
                 path = path.build / file_name
-                forces_tagline = self._part_subtitle(part_name) + ' part'
+                forces_tagline = self._part_subtitle(part.name) + ' part'
                 part_subtitle = self._part_subtitle(
-                    part_name,
+                    part.name,
                     parentheses=True,
                     )
                 self._generate_part_music_ly(
                     path,
                     dashed_part_name=dashed_part_name,
                     forces_tagline=forces_tagline,
-                    keep_with_tag=part_name,
-                    part_abbreviation=part_abbreviation,
-                    part_name=part_name,
+                    keep_with_tag=part.name,
+                    part_abbreviation=part.abbreviation,
+                    part_name=part.name,
                     part_subtitle=part_subtitle,
                     )
                 if 0 < total and i < total - 1:
