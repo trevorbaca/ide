@@ -326,8 +326,7 @@ class AbjadIDE(abjad.AbjadObject):
         forces_tagline=None,
         indent=0,
         keep_with_tag=None,
-        part_abbreviation=None,
-        part_name=None,
+        part=None,
         part_subtitle=None,
         silent=None,
         ):
@@ -403,7 +402,8 @@ class AbjadIDE(abjad.AbjadObject):
                 defaults_include_statement = ''
                 segment_ly_include_statements = r'\FOO'
             else:
-                identifiers = path.part_name_to_identifiers(part_name)
+                dictionary = self._make_container_to_part_assignment(path)
+                identifiers = path.part_to_identifiers(part, dictionary)
                 identifiers = ['\\' + _ for _ in identifiers]
                 newline = '\n' + 24 * ' '
                 segment_ly_include_statements = newline.join(identifiers)
@@ -413,7 +413,7 @@ class AbjadIDE(abjad.AbjadObject):
                 global_skip_identifiers=global_skip_identifiers,
                 lilypond_language_directive=lilypond_language_directive,
                 lilypond_version_directive=lilypond_version_directive,
-                part_abbreviation=repr(part_abbreviation),
+                part_abbreviation=repr(part.abbreviation),
                 part_subtitle=part_subtitle,
                 score_title=score_title,
                 score_title_without_year=score_title_without_year,
@@ -740,6 +740,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         directory._segments.mkdir()
         gitignore = directory._segments / '.gitignore'
+        gitignore.write_text('*.ily')
         gitignore.write_text('*.ly')
 
     def _make_command_sections(self, directory):
@@ -782,6 +783,19 @@ class AbjadIDE(abjad.AbjadObject):
                 )
             sections.append(section)
         return sections
+
+    def _make_container_to_part_assignment(self, directory):
+        pairs = self._collect_segments(directory.build)
+        if not pairs:
+            self.io.display('... no segment lys found.')
+            return
+        container_to_part_assignment = abjad.OrderedDict()
+        for source, target in pairs:
+            segment = source.parent
+            value = segment.get_metadatum('container_to_part_assignment')
+            if value:
+                container_to_part_assignment[segment.name] = value
+        return container_to_part_assignment
 
     def _make_file(self, directory):
         name = self.io.get('file name')
@@ -1049,7 +1063,7 @@ class AbjadIDE(abjad.AbjadObject):
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part.name,
-                part_name=part.name,
+                part=part,
                 part_subtitle=part_subtitle,
                 silent=True,
                 )
@@ -2225,7 +2239,6 @@ class AbjadIDE(abjad.AbjadObject):
             return
         self._make__assets_directory(directory.build)
         self._make__segments_directory(directory.build)
-        container_to_part_assignment = abjad.OrderedDict()
         fermata_measure_numbers = abjad.OrderedDict()
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
@@ -2242,20 +2255,12 @@ class AbjadIDE(abjad.AbjadObject):
             text = self._trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
-            value = segment.get_metadatum('container_to_part_assignment')
-            if value:
-                container_to_part_assignment[segment.name] = value
             value = segment.get_metadatum('fermata_measure_numbers')
             if value:
                 fermata_measure_numbers[segment.name] = value
             value = segment.get_metadatum('time_signatures')
             if value:
                 time_signatures[segment.name] = value
-        key = 'container_to_part_assignment'
-        if bool(container_to_part_assignment):
-            directory.contents.add_metadatum(key, container_to_part_assignment)
-        else:
-            directory.contents.remove_metadatum(key)
         key = 'fermata_measure_numbers'
         if bool(fermata_measure_numbers):
             directory.contents.add_metadatum(key, fermata_measure_numbers)
@@ -3029,8 +3034,7 @@ class AbjadIDE(abjad.AbjadObject):
                     dashed_part_name=dashed_part_name,
                     forces_tagline=forces_tagline,
                     keep_with_tag=part.name,
-                    part_abbreviation=part.abbreviation,
-                    part_name=part.name,
+                    part=part,
                     part_subtitle=part_subtitle,
                     )
                 if 0 < total and i < total - 1:
