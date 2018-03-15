@@ -2271,16 +2271,17 @@ class AbjadIDE(abjad.AbjadObject):
             directory.contents.add_metadatum(key, time_signatures)
         else:
             directory.contents.remove_metadatum(key)
+        _segments = directory._segments
         for job in [
-            abjad.Job.handle_edition_tags(directory.build),
-            abjad.Job.handle_fermata_bar_lines(directory.build),
-            abjad.Job.handle_shifted_clefs(directory.build),
-            abjad.Job.color_persistent_indicators(directory.build, undo=True),
-            abjad.Job.hide_default_clefs(directory.build),
-            abjad.Job.show_music_annotations(directory.build, undo=True),
-            abjad.Job.join_broken_spanners(directory.build),
+            abjad.Job.handle_edition_tags(_segments),
+            abjad.Job.handle_fermata_bar_lines(_segments),
+            abjad.Job.handle_shifted_clefs(_segments),
+            abjad.Job.color_persistent_indicators(_segments, undo=True),
+            abjad.Job.hide_default_clefs(_segments),
+            abjad.Job.show_music_annotations(_segments, undo=True),
+            abjad.Job.join_broken_spanners(_segments),
             ]:
-            self.run(job, quiet=True)
+            self.run(job, quiet=False)
 
     @Command(
         'ccl',
