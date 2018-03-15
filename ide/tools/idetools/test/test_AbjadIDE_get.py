@@ -8,7 +8,8 @@ def test_AbjadIDE_get_01():
     '''
 
     with ide.Test():
-        source = ide.Path('red_score', 'builds', 'letter-score', 'front-cover.tex')
+        source = ide.Path('red_score', 'builds', 'letter-score')
+        source /= 'front-cover.tex'
         assert source.is_file()
         target = source.with_score('blue_score')
         target.remove()
@@ -16,11 +17,11 @@ def test_AbjadIDE_get_01():
         abjad_ide(f'blu %letter get red ont-co y q')
         assert target.is_file()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : builds : letter-score'
+        header = 'Blue Score (2017) : builds : letter-score (empty)'
         header += ' : get files from ...'
         assert header in transcript
         assert header in transcript
-        header = 'Blue Score (2017) : distribution'
+        header = 'Blue Score (2017) : distribution (empty)'
         header += ' : get Red Score (2017) files ...'
         assert f'> red' in transcript
         assert f'Getting {source.trim()} ...' in transcript
@@ -42,10 +43,10 @@ def test_AbjadIDE_get_02():
         abjad_ide(f'blu dd get red ore.pdf y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : distribution'
+        header = 'Blue Score (2017) : distribution (empty)'
         header += ' : get files from ...'
         assert header in transcript
-        header = 'Blue Score (2017) : distribution'
+        header = 'Blue Score (2017) : distribution (empty)'
         header += ' : get Red Score (2017) files ...'
         assert header in transcript
         assert '> red' in transcript
@@ -69,9 +70,9 @@ def test_AbjadIDE_get_03():
         abjad_ide(f'blu ee get red otes.txt y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        header = 'Blue Score (2017) : etc : get files from ...'
+        header = 'Blue Score (2017) : etc (empty) : get files from ...'
         assert header in transcript
-        header = 'Blue Score (2017) : etc'
+        header = 'Blue Score (2017) : etc (empty)'
         header += ' : get Red Score (2017) files ...'
         assert header in transcript
         assert '> red' in transcript

@@ -26,7 +26,7 @@ def test_AbjadIDE_go_to_directory_02():
 
     abjad_ide('red %_ass q')
     transcript = abjad_ide.io.transcript 
-    assert 'Red Score (2017) : builds : _assets' in transcript.titles
+    assert 'Red Score (2017) : builds : _assets (empty)' in transcript.titles
 
 
 def test_AbjadIDE_go_to_directory_03():

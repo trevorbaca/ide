@@ -7,11 +7,11 @@ def test_AbjadIDE_duplicate_01():
     r'''In build directory.
     '''
 
-    abjad_ide(f'blu %letter dup ignore q')
+    abjad_ide(f'red %let dup layout.ly q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score', 'builds', 'letter-score')
-    assert 'Select files to duplicate> ignore' in transcript
-    assert 'Duplicating blue_score/builds/letter-score/.gitignore ...' in transcript
+    path = ide.Path('red_score', 'builds', 'letter-score')
+    assert 'Select files to duplicate> layout.ly' in transcript
+    assert 'Duplicating red_score/builds/letter-score/layout.ly ...' in transcript
     assert 'Enter new name> q' in transcript
 
 
@@ -19,11 +19,11 @@ def test_AbjadIDE_duplicate_02():
     r'''In distribution directory.
     '''
 
-    abjad_ide(f'blu dd dup ignore q')
+    abjad_ide(f'red dd dup red-score.pdf q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score', 'distribution')
-    assert 'Select files to duplicate> ignore' in transcript
-    assert 'Duplicating blue_score/distribution/.gitignore ...' in transcript
+    path = ide.Path('red_score', 'distribution')
+    assert 'Select files to duplicate> red-score.pdf' in transcript
+    assert 'Duplicating red_score/distribution/red-score.pdf ...' in transcript
     assert 'Enter new name> q' in transcript
 
 
@@ -31,11 +31,11 @@ def test_AbjadIDE_duplicate_03():
     r'''In etc directory.
     '''
 
-    abjad_ide(f'blu ee dup ignore q')
+    abjad_ide(f'red ee dup notes.txt q')
     transcript = abjad_ide.io.transcript
-    path = ide.Path('blue_score', 'etc')
-    assert 'Select files to duplicate> ignore' in transcript
-    assert 'Duplicating blue_score/etc/.gitignore ...' in transcript
+    path = ide.Path('red_score', 'etc')
+    assert 'Select files to duplicate> notes.txt' in transcript
+    assert 'Duplicating red_score/etc/notes.txt ...' in transcript
     assert 'Enter new name> q' in transcript
 
 

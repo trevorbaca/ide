@@ -16,7 +16,7 @@ def test_AbjadIDE_go_to_tools_directory_01():
         'Red Score (2017) : tools',
         ]
     assert 'adjust_spacing_sections.py' in transcript
-    assert '.gitignore' not in transcript
+    assert '.gitignore' in transcript
 
 
 def test_AbjadIDE_go_to_tools_directory_02():
