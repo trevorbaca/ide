@@ -2983,12 +2983,15 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not parts:
             return
+        parts_directory = directory
         for part in parts:
+            dashed_part_name = abjad.String(part.name).to_dash_case()
+            part_directory = parts_directory / dashed_part_name
             snake_part_name = abjad.String(part.name).to_snake_case()
             target_name = f'{snake_part_name}_layout.py'
             path = directory.build(target_name)
             self._copy_boilerplate(
-                directory.build,
+                part_directory,
                 'part_layout.py',
                 target_name=path.name,
                 values={'part_identifier':part.identifier},
