@@ -110,13 +110,13 @@ class AbjadIDE(abjad.AbjadObject):
         parts_directory = path.parent.parent
         assert parts_directory.is_parts()
         self.run(abjad.Job.handle_edition_tags(parts_directory))
-        part_abbreviation = path._parse_part_abbreviation()
-        if part_abbreviation is None:
-            self.io.display(f'no part abbreviation found in {path.name} ...')
+        part_identifier = path._parse_part_identifier()
+        if part_identifier is None:
+            self.io.display(f'no part identifier found in {path.name} ...')
         else:
             parts_directory_name = abjad.String(parts_directory.name)
             parts_directory_name = parts_directory_name.to_shout_case()
-            tag = f'+{parts_directory_name}_{part_abbreviation}'
+            tag = f'+{parts_directory_name}_{part_identifier}'
             self.activate(parts_directory, tag, message_zero=True)
         self.uncolor_persistent_indicators(parts_directory)
         
@@ -413,7 +413,7 @@ class AbjadIDE(abjad.AbjadObject):
                 global_skip_identifiers=global_skip_identifiers,
                 lilypond_language_directive=lilypond_language_directive,
                 lilypond_version_directive=lilypond_version_directive,
-                part_abbreviation=repr(part.abbreviation),
+                part_identifier=repr(part.identifier),
                 part_subtitle=part_subtitle,
                 score_title=score_title,
                 score_title_without_year=score_title_without_year,
@@ -970,7 +970,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('getting part names from score template ...')
         part_manifest = directory._get_part_manifest()
         part_names = [_.name for _ in part_manifest]
-        part_abbreviations = [_.abbreviation for _ in part_manifest]
+        part_identifier = [_.identifier for _ in part_manifest]
         for part_name in part_names:
             self.io.display(f'found {part_name} ...')
         self.io.display('')
@@ -1052,7 +1052,7 @@ class AbjadIDE(abjad.AbjadObject):
             forces_tagline = self._part_subtitle(part.name) + ' part'
             self._generate_back_cover_tex(
                 part_directory(f'{dashed_part_name}-back-cover.tex'),
-                price=f'{part.abbreviation} ({part.number}/{total_parts})',
+                price=f'{part.identifier} ({part.number}/{total_parts})',
                 ),
             self._generate_front_cover_tex(
                 part_directory(f'{dashed_part_name}-front-cover.tex'),
@@ -1078,7 +1078,7 @@ class AbjadIDE(abjad.AbjadObject):
                 part_directory,
                 'part_layout.py',
                 target_name=f'{snake_part_name}_layout.py',
-                values={'part_abbreviation':part.abbreviation},
+                values={'part_identifier':part.identifier},
                 )
 
     def _make_score_build_directory(self, builds):
@@ -2896,7 +2896,7 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 assert directory.is_part()
                 path = directory / file_name
-            price = f'{part.abbreviation} ({part.number}/{total_parts})'
+            price = f'{part.identifier} ({part.number}/{total_parts})'
             self._generate_back_cover_tex(path, price=price)
 
     @Command(
@@ -2991,7 +2991,7 @@ class AbjadIDE(abjad.AbjadObject):
                 directory.build,
                 'part_layout.py',
                 target_name=path.name,
-                values={'part_abbreviation':part.abbreviation},
+                values={'part_identifier':part.identifier},
                 )
 
     @Command(
@@ -4463,9 +4463,9 @@ class AbjadIDE(abjad.AbjadObject):
         source = paths[0]
         self.io.display(f'using {source.trim()} as source ...')
         self.io.display('')
-        source_part_abbreviation = source._parse_part_abbreviation()
-        if source_part_abbreviation is None:
-            self.io.display(f'no part abbreviation found in {source.name} ...')
+        source_part_identifier = source._parse_part_identifier()
+        if source_part_identifier is None:
+            self.io.display(f'no part identifier found in {source.name} ...')
             return
         source_text = source.read_text()
         name, verb = 'layout.py', 'use as targets'
@@ -4475,10 +4475,10 @@ class AbjadIDE(abjad.AbjadObject):
         if not paths:
             return
         for path in paths:
-            part_abbreviation = path.get_part_abbreviation()
+            part_identifier = path.get_part_identifier()
             target_text = source_text.replace(
-                source_part_abbreviation,
-                part_abbreviation,
+                source_part_identifier,
+                part_identifier,
                 )
             self.io.display(f'writing {path.trim()} ...')
             path.write_text(target_text)

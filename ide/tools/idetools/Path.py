@@ -239,23 +239,23 @@ class Path(abjad.Path):
             return True
         return False
 
-    def _parse_part_abbreviation(self):
+    def _parse_part_identifier(self):
         if self.suffix == '.ly':
-            part_abbreviation = None
+            part_identifier = None
             with self.open('r') as pointer:
                 for line in pointer.readlines():
-                    if line.startswith('% part_abbreviation = '):
-                        line = line.strip('% part_abbreviation = ')
-                        part_abbreviation = eval(line)
-                        return part_abbreviation
+                    if line.startswith('% part_identifier = '):
+                        line = line.strip('% part_identifier = ')
+                        part_identifier = eval(line)
+                        return part_identifier
         elif self.name.endswith('layout.py'):
-            part_abbreviation = None
+            part_identifier = None
             with self.open('r') as pointer:
                 for line in pointer.readlines():
-                    if line.startswith('part_abbreviation = '):
-                        line = line.strip('part_abbreviation = ')
-                        part_abbreviation = eval(line)
-                        return part_abbreviation
+                    if line.startswith('part_identifier = '):
+                        line = line.strip('part_identifier = ')
+                        part_identifier = eval(line)
+                        return part_identifier
         else:
             raise TypeError(self)
 
@@ -287,10 +287,9 @@ class Path(abjad.Path):
         assert self.is_parts()
         result = []
         part_manifest = self._get_part_manifest()
-        for pair in part_manifest:
-            part_name, abbreviation = pair
-            abbreviation = abjad.String(abbreviation).to_shout_case()
-            document_name = f'{stem}_{abbreviation}'
+        for part in part_manifest:
+            identifier = abjad.String(part.identifier).to_shout_case()
+            document_name = f'{stem}_{part.identifier}'
             result.append(document_name)
         return result
 
