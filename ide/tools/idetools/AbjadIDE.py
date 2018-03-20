@@ -3799,6 +3799,18 @@ class AbjadIDE(abjad.AbjadObject):
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
 
     @Command(
+        'lmnmh',
+        description=f'local measure number markup - hide',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def hide_local_measure_number_markup(self, directory: Path) -> None:
+        r'''Hides local measure number markup.
+        '''
+        assert directory.is_buildspace()
+        self.run(abjad.Job.hide_local_measure_number_markup(directory))
+
+    @Command(
         'mimh',
         description=f'measure index markup - hide',
         menu_section='music annotations',
@@ -4741,6 +4753,18 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Shows help.
         '''
         pass
+
+    @Command(
+        'lmnms',
+        description=f'local measure number markup - show',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def show_local_measure_number_markup(self, directory: Path) -> None:
+        r'''Shows local measure number markup.
+        '''
+        assert directory.is_buildspace()
+        self.run(abjad.Job.show_local_measure_number_markup(directory))
 
     @Command(
         'mims',
