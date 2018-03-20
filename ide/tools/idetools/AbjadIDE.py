@@ -3808,7 +3808,9 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Hides local measure number markup.
         '''
         assert directory.is_buildspace()
-        self.run(abjad.Job.hide_local_measure_number_markup(directory))
+        self.run(
+            abjad.Job.show_local_measure_number_markup(directory, undo=True)
+            )
 
     @Command(
         'mimh',
