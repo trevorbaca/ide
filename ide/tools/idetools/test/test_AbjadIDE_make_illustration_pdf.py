@@ -53,8 +53,9 @@ def test_AbjadIDE_make_illustration_pdf_02():
 
     with ide.Test():
         directory = ide.Path('red_score').materials
-        whitelist = ['metronome_marks', 'red_pitch_classes']
-        blacklist = ['instruments', 'ranges', 'time_signatures']
+        whitelist = ['red_pitch_classes']
+        blacklist = [
+            'instruments', 'metronome_marks', 'ranges', 'time_signatures']
         for name in whitelist:
             ly = directory(name, 'illustration.ly')
             ly.remove()
@@ -94,17 +95,17 @@ def test_AbjadIDE_make_illustration_pdf_02():
         abjad_ide('red mm **llus q')
         transcript = abjad_ide.io.transcript
         for name in whitelist:
-            assert "Matching '**llus' to 2 files ..." in transcript
+            assert "Matching '**llus' to 1 file ..." in transcript
 
         abjad_ide('red mm **pdf q')
         transcript = abjad_ide.io.transcript
         for name in whitelist:
-            assert "Matching '**pdf' to 2 files ..." in transcript
+            assert "Matching '**pdf' to 1 file ..." in transcript
 
         abjad_ide('red mm ** q')
         transcript = abjad_ide.io.transcript
         for name in whitelist:
-            assert "Matching '**' to 2 files ..." in transcript
+            assert "Matching '**' to 1 file ..." in transcript
 
         abjad_ide('red mm **asdf q')
         transcript = abjad_ide.io.transcript

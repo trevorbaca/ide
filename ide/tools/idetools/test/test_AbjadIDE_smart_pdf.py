@@ -3,22 +3,6 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_smart_pdf_01():
-    r'''In material directory.
-    '''
-
-    with ide.Test():
-
-        abjad_ide('red %metronome ipm q')
-        path = ide.Path(
-            'red_score', 'materials', 'metronome_marks', 'illustration.pdf')
-        assert path.is_file()
-
-        abjad_ide('red *metronome q')
-        transcript = abjad_ide.io.transcript 
-        assert f"Opening {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_pdf_02():
     r'''In segment directory.
     '''
 
@@ -33,7 +17,7 @@ def test_AbjadIDE_smart_pdf_02():
         assert f"Opening {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_pdf_03():
+def test_AbjadIDE_smart_pdf_02():
     r'''Handles numbers.
     '''
 
@@ -52,7 +36,7 @@ def test_AbjadIDE_smart_pdf_03():
         assert f"Opening {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_pdf_04():
+def test_AbjadIDE_smart_pdf_03():
     r'''Missing pattern.
     '''
 
@@ -61,7 +45,7 @@ def test_AbjadIDE_smart_pdf_04():
     assert "Missing '*' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_pdf_05():
+def test_AbjadIDE_smart_pdf_04():
     r'''Unmatched pattern.
     '''
 
