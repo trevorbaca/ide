@@ -1,7 +1,7 @@
 import abjad
 
 
-instruments = abjad.InstrumentDictionary([
+instruments = abjad.OrderedDict([
     (
         'piano',
         abjad.Piano(),
