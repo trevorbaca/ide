@@ -12,7 +12,7 @@ def test_AbjadIDE_go_to_directory_01():
     abjad_ide('ll %str q')
     transcript = abjad_ide.io.transcript 
     assert 'Abjad IDE : library' in transcript.titles
-    assert 'Stirrings Still (2017)' in transcript.titles
+    assert 'Stirrings Still (2018)' in transcript.titles
 
     abjad_ide('ll %fab q')
     transcript = abjad_ide.io.transcript 
