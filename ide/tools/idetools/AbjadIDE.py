@@ -405,7 +405,9 @@ class AbjadIDE(abjad.AbjadObject):
                 dictionary = self._make_container_to_part_assignment(path)
                 identifiers = path.part_to_identifiers(part, dictionary)
                 if isinstance(identifiers, str):
-                    self.io.display(identifiers)
+                    self.io.display(identifiers + ' ...')
+                    self.io.display(f'removing {path.trim()} ...')
+                    path.remove()
                     return
                 identifiers = ['\\' + _ for _ in identifiers]
                 newline = '\n' + 24 * ' '
