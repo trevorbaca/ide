@@ -404,6 +404,9 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 dictionary = self._make_container_to_part_assignment(path)
                 identifiers = path.part_to_identifiers(part, dictionary)
+                if isinstance(identifiers, str):
+                    self.io.display(identifiers)
+                    return
                 identifiers = ['\\' + _ for _ in identifiers]
                 newline = '\n' + 24 * ' '
                 segment_ly_include_statements = newline.join(identifiers)
