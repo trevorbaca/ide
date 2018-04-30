@@ -1763,12 +1763,19 @@ class AbjadIDE(abjad.AbjadObject):
         result = response.payload
         return result
 
-    def _select_paths_in_buildspace(self, directory, name, verb, count=None):
+    def _select_paths_in_buildspace(
+        self,
+        directory,
+        name,
+        verb,
+        count=None,
+        supply_missing=None,
+        ):
         assert directory.is_buildspace()
         selected_paths = []
         if directory.is_segment():
             path = directory(name)
-            if path.is_file():
+            if supply_missing or path.is_file():
                 selected_paths.append(path)
             if not selected_paths:
                 self.io.display(f'no files matching {name} ...')
@@ -1776,8 +1783,12 @@ class AbjadIDE(abjad.AbjadObject):
         if directory.is_part():
             paths = directory.get_files_ending_with(name)
             if not paths:
-                self.io.display(f'no file ending {name} ...')
-                return
+                if supply_missing:
+                    path = directory / name
+                    paths.append(path)
+                else:
+                    self.io.display(f'no file ending {name} ...')
+                    return
             if 1 < len(paths):
                 self.io.display(f'too many files ending in {name} ...')
                 return
@@ -1804,7 +1815,12 @@ class AbjadIDE(abjad.AbjadObject):
                 if part_directory.name in ('_assets', '_segments'):
                     continue
                 paths_ = part_directory.get_files_ending_with(name)
-                paths.extend(paths_)
+                if paths_:
+                    paths.extend(paths_)
+                elif supply_missing:
+                    file_name = f'{part_directory.name}-{name}'
+                    path = part_directory / file_name
+                    paths.append(path)
         if not paths:
             self.io.display(f'no files ending in {name} ...')
         if count is not None:
@@ -3104,7 +3120,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``preface.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'preface.tex'
+        name, verb = 'preface.tex', 'generate'
         if directory.is_part():
             file_name = f'{directory.name}-{name}'
             path = directory / file_name
@@ -3114,15 +3130,17 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory.build(name)
             self._generate_preface_tex(path)
             return
-        parts = self._select_parts(directory.build)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        for part in parts:
-            dashed_part_name = abjad.String(part.name).to_dash_case()
-            file_name = f'{dashed_part_name}-{name}'
-            path = directory / dashed_part_name / file_name
+        for path in paths:
             self._generate_preface_tex(path)
 
     @Command(
