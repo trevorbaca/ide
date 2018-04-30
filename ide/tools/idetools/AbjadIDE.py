@@ -12,9 +12,7 @@ import re
 import roman # type: ignore
 import shutil
 import subprocess
-from typing import Callable
-from typing import List
-from typing import Union
+import typing
 from .Command import Command
 from .Configuration import Configuration
 from .Interaction import Interaction
@@ -207,8 +205,22 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _generate_back_cover_tex(self, path, price=None):
         assert path.build.exists(), repr((path, path.build))
-        assert path.name.endswith('back-cover.tex')
+        name = 'back-cover.tex'
+        assert path.name.endswith(name)
         directory = path.build
+        local_template = directory._assets(name)
+        if local_template.is_file():
+            self.io.display(f'removing {path.trim()} ...')
+            path.remove()
+            self.io.display(f'copying {local_template.trim()} ...')
+            self.io.display(f'writing {path.trim()} ...')
+            shutil.copyfile(str(local_template), str(path))
+            if price is not None:
+                text = path.read_text()
+                if '_PRICE' in text:
+                    text = text.replace('_PRICE', price)
+                path.write_text(text)
+            return
         values = {}
         string = 'catalog_number'
         catalog_number = directory.contents.get_metadatum(string, r'\null')
@@ -284,8 +296,8 @@ class AbjadIDE(abjad.AbjadObject):
             shutil.copyfile(str(local_template), str(path))
             if forces_tagline is not None:
                 text = path.read_text()
-                if 'FORCES_TAGLINE' in text:
-                    text = text.replace('FORCES_TAGLINE', forces_tagline)
+                if '_FORCES_TAGLINE' in text:
+                    text = text.replace('_FORCES_TAGLINE', forces_tagline)
                 path.write_text(text)
             return
         values = {}
@@ -1986,7 +1998,7 @@ class AbjadIDE(abjad.AbjadObject):
     def activate(
         self,
         path: abjad.Path,
-        tag: Union[str, Callable],
+        tag: typing.Union[str, typing.Callable],
         deactivate: bool = False,
         indent: int = 0,
         message_zero: bool = False,
@@ -2025,7 +2037,7 @@ class AbjadIDE(abjad.AbjadObject):
     def deactivate(
         self,
         path: abjad.Path,
-        tag: Union[str, Callable],
+        tag: typing.Union[str, typing.Callable],
         indent: int = 0,
         message_zero: bool = False,
         name: str = None,
@@ -2063,7 +2075,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         message_zero = not bool(quiet)
         job = abjad.new(job, message_zero=message_zero)
-        messages: List[abjad.String] = job()
+        messages: typing.List[abjad.String] = job()
         self.io.display(messages)
 
     def test_baca_directories(self) -> bool:
@@ -2876,7 +2888,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``back-cover.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'back-cover.tex'
+        name, verb = 'back-cover.tex', 'generate'
         # TODO:
         #if directory.is_part():
         #    file_name = f'{directory.name}-{name}'
@@ -2884,42 +2896,27 @@ class AbjadIDE(abjad.AbjadObject):
         #    self._generate_back_cover_tex(path)
         #    return
         if not (directory.build.is_parts() or directory.build.is_part()):
-            path = directory.build(name)
+            path = directory.build / name
             self._generate_back_cover_tex(path)
             return
-        parts = self._select_parts(directory.build)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        if 1 < len(parts):
-            self.io.display('will generate ...')
-            for part in parts:
-                dashed_part_name = abjad.String(part.name).to_dash_case()
-                file_name = f'{dashed_part_name}-{name}'
-                if directory.is_parts():
-                    path = directory / dashed_part_name / file_name
-                else:
-                    assert directory.is_part()
-                    path = directory / file_name
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            response = self.io.get('ok?')
-            if self.is_navigation(response):
-                return
-            if response != 'y':
-                return
         total_parts = len(directory.build._get_part_manifest())
-        for part in parts:
-            dashed_part_name = abjad.String(part.name).to_dash_case()
-            file_name = f'{dashed_part_name}-{name}'
-            if directory.is_parts():
-                path = directory / dashed_part_name / file_name
-            else:
-                assert directory.is_part()
-                path = directory / file_name
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
             price = f'{part.identifier} ({part.number}/{total_parts})'
             self._generate_back_cover_tex(path, price=price)
+            if i + 1 < path_count:
+                self.io.display('')
 
     @Command(
         'fctg',
@@ -3531,7 +3528,7 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory: Path,
         pattern: str = None,
-        payload: List = None,
+        payload: typing.List = None,
         ) -> None:
         r'''Goes to directory.
         '''
@@ -4863,7 +4860,7 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory: Path,
         pattern: str,
-        menu_paths: List,
+        menu_paths: typing.List,
         ) -> None:
         r'''Smart doctest.
         '''
@@ -4891,7 +4888,7 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory: Path,
         pattern:  str,
-        menu_paths: List,
+        menu_paths: typing.List,
         ) -> None:
         r'''Smart edit.
         '''
@@ -4918,7 +4915,7 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory: Path,
         pattern: str,
-        menu_paths: List,
+        menu_paths: typing.List,
         ) -> None:
         r'''Smart PDF.
         '''
@@ -4945,7 +4942,7 @@ class AbjadIDE(abjad.AbjadObject):
         self,
         directory: Path,
         pattern: str,
-        menu_paths: List,
+        menu_paths: typing.List,
         ) -> None:
         r'''Smart pytest.
         '''
