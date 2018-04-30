@@ -442,8 +442,16 @@ class AbjadIDE(abjad.AbjadObject):
     def _generate_part_tex(self, path, dashed_part_name):
         assert path.build.exists(), repr(path)
         assert path.build.is_parts() or path.build.is_part(), repr(path)
-        name = 'part.tex'
         directory = path.build
+        name = 'part.tex'
+        local_template = directory._assets(name)
+        if local_template.is_file():
+            self.io.display(f'removing {path.trim()} ...')
+            path.remove()
+            self.io.display(f'copying {local_template.trim()} ...')
+            self.io.display(f'writing {path.trim()} ...')
+            shutil.copyfile(str(local_template), str(path))
+            return
         values = {}
         values['dashed_part_name'] = dashed_part_name
         if path.build.is_part():
@@ -1782,11 +1790,15 @@ class AbjadIDE(abjad.AbjadObject):
         verb,
         count=None,
         supply_missing=None,
+        underscores=False,
         ):
         assert directory.is_buildspace()
         selected_paths = []
         if directory.is_segment():
-            path = directory(name)
+            if underscores:
+                path = directory / name.replace('-', '_')
+            else:
+                path = directory / name
             if supply_missing or path.is_file():
                 selected_paths.append(path)
             if not selected_paths:
@@ -1796,7 +1808,10 @@ class AbjadIDE(abjad.AbjadObject):
             paths = directory.get_files_ending_with(name)
             if not paths:
                 if supply_missing:
-                    path = directory / name
+                    if underscores:
+                        path = directory / name.replace('-', '_')
+                    else:
+                        path = directory / name
                     paths.append(path)
                 else:
                     self.io.display(f'no file ending {name} ...')
@@ -1831,6 +1846,8 @@ class AbjadIDE(abjad.AbjadObject):
                     paths.extend(paths_)
                 elif supply_missing:
                     file_name = f'{part_directory.name}-{name}'
+                    if underscores:
+                        file_name = file_name.replace('-', '_')
                     path = part_directory / file_name
                     paths.append(path)
         if not paths:
@@ -2098,16 +2115,24 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Builds ``part.pdf`` from the ground up.
         '''
         assert directory.is_parts() or directory.is_part()
+        name, verb = 'part.pdf', 'build'
         # TODO:
         if directory.is_part():
             raise NotImplementedError()
-        parts = self._select_parts(directory)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        total_parts = len(parts)
-        for i, part in enumerate(parts):
+        total_parts = len(directory.build._get_part_manifest())
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
             dashed_part_name = abjad.String(part.name).to_dash_case()
             part_directory = directory / dashed_part_name
             part_pdf_path = part_directory / dashed_part_name
@@ -2137,10 +2162,9 @@ class AbjadIDE(abjad.AbjadObject):
             file_name = f'{dashed_part_name}-part.tex'
             path = part_directory / file_name
             self._interpret_tex_file(path)
-            self.io.display('')
-            if 1 < total_parts and i < total_parts - 1:
+            if 1 < path_count and i < path_count - 1:
                 self.io.display('')
-        if len(parts) == 1:
+        if path_count == 1:
             file_name = f'{dashed_part_name}-part.pdf'
             path = part_directory / file_name
             self._open_files([path])
@@ -2968,6 +2992,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``layout.py``.
         '''
         assert directory.is_buildspace()
+        name, verb = 'layout.py', 'generate'
         if directory.is_segment():
             self._copy_boilerplate(
                 directory,
@@ -2982,24 +3007,28 @@ class AbjadIDE(abjad.AbjadObject):
                 target_name='layout.py',
                 )
             return
-        parts = self._select_parts(directory)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            underscores=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        parts_directory = directory
-        for part in parts:
-            dashed_part_name = abjad.String(part.name).to_dash_case()
-            part_directory = parts_directory / dashed_part_name
-            snake_part_name = abjad.String(part.name).to_snake_case()
-            target_name = f'{snake_part_name}_layout.py'
-            path = directory.build(target_name)
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
             self._copy_boilerplate(
-                part_directory,
+                path.parent,
                 'part_layout.py',
                 target_name=path.name,
                 values={'part_identifier':part.identifier},
                 )
+            if 1 < path_count and i + 1 < path_count:
+                self.io.display('')
 
     @Command(
         'mlg',
@@ -3057,40 +3086,30 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``part.tex``.
         '''
         assert directory.is_parts() or directory.is_part()
-        name = 'part.tex'
+        name, verb = 'part.tex', 'generate'
         if directory.is_part():
             dashed_part_name = directory.name
             file_name = f'{dashed_part_name}-{name}'
             path = directory / file_name
             self._generate_part_tex(path, dashed_part_name)
             return
-        parts = self._select_parts(directory)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        if 1 < len(parts):
-            self.io.display('will generate ...')
-            for part in parts:
-                dashed_part_name = abjad.String(part.name).to_dash_case()
-                file_name = f'{dashed_part_name}-{name}'
-                if directory.is_parts():
-                    path = directory / dashed_part_name / file_name
-                else:
-                    assert directory.is_part()
-                    path = directory / file_name
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            response = self.io.get('ok?')
-            if self.is_navigation(response):
-                return
-            if response != 'y':
-                return
-        for part in parts:
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
             dashed_part_name = abjad.String(part.name).to_dash_case()
-            file_name = f'{dashed_part_name}-{name}'
-            path = directory / dashed_part_name / file_name
             self._generate_part_tex(path, dashed_part_name)
+            if 1 < path_count and i + 1 < path_count:
+                self.io.display('')
 
     @Command(
         'pftg',

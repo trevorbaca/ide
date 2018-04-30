@@ -19,10 +19,10 @@ def test_AbjadIDE_build_part_pdf_01():
             ' arch-a-parts ppb bass q'
             )
         lines = abjad_ide.io.transcript.lines
-        index = lines.index('Select parts> bass')
+        index = lines.index('Select files to build> bass')
         lines = lines[index:]
         for line in [
-            'Select parts> bass',
+            'Select files to build> bass',
             '',
             'Building green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet.pdf ...',
             'Writing green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...',
