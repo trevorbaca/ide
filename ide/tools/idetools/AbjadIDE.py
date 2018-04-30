@@ -2238,10 +2238,10 @@ class AbjadIDE(abjad.AbjadObject):
             return exit
         else:
             paths = directory.list_paths()
-            total = len(paths)
+            path_count = len(paths)
             for i, path in enumerate(paths):
                 self.check_definition_py(path)
-                if i + 1 < total:
+                if i + 1 < path_count:
                     self.io.display('')
         return 0
 
@@ -2928,7 +2928,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``front-cover.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
-        name = 'front-cover.tex'
+        name, verb = 'front-cover.tex', 'generate'
         # TODO:
         if directory.is_part():
             raise NotImplementedError()
@@ -2940,38 +2940,23 @@ class AbjadIDE(abjad.AbjadObject):
             path = directory.build(name)
             self._generate_front_cover_tex(path)
             return
-        parts = self._select_parts(directory.build)
-        if self.is_navigation(parts):
+        paths = self._select_paths_in_buildspace(
+            directory,
+            name,
+            verb,
+            supply_missing=True,
+            )
+        if self.is_navigation(paths):
             return
-        if not parts:
+        if not paths:
             return
-        if 1 < len(parts):
-            self.io.display('will generate ...')
-            for part in parts:
-                dashed_part_name = abjad.String(part.name).to_dash_case()
-                file_name = f'{dashed_part_name}-{name}'
-                if directory.is_parts():
-                    path = directory / dashed_part_name / file_name
-                else:
-                    assert directory.is_part()
-                    path = directory / file_name
-                self.io.display(path.trim(), raw=True)
-            self.io.display('')
-            response = self.io.get('ok?')
-            if self.is_navigation(response):
-                return
-            if response != 'y':
-                return
-        for part in parts:
-            dashed_part_name = abjad.String(part.name).to_dash_case()
-            file_name = f'{dashed_part_name}-{name}'
-            if directory.is_parts():
-                path = directory / dashed_part_name / file_name
-            else:
-                assert directory.is_part()
-                path = directory / file_name
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
             forces_tagline = self._part_subtitle(part.name, parentheses=False)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
+            if i + 1 < path_count:
+                self.io.display('')
 
     @Command(
         'lpg',
@@ -3039,7 +3024,7 @@ class AbjadIDE(abjad.AbjadObject):
                 return
             if not paths:
                 return
-            total = len(paths)
+            path_count = len(paths)
             for i, path in enumerate(paths):
                 part = path.to_part()
                 assert isinstance(part, abjad.Part)
@@ -3059,7 +3044,7 @@ class AbjadIDE(abjad.AbjadObject):
                     part=part,
                     part_subtitle=part_subtitle,
                     )
-                if 0 < total and i < total - 1:
+                if 0 < path_count and i + 1 < path_count:
                     self.io.display('')
 
     @Command(
@@ -3972,11 +3957,11 @@ class AbjadIDE(abjad.AbjadObject):
                 self._open_files([target])
         else:
             paths = directory.list_paths()
-            total = len(paths)
+            path_count = len(paths)
             with abjad.Timer() as timer:
                 for i, path in enumerate(paths):
                     self.interpret_illustration_ly(path, open_after=False)
-                    if i + 1 < total:
+                    if i + 1 < path_count:
                         self.io.display('')
             self.io.display(timer.total_time_message)
 
@@ -4002,7 +3987,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not paths:
             return
-        total = len(paths)
+        path_count = len(paths)
         for i, path in enumerate(paths):
             if path.parent.is_score_build():
                 if not do_not_collect_segments or not do_not_generate_music:
@@ -4037,7 +4022,7 @@ class AbjadIDE(abjad.AbjadObject):
                             self.io.display(message)
                             return
             self._run_lilypond(path)
-            if i + 1 < total:
+            if 0 < path_count and i + 1 < path_count:
                 self.io.display('')
         if len(paths) == 1:
             target = path.with_suffix('.pdf')
@@ -4062,10 +4047,10 @@ class AbjadIDE(abjad.AbjadObject):
         paths = self._select_paths_in_buildspace(directory, name, verb)
         if not paths:
             return
-        total = len(paths)
+        path_count = len(paths)
         for i, path in enumerate(paths):
             self._interpret_tex_file(path)
-            if 1 < total and i < total - 1:
+            if 1 < path_count and i + 1 < path_count:
                 self.io.display('')
         if len(paths) == 1:
             target = path.with_suffix('.pdf')
@@ -4141,11 +4126,11 @@ class AbjadIDE(abjad.AbjadObject):
                 self._make_segment_ly(directory)
         else:
             paths = directory.list_paths()
-            total = len(paths)
+            path_count = len(paths)
             with abjad.Timer() as timer:
                 for i, path in enumerate(paths):
                     self.make_illustration_ly(path)
-                    if i + 1 < total:
+                    if 1 < path_count and i + 1 < path_count:
                         self.io.display('')
             self.io.display(timer.total_time_message)
 
@@ -4179,7 +4164,7 @@ class AbjadIDE(abjad.AbjadObject):
             exit = 0
             paths = directory.list_paths()
             paths = [_ for _ in paths if _.is_dir()]
-            total = len(paths)
+            path_count = len(paths)
             for i, path in enumerate(paths):
                 exit_ = self.make_illustration_pdf(path, open_after=False)
                 if i + 1 < len(paths):
@@ -4211,7 +4196,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not paths:
             return
-        total = len(paths)
+        path_count = len(paths)
         for i, layout_py in enumerate(paths):
             self.io.display(f'{verb}ing {layout_py.trim()} ...')
             layout_ly = layout_py.with_suffix('.ly')
@@ -4219,7 +4204,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'missing {layout_py.trim()} ...')
                 continue
             self._make_layout_ly(layout_py)
-            if i < total - 1:
+            if i < path_count - 1:
                 self.io.display('')
 
     @Command(
