@@ -2129,6 +2129,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if not paths:
             return
+        assert directory.build is not None
         total_parts = len(directory.build._get_part_manifest())
         path_count = len(paths)
         for i, path in enumerate(paths):
@@ -2180,11 +2181,12 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Builds ``score.pdf`` from the ground up.
         '''
         assert directory.is_build() or directory.is__segments()
+        assert directory.build is not None
         self.io.display('building score ...')
         self.interpret_music_ly(directory.build, open_after=False)
         self.io.display('')
-        tex = directory.build('front-cover.tex')
-        pdf = directory.build('front-cover.pdf')
+        tex = directory.build / 'front-cover.tex'
+        pdf = directory.build/ 'front-cover.pdf'
         if tex.is_file():
             self.interpret_front_cover_tex(directory.build, open_after=False)
         elif pdf.is_file():
@@ -2193,8 +2195,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('missing front cover ...')
             return
         self.io.display('')
-        tex = directory.build('preface.tex')
-        pdf = directory.build('preface.pdf')
+        tex = directory.build / 'preface.tex'
+        pdf = directory.build / 'preface.pdf'
         if tex.is_file():
             self.interpret_preface_tex(directory.build, open_after=False)
         elif pdf:
@@ -2203,8 +2205,8 @@ class AbjadIDE(abjad.AbjadObject):
             self.io.display('missing preface ...')
             return
         self.io.display('')
-        tex = directory.build('back-cover.tex')
-        pdf = directory.build('back-cover.pdf')
+        tex = directory.build / 'back-cover.tex'
+        pdf = directory.build / 'back-cover.pdf'
         if tex.is_file():
             self.interpret_back_cover_tex(directory.build, open_after=False)
         elif pdf.is_file():
@@ -2833,7 +2835,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Edits ``score.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
-        path = directory.build('score.tex')
+        assert directory.build is not None
+        path = directory.build / 'score.tex'
         self._open_files([path])
 
     @Command(
@@ -2846,7 +2849,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Edits ``stylesheet.ily``.
         '''
         assert directory.is__segments() or directory.is_build()
-        path = directory.build('stylesheet.ily')
+        assert directory.build is not None
+        path = directory.build / 'stylesheet.ily'
         self._open_files([path])
 
     @Command(
@@ -2912,6 +2916,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``back-cover.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         name, verb = 'back-cover.tex', 'generate'
         # TODO:
         #if directory.is_part():
@@ -2952,6 +2957,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``front-cover.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         name, verb = 'front-cover.tex', 'generate'
         # TODO:
         if directory.is_part():
@@ -3000,7 +3006,8 @@ class AbjadIDE(abjad.AbjadObject):
                 target_name='layout.py',
                 )
             return
-        elif not directory.build.is_parts():
+        assert directory.build is not None
+        if not directory.build.is_parts():
             self._copy_boilerplate(
                 directory.build,
                 'score_layout.py',
@@ -3040,6 +3047,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``music.ly``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         name = 'music.ly'
         if not (directory.build.is_parts() or directory.is_part()):
             path = directory.build(name)
@@ -3059,6 +3067,7 @@ class AbjadIDE(abjad.AbjadObject):
                 assert isinstance(part, abjad.Part)
                 dashed_part_name = abjad.String(part.name).to_dash_case()
                 file_name = f'{dashed_part_name}-{name}'
+                assert path.build is not None
                 path = path.build / file_name
                 forces_tagline = self._part_subtitle(part.name) + ' part'
                 part_subtitle = self._part_subtitle(
@@ -3121,6 +3130,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``preface.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         name, verb = 'preface.tex', 'generate'
         if directory.is_part():
             file_name = f'{directory.name}-{name}'
@@ -3155,8 +3165,9 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates ``score.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         self.io.display('generating score ...')
-        path = directory.build('score.tex')
+        path = directory.build / 'score.tex'
         self._generate_document(path)
 
     @Command(
@@ -3169,6 +3180,7 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Generates build directory ``stylesheet.ily``.
         '''
         assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
         self.io.display('generating stylesheet ...')
         values = {}
         paper_size = directory.build.get_metadatum('paper_size', 'letter')
@@ -3337,6 +3349,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(lines, raw=True)
                 if commit_message is None:
                     commit_message = self.io.get('commit message')
+                    assert isinstance(commit_message, str)
                     if self.is_navigation(commit_message):
                         return
                 command = f'git commit -m "{commit_message}" {root}'
@@ -3346,6 +3359,7 @@ class AbjadIDE(abjad.AbjadObject):
         else:
             assert directory.is_scores()
             commit_message = self.io.get('commit message')
+            assert isinstance(commit_message, str)
             if self.is_navigation(commit_message):
                 return
             paths = directory.list_paths()
@@ -3502,11 +3516,13 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to builds directory.
         '''
         assert directory.is_score_package_path()
+        assert directory.builds is not None
+        assert directory.builds._assets is not None
         if not directory.builds._assets.exists():
             self._make__assets_directory(directory.builds)
         if not directory.builds('__metadata__.py').is_file():
             directory.builds.write_metadata_py(abjad.OrderedDict())
-        self._manage_directory(directory.builds())
+        self._manage_directory(directory.builds)
 
     @Command(
         'cc',
@@ -3609,7 +3625,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to distribution directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.distribution())
+        assert directory.distribution is not None
+        self._manage_directory(directory.distribution)
 
     @Command(
         'ee',
@@ -3621,7 +3638,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to etc directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.etc())
+        assert directory.etc is not None
+        self._manage_directory(directory.etc)
 
     @Command(
         'll',
@@ -3650,7 +3668,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to materials directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.materials())
+        assert directory.materials is not None
+        self._manage_directory(directory.materials)
 
     @Command(
         '>',
@@ -3678,6 +3697,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path() or directory.is_scores()
         wrapper = directory.get_next_score(cyclic=True)
+        assert wrapper is not None
         self._manage_directory(wrapper.contents)
 
     @Command(
@@ -3706,6 +3726,7 @@ class AbjadIDE(abjad.AbjadObject):
         '''
         assert directory.is_score_package_path() or directory.is_scores()
         wrapper = directory.get_previous_score(cyclic=True)
+        assert wrapper is not None
         self._manage_directory(wrapper.contents)
 
     @Command(
@@ -3734,7 +3755,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to segments directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.segments())
+        assert directory.segments is not None
+        self._manage_directory(directory.segments)
 
     @Command(
         'yy',
@@ -3746,7 +3768,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to stylesheets directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.stylesheets())
+        assert directory.stylesheets is not None
+        self._manage_directory(directory.stylesheets)
 
     @Command(
         'tt',
@@ -3758,7 +3781,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to test directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.test())
+        assert directory.test is not None
+        self._manage_directory(directory.test)
 
     @Command(
         'oo',
@@ -3770,7 +3794,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Goes to tools directory.
         '''
         assert directory.is_score_package_path()
-        self._manage_directory(directory.tools())
+        assert directory.tools is not None
+        self._manage_directory(directory.tools)
 
     @Command(
         'ww',
@@ -5233,7 +5258,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Trashes ``score.pdf``.
         '''
         assert directory.is__segments() or directory.is_build()
-        path = directory.build('score.pdf')
+        assert directory.build is not None
+        path = directory.build / 'score.pdf'
         self._trash_files(path)
 
     @Command(
@@ -5247,7 +5273,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Trashes ``score.tex``.
         '''
         assert directory.is__segments() or directory.is_build()
-        path = directory.build('score.tex')
+        assert directory.build is not None
+        path = directory.build / 'score.tex'
         self._trash_files(path)
 
     @Command(
@@ -5260,7 +5287,8 @@ class AbjadIDE(abjad.AbjadObject):
         r'''Trashes ``stylesheet.ily``.
         '''
         assert directory.is__segments() or directory.is_build()
-        path = directory.build('stylesheet.ily')
+        assert directory.build is not None
+        path = directory.build / 'stylesheet.ily'
         self._trash_files(path)
 
     @Command(

@@ -1,7 +1,5 @@
 import abjad
-from typing import Optional
-from typing import Tuple
-from typing import Union as U
+import typing
 from .Path import Path
 
 
@@ -24,11 +22,11 @@ class Response(abjad.AbjadObject):
 
     def __init__(
         self,
-        payload: Optional[U[str, list, Path]] = None,
+        payload: typing.Union[str, list, Path] = None,
         string: str = None,
         ) -> None:
-        self._payload: Optional[U[str, list, Path]] = payload
-        self._string: str = string
+        self._payload = payload
+        self._string = string
 
     ### PRIVATE METHODS ###
 
@@ -52,23 +50,25 @@ class Response(abjad.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def pair(self) -> Tuple[str, str]:
+    def pair(self) -> typing.Tuple[str, typing.Optional[str]]:
         r'''Gets prefix / pattern pair.
         '''
         return self.prefix, self.pattern
 
     @property
-    def pattern(self) -> Optional[str]:
+    def pattern(self) -> typing.Optional[str]:
         r'''Gets pattern.
         '''
         if self._is_single_address():
+            assert self.string is not None
             return self.string[1:]
         if self._is_double_address():
+            assert self.string is not None
             return self.string[2:]
         return self.string
 
     @property
-    def payload(self) -> Optional[U[str, list, Path]]:
+    def payload(self) -> typing.Optional[typing.Union[str, list, Path]]:
         r'''Gets payload.
         '''
         return self._payload
@@ -78,20 +78,22 @@ class Response(abjad.AbjadObject):
         r'''Gets prefix.
         '''
         if self._is_single_address():
+            assert self.string is not None
             return self.string[:1]
         if self._is_double_address():
+            assert self.string is not None
             return self.string[:2]
         return ''
 
     @property
-    def string(self) -> str:
+    def string(self) -> typing.Optional[str]:
         r'''Gets string.
         '''
         return self._string
 
     ### PUBLIC METHODS ###
 
-    def get_path(self) -> Optional[Path]:
+    def get_path(self) -> typing.Optional[Path]:
         r'''Gets path.
         '''
         if isinstance(self.payload, Path):
