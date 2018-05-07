@@ -102,6 +102,7 @@ man_pages = [
         1,
         )
     ]
+
 ### TEXINFO ###
 
 texinfo_documents = [
@@ -126,7 +127,6 @@ intersphinx_mapping = {
     'abjad': ('http://abjad.mbrsi.org', None),
     'python': ('http://docs.python.org/2', None),
     }
-#todo_include_todos = True
 
 uqbar_api_title = u'Abjad IDE'
 uqbar_api_source_paths = ['ide']
