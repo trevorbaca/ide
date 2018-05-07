@@ -1712,9 +1712,9 @@ class AbjadIDE(abjad.AbjadObject):
         globs = self._get_doctest_globs(external_modules=external_modules)
         optionflags = (
             doctest.NORMALIZE_WHITESPACE |
-            doctest.ELLIPSIS |
-            doctest.REPORT_NDIFF |
-            doctest.REPORT_ONLY_FIRST_FAILURE
+            doctest.ELLIPSIS #|
+            #doctest.REPORT_NDIFF |
+            #doctest.REPORT_ONLY_FIRST_FAILURE
             )
         failed_file_paths, error_messages = [], []
         failure_count, test_count = 0, 0
@@ -1750,7 +1750,9 @@ class AbjadIDE(abjad.AbjadObject):
         if failed_file_paths:
             self.io.display('')
             for error_message in error_messages:
-                self.io.display(error_message)
+                parts = error_message.split('\n')
+                for part in parts:
+                    self.io.display(part, raw=True)
         for path in failed_file_paths:
             string = f'FAILED: {path}'
             self.io.display(string)
