@@ -1711,10 +1711,9 @@ class AbjadIDE(abjad.AbjadObject):
             return
         globs = self._get_doctest_globs(external_modules=external_modules)
         optionflags = (
-            doctest.NORMALIZE_WHITESPACE |
-            doctest.ELLIPSIS #|
-            #doctest.REPORT_NDIFF |
-            #doctest.REPORT_ONLY_FIRST_FAILURE
+            doctest.NORMALIZE_WHITESPACE
+            | doctest.ELLIPSIS
+            | doctest.REPORT_ONLY_FIRST_FAILURE
             )
         failed_file_paths, error_messages = [], []
         failure_count, test_count = 0, 0
