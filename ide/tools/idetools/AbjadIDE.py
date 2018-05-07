@@ -2,6 +2,7 @@ import abjad
 import baca
 import collections
 import datetime
+import doctest
 import importlib
 import inspect
 import io
@@ -48,6 +49,13 @@ class AbjadIDE(abjad.AbjadObject):
         '_redraw',
         '_test',
         )
+
+    _colors = {
+        'BLUE': '\033[94m',
+        'RED': '\033[91m',
+        'GREEN': '\033[92m',
+        'END': '\033[0m',
+        }
 
     configuration = Configuration()
 
@@ -609,6 +617,26 @@ class AbjadIDE(abjad.AbjadObject):
                 score_skeleton=score_skeleton,
                 )
         path.write_text(template)
+
+    def _get_doctest_globs(self, external_modules=()):
+        globs = {}
+        abjad = importlib.import_module('abjad')
+        globs['abjad'] = abjad
+        globs.update(abjad.__dict__)
+        external_modules = external_modules or ''
+        external_modules = external_modules.split(',')
+        for name in external_modules:
+            try:
+                module = importlib.import_module(name)
+                globs[name] = module
+            except ImportError:
+                pass
+        try:
+            ide_module = importlib.import_module('ide')
+            globs['ide'] = ide_module
+        except (AttributeError, ImportError):
+            pass
+        return globs
 
     def _get_dimensions(self):
         dimensions = None
@@ -1674,17 +1702,68 @@ class AbjadIDE(abjad.AbjadObject):
             lines = [_.strip() for _ in lines if not _ == '']
             return lines
 
-    def _run_doctest(self, paths):
+    def _run_doctest(self, paths, external_modules='baca'):
         assert isinstance(paths, collections.Iterable), repr(paths)
         for path in paths:
             if path.is_dir():
                 raise Exception(f'directory {path.trim()} not a file ...')
         if self.test:
             return
-        if paths:
-            string = ' '.join([str(_) for _ in paths])
-            command = f'ajv doctest --external-modules=baca -x {string}'
-            abjad.IOManager.spawn_subprocess(command)
+        globs = self._get_doctest_globs(external_modules=external_modules)
+        optionflags = (
+            doctest.NORMALIZE_WHITESPACE |
+            doctest.ELLIPSIS |
+            doctest.REPORT_NDIFF |
+            doctest.REPORT_ONLY_FIRST_FAILURE
+            )
+        failed_file_paths, error_messages = [], []
+        failure_count, test_count = 0, 0
+        for path in paths:
+            relative_path = os.path.relpath(path)
+            string_buffer = io.StringIO()
+            with abjad.RedirectedStreams(stdout=string_buffer):
+                failure_count_, test_count_ = doctest.testfile(
+                    path,
+                    module_relative=False,
+                    globs=globs,
+                    optionflags=optionflags,
+                    )
+                failure_count += failure_count_
+                test_count += test_count_
+                doctest_output = string_buffer.getvalue()
+            if failure_count_:
+                failed_file_paths.append(os.path.relpath(path))
+                error_messages.append(doctest_output)
+                result_code = ''.join((
+                    self._colors['RED'],
+                    'FAILED',
+                    self._colors['END'],
+                    ))
+            else:
+                result_code = ''.join((
+                    self._colors['BLUE'],
+                    'OK',
+                    self._colors['END'],
+                    ))
+            message = f'{relative_path} {result_code}'
+            self.io.display(message, raw=True)
+        if failed_file_paths:
+            self.io.display('')
+            for error_message in error_messages:
+                self.io.display(error_message)
+        for path in failed_file_paths:
+            string = f'FAILED: {path}'
+            self.io.display(string)
+        self.io.display('')
+        test_identifier = abjad.String('test').pluralize(test_count)
+        module_identifier = abjad.String('module').pluralize(len(paths))
+        success_count = test_count - failure_count
+        string = (
+            f'{success_count} passed, {failure_count} failed out of '
+            f'{test_count} {test_identifier} '
+            f'in {len(paths)} {module_identifier}.'
+            )
+        self.io.display(string)
 
     def _run_lilypond(self, ly):
         assert ly.exists()
