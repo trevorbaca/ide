@@ -1,7 +1,6 @@
 import sphinx_rtd_theme
 from sphinx.highlighting import PygmentsBridge
 from pygments.formatters.latex import LatexFormatter
-from abjad import abjad_configuration
 
 
 class CustomLatexFormatter(LatexFormatter):
@@ -12,9 +11,13 @@ class CustomLatexFormatter(LatexFormatter):
 PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 ### CORE ###
+
 add_function_parentheses = True
+
 copyright = u'2008-2018, Trevor Bača'
+
 exclude_patterns = []
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
@@ -23,16 +26,28 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
     'sphinx_autodoc_typehints',
+    'uqbar.sphinx.api',
+    'uqbar.sphinx.inheritance',
+    'uqbar.sphinx.style',
     'abjad.docs.ext.abjadbook',
     ]
+
 master_doc = 'index'
+
 project = u'Abjad IDE'
-release = abjad_configuration.get_abjad_version_string()
-source_suffix = '.rst'
-templates_path = ['_templates']
-version = abjad_configuration.get_abjad_version_string()
+
 pygments_style = 'sphinx'
+
+release = ''
+
+source_suffix = '.rst'
+
+templates_path = ['_templates']
+
+version = ''
+
 ### HTML ###
+
 html_domain_indices = False
 html_last_updated_fmt = '%b %d, %Y'
 html_show_sourcelink = True
@@ -41,9 +56,13 @@ html_theme = "sphinx_rtd_theme"
 html_theme_options = {}
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_use_index = False
+
 ### HTML HELP ###
+
 htmlhelp_basename = 'AbjadAbjadIDEdoc'
+
 ### LATEX ###
+
 latex_elements = {
     'inputenc': r'\usepackage[utf8x]{inputenc}',
     'utf8extra': '',
@@ -57,6 +76,7 @@ latex_elements = {
     \definecolor{VerbatimBorderColor}{rgb}{1.0,1.0,1.0}
     ''',
     }
+
 latex_documents = [
     (
         'index',
@@ -66,9 +86,13 @@ latex_documents = [
         'manual',
         ),
     ]
+
 #latex_use_parts = True
+
 latex_domain_indices = False
+
 ### MAN ###
+
 man_pages = [
     (
         'index',
@@ -79,6 +103,7 @@ man_pages = [
         )
     ]
 ### TEXINFO ###
+
 texinfo_documents = [
     (
         'index',
@@ -90,7 +115,9 @@ texinfo_documents = [
         'Miscellaneous',
         ),
     ]
+
 ### EXTENSIONS ###
+
 abjadbook_ignored_documents = ()
 autodoc_member_order = 'groupwise'
 graphviz_dot_args = ['-s32']
@@ -99,4 +126,13 @@ intersphinx_mapping = {
     'abjad': ('http://abjad.mbrsi.org', None),
     'python': ('http://docs.python.org/2', None),
     }
-todo_include_todos = True
+#todo_include_todos = True
+
+uqbar_api_title = u'Abjad IDE'
+uqbar_api_source_paths = ['ide']
+uqbar_api_root_documenter_class = 'uqbar.apis.SummarizingRootDocumenter'
+uqbar_api_module_documenter_class = 'uqbar.apis.SummarizingModuleDocumenter'
+uqbar_api_member_documenter_classes = [
+    'uqbar.apis.FunctionDocumenter',
+    'uqbar.apis.SummarizingClassDocumenter',
+    ]

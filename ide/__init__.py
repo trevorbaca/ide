@@ -1,4 +1,4 @@
-'''Abjad IDE installation.
+r'''Abjad IDE installation.
 
 To install the Abjad IDE:
 
@@ -16,19 +16,7 @@ To install the Abjad IDE:
 
     git clone https://github.com/Abjad/ide.git
 
-2. Verify the Abjad IDE directories. The following directories should appear on
-your filesystem after checkout:
-
-    ide/
-        ide/
-        boilerplate/
-        docs/
-        etc/
-        scores/
-        scr/
-        test/
-        tools/
-            idetools/
+2. Verify the Abjad IDE directories.
 
 3. Add the Abjad IDE scr/ directory to your PATH. This tells your shell where
 the start-abjad-idetools script is housed:

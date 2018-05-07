@@ -12,6 +12,8 @@ class Path(abjad.Path):
 
     ### CLASS VARIABLES ###
 
+    __documentation_section__ = None
+
     address_characters = {
         '@': 'file',
         '%': 'directory',
