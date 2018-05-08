@@ -1711,7 +1711,7 @@ class AbjadIDE(abjad.AbjadObject):
             return
         if paths:
             string = ' '.join([str(_) for _ in paths])
-            command = f'doctest {string}; say "done"'
+            command = f'doctest {string}'
             abjad.IOManager.spawn_subprocess(command)
 
     def _run_lilypond(self, ly):
