@@ -1,10 +1,12 @@
 import abjad
+import typing
 from .Configuration import Configuration
 from .MenuEntry import MenuEntry
 
 
 class MenuSection(abjad.AbjadObject):
-    r'''Menu section.
+    '''
+    Menu section.
     '''
 
     ### CLASS VARIABLES ###
@@ -22,30 +24,37 @@ class MenuSection(abjad.AbjadObject):
 
     def __init__(
         self,
-        command=None,
-        entries=None,
-        force_single_column=None,
-        secondary=None,
-        ):
+        command: bool = None,
+        entries: typing.List[MenuEntry] = None,
+        force_single_column: bool = None,
+        secondary: bool = None,
+        ) -> None:
         abjad.AbjadObject.__init__(self)
+        if command is not None:
+            assert isinstance(command, str), repr(command)
         self._command = command
-        self._entries = []
         self._force_single_column = force_single_column
         self._secondary = secondary
         self._initialize_entries(entries)
 
     ### SPECIAL METHODS ###
 
-    def __getitem__(self, argument):
-        r'''Gets entry indexed by `argument`.
-
-        Returns entry.
+    def __getitem__(self, argument) -> MenuEntry:
+        '''
+        Gets entry indexed by `argument`.
         '''
         return self.entries.__getitem__(argument)
+        
+    def __iter__(self) -> typing.Iterator:
+        '''
+        Iterates entries.
+        '''
+        return self.entries.__iter__()
 
     ### PRIVATE METHODS ###
 
     def _initialize_entries(self, entries):
+        self._entries = []
         for i, entry in enumerate(entries):
             if not self.command and not self.secondary:
                 number = i + 1
@@ -73,54 +82,46 @@ class MenuSection(abjad.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def command(self):
-        r'''Is true when section lists commands. Otherwise false.
-
-        Returns true or false.
+    def command(self) -> typing.Optional[bool]:
+        '''Is true when section lists commands.
         '''
         return self._command
 
     @property
-    def entries(self):
-        r'''Gets entries.
-
-        Returns list.
+    def entries(self) -> typing.List[MenuEntry]:
+        '''
+        Gets entries.
         '''
         return self._entries
 
     @property
-    def force_single_column(self):
-        r'''Is true when section forces single column.
-
-        Returns true or false.
+    def force_single_column(self) -> typing.Optional[bool]:
+        '''
+        Is true when section forces single column.
         '''
         return self._force_single_column
 
     @property
-    def secondary(self):
-        r'''Is true when section lists secondary assets. Otherwise false.
-
-        Returns true or false.
+    def secondary(self) -> typing.Optional[bool]:
+        '''
+        Is true when section lists secondary assets.
         '''
         return self._secondary
 
     ### PUBLIC METHODS ###
 
-    def make_lines(self, left_margin_width):
-        r'''Makes lines.
-        
-        Returns list.
+    def make_lines(self, left_margin_width) -> typing.List[str]:
         '''
-        left_margin_width = left_margin_width or self.left_margin_width
+        Makes lines.
+        '''
         lines = [_.make_line(left_margin_width) for _ in self]
         if lines:
             lines.append('')
         return lines
 
-    def match(self, string):
-        r'''Gets entry that matches `string`.
-
-        Returns entry or none.
+    def match(self, string) -> typing.Optional[MenuEntry]:
+        '''
+        Gets entry that matches `string`.
         '''
         if self.command:
             for entry in self:
@@ -134,16 +135,18 @@ class MenuSection(abjad.AbjadObject):
             strings = [_.display for _ in self]
             for i in abjad.String.match_strings(strings, string):
                 return self[i]
+        return None
 
-    def range_string_to_numbers(self, string):
-        r'''Changes range `string` to numbers.
-
-        Returns list.
+    def range_string_to_numbers(self, string) -> typing.Optional[
+        typing.List[typing.Optional[int]]
+        ]:
+        '''
+        Changes range ``string`` to numbers.
         '''
         string = string.strip()
         assert self.entries
         if not self.entries[0].number:
-            return
+            return None
         numbers = []
         if ',' in string:
             parts = string.split(',')

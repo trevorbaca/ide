@@ -1,8 +1,10 @@
 import abjad
+import typing
 
 
 class MenuEntry(abjad.AbjadObject):
-    r'''Menu entry.
+    '''
+    Menu entry.
     '''
 
     ### CLASS VARIABLES ###
@@ -18,11 +20,11 @@ class MenuEntry(abjad.AbjadObject):
 
     def __init__(
         self,
-        command=None,
-        display=None,
-        number=None,
-        value=None,
-        ):
+        command: str = None,
+        display: str = None,
+        number: int = None,
+        value: str = None,
+        ) -> None:
         self._command = command
         self._display = abjad.String(display)
         self._number = number
@@ -30,61 +32,55 @@ class MenuEntry(abjad.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __lt__(self, argument):
-        r'''Is true when `argument` is a menu entry with display greater than
-        that of this menu entry. Otherwise false.
-
-        Returns true or false.
+    def __lt__(self, argument) -> bool:
+        '''
+        Is true when `argument` is a menu entry with display greater than
+        that of this menu entry.
         '''
         if not isinstance(argument, type(self)):
             raise TypeError(argument)
-        return self.display < argument.display
+        return (self.display or '') < (argument.display or '')
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def command(self):
-        r'''Gets name of command section.
-
-        Returns string or none.
+    def command(self) -> typing.Optional[str]:
+        '''
+        Gets name of command section.
         '''
         return self._command
 
     @property
-    def display(self):
-        r'''Gets display.
-
-        Returns string.
+    def display(self) -> typing.Optional[str]:
+        '''
+        Gets display.
         '''
         return self._display
 
     @property
-    def number(self):
-        r'''Gets number.
-
-        Returns positive integer or none.
+    def number(self) -> typing.Optional[int]:
+        '''
+        Gets number.
         '''
         return self._number
 
     @property
-    def value(self):
-        r'''Gets value.
-
-        Returns value.
+    def value(self) -> typing.Optional[str]:
+        '''
+        Gets value.
         '''
         return self._value
 
     ### PUBLIC METHODS ###
 
-    def make_line(self, left_margin_width):
-        r'''Makes line.
-
-        Returns string.
+    def make_line(self, left_margin_width: int) -> str:
+        '''
+        Makes line.
         '''
         if self.number is not None:
             line = str(self.number) + ': '
             line = line.rjust(left_margin_width)
         else:
             line = left_margin_width * ' '
-        line += self.display
+        line += (self.display or '')
         return line

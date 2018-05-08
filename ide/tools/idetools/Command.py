@@ -1,9 +1,11 @@
 import abjad
 import string
+import typing
 
 
 class Command(abjad.AbjadObject):
-    r'''Command.
+    '''
+    Command.
 
     Decorates IDE methods.
     '''
@@ -45,14 +47,14 @@ class Command(abjad.AbjadObject):
 
     def __init__(
         self,
-        command_name,
-        score_package_path_blacklist=(),
-        description=None,
-        external_directories=None,
-        menu_section=None,
-        score_package_paths=None,
-        scores_directory=None,
-        ):
+        command_name: str,
+        score_package_path_blacklist: typing.Tuple[str, ...] = (),
+        description: str = None,
+        external_directories: bool = None,
+        menu_section: str = None,
+        score_package_paths: typing.Union[bool, typing.Tuple[str, ...]] = None,
+        scores_directory: bool = None,
+        ) -> None:
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.score_package_path_blacklist = score_package_path_blacklist
@@ -74,9 +76,10 @@ class Command(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self, method):
-        r'''Calls command decorator on `method`.
+        '''
+        Calls command decorator on ``method``.
 
-        Returns `method` with metadata attached.
+        Returns ``method`` with metadata attached.
         '''
         method.score_package_path_blacklist = self.score_package_path_blacklist
         method.command_name = self.command_name

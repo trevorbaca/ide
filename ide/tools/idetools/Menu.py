@@ -1,5 +1,6 @@
 import abjad
 import os
+import typing
 from .IO import IO
 from .MenuEntry import MenuEntry
 from .MenuSection import MenuSection
@@ -8,12 +9,13 @@ from .Response import Response
 
 
 class Menu(abjad.AbjadObject):
-    r'''Menu.
+    '''
+    Menu.
 
     ..  container:: example
 
         >>> ide.Menu()
-        Menu(io=IO(), navigations={}, sections=[])
+        Menu(io=IO(), navigations=OrderedDict([]), sections=[])
 
     '''
 
@@ -36,21 +38,21 @@ class Menu(abjad.AbjadObject):
 
     def __init__(
         self,
-        aliases=None,
-        getter=None,
-        header=None,
-        io=None,
-        loop=None,
-        navigations=None,
-        prompt=None,
-        sections=None,
-        ):
+        aliases: abjad.OrderedDict = None,
+        getter: bool = None,
+        header: str = None,
+        io: IO = None,
+        loop: bool = None,
+        navigations: abjad.OrderedDict = None,
+        prompt: str = None,
+        sections: typing.List[MenuSection] = None,
+        ) -> None:
         self._aliases = aliases
         self._getter = getter
         self._header = header
         self._io = io or IO()
         self._loop = loop
-        self._navigations = navigations or {}
+        self._navigations = navigations or abjad.OrderedDict()
         self._prompt = prompt
         self._sections = sections or []
 
@@ -58,14 +60,13 @@ class Menu(abjad.AbjadObject):
 
     def __call__(
         self,
-        string=None,
-        dimensions=None,
-        force_single_column=False,
-        redraw=True,
-        ):
-        r'''Calls menu on `string`.
-
-        Returns response.
+        string: str = None,
+        dimensions: typing.Tuple[int, int] = None,
+        force_single_column: bool = False,
+        redraw: typing.Union[bool, str] = True,
+        ) -> Response:
+        '''
+        Calls menu on ``string``.
         '''
         if string is not None:
             self.io.pending_input(string)
@@ -115,13 +116,11 @@ class Menu(abjad.AbjadObject):
             string = prefix + string
         elif prefix:
             string = prefix
-        #return Response(payload=payload, source=source, string=string)
         return Response(payload=payload, string=string)
 
-    def __getitem__(self, argument):
-        r'''Gets section in menu.
-
-        Returns section.
+    def __getitem__(self, argument) -> MenuSection:
+        '''
+        Gets section in menu.
         '''
         return self.sections.__getitem__(argument)
 
@@ -279,66 +278,58 @@ class Menu(abjad.AbjadObject):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def aliases(self):
-        r'''Gets aliases.
-
-        Returns dictionary or none.
+    def aliases(self) -> typing.Optional[abjad.OrderedDict]:
+        '''
+        Gets aliases.
         '''
         return self._aliases
 
     @property
-    def getter(self):
-        r'''Is true when menu consumes all input with spaces at one time.
-
-        Returns true, false or none.
+    def getter(self) -> typing.Optional[bool]:
+        '''
+        Is true when menu consumes all input with spaces at one time.
         '''
         return self._getter
 
     @property
-    def header(self):
-        r'''Gets header.
-
-        Returns string or none.
+    def header(self) -> typing.Optional[str]:
+        '''
+        Gets header.
         '''
         return self._header
 
     @property
-    def io(self):
-        r'''Gets IO manager.
-
-        Returns IO manager.
+    def io(self) -> IO:
+        '''
+        Gets IO manager.
         '''
         return self._io
 
     @property
-    def loop(self):
-        r'''Is true when menu loops.
-
-        Returns true, false or none.
+    def loop(self) -> typing.Optional[bool]:
+        '''
+        Is true when menu loops.
         '''
         return self._loop
 
     @property
-    def navigations(self):
-        r'''Gets navigation context.
-
-        Returns dictionary or none.
+    def navigations(self) -> abjad.OrderedDict:
+        '''
+        Gets navigation context.
         '''
         return self._navigations
 
     @property
-    def prompt(self):
-        r'''Gets prompt.
-
-        Returns string or none.
+    def prompt(self) -> typing.Optional[str]:
+        '''
+        Gets prompt.
         '''
         return self._prompt
 
     @property
-    def sections(self):
-        r'''Gets menu sections.
-
-        Returns list.
+    def sections(self) -> typing.List[MenuSection]:
+        '''
+        Gets menu sections.
         '''
         return self._sections
 
@@ -351,10 +342,9 @@ class Menu(abjad.AbjadObject):
         io=None,
         navigations=None,
         sections=None,
-        ):
-        r'''Makes menu from `directory`.
-
-        Returns menu.
+        ) -> 'Menu':
+        '''
+        Makes menu from ``directory``.
         '''
         sections = sections or []
         entries = []

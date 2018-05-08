@@ -1,10 +1,12 @@
 import abjad
 import os
+import typing
 from .Transcript import Transcript
 
 
 class IO(abjad.AbjadObject):
-    r'''IO.
+    '''
+    IO.
 
     ..  container:: example
 
@@ -24,26 +26,32 @@ class IO(abjad.AbjadObject):
 
     ### INITIALIZER ###
 
-    def __init__(self):
-        self._pending_input = None
+    def __init__(self) -> None:
+        self._pending_input: typing.Optional[str] = None
         self._transcript = Transcript()
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def transcript(self):
-        r'''Gets transcript.
-
-        Returns transcript.
+    def transcript(self) -> Transcript:
+        '''
+        Gets transcript.
         '''
         return self._transcript
 
     ### PUBLIC METHODS ###
 
-    def display(self, lines, indent=0, is_menu=False, raw=False):
-        r'''Displays lines.
-
-        Returns none.
+    def display(
+        self,
+        lines: typing.Union[
+            str, abjad.String, typing.List[str], typing.List[abjad.String]
+            ],
+        indent: int = 0,
+        is_menu: bool = False,
+        raw: bool = False,
+        ) -> None:
+        '''
+        Displays lines.
         '''
         assert isinstance(lines, (str, list)), repr(lines)
         if isinstance(lines, str):
@@ -62,8 +70,13 @@ class IO(abjad.AbjadObject):
         for line in lines:
             print(line)
 
-    def get(self, prompt='', split_input=False):
-        r'''Gets user input.
+    def get(
+        self,
+        prompt: str = None,
+        split_input: bool = False,
+        ) -> typing.Optional[str]:
+        '''
+        Gets user input.
 
         Returns none when user enters lone return.
 
@@ -93,10 +106,10 @@ class IO(abjad.AbjadObject):
         self.transcript.append([f'{prompt}{string}', ''])
         if string:
             return abjad.String(string)
+        return None
 
-    def pending_input(self, string):
-        r'''Sets pending input.
-
-        Returns string.
+    def pending_input(self, string: str) -> None:
+        '''
+        Sets pending input.
         '''
         self._pending_input = string

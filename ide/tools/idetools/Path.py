@@ -3,16 +3,18 @@ import baca
 import importlib
 import os
 import pathlib
+import typing
 from .Configuration import Configuration
 
 
 class Path(abjad.Path):
-    r'''Path.
+    '''
+    Path.
     '''
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = None
+    __documentation_section__ = 'Classes'
 
     address_characters = {
         '@': 'file',

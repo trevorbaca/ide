@@ -5,7 +5,8 @@ import sys
 
 
 class Configuration(abjad.Configuration):
-    r'''Configuration.
+    '''
+    Configuration.
 
     ..  container:: example
 
@@ -103,21 +104,22 @@ class Configuration(abjad.Configuration):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def aliases(self):
-        r'''Gets aliases.
+    def aliases(self) -> abjad.OrderedDict:
+        '''
+        Gets aliases.
 
         ..  container:: example
 
             >>> ide.Configuration().aliases
             OrderedDict(...)
 
-        Returns ordered dictionary.
         '''
         return self._aliases
 
     @property
     def aliases_file_path(self):
-        r'''Gets aliases file path.
+        '''
+        Gets aliases file path.
 
         ..  container:: example
 
@@ -131,7 +133,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def boilerplate_directory(self):
-        r'''Gets boilerplate directory.
+        '''
+        Gets boilerplate directory.
 
         ..  container:: example
 
@@ -145,7 +148,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def composer_scores_directory(self):
-        r'''Gets composer scores directory.
+        '''
+        Gets composer scores directory.
 
         Returns package path.
         '''
@@ -160,7 +164,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def configuration_directory(self):
-        r'''Gets configuration directory path.
+        '''
+        Gets configuration directory path.
 
         ..  container:: example
 
@@ -175,7 +180,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def ide_directory(self):
-        r'''Gets IDE directory.
+        '''
+        Gets IDE directory.
 
         ..  container:: example
 
@@ -192,7 +198,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def latex_log_file_path(self):
-        r'''Gets LaTeX log file path.
+        '''
+        Gets LaTeX log file path.
 
         ..  container:: example
 
@@ -206,7 +213,8 @@ class Configuration(abjad.Configuration):
 
     @property
     def test_scores_directory(self):
-        r'''Gets test scores directory.
+        '''
+        Gets test scores directory.
 
         ..  container:: example
 
