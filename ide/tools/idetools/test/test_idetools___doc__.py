@@ -12,6 +12,7 @@ def test_idetools___doc___01(object_):
     '''
 
     ignored_names = (
+        '__documentation_section__',
         '__dict__',
         '__init__',
         '__new__',
