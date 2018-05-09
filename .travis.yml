@@ -3,7 +3,7 @@ language: python
 sudo: false
 
 python:
-- 3.6
+    - 3.6
 
 addons:
     apt:
@@ -19,48 +19,51 @@ addons:
         - texlive-xetex
 
 before_install:
-- LILYPOND_SCRIPT=lilypond-2.19.80-1.linux-64.sh
-- LILYPOND_URL=http://download.linuxaudio.org/lilypond/binaries/linux-64
-- LILYPOND_URL=$LILYPOND_URL/$LILYPOND_SCRIPT
-- wget -q $LILYPOND_URL
-- sh $LILYPOND_SCRIPT --batch
-- git clone https://github.com/Abjad/abjad.git;
-- cd abjad; git checkout trevor/dev; pip install -e .[development]
-- echo `git branch`
-- cd ..
-- pwd
+    - LILYPOND_SCRIPT=lilypond-2.19.80-1.linux-64.sh
+    - LILYPOND_URL=http://download.linuxaudio.org/lilypond/binaries/linux-64
+    - LILYPOND_URL=$LILYPOND_URL/$LILYPOND_SCRIPT
+    - wget -q $LILYPOND_URL
+    - sh $LILYPOND_SCRIPT --batch
+    - git clone https://github.com/Abjad/abjad.git;
+    - cd abjad; git checkout trevor/dev; pip install -e .[development]
+    - echo `git branch`
+    - cd ..
+    - pwd
 
 install:
-- pip install --upgrade pip
-- pip install coverage
-- pip install -e git://github.com/trevorbaca/baca.git#egg=baca
-- pip install -r requirements.txt
-- pip install -e . 
+    - pip install --upgrade pip
+    - pip install coverage
+    - pip install -e git://github.com/trevorbaca/baca.git#egg=baca
+    - pip install -r requirements.txt
+    - pip install -e . 
+    - pip install --target /tmp/typehints --no-deps uqbar>=0.2.11
+    - export MYPYPATH=/tmp/typehints
 
 before_script:
-- pwd
-- ls
-- IDE_SCORES=`pwd`/ide/scores
-- export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
-- echo $PYTHONPATH
-- export PATH=$PATH:`pwd`/ide/scr
-- echo $PATH
-- which latex
-- which xetex
-- export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca
-- export MYPYPATH=$MYPYPATH:/home/travis/virtualenv/python3.6.3/src/baca
-- echo $MYPYPATH
-- ls /home/travis/virtualenv/python3.6.3/src
-- echo `which start-abjad-ide`
-- ide/scr/prime-parser-tables
+    - pwd
+    - ls
+    - IDE_SCORES=`pwd`/ide/scores
+    - export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
+    - echo $PYTHONPATH
+    - export BACA=/home/travis/virtualenv/python3.6.3/src/baca
+    - export PATH=$PATH:`pwd`/ide/scr:$BACA/baca/scr
+    - echo `which doctest`
+    - echo $PATH
+    - which latex
+    - which xetex
+    - export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca:$BACA
+    - echo $MYPYPATH
+    - ls /home/travis/virtualenv/python3.6.3/src
+    - echo `which start-abjad-ide`
+    - ide/scr/prime-parser-tables
 
 script:
-- start-abjad-ide q
-#- coverage run -a `which ajv` doctest ide
-- coverage run -a `which py.test` -rf ide
-- mypy ide
-#- ajv api -IR
+    - start-abjad-ide q
+    #- coverage run -a `which ajv` doctest ide
+    - coverage run -a `which py.test` -rf ide
+    - mypy ide
+    #- ajv api -IR
 
 after_success:
-- pip install coveralls
-- coveralls
+    - pip install coveralls
+    - coveralls
