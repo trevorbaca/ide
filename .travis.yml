@@ -37,7 +37,6 @@ install:
     - pip install -r requirements.txt
     - pip install -e . 
     - pip install --target /tmp/typehints --no-deps uqbar>=0.2.11
-    - pip install mypy
     - export MYPYPATH=/tmp/typehints
 
 before_script:
