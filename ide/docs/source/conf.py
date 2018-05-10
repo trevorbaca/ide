@@ -14,7 +14,7 @@ PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 add_function_parentheses = True
 
-copyright = u'2008-2018, Trevor Bača'
+copyright = '2008-2018, Trevor Bača'
 
 exclude_patterns = []
 
@@ -29,12 +29,12 @@ extensions = [
     'uqbar.sphinx.api',
     'uqbar.sphinx.inheritance',
     'uqbar.sphinx.style',
-    'abjad.docs.ext.abjadbook',
+    'abjadext.book.sphinx',
     ]
 
 master_doc = 'index'
 
-project = u'Abjad IDE'
+project = 'Abjad IDE'
 
 pygments_style = 'sphinx'
 
@@ -81,8 +81,8 @@ latex_documents = [
     (
         'index',
         'AbjadExperimentalPackages.tex',
-        u'Abjad Experimental Packages Documentation',
-        u'Trevor Bača & Josiah Wolf Oberholtzer',
+        'Abjad Experimental Packages Documentation',
+        'Trevor Bača & Josiah Wolf Oberholtzer',
         'manual',
         ),
     ]
@@ -97,8 +97,8 @@ man_pages = [
     (
         'index',
         'abjadide',
-        u'Abjad Score PackageManager Documentation',
-        [u' Trevor Bača & Josiah Wolf Oberholtzer'],
+        'Abjad Score PackageManager Documentation',
+        [' Trevor Bača & Josiah Wolf Oberholtzer'],
         1,
         )
     ]
@@ -109,8 +109,8 @@ texinfo_documents = [
     (
         'index',
         'AbjadAbjadIDE',
-        u'Abjad Score PackageManager Documentation',
-        u'Trevor Bača & Josiah Wolf Oberholtzer',
+        'Abjad Score PackageManager Documentation',
+        'Trevor Bača & Josiah Wolf Oberholtzer',
         'AbjadAbjadIDE',
         'One line description of project.',
         'Miscellaneous',
@@ -128,7 +128,7 @@ intersphinx_mapping = {
     'python': ('http://docs.python.org/2', None),
     }
 
-uqbar_api_title = u'Abjad IDE'
+uqbar_api_title = 'Abjad IDE'
 uqbar_api_source_paths = ['ide']
 uqbar_api_root_documenter_class = 'uqbar.apis.SummarizingRootDocumenter'
 uqbar_api_module_documenter_class = 'uqbar.apis.SummarizingModuleDocumenter'
