@@ -51,7 +51,7 @@ before_script:
     - echo $PATH
     - which latex
     - which xetex
-    - export MYPYPATH=$PYTHONPATH:`pwd`/abjad:`pwd`/baca:$BACA
+    - export MYPYPATH=$MYPYPATH:$PYTHONPATH:`pwd`/abjad:`pwd`/baca:$BACA
     - echo $MYPYPATH
     - ls /home/travis/virtualenv/python3.6.3/src
     - echo `which start-abjad-ide`
