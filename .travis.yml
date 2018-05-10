@@ -62,7 +62,6 @@ script:
     - coverage run -a `which doctest` ide/tools/idetools/*py
     - coverage run -a `which py.test` -rf ide
     - mypy ide
-    - cd ide/docs; make html
 
 after_success:
     - pip install coveralls
