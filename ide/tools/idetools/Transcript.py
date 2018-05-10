@@ -1,8 +1,10 @@
 import abjad
+import typing
 
 
 class Transcript(abjad.AbjadObject):
-    r'''Transcript.
+    '''
+    Transcript.
     '''
 
     ### CLASS VARIABLES ###
@@ -24,53 +26,51 @@ class Transcript(abjad.AbjadObject):
 
     ### SPECIAL METHODS ###
 
-    def __contains__(self, argument):
-        r'''Is true when `argument` appears in transcript.
-
-        Returns true or false.
+    def __contains__(self, argument) -> bool:
+        '''
+        Is true when ``argument`` appears in transcript.
         '''
         return argument in '\n'.join(self.lines)
 
     ### PUBLIC PROPERTIES ###
 
     @property
-    def blocks(self):
-        r'''Gets blocks.
-
-        Returns list.
+    def blocks(self) -> typing.List:
+        '''
+        Gets blocks.
         '''
         return self._blocks
 
     @property
-    def lines(self):
-        r'''Gets lines.
-
-        Returns list.
+    def lines(self) -> typing.List[str]:
+        '''
+        Gets lines.
         '''
         return self._lines
 
     @property
-    def menus(self):
-        r'''Gets menus.
-
-        Returns list.
+    def menus(self) -> typing.List:
+        '''
+        Gets menus.
         '''
         return self._menus
 
     @property
-    def titles(self):
-        r'''Gets titles.
-
-        Returns list.
+    def titles(self) -> typing.List[str]:
+        '''
+        Gets titles.
         '''
         return self._titles
 
     ### PUBLIC METHODS ###
 
-    def append(self, block, is_menu=False):
-        r'''Appends `block`.
-
-        Returns none.
+    def append(
+        self,
+        block,
+        is_menu: bool = False,
+        ) -> None:
+        '''
+        Appends ``block``.
         '''
         self._lines.extend(block)
         self._blocks.append(block)
@@ -78,10 +78,9 @@ class Transcript(abjad.AbjadObject):
             self._menus.append(block)
             self._titles.append(block[0])
 
-    def trim(self):
-        r'''Trims transcript.
-
-        Returns none.
+    def trim(self) -> None:
+        '''
+        Trims transcript.
         '''
         for line in reversed(self.lines):
             if line == '':

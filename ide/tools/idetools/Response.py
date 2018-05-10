@@ -4,7 +4,8 @@ from .Path import Path
 
 
 class Response(abjad.AbjadObject):
-    r'''Response.
+    '''
+    Response.
 
     :param payload: delivered to IDE.
 
@@ -51,13 +52,15 @@ class Response(abjad.AbjadObject):
 
     @property
     def pair(self) -> typing.Tuple[str, typing.Optional[str]]:
-        r'''Gets prefix / pattern pair.
+        '''
+        Gets prefix / pattern pair.
         '''
         return self.prefix, self.pattern
 
     @property
     def pattern(self) -> typing.Optional[str]:
-        r'''Gets pattern.
+        '''
+        Gets pattern.
         '''
         if self._is_single_address():
             assert self.string is not None
@@ -69,13 +72,15 @@ class Response(abjad.AbjadObject):
 
     @property
     def payload(self) -> typing.Optional[typing.Union[str, list, Path]]:
-        r'''Gets payload.
+        '''
+        Gets payload.
         '''
         return self._payload
 
     @property
     def prefix(self) -> str:
-        r'''Gets prefix.
+        '''
+        Gets prefix.
         '''
         if self._is_single_address():
             assert self.string is not None
@@ -87,14 +92,16 @@ class Response(abjad.AbjadObject):
 
     @property
     def string(self) -> typing.Optional[str]:
-        r'''Gets string.
+        '''
+        Gets string.
         '''
         return self._string
 
     ### PUBLIC METHODS ###
 
     def get_path(self) -> typing.Optional[Path]:
-        r'''Gets path.
+        '''
+        Gets path.
         '''
         if isinstance(self.payload, Path):
             return self.payload
@@ -104,17 +111,20 @@ class Response(abjad.AbjadObject):
         return None
 
     def is_address(self) -> bool:
-        r'''Is true when response is address.
+        '''
+        Is true when response is address.
         '''
         return bool(self.prefix)
 
     def is_command(self, commands) -> bool:
-        r'''Is true when response is command.
+        '''
+        Is true when response is command.
         '''
         return str(self.payload) in commands and self.string != '!'
 
     def is_path(self) -> bool:
-        r'''Is true when response is path.
+        '''
+        Is true when response is path.
         '''
         if isinstance(self.payload, Path):
             return True
@@ -124,12 +134,14 @@ class Response(abjad.AbjadObject):
         return False
 
     def is_segment_name(self) -> bool:
-        r'''Is true when response is segment name.
+        '''
+        Is true when response is segment name.
         '''
         return Path.is_segment_name(self.string)
 
     def is_shell(self) -> bool:
-        r'''Is true when response is shell command.
+        '''
+        Is true when response is shell command.
         '''
         if (self.string and
             self.string.startswith('!') and

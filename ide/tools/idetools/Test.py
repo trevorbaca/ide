@@ -6,7 +6,8 @@ from .Configuration import Configuration
 
 
 class Test(abjad.FilesystemState):
-    r'''Test state context manager.
+    '''
+    Test state context manager.
     '''
 
     ### CLASS VARIABLES ###
@@ -17,12 +18,11 @@ class Test(abjad.FilesystemState):
 
     ### SPECIAL METHODS ###
 
-    def __enter__(self):
-        r'''Backs up example scores directory tree.
+    def __enter__(self) -> None:
+        '''
+        Backs up example scores directory tree.
 
         Then backs up keep-artifacts.
-
-        Returns none.
         '''
         for path in self.remove:
             assert not os.path.exists(path), repr(path)
@@ -34,10 +34,9 @@ class Test(abjad.FilesystemState):
         shutil.copytree(path, backup_path)
         super(Test, self).__enter__()
 
-    def __exit__(self, exg_type, exc_value, traceback):
-        r'''Restores example scores directory tree.
-
-        Returns none.
+    def __exit__(self, exg_type, exc_value, traceback) -> None:
+        '''
+        Restores example scores directory tree.
         '''
         super(Test, self).__exit__(exg_type, exc_value, traceback)
         path = str(self.configuration.test_scores_directory)

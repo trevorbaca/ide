@@ -278,13 +278,12 @@ class Path(abjad.Path):
     ### PUBLIC PROPERTIES ###
 
     @property
-    def document_names(self):
-        r'''Gets document names in path.
-
-        Returns list of shoutcase strings.
+    def document_names(self) -> typing.Optional[typing.List[str]]:
+        '''
+        Gets document names in path.
         '''
         if not self.is_build():
-            return
+            return None
         stem = abjad.String(self.name).to_shout_case()
         if not self.is_parts():
             return [stem]
@@ -298,8 +297,9 @@ class Path(abjad.Path):
         return result
 
     @property
-    def scores(self):
-        r'''Gets scores directory.
+    def scores(self) -> typing.Optional['Path']:
+        '''
+        Gets scores directory.
 
         ..  container:: example
 
@@ -312,11 +312,10 @@ class Path(abjad.Path):
             >>> path.scores('red_score', 'red_score', 'etc')
             Path*('/path/to/scores/red_score/red_score/etc')
 
-        Returns package path or none.
         '''
         if getattr(self, '_scores', None) is not None:
-            result = self._scores
-            result._scores = self._scores
+            result = getattr(self, '_scores')
+            result._scores = getattr(self, '_scores')
             return result
         for scores in (
             self.configuration.test_scores_directory,
@@ -324,28 +323,26 @@ class Path(abjad.Path):
             ):
             if str(self).startswith(str(scores)):
                 return type(self)(scores)
+        return None
 
     ### PUBLIC METHODS ###
 
-    def get_eol_measure_numbers(self):
-        r'''Gets EOL measure numbers from BOL measure numbers stored in
-        metadata.
-
-        Returns list or none.
+    def get_eol_measure_numbers(self) -> typing.Optional[typing.List[int]]:
+        '''
+        Gets EOL measure numbers from BOL measure numbers stored in metadata.
         '''
         bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
         if bol_measure_numbers is None:
-            return
+            return None
         eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
         last_measure_number = self.get_metadatum('last_measure_number')
         if last_measure_number is not None:
             eol_measure_numbers.append(last_measure_number)
         return eol_measure_numbers
 
-    def get_header(self):
-        r'''Gets menu header.
-
-        Returns string.
+    def get_header(self) -> str:
+        '''
+        Gets menu header.
         '''
         if self.is_scores():
             return 'Abjad IDE : scores'
@@ -367,8 +364,9 @@ class Path(abjad.Path):
             parts[-1] += ' (empty)'
         return ' : '.join(parts)
 
-    def is_external(self):
-        r'''Is true when path does not have form of score package path.
+    def is_external(self) -> bool:
+        '''
+        Is true when path does not have form of score package path.
 
         ..  container:: example
 
@@ -392,7 +390,6 @@ class Path(abjad.Path):
             >>> ide.Path('/path/to/location').is_external()
             True
 
-        Returns true or false.
         '''
         if (not self.name[0].isalpha() and
             not self.name == '_assets' and
@@ -409,10 +406,9 @@ class Path(abjad.Path):
                 return False
         return True
 
-    def is_prototype(self, prototype):
-        r'''Is true when path is `prototype`.
-
-        Returns true or false.
+    def is_prototype(self, prototype) -> bool:
+        '''
+        Is true when path is `prototype`.
         '''
         if prototype is True:
             return True

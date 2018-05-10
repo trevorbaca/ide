@@ -3299,7 +3299,9 @@ class AbjadIDE(abjad.AbjadObject):
             header = directory.get_header() 
             header += f' : get {label} ...'
         if not items:
-            for path in directory.scores.list_paths():
+            scores_directory = directory.scores
+            assert scores_directory is not None
+            for path in scores_directory.list_paths():
                 items.append((path.get_identifier(), path))
             label = abjad.String(directory.get_asset_type()).pluralize()
             header = directory.get_header() + f' : get {label} from ...'
