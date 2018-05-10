@@ -125,7 +125,7 @@ graphviz_dot_args = ['-s32']
 graphviz_output_format = 'svg'
 intersphinx_mapping = {
     'abjad': ('http://abjad.mbrsi.org', None),
-    'python': ('http://docs.python.org/2', None),
+    'python': ('http://docs.python.org/3.6', None),
     }
 
 uqbar_api_title = 'Abjad IDE'
