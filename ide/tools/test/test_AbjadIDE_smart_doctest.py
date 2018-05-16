@@ -42,7 +42,7 @@ def test_AbjadIDE_smart_doctest_02():
     abjad_ide('cdi ^ath q')
     transcript = abjad_ide.io.transcript 
     path = ide.Configuration().ide_directory
-    path = path('tools', 'idetools', 'Path.py')
+    path = path('tools', 'Path.py')
     assert f"Matching '^ath' to {path.trim()} ..." in transcript
 
 

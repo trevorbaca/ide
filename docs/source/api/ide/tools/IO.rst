@@ -1,0 +1,48 @@
+.. _ide--tools--IO:
+
+IO
+==
+
+.. automodule:: ide.tools.IO
+
+.. currentmodule:: ide.tools.IO
+
+.. container:: svg-container
+
+   .. inheritance-diagram:: ide
+      :lineage: ide.tools.IO
+
+.. autoclass:: IO
+
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Special methods
+      :class: class-header
+
+   .. automethod:: IO.__format__
+
+   .. automethod:: IO.__repr__
+
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Methods
+      :class: class-header
+
+   .. automethod:: IO.display
+
+   .. automethod:: IO.get
+
+   .. automethod:: IO.pending_input
+
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Read-only properties
+      :class: class-header
+
+   .. autoattribute:: IO.transcript

@@ -38,7 +38,7 @@ def test_AbjadIDE_smart_pytest_02():
     abjad_ide('cdi +ath q')
     transcript = abjad_ide.io.transcript 
     path = ide.Configuration().ide_directory
-    path = path('tools', 'idetools', 'test', 'test_Path_is_external.py')
+    path = path('tools', 'test', 'test_Path_is_external.py')
     assert f"Matching '+ath' to {path.trim()} ..." in transcript
 
 

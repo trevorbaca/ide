@@ -23,7 +23,7 @@ def test_AbjadIDE_smart_edit_02():
     abjad_ide('cdi @ath q')
     transcript = abjad_ide.io.transcript 
     directory = ide.Configuration().ide_directory
-    path = directory('tools', 'idetools', 'Path.py')
+    path = directory('tools', 'Path.py')
     assert f"Editing {path.trim()} ..." in transcript
 
 

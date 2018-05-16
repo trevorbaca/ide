@@ -1,4 +1,5 @@
-r'''Abjad IDE installation.
+"""
+Abjad IDE installation.
 
 To install the Abjad IDE:
 
@@ -52,10 +53,10 @@ the Abjad IDE.
     ajv api -I
 
 You're ready to use the Abjad IDE when the docs build and all tests pass.
-'''
+"""
 import distutils.version
 import platform
-from ide.tools.idetools import *
+from ide.tools import *
 if not (
     distutils.version.LooseVersion('3.6') <
     distutils.version.LooseVersion(platform.python_version())
