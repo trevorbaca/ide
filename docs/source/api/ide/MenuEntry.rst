@@ -1,16 +1,16 @@
-.. _ide--tools--MenuEntry:
+.. _ide--MenuEntry:
 
 MenuEntry
 =========
 
-.. automodule:: ide.tools.MenuEntry
+.. automodule:: ide.MenuEntry
 
-.. currentmodule:: ide.tools.MenuEntry
+.. currentmodule:: ide.MenuEntry
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.MenuEntry
+      :lineage: ide.MenuEntry
 
 .. autoclass:: MenuEntry
 

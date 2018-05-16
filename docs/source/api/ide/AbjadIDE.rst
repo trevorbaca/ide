@@ -1,16 +1,16 @@
-.. _ide--tools--AbjadIDE:
+.. _ide--AbjadIDE:
 
 AbjadIDE
 ========
 
-.. automodule:: ide.tools.AbjadIDE
+.. automodule:: ide.AbjadIDE
 
-.. currentmodule:: ide.tools.AbjadIDE
+.. currentmodule:: ide.AbjadIDE
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.AbjadIDE
+      :lineage: ide.AbjadIDE
 
 .. autoclass:: AbjadIDE
 

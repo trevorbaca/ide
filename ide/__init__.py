@@ -54,9 +54,22 @@ the Abjad IDE.
 
 You're ready to use the Abjad IDE when the docs build and all tests pass.
 """
+
 import distutils.version
 import platform
-from ide.tools import *
+from .AbjadIDE import AbjadIDE
+from .Command import Command
+from .Configuration import Configuration
+from .IO import IO
+from .Interaction import Interaction
+from .Menu import Menu
+from .MenuEntry import MenuEntry
+from .MenuSection import MenuSection
+from .Path import Path
+from .Response import Response
+from .Test import Test
+from .Transcript import Transcript
+
 if not (
     distutils.version.LooseVersion('3.6') <
     distutils.version.LooseVersion(platform.python_version())

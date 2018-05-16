@@ -1,16 +1,16 @@
-.. _ide--tools--IO:
+.. _ide--IO:
 
 IO
 ==
 
-.. automodule:: ide.tools.IO
+.. automodule:: ide.IO
 
-.. currentmodule:: ide.tools.IO
+.. currentmodule:: ide.IO
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.IO
+      :lineage: ide.IO
 
 .. autoclass:: IO
 

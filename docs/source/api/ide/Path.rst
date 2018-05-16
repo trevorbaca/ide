@@ -1,16 +1,16 @@
-.. _ide--tools--Path:
+.. _ide--Path:
 
 Path
 ====
 
-.. automodule:: ide.tools.Path
+.. automodule:: ide.Path
 
-.. currentmodule:: ide.tools.Path
+.. currentmodule:: ide.Path
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Path
+      :lineage: ide.Path
 
 .. autoclass:: Path
 

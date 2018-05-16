@@ -1,16 +1,16 @@
-.. _ide--tools--Command:
+.. _ide--Command:
 
 Command
 =======
 
-.. automodule:: ide.tools.Command
+.. automodule:: ide.Command
 
-.. currentmodule:: ide.tools.Command
+.. currentmodule:: ide.Command
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Command
+      :lineage: ide.Command
 
 .. autoclass:: Command
 

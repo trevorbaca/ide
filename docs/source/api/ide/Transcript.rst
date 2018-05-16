@@ -1,16 +1,16 @@
-.. _ide--tools--Transcript:
+.. _ide--Transcript:
 
 Transcript
 ==========
 
-.. automodule:: ide.tools.Transcript
+.. automodule:: ide.Transcript
 
-.. currentmodule:: ide.tools.Transcript
+.. currentmodule:: ide.Transcript
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Transcript
+      :lineage: ide.Transcript
 
 .. autoclass:: Transcript
 

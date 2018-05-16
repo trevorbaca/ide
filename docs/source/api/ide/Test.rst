@@ -1,16 +1,16 @@
-.. _ide--tools--Test:
+.. _ide--Test:
 
 Test
 ====
 
-.. automodule:: ide.tools.Test
+.. automodule:: ide.Test
 
-.. currentmodule:: ide.tools.Test
+.. currentmodule:: ide.Test
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Test
+      :lineage: ide.Test
 
 .. autoclass:: Test
 

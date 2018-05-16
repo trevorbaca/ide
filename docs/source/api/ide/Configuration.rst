@@ -1,16 +1,16 @@
-.. _ide--tools--Configuration:
+.. _ide--Configuration:
 
 Configuration
 =============
 
-.. automodule:: ide.tools.Configuration
+.. automodule:: ide.Configuration
 
-.. currentmodule:: ide.tools.Configuration
+.. currentmodule:: ide.Configuration
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Configuration
+      :lineage: ide.Configuration
 
 .. autoclass:: Configuration
 

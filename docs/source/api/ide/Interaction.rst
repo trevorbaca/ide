@@ -1,16 +1,16 @@
-.. _ide--tools--Interaction:
+.. _ide--Interaction:
 
 Interaction
 ===========
 
-.. automodule:: ide.tools.Interaction
+.. automodule:: ide.Interaction
 
-.. currentmodule:: ide.tools.Interaction
+.. currentmodule:: ide.Interaction
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Interaction
+      :lineage: ide.Interaction
 
 .. autoclass:: Interaction
 

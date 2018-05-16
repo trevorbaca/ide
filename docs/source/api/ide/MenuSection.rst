@@ -1,16 +1,16 @@
-.. _ide--tools--MenuSection:
+.. _ide--MenuSection:
 
 MenuSection
 ===========
 
-.. automodule:: ide.tools.MenuSection
+.. automodule:: ide.MenuSection
 
-.. currentmodule:: ide.tools.MenuSection
+.. currentmodule:: ide.MenuSection
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.MenuSection
+      :lineage: ide.MenuSection
 
 .. autoclass:: MenuSection
 

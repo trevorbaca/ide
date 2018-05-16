@@ -1,16 +1,16 @@
-.. _ide--tools--Response:
+.. _ide--Response:
 
 Response
 ========
 
-.. automodule:: ide.tools.Response
+.. automodule:: ide.Response
 
-.. currentmodule:: ide.tools.Response
+.. currentmodule:: ide.Response
 
 .. container:: svg-container
 
    .. inheritance-diagram:: ide
-      :lineage: ide.tools.Response
+      :lineage: ide.Response
 
 .. autoclass:: Response
 
