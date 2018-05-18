@@ -1,11 +1,12 @@
 import abjad
 
 
-class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):
-    r'''Rhythm-maker.
+class RhythmMaker(abjad.rhythmos.RhythmMaker):
+    """
+    Rhythm-maker.
 
     Dummy class used for testing.
-    '''
+    """
 
     ### INITIALIZER ###
 

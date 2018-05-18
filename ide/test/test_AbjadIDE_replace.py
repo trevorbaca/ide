@@ -4,15 +4,16 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_replace_01():
-    r'''In score directory.
-    '''
+    """
+    In score directory.
+    """
 
     with ide.Test():
 
         abjad_ide('red sr RhythmMaker q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> RhythmMaker' in transcript
-        string = 'class RhythmMaker(abjad.rhythmmakertools.RhythmMaker):'
+        string = 'class RhythmMaker(abjad.rhythmos.RhythmMaker):'
         assert string in transcript
 
         abjad_ide('red rp RhythmMaker FooMaker y q')
