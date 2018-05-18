@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_pytest_all_01():
-    r'''In contents directory.
-    '''
+    """
+    In contents directory.
+    """
 
     abjad_ide('red ++ q')
     transcript = abjad_ide.io.transcript 
@@ -29,8 +30,9 @@ def test_AbjadIDE_pytest_all_01():
 
 
 def test_AbjadIDE_pytest_all_02():
-    r'''In external directory.
-    '''
+    """
+    In external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -41,8 +43,9 @@ def test_AbjadIDE_pytest_all_02():
 
 
 def test_AbjadIDE_pytest_all_03():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     abjad_ide('red tt ++ q')
     transcript = abjad_ide.io.transcript 
@@ -50,8 +53,9 @@ def test_AbjadIDE_pytest_all_03():
 
 
 def test_AbjadIDE_pytest_all_04():
-    r'''Handles numeric input.
-    '''
+    """
+    Handles numeric input.
+    """
 
     abjad_ide('red tt ++0 q')
     transcript = abjad_ide.io.transcript 
@@ -67,8 +71,9 @@ def test_AbjadIDE_pytest_all_04():
 
 
 def test_AbjadIDE_pytest_all_05():
-    r'''Handles empty input and junk input.
-    '''
+    """
+    Handles empty input and junk input.
+    """
 
     abjad_ide('++asdf q')
     transcript = abjad_ide.io.transcript 

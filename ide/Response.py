@@ -4,13 +4,13 @@ from .Path import Path
 
 
 class Response(abjad.AbjadObject):
-    '''
+    """
     Response.
 
     :param payload: delivered to IDE.
 
     :param string: user input.
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -52,16 +52,16 @@ class Response(abjad.AbjadObject):
 
     @property
     def pair(self) -> typing.Tuple[str, typing.Optional[str]]:
-        '''
+        """
         Gets prefix / pattern pair.
-        '''
+        """
         return self.prefix, self.pattern
 
     @property
     def pattern(self) -> typing.Optional[str]:
-        '''
+        """
         Gets pattern.
-        '''
+        """
         if self._is_single_address():
             assert self.string is not None
             return self.string[1:]
@@ -72,16 +72,16 @@ class Response(abjad.AbjadObject):
 
     @property
     def payload(self) -> typing.Optional[typing.Union[str, list, Path]]:
-        '''
+        """
         Gets payload.
-        '''
+        """
         return self._payload
 
     @property
     def prefix(self) -> str:
-        '''
+        """
         Gets prefix.
-        '''
+        """
         if self._is_single_address():
             assert self.string is not None
             return self.string[:1]
@@ -92,17 +92,17 @@ class Response(abjad.AbjadObject):
 
     @property
     def string(self) -> typing.Optional[str]:
-        '''
+        """
         Gets string.
-        '''
+        """
         return self._string
 
     ### PUBLIC METHODS ###
 
     def get_path(self) -> typing.Optional[Path]:
-        '''
+        """
         Gets path.
-        '''
+        """
         if isinstance(self.payload, Path):
             return self.payload
         if (isinstance(self.payload, list) and
@@ -111,21 +111,21 @@ class Response(abjad.AbjadObject):
         return None
 
     def is_address(self) -> bool:
-        '''
+        """
         Is true when response is address.
-        '''
+        """
         return bool(self.prefix)
 
     def is_command(self, commands) -> bool:
-        '''
+        """
         Is true when response is command.
-        '''
+        """
         return str(self.payload) in commands and self.string != '!'
 
     def is_path(self) -> bool:
-        '''
+        """
         Is true when response is path.
-        '''
+        """
         if isinstance(self.payload, Path):
             return True
         if (isinstance(self.payload, list) and
@@ -134,15 +134,15 @@ class Response(abjad.AbjadObject):
         return False
 
     def is_segment_name(self) -> bool:
-        '''
+        """
         Is true when response is segment name.
-        '''
+        """
         return Path.is_segment_name(self.string)
 
     def is_shell(self) -> bool:
-        '''
+        """
         Is true when response is shell command.
-        '''
+        """
         if (self.string and
             self.string.startswith('!') and
             not self.string == '!!'):

@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_commit_01():
-    r'''In score package directories.
-    '''
+    """
+    In score package directories.
+    """
 
     path = ide.Path('red_score')
 
@@ -54,8 +55,9 @@ def test_AbjadIDE_git_commit_01():
 
 
 def test_AbjadIDE_git_commit_02():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     abjad_ide('ci Updated. q')
     transcript = abjad_ide.io.transcript
@@ -65,8 +67,9 @@ def test_AbjadIDE_git_commit_02():
 
 
 def test_AbjadIDE_git_commit_03():
-    r'''In library directory.
-    '''
+    """
+    In library directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

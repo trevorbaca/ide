@@ -5,8 +5,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_color_dynamics_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     with ide.Test():
 
@@ -45,8 +46,9 @@ def test_AbjadIDE_color_dynamics_01():
 
 
 def test_AbjadIDE_color_dynamics_02():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
 

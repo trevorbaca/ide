@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_smart_doctest_01():
-    r'''In contents directory.
-    '''
+    """
+    In contents directory.
+    """
 
     abjad_ide('red ^ q')
     transcript = abjad_ide.io.transcript 
@@ -33,8 +34,9 @@ def test_AbjadIDE_smart_doctest_01():
 
 
 def test_AbjadIDE_smart_doctest_02():
-    r'''In external directory.
-    '''
+    """
+    In external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -42,13 +44,14 @@ def test_AbjadIDE_smart_doctest_02():
     abjad_ide('cdi ^ath q')
     transcript = abjad_ide.io.transcript 
     path = ide.Configuration().ide_directory
-    path = path('tools', 'Path.py')
+    path = path / 'Path.py'
     assert f"Matching '^ath' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_doctest_03():
-    r'''In library.
-    '''
+    """
+    In library.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -61,8 +64,9 @@ def test_AbjadIDE_smart_doctest_03():
 
 
 def test_AbjadIDE_smart_doctest_04():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     abjad_ide('red mm ^ q')
     transcript = abjad_ide.io.transcript 
@@ -85,8 +89,9 @@ def test_AbjadIDE_smart_doctest_04():
 
 
 def test_AbjadIDE_smart_doctest_05():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg ^ q')
     transcript = abjad_ide.io.transcript 
@@ -108,8 +113,9 @@ def test_AbjadIDE_smart_doctest_05():
 
 
 def test_AbjadIDE_smart_doctest_06():
-    r'''In tools directory.
-    '''
+    """
+    In tools directory.
+    """
 
     abjad_ide('red oo ^ScT q')
     transcript = abjad_ide.io.transcript 
@@ -123,8 +129,9 @@ def test_AbjadIDE_smart_doctest_06():
 
 
 def test_AbjadIDE_smart_doctest_07():
-    r'''Handles numbers.
-    '''
+    """
+    Handles numbers.
+    """
 
     abjad_ide('red oo ^0 q')
     transcript = abjad_ide.io.transcript 
@@ -141,8 +148,9 @@ def test_AbjadIDE_smart_doctest_07():
 
 
 def test_AbjadIDE_smart_doctest_08():
-    r'''Missing pattern.
-    '''
+    """
+    Missing pattern.
+    """
 
     abjad_ide('^ q')
     transcript = abjad_ide.io.transcript 
@@ -150,8 +158,9 @@ def test_AbjadIDE_smart_doctest_08():
 
 
 def test_AbjadIDE_smart_doctest_09():
-    r'''Unmatched pattern.
-    '''
+    """
+    Unmatched pattern.
+    """
 
     abjad_ide('^asdf q')
     transcript = abjad_ide.io.transcript 

@@ -6,7 +6,7 @@ def test_AbjadIDE_column_01():
 
     with ide.Test():
 
-        abjad_ide(r'''
+        abjad_ide("""
             red oo
             new test_file_01.py y
             new test_file_02.py y
@@ -21,7 +21,7 @@ def test_AbjadIDE_column_01():
             new test_file_11.py y
             new test_file_12.py y
             <return>
-            q''')
+            q""")
         transcript = abjad_ide.io.transcript
         for line in [
             '   1: RhythmMaker.py                9: test_file_06.py',

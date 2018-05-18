@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_check_definition_py_01():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     path = ide.Path(
         'red_score', 'materials', 'red_pitch_classes', 'definition.py')
@@ -15,8 +16,9 @@ def test_AbjadIDE_check_definition_py_01():
 
 
 def test_AbjadIDE_check_definition_py_02():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     abjad_ide('red mm dpc q')
     transcript = abjad_ide.io.transcript
@@ -33,8 +35,9 @@ def test_AbjadIDE_check_definition_py_02():
 
 
 def test_AbjadIDE_check_definition_py_03():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     path = ide.Path('red_score', 'segments', 'A', 'definition.py')
     abjad_ide('red %A dpc q')
@@ -44,8 +47,9 @@ def test_AbjadIDE_check_definition_py_03():
 
 
 def test_AbjadIDE_check_definition_py_04():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg dpc q')
     transcript = abjad_ide.io.transcript

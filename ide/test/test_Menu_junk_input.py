@@ -28,7 +28,7 @@ def test_Menu_junk_input_01():
 
 def test_Menu_junk_input_02():
 
-    abjad_ide(r'''[ { ] } \ | : ' " , . / q''')
+    abjad_ide(r"""[ { ] } \ | : ' " , . / q""")
     transcript = abjad_ide.io.transcript
 
     assert "Unknown command '[' ..." in transcript
@@ -38,13 +38,13 @@ def test_Menu_junk_input_02():
     assert r"Unknown command '\\' ..." in transcript
     assert "Unknown command '|' ..." in transcript
     assert "Unknown command ':' ..." in transcript
-    assert '''Unknown command "'" ...''' in transcript
-    assert '''Unknown command '"' ...''' in transcript
+    assert """Unknown command "'" ...""" in transcript
+    assert """Unknown command '"' ...""" in transcript
     assert "Unknown command ',' ..." in transcript
     assert "Unknown command '.' ..." in transcript
     assert "Unknown command '/' ..." in transcript
 
-    abjad_ide(r'''[[ {{ ]] }} \\ || :: '' "" ,, // q''')
+    abjad_ide(r"""[[ {{ ]] }} \\ || :: '' "" ,, // q""")
     transcript = abjad_ide.io.transcript
 
     assert "Unknown command '[[' ..." in transcript
@@ -54,16 +54,17 @@ def test_Menu_junk_input_02():
     assert r"Unknown command '\\\\' ..." in transcript
     assert "Unknown command '||' ..." in transcript
     assert "Unknown command '::' ..." in transcript
-    assert '''Unknown command "''" ...''' in transcript
-    assert '''Unknown command '""' ...''' in transcript
+    assert """Unknown command "''" ...""" in transcript
+    assert """Unknown command '""' ...""" in transcript
     assert "Unknown command ',,' ..." in transcript
     assert "Unknown command '//' ..." in transcript
 
 
 def test_Menu_junk_input_03():
-    r'''Multihypen input doesn't break anything.
-    '''
+    """
+    Multihyphen input doesn't break anything.
+    """
 
-    abjad_ide(r'''allegro-moderato-ma-non-troppo q''')
+    abjad_ide(r"""allegro-moderato-ma-non-troppo q""")
     transcript = abjad_ide.io.transcript
     assert 'Unknown command' in transcript

@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_make_layout_ly_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
     
     with ide.Test():
         path = ide.Path('red_score', 'builds', 'letter-score', 'layout.ly')
@@ -25,8 +26,9 @@ def test_AbjadIDE_make_layout_ly_01():
 
 
 def test_AbjadIDE_make_layout_ly_02():
-    r'''In parts directory.
-    '''
+    """
+    In parts directory.
+    """
     
     with ide.Test():
         parts = ide.Path('green_score', 'builds', 'arch-a-parts')
@@ -51,8 +53,9 @@ def test_AbjadIDE_make_layout_ly_02():
 
 
 def test_AbjadIDE_make_layout_ly_03():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
     
     with ide.Test():
         path = ide.Path('red_score', 'segments', 'A', 'layout.ly')

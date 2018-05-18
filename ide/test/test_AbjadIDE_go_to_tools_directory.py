@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_tools_directory_01():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
 
     abjad_ide('red mm metronome oo q')
     transcript = abjad_ide.io.transcript
@@ -20,8 +21,9 @@ def test_AbjadIDE_go_to_tools_directory_01():
 
 
 def test_AbjadIDE_go_to_tools_directory_02():
-    r'''From segment directory.
-    '''
+    """
+    From segment directory.
+    """
 
     abjad_ide('red gg A oo q')
     transcript = abjad_ide.io.transcript
@@ -35,8 +37,9 @@ def test_AbjadIDE_go_to_tools_directory_02():
 
 
 def test_AbjadIDE_go_to_tools_directory_03():
-    r'''From score directory.
-    '''
+    """
+    From score directory.
+    """
 
     abjad_ide('red oo q')
     transcript = abjad_ide.io.transcript
@@ -48,8 +51,9 @@ def test_AbjadIDE_go_to_tools_directory_03():
 
 
 def test_AbjadIDE_go_to_tools_directory_04():
-    r'''From builds directory to tools directory.
-    '''
+    """
+    From builds directory to tools directory.
+    """
 
 
     abjad_ide('red bb oo q')

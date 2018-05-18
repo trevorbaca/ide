@@ -4,11 +4,11 @@ import typing
 
 
 class Command(abjad.AbjadObject):
-    '''
+    """
     Command.
 
     Decorates IDE methods.
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -76,11 +76,11 @@ class Command(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self, method):
-        '''
+        """
         Calls command decorator on ``method``.
 
         Returns ``method`` with metadata attached.
-        '''
+        """
         method.score_package_path_blacklist = self.score_package_path_blacklist
         method.command_name = self.command_name
         if self.description is not None:

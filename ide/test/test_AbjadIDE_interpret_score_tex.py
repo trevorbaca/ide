@@ -34,8 +34,9 @@ def test_AbjadIDE_interpret_score_tex_01():
 
 
 def test_AbjadIDE_interpret_score_tex_02():
-    r'''LaTeX error does not freeze IDE; runs in nonstop mode.
-    '''
+    """
+    LaTeX error does not freeze IDE; runs in nonstop mode.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'builds', 'letter-score')

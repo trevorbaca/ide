@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_duplicate_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     abjad_ide(f'red %let dup layout.ly q')
     transcript = abjad_ide.io.transcript
@@ -16,8 +17,9 @@ def test_AbjadIDE_duplicate_01():
 
 
 def test_AbjadIDE_duplicate_02():
-    r'''In distribution directory.
-    '''
+    """
+    In distribution directory.
+    """
 
     abjad_ide(f'red dd dup red-score.pdf q')
     transcript = abjad_ide.io.transcript
@@ -28,8 +30,9 @@ def test_AbjadIDE_duplicate_02():
 
 
 def test_AbjadIDE_duplicate_03():
-    r'''In etc directory.
-    '''
+    """
+    In etc directory.
+    """
 
     abjad_ide(f'red ee dup notes.txt q')
     transcript = abjad_ide.io.transcript
@@ -40,13 +43,14 @@ def test_AbjadIDE_duplicate_03():
 
 
 def test_AbjadIDE_duplicate_04():
-    r'''In external directory.
-    '''
+    """
+    In external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
 
-    directory = ide.Path('/Users/trevorbaca/baca/baca/tools')
+    directory = ide.Path('/Users/trevorbaca/baca/baca')
     with abjad.FilesystemState(keep=[directory]):
         source = directory / 'Matrix.py'
         assert source.is_file()
@@ -64,8 +68,9 @@ def test_AbjadIDE_duplicate_04():
 
 
 def test_AbjadIDE_duplicate_05():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'materials', 'red_pitch_classes')
@@ -86,8 +91,9 @@ def test_AbjadIDE_duplicate_05():
 
 
 def test_AbjadIDE_duplicate_06():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score').wrapper ()
@@ -107,8 +113,9 @@ def test_AbjadIDE_duplicate_06():
 
 
 def test_AbjadIDE_duplicate_07():
-    r'''In scores directory. Handles empty return gracefully.
-    '''
+    """
+    In scores directory. Handles empty return gracefully.
+    """
 
     abjad_ide('dup <return> q')
     transcript = abjad_ide.io.transcript
@@ -116,8 +123,9 @@ def test_AbjadIDE_duplicate_07():
 
 
 def test_AbjadIDE_duplicate_08():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     with ide.Test():
         source = ide.Path('blue_score', 'segments', 'A')
@@ -137,8 +145,9 @@ def test_AbjadIDE_duplicate_08():
 
 
 def test_AbjadIDE_duplicate_09():
-    r'''In stylesheets directory.
-    '''
+    """
+    In stylesheets directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'stylesheets', 'stylesheet.ily')
@@ -157,8 +166,9 @@ def test_AbjadIDE_duplicate_09():
 
 
 def test_AbjadIDE_duplicate_10():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'test', 'test_materials.py')
@@ -177,8 +187,9 @@ def test_AbjadIDE_duplicate_10():
 
 
 def test_AbjadIDE_duplicate_11():
-    r'''In tools directory.
-    '''
+    """
+    In tools directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'tools', 'ScoreTemplate.py')

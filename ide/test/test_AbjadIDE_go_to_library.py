@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_library_01():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -21,8 +22,9 @@ def test_AbjadIDE_go_to_library_01():
 
 
 def test_AbjadIDE_go_to_library_02():
-    r'''From segment directory.
-    '''
+    """
+    From segment directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -39,8 +41,9 @@ def test_AbjadIDE_go_to_library_02():
 
 
 def test_AbjadIDE_go_to_library_03():
-    r'''From score directory.
-    '''
+    """
+    From score directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -55,8 +58,9 @@ def test_AbjadIDE_go_to_library_03():
 
 
 def test_AbjadIDE_go_to_library_04():
-    r'''From scores directory.
-    '''
+    """
+    From scores directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_hop_to_previous_score_01():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     abjad_ide('red mm << << << q')
     transcript = abjad_ide.io.transcript
@@ -19,8 +20,9 @@ def test_AbjadIDE_hop_to_previous_score_01():
 
 
 def test_AbjadIDE_hop_to_previous_score_02():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     abjad_ide('<< << << q')
     transcript = abjad_ide.io.transcript

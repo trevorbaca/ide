@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_new_01():
-    r'''Makes build directory.
-    '''
+    """
+    Makes build directory.
+    """
 
     build = ide.Path('red_score', 'builds', 'arch-a-score')
     with ide.Test(remove=[build]):
@@ -79,8 +80,9 @@ def test_AbjadIDE_new_01():
 
 
 def test_AbjadIDE_new_02():
-    r'''Makes build directory. Ignores empty metadata.
-    '''
+    """
+    Makes build directory. Ignores empty metadata.
+    """
 
     path = ide.Path('red_score', 'builds', 'arch-a-score')
     with ide.Test(remove=[path]):
@@ -114,8 +116,9 @@ def test_AbjadIDE_new_02():
 
 
 def test_AbjadIDE_new_03():
-    r'''Makes material package.
-    '''
+    """
+    Makes material package.
+    """
 
     path = ide.Path('red_score', 'materials', 'test_notes')
     with ide.Test(remove=[path]):
@@ -140,8 +143,9 @@ def test_AbjadIDE_new_03():
 
 
 def test_AbjadIDE_new_04():
-    r'''Makes parts directory.
-    '''
+    """
+    Makes parts directory.
+    """
 
     with ide.Test():
         directory = ide.Path('green_score', 'builds', 'arch-a-parts')
@@ -291,8 +295,9 @@ def test_AbjadIDE_new_04():
 
 
 def test_AbjadIDE_new_05():
-    r'''Makes score package.
-    '''
+    """
+    Makes score package.
+    """
 
     with ide.Test():
 
@@ -338,8 +343,9 @@ def test_AbjadIDE_new_05():
 
 
 def test_AbjadIDE_new_06():
-    r'''Makes score package in empty directory.
-    '''
+    """
+    Makes score package in empty directory.
+    """
 
     with ide.Test():
         wrapper = ide.Path('test_scores') / 'purple_score'
@@ -387,8 +393,9 @@ def test_AbjadIDE_new_06():
 
 
 def test_AbjadIDE_new_07():
-    r'''Makes score package. Coerces package name.
-    '''
+    """
+    Makes score package. Coerces package name.
+    """
 
     package = ide.Path('test_scores') / 'purple_score'
 
@@ -414,8 +421,9 @@ def test_AbjadIDE_new_07():
 
 
 def test_AbjadIDE_new_08():
-    r'''Makes segment directory.
-    '''
+    """
+    Makes segment directory.
+    """
 
     path = ide.Path('red_score', 'segments', 'segment_04')
     with ide.Test(remove=[path]):
@@ -442,8 +450,9 @@ def test_AbjadIDE_new_08():
 
 
 def test_AbjadIDE_new_09():
-    r'''Makes stylesheet.
-    '''
+    """
+    Makes stylesheet.
+    """
 
     path = ide.Path('red_score', 'stylesheets', 'new-stylesheet.ily')
     with ide.Test(remove=[path]):
@@ -471,8 +480,9 @@ def test_AbjadIDE_new_09():
 
 
 def test_AbjadIDE_new_10():
-    r'''Makes tools classfile.
-    '''
+    """
+    Makes tools classfile.
+    """
 
     path = ide.Path('red_score', 'tools', 'NewClass.py')
     with ide.Test(remove=[path]):
@@ -492,8 +502,9 @@ def test_AbjadIDE_new_10():
 
 
 def test_AbjadIDE_new_11():
-    r'''Makes tools functionfile.
-    '''
+    """
+    Makes tools functionfile.
+    """
 
     path = ide.Path('red_score', 'tools', 'make_material.py')
     with ide.Test(remove=[path]):
@@ -513,8 +524,9 @@ def test_AbjadIDE_new_11():
 
 
 def test_AbjadIDE_new_12():
-    r'''In library.
-    '''
+    """
+    In library.
+    """
 
     if not abjad.abjad_configuration.composer_library_tools:
         return

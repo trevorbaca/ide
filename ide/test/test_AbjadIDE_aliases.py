@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=False)
 
 
 def test_AbjadIDE_aliases_01():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
     
     if not abjad_ide.test_baca_directories():
         return
@@ -22,8 +23,9 @@ def test_AbjadIDE_aliases_01():
 
 
 def test_AbjadIDE_aliases_02():
-    r'''From scores directory.
-    '''
+    """
+    From scores directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -37,8 +39,9 @@ def test_AbjadIDE_aliases_02():
 
 
 def test_AbjadIDE_aliases_03():
-    r'''With test score.
-    '''
+    """
+    With test score.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

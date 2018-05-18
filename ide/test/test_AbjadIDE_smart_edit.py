@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_smart_edit_01():
-    r'''Edits etc file.
-    '''
+    """
+    Edits etc file.
+    """
 
     abjad_ide('red @notes.txt q')
     transcript = abjad_ide.io.transcript 
@@ -14,8 +15,9 @@ def test_AbjadIDE_smart_edit_01():
 
 
 def test_AbjadIDE_smart_edit_02():
-    r'''Edits external file.
-    '''
+    """
+    Edits external file.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -23,13 +25,14 @@ def test_AbjadIDE_smart_edit_02():
     abjad_ide('cdi @ath q')
     transcript = abjad_ide.io.transcript 
     directory = ide.Configuration().ide_directory
-    path = directory('tools', 'Path.py')
+    path = directory / 'Path.py'
     assert f"Editing {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_edit_03():
-    r'''Edits library file.
-    '''
+    """
+    Edits library file.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -50,8 +53,9 @@ def test_AbjadIDE_smart_edit_03():
 
 
 def test_AbjadIDE_smart_edit_04():
-    r'''Edits material definition file.
-    '''
+    """
+    Edits material definition file.
+    """
 
     abjad_ide('red @rpc q')
     transcript = abjad_ide.io.transcript 
@@ -61,8 +65,9 @@ def test_AbjadIDE_smart_edit_04():
 
 
 def test_AbjadIDE_smart_edit_05():
-    r'''Edits segment definition file.
-    '''
+    """
+    Edits segment definition file.
+    """
 
     abjad_ide('red @A q')
     transcript = abjad_ide.io.transcript 
@@ -71,8 +76,9 @@ def test_AbjadIDE_smart_edit_05():
 
 
 def test_AbjadIDE_smart_edit_06():
-    r'''Edits stylesheet.
-    '''
+    """
+    Edits stylesheet.
+    """
 
     abjad_ide('red @contexts q')
     transcript = abjad_ide.io.transcript 
@@ -81,8 +87,9 @@ def test_AbjadIDE_smart_edit_06():
 
 
 def test_AbjadIDE_smart_edit_07():
-    r'''Edits tools files.
-    '''
+    """
+    Edits tools files.
+    """
 
     abjad_ide('red @RM q')
     transcript = abjad_ide.io.transcript 
@@ -101,8 +108,9 @@ def test_AbjadIDE_smart_edit_07():
 
 
 def test_AbjadIDE_smart_edit_08():
-    r'''Handles single-prefix numeric input.
-    '''
+    """
+    Handles single-prefix numeric input.
+    """
 
     abjad_ide('red mm @0 q')
     transcript = abjad_ide.io.transcript 
@@ -119,8 +127,9 @@ def test_AbjadIDE_smart_edit_08():
 
 
 def test_AbjadIDE_smart_edit_09():
-    r'''Missing pattern.
-    '''
+    """
+    Missing pattern.
+    """
 
     abjad_ide('@ q')
     transcript = abjad_ide.io.transcript 
@@ -128,8 +137,9 @@ def test_AbjadIDE_smart_edit_09():
 
 
 def test_AbjadIDE_smart_edit_10():
-    r'''Unmatched pattern.
-    '''
+    """
+    Unmatched pattern.
+    """
 
     abjad_ide('@asdf q')
     transcript = abjad_ide.io.transcript 
@@ -137,8 +147,9 @@ def test_AbjadIDE_smart_edit_10():
 
 
 def test_AbjadIDE_smart_edit_11():
-    r'''Matches file alias.
-    '''
+    """
+    Matches file alias.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -151,8 +162,9 @@ def test_AbjadIDE_smart_edit_11():
 
 
 def test_AbjadIDE_smart_edit_12():
-    r'''Matches directory alias.
-    '''
+    """
+    Matches directory alias.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

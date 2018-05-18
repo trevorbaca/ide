@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_edit_all_01():
-    r'''Edits material definition files.
-    '''
+    """
+    Edits material definition files.
+    """
 
     abjad_ide('red mm @@fini q')
     transcript = abjad_ide.io.transcript 
@@ -26,8 +27,9 @@ def test_AbjadIDE_edit_all_01():
 
 
 def test_AbjadIDE_edit_all_02():
-    r'''Edits segment definition files.
-    '''
+    """
+    Edits segment definition files.
+    """
 
     abjad_ide('red gg @@efin q')
     transcript = abjad_ide.io.transcript 
@@ -42,8 +44,9 @@ def test_AbjadIDE_edit_all_02():
 
 
 def test_AbjadIDE_edit_all_03():
-    r'''Handles nonexisting numeric input.
-    '''
+    """
+    Handles nonexisting numeric input.
+    """
 
     abjad_ide('red mm @@0 q')
     transcript = abjad_ide.io.transcript 
@@ -59,8 +62,9 @@ def test_AbjadIDE_edit_all_03():
 
 
 def test_AbjadIDE_edit_all_04():
-    r'''Handles empty input, junk input and nonfile input.
-    '''
+    """
+    Handles empty input, junk input and nonfile input.
+    """
 
     abjad_ide('@@asdf q')
     transcript = abjad_ide.io.transcript 
@@ -68,8 +72,9 @@ def test_AbjadIDE_edit_all_04():
 
 
 def test_AbjadIDE_edit_all_05():
-    r'''Provides warning with <= 20 files.
-    '''
+    """
+    Provides warning with <= 20 files.
+    """
 
     abjad_ide('red @@ <return> q')
     transcript = abjad_ide.io.transcript 

@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_remove_01():
-    r'''In build directory. Removes multiple files.
-    '''
+    """
+    In build directory. Removes multiple files.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'builds', 'letter-score')
@@ -73,8 +74,9 @@ def test_AbjadIDE_remove_01():
 
 
 def test_AbjadIDE_remove_02():
-    r'''In library directory.
-    '''
+    """
+    In library directory.
+    """
 
     if not abjad.abjad_configuration.composer_library_tools:
         return
@@ -100,8 +102,9 @@ def test_AbjadIDE_remove_02():
 
 
 def test_AbjadIDE_remove_03():
-    r'''In scores directory. Removes one package.
-    '''
+    """
+    In scores directory. Removes one package.
+    """
 
     with ide.Test():
         path = ide.Path('blue_score').wrapper
@@ -117,8 +120,9 @@ def test_AbjadIDE_remove_03():
 
 
 def test_AbjadIDE_remove_04():
-    r'''In scores directory. Removes multiple packages.
-    '''
+    """
+    In scores directory. Removes multiple packages.
+    """
 
     with ide.Test():
         path_1 = ide.Path('blue_score').wrapper
@@ -140,8 +144,9 @@ def test_AbjadIDE_remove_04():
 
 
 def test_AbjadIDE_remove_05():
-    r'''In stylesheets directory. Works with smart match.
-    '''
+    """
+    In stylesheets directory. Works with smart match.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'stylesheets', 'stylesheet.ily')

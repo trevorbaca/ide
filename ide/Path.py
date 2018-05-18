@@ -8,9 +8,9 @@ from .Configuration import Configuration
 
 
 class Path(abjad.Path):
-    '''
+    """
     Path.
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -279,9 +279,9 @@ class Path(abjad.Path):
 
     @property
     def document_names(self) -> typing.Optional[typing.List[str]]:
-        '''
+        """
         Gets document names in path.
-        '''
+        """
         if not self.is_build():
             return None
         stem = abjad.String(self.name).to_shout_case()
@@ -298,7 +298,7 @@ class Path(abjad.Path):
 
     @property
     def scores(self) -> typing.Optional['Path']:
-        '''
+        """
         Gets scores directory.
 
         ..  container:: example
@@ -312,7 +312,7 @@ class Path(abjad.Path):
             >>> path.scores('red_score', 'red_score', 'etc')
             Path*('/path/to/scores/red_score/red_score/etc')
 
-        '''
+        """
         if getattr(self, '_scores', None) is not None:
             result = getattr(self, '_scores')
             result._scores = getattr(self, '_scores')
@@ -328,9 +328,9 @@ class Path(abjad.Path):
     ### PUBLIC METHODS ###
 
     def get_eol_measure_numbers(self) -> typing.Optional[typing.List[int]]:
-        '''
+        """
         Gets EOL measure numbers from BOL measure numbers stored in metadata.
-        '''
+        """
         bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
         if bol_measure_numbers is None:
             return None
@@ -341,9 +341,9 @@ class Path(abjad.Path):
         return eol_measure_numbers
 
     def get_header(self) -> str:
-        '''
+        """
         Gets menu header.
-        '''
+        """
         if self.is_scores():
             return 'Abjad IDE : scores'
         if self.is_external():
@@ -365,7 +365,7 @@ class Path(abjad.Path):
         return ' : '.join(parts)
 
     def is_external(self) -> bool:
-        '''
+        """
         Is true when path does not have form of score package path.
 
         ..  container:: example
@@ -390,7 +390,7 @@ class Path(abjad.Path):
             >>> ide.Path('/path/to/location').is_external()
             True
 
-        '''
+        """
         if (not self.name[0].isalpha() and
             not self.name == '_assets' and
             not self.name == '_segments' and
@@ -407,9 +407,9 @@ class Path(abjad.Path):
         return True
 
     def is_prototype(self, prototype) -> bool:
-        '''
+        """
         Is true when path is `prototype`.
-        '''
+        """
         if prototype is True:
             return True
         if bool(prototype) is False:

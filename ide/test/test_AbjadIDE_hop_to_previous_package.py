@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_hop_to_previous_package_01():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     abjad_ide('red mm < < < q')
     transcript = abjad_ide.io.transcript
@@ -19,8 +20,9 @@ def test_AbjadIDE_hop_to_previous_package_01():
 
 
 def test_AbjadIDE_hop_to_previous_package_02():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     abjad_ide('red mm instruments < < q')
     transcript = abjad_ide.io.transcript
@@ -35,8 +37,9 @@ def test_AbjadIDE_hop_to_previous_package_02():
 
 
 def test_AbjadIDE_hop_to_previous_package_03():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg < < < q')
     transcript = abjad_ide.io.transcript
@@ -51,8 +54,9 @@ def test_AbjadIDE_hop_to_previous_package_03():
 
 
 def test_AbjadIDE_hop_to_previous_package_04():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     abjad_ide('red gg _ < < q')
     transcript = abjad_ide.io.transcript

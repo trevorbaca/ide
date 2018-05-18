@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_smart_pdf_01():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'segments', 'A', 'illustration.pdf')
@@ -18,8 +19,9 @@ def test_AbjadIDE_smart_pdf_01():
 
 
 def test_AbjadIDE_smart_pdf_02():
-    r'''Handles numbers.
-    '''
+    """
+    Handles numbers.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'segments', '_', 'illustration.pdf')
@@ -37,8 +39,9 @@ def test_AbjadIDE_smart_pdf_02():
 
 
 def test_AbjadIDE_smart_pdf_03():
-    r'''Missing pattern.
-    '''
+    """
+    Missing pattern.
+    """
 
     abjad_ide('* q')
     transcript = abjad_ide.io.transcript 
@@ -46,8 +49,9 @@ def test_AbjadIDE_smart_pdf_03():
 
 
 def test_AbjadIDE_smart_pdf_04():
-    r'''Unmatched pattern.
-    '''
+    """
+    Unmatched pattern.
+    """
 
     abjad_ide('*asdf q')
     transcript = abjad_ide.io.transcript 

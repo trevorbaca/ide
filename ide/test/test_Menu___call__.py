@@ -2,8 +2,9 @@ import ide
 
 
 def test_Menu___call___01():
-    r'''Command section.
-    '''
+    """
+    Command section.
+    """
 
     menu = ide.Menu(
         sections=[
@@ -36,8 +37,9 @@ def test_Menu___call___01():
 
 
 def test_Menu___call___02():
-    r'''Asset section.
-    '''
+    """
+    Asset section.
+    """
 
     menu = ide.Menu(
         sections=[
@@ -69,8 +71,9 @@ def test_Menu___call___02():
 
 
 def test_Menu___call___03():
-    r'''Secondary asset section.
-    '''
+    """
+    Secondary asset section.
+    """
 
     menu = ide.Menu(
         sections=[

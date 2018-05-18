@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_get_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'builds', 'letter-score')
@@ -31,8 +32,9 @@ def test_AbjadIDE_get_01():
 
 
 def test_AbjadIDE_get_02():
-    r'''In distribution directory.
-    '''
+    """
+    In distribution directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'distribution', 'red-score.pdf')
@@ -58,8 +60,9 @@ def test_AbjadIDE_get_02():
 
 
 def test_AbjadIDE_get_03():
-    r'''In etc directory.
-    '''
+    """
+    In etc directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'etc', 'notes.txt')
@@ -84,8 +87,9 @@ def test_AbjadIDE_get_03():
 
 
 def test_AbjadIDE_get_04():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     with ide.Test():
         source = ide.Path('blue_score', 'materials', 'blue_rhythm_1')
@@ -110,8 +114,9 @@ def test_AbjadIDE_get_04():
 
 
 def test_AbjadIDE_get_05():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'materials', 'red_pitch_classes')
@@ -133,8 +138,9 @@ def test_AbjadIDE_get_05():
 
 
 def test_AbjadIDE_get_06():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'segments', 'A', 'definition.py')
@@ -177,8 +183,9 @@ def test_AbjadIDE_get_06():
 
 
 def test_AbjadIDE_get_07():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'segments', 'B')
@@ -203,8 +210,9 @@ def test_AbjadIDE_get_07():
 
 
 def test_AbjadIDE_get_08():
-    r'''In stylesheets directory.
-    '''
+    """
+    In stylesheets directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'stylesheets', 'stylesheet.ily')
@@ -226,8 +234,9 @@ def test_AbjadIDE_get_08():
 
 
 def test_AbjadIDE_get_09():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'test', 'test_materials.py')
@@ -249,8 +258,9 @@ def test_AbjadIDE_get_09():
 
 
 def test_AbjadIDE_get_10():
-    r'''In tools directory.
-    '''
+    """
+    In tools directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'tools', 'ScoreTemplate.py')

@@ -17,8 +17,9 @@ def test_AbjadIDE_edit_aliases_01():
 
 
 def test_AbjadIDE_edit_aliases_02():
-    r'''In external directory.
-    '''
+    """
+    In external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

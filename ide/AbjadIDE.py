@@ -25,7 +25,7 @@ from .Response import Response
 
 
 class AbjadIDE(abjad.AbjadObject):
-    '''
+    """
     Abjad IDE.
 
     ..  container:: example
@@ -33,7 +33,7 @@ class AbjadIDE(abjad.AbjadObject):
         >>> ide.AbjadIDE()
         AbjadIDE()
 
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -93,9 +93,9 @@ class AbjadIDE(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self, string=None) -> None:
-        '''
+        """
         Calls IDE on ``string``.
-        '''
+        """
         if self.test and not string.endswith('q'):
             raise Exception(f"Test input must end with 'q': {string!r}.")
         AbjadIDE.__init__(self, example=self.example, test=self.test)
@@ -1977,72 +1977,72 @@ class AbjadIDE(abjad.AbjadObject):
 
     @property
     def aliases(self) -> abjad.OrderedDict:
-        '''
+        """
         Gets aliases.
-        '''
+        """
         return self._aliases
 
     @property
     def clipboard(self) -> list:
-        '''
+        """
         Gets clipboard.
-        '''
+        """
         return self._clipboard
 
     @property
     def commands(self) -> abjad.OrderedDict:
-        '''
+        """
         Gets commands.
-        '''
+        """
         return self._commands
 
     @property
     def current_directory(self) -> typing.Optional[abjad.Path]:
-        '''
+        """
         Gets current directory.
-        '''
+        """
         return self._current_directory
 
     @property
     def example(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when IDE is example.
-        '''
+        """
         return self._example
 
     @property
     def io(self) -> IO:
-        '''
+        """
         Gets IO.
-        '''
+        """
         return self._io
 
     @property
     def navigation(self) -> typing.Optional[str]:
-        '''
+        """
         Gets current navigation command.
-        '''
+        """
         return self._navigation
 
     @property
     def navigations(self) -> abjad.OrderedDict:
-        '''
+        """
         Gets all navigation commands.
-        '''
+        """
         return self._navigations
 
     @property
     def previous_directory(self) -> typing.Optional[str]:
-        '''
+        """
         Gets previous directory.
-        '''
+        """
         return self._previous_directory
 
     @property
     def test(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when IDE is test.
-        '''
+        """
         return self._test
 
     ### PUBLIC METHODS ###
@@ -2056,8 +2056,8 @@ class AbjadIDE(abjad.AbjadObject):
         message_zero: bool = False,
         name: str = None,
         ) -> None:
-        '''Activates ``tag`` in ``path``.
-        '''
+        """Activates ``tag`` in ``path``.
+        """
         if deactivate:
             count, skipped, messages = path.deactivate(
                 tag,
@@ -2076,16 +2076,16 @@ class AbjadIDE(abjad.AbjadObject):
 
     @staticmethod
     def change(directory) -> abjad.TemporaryDirectoryChange:
-        '''
+        """
         Makes temporary directory change context manager.
-        '''
+        """
         return abjad.TemporaryDirectoryChange(directory=directory)
 
     @staticmethod
     def cleanup(remove=None) -> abjad.FilesystemState:
-        '''
+        """
         Makes filesystem state context manager.
-        '''
+        """
         return abjad.FilesystemState(remove=remove)
 
     def deactivate(
@@ -2096,9 +2096,9 @@ class AbjadIDE(abjad.AbjadObject):
         message_zero: bool = False,
         name: str = None,
         ) -> None:
-        '''
+        """
         Deactivates ``tag`` in ``path``.
-        '''
+        """
         self.activate(
             path,
             tag,
@@ -2109,9 +2109,9 @@ class AbjadIDE(abjad.AbjadObject):
             )
 
     def is_navigation(self, argument: typing.Optional[str]) -> bool:
-        '''
+        """
         Is true when ``argument`` is navigation.
-        '''
+        """
         assert argument != '', repr(argument)
         if argument is None:
             return True
@@ -2127,18 +2127,18 @@ class AbjadIDE(abjad.AbjadObject):
         return False
 
     def run(self, job: abjad.Job, quiet: bool = False) -> None:
-        '''
+        """
         Runs ``job`` on ``path``.
-        '''
+        """
         message_zero = not bool(quiet)
         job = abjad.new(job, message_zero=message_zero)
         messages: typing.List[abjad.String] = job()
         self.io.display(messages)
 
     def test_baca_directories(self) -> bool:
-        '''
+        """
         Is true when IDE can test local directories on Trevor's machine.
-        '''
+        """
         scores = abjad.abjad_configuration.composer_scores_directory
         if 'trevorbaca' in scores:
             return True
@@ -2153,9 +2153,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def build_part_pdf(self, directory: Path) -> None:
-        '''
+        """
         Builds ``part.pdf`` from the ground up.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.pdf', 'build'
         # TODO:
@@ -2220,9 +2220,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def build_score_pdf(self, directory: Path) -> None:
-        '''
+        """
         Builds ``score.pdf`` from the ground up.
-        '''
+        """
         assert directory.is_build() or directory.is__segments()
         assert directory.build is not None
         self.io.display('building score ...')
@@ -2271,9 +2271,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def call_shell(self, directory: Path, statement: str) -> None:
-        '''
+        """
         Calls shell.
-        '''
+        """
         with self.change(directory):
             self.io.display(f'calling shell on {statement!r} ...')
             abjad.IOManager.spawn_subprocess(statement)
@@ -2285,11 +2285,11 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def check_definition_py(self, directory: Path) -> int:
-        '''
+        """
         Checks ``definition.py``.
 
         Returns integer exit code for Travis tests.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             self.io.display('checking definition ...')
@@ -2323,7 +2323,7 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def collect_segments(self, directory: Path) -> None:
-        '''
+        """
         Collects segment lys.
 
         Copies from illustration.ly files from segment directories to
@@ -2335,7 +2335,7 @@ class AbjadIDE(abjad.AbjadObject):
         Keeps score block in each illustration.ly file.
 
         Shows and deactivates build-appropriate tags.
-        '''
+        """
         assert directory.is_build() or directory.is__segments()
         self.io.display('collecting segment lys ...')
         pairs = self._collect_segments(directory.build)
@@ -2395,9 +2395,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_clefs(self, directory: Path) -> None:
-        '''
+        """
         Colors clefs.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_clefs(directory))
 
@@ -2408,9 +2408,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_dynamics(self, directory: Path) -> None:
-        '''
+        """
         Colors dynamics.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_dynamics(directory))
 
@@ -2421,9 +2421,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_instruments(self, directory: Path):
-        '''
+        """
         Colors instruments.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_instruments(directory))
 
@@ -2434,9 +2434,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_margin_markup(self, directory: Path) -> None:
-        '''
+        """
         Colors margin markup.
-        '''
+        """
         assert directory.is_score_package_path()
         self.run(abjad.Job.color_margin_markup(directory))
 
@@ -2447,9 +2447,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_metronome_marks(self, directory: Path) -> None:
-        '''
+        """
         Colors metronome marks.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_metronome_marks(directory))
 
@@ -2460,9 +2460,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_persistent_indicators(self, directory: Path) -> None:
-        '''
+        """
         Colors persistent indicators.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_persistent_indicators(directory))
 
@@ -2473,9 +2473,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_staff_lines(self, directory: Path) -> None:
-        '''
+        """
         Colors staff lines.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_staff_lines(directory))
 
@@ -2486,9 +2486,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def color_time_signatures(self, directory: Path) -> None:
-        '''
+        """
         Colors time signatures.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_time_signatures(directory))
 
@@ -2501,9 +2501,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def copy_to_clipboard(self, directory: Path) -> None:
-        '''
+        """
         Copies to clipboard.
-        '''
+        """
         paths = self._select_paths(directory, infinitive='for clipboard')
         if self.is_navigation(paths):
             return
@@ -2522,9 +2522,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def cut_to_clipboard(self, directory: Path) -> None:
-        '''
+        """
         Cuts to clipboard.
-        '''
+        """
         paths = self._select_paths(directory, infinitive='for clipboard')
         if self.is_navigation(paths):
             return
@@ -2544,9 +2544,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def doctest_all(self, directory: Path, pattern: str = None) -> None:
-        '''
+        """
         Doctests all.
-        '''
+        """
         files, strings = directory._find_doctest_files(force=True)
         files = self._match_files(files, strings, pattern, '^^')
         self._run_doctest(files)
@@ -2562,9 +2562,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def duplicate(self, directory: Path) -> None:
-        '''
+        """
         Duplicates asset.
-        '''
+        """
         paths = self._select_paths(directory, infinitive='to duplicate')
         if self.is_navigation(paths):
             return
@@ -2656,9 +2656,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_aliases_py(self) -> None:
-        '''
+        """
         Edits ``__aliases__.py``.
-        '''
+        """
         self._open_files([self.configuration.aliases_file_path])
         self.configuration._read_aliases_file()
         self._aliases = abjad.OrderedDict(self.configuration.aliases)
@@ -2675,9 +2675,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_all(self, directory: Path, pattern: str = None) -> None:
-        '''
+        """
         Edits all files.
-        '''
+        """
         files, strings = directory._find_editable_files(force=True)
         files = self._match_files(files, strings, pattern, '@@')
         self._open_files(files)
@@ -2689,9 +2689,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_back_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Edits ``back-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'back-cover.tex', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2706,9 +2706,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def edit_definition_py(self, directory: Path) -> None:
-        '''
+        """
         Edits ``definition.py``.
-        '''
+        """
         assert directory.is_illustrationspace()
         paths = []
         if directory.is_material() or directory.is_segment():
@@ -2727,9 +2727,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_front_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Edits ``front-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'front-cover.tex', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2744,9 +2744,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def edit_illustration_ily(self, directory: Path) -> None:
-        '''
+        """
         Edits ``illustration.ily``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             paths = [directory('illustration.ily')]
@@ -2765,9 +2765,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def edit_illustration_ly(self, directory: Path) -> None:
-        '''
+        """
         Edits ``illustration.ly``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             paths = [directory('illustration.ly')]
@@ -2788,9 +2788,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_latex_log(self) -> None:
-        '''
+        """
         Edits ``latex.log``.
-        '''
+        """
         path = self.configuration.latex_log_file_path
         self._open_files([path])
 
@@ -2801,9 +2801,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def edit_layout_ly(self, directory: Path) -> None:
-        '''
+        """
         Edits ``layout.ly``.
-        '''
+        """
         assert directory.is_buildspace()
         name, verb = 'layout.ly', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2818,9 +2818,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def edit_layout_py(self, directory: Path) -> None:
-        '''
+        """
         Edits ``layout.py``.
-        '''
+        """
         assert directory.is_buildspace()
         name, verb = 'layout.py', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2837,9 +2837,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_lilypond_log(self) -> None:
-        '''
+        """
         Edits ``lily.log``.
-        '''
+        """
         path = Path(abjad.abjad_configuration.lilypond_log_file_path)
         self._open_files([path])
 
@@ -2850,9 +2850,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_music_ly(self, directory: Path) -> None:
-        '''
+        """
         Edits ``music.ly``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'music.ly', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2867,9 +2867,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def edit_part_tex(self, directory: Path) -> None:
-        '''
+        """
         Edits ``part.tex``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2884,9 +2884,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_preface_tex(self, directory: Path) -> None:
-        '''
+        """
         Edits ``preface.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'preface.tex', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -2902,9 +2902,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_score_tex(self, directory: Path) -> None:
-        '''
+        """
         Edits ``score.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         path = directory.build / 'score.tex'
@@ -2917,9 +2917,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def edit_stylesheet_ily(self, directory: Path) -> None:
-        '''
+        """
         Edits ``stylesheet.ily``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         path = directory.build / 'stylesheet.ily'
@@ -2934,9 +2934,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def edit_text(self, directory: Path) -> None:
-        '''
+        """
         Opens Vim and goes to every occurrence of search string.
-        '''
+        """
         search_string = self.io.get('enter search string')
         if self.is_navigation(search_string):
             return
@@ -2956,9 +2956,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def empty_clipboard(self, directory: Path) -> None:
-        '''
+        """
         Empties clipboard.
-        '''
+        """
         if not bool(self.clipboard):
             self.io.display('clipboard is empty ...')
             return
@@ -2976,9 +2976,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def force_single_column(self) -> None:
-        '''
+        """
         Forces single-column display.
-        '''
+        """
         pass
 
     @Command(
@@ -2988,9 +2988,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_back_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Generates ``back-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = 'back-cover.tex', 'generate'
@@ -3030,9 +3030,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_front_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Generates ``front-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = 'front-cover.tex', 'generate'
@@ -3072,9 +3072,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def generate_layout_py(self, directory: Path) -> None:
-        '''
+        """
         Generates ``layout.py``.
-        '''
+        """
         assert directory.is_buildspace()
         name, verb = 'layout.py', 'generate'
         if directory.is_segment():
@@ -3122,9 +3122,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_music_ly(self, directory: Path) -> None:
-        '''
+        """
         Generates ``music.ly``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name = 'music.ly'
@@ -3171,9 +3171,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def generate_part_tex(self, directory: Path) -> None:
-        '''
+        """
         Generates ``part.tex``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'generate'
         if directory.is_part():
@@ -3207,9 +3207,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_preface_tex(self, directory: Path) -> None:
-        '''
+        """
         Generates ``preface.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = 'preface.tex', 'generate'
@@ -3243,9 +3243,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_score_tex(self, directory: Path) -> None:
-        '''
+        """
         Generates ``score.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         self.io.display('generating score ...')
@@ -3259,9 +3259,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def generate_stylesheet_ily(self, directory: Path) -> None:
-        '''
+        """
         Generates build directory ``stylesheet.ily``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         self.io.display('generating stylesheet ...')
@@ -3284,9 +3284,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def get(self, directory: Path) -> None:
-        '''
+        """
         Copies into ``directory``.
-        '''
+        """
         items = []
         if directory.is_material_or_segment():
             siblings = directory.parent.list_paths()
@@ -3415,9 +3415,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def git_commit(self, directory: Path, commit_message: str = None) -> None:
-        '''
+        """
         Commits working copy.
-        '''
+        """
         if not directory.is_scores():
             root = directory._get_repository_root()
             if not root:
@@ -3464,9 +3464,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def git_diff(self, directory: Path) -> None:
-        '''
+        """
         Displays Git diff of working copy.
-        '''
+        """
         if not directory.is_scores():
             if not directory._get_repository_root():
                 self.io.display(f'missing {directory.trim()} repository ...')
@@ -3491,9 +3491,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def git_pull(self, directory: Path) -> None:
-        '''
+        """
         Pulls working copy.
-        '''
+        """
         if not directory.is_scores():
             root = directory._get_repository_root()
             if not root:
@@ -3529,9 +3529,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def git_push(self, directory: Path) -> None:
-        '''
+        """
         Pushes working copy.
-        '''
+        """
         if not directory.is_scores():
             root = directory._get_repository_root()
             if not root:
@@ -3558,9 +3558,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def git_status(self, directory: Path) -> None:
-        '''
+        """
         Displays Git status of working copy.
-        '''
+        """
         if not directory.is_scores():
             root = directory._get_repository_root()
             if not root:
@@ -3590,9 +3590,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_back(self) -> None:
-        '''
+        """
         Goes back.
-        '''
+        """
         if self.previous_directory:
             self._manage_directory(self.previous_directory)
         else:
@@ -3605,9 +3605,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_builds_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to builds directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.builds is not None
         assert directory.builds._assets is not None
@@ -3624,9 +3624,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_contents_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to contents directory.
-        '''
+        """
         assert directory.is_score_package_path()
         self._manage_directory(directory.contents)
 
@@ -3644,9 +3644,9 @@ class AbjadIDE(abjad.AbjadObject):
         pattern: str = None,
         payload: typing.List = None,
         ) -> None:
-        '''
+        """
         Goes to directory.
-        '''
+        """
         assert directory.is_dir()
         if Path.is_segment_name(pattern):
             address = pattern
@@ -3717,9 +3717,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_distribution_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to distribution directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.distribution is not None
         self._manage_directory(directory.distribution)
@@ -3731,9 +3731,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_etc_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to etc directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.etc is not None
         self._manage_directory(directory.etc)
@@ -3747,9 +3747,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_to_library(self) -> None:
-        '''
+        """
         Goes to library.
-        '''
+        """
         library = abjad.abjad_configuration.composer_library_tools
         if library is None:
             self.io.display('missing library ...')
@@ -3763,9 +3763,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_materials_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to materials directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.materials is not None
         self._manage_directory(directory.materials)
@@ -3777,9 +3777,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('material', 'materials', 'segment', 'segments'),
         )
     def go_to_next_package(self, directory: Path) -> None:
-        '''
+        """
         Goes to next package.
-        '''
+        """
         assert (directory.is_material_or_segment() or
             directory.is_materials_or_segments())
         next_package = directory.get_next_package(cyclic=True)
@@ -3793,9 +3793,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_to_next_score(self, directory: Path) -> None:
-        '''
+        """
         Goes to next score.
-        '''
+        """
         assert directory.is_score_package_path() or directory.is_scores()
         wrapper = directory.get_next_score(cyclic=True)
         assert wrapper is not None
@@ -3808,9 +3808,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('material', 'materials', 'segment', 'segments',),
         )
     def go_to_previous_package(self, directory: Path) -> None:
-        '''
+        """
         Goes to previous package.
-        '''
+        """
         assert (directory.is_material_or_segment() or
             directory.is_materials_or_segments())
         previous_package = directory.get_previous_package(cyclic=True)
@@ -3824,9 +3824,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_to_previous_score(self, directory: Path) -> None:
-        '''
+        """
         Goes to previous score.
-        '''
+        """
         assert directory.is_score_package_path() or directory.is_scores()
         wrapper = directory.get_previous_score(cyclic=True)
         assert wrapper is not None
@@ -3841,9 +3841,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_to_scores_directory(self) -> None:
-        '''
+        """
         Goes to scores directory.
-        '''
+        """
         directory = self.configuration.composer_scores_directory
         if self.test or self.example:
             directory = self.configuration.test_scores_directory
@@ -3856,9 +3856,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_segments_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to segments directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.segments is not None
         self._manage_directory(directory.segments)
@@ -3870,9 +3870,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_stylesheets_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to stylesheets directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.stylesheets is not None
         self._manage_directory(directory.stylesheets)
@@ -3884,9 +3884,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_test_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to test directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.test is not None
         self._manage_directory(directory.test)
@@ -3898,9 +3898,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_tools_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to tools directory.
-        '''
+        """
         assert directory.is_score_package_path()
         assert directory.tools is not None
         self._manage_directory(directory.tools)
@@ -3912,9 +3912,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=True,
         )
     def go_to_wrapper_directory(self, directory: Path) -> None:
-        '''
+        """
         Goes to wrapper directory.
-        '''
+        """
         assert directory.is_score_package_path()
         self._manage_directory(directory.wrapper)
 
@@ -3927,9 +3927,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def go_up(self) -> None:
-        '''
+        """
         Goes up.
-        '''
+        """
         if self.current_directory:
             self._manage_directory(self.current_directory.parent)
 
@@ -3940,9 +3940,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_clock_time_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides clock time markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_clock_time_markup(directory, undo=True))
 
@@ -3953,9 +3953,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_figure_name_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides figure name markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
 
@@ -3966,9 +3966,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_local_measure_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides local measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(
             abjad.Job.show_local_measure_number_markup(directory, undo=True)
@@ -3981,9 +3981,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_measure_index_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_index_markup(directory, undo=True))
 
@@ -3994,9 +3994,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_measure_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_number_markup(directory, undo=True))
 
@@ -4007,9 +4007,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_music_annotations(self, directory: Path) -> None:
-        '''
+        """
         Hides music annotations.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_music_annotations(directory, undo=True))
 
@@ -4020,9 +4020,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_spacing_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides spacing markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_spacing_markup(directory, undo=True))
 
@@ -4033,9 +4033,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def hide_stage_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Hides stage number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_stage_number_markup(directory, undo=True))
 
@@ -4050,9 +4050,9 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``back-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'back-cover.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4078,9 +4078,9 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``front-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'front-cover.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4104,11 +4104,11 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``illustration.ly``.
 
         Makes ``illustration.pdf``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             self.io.display('interpreting ly ...')
@@ -4143,9 +4143,9 @@ class AbjadIDE(abjad.AbjadObject):
         do_not_generate_music: bool = False,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``music.ly``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'music.ly', 'interpret'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4206,9 +4206,9 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``part.tex``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -4235,9 +4235,9 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``preface.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'preface.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4262,9 +4262,9 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``score.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'score.tex', 'interpret'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4284,9 +4284,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def make_illustration_ly(self, directory: Path) -> None:
-        '''
+        """
         Makes ``illustration.ly``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             if directory.is_material():
@@ -4316,11 +4316,11 @@ class AbjadIDE(abjad.AbjadObject):
         layout: bool = True,
         open_after: bool = True,
         ) -> int:
-        '''
+        """
         Makes ``illustration.pdf``.
 
         Returns integer exit code for Travis tests.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material():
             return self._make_material_pdf(directory, open_after=open_after)
@@ -4354,9 +4354,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def make_layout_ly(self, directory: Path) -> None:
-        '''
+        """
         Makes ``layout.ly``.
-        '''
+        """
         assert directory.is_buildspace()
         if directory.is__segments():
             buildspace = directory.build
@@ -4390,11 +4390,11 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> int:
-        '''
+        """
         Makes segment MIDI file.
 
         Returns integer exit code for Travis tests.
-        '''
+        """
         assert directory.is_segment()
         return self._make_segment_midi(directory, open_after=open_after)
 
@@ -4405,12 +4405,12 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def nake_illustration_pdf(self, directory: Path) -> int:
-        '''
+        """
         Makes ``illustration.pdf``; does not reinterpret ``layout.py``;
         does not open after.
 
         Returns integer exit code for Travis tests.
-        '''
+        """
         assert directory.is_illustrationspace()
         return self.make_illustration_pdf(
             directory,
@@ -4428,9 +4428,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def new(self, directory: Path) -> None:
-        '''
+        """
         Makes asset.
-        '''
+        """
         if directory.is_builds():
             type_ = self.io.get('score or parts?')
             if self.is_navigation(type_):
@@ -4455,9 +4455,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def open_all_pdfs(self, directory: Path, pattern: str = None) -> None:
-        '''
+        """
         Opens all PDFs.
-        '''
+        """
         files, strings = directory._find_pdfs(force=True)
         files = self._match_files(files, strings, pattern, '**')
         self._open_files(files)
@@ -4469,9 +4469,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def open_back_cover_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``back-cover.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'back-cover.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4486,9 +4486,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def open_front_cover_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``front-cover.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'front-cover.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4503,9 +4503,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def open_illustration_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``illustration.pdf``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             path = directory('illustration.pdf')
@@ -4521,9 +4521,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def open_music_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``music.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'music.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4540,9 +4540,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def open_part_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``part.pdf``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -4557,9 +4557,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def open_preface_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``preface.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'preface.pdf', 'open'
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -4575,9 +4575,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def open_score_pdf(self, directory: Path) -> None:
-        '''
+        """
         Opens ``score.pdf``.
-        '''
+        """
         if directory.is_scores():
             score_pdfs = []
             for path in directory.list_paths():
@@ -4611,9 +4611,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def paste_from_clipboard(self, directory: Path) -> None:
-        '''
+        """
         Pastes from clipboard.
-        '''
+        """
         if not bool(self.clipboard):
             self.io.display('showing empty clipboard ...')
             return
@@ -4649,9 +4649,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('parts',),
         )
     def propagate_layout_py(self, directory: Path) -> None:
-        '''
+        """
         Propagates ``layout.py``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'layout.py', 'use as source'
         paths = self._select_paths_in_buildspace(
@@ -4700,9 +4700,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def pytest_all(self, directory: Path, pattern: str = None) -> None:
-        '''
+        """
         Pytests all.
-        '''
+        """
         files, strings = directory._find_pytest_files(force=True)
         files = self._match_files(files, strings, pattern, '++')
         self._run_pytest(files)
@@ -4716,9 +4716,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def quit(self) -> None:
-        '''
+        """
         Quits Abjad IDE.
-        '''
+        """
         self._navigation = 'q'
 
     @Command(
@@ -4731,9 +4731,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def remove(self, directory: Path) -> None:
-        '''
+        """
         Removes assets.
-        '''
+        """
         paths = self._select_paths(directory, infinitive='to remove')
         if self.is_navigation(paths):
             return
@@ -4768,9 +4768,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def rename(self, directory: Path) -> None:
-        '''
+        """
         Renames file or directory.
-        '''
+        """
         paths = self._select_paths(directory, infinitive='to rename')
         if self.is_navigation(paths):
             return
@@ -4820,9 +4820,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def replace(self, directory: Path) -> None:
-        '''
+        """
         Replaces search string with replace string.
-        '''
+        """
         search_string = self.io.get('enter search string')
         if self.is_navigation(search_string):
             return
@@ -4856,13 +4856,13 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def search(self, directory: Path) -> None:
-        '''
+        """
         Searches for expression
 
         Delegates to ack if ack is found.
 
         Delegates to grep is ack is not found.
-        '''
+        """
         executables = abjad.IOManager.find_executable('ack')
         if not executables:
             executables = abjad.IOManager.find_executable('grep')
@@ -4906,9 +4906,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def show_clipboard(self, directory: Path) -> None:
-        '''
+        """
         Shows clipboard.
-        '''
+        """
         if not bool(self.clipboard):
             self.io.display('showing empty clipboard ...')
             return
@@ -4923,9 +4923,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_clock_time_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows clock time markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_clock_time_markup(directory))
 
@@ -4936,9 +4936,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_figure_name_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows figure name markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_figure_name_markup(directory))
 
@@ -4951,9 +4951,9 @@ class AbjadIDE(abjad.AbjadObject):
         scores_directory=True,
         )
     def show_help(self) -> None:
-        '''
+        """
         Shows help.
-        '''
+        """
         pass
 
     @Command(
@@ -4963,9 +4963,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_local_measure_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows local measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_local_measure_number_markup(directory))
 
@@ -4976,9 +4976,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_measure_index_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_index_markup(directory))
 
@@ -4989,9 +4989,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_measure_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows measure number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_number_markup(directory))
 
@@ -5002,9 +5002,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_music_annotations(self, directory: Path) -> None:
-        '''
+        """
         Shows music annotations.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_music_annotations(directory))
 
@@ -5015,9 +5015,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_spacing_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows spacing markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_spacing_markup(directory))
 
@@ -5028,9 +5028,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def show_stage_number_markup(self, directory: Path) -> None:
-        '''
+        """
         Shows stage number markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_stage_number_markup(directory))
 
@@ -5048,9 +5048,9 @@ class AbjadIDE(abjad.AbjadObject):
         pattern: str,
         menu_paths: typing.List,
         ) -> None:
-        '''
+        """
         Smart doctest.
-        '''
+        """
         address, file_ = self._match_smart_file(
             directory,
             pattern,
@@ -5077,9 +5077,9 @@ class AbjadIDE(abjad.AbjadObject):
         pattern:  str,
         menu_paths: typing.List,
         ) -> None:
-        '''
+        """
         Smart edit.
-        '''
+        """
         address, file_ = self._match_smart_file(
             directory,
             pattern,
@@ -5105,9 +5105,9 @@ class AbjadIDE(abjad.AbjadObject):
         pattern: str,
         menu_paths: typing.List,
         ) -> None:
-        '''
+        """
         Smart PDF.
-        '''
+        """
         address, file_ = self._match_smart_file(
             directory,
             pattern,
@@ -5133,9 +5133,9 @@ class AbjadIDE(abjad.AbjadObject):
         pattern: str,
         menu_paths: typing.List,
         ) -> None:
-        '''
+        """
         Smart pytest.
-        '''
+        """
         address, file_ = self._match_smart_file(
             directory,
             pattern,
@@ -5155,9 +5155,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_back_cover_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``back-cover.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'back-cover.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5172,9 +5172,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_back_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``back-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'back-cover.tex', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5189,9 +5189,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def trash_definition_py(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``definition.py``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             path = directory('definition.py')
@@ -5207,9 +5207,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_front_cover_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``front-cover.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'front-cover.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5224,9 +5224,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_front_cover_tex(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``front-cover.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'front-cover.tex', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5241,9 +5241,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def trash_illustration_ily(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``illustration.ily``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             path = directory('illustration.ily')
@@ -5259,9 +5259,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def trash_illustration_ly(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``illustration.ly``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             path = directory('illustration.ly')
@@ -5277,9 +5277,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('illustrationspace',),
         )
     def trash_illustration_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``illustration.pdf``.
-        '''
+        """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             path = directory('illustration.pdf')
@@ -5295,9 +5295,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def trash_layout_ly(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``layout.ly``.
-        '''
+        """
         assert directory.is_buildspace()
         name, verb = 'layout.ly', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5312,9 +5312,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def trash_layout_py(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``layout.py``.
-        '''
+        """
         assert directory.is_buildspace()
         name, verb = 'layout.py', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5329,9 +5329,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_music_ly(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``music.ly``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'music.ly', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5346,9 +5346,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_music_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``music.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'music.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5363,9 +5363,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def trash_part_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``part.pdf``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5380,9 +5380,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('part', 'parts',),
         )
     def trash_part_tex(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``part.tex``.
-        '''
+        """
         assert directory.is_parts() or directory.is_part()
         name, verb = 'part.tex', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5397,9 +5397,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_preface_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``preface.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'preface.pdf', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5414,9 +5414,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_preface_tex(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``preface.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         name, verb = 'preface.tex', 'trash'
         paths = self._select_paths_in_buildspace(directory, name, verb)
@@ -5432,9 +5432,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_score_pdf(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``score.pdf``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         path = directory.build / 'score.pdf'
@@ -5448,9 +5448,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_score_tex(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``score.tex``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         path = directory.build / 'score.tex'
@@ -5463,9 +5463,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('_segments', 'build',),
         )
     def trash_stylesheet_ily(self, directory: Path) -> None:
-        '''
+        """
         Trashes ``stylesheet.ily``.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         path = directory.build / 'stylesheet.ily'
@@ -5478,9 +5478,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_clefs(self, directory: Path) -> None:
-        '''
+        """
         Uncolors clefs.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_clefs(directory, undo=True))
 
@@ -5491,9 +5491,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_dynamics(self, directory: Path) -> None:
-        '''
+        """
         Uncolors dynamics.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_dynamics(directory, undo=True))
 
@@ -5504,9 +5504,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_instruments(self, directory: Path) -> None:
-        '''
+        """
         Uncolors instruments.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_instruments(directory, undo=True))
 
@@ -5517,9 +5517,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_margin_markup(self, directory: Path) -> None:
-        '''
+        """
         Uncolors margin markup.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_margin_markup(directory, undo=True))
 
@@ -5530,9 +5530,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_metronome_marks(self, directory: Path) -> None:
-        '''
+        """
         Uncolors metornome marks.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_metronome_marks(directory, undo=True))
 
@@ -5543,9 +5543,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_persistent_indicators(self, directory: Path) -> None:
-        '''
+        """
         Uncolors persistent indicators.
-        '''
+        """
         assert directory.is_buildspace()
         job = abjad.Job.color_persistent_indicators(directory, undo=True)
         self.run(job)
@@ -5557,9 +5557,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_staff_lines(self, directory: Path) -> None:
-        '''
+        """
         Uncolors staff lines.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_staff_lines(directory, undo=True))
 
@@ -5570,9 +5570,9 @@ class AbjadIDE(abjad.AbjadObject):
         score_package_paths=('buildspace',),
         )
     def uncolor_time_signatures(self, directory: Path) -> None:
-        '''
+        """
         Uncolors time signatures.
-        '''
+        """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_time_signatures(directory, undo=True))
 
@@ -5588,10 +5588,10 @@ class AbjadIDE(abjad.AbjadObject):
         directory: Path,
         open_after: bool = True,
         ) -> None:
-        '''
+        """
         Interprets ``music.ly`` without collecting segments, handling
         tags or generating music.
-        '''
+        """
         assert directory.is__segments() or directory.is_build()
         self.interpret_music_ly(
             directory,

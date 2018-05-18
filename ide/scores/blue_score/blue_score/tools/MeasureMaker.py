@@ -2,8 +2,9 @@ import abjad
 
 
 class MeasureMaker(abjad.AbjadObject):
-    r'''Measure-maker.
-    '''
+    """
+    Measure-maker.
+    """
 
     ### CLASS VARIABLES ###
 
@@ -54,10 +55,11 @@ class MeasureMaker(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self):
-        r'''Calls measure maker.
+        """
+        Calls measure maker.
 
         Returns list of measures.
-        '''
+        """
         measure_denominator = self.measure_denominator
         measure_numerator_talea = self.measure_numerator_talea
         measure_division_denominator = self.measure_division_denominator
@@ -215,26 +217,29 @@ class MeasureMaker(abjad.AbjadObject):
         return selection
 
     def __eq__(self, argument):
-        r'''Is true when `argument` is a measure-maker with type and
+        """
+        Is true when `argument` is a measure-maker with type and
         public properties equal to those of this measure-maker.
         Otherwise false.
 
         Returns true or false.
-        '''
+        """
         return abjad.StorageFormatManager.compare(self, argument)
 
     def __hash__(self):
-        r'''Hashes measure-maker.
-        '''
+        """
+        Hashes measure-maker.
+        """
         hash_values = abjad.StorageFormatManager.get_hash_values(
             self)
         return hash(hash_values)
 
     def __illustrate__(self, **keywords):
-        r'''Illustrates measure maker.
+        """
+        Illustrates measure maker.
 
         Returns LilyPond file.
-        '''
+        """
         measures = self()
         staff = abjad.Staff(measures, context_name='RhythmicStaff')
         score = abjad.Score([staff])
@@ -312,64 +317,72 @@ class MeasureMaker(abjad.AbjadObject):
 
     @property
     def measure_denominator(self):
-        r'''Gets measure denominator of measure maker.
+        """
+        Gets measure denominator of measure maker.
 
         Returns positive integer.
-        '''
+        """
         return self._measure_denominator
 
     @property
     def measure_division_denominator(self):
-        r'''Gets mesaure division denominator of measure maker.
+        """
+        Gets mesaure division denominator of measure maker.
 
         Returns positive integer.
-        '''
+        """
         return self._measure_division_denominator
 
     @property
     def measure_division_talea(self):
-        r'''Gets measure division talea of measure maker.
+        """
+        Gets measure division talea of measure maker.
 
         Returns tuple.
-        '''
+        """
         return self._measure_division_talea
 
     @property
     def measure_numerator_talea(self):
-        r'''Gets measure numerator talea of measure maker.
+        """
+        Gets measure numerator talea of measure maker.
 
         Returns tuple.
-        '''
+        """
         return self._measure_numerator_talea
 
     @property
     def measures_are_scaled(self):
-        r'''Is true when measures are scaled. Otherwise false.
+        """
+        Is true when measures are scaled. Otherwise false.
 
         Returns true or false.
-        '''
+        """
         return self._measures_are_scaled
 
     @property
     def measures_are_shuffled(self):
-        r'''Is true when measures are shuffled. Otherwise false.
+        """
+        Is true when measures are shuffled. Otherwise false.
 
         Returns true or false.
-        '''
+        """
         return self._measures_are_shuffled
 
     @property
     def measures_are_split(self):
-        r'''Is true when measures are split. Otherwise false.
+        """
+        Is true when measures are split. Otherwise false.
 
         Returns true or false.
-        '''
+        """
         return self._measures_are_split
 
     @property
     def total_duration(self):
-        r'''Gets total duration of measure maker.
+        """
+        Gets total duration of measure maker.
 
         Returns duration.
-        '''
+        """
         return self._total_duration

@@ -30,8 +30,9 @@ def test_AbjadIDE_replace_01():
 
 
 def test_AbjadIDE_replace_02():
-    r'''In library.
-    '''
+    """
+    In library.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

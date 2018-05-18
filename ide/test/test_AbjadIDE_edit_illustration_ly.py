@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_edit_illustration_ly_01():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     abjad_ide('red %A ile q')
     transcript = abjad_ide.io.transcript
@@ -13,8 +14,9 @@ def test_AbjadIDE_edit_illustration_ly_01():
 
 
 def test_AbjadIDE_edit_illustration_ly_02():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg ile q')
     transcript = abjad_ide.io.transcript

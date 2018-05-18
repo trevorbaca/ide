@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_git_push_01():
-    r'''In score directories.
-    '''
+    """
+    In score directories.
+    """
 
     path = ide.Path('red_score')
 
@@ -54,8 +55,9 @@ def test_AbjadIDE_git_push_01():
 
 
 def test_AbjadIDE_git_push_02():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     abjad_ide('push q')
     transcript = abjad_ide.io.transcript
@@ -64,8 +66,9 @@ def test_AbjadIDE_git_push_02():
 
 
 def test_AbjadIDE_git_push_03():
-    r'''In library directory.
-    '''
+    """
+    In library directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

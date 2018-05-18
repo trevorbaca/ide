@@ -5,7 +5,7 @@ from .Transcript import Transcript
 
 
 class IO(abjad.AbjadObject):
-    '''
+    """
     IO.
 
     ..  container:: example
@@ -13,7 +13,7 @@ class IO(abjad.AbjadObject):
         >>> ide.IO()
         IO()
 
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -34,9 +34,9 @@ class IO(abjad.AbjadObject):
 
     @property
     def transcript(self) -> Transcript:
-        '''
+        """
         Gets transcript.
-        '''
+        """
         return self._transcript
 
     ### PUBLIC METHODS ###
@@ -50,9 +50,9 @@ class IO(abjad.AbjadObject):
         is_menu: bool = False,
         raw: bool = False,
         ) -> None:
-        '''
+        """
         Displays lines.
-        '''
+        """
         assert isinstance(lines, (str, list)), repr(lines)
         if isinstance(lines, str):
             lines = [lines]
@@ -75,13 +75,13 @@ class IO(abjad.AbjadObject):
         prompt: str = None,
         split_input: bool = False,
         ) -> typing.Optional[str]:
-        '''
+        """
         Gets user input.
 
         Returns none when user enters lone return.
 
         Returns string when user types input and then hits return.
-        '''
+        """
         prompt = prompt or ''
         prompt = abjad.String(prompt).capitalize_start() + '> '
         if self._pending_input:
@@ -109,7 +109,7 @@ class IO(abjad.AbjadObject):
         return None
 
     def pending_input(self, string: str) -> None:
-        '''
+        """
         Sets pending input.
-        '''
+        """
         self._pending_input = string

@@ -9,7 +9,7 @@ from .Response import Response
 
 
 class Menu(abjad.AbjadObject):
-    '''
+    """
     Menu.
 
     ..  container:: example
@@ -17,7 +17,7 @@ class Menu(abjad.AbjadObject):
         >>> ide.Menu()
         Menu(io=IO(), navigations=OrderedDict([]), sections=[])
 
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -65,9 +65,9 @@ class Menu(abjad.AbjadObject):
         force_single_column: bool = False,
         redraw: typing.Union[bool, str] = True,
         ) -> Response:
-        '''
+        """
         Calls menu on ``string``.
-        '''
+        """
         if string is not None:
             self.io.pending_input(string)
         self.redraw(
@@ -119,9 +119,9 @@ class Menu(abjad.AbjadObject):
         return Response(payload=payload, string=string)
 
     def __getitem__(self, argument) -> MenuSection:
-        '''
+        """
         Gets section in menu.
-        '''
+        """
         return self.sections.__getitem__(argument)
 
     ### PRIVATE METHODS ###
@@ -279,58 +279,58 @@ class Menu(abjad.AbjadObject):
 
     @property
     def aliases(self) -> typing.Optional[abjad.OrderedDict]:
-        '''
+        """
         Gets aliases.
-        '''
+        """
         return self._aliases
 
     @property
     def getter(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when menu consumes all input with spaces at one time.
-        '''
+        """
         return self._getter
 
     @property
     def header(self) -> typing.Optional[str]:
-        '''
+        """
         Gets header.
-        '''
+        """
         return self._header
 
     @property
     def io(self) -> IO:
-        '''
+        """
         Gets IO manager.
-        '''
+        """
         return self._io
 
     @property
     def loop(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when menu loops.
-        '''
+        """
         return self._loop
 
     @property
     def navigations(self) -> abjad.OrderedDict:
-        '''
+        """
         Gets navigation context.
-        '''
+        """
         return self._navigations
 
     @property
     def prompt(self) -> typing.Optional[str]:
-        '''
+        """
         Gets prompt.
-        '''
+        """
         return self._prompt
 
     @property
     def sections(self) -> typing.List[MenuSection]:
-        '''
+        """
         Gets menu sections.
-        '''
+        """
         return self._sections
 
     ### PUBLIC METHODS ###
@@ -343,9 +343,9 @@ class Menu(abjad.AbjadObject):
         navigations=None,
         sections=None,
         ) -> 'Menu':
-        '''
+        """
         Makes menu from ``directory``.
-        '''
+        """
         sections = sections or []
         entries = []
         for path in directory.list_secondary_paths():
@@ -376,10 +376,11 @@ class Menu(abjad.AbjadObject):
         return menu
 
     def make_help_lines(self, dimensions=None, force_single_column=None):
-        r'''Makes help lines.
+        """
+        Makes help lines.
 
         Returns list.
-        '''
+        """
         lines = []
         for section in self:
             if section.command:
@@ -398,10 +399,11 @@ class Menu(abjad.AbjadObject):
         return lines
 
     def make_lines(self, dimensions=None, force_single_column=False):
-        r'''Makes lines.
+        """
+        Makes lines.
 
         Returns list.
-        '''
+        """
         header = abjad.String(self.header or '').capitalize_start()
         lines = [header, '']
         names = []
@@ -429,10 +431,11 @@ class Menu(abjad.AbjadObject):
         return lines
 
     def redraw(self, value, dimensions=None, force_single_column=False):
-        r'''Redraws menu.
+        """
+        Redraws menu.
 
         Returns none.
-        '''
+        """
         if not value:
             return
         abjad.IOManager.clear_terminal()

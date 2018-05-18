@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_nake_illustration_pdf_01():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         directory = ide.Path('red_score', 'segments', 'A')

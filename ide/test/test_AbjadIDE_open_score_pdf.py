@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_open_score_pdf_01():
-    r'''Opens distribution score.
-    '''
+    """
+    Opens distribution score.
+    """
 
     abjad_ide('red spo q')
     transcript = abjad_ide.io.transcript
@@ -13,8 +14,9 @@ def test_AbjadIDE_open_score_pdf_01():
 
 
 def test_AbjadIDE_open_score_pdf_02():
-    r'''Opens build score.
-    '''
+    """
+    Opens build score.
+    """
 
     abjad_ide('red %letter spo q')
     transcript = abjad_ide.io.transcript
@@ -31,8 +33,9 @@ def test_AbjadIDE_open_score_pdf_03():
 
 
 def test_AbjadIDE_open_score_pdf_04():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     abjad_ide('spo q')
     transcript = abjad_ide.io.transcript

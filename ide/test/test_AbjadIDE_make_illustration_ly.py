@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_make_illustration_ly_01():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     with ide.Test():
         material = ide.Path('red_score', 'materials', 'red_pitch_classes')
@@ -36,8 +37,9 @@ def test_AbjadIDE_make_illustration_ly_01():
 
 
 def test_AbjadIDE_make_illustration_ly_02():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         segment = ide.Path('red_score', 'segments', 'A')

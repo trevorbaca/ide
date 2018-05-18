@@ -8,8 +8,9 @@ classes = abjad.documentationtools.list_all_ide_classes()
 
 @pytest.mark.parametrize('object_', classes)
 def test_idetools___doc___01(object_):
-    r'''All classes have a docstring. All class methods have a docstring.
-    '''
+    """
+    All classes have a docstring. All class methods have a docstring.
+    """
 
     ignored_names = (
         '__documentation_section__',

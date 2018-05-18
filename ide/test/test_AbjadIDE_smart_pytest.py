@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_smart_pytest_01():
-    r'''In contents directory.
-    '''
+    """
+    In contents directory.
+    """
 
     abjad_ide('red + q')
     transcript = abjad_ide.io.transcript 
@@ -29,8 +30,9 @@ def test_AbjadIDE_smart_pytest_01():
 
 
 def test_AbjadIDE_smart_pytest_02():
-    r'''In external directory.
-    '''
+    """
+    In external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -38,13 +40,14 @@ def test_AbjadIDE_smart_pytest_02():
     abjad_ide('cdi +ath q')
     transcript = abjad_ide.io.transcript 
     path = ide.Configuration().ide_directory
-    path = path('tools', 'test', 'test_Path_is_external.py')
+    path = path / 'test' / 'test_Path_is_external.py'
     assert f"Matching '+ath' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_pytest_03():
-    r'''In library.
-    '''
+    """
+    In library.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -55,8 +58,9 @@ def test_AbjadIDE_smart_pytest_03():
 
 
 def test_AbjadIDE_smart_pytest_04():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     abjad_ide('red tt + q')
     transcript = abjad_ide.io.transcript 
@@ -69,8 +73,9 @@ def test_AbjadIDE_smart_pytest_04():
 
 
 def test_AbjadIDE_smart_pytest_05():
-    r'''Handles numbers.
-    '''
+    """
+    Handles numbers.
+    """
 
     abjad_ide('red tt +0 q')
     transcript = abjad_ide.io.transcript 
@@ -87,8 +92,9 @@ def test_AbjadIDE_smart_pytest_05():
 
 
 def test_AbjadIDE_smart_pytest_06():
-    r'''Missing pattern.
-    '''
+    """
+    Missing pattern.
+    """
 
     abjad_ide('+ q')
     transcript = abjad_ide.io.transcript 
@@ -96,8 +102,9 @@ def test_AbjadIDE_smart_pytest_06():
 
 
 def test_AbjadIDE_smart_pytest_07():
-    r'''Unmatched pattern.
-    '''
+    """
+    Unmatched pattern.
+    """
 
     abjad_ide('+asdf q')
     transcript = abjad_ide.io.transcript 

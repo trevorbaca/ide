@@ -38,8 +38,9 @@ def test_AbjadIDE_generate_music_ly_01():
 
 
 def test_AbjadIDE_generate_music_ly_02():
-    r'''Comments out not-yet-extant segments.
-    '''
+    """
+    Comments out not-yet-extant segments.
+    """
 
     with ide.Test():
         target = ide.Path('red_score', 'builds', 'letter-score', 'music.ly')

@@ -46,8 +46,9 @@ def test_AbjadIDE_go_back_03():
 
 
 def test_AbjadIDE_go_back_04():
-    r'''Regression: back manages scores directory rather than quitting.
-    '''
+    """
+    Regression: back manages scores directory rather than quitting.
+    """
 
     abjad_ide('- q')
     transcript = abjad_ide.io.transcript

@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_etc_directory_01():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
 
     abjad_ide('red mm metronome ee q')
     transcript = abjad_ide.io.transcript
@@ -19,8 +20,9 @@ def test_AbjadIDE_go_to_etc_directory_01():
 
 
 def test_AbjadIDE_go_to_etc_directory_02():
-    r'''From segment directory.
-    '''
+    """
+    From segment directory.
+    """
 
     abjad_ide('red gg A ee q')
     transcript = abjad_ide.io.transcript
@@ -34,8 +36,9 @@ def test_AbjadIDE_go_to_etc_directory_02():
 
 
 def test_AbjadIDE_go_to_etc_directory_03():
-    r'''From builds directory to etc directory.
-    '''
+    """
+    From builds directory to etc directory.
+    """
 
     abjad_ide('red bb ee q')
     transcript = abjad_ide.io.transcript

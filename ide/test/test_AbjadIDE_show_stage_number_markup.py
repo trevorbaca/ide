@@ -6,8 +6,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 tag = abjad.tags.STAGE_NUMBER_MARKUP
 
 def test_AbjadIDE_show_stage_number_markup_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     with ide.Test():
 
@@ -37,8 +38,9 @@ def test_AbjadIDE_show_stage_number_markup_01():
 
 
 def test_AbjadIDE_show_stage_number_markup_02():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
 

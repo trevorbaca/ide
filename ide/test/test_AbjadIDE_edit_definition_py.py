@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_edit_definition_py_01():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     abjad_ide('red %rpc dpe q')
     transcript = abjad_ide.io.transcript 
@@ -14,8 +15,9 @@ def test_AbjadIDE_edit_definition_py_01():
 
 
 def test_AbjadIDE_edit_definition_py_02():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     abjad_ide('red %A dpe q')
     transcript = abjad_ide.io.transcript

@@ -1,6 +1,6 @@
 def adjust_spacing_sections():
-    r'''Example function to test allowing for function files in tools
-    directory.
-    '''
+    """
+    Example function to test allowing for function files in tools directory.
+    """
 
     pass

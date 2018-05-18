@@ -2,8 +2,9 @@ import abjad
 
 
 class ScoreTemplate(abjad.AbjadObject):
-    r'''Score template.
-    '''
+    """
+    Score template.
+    """
 
     ### INITIALIZER ###
 
@@ -14,7 +15,8 @@ class ScoreTemplate(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __call__(self):
-        r'''Calls score template.
+        r"""
+        Calls score template.
 
         ..  container:: example
 
@@ -43,7 +45,7 @@ class ScoreTemplate(abjad.AbjadObject):
             >>
 
         Returns score.
-        '''
+        """
         rh_voice = abjad.Voice(
             lilypond_type='RHVoice',
             name='RHVoice',

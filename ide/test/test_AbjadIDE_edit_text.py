@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_edit_text_01():
-    r'''Works in scores directory.
-    '''
+    """
+    Works in scores directory.
+    """
 
     abjad_ide('it foo q')
     transcript = abjad_ide.io.transcript
@@ -12,8 +13,9 @@ def test_AbjadIDE_edit_text_01():
 
 
 def test_AbjadIDE_edit_text_02():
-    r'''Works in score directory.
-    '''
+    """
+    Works in score directory.
+    """
 
     abjad_ide('red it foo q')
     transcript = abjad_ide.io.transcript
@@ -21,8 +23,9 @@ def test_AbjadIDE_edit_text_02():
 
 
 def test_AbjadIDE_edit_text_03():
-    r'''Works in external directory.
-    '''
+    """
+    Works in external directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return

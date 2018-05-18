@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_materials_directory_01():
-    r'''From builds directory.
-    '''
+    """
+    From builds directory.
+    """
 
     abjad_ide('red bb mm q')
     transcript = abjad_ide.io.transcript

@@ -4,8 +4,9 @@ import pathlib
 
 
 def make_lilypond_file():
-    r'''Reimplement for material-specific illustration logic.
-    '''
+    """
+    Reimplement for material-specific illustration logic.
+    """
     name = pathlib.Path(__file__).parent.name
     title = name.replace('_', ' ').capitalize()
     title = abjad.Markup(title)

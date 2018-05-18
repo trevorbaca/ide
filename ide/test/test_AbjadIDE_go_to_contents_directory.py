@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_contents_directory_01():
-    r'''From builds directory.
-    '''
+    """
+    From builds directory.
+    """
 
     abjad_ide('red bb cc q')
     transcript = abjad_ide.io.transcript
@@ -17,8 +18,9 @@ def test_AbjadIDE_go_to_contents_directory_01():
 
 
 def test_AbjadIDE_go_to_contents_directory_02():
-    r'''From interrupted getter.
-    '''
+    """
+    From interrupted getter.
+    """
 
     abjad_ide('red bb new cc q')
     transcript = abjad_ide.io.transcript
@@ -31,8 +33,9 @@ def test_AbjadIDE_go_to_contents_directory_02():
 
 
 def test_AbjadIDE_go_to_contents_directory_03():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
 
     abjad_ide('red mm metronome cc q')
     transcript = abjad_ide.io.transcript
@@ -47,8 +50,9 @@ def test_AbjadIDE_go_to_contents_directory_03():
 
 
 def test_AbjadIDE_go_to_contents_directory_04():
-    r'''From score directory.
-    '''
+    """
+    From score directory.
+    """
 
     abjad_ide('red cc q')
     transcript = abjad_ide.io.transcript
@@ -60,8 +64,9 @@ def test_AbjadIDE_go_to_contents_directory_04():
 
 
 def test_AbjadIDE_go_to_contents_directory_05():
-    r'''From scores directory with smart match.
-    '''
+    """
+    From scores directory with smart match.
+    """
     
     abjad_ide('lue q')
     transcript = abjad_ide.io.transcript
@@ -79,8 +84,9 @@ def test_AbjadIDE_go_to_contents_directory_05():
 
 
 def test_AbjadIDE_go_to_contents_directory_06():
-    r'''From segment directory.
-    '''
+    """
+    From segment directory.
+    """
 
     abjad_ide('red gg A cc q')
     transcript = abjad_ide.io.transcript

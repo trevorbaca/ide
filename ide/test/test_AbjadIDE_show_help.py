@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_show_help_01():
-    r'''In _assets directory.
-    '''
+    """
+    In _assets directory.
+    """
 
     abjad_ide('red bb _assets ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -80,8 +81,9 @@ def test_AbjadIDE_show_help_01():
 
 
 def test_AbjadIDE_show_help_02():
-    r'''In _segments directory.
-    '''
+    """
+    In _segments directory.
+    """
 
     abjad_ide('red %letter _segments ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -238,8 +240,9 @@ def test_AbjadIDE_show_help_02():
 
 
 def test_AbjadIDE_show_help_03():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     abjad_ide('red %letter ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -397,8 +400,9 @@ def test_AbjadIDE_show_help_03():
 
 
 def test_AbjadIDE_show_help_04():
-    r'''In builds directory.
-    '''
+    """
+    In builds directory.
+    """
 
     abjad_ide('red bb ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -514,8 +518,9 @@ def test_AbjadIDE_show_help_04():
 
 
 def test_AbjadIDE_show_help_05():
-    r'''In contents directory.
-    '''
+    """
+    In contents directory.
+    """
 
     abjad_ide('red ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -584,8 +589,9 @@ def test_AbjadIDE_show_help_05():
 
 
 def test_AbjadIDE_show_help_06():
-    r'''In distribution directory.
-    '''
+    """
+    In distribution directory.
+    """
 
     abjad_ide('red dd ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -660,8 +666,9 @@ def test_AbjadIDE_show_help_06():
 
 
 def test_AbjadIDE_show_help_07():
-    r'''In library.
-    '''
+    r"""
+    In library.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -722,8 +729,9 @@ def test_AbjadIDE_show_help_07():
 
 
 def test_AbjadIDE_show_help_08():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     abjad_ide('red %rpc ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -814,8 +822,9 @@ def test_AbjadIDE_show_help_08():
 
 
 def test_AbjadIDE_show_help_09():
-    r'''In materials directory.
-    '''
+    r"""
+    In materials directory.
+    """
 
     abjad_ide('red mm ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -907,8 +916,9 @@ def test_AbjadIDE_show_help_09():
 
 
 def test_AbjadIDE_show_help_10():
-    r'''In parts directory.
-    '''
+    """
+    In parts directory.
+    """
 
     with ide.Test():
 
@@ -1072,8 +1082,9 @@ def test_AbjadIDE_show_help_10():
 
 
 def test_AbjadIDE_show_help_11():
-    r'''In scores directory.
-    '''
+    """
+    In scores directory.
+    """
 
     abjad_ide('? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1136,8 +1147,9 @@ def test_AbjadIDE_show_help_11():
 
 
 def test_AbjadIDE_show_help_12():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     abjad_ide('red %A ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1271,8 +1283,9 @@ def test_AbjadIDE_show_help_12():
 
 
 def test_AbjadIDE_show_help_13():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1405,8 +1418,9 @@ def test_AbjadIDE_show_help_13():
 
 
 def test_AbjadIDE_show_help_14():
-    r'''In stylesheets directory.
-    '''
+    """
+    In stylesheets directory.
+    """
 
     abjad_ide('red yy ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1481,8 +1495,9 @@ def test_AbjadIDE_show_help_14():
 
 
 def test_AbjadIDE_show_help_15():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     abjad_ide('red tt ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1557,8 +1572,9 @@ def test_AbjadIDE_show_help_15():
 
 
 def test_AbjadIDE_show_help_16():
-    r'''In tools directory.
-    '''
+    """
+    In tools directory.
+    """
 
     abjad_ide('red oo ? q')
     menu = abjad_ide.io.transcript.menus[-1]
@@ -1633,8 +1649,9 @@ def test_AbjadIDE_show_help_16():
 
 
 def test_AbjadIDE_show_help_17():
-    r'''In wrapper directory.
-    '''
+    """
+    In wrapper directory.
+    """
 
     abjad_ide('red ww ? q')
     menu = abjad_ide.io.transcript.menus[-1]

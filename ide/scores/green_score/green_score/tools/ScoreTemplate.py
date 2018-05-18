@@ -4,7 +4,8 @@ import green_score
 
 
 class ScoreTemplate(baca.ScoreTemplate):
-    r'''Score template.
+    r"""
+    Score template.
 
     >>> import green_score
 
@@ -147,7 +148,7 @@ class ScoreTemplate(baca.ScoreTemplate):
             }
         >>
 
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -163,10 +164,11 @@ class ScoreTemplate(baca.ScoreTemplate):
     ### SPECIAL METHODS ###
 
     def __call__(self):
-        r'''Calls score template.
+        """
+        Calls score template.
 
         Returns score.
-        '''
+        """
 
         # GLOBAL CONTEXT
         global_context = self._make_global_context()
@@ -368,7 +370,8 @@ class ScoreTemplate(baca.ScoreTemplate):
 
     @property
     def known_documents(self):
-        r'''Gets known documents.
+        """
+        Gets known documents.
 
         ..  container:: example
 
@@ -384,7 +387,7 @@ class ScoreTemplate(baca.ScoreTemplate):
             'LEDGER_SCORE'
 
         Returns list of strings.
-        '''
+        """
         known_documents = [
             'ARCH_A_SCORE',
             'LEDGER_SCORE',

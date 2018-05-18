@@ -5,7 +5,7 @@ import sys
 
 
 class Configuration(abjad.Configuration):
-    '''
+    """
     Configuration.
 
     ..  container:: example
@@ -13,7 +13,7 @@ class Configuration(abjad.Configuration):
         >>> ide.Configuration()
         Configuration()
 
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -105,7 +105,7 @@ class Configuration(abjad.Configuration):
 
     @property
     def aliases(self) -> abjad.OrderedDict:
-        '''
+        """
         Gets aliases.
 
         ..  container:: example
@@ -113,12 +113,12 @@ class Configuration(abjad.Configuration):
             >>> ide.Configuration().aliases
             OrderedDict(...)
 
-        '''
+        """
         return self._aliases
 
     @property
     def aliases_file_path(self):
-        '''
+        """
         Gets aliases file path.
 
         ..  container:: example
@@ -127,13 +127,13 @@ class Configuration(abjad.Configuration):
             Path('.../.abjad/ide/__aliases__.py')
 
         Returns package path.
-        '''
+        """
         import ide
         return ide.Path(self.configuration_directory / '__aliases__.py')
 
     @property
     def boilerplate_directory(self):
-        '''
+        """
         Gets boilerplate directory.
 
         ..  container:: example
@@ -142,17 +142,17 @@ class Configuration(abjad.Configuration):
             Path('.../abjad/abjad/boilerplate')
 
         Returns package path.
-        '''
+        """
         import ide
         return ide.Path(abjad.abjad_configuration.boilerplate_directory)
 
     @property
     def composer_scores_directory(self):
-        '''
+        """
         Gets composer scores directory.
 
         Returns package path.
-        '''
+        """
         import ide
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
@@ -164,7 +164,7 @@ class Configuration(abjad.Configuration):
 
     @property
     def configuration_directory(self):
-        '''
+        """
         Gets configuration directory path.
 
         ..  container:: example
@@ -173,14 +173,14 @@ class Configuration(abjad.Configuration):
             PosixPath('.../.abjad/ide')
 
         Returns path.
-        '''
+        """
         path = abjad.abjad_configuration.configuration_directory
         path = path / self._configuration_directory_name
         return path
 
     @property
     def ide_directory(self):
-        '''
+        """
         Gets IDE directory.
 
         ..  container:: example
@@ -189,7 +189,7 @@ class Configuration(abjad.Configuration):
             Path('.../ide')
 
         Returns package path.
-        '''
+        """
         import ide
         if self._ide_directory is None:
             ide_directory = ide.Path(ide.__path__[0])
@@ -198,7 +198,7 @@ class Configuration(abjad.Configuration):
 
     @property
     def latex_log_file_path(self):
-        '''
+        """
         Gets LaTeX log file path.
 
         ..  container:: example
@@ -207,13 +207,13 @@ class Configuration(abjad.Configuration):
             Path('.../.abjad/ide/latex.log')
 
         Returns package path.
-        '''
+        """
         import ide
         return ide.Path(self.configuration_directory / 'latex.log')
 
     @property
     def test_scores_directory(self):
-        '''
+        """
         Gets test scores directory.
 
         ..  container:: example
@@ -222,7 +222,7 @@ class Configuration(abjad.Configuration):
             Path('.../ide/scores')
 
         Returns package path.
-        '''
+        """
         import ide
         try:
             ide = importlib.import_module('ide')

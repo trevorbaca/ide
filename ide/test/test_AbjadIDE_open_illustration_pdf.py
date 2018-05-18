@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_open_illustration_pdf_01():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     with ide.Test():
 
@@ -21,8 +22,9 @@ def test_AbjadIDE_open_illustration_pdf_01():
 
 
 def test_AbjadIDE_open_illustration_pdf_02():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
 
@@ -38,8 +40,9 @@ def test_AbjadIDE_open_illustration_pdf_02():
 
 
 def test_AbjadIDE_open_illustration_pdf_03():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     with ide.Test():
 
@@ -58,8 +61,9 @@ def test_AbjadIDE_open_illustration_pdf_03():
 
 
 def test_AbjadIDE_open_illustration_pdf_04():
-    r'''Displays message when PDF does not exist.
-    '''
+    """
+    Displays message when PDF does not exist.
+    """
 
     abjad_ide('blu %A ipo q')
     path = ide.Path('blue_score', 'segments', 'A', 'illustration.pdf')

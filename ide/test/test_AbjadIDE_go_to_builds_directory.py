@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_builds_directory_01():
-    r'''From material directory.
-    '''
+    """
+    From material directory.
+    """
 
     abjad_ide('red mm metronome bb q')
     transcript = abjad_ide.io.transcript
@@ -19,8 +20,9 @@ def test_AbjadIDE_go_to_builds_directory_01():
 
 
 def test_AbjadIDE_go_to_builds_directory_02():
-    r'''From segment directory.
-    '''
+    """
+    From segment directory.
+    """
 
     abjad_ide('red gg A bb q')
     transcript = abjad_ide.io.transcript
@@ -34,8 +36,9 @@ def test_AbjadIDE_go_to_builds_directory_02():
 
 
 def test_AbjadIDE_go_to_builds_directory_03():
-    r'''From score directory.
-    '''
+    """
+    From score directory.
+    """
 
     abjad_ide('red dd q')
     transcript = abjad_ide.io.transcript
@@ -47,8 +50,9 @@ def test_AbjadIDE_go_to_builds_directory_03():
 
 
 def test_AbjadIDE_go_to_builds_directory_04():
-    r'''From builds directory to builds directory.
-    '''
+    """
+    From builds directory to builds directory.
+    """
 
     abjad_ide('red bb bb q')
     transcript = abjad_ide.io.transcript
@@ -61,8 +65,9 @@ def test_AbjadIDE_go_to_builds_directory_04():
 
 
 def test_AbjadIDE_go_to_builds_directory_05():
-    r'''Git ignore file is hidden.
-    '''
+    """
+    Git ignore file is hidden.
+    """
 
     abjad_ide('red bb q')
     transcript = abjad_ide.io.transcript

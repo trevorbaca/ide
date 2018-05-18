@@ -3,9 +3,9 @@ import typing
 
 
 class MenuEntry(abjad.AbjadObject):
-    '''
+    """
     Menu entry.
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -33,10 +33,10 @@ class MenuEntry(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __lt__(self, argument) -> bool:
-        '''
+        """
         Is true when `argument` is a menu entry with display greater than
         that of this menu entry.
-        '''
+        """
         if not isinstance(argument, type(self)):
             raise TypeError(argument)
         return (self.display or '') < (argument.display or '')
@@ -45,38 +45,38 @@ class MenuEntry(abjad.AbjadObject):
 
     @property
     def command(self) -> typing.Optional[str]:
-        '''
+        """
         Gets name of command section.
-        '''
+        """
         return self._command
 
     @property
     def display(self) -> typing.Optional[str]:
-        '''
+        """
         Gets display.
-        '''
+        """
         return self._display
 
     @property
     def number(self) -> typing.Optional[int]:
-        '''
+        """
         Gets number.
-        '''
+        """
         return self._number
 
     @property
     def value(self) -> typing.Optional[str]:
-        '''
+        """
         Gets value.
-        '''
+        """
         return self._value
 
     ### PUBLIC METHODS ###
 
     def make_line(self, left_margin_width: int) -> str:
-        '''
+        """
         Makes line.
-        '''
+        """
         if self.number is not None:
             line = str(self.number) + ': '
             line = line.rjust(left_margin_width)

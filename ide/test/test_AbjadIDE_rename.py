@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_rename_01():
-    r'''Renames score package.
-    '''
+    """
+    Renames score package.
+    """
 
     with ide.Test():
         source = ide.Path('blue_score')
@@ -19,8 +20,9 @@ def test_AbjadIDE_rename_01():
 
 
 def test_AbjadIDE_rename_02():
-    r'''Renames material directory.
-    '''
+    """
+    Renames material directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'materials', 'test_material')
@@ -46,8 +48,9 @@ def test_AbjadIDE_rename_02():
 
 
 def test_AbjadIDE_rename_03():
-    r'''Renames segment directory.
-    '''
+    """
+    Renames segment directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'segments', 'D')
@@ -72,8 +75,9 @@ def test_AbjadIDE_rename_03():
 
 
 def test_AbjadIDE_rename_04():
-    r'''Renames named segment.
-    '''
+    """
+    Renames named segment.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'segments', 'B')
@@ -95,8 +99,9 @@ def test_AbjadIDE_rename_04():
 
 
 def test_AbjadIDE_rename_05():
-    r'''Renames build directory.
-    '''
+    """
+    Renames build directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'builds', 'letter-score')
@@ -118,8 +123,9 @@ def test_AbjadIDE_rename_05():
 
 
 def test_AbjadIDE_rename_06():
-    r'''Renames tools file.
-    '''
+    """
+    Renames tools file.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'tools', 'NewMaker.py')
@@ -144,8 +150,9 @@ def test_AbjadIDE_rename_06():
 
 
 def test_AbjadIDE_rename_07():
-    r'''Renames stylesheet.
-    '''
+    """
+    Renames stylesheet.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'stylesheets', 'new-stylesheet.ily')
@@ -172,8 +179,9 @@ def test_AbjadIDE_rename_07():
 
 
 def test_AbjadIDE_rename_08():
-    r'''In library.
-    '''
+    """
+    In library.
+    """
 
     if not abjad.abjad_configuration.composer_library_tools:
         return

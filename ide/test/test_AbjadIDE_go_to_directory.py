@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_go_to_directory_01():
-    r'''Goes to aliased directory.
-    '''
+    """
+    Goes to aliased directory.
+    """
 
     if not abjad_ide.test_baca_directories():
         return
@@ -21,8 +22,9 @@ def test_AbjadIDE_go_to_directory_01():
 
 
 def test_AbjadIDE_go_to_directory_02():
-    r'''Goes to assets directory.
-    '''
+    """
+    Goes to assets directory.
+    """
 
     abjad_ide('red %_ass q')
     transcript = abjad_ide.io.transcript 
@@ -30,8 +32,9 @@ def test_AbjadIDE_go_to_directory_02():
 
 
 def test_AbjadIDE_go_to_directory_03():
-    r'''Goes to build directory.
-    '''
+    """
+    Goes to build directory.
+    """
 
     abjad_ide('red %ette q')
     transcript = abjad_ide.io.transcript 
@@ -39,8 +42,9 @@ def test_AbjadIDE_go_to_directory_03():
 
 
 def test_AbjadIDE_go_to_directory_04():
-    r'''Goes to distribution directory.
-    '''
+    """
+    Goes to distribution directory.
+    """
 
     abjad_ide('red %istri q')
     transcript = abjad_ide.io.transcript 
@@ -48,8 +52,9 @@ def test_AbjadIDE_go_to_directory_04():
 
 
 def test_AbjadIDE_go_to_directory_05():
-    r'''Goes to etc directory.
-    '''
+    """
+    Goes to etc directory.
+    """
 
     abjad_ide('red %etc q')
     transcript = abjad_ide.io.transcript 
@@ -57,8 +62,9 @@ def test_AbjadIDE_go_to_directory_05():
 
 
 def test_AbjadIDE_go_to_directory_06():
-    r'''Goes to material directory.
-    '''
+    """
+    Goes to material directory.
+    """
 
     abjad_ide('red %rpc q')
     transcript = abjad_ide.io.transcript 
@@ -67,8 +73,9 @@ def test_AbjadIDE_go_to_directory_06():
 
 
 def test_AbjadIDE_go_to_directory_07():
-    r'''Goes to materials directory.
-    '''
+    """
+    Goes to materials directory.
+    """
 
     abjad_ide('red %erial q')
     transcript = abjad_ide.io.transcript 
@@ -76,8 +83,9 @@ def test_AbjadIDE_go_to_directory_07():
 
 
 def test_AbjadIDE_go_to_directory_08():
-    r'''Goes to segment directory.
-    '''
+    """
+    Goes to segment directory.
+    """
 
     abjad_ide('red %A q')
     transcript = abjad_ide.io.transcript 
@@ -85,8 +93,9 @@ def test_AbjadIDE_go_to_directory_08():
 
 
 def test_AbjadIDE_go_to_directory_09():
-    r'''Goes to segments directory.
-    '''
+    """
+    Goes to segments directory.
+    """
 
     abjad_ide('red %egmen q')
     transcript = abjad_ide.io.transcript 
@@ -94,8 +103,9 @@ def test_AbjadIDE_go_to_directory_09():
 
 
 def test_AbjadIDE_go_to_directory_10():
-    r'''Goes to stylesheet directory.
-    '''
+    """
+    Goes to stylesheet directory.
+    """
 
     abjad_ide('red %yles q')
     transcript = abjad_ide.io.transcript 
@@ -103,8 +113,9 @@ def test_AbjadIDE_go_to_directory_10():
 
 
 def test_AbjadIDE_go_to_directory_11():
-    r'''Goes to test directory.
-    '''
+    """
+    Goes to test directory.
+    """
 
     abjad_ide('red %est q')
     transcript = abjad_ide.io.transcript 
@@ -112,8 +123,9 @@ def test_AbjadIDE_go_to_directory_11():
 
 
 def test_AbjadIDE_go_to_directory_12():
-    r'''Goes to tools directory.
-    '''
+    """
+    Goes to tools directory.
+    """
 
     abjad_ide('red %ool q')
     transcript = abjad_ide.io.transcript 
@@ -121,8 +133,9 @@ def test_AbjadIDE_go_to_directory_12():
 
 
 def test_AbjadIDE_go_to_directory_13():
-    r'''Handles numeric input.
-    '''
+    """
+    Handles numeric input.
+    """
 
     abjad_ide('red gg %0 q')
     transcript = abjad_ide.io.transcript 
@@ -139,8 +152,9 @@ def test_AbjadIDE_go_to_directory_13():
 
 
 def test_AbjadIDE_go_to_directory_14():
-    r'''Handles empty input and junk input.
-    '''
+    """
+    Handles empty input and junk input.
+    """
 
     abjad_ide('% q')
     transcript = abjad_ide.io.transcript 
@@ -152,8 +166,9 @@ def test_AbjadIDE_go_to_directory_14():
 
 
 def test_AbjadIDE_go_to_directory_15():
-    r'''Handles double input.
-    '''
+    """
+    Handles double input.
+    """
 
     abjad_ide('%% q')
     transcript = abjad_ide.io.transcript 

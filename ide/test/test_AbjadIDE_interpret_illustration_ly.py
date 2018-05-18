@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_interpret_illustration_ly_01():
-    r'''In material directory.
-    '''
+    """
+    In material directory.
+    """
 
     with ide.Test():
         source = ide.Path(
@@ -32,8 +33,9 @@ def test_AbjadIDE_interpret_illustration_ly_01():
 
 
 def test_AbjadIDE_interpret_illustration_ly_02():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     with ide.Test():
         sources = [
@@ -68,8 +70,9 @@ def test_AbjadIDE_interpret_illustration_ly_02():
 
 
 def test_AbjadIDE_interpret_illustration_ly_03():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     with ide.Test():
         sources = []
@@ -104,8 +107,9 @@ def test_AbjadIDE_interpret_illustration_ly_03():
 
 
 def test_AbjadIDE_interpret_illustration_ly_04():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         source = ide.Path('red_score', 'segments', 'A', 'illustration.ly')

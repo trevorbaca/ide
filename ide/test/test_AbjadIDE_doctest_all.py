@@ -4,8 +4,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_doctest_all_01():
-    r'''In contents directory.
-    '''
+    """
+    In contents directory.
+    """
 
     abjad_ide('red ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -29,8 +30,9 @@ def test_AbjadIDE_doctest_all_01():
 
 
 def test_AbjadIDE_doctest_all_02():
-    r'''In materials directory.
-    '''
+    """
+    In materials directory.
+    """
 
     abjad_ide('red mm ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -50,8 +52,9 @@ def test_AbjadIDE_doctest_all_02():
 
 
 def test_AbjadIDE_doctest_all_03():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     abjad_ide('red gg ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -71,8 +74,9 @@ def test_AbjadIDE_doctest_all_03():
 
 
 def test_AbjadIDE_doctest_all_04():
-    r'''In test directory.
-    '''
+    """
+    In test directory.
+    """
 
     abjad_ide('red tt ^^ q')
     transcript = abjad_ide.io.transcript 
@@ -80,8 +84,9 @@ def test_AbjadIDE_doctest_all_04():
 
 
 def test_AbjadIDE_doctest_all_05():
-    r'''Handles numeric input.
-    '''
+    """
+    Handles numeric input.
+    """
 
     abjad_ide('red oo ^^0 q')
     transcript = abjad_ide.io.transcript 
@@ -97,8 +102,9 @@ def test_AbjadIDE_doctest_all_05():
 
 
 def test_AbjadIDE_doctest_all_06():
-    r'''Emtpy and junk addresses.
-    '''
+    """
+    Emtpy and junk addresses.
+    """
 
     abjad_ide('^^asdf q')
     transcript = abjad_ide.io.transcript 

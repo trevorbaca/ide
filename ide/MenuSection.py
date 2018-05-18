@@ -5,9 +5,9 @@ from .MenuEntry import MenuEntry
 
 
 class MenuSection(abjad.AbjadObject):
-    '''
+    """
     Menu section.
-    '''
+    """
 
     ### CLASS VARIABLES ###
 
@@ -40,15 +40,15 @@ class MenuSection(abjad.AbjadObject):
     ### SPECIAL METHODS ###
 
     def __getitem__(self, argument) -> MenuEntry:
-        '''
+        """
         Gets entry indexed by `argument`.
-        '''
+        """
         return self.entries.__getitem__(argument)
         
     def __iter__(self) -> typing.Iterator:
-        '''
+        """
         Iterates entries.
-        '''
+        """
         return self.entries.__iter__()
 
     ### PRIVATE METHODS ###
@@ -83,46 +83,46 @@ class MenuSection(abjad.AbjadObject):
 
     @property
     def command(self) -> typing.Optional[bool]:
-        '''Is true when section lists commands.
-        '''
+        """Is true when section lists commands.
+        """
         return self._command
 
     @property
     def entries(self) -> typing.List[MenuEntry]:
-        '''
+        """
         Gets entries.
-        '''
+        """
         return self._entries
 
     @property
     def force_single_column(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when section forces single column.
-        '''
+        """
         return self._force_single_column
 
     @property
     def secondary(self) -> typing.Optional[bool]:
-        '''
+        """
         Is true when section lists secondary assets.
-        '''
+        """
         return self._secondary
 
     ### PUBLIC METHODS ###
 
     def make_lines(self, left_margin_width) -> typing.List[str]:
-        '''
+        """
         Makes lines.
-        '''
+        """
         lines = [_.make_line(left_margin_width) for _ in self]
         if lines:
             lines.append('')
         return lines
 
     def match(self, string) -> typing.Optional[MenuEntry]:
-        '''
+        """
         Gets entry that matches `string`.
-        '''
+        """
         if self.command:
             for entry in self:
                 if entry.value == string:
@@ -140,9 +140,9 @@ class MenuSection(abjad.AbjadObject):
     def range_string_to_numbers(self, string) -> typing.Optional[
         typing.List[typing.Optional[int]]
         ]:
-        '''
+        """
         Changes range ``string`` to numbers.
-        '''
+        """
         string = string.strip()
         assert self.entries
         if not self.entries[0].number:

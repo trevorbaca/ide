@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_trash_illustration_ily_01():
-    r'''In segment directory.
-    '''
+    """
+    In segment directory.
+    """
 
     with ide.Test():
         path = ide.Path('red_score', 'segments', 'A', 'illustration.ily')
@@ -22,8 +23,9 @@ def test_AbjadIDE_trash_illustration_ily_01():
 
 
 def test_AbjadIDE_trash_illustration_ily_02():
-    r'''In segments directory.
-    '''
+    """
+    In segments directory.
+    """
 
     with ide.Test():
         paths = []

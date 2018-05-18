@@ -17,8 +17,9 @@ def test_AbjadIDE_copy_to_clipboard_01():
 
 
 def test_AbjadIDE_copy_to_clipboard_02():
-    r'''Can jump from selector.
-    '''
+    """
+    Can jump from selector.
+    """
 
     abjad_ide('cbc ss q')
     transcript = abjad_ide.io.transcript

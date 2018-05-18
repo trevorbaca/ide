@@ -3,8 +3,9 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_collect_segments_01():
-    r'''In build directory.
-    '''
+    """
+    In build directory.
+    """
 
     with ide.Test():
 

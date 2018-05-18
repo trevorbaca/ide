@@ -17,9 +17,9 @@ def test_AbjadIDE_generate_part_tex_01():
         assert f'Writing {path.trim()} ...' in transcript
         assert path.is_file()
 
-        r'''
+        """
         Works when part.tex is missing, too.
-        '''
+        """
 
         path.remove()
         assert not path.exists()
