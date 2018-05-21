@@ -220,7 +220,6 @@ class MeasureMaker(abjad.AbjadObject):
         """
         Is true when `argument` is a measure-maker with type and
         public properties equal to those of this measure-maker.
-        Otherwise false.
 
         Returns true or false.
         """
@@ -354,7 +353,7 @@ class MeasureMaker(abjad.AbjadObject):
     @property
     def measures_are_scaled(self):
         """
-        Is true when measures are scaled. Otherwise false.
+        Is true when measures are scaled.
 
         Returns true or false.
         """
@@ -363,7 +362,7 @@ class MeasureMaker(abjad.AbjadObject):
     @property
     def measures_are_shuffled(self):
         """
-        Is true when measures are shuffled. Otherwise false.
+        Is true when measures are shuffled.
 
         Returns true or false.
         """
@@ -372,7 +371,7 @@ class MeasureMaker(abjad.AbjadObject):
     @property
     def measures_are_split(self):
         """
-        Is true when measures are split. Otherwise false.
+        Is true when measures are split.
 
         Returns true or false.
         """
