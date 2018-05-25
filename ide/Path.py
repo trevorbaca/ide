@@ -408,7 +408,7 @@ class Path(abjad.Path):
 
     def is_prototype(self, prototype) -> bool:
         """
-        Is true when path is `prototype`.
+        Is true when path is ``prototype``.
         """
         if prototype is True:
             return True

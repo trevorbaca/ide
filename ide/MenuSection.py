@@ -41,7 +41,7 @@ class MenuSection(abjad.AbjadObject):
 
     def __getitem__(self, argument) -> MenuEntry:
         """
-        Gets entry indexed by `argument`.
+        Gets entry indexed by ``argument``.
         """
         return self.entries.__getitem__(argument)
         
@@ -121,7 +121,7 @@ class MenuSection(abjad.AbjadObject):
 
     def match(self, string) -> typing.Optional[MenuEntry]:
         """
-        Gets entry that matches `string`.
+        Gets entry that matches ``string``.
         """
         if self.command:
             for entry in self:
