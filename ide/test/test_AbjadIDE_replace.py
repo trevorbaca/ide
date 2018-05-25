@@ -13,7 +13,7 @@ def test_AbjadIDE_replace_01():
         abjad_ide('red sr RhythmMaker q')
         transcript = abjad_ide.io.transcript
         assert 'Enter search string> RhythmMaker' in transcript
-        string = 'class RhythmMaker(abjad.rhythmos.RhythmMaker):'
+        string = 'class RhythmMaker(abjad.rmakers.RhythmMaker):'
         assert string in transcript
 
         abjad_ide('red rp RhythmMaker FooMaker y q')
