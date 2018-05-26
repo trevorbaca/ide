@@ -28,6 +28,8 @@ before_install:
     - cd abjad; git checkout trevor/dev; pip install -e .[book,rmakers,test]
     - echo `git branch`
     - cd ..
+    # allows mypy to find abjad-ext-rmakers/abjadext:
+    - git clone https://github.com/Abjad/abjad-ext-rmakers.git
     - pwd
 
 install:
@@ -43,7 +45,8 @@ before_script:
     - pwd
     - ls
     - IDE_SCORES=`pwd`/ide/scores
-    - export PYTHONPATH=$IDE_SCORES/blue_score:$IDE_SCORES/red_score
+    - export PYTHONPATH=$PYTHONPATH:$IDE_SCORES/blue_score
+    - export PYTHONPATH=$PYTHONPATH:$IDE_SCORES/red_score
     - echo $PYTHONPATH
     - export BACA=/home/travis/virtualenv/python3.6.3/src/baca
     - export PATH=$PATH:`pwd`/ide/scr:$BACA/baca/scr
@@ -51,7 +54,10 @@ before_script:
     - echo $PATH
     - which latex
     - which xetex
-    - export MYPYPATH=$MYPYPATH:$PYTHONPATH:`pwd`/abjad:`pwd`/baca:$BACA
+    - export MYPYPATH=$MYPYPATH:$PYTHONPATH
+    - export MYPYPATH=$MYPYPATH:`pwd`/abjad
+    - export MYPYPATH=$MYPYPATH:`pwd`/baca:$BACA
+    - export MYPYPATH=$MYPYPATH:`pwd`/abjad-ext-rmakers
     - echo $MYPYPATH
     - ls /home/travis/virtualenv/python3.6.3/src
     - echo `which start-abjad-ide`
@@ -59,9 +65,9 @@ before_script:
 
 script:
     - start-abjad-ide q
+    - mypy ide
     - coverage run -a `which doctest` ide/*py
     - coverage run -a `which py.test` -rf ide
-    - mypy ide
 
 after_success:
     - pip install coveralls
