@@ -139,7 +139,7 @@ def test_AbjadIDE_smart_doctest_07():
 
     abjad_ide('red oo ^1 q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('RhythmMaker.py')
+    path = ide.Path('red_score') / 'tools' / 'PianoStaffSegmentMaker.py'
     assert f"Matching '^1' to {path.trim()} ..." in transcript
 
     abjad_ide('red oo ^99 q')

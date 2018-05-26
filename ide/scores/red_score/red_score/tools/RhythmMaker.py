@@ -1,7 +1,7 @@
-import abjad
+from abjadext import rmakers
 
 
-class RhythmMaker(abjad.rmakers.RhythmMaker):
+class RhythmMaker(rmakers.RhythmMaker):
     """
     Rhythm-maker.
 

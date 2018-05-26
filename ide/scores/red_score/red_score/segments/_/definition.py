@@ -1,4 +1,5 @@
 import abjad
+import red_score
 
 
 time_signatures = [(15, 8), (18, 8)]
@@ -15,7 +16,7 @@ divisions = {
     'LHVoice': lh_divisions,
     }
 
-maker = abjad.PianoStaffSegmentMaker(
+maker = red_score.PianoStaffSegmentMaker(
     divisions=divisions,
     include_layout_ly=True,
     time_signatures=time_signatures,

@@ -12,15 +12,15 @@ def test_AbjadIDE_search_01():
     assert 'Enter search string> RhythmMaker' in transcript
 
     ack_line = 'blue_score/blue_score/materials/blue_rhythm_1/definition.py:4:'
-    ack_line += 'blue_rhythm_1 = abjad.rmakers.TaleaRhythmMaker('
+    ack_line += 'blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker('
     grep_line = 'blue_score/blue_score/materials/blue_rhythm_1/definition.py:'
-    grep_line += 'blue_rhythm_1 = abjad.rmakers.TaleaRhythmMaker('
+    grep_line += 'blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker('
     assert ack_line in transcript or grep_line in transcript
 
     ack_line = 'red_score/red_score/tools/RhythmMaker.py:4:'
-    ack_line += 'class RhythmMaker(abjad.rmakers.RhythmMaker):'
+    ack_line += 'class RhythmMaker(rmakers.RhythmMaker):'
     grep_line = 'red_score/red_score/tools/RhythmMaker.py:'
-    grep_line += 'class RhythmMaker(abjad.rmakers.RhythmMaker):'
+    grep_line += 'class RhythmMaker(rmakers.RhythmMaker):'
     assert ack_line in transcript or grep_line in transcript
 
 
@@ -34,15 +34,15 @@ def test_AbjadIDE_search_02():
     assert 'Enter search string> RhythmMaker' in transcript
 
     ack_line = 'blue_score/blue_score/materials/blue_rhythm_1/definition.py:4:'
-    ack_line += 'blue_rhythm_1 = rmakers.TaleaRhythmMaker('
+    ack_line += 'blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker('
     grep_line = 'blue_score/blue_score/materials/blue_rhythm_1/definition.py:'
-    grep_line += 'blue_rhythm_1 = rmakers.TaleaRhythmMaker('
+    grep_line += 'blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker('
     assert ack_line not in transcript and grep_line not in transcript
 
     ack_line = 'tools/RhythmMaker.py:4:'
-    ack_line += 'class RhythmMaker(abjad.rmakers.RhythmMaker):'
+    ack_line += 'class RhythmMaker(rmakers.RhythmMaker):'
     grep_line = 'tools/RhythmMaker.py:'
-    grep_line += 'class RhythmMaker(abjad.rmakers.RhythmMaker):'
+    grep_line += 'class RhythmMaker(rmakers.RhythmMaker):'
     assert ack_line in transcript or grep_line in transcript
 
 
