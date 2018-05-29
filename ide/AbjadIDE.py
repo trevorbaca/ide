@@ -4168,11 +4168,13 @@ class AbjadIDE(abjad.AbjadObject):
             music_time_signatures = path.parent.get_time_signature_metadata()
             music_time_signatures = [str(_) for _ in music_time_signatures]
             layout_ly = path.name.replace('music.ly', 'layout.ly')
-            layout_ly = path.parent(layout_ly)
+            layout_ly = path.parent / layout_ly
             if layout_ly.exists():
                 layout_time_signatures = \
                     layout_ly.get_preamble_time_signatures()
-                if music_time_signatures != layout_time_signatures:
+                partial_score = layout_ly.get_preamble_partial_score()
+                if (not partial_score and
+                    (music_time_signatures != layout_time_signatures)):
                     message = f'music time signatures do not match'
                     message += ' layout time signatures ...'
                     if not self.test:
