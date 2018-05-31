@@ -16,7 +16,10 @@ author_email = ', '.join(author_email)
 
 install_requires = [
     'abjad',
+    'mypy',
     'roman',
+    'sphinx',
+    'sphinx-rtd-theme',
     'uqbar>=0.2.13',
     ]
 
