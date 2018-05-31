@@ -14,7 +14,7 @@ def test_AbjadIDE_go_to_external_directory_01():
     assert '.gitignore' not in transcript
 
     # regression: underscore files appear in external directory
-    abjad_ide('cdj .. boiler q')
+    abjad_ide('cdj boiler q')
     transcript = abjad_ide.io.transcript
     assert '/Users/trevorbaca/abjad/abjad/boilerplate' in transcript
     assert '.gitignore' not in transcript

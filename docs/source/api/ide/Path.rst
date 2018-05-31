@@ -110,6 +110,8 @@ Path
 
    .. automethod:: Path.get_part_identifier
 
+   .. automethod:: Path.get_preamble_partial_score
+
    .. automethod:: Path.get_preamble_time_signatures
 
    .. automethod:: Path.get_previous_package
