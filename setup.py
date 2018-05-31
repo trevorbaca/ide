@@ -21,7 +21,7 @@ setuptools.setup(
     author_email=author_email,
     include_package_data=True,
     install_requires=[
-        'abjad[development]',
+        'abjad',
         ],
     license='GPL',
     name='Abjad IDE',
