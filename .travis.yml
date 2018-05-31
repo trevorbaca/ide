@@ -19,55 +19,74 @@ addons:
         - texlive-xetex
 
 before_install:
-    - LILYPOND_SCRIPT=lilypond-2.19.80-1.linux-64.sh
+    # declare package
+    - PACKAGE=`pwd`/ide
+    - export PATH=$PATH:$PACKAGE/scr
+
+    # install lilypond:
     - LILYPOND_URL=http://download.linuxaudio.org/lilypond/binaries/linux-64
-    - LILYPOND_URL=$LILYPOND_URL/$LILYPOND_SCRIPT
-    - wget -q $LILYPOND_URL
-    - sh $LILYPOND_SCRIPT --batch
-    - git clone https://github.com/Abjad/abjad.git;
-    - cd abjad; git checkout trevor/dev; pip install -e .[book,rmakers,test]
-    - echo `git branch`
-    - cd ..
-    # allows mypy to find abjad-ext-rmakers/abjadext:
-    - git clone https://github.com/Abjad/abjad-ext-rmakers.git
+    - LILYPOND_SCRIPT=lilypond-2.19.80-1.linux-64.sh
+    - wget -q -O /tmp/$LILYPOND_SCRIPT $LILYPOND_URL/$LILYPOND_SCRIPT
+    - sh /tmp/$LILYPOND_SCRIPT --batch
+
+    # upgrade pip:
+    - pip install --upgrade pip
+
+    # clone & install abjad dev branch:
+    - ABJAD=/tmp/abjad
+    - git clone -b trevor/dev https://github.com/Abjad/abjad.git $ABJAD
+    - pip install -e $ABJAD
+    - export MYPYPATH=$ABJAD
+
+    # clone & install rmakers:
+    - RMAKERS=/tmp/abjad-ext-rmakers
+    - git clone https://github.com/Abjad/abjad-ext-rmakers.git $RMAKERS
+    - pip install -e $RMAKERS
+    - export MYPYPATH=$MYPYPATH:$RMAKERS
+
+    # clone & install baca:
+    - BACA=/tmp/baca
+    - git clone https://github.com/trevorbaca/baca.git $BACA
+    - pip install -e $BACA
+    - export MYPYPATH=$MYPYPATH:$BACA
+    - export PATH=$PATH:$BACA/baca/scr
+
+    # install uqbar:
+    - UQBAR=/tmp/uqbar
+    - pip install --no-deps --target $UQBAR uqbar
+    - export MYPYPATH=$MYPYPATH:$UQBAR
+
+    # set pythonpath; is this needed anymore?
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
+
+    # log setup:
+    - echo $MYPYPATH
+    - echo $PATH
+    - echo $PYTHONPATH
+    - ls
+    - ls /home/travis/virtualenv/python3.6.3/src
+    - ls /tmp
     - pwd
+    - which doctest
+    - which latex
+    - which prime-parser-tables
+    - which start-abjad-ide
+    - which xetex
 
 install:
-    - pip install --upgrade pip
     - pip install coverage
-    - pip install -e git://github.com/trevorbaca/baca.git#egg=baca
     - pip install -r requirements.txt
     - pip install -e . 
-    - pip install --target /tmp/typehints --no-deps uqbar>=0.2.11
-    - export MYPYPATH=/tmp/typehints
-
-before_script:
-    - pwd
-    - ls
-    - IDE_SCORES=`pwd`/ide/scores
-    - export PYTHONPATH=$PYTHONPATH:$IDE_SCORES/blue_score
-    - export PYTHONPATH=$PYTHONPATH:$IDE_SCORES/red_score
-    - echo $PYTHONPATH
-    - export BACA=/home/travis/virtualenv/python3.6.3/src/baca
-    - export PATH=$PATH:`pwd`/ide/scr:$BACA/baca/scr
-    - echo `which doctest`
-    - echo $PATH
-    - which latex
-    - which xetex
-    - export MYPYPATH=$MYPYPATH:$PYTHONPATH
-    - export MYPYPATH=$MYPYPATH:`pwd`/abjad
-    - export MYPYPATH=$MYPYPATH:`pwd`/baca:$BACA
-    - export MYPYPATH=$MYPYPATH:`pwd`/abjad-ext-rmakers
-    - echo $MYPYPATH
-    - ls /home/travis/virtualenv/python3.6.3/src
-    - echo `which start-abjad-ide`
-    - ide/scr/prime-parser-tables
+    #- $PACKAGE/scr/prime-parser-tables
+    - prime-parser-tables
 
 script:
+    - mypy $PACKAGE
     - start-abjad-ide q
-    - mypy ide
-    - coverage run -a `which doctest` ide/*py
-    - coverage run -a `which py.test` -rf ide
+    - coverage run -a `which doctest` $PACKAGE/*.py
+    - coverage run -a `which py.test` -rf $PACKAGE
 
 after_success:
     - pip install coveralls
