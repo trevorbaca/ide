@@ -29,7 +29,7 @@ keywords = [
     ]
 keywords = ', '.join(keywords)
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     setuptools.setup(
         author=author,
         author_email=author_email,
