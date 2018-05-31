@@ -1,0 +1,8 @@
+include LICENSE
+include MANIFEST.in
+include README.md
+include conftest.py
+include pytest.ini
+include setup.py
+recursive-include ide/ *
+recursive-exclude docs/ *
