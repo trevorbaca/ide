@@ -1,9 +1,10 @@
-language: python
-
 sudo: false
+
+language: python
 
 python:
     - 3.6
+    - "3.7-dev"
 
 addons:
     apt:
@@ -60,10 +61,10 @@ before_install:
     - pip install --no-deps --target $UQBAR uqbar
     - export MYPYPATH=$MYPYPATH:$UQBAR
 
-    # set pythonpath; is this needed anymore?
-    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
-    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
-    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
+    # set pythonpath:
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
+    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
     # log setup:
     - echo $MYPYPATH
