@@ -61,9 +61,9 @@ before_install:
     - export MYPYPATH=$MYPYPATH:$UQBAR
 
     # set pythonpath; is this needed anymore?
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
+    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
+    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
+    #- export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
     # log setup:
     - echo $MYPYPATH
