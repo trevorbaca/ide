@@ -7,33 +7,33 @@ instruments = abjad.OrderedDict([
         'BassClarinet',
         abjad.BassClarinet(
             name='bass clarinet',
-            markup=baca.markup.instrument('Bass clarinet'),
+            markup=baca.markups.instrument('Bass clarinet'),
             short_name='b. cl.',
-            short_markup=baca.markup.short_instrument('B. cl.'),
+            short_markup=baca.markups.short_instrument('B. cl.'),
             ),
         ),
     (
         'Violin',
         abjad.Violin(
             context='StaffGroup',
-            markup=baca.markup.instrument('Violin'),
-            short_markup=baca.markup.short_instrument('Vn.'),
+            markup=baca.markups.instrument('Violin'),
+            short_markup=baca.markups.short_instrument('Vn.'),
             )
         ),
     (
         'Viola',
         abjad.Viola(
             context='StaffGroup',
-            markup=baca.markup.instrument('Viola'),
-            short_markup=baca.markup.short_instrument('Va.'),
+            markup=baca.markups.instrument('Viola'),
+            short_markup=baca.markups.short_instrument('Va.'),
             ),
         ),
     (
         'Cello',
         abjad.Cello(
             context='StaffGroup',
-            markup=baca.markup.instrument('Cello'),
-            short_markup=baca.markup.short_instrument('Vc.'),
+            markup=baca.markups.instrument('Cello'),
+            short_markup=baca.markups.short_instrument('Vc.'),
             ),
         ),
     ])
