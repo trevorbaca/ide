@@ -81,6 +81,7 @@ before_install:
     - which xetex
 
 install:
+    - pip install pytest-helpers-namespace
     - pip install coverage
     - pip install -e . 
     - prime-parser-tables
