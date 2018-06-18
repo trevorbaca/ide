@@ -14,6 +14,25 @@ Response
 
 .. autoclass:: Response
 
+   .. autosummary::
+      :nosignatures:
+
+      get_path
+      is_address
+      is_command
+      is_path
+      is_segment_name
+      is_shell
+
+   .. autosummary::
+      :nosignatures:
+
+      pair
+      pattern
+      payload
+      prefix
+      string
+
    .. raw:: html
 
       <hr/>
@@ -21,9 +40,13 @@ Response
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: Response.__format__
+   .. container:: inherited
 
-   .. automethod:: Response.__repr__
+      .. automethod:: Response.__format__
+
+   .. container:: inherited
+
+      .. automethod:: Response.__repr__
 
    .. raw:: html
 

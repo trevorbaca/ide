@@ -14,6 +14,18 @@ Interaction
 
 .. autoclass:: Interaction
 
+   .. autosummary::
+      :nosignatures:
+
+      io
+
+   .. autosummary::
+      :nosignatures:
+
+      __enter__
+      __exit__
+      __repr__
+
    .. raw:: html
 
       <hr/>
@@ -25,7 +37,9 @@ Interaction
 
    .. automethod:: Interaction.__exit__
 
-   .. automethod:: Interaction.__format__
+   .. container:: inherited
+
+      .. automethod:: Interaction.__format__
 
    .. automethod:: Interaction.__repr__
 

@@ -3,7 +3,7 @@ import inspect
 import pytest
 
 
-classes = abjad.documentationtools.list_all_ide_classes()
+classes = pytest.helpers.list_all_abjad_classes()
 
 
 @pytest.mark.parametrize('object_', classes)

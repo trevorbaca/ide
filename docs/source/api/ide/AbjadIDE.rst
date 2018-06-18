@@ -14,6 +14,195 @@ AbjadIDE
 
 .. autoclass:: AbjadIDE
 
+   .. autosummary::
+      :nosignatures:
+
+      configuration
+      known_paper_sizes
+      paper_size_to_paper_dimensions
+
+   .. autosummary::
+      :nosignatures:
+
+      activate
+      build_part_pdf
+      build_score_pdf
+      call_shell
+      check_definition_py
+      collect_segments
+      color_clefs
+      color_dynamics
+      color_instruments
+      color_margin_markup
+      color_metronome_marks
+      color_persistent_indicators
+      color_staff_lines
+      color_time_signatures
+      copy_to_clipboard
+      cut_to_clipboard
+      deactivate
+      doctest_all
+      duplicate
+      edit_aliases_py
+      edit_all
+      edit_back_cover_tex
+      edit_definition_py
+      edit_front_cover_tex
+      edit_illustration_ily
+      edit_illustration_ly
+      edit_latex_log
+      edit_layout_ly
+      edit_layout_py
+      edit_lilypond_log
+      edit_music_ly
+      edit_part_tex
+      edit_preface_tex
+      edit_score_tex
+      edit_stylesheet_ily
+      edit_text
+      empty_clipboard
+      force_single_column
+      generate_back_cover_tex
+      generate_front_cover_tex
+      generate_layout_py
+      generate_music_ly
+      generate_part_tex
+      generate_preface_tex
+      generate_score_tex
+      generate_stylesheet_ily
+      get
+      git_commit
+      git_diff
+      git_pull
+      git_push
+      git_status
+      go_back
+      go_to_builds_directory
+      go_to_contents_directory
+      go_to_directory
+      go_to_distribution_directory
+      go_to_etc_directory
+      go_to_library
+      go_to_materials_directory
+      go_to_next_package
+      go_to_next_score
+      go_to_previous_package
+      go_to_previous_score
+      go_to_scores_directory
+      go_to_segments_directory
+      go_to_stylesheets_directory
+      go_to_test_directory
+      go_to_tools_directory
+      go_to_wrapper_directory
+      go_up
+      hide_clock_time_markup
+      hide_figure_name_markup
+      hide_local_measure_number_markup
+      hide_measure_index_markup
+      hide_measure_number_markup
+      hide_music_annotations
+      hide_spacing_markup
+      hide_stage_number_markup
+      interpret_back_cover_tex
+      interpret_front_cover_tex
+      interpret_illustration_ly
+      interpret_music_ly
+      interpret_part_tex
+      interpret_preface_tex
+      interpret_score_tex
+      is_navigation
+      make_illustration_ly
+      make_illustration_pdf
+      make_layout_ly
+      make_segment_midi
+      nake_illustration_pdf
+      new
+      open_all_pdfs
+      open_back_cover_pdf
+      open_front_cover_pdf
+      open_illustration_pdf
+      open_music_pdf
+      open_part_pdf
+      open_preface_pdf
+      open_score_pdf
+      paste_from_clipboard
+      propagate_layout_py
+      pytest_all
+      quit
+      remove
+      rename
+      replace
+      run
+      search
+      show_clipboard
+      show_clock_time_markup
+      show_figure_name_markup
+      show_help
+      show_local_measure_number_markup
+      show_measure_index_markup
+      show_measure_number_markup
+      show_music_annotations
+      show_spacing_markup
+      show_stage_number_markup
+      smart_doctest
+      smart_edit
+      smart_pdf
+      smart_pytest
+      test_baca_directories
+      trash_back_cover_pdf
+      trash_back_cover_tex
+      trash_definition_py
+      trash_front_cover_pdf
+      trash_front_cover_tex
+      trash_illustration_ily
+      trash_illustration_ly
+      trash_illustration_pdf
+      trash_layout_ly
+      trash_layout_py
+      trash_music_ly
+      trash_music_pdf
+      trash_part_pdf
+      trash_part_tex
+      trash_preface_pdf
+      trash_preface_tex
+      trash_score_pdf
+      trash_score_tex
+      trash_stylesheet_ily
+      uncolor_clefs
+      uncolor_dynamics
+      uncolor_instruments
+      uncolor_margin_markup
+      uncolor_metronome_marks
+      uncolor_persistent_indicators
+      uncolor_staff_lines
+      uncolor_time_signatures
+      xinterpret_music_ly
+
+   .. autosummary::
+      :nosignatures:
+
+      aliases
+      clipboard
+      commands
+      current_directory
+      example
+      io
+      navigation
+      navigations
+      previous_directory
+      test
+
+   .. autosummary::
+      :nosignatures:
+
+      __call__
+
+   .. autosummary::
+      :nosignatures:
+
+      change
+      cleanup
+
    .. raw:: html
 
       <hr/>
@@ -23,9 +212,13 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.__call__
 
-   .. automethod:: AbjadIDE.__format__
+   .. container:: inherited
 
-   .. automethod:: AbjadIDE.__repr__
+      .. automethod:: AbjadIDE.__format__
+
+   .. container:: inherited
+
+      .. automethod:: AbjadIDE.__repr__
 
    .. raw:: html
 

@@ -14,6 +14,32 @@ Path
 
 .. autoclass:: Path
 
+   .. autosummary::
+      :nosignatures:
+
+      address_characters
+      configuration
+      test_score_names
+
+   .. autosummary::
+      :nosignatures:
+
+      get_eol_measure_numbers
+      get_header
+      is_external
+      is_prototype
+
+   .. autosummary::
+      :nosignatures:
+
+      document_names
+      scores
+
+   .. autosummary::
+      :nosignatures:
+
+      __new__
+
    .. raw:: html
 
       <hr/>
@@ -21,37 +47,67 @@ Path
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: Path.__bytes__
+   .. container:: inherited
 
-   .. automethod:: Path.__call__
+      .. automethod:: Path.__bytes__
 
-   .. automethod:: Path.__enter__
+   .. container:: inherited
 
-   .. automethod:: Path.__eq__
+      .. automethod:: Path.__call__
 
-   .. automethod:: Path.__exit__
+   .. container:: inherited
 
-   .. automethod:: Path.__fspath__
+      .. automethod:: Path.__enter__
 
-   .. automethod:: Path.__ge__
+   .. container:: inherited
 
-   .. automethod:: Path.__gt__
+      .. automethod:: Path.__eq__
 
-   .. automethod:: Path.__hash__
+   .. container:: inherited
 
-   .. automethod:: Path.__le__
+      .. automethod:: Path.__exit__
 
-   .. automethod:: Path.__lt__
+   .. container:: inherited
+
+      .. automethod:: Path.__fspath__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__ge__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__gt__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__hash__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__le__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__lt__
 
    .. automethod:: Path.__new__
 
-   .. automethod:: Path.__repr__
+   .. container:: inherited
 
-   .. automethod:: Path.__rtruediv__
+      .. automethod:: Path.__repr__
 
-   .. automethod:: Path.__str__
+   .. container:: inherited
 
-   .. automethod:: Path.__truediv__
+      .. automethod:: Path.__rtruediv__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__str__
+
+   .. container:: inherited
+
+      .. automethod:: Path.__truediv__
 
    .. raw:: html
 
@@ -60,227 +116,441 @@ Path
    .. rubric:: Methods
       :class: class-header
 
-   .. automethod:: Path.absolute
+   .. container:: inherited
 
-   .. automethod:: Path.activate
+      .. automethod:: Path.absolute
 
-   .. automethod:: Path.add_buildspace_metadatum
+   .. container:: inherited
 
-   .. automethod:: Path.add_metadatum
+      .. automethod:: Path.activate
 
-   .. automethod:: Path.as_posix
+   .. container:: inherited
 
-   .. automethod:: Path.as_uri
+      .. automethod:: Path.add_buildspace_metadatum
 
-   .. automethod:: Path.chmod
+   .. container:: inherited
 
-   .. automethod:: Path.coerce
+      .. automethod:: Path.add_metadatum
 
-   .. automethod:: Path.count
+   .. container:: inherited
 
-   .. automethod:: Path.deactivate
+      .. automethod:: Path.as_posix
 
-   .. automethod:: Path.exists
+   .. container:: inherited
 
-   .. automethod:: Path.expanduser
+      .. automethod:: Path.as_uri
 
-   .. automethod:: Path.extern
+   .. container:: inherited
 
-   .. automethod:: Path.get_asset_type
+      .. automethod:: Path.chmod
+
+   .. container:: inherited
+
+      .. automethod:: Path.coerce
+
+   .. container:: inherited
+
+      .. automethod:: Path.count
+
+   .. container:: inherited
+
+      .. automethod:: Path.deactivate
+
+   .. container:: inherited
+
+      .. automethod:: Path.exists
+
+   .. container:: inherited
+
+      .. automethod:: Path.expanduser
+
+   .. container:: inherited
+
+      .. automethod:: Path.extern
+
+   .. container:: inherited
+
+      .. automethod:: Path.get_asset_type
 
    .. automethod:: Path.get_eol_measure_numbers
 
-   .. automethod:: Path.get_files_ending_with
+   .. container:: inherited
+
+      .. automethod:: Path.get_files_ending_with
 
    .. automethod:: Path.get_header
 
-   .. automethod:: Path.get_identifier
+   .. container:: inherited
 
-   .. automethod:: Path.get_measure_profile_metadata
+      .. automethod:: Path.get_identifier
 
-   .. automethod:: Path.get_metadata
+   .. container:: inherited
 
-   .. automethod:: Path.get_metadatum
+      .. automethod:: Path.get_measure_profile_metadata
 
-   .. automethod:: Path.get_name_predicate
+   .. container:: inherited
 
-   .. automethod:: Path.get_next_package
+      .. automethod:: Path.get_metadata
 
-   .. automethod:: Path.get_next_score
+   .. container:: inherited
 
-   .. automethod:: Path.get_part_identifier
+      .. automethod:: Path.get_metadatum
 
-   .. automethod:: Path.get_preamble_partial_score
+   .. container:: inherited
 
-   .. automethod:: Path.get_preamble_time_signatures
+      .. automethod:: Path.get_name_predicate
 
-   .. automethod:: Path.get_previous_package
+   .. container:: inherited
 
-   .. automethod:: Path.get_previous_score
+      .. automethod:: Path.get_next_package
 
-   .. automethod:: Path.get_time_signature_metadata
+   .. container:: inherited
 
-   .. automethod:: Path.get_title
+      .. automethod:: Path.get_next_score
 
-   .. automethod:: Path.glob
+   .. container:: inherited
 
-   .. automethod:: Path.global_rest_identifiers
+      .. automethod:: Path.get_part_identifier
 
-   .. automethod:: Path.global_skip_identifiers
+   .. container:: inherited
 
-   .. automethod:: Path.group
+      .. automethod:: Path.get_preamble_partial_score
 
-   .. automethod:: Path.instrument_to_staff_identifiers
+   .. container:: inherited
 
-   .. automethod:: Path.is__assets
+      .. automethod:: Path.get_preamble_time_signatures
 
-   .. automethod:: Path.is__segments
+   .. container:: inherited
 
-   .. automethod:: Path.is_absolute
+      .. automethod:: Path.get_previous_package
 
-   .. automethod:: Path.is_block_device
+   .. container:: inherited
 
-   .. automethod:: Path.is_build
+      .. automethod:: Path.get_previous_score
 
-   .. automethod:: Path.is_builds
+   .. container:: inherited
 
-   .. automethod:: Path.is_buildspace
+      .. automethod:: Path.get_time_signature_metadata
 
-   .. automethod:: Path.is_char_device
+   .. container:: inherited
 
-   .. automethod:: Path.is_contents
+      .. automethod:: Path.get_title
 
-   .. automethod:: Path.is_dir
+   .. container:: inherited
 
-   .. automethod:: Path.is_distribution
+      .. automethod:: Path.glob
 
-   .. automethod:: Path.is_etc
+   .. container:: inherited
+
+      .. automethod:: Path.global_rest_identifiers
+
+   .. container:: inherited
+
+      .. automethod:: Path.global_skip_identifiers
+
+   .. container:: inherited
+
+      .. automethod:: Path.group
+
+   .. container:: inherited
+
+      .. automethod:: Path.instrument_to_staff_identifiers
+
+   .. container:: inherited
+
+      .. automethod:: Path.is__assets
+
+   .. container:: inherited
+
+      .. automethod:: Path.is__segments
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_absolute
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_block_device
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_build
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_builds
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_buildspace
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_char_device
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_contents
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_dir
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_distribution
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_etc
 
    .. automethod:: Path.is_external
 
-   .. automethod:: Path.is_fifo
+   .. container:: inherited
 
-   .. automethod:: Path.is_file
+      .. automethod:: Path.is_fifo
 
-   .. automethod:: Path.is_illustrationspace
+   .. container:: inherited
 
-   .. automethod:: Path.is_introduction_segment
+      .. automethod:: Path.is_file
 
-   .. automethod:: Path.is_library
+   .. container:: inherited
 
-   .. automethod:: Path.is_material
+      .. automethod:: Path.is_illustrationspace
 
-   .. automethod:: Path.is_material_or_segment
+   .. container:: inherited
 
-   .. automethod:: Path.is_materials
+      .. automethod:: Path.is_introduction_segment
 
-   .. automethod:: Path.is_materials_or_segments
+   .. container:: inherited
 
-   .. automethod:: Path.is_part
+      .. automethod:: Path.is_library
 
-   .. automethod:: Path.is_parts
+   .. container:: inherited
+
+      .. automethod:: Path.is_material
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_material_or_segment
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_materials
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_materials_or_segments
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_part
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_parts
 
    .. automethod:: Path.is_prototype
 
-   .. automethod:: Path.is_reserved
+   .. container:: inherited
 
-   .. automethod:: Path.is_score_build
+      .. automethod:: Path.is_reserved
 
-   .. automethod:: Path.is_score_package_path
+   .. container:: inherited
 
-   .. automethod:: Path.is_scores
+      .. automethod:: Path.is_score_build
 
-   .. automethod:: Path.is_segment
+   .. container:: inherited
 
-   .. automethod:: Path.is_segments
+      .. automethod:: Path.is_score_package_path
 
-   .. automethod:: Path.is_socket
+   .. container:: inherited
 
-   .. automethod:: Path.is_stylesheets
+      .. automethod:: Path.is_scores
 
-   .. automethod:: Path.is_symlink
+   .. container:: inherited
 
-   .. automethod:: Path.is_test
+      .. automethod:: Path.is_segment
 
-   .. automethod:: Path.is_tools
+   .. container:: inherited
 
-   .. automethod:: Path.is_wrapper
+      .. automethod:: Path.is_segments
 
-   .. automethod:: Path.iterdir
+   .. container:: inherited
 
-   .. automethod:: Path.joinpath
+      .. automethod:: Path.is_socket
 
-   .. automethod:: Path.lchmod
+   .. container:: inherited
 
-   .. automethod:: Path.list_paths
+      .. automethod:: Path.is_stylesheets
 
-   .. automethod:: Path.list_secondary_paths
+   .. container:: inherited
 
-   .. automethod:: Path.lstat
+      .. automethod:: Path.is_symlink
 
-   .. automethod:: Path.match
+   .. container:: inherited
 
-   .. automethod:: Path.mkdir
+      .. automethod:: Path.is_test
 
-   .. automethod:: Path.open
+   .. container:: inherited
 
-   .. automethod:: Path.owner
+      .. automethod:: Path.is_tools
 
-   .. automethod:: Path.part_to_identifiers
+   .. container:: inherited
 
-   .. automethod:: Path.read_bytes
+      .. automethod:: Path.is_wrapper
 
-   .. automethod:: Path.read_text
+   .. container:: inherited
 
-   .. automethod:: Path.relative_to
+      .. automethod:: Path.iterdir
 
-   .. automethod:: Path.remove
+   .. container:: inherited
 
-   .. automethod:: Path.remove_metadatum
+      .. automethod:: Path.joinpath
 
-   .. automethod:: Path.rename
+   .. container:: inherited
 
-   .. automethod:: Path.replace
+      .. automethod:: Path.lchmod
 
-   .. automethod:: Path.resolve
+   .. container:: inherited
 
-   .. automethod:: Path.rglob
+      .. automethod:: Path.list_paths
 
-   .. automethod:: Path.rmdir
+   .. container:: inherited
 
-   .. automethod:: Path.samefile
+      .. automethod:: Path.list_secondary_paths
 
-   .. automethod:: Path.score_skeleton
+   .. container:: inherited
 
-   .. automethod:: Path.segment_number_to_path
+      .. automethod:: Path.lstat
 
-   .. automethod:: Path.stat
+   .. container:: inherited
 
-   .. automethod:: Path.symlink_to
+      .. automethod:: Path.match
 
-   .. automethod:: Path.to_part
+   .. container:: inherited
 
-   .. automethod:: Path.touch
+      .. automethod:: Path.mkdir
 
-   .. automethod:: Path.trim
+   .. container:: inherited
 
-   .. automethod:: Path.unlink
+      .. automethod:: Path.open
 
-   .. automethod:: Path.update_order_dependent_segment_metadata
+   .. container:: inherited
 
-   .. automethod:: Path.with_name
+      .. automethod:: Path.owner
 
-   .. automethod:: Path.with_parent
+   .. container:: inherited
 
-   .. automethod:: Path.with_score
+      .. automethod:: Path.part_to_identifiers
 
-   .. automethod:: Path.with_suffix
+   .. container:: inherited
 
-   .. automethod:: Path.write_bytes
+      .. automethod:: Path.read_bytes
 
-   .. automethod:: Path.write_metadata_py
+   .. container:: inherited
 
-   .. automethod:: Path.write_text
+      .. automethod:: Path.read_text
+
+   .. container:: inherited
+
+      .. automethod:: Path.relative_to
+
+   .. container:: inherited
+
+      .. automethod:: Path.remove
+
+   .. container:: inherited
+
+      .. automethod:: Path.remove_metadatum
+
+   .. container:: inherited
+
+      .. automethod:: Path.rename
+
+   .. container:: inherited
+
+      .. automethod:: Path.replace
+
+   .. container:: inherited
+
+      .. automethod:: Path.resolve
+
+   .. container:: inherited
+
+      .. automethod:: Path.rglob
+
+   .. container:: inherited
+
+      .. automethod:: Path.rmdir
+
+   .. container:: inherited
+
+      .. automethod:: Path.samefile
+
+   .. container:: inherited
+
+      .. automethod:: Path.score_skeleton
+
+   .. container:: inherited
+
+      .. automethod:: Path.segment_number_to_path
+
+   .. container:: inherited
+
+      .. automethod:: Path.stat
+
+   .. container:: inherited
+
+      .. automethod:: Path.symlink_to
+
+   .. container:: inherited
+
+      .. automethod:: Path.to_part
+
+   .. container:: inherited
+
+      .. automethod:: Path.touch
+
+   .. container:: inherited
+
+      .. automethod:: Path.trim
+
+   .. container:: inherited
+
+      .. automethod:: Path.unlink
+
+   .. container:: inherited
+
+      .. automethod:: Path.update_order_dependent_segment_metadata
+
+   .. container:: inherited
+
+      .. automethod:: Path.with_name
+
+   .. container:: inherited
+
+      .. automethod:: Path.with_parent
+
+   .. container:: inherited
+
+      .. automethod:: Path.with_score
+
+   .. container:: inherited
+
+      .. automethod:: Path.with_suffix
+
+   .. container:: inherited
+
+      .. automethod:: Path.write_bytes
+
+   .. container:: inherited
+
+      .. automethod:: Path.write_metadata_py
+
+   .. container:: inherited
+
+      .. automethod:: Path.write_text
 
    .. raw:: html
 
@@ -289,13 +559,21 @@ Path
    .. rubric:: Class & static methods
       :class: class-header
 
-   .. automethod:: Path.cwd
+   .. container:: inherited
 
-   .. automethod:: Path.global_rest_identifier
+      .. automethod:: Path.cwd
 
-   .. automethod:: Path.home
+   .. container:: inherited
 
-   .. automethod:: Path.is_segment_name
+      .. automethod:: Path.global_rest_identifier
+
+   .. container:: inherited
+
+      .. automethod:: Path.home
+
+   .. container:: inherited
+
+      .. automethod:: Path.is_segment_name
 
    .. raw:: html
 
@@ -304,48 +582,90 @@ Path
    .. rubric:: Read-only properties
       :class: class-header
 
-   .. autoattribute:: Path.anchor
+   .. container:: inherited
 
-   .. autoattribute:: Path.build
+      .. autoattribute:: Path.anchor
 
-   .. autoattribute:: Path.builds
+   .. container:: inherited
 
-   .. autoattribute:: Path.contents
+      .. autoattribute:: Path.build
 
-   .. autoattribute:: Path.distribution
+   .. container:: inherited
+
+      .. autoattribute:: Path.builds
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.contents
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.distribution
 
    .. autoattribute:: Path.document_names
 
-   .. autoattribute:: Path.drive
+   .. container:: inherited
 
-   .. autoattribute:: Path.etc
+      .. autoattribute:: Path.drive
 
-   .. autoattribute:: Path.materials
+   .. container:: inherited
 
-   .. autoattribute:: Path.name
+      .. autoattribute:: Path.etc
 
-   .. autoattribute:: Path.parent
+   .. container:: inherited
 
-   .. autoattribute:: Path.parents
+      .. autoattribute:: Path.materials
 
-   .. autoattribute:: Path.parts
+   .. container:: inherited
 
-   .. autoattribute:: Path.root
+      .. autoattribute:: Path.name
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.parent
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.parents
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.parts
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.root
 
    .. autoattribute:: Path.scores
 
-   .. autoattribute:: Path.segments
+   .. container:: inherited
 
-   .. autoattribute:: Path.stem
+      .. autoattribute:: Path.segments
 
-   .. autoattribute:: Path.stylesheets
+   .. container:: inherited
 
-   .. autoattribute:: Path.suffix
+      .. autoattribute:: Path.stem
 
-   .. autoattribute:: Path.suffixes
+   .. container:: inherited
 
-   .. autoattribute:: Path.test
+      .. autoattribute:: Path.stylesheets
 
-   .. autoattribute:: Path.tools
+   .. container:: inherited
 
-   .. autoattribute:: Path.wrapper
+      .. autoattribute:: Path.suffix
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.suffixes
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.test
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.tools
+
+   .. container:: inherited
+
+      .. autoattribute:: Path.wrapper

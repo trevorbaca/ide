@@ -14,6 +14,25 @@ Configuration
 
 .. autoclass:: Configuration
 
+   .. autosummary::
+      :nosignatures:
+
+      always_ignore
+      editor_suffixes
+      noneditor_suffixes
+
+   .. autosummary::
+      :nosignatures:
+
+      aliases
+      aliases_file_path
+      boilerplate_directory
+      composer_scores_directory
+      configuration_directory
+      ide_directory
+      latex_log_file_path
+      test_scores_directory
+
    .. raw:: html
 
       <hr/>
@@ -21,19 +40,33 @@ Configuration
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: Configuration.__delitem__
+   .. container:: inherited
 
-   .. automethod:: Configuration.__format__
+      .. automethod:: Configuration.__delitem__
 
-   .. automethod:: Configuration.__getitem__
+   .. container:: inherited
 
-   .. automethod:: Configuration.__iter__
+      .. automethod:: Configuration.__format__
 
-   .. automethod:: Configuration.__len__
+   .. container:: inherited
 
-   .. automethod:: Configuration.__repr__
+      .. automethod:: Configuration.__getitem__
 
-   .. automethod:: Configuration.__setitem__
+   .. container:: inherited
+
+      .. automethod:: Configuration.__iter__
+
+   .. container:: inherited
+
+      .. automethod:: Configuration.__len__
+
+   .. container:: inherited
+
+      .. automethod:: Configuration.__repr__
+
+   .. container:: inherited
+
+      .. automethod:: Configuration.__setitem__
 
    .. raw:: html
 
@@ -42,7 +75,9 @@ Configuration
    .. rubric:: Methods
       :class: class-header
 
-   .. automethod:: Configuration.get
+   .. container:: inherited
+
+      .. automethod:: Configuration.get
 
    .. raw:: html
 
@@ -61,14 +96,20 @@ Configuration
 
    .. autoattribute:: Configuration.configuration_directory
 
-   .. autoattribute:: Configuration.configuration_file_path
+   .. container:: inherited
 
-   .. autoattribute:: Configuration.home_directory
+      .. autoattribute:: Configuration.configuration_file_path
+
+   .. container:: inherited
+
+      .. autoattribute:: Configuration.home_directory
 
    .. autoattribute:: Configuration.ide_directory
 
    .. autoattribute:: Configuration.latex_log_file_path
 
-   .. autoattribute:: Configuration.temp_directory
+   .. container:: inherited
+
+      .. autoattribute:: Configuration.temp_directory
 
    .. autoattribute:: Configuration.test_scores_directory

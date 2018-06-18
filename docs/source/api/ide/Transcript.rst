@@ -14,6 +14,25 @@ Transcript
 
 .. autoclass:: Transcript
 
+   .. autosummary::
+      :nosignatures:
+
+      append
+      trim
+
+   .. autosummary::
+      :nosignatures:
+
+      blocks
+      lines
+      menus
+      titles
+
+   .. autosummary::
+      :nosignatures:
+
+      __contains__
+
    .. raw:: html
 
       <hr/>
@@ -23,9 +42,13 @@ Transcript
 
    .. automethod:: Transcript.__contains__
 
-   .. automethod:: Transcript.__format__
+   .. container:: inherited
 
-   .. automethod:: Transcript.__repr__
+      .. automethod:: Transcript.__format__
+
+   .. container:: inherited
+
+      .. automethod:: Transcript.__repr__
 
    .. raw:: html
 

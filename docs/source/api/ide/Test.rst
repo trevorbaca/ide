@@ -14,6 +14,17 @@ Test
 
 .. autoclass:: Test
 
+   .. autosummary::
+      :nosignatures:
+
+      configuration
+
+   .. autosummary::
+      :nosignatures:
+
+      __enter__
+      __exit__
+
    .. raw:: html
 
       <hr/>
@@ -25,9 +36,13 @@ Test
 
    .. automethod:: Test.__exit__
 
-   .. automethod:: Test.__format__
+   .. container:: inherited
 
-   .. automethod:: Test.__repr__
+      .. automethod:: Test.__format__
+
+   .. container:: inherited
+
+      .. automethod:: Test.__repr__
 
    .. raw:: html
 
@@ -36,6 +51,10 @@ Test
    .. rubric:: Read-only properties
       :class: class-header
 
-   .. autoattribute:: Test.keep
+   .. container:: inherited
 
-   .. autoattribute:: Test.remove
+      .. autoattribute:: Test.keep
+
+   .. container:: inherited
+
+      .. autoattribute:: Test.remove

@@ -14,6 +14,41 @@ Menu
 
 .. autoclass:: Menu
 
+   .. autosummary::
+      :nosignatures:
+
+      left_margin_width
+
+   .. autosummary::
+      :nosignatures:
+
+      make_help_lines
+      make_lines
+      redraw
+
+   .. autosummary::
+      :nosignatures:
+
+      aliases
+      getter
+      header
+      io
+      loop
+      navigations
+      prompt
+      sections
+
+   .. autosummary::
+      :nosignatures:
+
+      __call__
+      __getitem__
+
+   .. autosummary::
+      :nosignatures:
+
+      from_directory
+
    .. raw:: html
 
       <hr/>
@@ -23,11 +58,15 @@ Menu
 
    .. automethod:: Menu.__call__
 
-   .. automethod:: Menu.__format__
+   .. container:: inherited
+
+      .. automethod:: Menu.__format__
 
    .. automethod:: Menu.__getitem__
 
-   .. automethod:: Menu.__repr__
+   .. container:: inherited
+
+      .. automethod:: Menu.__repr__
 
    .. raw:: html
 

@@ -14,6 +14,32 @@ MenuSection
 
 .. autoclass:: MenuSection
 
+   .. autosummary::
+      :nosignatures:
+
+      configuration
+
+   .. autosummary::
+      :nosignatures:
+
+      make_lines
+      match
+      range_string_to_numbers
+
+   .. autosummary::
+      :nosignatures:
+
+      command
+      entries
+      force_single_column
+      secondary
+
+   .. autosummary::
+      :nosignatures:
+
+      __getitem__
+      __iter__
+
    .. raw:: html
 
       <hr/>
@@ -21,13 +47,17 @@ MenuSection
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: MenuSection.__format__
+   .. container:: inherited
+
+      .. automethod:: MenuSection.__format__
 
    .. automethod:: MenuSection.__getitem__
 
    .. automethod:: MenuSection.__iter__
 
-   .. automethod:: MenuSection.__repr__
+   .. container:: inherited
+
+      .. automethod:: MenuSection.__repr__
 
    .. raw:: html
 

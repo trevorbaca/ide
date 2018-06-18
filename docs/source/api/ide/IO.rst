@@ -14,6 +14,18 @@ IO
 
 .. autoclass:: IO
 
+   .. autosummary::
+      :nosignatures:
+
+      display
+      get
+      pending_input
+
+   .. autosummary::
+      :nosignatures:
+
+      transcript
+
    .. raw:: html
 
       <hr/>
@@ -21,9 +33,13 @@ IO
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: IO.__format__
+   .. container:: inherited
 
-   .. automethod:: IO.__repr__
+      .. automethod:: IO.__format__
+
+   .. container:: inherited
+
+      .. automethod:: IO.__repr__
 
    .. raw:: html
 

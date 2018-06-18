@@ -14,6 +14,24 @@ MenuEntry
 
 .. autoclass:: MenuEntry
 
+   .. autosummary::
+      :nosignatures:
+
+      make_line
+
+   .. autosummary::
+      :nosignatures:
+
+      command
+      display
+      number
+      value
+
+   .. autosummary::
+      :nosignatures:
+
+      __lt__
+
    .. raw:: html
 
       <hr/>
@@ -21,11 +39,15 @@ MenuEntry
    .. rubric:: Special methods
       :class: class-header
 
-   .. automethod:: MenuEntry.__format__
+   .. container:: inherited
+
+      .. automethod:: MenuEntry.__format__
 
    .. automethod:: MenuEntry.__lt__
 
-   .. automethod:: MenuEntry.__repr__
+   .. container:: inherited
+
+      .. automethod:: MenuEntry.__repr__
 
    .. raw:: html
 
