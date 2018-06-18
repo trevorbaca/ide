@@ -12,10 +12,18 @@ This script simply finds each Parser subclass in Abjad and instantiates it,
 thereby causing PLY to create and persist the appropriate parser tables.
 """
 
-for class_ in abjad.documentationtools.list_all_abjad_classes():
-    if not issubclass(class_, abjad.Parser):
-        continue
-    if class_ is abjad.Parser:
-        continue
-    print('Priming {} parser tables.'.format(class_.__name__))
-    class_()
+class_ = abjad.parser.LilyPondParser
+print('Priming {} parser tables.'.format(class_.__name__))
+class_()
+
+class_ = abjad.parser.SchemeParser
+print('Priming {} parser tables.'.format(class_.__name__))
+class_()
+
+class_ = abjad.rhythmtrees.RhythmTreeParser
+print('Priming {} parser tables.'.format(class_.__name__))
+class_()
+
+class_ = abjad.parser.ReducedLyParser
+print('Priming {} parser tables.'.format(class_.__name__))
+class_()
