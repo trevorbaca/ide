@@ -49,6 +49,12 @@ before_install:
     - pip install -e $RMAKERS
     - export MYPYPATH=$MYPYPATH:$RMAKERS
 
+    # clone & install tonality:
+    - TONALITY=/tmp/abjad-ext-tonality
+    - git clone https://github.com/Abjad/abjad-ext-tonality.git $TONALITY
+    - pip install -e $TONALITY
+    - export MYPYPATH=$MYPYPATH:$TONALITY
+
     # clone & install baca:
     - BACA=/tmp/baca
     - git clone https://github.com/trevorbaca/baca.git $BACA
