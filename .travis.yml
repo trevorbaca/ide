@@ -60,7 +60,7 @@ before_install:
     - git clone https://github.com/trevorbaca/baca.git $BACA
     - pip install -e $BACA
     - export MYPYPATH=$MYPYPATH:$BACA
-    - export PATH=$PATH:$BACA/baca/scr
+    - export PATH=$PATH:$BACA/scr
 
     # install uqbar:
     - UQBAR=/tmp/uqbar
