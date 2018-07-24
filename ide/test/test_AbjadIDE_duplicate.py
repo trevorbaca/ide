@@ -52,17 +52,17 @@ def test_AbjadIDE_duplicate_04():
 
     directory = ide.Path('/Users/trevorbaca/baca/baca')
     with abjad.FilesystemState(keep=[directory]):
-        source = directory / 'Matrix.py'
+        source = directory / 'pitchcommands.py'
         assert source.is_file()
-        target = source.with_name('NewMatrix.py')
+        target = source.with_name('newpitchcommands.py')
         target.remove()
 
-        abjad_ide(f'll dup Matrix.py NewMatrix.py y q')
+        abjad_ide(f'll dup pitchcommands.py newpitchcommands.py y q')
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f'Select assets to duplicate> Matrix.py' in transcript
+        assert f'Select assets to duplicate> pitchcommands.py' in transcript
         assert f'Duplicating {source.trim()} ...' in transcript
-        assert 'Enter new name> NewMatrix.py' in transcript
+        assert 'Enter new name> newpitchcommands.py' in transcript
         assert f'Writing {target.trim()} ...' in transcript
         assert 'Ok?> y' in transcript
 

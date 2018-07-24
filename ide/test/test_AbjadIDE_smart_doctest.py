@@ -56,11 +56,11 @@ def test_AbjadIDE_smart_doctest_03():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('ll ^ACel q')
+    abjad_ide('ll ^pcom q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path = path('PitchArrayCell.py')
-    assert f"Matching '^ACel' to {path.trim()} ..." in transcript
+    path = path('pitchcommands.py')
+    assert f"Matching '^pcom' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_doctest_04():

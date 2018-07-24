@@ -31,29 +31,6 @@ def test_AbjadIDE_smart_edit_02():
 
 def test_AbjadIDE_smart_edit_03():
     """
-    Edits library file.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path_1 = path('PitchArrayCell.py')
-    path_2 = path('PitchArrayColumn.py')
-
-    abjad_ide('ll @PAC q')
-    transcript = abjad_ide.io.transcript 
-    assert f"Matching '@PAC' to 3 files ..." in transcript
-    assert path_1.trim() in transcript.lines
-    assert path_2.trim() in transcript.lines
-
-    abjad_ide('ll @ACel q')
-    transcript = abjad_ide.io.transcript 
-    assert f'Editing {path_1.trim()} ...' in transcript
-
-
-def test_AbjadIDE_smart_edit_04():
-    """
     Edits material definition file.
     """
 
@@ -64,7 +41,7 @@ def test_AbjadIDE_smart_edit_04():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_05():
+def test_AbjadIDE_smart_edit_04():
     """
     Edits segment definition file.
     """
@@ -75,7 +52,7 @@ def test_AbjadIDE_smart_edit_05():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_06():
+def test_AbjadIDE_smart_edit_05():
     """
     Edits stylesheet.
     """
@@ -86,7 +63,7 @@ def test_AbjadIDE_smart_edit_06():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_07():
+def test_AbjadIDE_smart_edit_06():
     """
     Edits tools files.
     """
@@ -107,7 +84,7 @@ def test_AbjadIDE_smart_edit_07():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_08():
+def test_AbjadIDE_smart_edit_07():
     """
     Handles single-prefix numeric input.
     """
@@ -126,7 +103,7 @@ def test_AbjadIDE_smart_edit_08():
     assert f"Matching '@99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_09():
+def test_AbjadIDE_smart_edit_08():
     """
     Missing pattern.
     """
@@ -136,7 +113,7 @@ def test_AbjadIDE_smart_edit_09():
     assert "Missing '@' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_10():
+def test_AbjadIDE_smart_edit_09():
     """
     Unmatched pattern.
     """
@@ -146,7 +123,7 @@ def test_AbjadIDE_smart_edit_10():
     assert "Matching '@asdf' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_11():
+def test_AbjadIDE_smart_edit_10():
     """
     Matches file alias.
     """
@@ -154,14 +131,14 @@ def test_AbjadIDE_smart_edit_11():
     if not abjad_ide.test_baca_directories():
         return
 
-    abjad_ide('@LAF q')
+    abjad_ide('@pcom q')
     transcript = abjad_ide.io.transcript 
     path = abjad.abjad_configuration.composer_library_tools
-    path = ide.Path(path) / 'LibraryAF.py'
+    path = ide.Path(path) / 'pitchcommands.py'
     assert f'Editing {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_smart_edit_12():
+def test_AbjadIDE_smart_edit_11():
     """
     Matches directory alias.
     """
