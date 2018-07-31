@@ -14,10 +14,12 @@ Interaction
 
 .. autoclass:: Interaction
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      io
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
@@ -25,6 +27,7 @@ Interaction
       __enter__
       __exit__
       __repr__
+      io
 
    .. raw:: html
 

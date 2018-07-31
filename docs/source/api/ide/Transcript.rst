@@ -14,24 +14,23 @@ Transcript
 
 .. autoclass:: Transcript
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      append
-      trim
+      <hr/>
 
-   .. autosummary::
-      :nosignatures:
-
-      blocks
-      lines
-      menus
-      titles
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __contains__
+      append
+      blocks
+      lines
+      menus
+      titles
+      trim
 
    .. raw:: html
 

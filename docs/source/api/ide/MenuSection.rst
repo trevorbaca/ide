@@ -14,31 +14,26 @@ MenuSection
 
 .. autoclass:: MenuSection
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      configuration
+      <hr/>
 
-   .. autosummary::
-      :nosignatures:
-
-      make_lines
-      match
-      range_string_to_numbers
-
-   .. autosummary::
-      :nosignatures:
-
-      command
-      entries
-      force_single_column
-      secondary
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __getitem__
       __iter__
+      command
+      configuration
+      entries
+      force_single_column
+      make_lines
+      match
+      range_string_to_numbers
+      secondary
 
    .. raw:: html
 

@@ -14,15 +14,18 @@ Command
 
 .. autoclass:: Command
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      known_sections
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __call__
+      known_sections
 
    .. raw:: html
 

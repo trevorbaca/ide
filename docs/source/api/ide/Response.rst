@@ -14,6 +14,13 @@ Response
 
 .. autoclass:: Response
 
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
+
    .. autosummary::
       :nosignatures:
 
@@ -23,10 +30,6 @@ Response
       is_path
       is_segment_name
       is_shell
-
-   .. autosummary::
-      :nosignatures:
-
       pair
       pattern
       payload

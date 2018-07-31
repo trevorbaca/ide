@@ -14,31 +14,26 @@ Path
 
 .. autoclass:: Path
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      address_characters
-      configuration
-      test_score_names
+      <hr/>
 
-   .. autosummary::
-      :nosignatures:
-
-      get_eol_measure_numbers
-      get_header
-      is_external
-      is_prototype
-
-   .. autosummary::
-      :nosignatures:
-
-      document_names
-      scores
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __new__
+      address_characters
+      configuration
+      document_names
+      get_eol_measure_numbers
+      get_header
+      is_external
+      is_prototype
+      scores
+      test_score_names
 
    .. raw:: html
 

@@ -14,23 +14,26 @@ Configuration
 
 .. autoclass:: Configuration
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      always_ignore
-      editor_suffixes
-      noneditor_suffixes
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       aliases
       aliases_file_path
+      always_ignore
       boilerplate_directory
       composer_scores_directory
       configuration_directory
+      editor_suffixes
       ide_directory
       latex_log_file_path
+      noneditor_suffixes
       test_scores_directory
 
    .. raw:: html

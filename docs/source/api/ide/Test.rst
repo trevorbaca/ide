@@ -14,16 +14,19 @@ Test
 
 .. autoclass:: Test
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      configuration
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __enter__
       __exit__
+      configuration
 
    .. raw:: html
 

@@ -14,21 +14,26 @@ AbjadIDE
 
 .. autoclass:: AbjadIDE
 
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
+
    .. autosummary::
       :nosignatures:
 
-      configuration
-      known_paper_sizes
-      paper_size_to_paper_dimensions
-
-   .. autosummary::
-      :nosignatures:
-
+      __call__
       activate
+      aliases
       build_part_pdf
       build_score_pdf
       call_shell
+      change
       check_definition_py
+      cleanup
+      clipboard
       collect_segments
       color_clefs
       color_dynamics
@@ -38,7 +43,10 @@ AbjadIDE
       color_persistent_indicators
       color_staff_lines
       color_time_signatures
+      commands
+      configuration
       copy_to_clipboard
+      current_directory
       cut_to_clipboard
       deactivate
       doctest_all
@@ -61,6 +69,7 @@ AbjadIDE
       edit_stylesheet_ily
       edit_text
       empty_clipboard
+      example
       force_single_column
       generate_back_cover_tex
       generate_front_cover_tex
@@ -110,12 +119,16 @@ AbjadIDE
       interpret_part_tex
       interpret_preface_tex
       interpret_score_tex
+      io
       is_navigation
+      known_paper_sizes
       make_illustration_ly
       make_illustration_pdf
       make_layout_ly
       make_segment_midi
       nake_illustration_pdf
+      navigation
+      navigations
       new
       open_all_pdfs
       open_back_cover_pdf
@@ -125,7 +138,9 @@ AbjadIDE
       open_part_pdf
       open_preface_pdf
       open_score_pdf
+      paper_size_to_paper_dimensions
       paste_from_clipboard
+      previous_directory
       propagate_layout_py
       pytest_all
       quit
@@ -148,6 +163,7 @@ AbjadIDE
       smart_edit
       smart_pdf
       smart_pytest
+      test
       test_baca_directories
       trash_back_cover_pdf
       trash_back_cover_tex
@@ -177,31 +193,6 @@ AbjadIDE
       uncolor_staff_lines
       uncolor_time_signatures
       xinterpret_music_ly
-
-   .. autosummary::
-      :nosignatures:
-
-      aliases
-      clipboard
-      commands
-      current_directory
-      example
-      io
-      navigation
-      navigations
-      previous_directory
-      test
-
-   .. autosummary::
-      :nosignatures:
-
-      __call__
-
-   .. autosummary::
-      :nosignatures:
-
-      change
-      cleanup
 
    .. raw:: html
 

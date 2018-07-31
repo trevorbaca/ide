@@ -14,16 +14,19 @@ IO
 
 .. autoclass:: IO
 
+   .. raw:: html
+
+      <hr/>
+
+   .. rubric:: Attributes Summary
+      :class: class-header
+
    .. autosummary::
       :nosignatures:
 
       display
       get
       pending_input
-
-   .. autosummary::
-      :nosignatures:
-
       transcript
 
    .. raw:: html

@@ -14,40 +14,31 @@ Menu
 
 .. autoclass:: Menu
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      left_margin_width
+      <hr/>
 
-   .. autosummary::
-      :nosignatures:
-
-      make_help_lines
-      make_lines
-      redraw
-
-   .. autosummary::
-      :nosignatures:
-
-      aliases
-      getter
-      header
-      io
-      loop
-      navigations
-      prompt
-      sections
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __call__
       __getitem__
-
-   .. autosummary::
-      :nosignatures:
-
+      aliases
       from_directory
+      getter
+      header
+      io
+      left_margin_width
+      loop
+      make_help_lines
+      make_lines
+      navigations
+      prompt
+      redraw
+      sections
 
    .. raw:: html
 

@@ -14,23 +14,22 @@ MenuEntry
 
 .. autoclass:: MenuEntry
 
-   .. autosummary::
-      :nosignatures:
+   .. raw:: html
 
-      make_line
+      <hr/>
 
-   .. autosummary::
-      :nosignatures:
-
-      command
-      display
-      number
-      value
+   .. rubric:: Attributes Summary
+      :class: class-header
 
    .. autosummary::
       :nosignatures:
 
       __lt__
+      command
+      display
+      make_line
+      number
+      value
 
    .. raw:: html
 
