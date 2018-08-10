@@ -79,7 +79,7 @@ before_install:
     - ls
     - ls /tmp
     - pwd
-    - which doctest
+    - which baca-doctest
     - which latex
     - which mypy
     - which prime-parser-tables
@@ -95,7 +95,7 @@ install:
 script:
     - mypy $PACKAGE
     - start-abjad-ide q
-    - coverage run -a `which doctest` $PACKAGE/*.py
+    - coverage run -a `which baca-doctest` $PACKAGE/*.py
     - coverage run -a `which py.test` -rf $PACKAGE
 
 after_success:
