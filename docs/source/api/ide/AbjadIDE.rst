@@ -56,12 +56,14 @@ AbjadIDE
       edit_back_cover_tex
       edit_definition_py
       edit_front_cover_tex
+      edit_history
       edit_illustration_ily
       edit_illustration_ly
       edit_latex_log
       edit_layout_ly
       edit_layout_py
       edit_lilypond_log
+      edit_log
       edit_music_ly
       edit_part_tex
       edit_preface_tex
@@ -266,6 +268,8 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.edit_front_cover_tex
 
+   .. automethod:: AbjadIDE.edit_history
+
    .. automethod:: AbjadIDE.edit_illustration_ily
 
    .. automethod:: AbjadIDE.edit_illustration_ly
@@ -277,6 +281,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.edit_layout_py
 
    .. automethod:: AbjadIDE.edit_lilypond_log
+
+   .. automethod:: AbjadIDE.edit_log
 
    .. automethod:: AbjadIDE.edit_music_ly
 

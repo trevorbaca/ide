@@ -2738,6 +2738,27 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(paths)
 
     @Command(
+        'he',
+        description='.history - edit',
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
+        )
+    def edit_history(self, directory: Path) -> None:
+        """
+        Edits ``.history``.
+        """
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory / '.history']
+        else:
+            paths = []
+            for path in directory.list_paths():
+                illustration_ily = path / '.history'
+                if illustration_ily.is_file():
+                    paths.append(illustration_ily)
+        self._open_files(paths, force_vim=True)
+
+    @Command(
         'iie',
         description='illustration.ily - edit',
         menu_section='illustration',
@@ -2842,6 +2863,27 @@ class AbjadIDE(abjad.AbjadObject):
         """
         path = Path(abjad.abjad_configuration.lilypond_log_file_path)
         self._open_files([path])
+
+    @Command(
+        'le',
+        description='.log - edit',
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
+        )
+    def edit_log(self, directory: Path) -> None:
+        """
+        Edits ``.log``.
+        """
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory / '.log']
+        else:
+            paths = []
+            for path in directory.list_paths():
+                illustration_ily = path / '.log'
+                if illustration_ily.is_file():
+                    paths.append(illustration_ily)
+        self._open_files(paths, force_vim=True)
 
     @Command(
         'mle',
