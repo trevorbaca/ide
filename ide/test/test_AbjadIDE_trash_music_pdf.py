@@ -6,7 +6,7 @@ def test_AbjadIDE_trash_music_pdf_01():
 
     with ide.Test():
         path = ide.Path('red_score')
-        path = path('builds', 'letter-score', 'music.pdf')
+        path = path / 'builds' / 'letter-score' / 'music.pdf'
         assert not path.exists()
 
         abjad_ide('red %let ggc mli q')

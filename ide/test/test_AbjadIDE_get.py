@@ -104,7 +104,7 @@ def test_AbjadIDE_get_04():
         header = 'Blue Score (2017) : materials : blue_rhythm_2 : get file ...'
         assert header in transcript
         for name in ['blue_rhythm_1', 'blue_rhythm_2']:
-            path = source.materials(name, 'definition.py')
+            path = source.materials / name / 'definition.py'
             assert path.trim() in transcript
         assert f'> br1' in transcript
         assert f'Getting {source.trim()} ...' in transcript

@@ -6,8 +6,8 @@ def test_AbjadIDE_copy_to_clipboard_01():
 
     abjad_ide('cbc Red,Blue q')
     transcript = abjad_ide.io.transcript
-    red_score_wrapper = ide.Path('red_score').wrapper()
-    blue_score_wrapper = ide.Path('blue_score').wrapper()
+    red_score_wrapper = ide.Path('red_score').wrapper
+    blue_score_wrapper = ide.Path('blue_score').wrapper
     assert red_score_wrapper in abjad_ide.clipboard
     assert blue_score_wrapper in abjad_ide.clipboard
     assert 'Select packages for clipboard> Red,Blue' in transcript

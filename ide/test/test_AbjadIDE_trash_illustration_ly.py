@@ -9,7 +9,7 @@ def test_AbjadIDE_trash_illustration_ly_01():
 
     with ide.Test():
         path = ide.Path('red_score')
-        path = path('materials', 'red_pitch_classes', 'illustration.ly')
+        path = path / 'materials' / 'red_pitch_classes' / 'illustration.ly'
         assert path.is_file()
 
         abjad_ide('red %rpc ilt q')

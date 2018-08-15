@@ -10,11 +10,11 @@ def test_AbjadIDE_remove_01():
 
     with ide.Test():
         path = ide.Path('red_score', 'builds', 'letter-score')
-        target_1 = path('back-cover.tex')
+        target_1 = path / 'back-cover.tex'
         assert target_1.is_file()
-        target_2 = path('front-cover.tex')
+        target_2 = path / 'front-cover.tex'
         assert target_2.is_file()
-        target_3 = path('layout.ly')
+        target_3 = path / 'layout.ly'
         assert target_3.is_file()
 
         abjad_ide('red %letter rm 1-3 remove~3 q')

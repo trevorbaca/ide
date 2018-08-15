@@ -10,11 +10,11 @@ def test_AbjadIDE_nake_illustration_pdf_01():
 
     with ide.Test():
         directory = ide.Path('red_score', 'segments', 'A')
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         ly.remove()
-        pdf = directory('illustration.pdf')
+        pdf = directory / 'illustration.pdf'
         pdf.remove()
-        maker = directory('__make_segment_pdf__.py')
+        maker = directory / '__make_segment_pdf__.py'
         maker.remove()
 
         abjad_ide('red %A ipn q')

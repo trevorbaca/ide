@@ -10,11 +10,11 @@ def test_AbjadIDE_make_illustration_pdf_01():
 
     with ide.Test():
         directory = ide.Path('red_score', 'materials', 'red_pitch_classes')
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         ly.remove()
-        pdf = directory('illustration.pdf')
+        pdf = directory / 'illustration.pdf'
         pdf.remove()
-        maker = directory('__make_material_pdf__.py')
+        maker = directory / '__make_material_pdf__.py'
         maker.remove()
 
         abjad_ide('red %rpc ipm q')
@@ -59,17 +59,17 @@ def test_AbjadIDE_make_illustration_pdf_02():
         blacklist = [
             'instruments', 'metronome_marks', 'ranges', 'time_signatures']
         for name in whitelist:
-            ly = directory(name, 'illustration.ly')
+            ly = directory / name / 'illustration.ly'
             ly.remove()
-            pdf = directory(name, 'illustration.pdf')
+            pdf = directory / name / 'illustration.pdf'
             pdf.remove()
 
         abjad_ide('red mm ipm q')
         transcript = abjad_ide.io.transcript
         for name in whitelist:
-            ly = directory(name, 'illustration.ly')
-            pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_material_pdf__.py')
+            ly = directory / name / 'illustration.ly'
+            pdf = directory / name / 'illustration.pdf'
+            maker = directory / name / '__make_material_pdf__.py'
             assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Removing {ly.trim()} ...' not in transcript
             assert f'Removing {pdf.trim()} ...' not in transcript
@@ -83,9 +83,9 @@ def test_AbjadIDE_make_illustration_pdf_02():
             assert pdf.is_file()
             assert not maker.exists()
         for name in blacklist:
-            ly = directory(name, 'illustration.ly')
-            pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_material_pdf__.py')
+            ly = directory / name / 'illustration.ly'
+            pdf = directory / name / 'illustration.pdf'
+            maker = directory / name / '__make_material_pdf__.py'
             assert f"Making {name.replace('_', ' ')} PDF ..." in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
@@ -121,11 +121,11 @@ def test_AbjadIDE_make_illustration_pdf_03():
 
     with ide.Test():
         directory = ide.Path('red_score', 'segments', 'A')
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         ly.remove()
-        pdf = directory('illustration.pdf')
+        pdf = directory / 'illustration.pdf'
         pdf.remove()
-        maker = directory('__make_segment_pdf__.py')
+        maker = directory / '__make_segment_pdf__.py'
         maker.remove()
 
         abjad_ide('red %A ipm q')
@@ -168,19 +168,19 @@ def test_AbjadIDE_make_illustration_pdf_04():
         directory = ide.Path('red_score').segments
         names = ['_', 'A', 'B']
         for name in names:
-            ly = directory('illustration.ly')
+            ly = directory / 'illustration.ly'
             ly.remove()
-            pdf = directory('illustration.pdf')
+            pdf = directory / 'illustration.pdf'
             pdf.remove()
-            maker = directory('__make_segment_pdf__.py')
+            maker = directory / '__make_segment_pdf__.py'
             maker.remove()
 
         abjad_ide('red gg ipm q')
         transcript = abjad_ide.io.transcript
         for name in names:
-            ly = directory(name, 'illustration.ly')
-            pdf = directory(name, 'illustration.pdf')
-            maker = directory(name, '__make_segment_pdf__.py')
+            ly = directory / name / 'illustration.ly'
+            pdf = directory / name / 'illustration.pdf'
+            maker = directory / name / '__make_segment_pdf__.py'
             assert f'Making segment {name} PDF ...' in transcript
             assert f'Writing {maker.trim()} ...' in transcript
             assert f'Interpreting {maker.trim()} ...' in transcript
@@ -210,5 +210,3 @@ def test_AbjadIDE_make_illustration_pdf_04():
         abjad_ide('red gg **asdf q')
         transcript = abjad_ide.io.transcript
         assert "Matching '**asdf' to 0 files ..." in transcript
-
-

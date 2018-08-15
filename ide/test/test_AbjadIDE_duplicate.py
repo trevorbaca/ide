@@ -96,7 +96,7 @@ def test_AbjadIDE_duplicate_06():
     """
 
     with ide.Test():
-        source = ide.Path('red_score').wrapper ()
+        source = ide.Path('red_score').wrapper
         assert source.is_dir()
         target = source.with_name('purple_score')
         target.remove()

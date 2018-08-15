@@ -239,12 +239,12 @@ def test_AbjadIDE_new_04():
             assert line in lines, repr(line)
 
         assert directory.is_parts()
-        assert directory('__metadata__.py').is_file()
+        assert (directory / '__metadata__.py').is_file()
         assert directory._assets.exists()
-        assert directory._assets('.gitignore').is_file()
+        assert (directory._assets / '.gitignore').is_file()
         assert directory._segments.exists()
-        assert directory._segments('.gitignore').is_file()
-        assert directory._segments('segment--.ly').is_file()
+        assert (directory._segments / '.gitignore').is_file()
+        assert (directory._segments / 'segment--.ly').is_file()
 
         for name in [
             'bass-clarinet-back-cover.tex',
@@ -327,15 +327,15 @@ def test_AbjadIDE_new_05():
             'test',
             'tools',
             ]:
-            assert wrapper.contents(name).exists()
-        assert wrapper.materials('__init__.py').is_file()
-        assert wrapper.segments('__init__.py').is_file()
+            assert (wrapper.contents / name).exists()
+        assert (wrapper.materials / '__init__.py').is_file()
+        assert (wrapper.segments / '__init__.py').is_file()
         assert 'Enter title> Purple Score' in transcript
         assert f'Making {wrapper.trim()} ...' in transcript
 
         assert wrapper.builds._assets.exists()
-        assert wrapper.builds._assets('.gitignore').is_file()
-        assert wrapper.builds('__metadata__.py').is_file()
+        assert (wrapper.builds._assets / '.gitignore').is_file()
+        assert (wrapper.builds / '__metadata__.py').is_file()
 
         abjad_ide('new Purple~Score q')
         transcript = abjad_ide.io.transcript
@@ -379,9 +379,9 @@ def test_AbjadIDE_new_06():
             'stylesheets',
             'test',
             ]:
-            assert wrapper.contents(name).exists()
-        assert wrapper.materials('__init__.py').is_file()
-        assert wrapper.segments('__init__.py').is_file()
+            assert (wrapper.contents/ name).exists()
+        assert (wrapper.materials / '__init__.py').is_file()
+        assert (wrapper.segments / '__init__.py').is_file()
         assert f'Found {wrapper.trim()}.' in transcript
         assert f'Populate {wrapper.trim()}?>' in transcript
         assert 'Enter title> Purple Score' in transcript

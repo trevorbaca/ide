@@ -6,7 +6,7 @@ def test_AbjadIDE_trash_preface_pdf_01():
 
     with ide.Test():
         path = ide.Path('red_score')
-        path = path('builds', 'letter-score', 'preface.pdf')
+        path = path / 'builds' / 'letter-score' / 'preface.pdf'
         assert not path.exists()
 
         path.write_text('')

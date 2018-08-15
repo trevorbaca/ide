@@ -59,7 +59,7 @@ def test_AbjadIDE_smart_doctest_03():
     abjad_ide('ll ^pcom q')
     transcript = abjad_ide.io.transcript 
     path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path = path('pitchcommands.py')
+    path = path / 'pitchcommands.py'
     assert f"Matching '^pcom' to {path.trim()} ..." in transcript
 
 
@@ -103,12 +103,12 @@ def test_AbjadIDE_smart_doctest_05():
 
     abjad_ide('red gg ^A q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').segments('A', 'definition.py')
+    path = ide.Path('red_score', 'segments', 'A', 'definition.py')
     assert f"Matching '^A' to {path.trim()} ..." in transcript
 
     abjad_ide('red gg ^ST q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('ScoreTemplate.py')
+    path = ide.Path('red_score', 'tools', 'ScoreTemplate.py')
     assert f"Matching '^ST' to {path.trim()} ..." in transcript
 
 
@@ -119,7 +119,7 @@ def test_AbjadIDE_smart_doctest_06():
 
     abjad_ide('red oo ^ScT q')
     transcript = abjad_ide.io.transcript 
-    path = ide.Path('red_score').tools('ScoreTemplate.py')
+    path = ide.Path('red_score', 'tools', 'ScoreTemplate.py')
     assert f"Matching '^ScT' to {path.trim()} ..." in transcript
 
     abjad_ide('red oo ^spacing q')

@@ -153,11 +153,11 @@ class AbjadIDE(abjad.AbjadObject):
         names = [_.name for _ in paths]
         sources, targets = [], []
         for name in names:
-            source = directory.segments(name, 'illustration.ly')
+            source = directory.segments / name / 'illustration.ly'
             if not source.is_file():
                 continue
             target = 'segment-' + name.replace('_', '-') + '.ly'
-            target = directory._segments(target)
+            target = directory._segments / target
             sources.append(source)
             targets.append(target)
         if not directory.builds.is_dir():
@@ -213,7 +213,7 @@ class AbjadIDE(abjad.AbjadObject):
         name = 'back-cover.tex'
         assert path.name.endswith(name)
         directory = path.build
-        local_template = directory._assets(name)
+        local_template = directory._assets / name
         if local_template.is_file():
             self.io.display(f'removing {path.trim()} ...')
             path.remove()
@@ -292,7 +292,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert path.build.exists(), repr(path)
         directory = path.build
         name = 'front-cover.tex'
-        local_template = directory._assets(name)
+        local_template = directory._assets / name
         if local_template.is_file():
             self.io.display(f'removing {path.trim()} ...')
             path.remove()
@@ -380,7 +380,7 @@ class AbjadIDE(abjad.AbjadObject):
         lines, ily_lines = [], []
         for i, name in enumerate(names):
             name = 'segment-' + name + '.ly'
-            ly = path.build._segments(name)
+            ly = path.build._segments / name
             if ly.is_file():
                 line = rf'\include "../_segments/{name}"'
             else:
@@ -449,7 +449,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert path.build.is_parts() or path.build.is_part(), repr(path)
         directory = path.build
         name = 'part.tex'
-        local_template = directory._assets(name)
+        local_template = directory._assets / name
         if local_template.is_file():
             self.io.display(f'removing {path.trim()} ...')
             path.remove()
@@ -481,7 +481,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert path.build.exists(), repr(path)
         directory = path.build
         name = 'preface.tex'
-        local_template = directory._assets(name)
+        local_template = directory._assets / name
         if local_template.is_file():
             self.io.display(f'removing {path.trim()} ...')
             path.remove()
@@ -561,7 +561,7 @@ class AbjadIDE(abjad.AbjadObject):
         lines, ily_lines = [], []
         for i, name in enumerate(names):
             name = 'segment-' + name + '.ly'
-            ly = path.build._segments(name)
+            ly = path.build._segments / name
             if ly.is_file():
                 line = rf'\include "_segments/{name}"'
             else:
@@ -906,9 +906,9 @@ class AbjadIDE(abjad.AbjadObject):
     def _make_layout_ly(self, path):
         assert path.suffix == '.py'
         ly_name = abjad.String(path.stem).to_dash_case() + '.ly'
-        ly_path = path.parent(ly_name)
+        ly_path = path.parent / ly_name
         maker = '__make_layout_ly__.py'
-        maker = path.parent(maker)
+        maker = path.parent / maker
         with self.cleanup([maker]):
             self._copy_boilerplate(
                 path.parent,
@@ -924,14 +924,14 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _make_material_ly(self, directory):
         assert directory.is_material()
-        definition = directory('definition.py')
+        definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
             return
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
-        maker = directory('__make_material_ly__.py')
+        maker = directory / '__make_material_ly__.py'
         maker.remove()
         with self.cleanup([maker]):
             self.io.display(f'writing {maker.trim()} ...')
@@ -947,21 +947,21 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _make_material_pdf(self, directory, open_after=True):
         assert directory.is_material()
-        definition = directory('definition.py')
+        definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'missing {definition.trim()} ...')
             return 0 
         name = directory.name.replace('_', ' ')
         self.io.display(f'making {name} PDF ...')
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
             ly.remove()
-        pdf = directory('illustration.pdf')
+        pdf = directory / 'illustration.pdf'
         if pdf.exists():
             self.io.display(f'removing {pdf.trim()} ...')
             pdf.remove()
-        maker = directory('__make_material_pdf__.py')
+        maker = directory / '__make_material_pdf__.py'
         maker.remove()
         with self.cleanup([maker]):
             self.io.display(f'writing {maker.trim()} ...')
@@ -986,21 +986,21 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(name):
             return
         name = directory.coerce(name)
-        path = directory(name)
+        path = directory / name
         if path.exists():
             self.io.display(f'existing {path.trim()} ...')
             return
         self.io.display(f'making {path.trim()} ...')
         path.mkdir()
-        target = path('__init__.py')
+        target = path / '__init__.py'
         self.io.display(f'writing {target.trim()} ...')
         target.write_text('')
         if path.is_segment():
-            target = path('__metadata__.py')
+            target = path / '__metadata__.py'
             self.io.display(f'writing {target.trim()} ...')
             text = 'import abjad\n\n\nmetadata = abjad.OrderedDict()'
             target.write_text(text)
-        target = path('definition.py')
+        target = path / 'definition.py'
         self.io.display(f'writing {target.trim()} ...')
         target.write_text('')
         self._copy_boilerplate(
@@ -1085,10 +1085,10 @@ class AbjadIDE(abjad.AbjadObject):
         if bool(suffix):
             parts_directory.add_metadatum('catalog_number_suffix', suffix)
         self.collect_segments(parts_directory)
-        stub = parts_directory.builds._assets('preface-body.tex')
+        stub = parts_directory.builds._assets / 'preface-body.tex'
         if not stub.is_file():
             stub.write_text('')
-        stub = parts_directory.builds._assets('preface-colophon.tex')
+        stub = parts_directory.builds._assets / 'preface-colophon.tex'
         if not stub.is_file():
             stub.write_text('')
         self.generate_stylesheet_ily(parts_directory)
@@ -1101,15 +1101,15 @@ class AbjadIDE(abjad.AbjadObject):
             part_subtitle = self._part_subtitle(part.name, parentheses=True)
             forces_tagline = self._part_subtitle(part.name) + ' part'
             self._generate_back_cover_tex(
-                part_directory(f'{dashed_part_name}-back-cover.tex'),
+                part_directory / f'{dashed_part_name}-back-cover.tex',
                 price=f'{part.identifier} ({part.number}/{total_parts})',
                 ),
             self._generate_front_cover_tex(
-                part_directory(f'{dashed_part_name}-front-cover.tex'),
+                part_directory / f'{dashed_part_name}-front-cover.tex',
                 forces_tagline=forces_tagline,
                 )
             self._generate_part_music_ly(
-                part_directory(f'{dashed_part_name}-music.ly'),
+                part_directory / f'{dashed_part_name}-music.ly',
                 dashed_part_name=dashed_part_name,
                 forces_tagline=forces_tagline,
                 keep_with_tag=part.name,
@@ -1118,11 +1118,11 @@ class AbjadIDE(abjad.AbjadObject):
                 silent=True,
                 )
             self._generate_part_tex(
-                part_directory(f'{dashed_part_name}-part.tex'),
+                part_directory / f'{dashed_part_name}-part.tex',
                 dashed_part_name,
                 )
             self._generate_preface_tex(
-                part_directory(f'{dashed_part_name}-preface.tex')
+                part_directory / f'{dashed_part_name}-preface.tex'
                 )
             self._copy_boilerplate(
                 part_directory,
@@ -1255,19 +1255,19 @@ class AbjadIDE(abjad.AbjadObject):
         assert score.exists()
         if not score.builds._assets.exists():
             self._make__assets_directory(score.builds)
-        if not score.builds('__metadata__.py').is_file():
+        if not (score.builds / '__metadata__.py').is_file():
             score.builds.write_metadata_py(abjad.OrderedDict())
 
     def _make_segment_ly(self, directory):
         assert directory.is_segment()
-        definition = directory('definition.py')
+        definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
             return
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
-        maker = directory('__make_segment_ly__.py')
+        maker = directory / '__make_segment_ly__.py'
         maker.remove()
         with self.cleanup([maker]):
             self.io.display(f'writing {maker.trim()} ...')
@@ -1298,20 +1298,20 @@ class AbjadIDE(abjad.AbjadObject):
 
     def _make_segment_midi(self, directory, open_after=True):
         assert directory.is_segment()
-        definition = directory('definition.py')
+        definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
             return -1
         self.io.display('making MIDI ...')
-        ly = directory('midi.ly')
+        ly = directory / 'midi.ly'
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
             ly.remove()
-        midi = directory('segment.midi')
+        midi = directory / 'segment.midi'
         if midi.exists():
             self.io.display(f'removing {midi.trim()} ...')
             midi.remove()
-        maker = directory('__make_segment_midi__.py')
+        maker = directory / '__make_segment_midi__.py'
         maker.remove()
         with self.cleanup([maker]):
             self.io.display(f'writing {maker.trim()} ...')
@@ -1349,20 +1349,20 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_segment()
         if layout is True:
             self.make_layout_ly(directory)
-        definition = directory('definition.py')
+        definition = directory / 'definition.py'
         if not definition.is_file():
             self.io.display(f'can not find {definition.trim()} ...')
             return -1
         self.io.display(f'making segment {directory.name} PDF ...')
-        ly = directory('illustration.ly')
+        ly = directory / 'illustration.ly'
         if ly.exists():
             self.io.display(f'removing {ly.trim()} ...')
             ly.remove()
-        pdf = directory('illustration.pdf')
+        pdf = directory / 'illustration.pdf'
         if pdf.exists():
             self.io.display(f'removing {pdf.trim()} ...')
             pdf.remove()
-        maker = directory('__make_segment_pdf__.py')
+        maker = directory / '__make_segment_pdf__.py'
         maker.remove()
         with self.cleanup([maker]):
             self._copy_boilerplate(directory, maker.name)
@@ -1847,7 +1847,7 @@ class AbjadIDE(abjad.AbjadObject):
             assert len(paths) == 1, repr(paths)
             return paths
         if not directory.is_parts() and not directory.is_segments():
-            path = directory.build(name)
+            path = directory.build / name
             if path.is_file():
                 selected_paths.append(path)
             if not selected_paths:
@@ -2293,7 +2293,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             self.io.display('checking definition ...')
-            definition = directory('definition.py')
+            definition = directory / 'definition.py'
             if not definition.is_file():
                 self.io.display(f'missing {definition.trim()} ...')
                 return -1
@@ -2625,7 +2625,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(lines)
             elif target.is_wrapper():
                 shutil.move(
-                    str(target.wrapper(source.name)),
+                    str(target.wrapper / source.name),
                     str(target.contents),
                     )
                 lines = self._replace_in_tree(
@@ -2712,10 +2712,10 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_illustrationspace()
         paths = []
         if directory.is_material() or directory.is_segment():
-            paths.append(directory('definition.py'))
+            paths.append(directory / 'definition.py')
         else:
             for path in directory.list_paths():
-                definition_py = path('definition.py')
+                definition_py = path / 'definition.py'
                 if definition_py.is_file():
                     paths.append(definition_py)
         self._open_files(paths)
@@ -2770,11 +2770,11 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            paths = [directory('illustration.ily')]
+            paths = [directory / 'illustration.ily']
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ily = path('illustration.ily')
+                illustration_ily = path / 'illustration.ily'
                 if illustration_ily.is_file():
                     paths.append(illustration_ily)
         self._open_files(paths)
@@ -2791,11 +2791,11 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            paths = [directory('illustration.ly')]
+            paths = [directory / 'illustration.ly']
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ly = path('illustration.ly')
+                illustration_ly = path / 'illustration.ly'
                 if illustration_ly.is_file():
                     paths.append(illustration_ly)
         self._open_files(paths)
@@ -3086,7 +3086,7 @@ class AbjadIDE(abjad.AbjadObject):
             #self._generate_front_cover_tex(path)
             #return
         if not directory.build.is_parts():
-            path = directory.build(name)
+            path = directory.build / name
             self._generate_front_cover_tex(path)
             return
         paths = self._select_paths_in_buildspace(
@@ -3171,7 +3171,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.build is not None
         name = 'music.ly'
         if not (directory.build.is_parts() or directory.is_part()):
-            path = directory.build(name)
+            path = directory.build / name
             self.io.display(f'generating {path.trim()} ...')
             self._generate_score_music_ly(path, indent=1)
             return
@@ -3261,7 +3261,7 @@ class AbjadIDE(abjad.AbjadObject):
             self._generate_preface_tex(path)
             return
         if not directory.build.is_parts():
-            path = directory.build(name)
+            path = directory.build / name
             self._generate_preface_tex(path)
             return
         paths = self._select_paths_in_buildspace(
@@ -3334,7 +3334,7 @@ class AbjadIDE(abjad.AbjadObject):
             siblings = directory.parent.list_paths()
             siblings.remove(directory)
             for sibling in siblings:
-                definition = sibling('definition.py')
+                definition = sibling / 'definition.py'
                 if definition.is_file():
                     items.append((definition.trim(), definition))
             label = directory.get_asset_type()
@@ -3406,7 +3406,7 @@ class AbjadIDE(abjad.AbjadObject):
                 self.io.display(f'    {path.trim()}')
         targets = []
         for source in paths:
-            target = directory(source.name)
+            target = directory / source.name
             if target.exists():
                 self.io.display(f'existing {target.trim()} ...')
                 name = self.io.get('enter new name')
@@ -3656,7 +3656,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.builds._assets is not None
         if not directory.builds._assets.exists():
             self._make__assets_directory(directory.builds)
-        if not directory.builds('__metadata__.py').is_file():
+        if not (directory.builds / '__metadata__.py').is_file():
             directory.builds.write_metadata_py(abjad.OrderedDict())
         self._manage_directory(directory.builds)
 
@@ -4155,7 +4155,7 @@ class AbjadIDE(abjad.AbjadObject):
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
             self.io.display('interpreting ly ...')
-            source = directory('illustration.ly')
+            source = directory / 'illustration.ly'
             target = source.with_suffix('.pdf')
             if source.is_file():
                 self._run_lilypond(source)
@@ -4553,7 +4553,7 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            path = directory('illustration.pdf')
+            path = directory / 'illustration.pdf'
             self._open_files([path])
         else:
             for path in directory.list_paths():
@@ -4665,7 +4665,7 @@ class AbjadIDE(abjad.AbjadObject):
         self.io.display('pasting from clipboard ...')
         for i, source in enumerate(self.clipboard[:]):
             self.io.display(f'    {source.trim()} ...')
-            target = directory(source.name)
+            target = directory / source.name
             self.io.display(f'    {target.trim()} ...')
             if target.exists():
                 self.io.display(['', f'existing {target.trim()} ...'])
@@ -4826,7 +4826,7 @@ class AbjadIDE(abjad.AbjadObject):
             if self.is_navigation(name):
                 return
             name_ = directory.coerce(name, suffix=source.suffix)
-            target = source.parent(name_)
+            target = source.parent / name_
             if target.exists():
                 self.io.display(f'existing {target.trim()!r} ...')
                 return
@@ -4840,9 +4840,9 @@ class AbjadIDE(abjad.AbjadObject):
                 return
             shutil.move(str(source), str(target))
             if target.is_wrapper():
-                assert target(source.name).is_dir()
+                assert (target / source.name).is_dir()
                 shutil.move(
-                    str(target(source.name)),
+                    str(target / source.name),
                     str(target.contents),
                     )
                 target.contents.add_metadatum('title', name)
@@ -5239,7 +5239,7 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            path = directory('definition.py')
+            path = directory / 'definition.py'
             self._trash_files(path)
         else:
             for path in directory.list_paths():
@@ -5291,7 +5291,7 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            path = directory('illustration.ily')
+            path = directory / 'illustration.ily'
             self._trash_files(path)
         else:
             for path in directory.list_paths():
@@ -5309,7 +5309,7 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            path = directory('illustration.ly')
+            path = directory / 'illustration.ly'
             self._trash_files(path)
         else:
             for path in directory.list_paths():
@@ -5327,7 +5327,7 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_illustrationspace()
         if directory.is_material() or directory.is_segment():
-            path = directory('illustration.pdf')
+            path = directory / 'illustration.pdf'
             self._trash_files(path)
         else:
             for path in directory.list_paths():
