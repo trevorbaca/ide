@@ -3366,6 +3366,7 @@ class AbjadIDE(abjad.AbjadObject):
             else:
                 score = response.payload
             cousin = directory.with_score(score.name)
+            assert cousin is not None
             items = []
             if directory.is_material_or_segment():
                 cousins = cousin.parent.list_paths()
