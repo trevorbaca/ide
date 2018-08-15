@@ -4865,10 +4865,10 @@ class AbjadIDE(abjad.AbjadObject):
 
         Delegates to grep is ack is not found.
         """
-        executables = abjad.IOManager.find_executable('ack')
-        if not executables:
-            executables = abjad.IOManager.find_executable('grep')
-        executables = [Path(_) for _ in executables]
+        strings = abjad.IOManager.find_executable('ack')
+        if not strings:
+            strings = abjad.IOManager.find_executable('grep')
+        executables = [Path(_) for _ in strings]
         if not executables:
             self.io.display('can not find ack.')
             self.io.display('can not find grep.')
