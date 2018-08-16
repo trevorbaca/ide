@@ -189,8 +189,9 @@ class AbjadIDE(abjad.AbjadObject):
         template = template.format(**values)
         target.write_text(template)
 
-    def _display_lilypond_log_errors(self):
-        log = abjad.abjad_configuration.lilypond_log_file_path
+    def _display_lilypond_log_errors(self, log=None):
+        if log is None:
+            log = abjad.abjad_configuration.lilypond_log_file_path
         log = Path(log)
         with log.open() as file_pointer:
             lines = file_pointer.readlines()
@@ -712,7 +713,8 @@ class AbjadIDE(abjad.AbjadObject):
             stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
         if path.suffix == '.ly':
-            self._display_lilypond_log_errors()
+            log = directory / '.log'
+            self._display_lilypond_log_errors(log=log)
         return stdout_lines, stderr_lines, exit_code
 
     def _interpret_tex_file(self, tex):
@@ -1736,7 +1738,7 @@ class AbjadIDE(abjad.AbjadObject):
                 decrescendo_too_small=True,
                 overwriting_glissando=True,
                 )
-            self._display_lilypond_log_errors()
+            self._display_lilypond_log_errors(log=log)
             if pdf.is_file():
                 self.io.display(f'found {pdf.trim()} ...')
             else:
