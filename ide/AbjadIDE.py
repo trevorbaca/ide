@@ -1718,6 +1718,7 @@ class AbjadIDE(abjad.AbjadObject):
         directory = ly.parent
         pdf = ly.with_suffix('.pdf')
         backup_pdf = ly.with_suffix('._backup.pdf')
+        log = directory / '.log'
         if backup_pdf.exists():
             backup_pdf.remove()
         if pdf.exists():
@@ -1726,7 +1727,15 @@ class AbjadIDE(abjad.AbjadObject):
         assert not pdf.exists()
         with self.change(directory):
             self.io.display(f'interpreting {ly.trim()} ...')
-            abjad.IOManager.run_lilypond(str(ly))
+            abjad.IOManager.run_lilypond(
+                str(ly),
+                lilypond_log_file_path=str(log),
+                )
+            log.remove_lilypond_warnings(
+                crescendo_too_small=True,
+                decrescendo_too_small=True,
+                overwriting_glissando=True,
+                )
             self._display_lilypond_log_errors()
             if pdf.is_file():
                 self.io.display(f'found {pdf.trim()} ...')

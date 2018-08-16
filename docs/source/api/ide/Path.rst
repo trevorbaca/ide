@@ -457,6 +457,10 @@ Path
 
    .. container:: inherited
 
+      .. automethod:: Path.remove_lilypond_warnings
+
+   .. container:: inherited
+
       .. automethod:: Path.remove_metadatum
 
    .. container:: inherited
