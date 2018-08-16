@@ -3736,7 +3736,7 @@ class AbjadIDE(abjad.AbjadObject):
             strings.append(path.name)
         if isinstance(pattern, str):
             indices = abjad.String.match_strings(strings, pattern)
-            paths = abjad.Sequence(paths).retain(indices)
+            paths = list(abjad.Sequence(paths).retain(indices))
             for index, path in zip(indices, paths):
                 if path.name == address:
                     indices = [index]
