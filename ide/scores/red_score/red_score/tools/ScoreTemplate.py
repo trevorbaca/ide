@@ -31,13 +31,13 @@ class ScoreTemplate(abjad.AbjadObject):
                 <<
                     \context RHStaff = "RHStaff"
                     {
-                        \context RHVoice = "RHVoice"
+                        \context RH_Voice = "RH_Voice"
                         {
                         }
                     }
                     \context LHStaff = "LHStaff"
                     {
-                        \context LHVoice = "LHVoice"
+                        \context LH_Voice = "LH_Voice"
                         {
                         }
                     }
@@ -47,8 +47,8 @@ class ScoreTemplate(abjad.AbjadObject):
         Returns score.
         """
         rh_voice = abjad.Voice(
-            lilypond_type='RHVoice',
-            name='RHVoice',
+            lilypond_type='RH_Voice',
+            name='RH_Voice',
             )
         rh_staff = abjad.Staff(
             [rh_voice],
@@ -56,8 +56,8 @@ class ScoreTemplate(abjad.AbjadObject):
             name='RHStaff',
             )
         lh_voice = abjad.Voice(
-            lilypond_type='LHVoice',
-            name='LHVoice',
+            lilypond_type='LH_Voice',
+            name='LH_Voice',
             )
         lh_staff = abjad.Staff(
             [lh_voice],

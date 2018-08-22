@@ -12,8 +12,8 @@ lh_divisions.extend(6 * [(5, 16)])
 lh_divisions.extend(4 * [(3, 8)])
 lh_divisions.extend(4 * [(3, 16)])
 divisions = {
-    'RHVoice': rh_divisions,
-    'LHVoice': lh_divisions,
+    'RH_Voice': rh_divisions,
+    'LH_Voice': lh_divisions,
     }
 
 maker = red_score.PianoStaffSegmentMaker(

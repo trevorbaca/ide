@@ -33,7 +33,7 @@
             <<
                 \context Staff = "RHStaff"
                 {
-                    \context Voice = "RHVoice"
+                    \context Voice = "RH_Voice"
                     {
                         g''4.
                         bf''4.
@@ -65,7 +65,7 @@
                 }
                 \context Staff = "LHStaff"
                 {
-                    \context Voice = "LHVoice"
+                    \context Voice = "LH_Voice"
                     {
                         \set PianoStaff.instrumentName = \markup { Piano }               %! ST1
                         \set PianoStaff.shortInstrumentName = \markup { Pf. }            %! ST1

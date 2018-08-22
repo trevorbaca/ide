@@ -79,8 +79,8 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
         template = abjad.TwoStaffPianoScoreTemplate()
         score = template()
         self._score = score
-        rh_voice = score['RHVoice']
-        lh_voice = score['LHVoice']
+        rh_voice = score['RH_Voice']
+        lh_voice = score['LH_Voice']
         self._populate_rhythms(rh_voice, self.rh_rhythm_maker)
         self._populate_rhythms(lh_voice, self.lh_rhythm_maker)
         self._populate_pitches(rh_voice, self.rh_pitch_range)
