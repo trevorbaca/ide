@@ -616,6 +616,14 @@ class AbjadIDE(abjad.AbjadObject):
                 )
         path.write_text(template)
 
+    def _get_dimensions(self):
+        dimensions = None
+        if self.test is True:
+            dimensions = False
+        if isinstance(self.test, str) and self.test.startswith('dimensions'):
+            dimensions = eval(self.test.strip('dimensions='))
+        return dimensions
+
     def _get_doctest_globs(self, external_modules=()):
         globs = {}
         abjad = importlib.import_module('abjad')
@@ -635,14 +643,6 @@ class AbjadIDE(abjad.AbjadObject):
         except (AttributeError, ImportError):
             pass
         return globs
-
-    def _get_dimensions(self):
-        dimensions = None
-        if self.test is True:
-            dimensions = False
-        if isinstance(self.test, str) and self.test.startswith('dimensions'):
-            dimensions = eval(self.test.strip('dimensions='))
-        return dimensions
 
     def _get_score_names(self):
         scores = self._get_scores_directory()
@@ -2749,27 +2749,6 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(paths)
 
     @Command(
-        'he',
-        description='.history - edit',
-        menu_section='illustration',
-        score_package_paths=('illustrationspace',),
-        )
-    def edit_history(self, directory: Path) -> None:
-        """
-        Edits ``.history``.
-        """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
-            paths = [directory / '.history']
-        else:
-            paths = []
-            for path in directory.list_paths():
-                illustration_ily = path / '.history'
-                if illustration_ily.is_file():
-                    paths.append(illustration_ily)
-        self._open_files(paths, force_vim=True)
-
-    @Command(
         'iie',
         description='illustration.ily - edit',
         menu_section='illustration',
@@ -2929,6 +2908,27 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(paths):
             return
         self._open_files(paths)
+
+    @Command(
+        'pe',
+        description='.performance - edit',
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
+        )
+    def edit_performance(self, directory: Path) -> None:
+        """
+        Edits ``.performance``.
+        """
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory / '.performance']
+        else:
+            paths = []
+            for path in directory.list_paths():
+                illustration_ily = path / '.performance'
+                if illustration_ily.is_file():
+                    paths.append(illustration_ily)
+        self._open_files(paths, force_vim=True)
 
     @Command(
         'pfte',
@@ -4014,6 +4014,20 @@ class AbjadIDE(abjad.AbjadObject):
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
 
     @Command(
+        'lmimh',
+        description=f'local measure index markup - hide',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def hide_local_measure_index_markup(self, directory: Path) -> None:
+        """
+        Hides local measure index markup.
+        """
+        assert directory.is_buildspace()
+        self.run(
+            abjad.Job.show_local_measure_index_markup(directory, undo=True))
+
+    @Command(
         'lmnmh',
         description=f'local measure number markup - hide',
         menu_section='music annotations',
@@ -4027,19 +4041,6 @@ class AbjadIDE(abjad.AbjadObject):
         self.run(
             abjad.Job.show_local_measure_number_markup(directory, undo=True)
             )
-
-    @Command(
-        'mimh',
-        description=f'measure index markup - hide',
-        menu_section='music annotations',
-        score_package_paths=('buildspace',),
-        )
-    def hide_measure_index_markup(self, directory: Path) -> None:
-        """
-        Hides measure number markup.
-        """
-        assert directory.is_buildspace()
-        self.run(abjad.Job.show_measure_index_markup(directory, undo=True))
 
     @Command(
         'mnmh',
@@ -5013,6 +5014,19 @@ class AbjadIDE(abjad.AbjadObject):
         pass
 
     @Command(
+        'lmims',
+        description=f'local measure index markup - show',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def show_local_measure_index_markup(self, directory: Path) -> None:
+        """
+        Shows local measure number markup.
+        """
+        assert directory.is_buildspace()
+        self.run(abjad.Job.show_local_measure_index_markup(directory))
+
+    @Command(
         'lmnms',
         description=f'local measure number markup - show',
         menu_section='music annotations',
@@ -5024,19 +5038,6 @@ class AbjadIDE(abjad.AbjadObject):
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_local_measure_number_markup(directory))
-
-    @Command(
-        'mims',
-        description=f'measure index markup - show',
-        menu_section='music annotations',
-        score_package_paths=('buildspace',),
-        )
-    def show_measure_index_markup(self, directory: Path) -> None:
-        """
-        Shows measure number markup.
-        """
-        assert directory.is_buildspace()
-        self.run(abjad.Job.show_measure_index_markup(directory))
 
     @Command(
         'mnms',

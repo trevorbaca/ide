@@ -91,14 +91,14 @@
                     ^ \markup {
                         \column
                             {
-                            %@% \line                                                    %! MEASURE_INDEX_MARKUP:SM31
-                            %@%     {                                                    %! MEASURE_INDEX_MARKUP:SM31
-                            %@%         \fontsize                                        %! MEASURE_INDEX_MARKUP:SM31
-                            %@%             #3                                           %! MEASURE_INDEX_MARKUP:SM31
-                            %@%             \with-color                                  %! MEASURE_INDEX_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_INDEX_MARKUP:SM31
-                            %@%                 <0>                                      %! MEASURE_INDEX_MARKUP:SM31
-                            %@%     }                                                    %! MEASURE_INDEX_MARKUP:SM31
+                            %@% \line                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%     {                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%             #3                                           %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%                 <0>                                      %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%     }                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
                             %@% \line                                                    %! MEASURE_NUMBER_MARKUP:SM31
                             %@%     {                                                    %! MEASURE_NUMBER_MARKUP:SM31
                             %@%         \fontsize                                        %! MEASURE_NUMBER_MARKUP:SM31
@@ -134,14 +134,14 @@
                     ^ \markup {
                         \column
                             {
-                            %@% \line                                                    %! MEASURE_INDEX_MARKUP:SM31
-                            %@%     {                                                    %! MEASURE_INDEX_MARKUP:SM31
-                            %@%         \fontsize                                        %! MEASURE_INDEX_MARKUP:SM31
-                            %@%             #3                                           %! MEASURE_INDEX_MARKUP:SM31
-                            %@%             \with-color                                  %! MEASURE_INDEX_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_INDEX_MARKUP:SM31
-                            %@%                 <1>                                      %! MEASURE_INDEX_MARKUP:SM31
-                            %@%     }                                                    %! MEASURE_INDEX_MARKUP:SM31
+                            %@% \line                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%     {                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%             #3                                           %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%                 <1>                                      %! LOCAL_MEASURE_INDEX_MARKUP:SM31
+                            %@%     }                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
                             %@% \line                                                    %! MEASURE_NUMBER_MARKUP:SM31
                             %@%     {                                                    %! MEASURE_NUMBER_MARKUP:SM31
                             %@%         \fontsize                                        %! MEASURE_NUMBER_MARKUP:SM31

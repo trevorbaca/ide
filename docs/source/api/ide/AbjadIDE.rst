@@ -56,7 +56,6 @@ AbjadIDE
       edit_back_cover_tex
       edit_definition_py
       edit_front_cover_tex
-      edit_history
       edit_illustration_ily
       edit_illustration_ly
       edit_latex_log
@@ -66,6 +65,7 @@ AbjadIDE
       edit_log
       edit_music_ly
       edit_part_tex
+      edit_performance
       edit_preface_tex
       edit_score_tex
       edit_stylesheet_ily
@@ -108,8 +108,8 @@ AbjadIDE
       go_up
       hide_clock_time_markup
       hide_figure_name_markup
+      hide_local_measure_index_markup
       hide_local_measure_number_markup
-      hide_measure_index_markup
       hide_measure_number_markup
       hide_music_annotations
       hide_spacing_markup
@@ -155,8 +155,8 @@ AbjadIDE
       show_clock_time_markup
       show_figure_name_markup
       show_help
+      show_local_measure_index_markup
       show_local_measure_number_markup
-      show_measure_index_markup
       show_measure_number_markup
       show_music_annotations
       show_spacing_markup
@@ -268,8 +268,6 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.edit_front_cover_tex
 
-   .. automethod:: AbjadIDE.edit_history
-
    .. automethod:: AbjadIDE.edit_illustration_ily
 
    .. automethod:: AbjadIDE.edit_illustration_ly
@@ -287,6 +285,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.edit_music_ly
 
    .. automethod:: AbjadIDE.edit_part_tex
+
+   .. automethod:: AbjadIDE.edit_performance
 
    .. automethod:: AbjadIDE.edit_preface_tex
 
@@ -370,9 +370,9 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.hide_figure_name_markup
 
-   .. automethod:: AbjadIDE.hide_local_measure_number_markup
+   .. automethod:: AbjadIDE.hide_local_measure_index_markup
 
-   .. automethod:: AbjadIDE.hide_measure_index_markup
+   .. automethod:: AbjadIDE.hide_local_measure_number_markup
 
    .. automethod:: AbjadIDE.hide_measure_number_markup
 
@@ -452,9 +452,9 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.show_help
 
-   .. automethod:: AbjadIDE.show_local_measure_number_markup
+   .. automethod:: AbjadIDE.show_local_measure_index_markup
 
-   .. automethod:: AbjadIDE.show_measure_index_markup
+   .. automethod:: AbjadIDE.show_local_measure_number_markup
 
    .. automethod:: AbjadIDE.show_measure_number_markup
 
