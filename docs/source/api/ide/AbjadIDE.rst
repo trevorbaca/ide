@@ -64,8 +64,8 @@ AbjadIDE
       edit_lilypond_log
       edit_log
       edit_music_ly
+      edit_optimization
       edit_part_tex
-      edit_performance
       edit_preface_tex
       edit_score_tex
       edit_stylesheet_ily
@@ -284,9 +284,9 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.edit_music_ly
 
-   .. automethod:: AbjadIDE.edit_part_tex
+   .. automethod:: AbjadIDE.edit_optimization
 
-   .. automethod:: AbjadIDE.edit_performance
+   .. automethod:: AbjadIDE.edit_part_tex
 
    .. automethod:: AbjadIDE.edit_preface_tex
 

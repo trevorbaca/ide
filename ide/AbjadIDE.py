@@ -2893,6 +2893,27 @@ class AbjadIDE(abjad.AbjadObject):
         self._open_files(paths)
 
     @Command(
+        'oe',
+        description='.optimization - edit',
+        menu_section='illustration',
+        score_package_paths=('illustrationspace',),
+        )
+    def edit_optimization(self, directory: Path) -> None:
+        """
+        Edits ``.optimization``.
+        """
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory / '.optimization']
+        else:
+            paths = []
+            for path in directory.list_paths():
+                illustration_ily = path / '.optimization'
+                if illustration_ily.is_file():
+                    paths.append(illustration_ily)
+        self._open_files(paths, force_vim=True)
+
+    @Command(
         'pte',
         description='part.tex - edit',
         menu_section='parts',
@@ -2908,27 +2929,6 @@ class AbjadIDE(abjad.AbjadObject):
         if self.is_navigation(paths):
             return
         self._open_files(paths)
-
-    @Command(
-        'pe',
-        description='.performance - edit',
-        menu_section='illustration',
-        score_package_paths=('illustrationspace',),
-        )
-    def edit_performance(self, directory: Path) -> None:
-        """
-        Edits ``.performance``.
-        """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
-            paths = [directory / '.performance']
-        else:
-            paths = []
-            for path in directory.list_paths():
-                illustration_ily = path / '.performance'
-                if illustration_ily.is_file():
-                    paths.append(illustration_ily)
-        self._open_files(paths, force_vim=True)
 
     @Command(
         'pfte',
