@@ -491,7 +491,7 @@ def test_AbjadIDE_new_10():
         transcript = abjad_ide.io.transcript
         assert path.is_file()
         text = path.read_text()
-        assert 'class NewClass(abjad.AbjadObject)' in text
+        assert 'class NewClass(object)' in text
         assert 'File name> NewClass' in transcript
         assert f'Writing {path.trim()} ...' in transcript
         assert 'Ok?> y' in transcript

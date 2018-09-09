@@ -25,6 +25,7 @@ AbjadIDE
       :nosignatures:
 
       __call__
+      __repr__
       activate
       aliases
       build_part_pdf
@@ -205,13 +206,7 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.__call__
 
-   .. container:: inherited
-
-      .. automethod:: AbjadIDE.__format__
-
-   .. container:: inherited
-
-      .. automethod:: AbjadIDE.__repr__
+   .. automethod:: AbjadIDE.__repr__
 
    .. raw:: html
 

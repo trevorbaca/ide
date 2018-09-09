@@ -40,21 +40,6 @@ Response
 
       <hr/>
 
-   .. rubric:: Special methods
-      :class: class-header
-
-   .. container:: inherited
-
-      .. automethod:: Response.__format__
-
-   .. container:: inherited
-
-      .. automethod:: Response.__repr__
-
-   .. raw:: html
-
-      <hr/>
-
    .. rubric:: Methods
       :class: class-header
 

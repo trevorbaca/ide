@@ -2,7 +2,7 @@ import abjad
 import typing
 
 
-class MenuEntry(abjad.AbjadObject):
+class MenuEntry(object):
     """
     Menu entry.
     """

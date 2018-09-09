@@ -4,7 +4,7 @@ import typing
 from .Transcript import Transcript
 
 
-class IO(abjad.AbjadObject):
+class IO(object):
     """
     IO.
 
@@ -23,6 +23,14 @@ class IO(abjad.AbjadObject):
         '_pending_input',
         '_transcript',
         )
+
+    ### SPECIAL METHODS ###
+
+    def __repr__(self) -> str:
+        """
+        Gets interpreter representation.
+        """
+        return abjad.StorageFormatManager(self).get_repr_format()
 
     ### INITIALIZER ###
 

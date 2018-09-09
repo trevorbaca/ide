@@ -49,10 +49,6 @@ Configuration
 
    .. container:: inherited
 
-      .. automethod:: Configuration.__format__
-
-   .. container:: inherited
-
       .. automethod:: Configuration.__getitem__
 
    .. container:: inherited

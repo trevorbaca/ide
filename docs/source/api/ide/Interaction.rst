@@ -40,10 +40,6 @@ Interaction
 
    .. automethod:: Interaction.__exit__
 
-   .. container:: inherited
-
-      .. automethod:: Interaction.__format__
-
    .. automethod:: Interaction.__repr__
 
    .. raw:: html

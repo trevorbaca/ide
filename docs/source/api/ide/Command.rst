@@ -35,11 +35,3 @@ Command
       :class: class-header
 
    .. automethod:: Command.__call__
-
-   .. container:: inherited
-
-      .. automethod:: Command.__format__
-
-   .. container:: inherited
-
-      .. automethod:: Command.__repr__

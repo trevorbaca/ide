@@ -24,6 +24,7 @@ IO
    .. autosummary::
       :nosignatures:
 
+      __repr__
       display
       get
       pending_input
@@ -36,13 +37,7 @@ IO
    .. rubric:: Special methods
       :class: class-header
 
-   .. container:: inherited
-
-      .. automethod:: IO.__format__
-
-   .. container:: inherited
-
-      .. automethod:: IO.__repr__
+   .. automethod:: IO.__repr__
 
    .. raw:: html
 

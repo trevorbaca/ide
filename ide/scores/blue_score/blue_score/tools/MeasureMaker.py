@@ -1,7 +1,7 @@
 import abjad
 
 
-class MeasureMaker(abjad.AbjadObject):
+class MeasureMaker(object):
     """
     Measure-maker.
     """

@@ -3,7 +3,7 @@ import string
 import typing
 
 
-class Command(abjad.AbjadObject):
+class Command(object):
     """
     Command.
 

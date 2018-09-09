@@ -8,7 +8,7 @@ from .Path import Path
 from .Response import Response
 
 
-class Menu(abjad.AbjadObject):
+class Menu(object):
     """
     Menu.
 
@@ -123,6 +123,12 @@ class Menu(abjad.AbjadObject):
         Gets section in menu.
         """
         return self.sections.__getitem__(argument)
+
+    def __repr__(self) -> str:
+        """
+        Gets interpreter representation.
+        """
+        return abjad.StorageFormatManager(self).get_repr_format()
 
     ### PRIVATE METHODS ###
 

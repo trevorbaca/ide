@@ -26,6 +26,7 @@ Menu
 
       __call__
       __getitem__
+      __repr__
       aliases
       from_directory
       getter
@@ -49,15 +50,9 @@ Menu
 
    .. automethod:: Menu.__call__
 
-   .. container:: inherited
-
-      .. automethod:: Menu.__format__
-
    .. automethod:: Menu.__getitem__
 
-   .. container:: inherited
-
-      .. automethod:: Menu.__repr__
+   .. automethod:: Menu.__repr__
 
    .. raw:: html
 

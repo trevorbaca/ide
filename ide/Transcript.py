@@ -2,7 +2,7 @@ import abjad
 import typing
 
 
-class Transcript(abjad.AbjadObject):
+class Transcript(object):
     """
     Transcript.
     """

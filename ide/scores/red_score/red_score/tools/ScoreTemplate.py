@@ -1,7 +1,7 @@
 import abjad
 
 
-class ScoreTemplate(abjad.AbjadObject):
+class ScoreTemplate(object):
     """
     Score template.
     """

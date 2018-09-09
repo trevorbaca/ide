@@ -38,15 +38,7 @@ MenuEntry
    .. rubric:: Special methods
       :class: class-header
 
-   .. container:: inherited
-
-      .. automethod:: MenuEntry.__format__
-
    .. automethod:: MenuEntry.__lt__
-
-   .. container:: inherited
-
-      .. automethod:: MenuEntry.__repr__
 
    .. raw:: html
 

@@ -4,7 +4,7 @@ from .Configuration import Configuration
 from .MenuEntry import MenuEntry
 
 
-class MenuSection(abjad.AbjadObject):
+class MenuSection(object):
     """
     Menu section.
     """
@@ -29,7 +29,7 @@ class MenuSection(abjad.AbjadObject):
         force_single_column: bool = None,
         secondary: bool = None,
         ) -> None:
-        abjad.AbjadObject.__init__(self)
+        object.__init__(self)
         if command is not None:
             assert isinstance(command, str), repr(command)
         self._command = command

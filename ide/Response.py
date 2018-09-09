@@ -3,7 +3,7 @@ import typing
 from .Path import Path
 
 
-class Response(abjad.AbjadObject):
+class Response(object):
     """
     Response.
 

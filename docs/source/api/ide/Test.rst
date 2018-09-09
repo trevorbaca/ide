@@ -41,10 +41,6 @@ Test
 
    .. container:: inherited
 
-      .. automethod:: Test.__format__
-
-   .. container:: inherited
-
       .. automethod:: Test.__repr__
 
    .. raw:: html

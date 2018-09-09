@@ -41,14 +41,6 @@ Transcript
 
    .. automethod:: Transcript.__contains__
 
-   .. container:: inherited
-
-      .. automethod:: Transcript.__format__
-
-   .. container:: inherited
-
-      .. automethod:: Transcript.__repr__
-
    .. raw:: html
 
       <hr/>

@@ -42,17 +42,9 @@ MenuSection
    .. rubric:: Special methods
       :class: class-header
 
-   .. container:: inherited
-
-      .. automethod:: MenuSection.__format__
-
    .. automethod:: MenuSection.__getitem__
 
    .. automethod:: MenuSection.__iter__
-
-   .. container:: inherited
-
-      .. automethod:: MenuSection.__repr__
 
    .. raw:: html
 

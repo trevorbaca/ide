@@ -24,7 +24,7 @@ from .Path import Path
 from .Response import Response
 
 
-class AbjadIDE(abjad.AbjadObject):
+class AbjadIDE(object):
     """
     Abjad IDE.
 
@@ -106,6 +106,12 @@ class AbjadIDE(abjad.AbjadObject):
         last_line = self.io.transcript.lines[-1]
         assert last_line == '', repr(last_line)
         abjad.IOManager.clear_terminal()
+
+    def __repr__(self) -> str:
+        """
+        Gets interpreter representation.
+        """
+        return abjad.StorageFormatManager(self).get_repr_format()
 
     ### PRIVATE METHODS ###
 
