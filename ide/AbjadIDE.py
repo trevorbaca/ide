@@ -3389,7 +3389,7 @@ class AbjadIDE(object):
                 cousins = cousin.parent.list_paths()
                 cousins.remove(cousin)
                 for cousin in cousins:
-                    definition = cousin('definition.py')
+                    definition = cousin / 'definition.py'
                     if definition.is_file():
                         items.append((definition.trim(), definition))
                 label = directory.get_asset_type()
