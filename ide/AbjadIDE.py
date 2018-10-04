@@ -2864,14 +2864,16 @@ class AbjadIDE(object):
         'le',
         description='.log - edit',
         menu_section='illustration',
-        score_package_paths=('illustrationspace',),
+        score_package_paths=('buildspace', 'illustrationspace'),
         )
     def edit_log(self, directory: Path) -> None:
         """
         Edits ``.log``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_buildspace()
+        if (directory.is_material() or
+            directory.is_segment() or
+            directory.is_build()):
             paths = [directory / '.log']
         else:
             paths = []
