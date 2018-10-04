@@ -31,6 +31,7 @@ def test_AbjadIDE_build_score_pdf_01():
             ' Found no bar line adjustment tags ...',
             'Handling shifted clefs ...',
             ' Found no shifted clef tags ...',
+            ' Found no BOL clef tags ...',
             'Uncoloring persistent indicators ...',
             ' Found no persistent indicator color suppression tags ...',
             ' Found no persistent indicator color expression tags ...',
