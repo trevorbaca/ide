@@ -4103,6 +4103,22 @@ class AbjadIDE(object):
         self.run(abjad.Job.color_stage_number_markup(directory, undo=True))
 
     @Command(
+        'th',
+        description=f'tag - hide',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def hide_tag(self, directory: Path) -> None:
+        """
+        Hides arbitrary (user-specified) tag.
+        """
+        assert directory.is_buildspace()
+        tag = self.io.get('tag')
+        if self.is_navigation(tag):
+            return
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+
+    @Command(
         'bcti',
         description='back-cover.tex - interpret',
         menu_section='back cover',
@@ -5098,6 +5114,22 @@ class AbjadIDE(object):
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_stage_number_markup(directory))
+
+    @Command(
+        'ts',
+        description=f'tag - show',
+        menu_section='music annotations',
+        score_package_paths=('buildspace',),
+        )
+    def show_tag(self, directory: Path) -> None:
+        """
+        Shows arbitrary (user-specified) tag.
+        """
+        assert directory.is_buildspace()
+        tag = self.io.get('tag')
+        if self.is_navigation(tag):
+            return
+        self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
         '^',
