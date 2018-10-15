@@ -115,6 +115,7 @@ AbjadIDE
       hide_music_annotations
       hide_spacing_markup
       hide_stage_number_markup
+      hide_tag
       interpret_back_cover_tex
       interpret_front_cover_tex
       interpret_illustration_ly
@@ -162,6 +163,7 @@ AbjadIDE
       show_music_annotations
       show_spacing_markup
       show_stage_number_markup
+      show_tag
       smart_doctest
       smart_edit
       smart_pdf
@@ -377,6 +379,8 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.hide_stage_number_markup
 
+   .. automethod:: AbjadIDE.hide_tag
+
    .. automethod:: AbjadIDE.interpret_back_cover_tex
 
    .. automethod:: AbjadIDE.interpret_front_cover_tex
@@ -458,6 +462,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.show_spacing_markup
 
    .. automethod:: AbjadIDE.show_stage_number_markup
+
+   .. automethod:: AbjadIDE.show_tag
 
    .. automethod:: AbjadIDE.smart_doctest
 
