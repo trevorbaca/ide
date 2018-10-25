@@ -2343,15 +2343,15 @@ class AbjadIDE(object):
         """
         Collects segment lys.
 
-        Copies from illustration.ly files from segment directories to
+        Copies illustration.ly files from segment directories to
         build/_segments directory.
 
-        Trims top-level comments, head block, paper block from each
+        Trims top-level comments, header block, paper block from each
         illustration.ly file.
 
         Keeps score block in each illustration.ly file.
 
-        Shows and deactivates build-appropriate tags.
+        Activates and deactivates build-appropriate tags.
         """
         assert directory.is_build() or directory.is__segments()
         self.io.display('collecting segment lys ...')
@@ -2402,6 +2402,7 @@ class AbjadIDE(object):
             abjad.Job.hide_default_clefs(_segments),
             abjad.Job.show_music_annotations(_segments, undo=True),
             abjad.Job.join_broken_spanners(_segments),
+            abjad.Job.show_tag(_segments, 'PHANTOM', undo=True),
             ]:
             self.run(job, quiet=False)
 
