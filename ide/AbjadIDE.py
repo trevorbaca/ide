@@ -2383,6 +2383,7 @@ class AbjadIDE(object):
             value = segment.get_metadatum('time_signatures')
             if value:
                 time_signatures[segment.name] = value
+        final_file_name = target.with_suffix('.ily').name
         key = 'fermata_measure_numbers'
         if bool(fermata_measure_numbers):
             directory.contents.add_metadatum(key, fermata_measure_numbers)
@@ -2393,6 +2394,7 @@ class AbjadIDE(object):
             directory.contents.add_metadatum(key, time_signatures)
         else:
             directory.contents.remove_metadatum(key)
+
         _segments = directory._segments
         for job in [
             abjad.Job.handle_edition_tags(_segments),
@@ -2402,7 +2404,12 @@ class AbjadIDE(object):
             abjad.Job.hide_default_clefs(_segments),
             abjad.Job.show_music_annotations(_segments, undo=True),
             abjad.Job.join_broken_spanners(_segments),
-            abjad.Job.show_tag(_segments, 'PHANTOM', undo=True),
+            abjad.Job.show_tag(
+                _segments,
+                'PHANTOM',
+                skip_file_name=final_file_name,
+                undo=True,
+                ),
             ]:
             self.run(job, quiet=False)
 
