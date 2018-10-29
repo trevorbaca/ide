@@ -2076,19 +2076,23 @@ class AbjadIDE(object):
         """Activates ``tag`` in ``path``.
         """
         if deactivate:
-            count, skipped, messages = path.deactivate(
+            result = path.deactivate(
                 tag,
                 indent=indent,
                 message_zero=message_zero,
                 name=name,
                 )
+            assert result is not None
+            count, skipped, messages = result
         else:
-            count, skipped, messages = path.activate(
+            result = path.activate(
                 tag,
                 indent=indent,
                 message_zero=message_zero,
                 name=name,
                 )
+            assert result is not None
+            count, skipped, messages = result
         self.io.display(messages)
 
     @staticmethod
