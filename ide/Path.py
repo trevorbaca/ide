@@ -335,9 +335,9 @@ class Path(abjad.Path):
         if bol_measure_numbers is None:
             return None
         eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
-        last_measure_number = self.get_metadatum('last_measure_number')
-        if last_measure_number is not None:
-            eol_measure_numbers.append(last_measure_number)
+        final_measure_number = self.get_metadatum('final_measure_number')
+        if final_measure_number is not None:
+            eol_measure_numbers.append(final_measure_number)
         return eol_measure_numbers
 
     def get_header(self) -> str:
