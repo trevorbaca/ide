@@ -4272,8 +4272,10 @@ class AbjadIDE(object):
                 partial_score = layout_ly.get_preamble_partial_score()
                 if (not partial_score and
                     (music_time_signatures != layout_time_signatures)):
-                    message = f'music time signatures do not match'
-                    message += ' layout time signatures ...'
+                    message = f'music time signatures'
+                    message += f' ({len(music_time_signatures)})'
+                    message += ' do not match layout time signatures'
+                    message += f' ({len(layout_time_signatures)}) ...'
                     if not self.test:
                         self.io.display(message)
                         self.io.display(f'remaking {layout_ly.trim()} ...')
@@ -4282,8 +4284,11 @@ class AbjadIDE(object):
                         layout_time_signatures = \
                             layout_ly.get_preamble_time_signatures()
                         if music_time_signatures != layout_time_signatures:
-                            message = 'music time signatures still do not'
-                            message += 'match layout time signatures ...'
+                            message = 'music time signatures'
+                            message += f' ({len(music_time_signatures)})'
+                            message += ' still do not match'
+                            message += ' layout time signatures'
+                            message += f' ({len(layout_time_signatures)}) ...'
                             self.io.display(message)
                             return
             self._run_lilypond(path)
