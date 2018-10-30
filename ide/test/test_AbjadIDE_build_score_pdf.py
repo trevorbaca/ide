@@ -42,6 +42,8 @@ def test_AbjadIDE_build_score_pdf_01():
             'Joining broken spanners ...',
             ' Found no broken spanner expression tags ...',
             ' Found no broken spanner suppression tags ...',
+            'Showing PHANTOM tags ...',
+            ' Found no PHANTOM tags ...',
             'Hiding PHANTOM tags ...',
             ' Found no PHANTOM tags ...',
             'Generating red_score/builds/letter-score/music.ly ...',

@@ -2412,6 +2412,12 @@ class AbjadIDE(object):
                 _segments,
                 'PHANTOM',
                 skip_file_name=final_file_name,
+                ),
+            abjad.Job.show_tag(
+                _segments,
+                'PHANTOM',
+                prepend_empty_chord=True,
+                skip_file_name=final_file_name,
                 undo=True,
                 ),
             ]:
