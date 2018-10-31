@@ -209,6 +209,10 @@ Path
 
    .. container:: inherited
 
+      .. automethod:: Path.get_preamble_page_count_overview
+
+   .. container:: inherited
+
       .. automethod:: Path.get_preamble_partial_score
 
    .. container:: inherited
