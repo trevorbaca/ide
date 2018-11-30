@@ -2420,6 +2420,11 @@ class AbjadIDE(object):
                 skip_file_name=final_file_name,
                 undo=True,
                 ),
+            abjad.Job.show_tag(
+                _segments,
+                'SEGMENT_FINAL_STOP_MM_SPANNER',
+                skip_file_name=final_file_name,
+                ),
             ]:
             self.run(job, quiet=False)
 

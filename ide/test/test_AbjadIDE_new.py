@@ -59,6 +59,8 @@ def test_AbjadIDE_new_01():
             ' Found no PHANTOM tags ...',
             'Hiding PHANTOM tags ...',
             ' Found no PHANTOM tags ...',
+            'Showing SEGMENT_FINAL_STOP_MM_SPANNER tags ...',
+            ' Found no SEGMENT_FINAL_STOP_MM_SPANNER tags ...',
             '',
             'Generating red_score/builds/arch-a-score/music.ly ...',
             ' Examining red_score/segments/_ ...',
