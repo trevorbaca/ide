@@ -29,6 +29,7 @@ def test_AbjadIDE_build_score_pdf_01():
             ' Found no this-edition tags ...',
             'Handling fermata bar lines ...',
             ' Found no bar line adjustment tags ...',
+            ' Found no EOL fermata bar line tags ...',
             'Handling shifted clefs ...',
             ' Found no shifted clef tags ...',
             ' Found no BOL clef tags ...',
