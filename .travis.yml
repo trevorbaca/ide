@@ -19,6 +19,7 @@ addons:
         - texlive-latex-recommended
         - texlive-xetex
         - lmodern # lmodern required for texlive-xetex to find fonts
+        - msttcorefonts
 
 before_install:
     # alias package
@@ -86,6 +87,47 @@ before_install:
     - which prime-parser-tables
     - which start-abjad-ide
     - which xetex
+
+    # install palatino (also tahoma and courier)
+    - mkdir ~/.fonts
+    - cd ~/.fonts
+    - wget http://fonts.zaraf.ro/download/pala.rar
+    - wget http://fonts.zaraf.ro/download/palai.rar
+    - wget http://fonts.zaraf.ro/download/palab.rar
+    - wget http://fonts.zaraf.ro/download/palabi.rar
+    - wget http://fonts.zaraf.ro/download/tahomabd.rar
+    - wget http://fonts.zaraf.ro/download/tahoma.rar
+    
+    - wget http://fonts.zaraf.ro/download/cour.rar
+    - wget http://fonts.zaraf.ro/download/couri.rar
+    - wget http://fonts.zaraf.ro/download/courbd.rar
+    - wget http://fonts.zaraf.ro/download/courbi.rar
+    
+    - unrar e pala.rar
+    - unrar e palab.rar
+    - unrar e palai.rar
+    - unrar e palabi.rar
+    - unrar e tahomabd.rar
+    - unrar e tahoma.rar
+    
+    - unrar e cour.rar
+    - unrar e couri.rar
+    - unrar e courbd.rar
+    - unrar e courbi.rar
+    
+    - unlink pala.rar
+    - unlink palab.rar
+    - unlink palai.rar
+    - unlink palabi.rar
+    - unlink tahomabd.rar
+    - unlink tahoma.rar
+    
+    - unlink cour.rar
+    - unlink couri.rar
+    - unlink courbd.rar
+    - unlink courbi.rar
+    
+    - sudo fc-cache -f -v
 
 install:
     - pip install pytest-helpers-namespace
