@@ -4,10 +4,10 @@ import pytest
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-@pytest.mark.skipif(
-    os.environ.get('TRAVIS') == 'true',
-    reason="Travis-CI can not find fonts for XeTeX tests."
-    )
+#@pytest.mark.skipif(
+#    os.environ.get('TRAVIS') == 'true',
+#    reason="Travis-CI can not find fonts for XeTeX tests."
+#    )
 def test_AbjadIDE_build_part_pdf_01():
 
     with ide.Test():

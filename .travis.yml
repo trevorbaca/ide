@@ -18,9 +18,7 @@ addons:
         - texlive-latex-extra
         - texlive-latex-recommended
         - texlive-xetex
-        #- texlive-xetex-def            # not found
-        #- texlive-collection-xetex     # not found
-        - lmodern
+        - lmodern # lmodern required for texlive-xetex to find fonts
 
 before_install:
     # alias package
@@ -99,9 +97,7 @@ script:
     - mypy $PACKAGE
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
-    #- coverage run -a `which py.test` -rf $PACKAGE
-    # temporarily testing Travis XeTeX install:
-    - coverage run -a `which py.test` -rf $PACKAGE -k interpret_front_cover
+    - coverage run -a `which py.test` -rf $PACKAGE
 
 after_success:
     - pip install coveralls
