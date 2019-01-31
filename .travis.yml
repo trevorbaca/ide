@@ -18,6 +18,9 @@ addons:
         - texlive-latex-extra
         - texlive-latex-recommended
         - texlive-xetex
+        - texlive-xetex-def
+        - texlive-collection-xetex
+        - lmodern
 
 before_install:
     # alias package

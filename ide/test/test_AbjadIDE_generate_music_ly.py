@@ -18,9 +18,9 @@ def test_AbjadIDE_generate_music_ly_01():
         assert 'Red Score (2017) for piano' in text
         assert r'\version' in text
         assert r'\language' in text
-        assert '\n        \include "_segments/segment--.ly"' in text
-        assert '\n        \include "_segments/segment-A.ly"' in text
-        assert '\n        \include "_segments/segment-B.ly"' in text
+        assert '\n        \\include "_segments/segment--.ly"' in text
+        assert '\n        \\include "_segments/segment-A.ly"' in text
+        assert '\n        \\include "_segments/segment-B.ly"' in text
 
         abjad_ide('red %letter mlg q')
         transcript = abjad_ide.io.transcript
@@ -32,9 +32,9 @@ def test_AbjadIDE_generate_music_ly_01():
         assert 'Red Score (2017) for piano' in text
         assert r'\version' in text
         assert r'\language' in text
-        assert '\n        \include "_segments/segment--.ly"' in text
-        assert '\n        \include "_segments/segment-A.ly"' in text
-        assert '\n        \include "_segments/segment-B.ly"' in text
+        assert '\n        \\include "_segments/segment--.ly"' in text
+        assert '\n        \\include "_segments/segment-A.ly"' in text
+        assert '\n        \\include "_segments/segment-B.ly"' in text
 
 
 def test_AbjadIDE_generate_music_ly_02():
@@ -56,7 +56,7 @@ def test_AbjadIDE_generate_music_ly_02():
         assert 'Red Score (2017) for piano' in text
         assert r'\version' in text
         assert r'\language' in text
-        assert '\n        \include "_segments/segment--.ly"' in text
-        assert '\n        \include "_segments/segment-A.ly"' in text
-        assert '\n        \include "_segments/segment-B.ly"' in text
-        assert '\n        %\include "_segments/segment-C.ly"' in text
+        assert '\n        \\include "_segments/segment--.ly"' in text
+        assert '\n        \\include "_segments/segment-A.ly"' in text
+        assert '\n        \\include "_segments/segment-B.ly"' in text
+        assert '\n        %\\include "_segments/segment-C.ly"' in text
