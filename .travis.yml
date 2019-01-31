@@ -96,7 +96,9 @@ script:
     - mypy $PACKAGE
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
-    - coverage run -a `which py.test` -rf $PACKAGE
+    #- coverage run -a `which py.test` -rf $PACKAGE
+    # temporarily testing Travis XeTeX install:
+    - coverage run -a `which py.test` -rf $PACKAGE -k interpret_front_cover
 
 after_success:
     - pip install coveralls
