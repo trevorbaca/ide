@@ -18,8 +18,8 @@ addons:
         - texlive-latex-extra
         - texlive-latex-recommended
         - texlive-xetex
-        - texlive-xetex-def
-        - texlive-collection-xetex
+        #- texlive-xetex-def            # not found
+        #- texlive-collection-xetex     # not found
         - lmodern
 
 before_install:
