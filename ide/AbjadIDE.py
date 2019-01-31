@@ -3509,14 +3509,14 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(root):
-                self.io.display(f'git commit {root} ...')
                 if not root._has_pending_commit():
-                    self.io.display(f'{root} ... nothing to commit.')
+                    self.io.display('nothing to commit ...')
                     return
-                abjad.IOManager.spawn_subprocess('git status .')
+                self.git_status(root)
                 if self.test:
                     return
                 command = f'git add -A {root}'
+                self.io.display(f'Running {command} ...')
                 lines = abjad.IOManager.run_command(command)
                 self.io.display(lines, raw=True)
                 if commit_message is None:
@@ -3536,6 +3536,7 @@ class AbjadIDE(object):
                 return
             paths = directory.list_paths()
             for i, path in enumerate(paths):
+                self.io.display(f'{path} ...')
                 self.git_commit(path, commit_message=commit_message)
                 if i + 1 < len(paths):
                     self.io.display('')
@@ -3557,12 +3558,14 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(directory):
-                self.io.display(f'git diff {directory.trim()} ...')
-                abjad.IOManager.spawn_subprocess(f'git diff {directory}')
+                command = 'git diff'
+                self.io.display(f'Running {command} ...')
+                abjad.IOManager.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
+                self.io.display(f'{path} ...')
                 self.git_diff(path)
                 if i + 1 < len(paths):
                     self.io.display('')
@@ -3585,22 +3588,25 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(root):
-                self.io.display(f'git pull {root} ...')
-                if not self.test:
-                    lines = abjad.IOManager.run_command('git pull .')
-                    if lines and 'Already up-to-date' in lines[-1]:
-                        lines = lines[-1:]
-                    self.io.display(lines)
-                    command = 'git submodule foreach git pull origin master'
-                    self.io.display(f'{command} ...')
-                    lines = abjad.IOManager.run_command(command)
-                    if lines and 'Already up-to-date' in lines[-1]:
-                        lines = lines[-1:]
-                    self.io.display(lines)
+                command = f'git pull'
+                self.io.display(f'Running {command} ...')
+                if self.test:
+                    return
+                lines = abjad.IOManager.run_command(command)
+                if lines and 'Already up to date' in lines[-1]:
+                    lines = lines[-1:]
+                self.io.display(lines)
+                command = 'git submodule foreach git pull origin master'
+                self.io.display(f'Running {command} ...')
+                lines = abjad.IOManager.run_command(command)
+                if lines and 'Already up to date' in lines[-1]:
+                    lines = lines[-1:]
+                self.io.display(lines)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
+                self.io.display(f'{path} ...')
                 self.git_pull(path)
                 if i + 1 < len(paths):
                     self.io.display('')
@@ -3623,13 +3629,16 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(root):
-                self.io.display(f'git push {root} ...')
-                if not self.test:
-                    abjad.IOManager.spawn_subprocess('git push .')
+                command = 'git push'
+                self.io.display(f'Running {command} ...')
+                if self.test:
+                    return
+                abjad.IOManager.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
+                self.io.display(f'{path} ...')
                 self.git_push(path)
                 if i + 1 < len(paths):
                     self.io.display('')
@@ -3652,16 +3661,19 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(root):
-                self.io.display(f'git status {root} ...')
-                abjad.IOManager.spawn_subprocess('git status .')
-                self.io.display('')
+                command = 'git status'
+                self.io.display(f'Running {command} ...')
+                lines = abjad.IOManager.run_command(command)
+                lines = [_ for _ in lines if _ != '']
+                self.io.display(lines)
                 command = 'git submodule foreach git fetch'
-                self.io.display(f'{command} ...')
+                self.io.display(f'Running {command} ...')
                 abjad.IOManager.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
+                self.io.display(f'{path} ...')
                 self.git_status(path)
                 if i + 1 < len(paths):
                     self.io.display('')

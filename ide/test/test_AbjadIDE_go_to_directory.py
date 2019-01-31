@@ -18,7 +18,7 @@ def test_AbjadIDE_go_to_directory_01():
     abjad_ide('ll %fab q')
     transcript = abjad_ide.io.transcript 
     assert 'Abjad IDE : library' in transcript.titles
-    assert 'Fabergé Investigations (2016)' in transcript.titles
+    assert 'Fabergé Investigations (2019)' in transcript.titles
 
 
 def test_AbjadIDE_go_to_directory_02():

@@ -15,9 +15,9 @@ def test_AbjadIDE_aliases_01():
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         'Abjad IDE : scores',
-        'Fabergé Investigations (2016)',
-        'Fabergé Investigations (2016) : materials',
-        'Fabergé Investigations (2016) : materials : metronome_marks',
+        'Fabergé Investigations (2019)',
+        'Fabergé Investigations (2019) : materials',
+        'Fabergé Investigations (2019) : materials : metronome_marks',
         'Stirrings Still (2018)',
         ]
 

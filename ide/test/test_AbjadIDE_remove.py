@@ -75,7 +75,7 @@ def test_AbjadIDE_remove_01():
 
 def test_AbjadIDE_remove_02():
     """
-    In library directory.
+    In library.
     """
 
     if not abjad.abjad_configuration.composer_library_tools:
