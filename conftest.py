@@ -13,8 +13,8 @@ def add_libraries(doctest_namespace):
     doctest_namespace['NegativeInfinity'] = abjad.mathtools.NegativeInfinity()
 
 @pytest.helpers.register
-def list_all_abjad_classes(modules=None, ignored_classes=None):
-    return utilities.list_all_ide_classes(
-        modules='abjad',
+def list_all_ide_classes(ignored_classes=None):
+    return utilities.list_all_classes(
+        modules='ide',
         ignored_classes=ignored_classes,
         )
