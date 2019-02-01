@@ -33,19 +33,6 @@ def test_AbjadIDE_call_shell_03():
     assert "Calling shell on 'pwd' ..." in transcript
 
 
-def test_AbjadIDE_call_shell_04():
-    """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdk !pwd q')
-    transcript = abjad_ide.io.transcript
-    assert "Calling shell on 'pwd' ..." in transcript
-
-
 def test_AbjadIDE_call_shell_05():
     """
     Works with spaces in command.

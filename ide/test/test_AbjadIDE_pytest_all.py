@@ -29,19 +29,6 @@ def test_AbjadIDE_pytest_all_01():
     assert f"Matching '++ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_pytest_all_02():
-    """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdi ++ath q')
-    transcript = abjad_ide.io.transcript 
-    assert f"Matching '++ath' to 1 file ..." in transcript
-
-
 def test_AbjadIDE_pytest_all_03():
     """
     In test directory.

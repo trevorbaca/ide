@@ -2144,15 +2144,6 @@ class AbjadIDE(object):
         messages: typing.List[abjad.String] = job()
         self.io.display(messages)
 
-    def test_baca_directories(self) -> bool:
-        """
-        Is true when IDE can test local directories on Trevor's machine.
-        """
-        scores = abjad.abjad_configuration.composer_scores_directory
-        if 'trevorbaca' in scores:
-            return True
-        return False
-
     ### USER METHODS ###
 
     @Command(

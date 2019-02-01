@@ -106,17 +106,3 @@ def test_AbjadIDE_smart_edit_08():
     abjad_ide('@asdf q')
     transcript = abjad_ide.io.transcript 
     assert "Matching '@asdf' to 0 files ..." in transcript
-
-
-def test_AbjadIDE_smart_edit_09():
-    """
-    Matches directory alias.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('@aka q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Path('akasha')
-    assert "Matching '@aka' to " in transcript
