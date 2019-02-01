@@ -10,17 +10,3 @@ def test_AbjadIDE_edit_aliases_01():
     transcript = abjad_ide.io.transcript
     path = ide.Path(abjad_ide.configuration.aliases_file_path)
     assert f'Editing {path.trim()} ...' in transcript
-
-
-def test_AbjadIDE_edit_aliases_02():
-    """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdk al q')
-    transcript = abjad_ide.io.transcript
-    path = abjad_ide.configuration.aliases_file_path
-    assert f'Editing {path.trim()} ...' in transcript

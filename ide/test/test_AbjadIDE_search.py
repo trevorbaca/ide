@@ -44,16 +44,3 @@ def test_AbjadIDE_search_02():
     grep_line = 'tools/RhythmMaker.py:'
     grep_line += 'class RhythmMaker(rmakers.RhythmMaker):'
     assert ack_line in transcript or grep_line in transcript
-
-
-def test_AbjadIDE_search_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll sr RhythmMaker q')
-    transcript = abjad_ide.io.transcript
-    assert 'Enter search string> RhythmMaker' in transcript

@@ -16,21 +16,6 @@ def test_AbjadIDE_smart_edit_01():
 
 def test_AbjadIDE_smart_edit_02():
     """
-    Edits external file.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdi @ath q')
-    transcript = abjad_ide.io.transcript 
-    directory = ide.Configuration().ide_directory
-    path = directory / 'Path.py'
-    assert f"Editing {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_edit_03():
-    """
     Edits material definition file.
     """
 
@@ -41,7 +26,7 @@ def test_AbjadIDE_smart_edit_03():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_04():
+def test_AbjadIDE_smart_edit_03():
     """
     Edits segment definition file.
     """
@@ -52,7 +37,7 @@ def test_AbjadIDE_smart_edit_04():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_05():
+def test_AbjadIDE_smart_edit_04():
     """
     Edits stylesheet.
     """
@@ -63,7 +48,7 @@ def test_AbjadIDE_smart_edit_05():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_06():
+def test_AbjadIDE_smart_edit_05():
     """
     Edits tools files.
     """
@@ -84,7 +69,7 @@ def test_AbjadIDE_smart_edit_06():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_07():
+def test_AbjadIDE_smart_edit_06():
     """
     Handles single-prefix numeric input.
     """
@@ -103,7 +88,7 @@ def test_AbjadIDE_smart_edit_07():
     assert f"Matching '@99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_08():
+def test_AbjadIDE_smart_edit_07():
     """
     Missing pattern.
     """
@@ -113,7 +98,7 @@ def test_AbjadIDE_smart_edit_08():
     assert "Missing '@' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_09():
+def test_AbjadIDE_smart_edit_08():
     """
     Unmatched pattern.
     """
@@ -123,7 +108,7 @@ def test_AbjadIDE_smart_edit_09():
     assert "Matching '@asdf' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_10():
+def test_AbjadIDE_smart_edit_09():
     """
     Matches file alias.
     """
@@ -138,7 +123,7 @@ def test_AbjadIDE_smart_edit_10():
     assert f'Editing {path.trim()} ...' in transcript
 
 
-def test_AbjadIDE_smart_edit_11():
+def test_AbjadIDE_smart_edit_10():
     """
     Matches directory alias.
     """

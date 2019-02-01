@@ -12,18 +12,3 @@ def test_AbjadIDE_edit_lilypond_log_01():
     path = abjad.abjad_configuration.lilypond_log_file_path
     path = ide.Path(path)
     assert f'Editing {path.trim()} ...' in transcript
-
-
-def test_AbjadIDE_edit_lilypond_log_02():
-    """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdk lp q')
-    transcript = abjad_ide.io.transcript
-    path = abjad.abjad_configuration.lilypond_log_file_path
-    path = ide.Path(path)
-    assert f'Editing {path.trim()} ...' in transcript

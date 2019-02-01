@@ -65,16 +65,3 @@ def test_AbjadIDE_git_commit_02():
     for path in [ide.Path('red_score'), ide.Path('blue_score')]:
         assert f'{path.wrapper} ...' in transcript
         assert '> ci' in transcript
-
-
-def test_AbjadIDE_git_commit_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll ci q')
-    transcript = abjad_ide.io.transcript
-    assert 'Nothing to commit ...' in transcript

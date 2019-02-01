@@ -31,34 +31,6 @@ def test_AbjadIDE_smart_pytest_01():
 
 def test_AbjadIDE_smart_pytest_02():
     """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdi +ath q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Configuration().ide_directory
-    path = path / 'test' / 'test_Path_is_external.py'
-    assert f"Matching '+ath' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_pytest_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll +PAC q')
-    transcript = abjad_ide.io.transcript 
-    assert "Matching '+PAC' to 0 files ..." in transcript
-
-
-def test_AbjadIDE_smart_pytest_04():
-    """
     In test directory.
     """
 
@@ -72,7 +44,7 @@ def test_AbjadIDE_smart_pytest_04():
     assert f"Matching '+tm' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_pytest_05():
+def test_AbjadIDE_smart_pytest_03():
     """
     Handles numbers.
     """
@@ -91,7 +63,7 @@ def test_AbjadIDE_smart_pytest_05():
     assert "Matching '+99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_pytest_06():
+def test_AbjadIDE_smart_pytest_04():
     """
     Missing pattern.
     """
@@ -101,7 +73,7 @@ def test_AbjadIDE_smart_pytest_06():
     assert "Missing '+' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_pytest_07():
+def test_AbjadIDE_smart_pytest_05():
     """
     Unmatched pattern.
     """

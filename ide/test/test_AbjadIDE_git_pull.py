@@ -64,16 +64,3 @@ def test_AbjadIDE_git_pull_02():
     for path in [ide.Path('red_score'), ide.Path('blue_score')]:
         assert f'{path.wrapper} ...' in transcript
         assert 'Running git pull ...' in transcript
-
-
-def test_AbjadIDE_git_pull_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll pull q')
-    transcript = abjad_ide.io.transcript
-    assert 'Running git pull ...' in transcript

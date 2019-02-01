@@ -35,36 +35,6 @@ def test_AbjadIDE_smart_doctest_01():
 
 def test_AbjadIDE_smart_doctest_02():
     """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('cdi ^ath q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Configuration().ide_directory
-    path = path / 'Path.py'
-    assert f"Matching '^ath' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_doctest_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll ^pcom q')
-    transcript = abjad_ide.io.transcript 
-    path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    path = path / 'pitchcommands.py'
-    assert f"Matching '^pcom' to {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_doctest_04():
-    """
     In materials directory.
     """
 
@@ -88,7 +58,7 @@ def test_AbjadIDE_smart_doctest_04():
     assert f"Matching '^ST' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_doctest_05():
+def test_AbjadIDE_smart_doctest_03():
     """
     In segments directory.
     """
@@ -112,7 +82,7 @@ def test_AbjadIDE_smart_doctest_05():
     assert f"Matching '^ST' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_doctest_06():
+def test_AbjadIDE_smart_doctest_04():
     """
     In tools directory.
     """
@@ -128,7 +98,7 @@ def test_AbjadIDE_smart_doctest_06():
     assert f"Matching '^spacing' to {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_doctest_07():
+def test_AbjadIDE_smart_doctest_05():
     """
     Handles numbers.
     """
@@ -147,7 +117,7 @@ def test_AbjadIDE_smart_doctest_07():
     assert "Matching '^99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_doctest_08():
+def test_AbjadIDE_smart_doctest_06():
     """
     Missing pattern.
     """
@@ -157,7 +127,7 @@ def test_AbjadIDE_smart_doctest_08():
     assert "Missing '^' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_doctest_09():
+def test_AbjadIDE_smart_doctest_07():
     """
     Unmatched pattern.
     """

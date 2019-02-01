@@ -76,17 +76,3 @@ def test_AbjadIDE_git_status_02():
         assert f'{path.wrapper} ...' in transcript
         assert 'Running git status ...' in transcript
         assert 'Running git submodule foreach git fetch ...' in transcript
-
-
-def test_AbjadIDE_git_status_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll st q')
-    transcript = abjad_ide.io.transcript
-    assert 'Running git status ...' in transcript
-    assert 'Running git submodule foreach git fetch ...' in transcript

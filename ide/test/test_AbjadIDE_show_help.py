@@ -677,6 +677,7 @@ def test_AbjadIDE_show_help_06():
         ]
 
 
+# TODO: change to external directory (rather than library)
 def test_AbjadIDE_show_help_07():
     r"""
     In library.

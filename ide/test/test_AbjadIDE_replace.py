@@ -27,17 +27,3 @@ def test_AbjadIDE_replace_01():
         assert 'Enter search string> FooMaker' in transcript
         assert 'Enter replace string> RhythmMaker' in transcript
         assert 'Replaced 8 instances over 6 lines in 3 files.' in transcript
-
-
-def test_AbjadIDE_replace_02():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll rp RhythmMaker <return> q')
-    transcript = abjad_ide.io.transcript
-    assert 'Enter search string> RhythmMaker' in transcript
-    assert 'Enter replace string>' in transcript

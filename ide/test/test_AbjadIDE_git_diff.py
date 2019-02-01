@@ -65,17 +65,3 @@ def test_AbjadIDE_git_diff_02():
     for path in [ide.Path('red_score'), ide.Path('blue_score')]:
         assert f'{path.wrapper} ...' in transcript
         assert 'Running git diff ...' in transcript
-
-
-def test_AbjadIDE_git_diff_03():
-    """
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll diff q')
-    transcript = abjad_ide.io.transcript
-    path = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    assert 'Running git diff ...' in transcript
