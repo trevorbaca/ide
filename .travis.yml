@@ -75,16 +75,17 @@ before_install:
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
     # make aliases file for tests
-    - mkdir -p ~/.abjad/ide/__aliases__.py
+    - mkdir -p $HOME/.abjad/ide/__aliases__.py
 
     # log setup:
+    - echo $HOME
     - echo $MYPYPATH
     - echo $PATH
     - echo $PYTHONPATH
     - ls
     - ls /tmp
-    - ls ~/.abjad
-    - ls ~/.abjad/ide
+    - ls $HOME/.abjad
+    - ls $HOME/.abjad/ide
     - pwd
     - which baca-doctest
     - which latex
@@ -103,7 +104,9 @@ script:
     - mypy $PACKAGE
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
-    - coverage run -a `which py.test` -rf $PACKAGE
+    #- coverage run -a `which py.test` -rf $PACKAGE
+    # temporarily testing aliases file location on Travis:
+    - coverage run -a `which py.test` -rf $PACKAGE -k edit_aliases
 
 after_success:
     - pip install coveralls
