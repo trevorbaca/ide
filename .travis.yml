@@ -74,9 +74,12 @@ before_install:
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
-    # make aliases file for tests
+    # make aliases and log files for tests
     - mkdir -p $HOME/.abjad/ide
     - touch $HOME/.abjad/ide/__aliases__.py
+    - touch $HOME/.abjad/ide/latex.log
+    - mkdir -p $HOME/.abjad/output
+    - touch $HOME/.abjad/output/lily.log
 
     # log setup:
     - echo $HOME
