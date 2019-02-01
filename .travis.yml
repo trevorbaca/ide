@@ -75,7 +75,8 @@ before_install:
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
     # make aliases file for tests
-    - mkdir -p $HOME/.abjad/ide/__aliases__.py
+    - mkdir -p $HOME/.abjad/ide
+    - touch $HOME/.abjad/ide/__aliases__.py
 
     # log setup:
     - echo $HOME
@@ -84,6 +85,7 @@ before_install:
     - echo $PYTHONPATH
     - ls
     - ls /tmp
+    - ls $HOME
     - ls $HOME/.abjad
     - ls $HOME/.abjad/ide
     - pwd
