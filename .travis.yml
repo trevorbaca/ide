@@ -85,7 +85,7 @@ before_install:
     - echo $PYTHONPATH
     - ls
     - ls /tmp
-    - ls $HOME
+    - ls -a $HOME
     - ls $HOME/.abjad
     - ls $HOME/.abjad/ide
     - pwd
