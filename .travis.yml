@@ -18,8 +18,8 @@ addons:
         - texlive-latex-extra
         - texlive-latex-recommended
         - texlive-xetex
-        - lmodern # lmodern required for texlive-xetex to find fonts
-        - msttcorefonts # maybe includes palatino?
+        # lmodern required for texlive-xetex to find fonts
+        - lmodern
 
 before_install:
     # alias package
@@ -74,12 +74,17 @@ before_install:
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
     - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
 
+    # make aliases file for tests
+    - mkdir -p ~/.abjad/ide/__aliases__.py
+
     # log setup:
     - echo $MYPYPATH
     - echo $PATH
     - echo $PYTHONPATH
     - ls
     - ls /tmp
+    - ls ~/.abjad
+    - ls ~/.abjad/ide
     - pwd
     - which baca-doctest
     - which latex
