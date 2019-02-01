@@ -108,7 +108,7 @@ script:
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
     #- coverage run -a `which py.test` -rf $PACKAGE
     # temporarily testing aliases file location on Travis:
-    - coverage run -a `which py.test` -rf $PACKAGE -k edit_aliases
+    - coverage run -a `which py.test` -rf $PACKAGE -k edit
 
 after_success:
     - pip install coveralls
