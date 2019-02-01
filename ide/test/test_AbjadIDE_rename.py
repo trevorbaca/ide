@@ -176,34 +176,3 @@ def test_AbjadIDE_rename_07():
         assert f' FROM: {source.trim()}' in transcript
         assert f'   TO: {target.trim()}' in transcript
         assert 'Ok?> y' in transcript
-
-
-def test_AbjadIDE_rename_08():
-    """
-    In library.
-    """
-
-    if not abjad.abjad_configuration.composer_library_tools:
-        return
-
-    directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    with abjad.FilesystemState(keep=[directory]):
-        source = directory / 'FooCommand.py'
-        source.remove()
-        target = source.with_name('NewFooCommand.py')
-        target.remove()
-
-        abjad_ide('ll new FooCommand.py y q')
-        assert source.is_file()
-
-        abjad_ide('ll ren FooCommand.py NewFooCommand.py y q')
-        transcript = abjad_ide.io.transcript
-        assert not source.exists()
-        assert target.is_file()
-        assert 'Select assets to rename> FooCommand.py'
-        assert f'Renaming {source.trim()} ...' in transcript
-        assert 'New name> NewFooCommand.py' in transcript
-        assert 'Renaming ...' in transcript
-        assert f' FROM: {source.trim()}' in transcript
-        assert f'   TO: {target.trim()}' in transcript
-        assert 'Ok?> y' in transcript

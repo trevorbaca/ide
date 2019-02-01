@@ -75,34 +75,6 @@ def test_AbjadIDE_remove_01():
 
 def test_AbjadIDE_remove_02():
     """
-    In library.
-    """
-
-    if not abjad.abjad_configuration.composer_library_tools:
-        return
-
-    directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    with abjad.FilesystemState(keep=[directory]):
-
-        abjad_ide('ll new FooCommand.py y q')
-        path = directory / 'FooCommand.py'
-        assert path.is_file()
-
-        abjad_ide('ll rm FooCommand.py remove q')
-        transcript = abjad_ide.io.transcript
-        assert not path.exists()
-        assert 'Select assets to remove> FooCommand.py'
-        assert f'Will remove {path.trim()} ...' in transcript
-        assert "Type 'remove' to proceed> remove" in transcript
-        assert f'Removing {path.trim()} ...' in transcript
-
-        abjad_ide('ll rm FooCommand.py q')
-        transcript = abjad_ide.io.transcript
-        assert "Matches no path 'FooCommand.py' ..." in transcript
-
-
-def test_AbjadIDE_remove_03():
-    """
     In scores directory. Removes one package.
     """
 
@@ -119,7 +91,7 @@ def test_AbjadIDE_remove_03():
         assert not path.exists()
 
 
-def test_AbjadIDE_remove_04():
+def test_AbjadIDE_remove_03():
     """
     In scores directory. Removes multiple packages.
     """
@@ -143,7 +115,7 @@ def test_AbjadIDE_remove_04():
         assert not path_2.exists()
 
 
-def test_AbjadIDE_remove_05():
+def test_AbjadIDE_remove_04():
     """
     In stylesheets directory. Works with smart match.
     """

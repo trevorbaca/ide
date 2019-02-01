@@ -43,7 +43,6 @@ def test_AbjadIDE_show_help_01():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -134,7 +133,6 @@ def test_AbjadIDE_show_help_02():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -298,7 +296,6 @@ def test_AbjadIDE_show_help_03():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -447,7 +444,6 @@ def test_AbjadIDE_show_help_04():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -569,7 +565,6 @@ def test_AbjadIDE_show_help_05():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -640,7 +635,6 @@ def test_AbjadIDE_show_help_06():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -677,71 +671,7 @@ def test_AbjadIDE_show_help_06():
         ]
 
 
-# TODO: change to external directory (rather than library)
 def test_AbjadIDE_show_help_07():
-    r"""
-    In library.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll ? q')
-    menu = abjad_ide.io.transcript.menus[-1]
-    assert menu == [
-        'Abjad IDE : library : help',
-        '',
-        '    all - doctest (^^)',
-        '    all - edit (@@)',
-        '    all - pdfs (**)',
-        '    all - pytest (++)',
-        '',
-        '    clipboard - copy (cbc)',
-        '    clipboard - cut (cbx)',
-        '    clipboard - empty (cbe)',
-        '    clipboard - paste (cbv)',
-        '    clipboard - show (cbs)',
-        '',
-        '    git - commit (ci)',
-        '    git - diff (diff)',
-        '    git - pull (pull)',
-        '    git - push (push)',
-        '    git - status (st)',
-        '',
-        '    go - back (-)',
-        '    go - directory (%)',
-        '    go - library (ll)',
-        '    go - quit (q)',
-        '    go - scores (ss)',
-        '    go - up (..)',
-        '',
-        '    log - aliases (al)',
-        '    log - latex (lx)',
-        '    log - lilypond (lp)',
-        '',
-        '    path - duplicate (dup)',
-        '    path - new (new)',
-        '    path - remove (rm)',
-        '    path - rename (ren)',
-        '',
-        '    shell - call (!)',
-        '',
-        '    show - column (;)',
-        '    show - help (?)',
-        '',
-        '    smart - doctest (^)',
-        '    smart - edit (@)',
-        '    smart - pdf (*)',
-        '    smart - pytest (+)',
-        '',
-        '    text - edit (it)',
-        '    text - replace (rp)',
-        '    text - search (sr)',
-        '',
-        ]
-
-
-def test_AbjadIDE_show_help_08():
     """
     In material directory.
     """
@@ -785,7 +715,6 @@ def test_AbjadIDE_show_help_08():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -836,7 +765,7 @@ def test_AbjadIDE_show_help_08():
         ]
 
 
-def test_AbjadIDE_show_help_09():
+def test_AbjadIDE_show_help_08():
     r"""
     In materials directory.
     """
@@ -880,7 +809,6 @@ def test_AbjadIDE_show_help_09():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -932,7 +860,7 @@ def test_AbjadIDE_show_help_09():
         ]
 
 
-def test_AbjadIDE_show_help_10():
+def test_AbjadIDE_show_help_09():
     """
     In parts directory.
     """
@@ -990,7 +918,6 @@ def test_AbjadIDE_show_help_10():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1102,7 +1029,7 @@ def test_AbjadIDE_show_help_10():
         ]
 
 
-def test_AbjadIDE_show_help_11():
+def test_AbjadIDE_show_help_10():
     """
     In scores directory.
     """
@@ -1131,7 +1058,6 @@ def test_AbjadIDE_show_help_11():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1167,7 +1093,7 @@ def test_AbjadIDE_show_help_11():
         ]
 
 
-def test_AbjadIDE_show_help_12():
+def test_AbjadIDE_show_help_11():
     """
     In segment directory.
     """
@@ -1211,7 +1137,6 @@ def test_AbjadIDE_show_help_12():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1307,7 +1232,7 @@ def test_AbjadIDE_show_help_12():
         ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_12():
     """
     In segments directory.
     """
@@ -1351,7 +1276,6 @@ def test_AbjadIDE_show_help_13():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1446,7 +1370,7 @@ def test_AbjadIDE_show_help_13():
         ]
 
 
-def test_AbjadIDE_show_help_14():
+def test_AbjadIDE_show_help_13():
     """
     In stylesheets directory.
     """
@@ -1486,7 +1410,6 @@ def test_AbjadIDE_show_help_14():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1523,7 +1446,7 @@ def test_AbjadIDE_show_help_14():
         ]
 
 
-def test_AbjadIDE_show_help_15():
+def test_AbjadIDE_show_help_14():
     """
     In test directory.
     """
@@ -1563,7 +1486,6 @@ def test_AbjadIDE_show_help_15():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1600,7 +1522,7 @@ def test_AbjadIDE_show_help_15():
         ]
 
 
-def test_AbjadIDE_show_help_16():
+def test_AbjadIDE_show_help_15():
     """
     In tools directory.
     """
@@ -1640,7 +1562,6 @@ def test_AbjadIDE_show_help_16():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',
@@ -1677,7 +1598,7 @@ def test_AbjadIDE_show_help_16():
         ]
 
 
-def test_AbjadIDE_show_help_17():
+def test_AbjadIDE_show_help_16():
     """
     In wrapper directory.
     """
@@ -1717,7 +1638,6 @@ def test_AbjadIDE_show_help_17():
         '',
         '    go - back (-)',
         '    go - directory (%)',
-        '    go - library (ll)',
         '    go - quit (q)',
         '    go - scores (ss)',
         '    go - up (..)',

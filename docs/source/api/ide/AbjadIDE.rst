@@ -94,7 +94,6 @@ AbjadIDE
       go_to_directory
       go_to_distribution_directory
       go_to_etc_directory
-      go_to_library
       go_to_materials_directory
       go_to_next_package
       go_to_next_score
@@ -336,8 +335,6 @@ AbjadIDE
    .. automethod:: AbjadIDE.go_to_distribution_directory
 
    .. automethod:: AbjadIDE.go_to_etc_directory
-
-   .. automethod:: AbjadIDE.go_to_library
 
    .. automethod:: AbjadIDE.go_to_materials_directory
 

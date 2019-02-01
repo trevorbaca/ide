@@ -4,25 +4,6 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_go_to_directory_01():
     """
-    Goes to aliased directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('ll %str q')
-    transcript = abjad_ide.io.transcript 
-    assert 'Abjad IDE : library' in transcript.titles
-    assert 'Stirrings Still (2018)' in transcript.titles
-
-    abjad_ide('ll %fab q')
-    transcript = abjad_ide.io.transcript 
-    assert 'Abjad IDE : library' in transcript.titles
-    assert 'Fabergé Investigations (2019)' in transcript.titles
-
-
-def test_AbjadIDE_go_to_directory_02():
-    """
     Goes to assets directory.
     """
 
@@ -31,7 +12,7 @@ def test_AbjadIDE_go_to_directory_02():
     assert 'Red Score (2017) : builds : _assets (empty)' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_03():
+def test_AbjadIDE_go_to_directory_02():
     """
     Goes to build directory.
     """
@@ -41,7 +22,7 @@ def test_AbjadIDE_go_to_directory_03():
     assert 'Red Score (2017) : builds : letter-score' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_04():
+def test_AbjadIDE_go_to_directory_03():
     """
     Goes to distribution directory.
     """
@@ -51,7 +32,7 @@ def test_AbjadIDE_go_to_directory_04():
     assert 'Red Score (2017) : distribution' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_05():
+def test_AbjadIDE_go_to_directory_04():
     """
     Goes to etc directory.
     """
@@ -61,7 +42,7 @@ def test_AbjadIDE_go_to_directory_05():
     assert 'Red Score (2017) : etc' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_06():
+def test_AbjadIDE_go_to_directory_05():
     """
     Goes to material directory.
     """
@@ -72,7 +53,7 @@ def test_AbjadIDE_go_to_directory_06():
     assert line in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_07():
+def test_AbjadIDE_go_to_directory_06():
     """
     Goes to materials directory.
     """
@@ -82,7 +63,7 @@ def test_AbjadIDE_go_to_directory_07():
     assert 'Red Score (2017) : materials' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_08():
+def test_AbjadIDE_go_to_directory_07():
     """
     Goes to segment directory.
     """
@@ -92,7 +73,7 @@ def test_AbjadIDE_go_to_directory_08():
     assert 'Red Score (2017) : segments : A' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_09():
+def test_AbjadIDE_go_to_directory_08():
     """
     Goes to segments directory.
     """
@@ -102,7 +83,7 @@ def test_AbjadIDE_go_to_directory_09():
     assert 'Red Score (2017) : segments' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_10():
+def test_AbjadIDE_go_to_directory_09():
     """
     Goes to stylesheet directory.
     """
@@ -112,7 +93,7 @@ def test_AbjadIDE_go_to_directory_10():
     assert 'Red Score (2017) : stylesheets' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_11():
+def test_AbjadIDE_go_to_directory_10():
     """
     Goes to test directory.
     """
@@ -122,7 +103,7 @@ def test_AbjadIDE_go_to_directory_11():
     assert 'Red Score (2017) : test' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_12():
+def test_AbjadIDE_go_to_directory_11():
     """
     Goes to tools directory.
     """
@@ -132,7 +113,7 @@ def test_AbjadIDE_go_to_directory_12():
     assert 'Red Score (2017) : tools' in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_13():
+def test_AbjadIDE_go_to_directory_12():
     """
     Handles numeric input.
     """
@@ -151,7 +132,7 @@ def test_AbjadIDE_go_to_directory_13():
     assert "Matching '%99' to 0 directories ..." in transcript
 
 
-def test_AbjadIDE_go_to_directory_14():
+def test_AbjadIDE_go_to_directory_13():
     """
     Handles empty input and junk input.
     """
@@ -165,7 +146,7 @@ def test_AbjadIDE_go_to_directory_14():
     assert "Matching '%asdf' to 0 directories ..." in transcript
 
 
-def test_AbjadIDE_go_to_directory_15():
+def test_AbjadIDE_go_to_directory_14():
     """
     Handles double input.
     """

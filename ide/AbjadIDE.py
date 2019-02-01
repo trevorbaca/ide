@@ -865,17 +865,6 @@ class AbjadIDE(object):
             if predicate and not predicate(abjad.String(name)):
                 self.io.display(f'invalid file name {name!r} ...')
                 return
-        elif directory.is_library():
-            suffix = Path(name).suffix
-            if suffix and suffix != '.py':
-                self.io.display(f'invalid file name {name!r} ...')
-            stem = abjad.String(Path(name).stem)
-            if stem.islower():
-                stem = stem.to_snake_case()
-            else:
-                stem = stem.to_upper_camel_case()
-            suffix = suffix or '.py'
-            name = stem + suffix
         target = directory / name
         if target.exists():
             self.io.display(f'existing {target.trim()} ...')
@@ -1247,7 +1236,6 @@ class AbjadIDE(object):
             composer_full_name=abjad.abjad_configuration.composer_full_name,
             composer_github_username=abjad.abjad_configuration.composer_github_username,
             composer_last_name=abjad.abjad_configuration.composer_last_name,
-            composer_library=abjad.abjad_configuration.composer_library,
             score_title=title,
             year=year,
             )
@@ -3834,24 +3822,6 @@ class AbjadIDE(object):
         assert directory.is_score_package_path()
         assert directory.etc is not None
         self._manage_directory(directory.etc)
-
-    @Command(
-        'll',
-        description='go - library',
-        external_directories=True,
-        menu_section='go',
-        score_package_paths=True,
-        scores_directory=True,
-        )
-    def go_to_library(self) -> None:
-        """
-        Goes to library.
-        """
-        library = abjad.abjad_configuration.composer_library_tools
-        if library is None:
-            self.io.display('missing library ...')
-        else:
-            self._manage_directory(Path(library))
 
     @Command(
         'mm',

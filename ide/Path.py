@@ -347,10 +347,7 @@ class Path(abjad.Path):
         if self.is_scores():
             return 'Abjad IDE : scores'
         if self.is_external():
-            if self.parent.name == abjad.abjad_configuration.composer_library:
-                header = 'Abjad IDE : library'
-            else:
-                header = f'Abjad IDE : {self}'
+            header = f'Abjad IDE : {self}'
             if not self.list_paths():
                 header += ' (empty)'
             return header

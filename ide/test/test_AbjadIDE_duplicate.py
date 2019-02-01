@@ -44,31 +44,6 @@ def test_AbjadIDE_duplicate_03():
 
 def test_AbjadIDE_duplicate_04():
     """
-    In external directory.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    directory = ide.Path('/Users/trevorbaca/baca/baca')
-    with abjad.FilesystemState(keep=[directory]):
-        source = directory / 'pitchcommands.py'
-        assert source.is_file()
-        target = source.with_name('newpitchcommands.py')
-        target.remove()
-
-        abjad_ide(f'll dup pitchcommands.py newpitchcommands.py y q')
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        assert f'Select assets to duplicate> pitchcommands.py' in transcript
-        assert f'Duplicating {source.trim()} ...' in transcript
-        assert 'Enter new name> newpitchcommands.py' in transcript
-        assert f'Writing {target.trim()} ...' in transcript
-        assert 'Ok?> y' in transcript
-
-
-def test_AbjadIDE_duplicate_05():
-    """
     In materials directory.
     """
 
@@ -90,7 +65,7 @@ def test_AbjadIDE_duplicate_05():
         assert line in transcript
 
 
-def test_AbjadIDE_duplicate_06():
+def test_AbjadIDE_duplicate_05():
     """
     In scores directory.
     """
@@ -112,7 +87,7 @@ def test_AbjadIDE_duplicate_06():
         assert "Replacing 'Red Score' with 'Purple Score' ..." in transcript
 
 
-def test_AbjadIDE_duplicate_07():
+def test_AbjadIDE_duplicate_06():
     """
     In scores directory. Handles empty return gracefully.
     """
@@ -122,7 +97,7 @@ def test_AbjadIDE_duplicate_07():
     assert 'Select packages to duplicate> ' in transcript
 
 
-def test_AbjadIDE_duplicate_08():
+def test_AbjadIDE_duplicate_07():
     """
     In segments directory.
     """
@@ -144,7 +119,7 @@ def test_AbjadIDE_duplicate_08():
         assert "Replacing 'A' with 'B' ..." in transcript
 
 
-def test_AbjadIDE_duplicate_09():
+def test_AbjadIDE_duplicate_08():
     """
     In stylesheets directory.
     """
@@ -165,7 +140,7 @@ def test_AbjadIDE_duplicate_09():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_duplicate_10():
+def test_AbjadIDE_duplicate_09():
     """
     In test directory.
     """
@@ -186,7 +161,7 @@ def test_AbjadIDE_duplicate_10():
         assert 'Ok?> y' in transcript
 
 
-def test_AbjadIDE_duplicate_11():
+def test_AbjadIDE_duplicate_10():
     """
     In tools directory.
     """

@@ -323,10 +323,6 @@ Path
 
    .. container:: inherited
 
-      .. automethod:: Path.is_library
-
-   .. container:: inherited
-
       .. automethod:: Path.is_material
 
    .. container:: inherited

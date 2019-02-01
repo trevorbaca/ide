@@ -110,21 +110,6 @@ def test_AbjadIDE_smart_edit_08():
 
 def test_AbjadIDE_smart_edit_09():
     """
-    Matches file alias.
-    """
-
-    if not abjad_ide.test_baca_directories():
-        return
-
-    abjad_ide('@pcom q')
-    transcript = abjad_ide.io.transcript 
-    path = abjad.abjad_configuration.composer_library_tools
-    path = ide.Path(path) / 'pitchcommands.py'
-    assert f'Editing {path.trim()} ...' in transcript
-
-
-def test_AbjadIDE_smart_edit_10():
-    """
     Matches directory alias.
     """
 

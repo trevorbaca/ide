@@ -527,39 +527,3 @@ def test_AbjadIDE_new_11():
         abjad_ide('red oo new make~material q')
         transcript = abjad_ide.io.transcript
         assert f'Existing {path.trim()} ...'
-
-
-def test_AbjadIDE_new_12():
-    """
-    In library.
-    """
-
-    if not abjad.abjad_configuration.composer_library_tools:
-        return
-
-    directory = ide.Path(abjad.abjad_configuration.composer_library_tools)
-    with abjad.FilesystemState(keep=[directory]):
-
-        abjad_ide('ll new FooCommand y q')
-        transcript = abjad_ide.io.transcript
-        path = directory / 'FooCommand.py'
-        assert path.is_file()
-        assert 'File name> FooCommand' in transcript
-        assert f'Writing {path.trim()} ...' in transcript
-        assert 'Ok?> y' in transcript
-
-        abjad_ide('ll new FooCommand q')
-        transcript = abjad_ide.io.transcript
-        assert f'Existing {path.trim()} ...' in transcript
-
-        abjad_ide('ll new foo~command y q')
-        transcript = abjad_ide.io.transcript
-        path = directory / 'foo_command.py'
-        assert path.is_file()
-        assert 'File name> foo command' in transcript
-        assert f'Writing {path.trim()} ...' in transcript
-        assert 'Ok?> y' in transcript
-
-        abjad_ide('ll new foo~command q')
-        transcript = abjad_ide.io.transcript
-        assert f'Existing {path.trim()} ...' in transcript
