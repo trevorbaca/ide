@@ -22,10 +22,10 @@
                     \once \override Score.MultiMeasureRest.transparent = ##t             %! SM19
                     \once \override Score.TimeSignature.stencil = ##f                    %! SM19
                     R1 * 1/4
-                    ^ \markup {                                                          %! FIGURE_NAME_MARKUP:SM18
-                        \musicglyph                                                      %! FIGURE_NAME_MARKUP:SM18
-                            #"scripts.ulongfermata"                                      %! FIGURE_NAME_MARKUP:SM18
-                        }                                                                %! FIGURE_NAME_MARKUP:SM18
+                    ^ \markup {                                                          %! FIGURE_NAME:SM18
+                        \musicglyph                                                      %! FIGURE_NAME:SM18
+                            #"scripts.ulongfermata"                                      %! FIGURE_NAME:SM18
+                        }                                                                %! FIGURE_NAME:SM18
                     
                 }
                 \context GlobalSkips = "GlobalSkips" {
@@ -91,38 +91,38 @@
                     ^ \markup {
                         \column
                             {
-                            %@% \line                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%     {                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%             #3                                           %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%                 <0>                                      %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%     }                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@% \line                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%     {                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%         \fontsize                                        %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%             #3                                           %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%             \with-color                                  %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%                 (1)                                      %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%     }                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@% \line                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@%     {                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@%         \fontsize                                        %! STAGE_NUMBER_MARKUP:SM3
-                            %@%             #3                                           %! STAGE_NUMBER_MARKUP:SM3
-                            %@%             \with-color                                  %! STAGE_NUMBER_MARKUP:SM3
-                            %@%                 #(x11-color 'DarkCyan)                   %! STAGE_NUMBER_MARKUP:SM3
-                            %@%                 [1]                                      %! STAGE_NUMBER_MARKUP:SM3
-                            %@%     }                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@% \line                                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%     {                                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%         \with-color                                      %! CLOCK_TIME_MARKUP:SM28
-                            %@%             #(x11-color 'DarkCyan)                       %! CLOCK_TIME_MARKUP:SM28
-                            %@%             \fontsize                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%                 #3                                       %! CLOCK_TIME_MARKUP:SM28
-                            %@%                 [0'00'']                                 %! CLOCK_TIME_MARKUP:SM28
-                            %@%     }                                                    %! CLOCK_TIME_MARKUP:SM28
+                            %@% \line                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@%     {                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX:SM31
+                            %@%             #3                                           %! LOCAL_MEASURE_INDEX:SM31
+                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX:SM31
+                            %@%                 <0>                                      %! LOCAL_MEASURE_INDEX:SM31
+                            %@%     }                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@% \line                                                    %! MEASURE_NUMBER:SM31
+                            %@%     {                                                    %! MEASURE_NUMBER:SM31
+                            %@%         \fontsize                                        %! MEASURE_NUMBER:SM31
+                            %@%             #3                                           %! MEASURE_NUMBER:SM31
+                            %@%             \with-color                                  %! MEASURE_NUMBER:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_NUMBER:SM31
+                            %@%                 (1)                                      %! MEASURE_NUMBER:SM31
+                            %@%     }                                                    %! MEASURE_NUMBER:SM31
+                            %@% \line                                                    %! STAGE_NUMBER:SM3
+                            %@%     {                                                    %! STAGE_NUMBER:SM3
+                            %@%         \fontsize                                        %! STAGE_NUMBER:SM3
+                            %@%             #3                                           %! STAGE_NUMBER:SM3
+                            %@%             \with-color                                  %! STAGE_NUMBER:SM3
+                            %@%                 #(x11-color 'DarkCyan)                   %! STAGE_NUMBER:SM3
+                            %@%                 [1]                                      %! STAGE_NUMBER:SM3
+                            %@%     }                                                    %! STAGE_NUMBER:SM3
+                            %@% \line                                                    %! CLOCK_TIME:SM28
+                            %@%     {                                                    %! CLOCK_TIME:SM28
+                            %@%         \with-color                                      %! CLOCK_TIME:SM28
+                            %@%             #(x11-color 'DarkCyan)                       %! CLOCK_TIME:SM28
+                            %@%             \fontsize                                    %! CLOCK_TIME:SM28
+                            %@%                 #3                                       %! CLOCK_TIME:SM28
+                            %@%                 [0'00'']                                 %! CLOCK_TIME:SM28
+                            %@%     }                                                    %! CLOCK_TIME:SM28
                             }
                         }
                     
@@ -134,38 +134,38 @@
                     ^ \markup {
                         \column
                             {
-                            %@% \line                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%     {                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%             #3                                           %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%                 <1>                                      %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@%     }                                                    %! LOCAL_MEASURE_INDEX_MARKUP:SM31
-                            %@% \line                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%     {                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%         \fontsize                                        %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%             #3                                           %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%             \with-color                                  %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%                 (2)                                      %! MEASURE_NUMBER_MARKUP:SM31
-                            %@%     }                                                    %! MEASURE_NUMBER_MARKUP:SM31
-                            %@% \line                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@%     {                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@%         \fontsize                                        %! STAGE_NUMBER_MARKUP:SM3
-                            %@%             #3                                           %! STAGE_NUMBER_MARKUP:SM3
-                            %@%             \with-color                                  %! STAGE_NUMBER_MARKUP:SM3
-                            %@%                 #(x11-color 'DarkCyan)                   %! STAGE_NUMBER_MARKUP:SM3
-                            %@%                 [2]                                      %! STAGE_NUMBER_MARKUP:SM3
-                            %@%     }                                                    %! STAGE_NUMBER_MARKUP:SM3
-                            %@% \line                                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%     {                                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%         \with-color                                      %! CLOCK_TIME_MARKUP:SM28
-                            %@%             #(x11-color 'DarkCyan)                       %! CLOCK_TIME_MARKUP:SM28
-                            %@%             \fontsize                                    %! CLOCK_TIME_MARKUP:SM28
-                            %@%                 #3                                       %! CLOCK_TIME_MARKUP:SM28
-                            %@%                 [0'07'']                                 %! CLOCK_TIME_MARKUP:SM28
-                            %@%     }                                                    %! CLOCK_TIME_MARKUP:SM28
+                            %@% \line                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@%     {                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@%         \fontsize                                        %! LOCAL_MEASURE_INDEX:SM31
+                            %@%             #3                                           %! LOCAL_MEASURE_INDEX:SM31
+                            %@%             \with-color                                  %! LOCAL_MEASURE_INDEX:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! LOCAL_MEASURE_INDEX:SM31
+                            %@%                 <1>                                      %! LOCAL_MEASURE_INDEX:SM31
+                            %@%     }                                                    %! LOCAL_MEASURE_INDEX:SM31
+                            %@% \line                                                    %! MEASURE_NUMBER:SM31
+                            %@%     {                                                    %! MEASURE_NUMBER:SM31
+                            %@%         \fontsize                                        %! MEASURE_NUMBER:SM31
+                            %@%             #3                                           %! MEASURE_NUMBER:SM31
+                            %@%             \with-color                                  %! MEASURE_NUMBER:SM31
+                            %@%                 #(x11-color 'DarkCyan)                   %! MEASURE_NUMBER:SM31
+                            %@%                 (2)                                      %! MEASURE_NUMBER:SM31
+                            %@%     }                                                    %! MEASURE_NUMBER:SM31
+                            %@% \line                                                    %! STAGE_NUMBER:SM3
+                            %@%     {                                                    %! STAGE_NUMBER:SM3
+                            %@%         \fontsize                                        %! STAGE_NUMBER:SM3
+                            %@%             #3                                           %! STAGE_NUMBER:SM3
+                            %@%             \with-color                                  %! STAGE_NUMBER:SM3
+                            %@%                 #(x11-color 'DarkCyan)                   %! STAGE_NUMBER:SM3
+                            %@%                 [2]                                      %! STAGE_NUMBER:SM3
+                            %@%     }                                                    %! STAGE_NUMBER:SM3
+                            %@% \line                                                    %! CLOCK_TIME:SM28
+                            %@%     {                                                    %! CLOCK_TIME:SM28
+                            %@%         \with-color                                      %! CLOCK_TIME:SM28
+                            %@%             #(x11-color 'DarkCyan)                       %! CLOCK_TIME:SM28
+                            %@%             \fontsize                                    %! CLOCK_TIME:SM28
+                            %@%                 #3                                       %! CLOCK_TIME:SM28
+                            %@%                 [0'07'']                                 %! CLOCK_TIME:SM28
+                            %@%     }                                                    %! CLOCK_TIME:SM28
                             }
                         }
                     \override Score.BarLine.transparent = ##f                            %! SM5

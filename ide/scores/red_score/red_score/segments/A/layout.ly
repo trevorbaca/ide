@@ -1,57 +1,44 @@
-\context Score = "Score" \with {
-    currentBarNumber = #3
-} <<
-    \context GlobalContext = "GlobalContext" <<
-        \context PageLayout = "PageLayout" {
-            
-            % PageLayout [measure 3]                                                     %! SM4
-            \autoPageBreaksOff                                                           %! BREAK:BMM1
-            \noBreak                                                                     %! BREAK:BMM2
-            \overrideProperty Score.NonMusicalPaperColumn.line-break-system-details      %! BREAK:IC
-            #'((Y-offset . 20) (alignment-distances . (15 20)))                          %! BREAK:IC
-            \pageBreak                                                                   %! BREAK:IC
-            s1 * 3/4
-        %@% ^ \markup {                                                                  %! MEASURE_INDEX_MARKUP:SM32
-        %@%     \fontsize                                                                %! MEASURE_INDEX_MARKUP:SM32
-        %@%         #3                                                                   %! MEASURE_INDEX_MARKUP:SM32
-        %@%         \with-color                                                          %! MEASURE_INDEX_MARKUP:SM32
-        %@%             #(x11-color 'DarkCyan)                                           %! MEASURE_INDEX_MARKUP:SM32
-        %@%             <0>                                                              %! MEASURE_INDEX_MARKUP:SM32
-        %@%     }                                                                        %! MEASURE_INDEX_MARKUP:SM32
-            
-            % PageLayout [measure 4]                                                     %! SM4
-            \noBreak                                                                     %! BREAK:BMM2
-            s1 * 3/4
-        %@% ^ \markup {                                                                  %! MEASURE_INDEX_MARKUP:SM32
-        %@%     \fontsize                                                                %! MEASURE_INDEX_MARKUP:SM32
-        %@%         #3                                                                   %! MEASURE_INDEX_MARKUP:SM32
-        %@%         \with-color                                                          %! MEASURE_INDEX_MARKUP:SM32
-        %@%             #(x11-color 'DarkCyan)                                           %! MEASURE_INDEX_MARKUP:SM32
-        %@%             <1>                                                              %! MEASURE_INDEX_MARKUP:SM32
-        %@%     }                                                                        %! MEASURE_INDEX_MARKUP:SM32
-            
-            % PageLayout [measure 5]                                                     %! SM4
-            \noBreak                                                                     %! BREAK:BMM2
-            s1 * 3/4
-        %@% ^ \markup {                                                                  %! MEASURE_INDEX_MARKUP:SM32
-        %@%     \fontsize                                                                %! MEASURE_INDEX_MARKUP:SM32
-        %@%         #3                                                                   %! MEASURE_INDEX_MARKUP:SM32
-        %@%         \with-color                                                          %! MEASURE_INDEX_MARKUP:SM32
-        %@%             #(x11-color 'DarkCyan)                                           %! MEASURE_INDEX_MARKUP:SM32
-        %@%             <2>                                                              %! MEASURE_INDEX_MARKUP:SM32
-        %@%     }                                                                        %! MEASURE_INDEX_MARKUP:SM32
-            
-            % PageLayout [measure 6]                                                     %! SM4
-            \noBreak                                                                     %! BREAK:BMM2
-            s1 * 3/4
-        %@% ^ \markup {                                                                  %! MEASURE_INDEX_MARKUP:SM32
-        %@%     \fontsize                                                                %! MEASURE_INDEX_MARKUP:SM32
-        %@%         #3                                                                   %! MEASURE_INDEX_MARKUP:SM32
-        %@%         \with-color                                                          %! MEASURE_INDEX_MARKUP:SM32
-        %@%             #(x11-color 'DarkCyan)                                           %! MEASURE_INDEX_MARKUP:SM32
-        %@%             <3>                                                              %! MEASURE_INDEX_MARKUP:SM32
-        %@%     }                                                                        %! MEASURE_INDEX_MARKUP:SM32
-            
-        }
-    >>
->>
+% page_count = 1
+% measure_count = 4
+% time_signatures = [
+% '3/4', '3/4', '3/4', '3/4'
+%  ]
+
+
+\context Score = "Score"                                                       %! baca.SingleStaffScoreTemplate.__call__
+\with                                                                          %! baca.SingleStaffScoreTemplate.__call__
+{                                                                              %! baca.SingleStaffScoreTemplate.__call__
+    currentBarNumber = #3                                                      %! baca.SingleStaffScoreTemplate.__call__
+}                                                                              %! baca.SingleStaffScoreTemplate.__call__
+<<                                                                             %! baca.SingleStaffScoreTemplate.__call__
+
+    \context GlobalContext = "Global_Context"                                  %! abjad.ScoreTemplate._make_global_context
+    <<                                                                         %! abjad.ScoreTemplate._make_global_context
+
+        \context PageLayout = "Page_Layout"                                    %! abjad.ScoreTemplate._make_global_context
+        {   %*% Page_Layout                                                    %! abjad.ScoreTemplate._make_global_context
+
+            % [Page_Layout measure 3]                                          %! _comment_measure_numbers
+            \autoPageBreaksOff                                                 %! BreakMeasureMap(1):BREAK
+            \noBreak                                                           %! BreakMeasureMap(2):BREAK
+            \baca-lbsd #20 #'(15 20)                                           %! BREAK:IndicatorCommand
+            \pageBreak                                                         %! BREAK:IndicatorCommand
+            s1 * 3/4                                                           %! _make_global_skips(1)
+
+            % [Page_Layout measure 4]                                          %! _comment_measure_numbers
+            \noBreak                                                           %! BreakMeasureMap(2):BREAK
+            s1 * 3/4                                                           %! _make_global_skips(1)
+
+            % [Page_Layout measure 5]                                          %! _comment_measure_numbers
+            \noBreak                                                           %! BreakMeasureMap(2):BREAK
+            s1 * 3/4                                                           %! _make_global_skips(1)
+
+            % [Page_Layout measure 6]                                          %! _comment_measure_numbers
+            \noBreak                                                           %! BreakMeasureMap(2):BREAK
+            s1 * 3/4                                                           %! _make_global_skips(1)
+
+        }   %*% Page_Layout                                                    %! abjad.ScoreTemplate._make_global_context
+
+    >>                                                                         %! abjad.ScoreTemplate._make_global_context
+
+>>                                                                             %! baca.SingleStaffScoreTemplate.__call__

@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.const.STAGE_NUMBER_MARKUP
+tag = abjad.const.STAGE_NUMBER
 
 def test_AbjadIDE_show_stage_numbers_01():
     """

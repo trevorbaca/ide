@@ -10,7 +10,7 @@ def test_AbjadIDE_show_local_measure_indices_01():
 
     with ide.Test():
 
-        tag = abjad.const.LOCAL_MEASURE_INDEX_MARKUP
+        tag = abjad.const.LOCAL_MEASURE_INDEX
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build / '_segments' / 'segment--.ly'
 
@@ -43,7 +43,7 @@ def test_AbjadIDE_show_local_measure_indices_02():
 
     with ide.Test():
 
-        tag = abjad.const.LOCAL_MEASURE_INDEX_MARKUP
+        tag = abjad.const.LOCAL_MEASURE_INDEX
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
