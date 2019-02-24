@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_show_measure_number_markup_01():
+def test_AbjadIDE_show_measure_numbers_01():
     """
     In build directory.
     """
@@ -17,7 +17,7 @@ def test_AbjadIDE_show_measure_number_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score mnms q')
+        abjad_ide('gre bb arch-a-score mns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing measure number markup ...',
@@ -26,7 +26,7 @@ def test_AbjadIDE_show_measure_number_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score mnmh q')
+        abjad_ide('gre bb arch-a-score mnh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding measure number markup ...',
@@ -36,7 +36,7 @@ def test_AbjadIDE_show_measure_number_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_show_measure_number_markup_02():
+def test_AbjadIDE_show_measure_numbers_02():
     """
     In segment directory.
     """
@@ -47,7 +47,7 @@ def test_AbjadIDE_show_measure_number_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ mnms q')
+        abjad_ide('gre %_ mns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing measure number markup ...',
@@ -56,7 +56,7 @@ def test_AbjadIDE_show_measure_number_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ mnmh q')
+        abjad_ide('gre %_ mnh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding measure number markup ...',

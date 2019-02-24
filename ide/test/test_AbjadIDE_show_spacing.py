@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_show_spacing_markup_01():
+def test_AbjadIDE_show_spacing_01():
     """
     In build directory.
     """
@@ -16,7 +16,7 @@ def test_AbjadIDE_show_spacing_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score spms q')
+        abjad_ide('gre bb arch-a-score sps q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing spacing markup ...',
@@ -25,7 +25,7 @@ def test_AbjadIDE_show_spacing_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_show_spacing_markup_02():
+def test_AbjadIDE_show_spacing_02():
     """
     In segment directory.
     """
@@ -35,7 +35,7 @@ def test_AbjadIDE_show_spacing_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'layout.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ spms q')
+        abjad_ide('gre %_ sps q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing spacing markup ...',
@@ -44,7 +44,7 @@ def test_AbjadIDE_show_spacing_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ spmh q')
+        abjad_ide('gre %_ sph q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding spacing markup ...',

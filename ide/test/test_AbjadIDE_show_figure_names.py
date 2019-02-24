@@ -3,9 +3,9 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.tags.STAGE_NUMBER_MARKUP
+tag = abjad.tags.FIGURE_NAME_MARKUP
 
-def test_AbjadIDE_show_stage_number_markup_01():
+def test_AbjadIDE_show_figure_names_01():
     """
     In build directory.
     """
@@ -18,26 +18,26 @@ def test_AbjadIDE_show_stage_number_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score snms q')
+        abjad_ide('gre bb arch-a-score fns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing stage number markup ...',
-            ' Found 2 stage number markup tags ...',
-            ' Activating 2 stage number markup tags ...',
+            'Showing figure name markup ...',
+            ' Found 1 figure name markup tag ...',
+            ' Activating 1 figure name markup tag ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score snmh q')
+        abjad_ide('gre bb arch-a-score fnh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding stage number markup ...',
-            ' Found 2 stage number markup tags ...',
-            ' Deactivating 2 stage number markup tags ...',
+            'Hiding figure name markup ...',
+            ' Found 1 figure name markup tag ...',
+            ' Deactivating 1 figure name markup tag ...',
             ]:
             assert line in lines
 
 
-def test_AbjadIDE_show_stage_number_markup_02():
+def test_AbjadIDE_show_figure_names_02():
     """
     In segment directory.
     """
@@ -47,20 +47,20 @@ def test_AbjadIDE_show_stage_number_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ snms q')
+        abjad_ide('gre %_ fnh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing stage number markup ...',
-            ' Found 2 stage number markup tags ...',
-            ' Activating 2 stage number markup tags ...',
+            'Hiding figure name markup ...',
+            ' Found 1 figure name markup tag ...',
+            ' Deactivating 1 figure name markup tag ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ snmh q')
+        abjad_ide('gre %_ fns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding stage number markup ...',
-            ' Found 2 stage number markup tags ...',
-            ' Deactivating 2 stage number markup tags ...',
+            'Showing figure name markup ...',
+            ' Found 1 figure name markup tag ...',
+            ' Activating 1 figure name markup tag ...',
             ]:
             assert line in lines

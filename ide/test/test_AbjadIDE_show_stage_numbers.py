@@ -3,9 +3,9 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.tags.CLOCK_TIME_MARKUP
+tag = abjad.tags.STAGE_NUMBER_MARKUP
 
-def test_AbjadIDE_show_clock_time_markup_01():
+def test_AbjadIDE_show_stage_numbers_01():
     """
     In build directory.
     """
@@ -18,26 +18,26 @@ def test_AbjadIDE_show_clock_time_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score ctms q')
+        abjad_ide('gre bb arch-a-score sns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing clock time markup ...',
-            ' Found 2 clock time markup tags ...',
-            ' Activating 2 clock time markup tags ...',
+            'Showing stage number markup ...',
+            ' Found 2 stage number markup tags ...',
+            ' Activating 2 stage number markup tags ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score ctmh q')
+        abjad_ide('gre bb arch-a-score snh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding clock time markup ...',
-            ' Found 2 clock time markup tags ...',
-            ' Deactivating 2 clock time markup tags ...',
+            'Hiding stage number markup ...',
+            ' Found 2 stage number markup tags ...',
+            ' Deactivating 2 stage number markup tags ...',
             ]:
             assert line in lines
 
 
-def test_AbjadIDE_show_clock_time_markup_02():
+def test_AbjadIDE_show_stage_numbers_02():
     """
     In segment directory.
     """
@@ -47,20 +47,20 @@ def test_AbjadIDE_show_clock_time_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ ctms q')
+        abjad_ide('gre %_ sns q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing clock time markup ...',
-            ' Found 2 clock time markup tags ...',
-            ' Activating 2 clock time markup tags ...',
+            'Showing stage number markup ...',
+            ' Found 2 stage number markup tags ...',
+            ' Activating 2 stage number markup tags ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ ctmh q')
+        abjad_ide('gre %_ snh q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding clock time markup ...',
-            ' Found 2 clock time markup tags ...',
-            ' Deactivating 2 clock time markup tags ...',
+            'Hiding stage number markup ...',
+            ' Found 2 stage number markup tags ...',
+            ' Deactivating 2 stage number markup tags ...',
             ]:
             assert line in lines

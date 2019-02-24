@@ -3992,54 +3992,54 @@ class AbjadIDE(object):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
-        'ctmh',
-        description=f'clock time markup - hide',
+        'cth',
+        description=f'clock time - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_clock_time_markup(self, directory: Path) -> None:
+    def hide_clock_time(self, directory: Path) -> None:
         """
-        Hides clock time markup.
+        Hides clock time.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_clock_time_markup(directory, undo=True))
 
     @Command(
-        'fnmh',
-        description=f'figure name markup - hide',
+        'fnh',
+        description=f'figure names - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_figure_name_markup(self, directory: Path) -> None:
+    def hide_figure_names(self, directory: Path) -> None:
         """
-        Hides figure name markup.
+        Hides figure names.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
 
     @Command(
-        'lmimh',
-        description=f'local measure index markup - hide',
+        'lmih',
+        description=f'local measure indices - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_local_measure_index_markup(self, directory: Path) -> None:
+    def hide_local_measure_indices(self, directory: Path) -> None:
         """
-        Hides local measure index markup.
+        Hides local measure indices.
         """
         assert directory.is_buildspace()
         self.run(
             abjad.Job.show_local_measure_index_markup(directory, undo=True))
 
     @Command(
-        'lmnmh',
-        description=f'local measure number markup - hide',
+        'lmnh',
+        description=f'local measure numbers - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_local_measure_number_markup(self, directory: Path) -> None:
+    def hide_local_measure_numbers(self, directory: Path) -> None:
         """
-        Hides local measure number markup.
+        Hides local measure numbers.
         """
         assert directory.is_buildspace()
         self.run(
@@ -4047,14 +4047,14 @@ class AbjadIDE(object):
             )
 
     @Command(
-        'mnmh',
-        description=f'measure number markup - hide',
+        'mnh',
+        description=f'measure numbers - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_measure_number_markup(self, directory: Path) -> None:
+    def hide_measure_numbers(self, directory: Path) -> None:
         """
-        Hides measure number markup.
+        Hides measure numbers.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_number_markup(directory, undo=True))
@@ -4073,27 +4073,27 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_music_annotations(directory, undo=True))
 
     @Command(
-        'spmh',
-        description=f'spacing markup - hide',
+        'sph',
+        description=f'spacing - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_spacing_markup(self, directory: Path) -> None:
+    def hide_spacing(self, directory: Path) -> None:
         """
-        Hides spacing markup.
+        Hides spacing.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_spacing_markup(directory, undo=True))
 
     @Command(
-        'snmh',
-        description=f'stage number markup - hide',
+        'snh',
+        description=f'stage numbers - hide',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def hide_stage_number_markup(self, directory: Path) -> None:
+    def hide_stage_numbers(self, directory: Path) -> None:
         """
-        Hides stage number markup.
+        Hides stage numbers.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_stage_number_markup(directory, undo=True))
@@ -4999,27 +4999,27 @@ class AbjadIDE(object):
             self.io.display(path.trim(), raw=True)
 
     @Command(
-        'ctms',
-        description=f'clock time markup - show',
+        'cts',
+        description=f'clock time - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_clock_time_markup(self, directory: Path) -> None:
+    def show_clock_time(self, directory: Path) -> None:
         """
-        Shows clock time markup.
+        Shows clock time.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_clock_time_markup(directory))
 
     @Command(
-        'fnms',
-        description=f'figure name markup - show',
+        'fns',
+        description=f'figure names - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_figure_name_markup(self, directory: Path) -> None:
+    def show_figure_names(self, directory: Path) -> None:
         """
-        Shows figure name markup.
+        Shows figure names.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_figure_name_markup(directory))
@@ -5039,40 +5039,40 @@ class AbjadIDE(object):
         pass
 
     @Command(
-        'lmims',
-        description=f'local measure index markup - show',
+        'lmis',
+        description=f'local measure indices - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_local_measure_index_markup(self, directory: Path) -> None:
+    def show_local_measure_indices(self, directory: Path) -> None:
         """
-        Shows local measure number markup.
+        Shows local measure indices.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_local_measure_index_markup(directory))
 
     @Command(
-        'lmnms',
-        description=f'local measure number markup - show',
+        'lmns',
+        description=f'local measure numbers - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_local_measure_number_markup(self, directory: Path) -> None:
+    def show_local_measure_numbers(self, directory: Path) -> None:
         """
-        Shows local measure number markup.
+        Shows local measure numbers.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_local_measure_number_markup(directory))
 
     @Command(
-        'mnms',
-        description=f'measure number markup - show',
+        'mns',
+        description=f'measure numbers - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_measure_number_markup(self, directory: Path) -> None:
+    def show_measure_numbers(self, directory: Path) -> None:
         """
-        Shows measure number markup.
+        Shows measure numbers.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_measure_number_markup(directory))
@@ -5091,27 +5091,27 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_music_annotations(directory))
 
     @Command(
-        'spms',
-        description=f'spacing markup - show',
+        'sps',
+        description=f'spacing - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_spacing_markup(self, directory: Path) -> None:
+    def show_spacing(self, directory: Path) -> None:
         """
-        Shows spacing markup.
+        Shows spacing.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_spacing_markup(directory))
 
     @Command(
-        'snms',
-        description=f'stage number markup - show',
+        'sns',
+        description=f'stage numbers - show',
         menu_section='music annotations',
         score_package_paths=('buildspace',),
         )
-    def show_stage_number_markup(self, directory: Path) -> None:
+    def show_stage_numbers(self, directory: Path) -> None:
         """
-        Shows stage number markup.
+        Shows stage numbers.
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.color_stage_number_markup(directory))

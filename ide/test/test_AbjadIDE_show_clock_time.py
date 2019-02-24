@@ -3,9 +3,9 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.tags.FIGURE_NAME_MARKUP
+tag = abjad.tags.CLOCK_TIME_MARKUP
 
-def test_AbjadIDE_show_figure_name_markup_01():
+def test_AbjadIDE_show_clock_time_01():
     """
     In build directory.
     """
@@ -18,26 +18,26 @@ def test_AbjadIDE_show_figure_name_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score fnms q')
+        abjad_ide('gre bb arch-a-score cts q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Activating 1 figure name markup tag ...',
+            'Showing clock time markup ...',
+            ' Found 2 clock time markup tags ...',
+            ' Activating 2 clock time markup tags ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score fnmh q')
+        abjad_ide('gre bb arch-a-score cth q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Deactivating 1 figure name markup tag ...',
+            'Hiding clock time markup ...',
+            ' Found 2 clock time markup tags ...',
+            ' Deactivating 2 clock time markup tags ...',
             ]:
             assert line in lines
 
 
-def test_AbjadIDE_show_figure_name_markup_02():
+def test_AbjadIDE_show_clock_time_02():
     """
     In segment directory.
     """
@@ -47,20 +47,20 @@ def test_AbjadIDE_show_figure_name_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ fnmh q')
+        abjad_ide('gre %_ cts q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Deactivating 1 figure name markup tag ...',
+            'Showing clock time markup ...',
+            ' Found 2 clock time markup tags ...',
+            ' Activating 2 clock time markup tags ...',
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ fnms q')
+        abjad_ide('gre %_ cth q')
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Activating 1 figure name markup tag ...',
+            'Hiding clock time markup ...',
+            ' Found 2 clock time markup tags ...',
+            ' Deactivating 2 clock time markup tags ...',
             ]:
             assert line in lines

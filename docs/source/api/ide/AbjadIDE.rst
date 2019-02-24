@@ -106,14 +106,14 @@ AbjadIDE
       go_to_tools_directory
       go_to_wrapper_directory
       go_up
-      hide_clock_time_markup
-      hide_figure_name_markup
-      hide_local_measure_index_markup
-      hide_local_measure_number_markup
-      hide_measure_number_markup
+      hide_clock_time
+      hide_figure_names
+      hide_local_measure_indices
+      hide_local_measure_numbers
+      hide_measure_numbers
       hide_music_annotations
-      hide_spacing_markup
-      hide_stage_number_markup
+      hide_spacing
+      hide_stage_numbers
       hide_tag
       interpret_back_cover_tex
       interpret_front_cover_tex
@@ -153,22 +153,21 @@ AbjadIDE
       run
       search
       show_clipboard
-      show_clock_time_markup
-      show_figure_name_markup
+      show_clock_time
+      show_figure_names
       show_help
-      show_local_measure_index_markup
-      show_local_measure_number_markup
-      show_measure_number_markup
+      show_local_measure_indices
+      show_local_measure_numbers
+      show_measure_numbers
       show_music_annotations
-      show_spacing_markup
-      show_stage_number_markup
+      show_spacing
+      show_stage_numbers
       show_tag
       smart_doctest
       smart_edit
       smart_pdf
       smart_pytest
       test
-      test_baca_directories
       trash_back_cover_pdf
       trash_back_cover_tex
       trash_definition_py
@@ -360,21 +359,21 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.go_up
 
-   .. automethod:: AbjadIDE.hide_clock_time_markup
+   .. automethod:: AbjadIDE.hide_clock_time
 
-   .. automethod:: AbjadIDE.hide_figure_name_markup
+   .. automethod:: AbjadIDE.hide_figure_names
 
-   .. automethod:: AbjadIDE.hide_local_measure_index_markup
+   .. automethod:: AbjadIDE.hide_local_measure_indices
 
-   .. automethod:: AbjadIDE.hide_local_measure_number_markup
+   .. automethod:: AbjadIDE.hide_local_measure_numbers
 
-   .. automethod:: AbjadIDE.hide_measure_number_markup
+   .. automethod:: AbjadIDE.hide_measure_numbers
 
    .. automethod:: AbjadIDE.hide_music_annotations
 
-   .. automethod:: AbjadIDE.hide_spacing_markup
+   .. automethod:: AbjadIDE.hide_spacing
 
-   .. automethod:: AbjadIDE.hide_stage_number_markup
+   .. automethod:: AbjadIDE.hide_stage_numbers
 
    .. automethod:: AbjadIDE.hide_tag
 
@@ -442,23 +441,23 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.show_clipboard
 
-   .. automethod:: AbjadIDE.show_clock_time_markup
+   .. automethod:: AbjadIDE.show_clock_time
 
-   .. automethod:: AbjadIDE.show_figure_name_markup
+   .. automethod:: AbjadIDE.show_figure_names
 
    .. automethod:: AbjadIDE.show_help
 
-   .. automethod:: AbjadIDE.show_local_measure_index_markup
+   .. automethod:: AbjadIDE.show_local_measure_indices
 
-   .. automethod:: AbjadIDE.show_local_measure_number_markup
+   .. automethod:: AbjadIDE.show_local_measure_numbers
 
-   .. automethod:: AbjadIDE.show_measure_number_markup
+   .. automethod:: AbjadIDE.show_measure_numbers
 
    .. automethod:: AbjadIDE.show_music_annotations
 
-   .. automethod:: AbjadIDE.show_spacing_markup
+   .. automethod:: AbjadIDE.show_spacing
 
-   .. automethod:: AbjadIDE.show_stage_number_markup
+   .. automethod:: AbjadIDE.show_stage_numbers
 
    .. automethod:: AbjadIDE.show_tag
 
@@ -469,8 +468,6 @@ AbjadIDE
    .. automethod:: AbjadIDE.smart_pdf
 
    .. automethod:: AbjadIDE.smart_pytest
-
-   .. automethod:: AbjadIDE.test_baca_directories
 
    .. automethod:: AbjadIDE.trash_back_cover_pdf
 

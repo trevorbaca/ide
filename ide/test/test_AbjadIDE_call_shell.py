@@ -33,7 +33,7 @@ def test_AbjadIDE_call_shell_03():
     assert "Calling shell on 'pwd' ..." in transcript
 
 
-def test_AbjadIDE_call_shell_05():
+def test_AbjadIDE_call_shell_04():
     """
     Works with spaces in command.
     """
@@ -43,7 +43,7 @@ def test_AbjadIDE_call_shell_05():
     assert "Calling shell on 'ls -a' ..." in transcript
 
 
-def test_AbjadIDE_call_shell_06():
+def test_AbjadIDE_call_shell_05():
     """
     Empty excalamation raises no exception.
     """

@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-def test_AbjadIDE_show_local_measure_index_markup_01():
+def test_AbjadIDE_show_local_measure_indices_01():
     """
     In build directory.
     """
@@ -17,7 +17,7 @@ def test_AbjadIDE_show_local_measure_index_markup_01():
         abjad_ide('gre bb arch-a-score ggc q')
         assert path.is_file()
         
-        abjad_ide('gre bb arch-a-score lmims q')
+        abjad_ide('gre bb arch-a-score lmis q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing local measure index markup ...',
@@ -26,7 +26,7 @@ def test_AbjadIDE_show_local_measure_index_markup_01():
             ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score lmimh q')
+        abjad_ide('gre bb arch-a-score lmih q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding local measure index markup ...',
@@ -36,7 +36,7 @@ def test_AbjadIDE_show_local_measure_index_markup_01():
             assert line in lines
 
 
-def test_AbjadIDE_show_local_measure_index_markup_02():
+def test_AbjadIDE_show_local_measure_indices_02():
     """
     In segment directory.
     """
@@ -47,7 +47,7 @@ def test_AbjadIDE_show_local_measure_index_markup_02():
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
-        abjad_ide('gre %_ lmims q')
+        abjad_ide('gre %_ lmis q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Showing local measure index markup ...',
@@ -56,7 +56,7 @@ def test_AbjadIDE_show_local_measure_index_markup_02():
             ]:
             assert line in lines
 
-        abjad_ide('gre %_ lmimh q')
+        abjad_ide('gre %_ lmih q')
         lines = abjad_ide.io.transcript.lines
         for line in [
             'Hiding local measure index markup ...',

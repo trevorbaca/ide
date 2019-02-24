@@ -29,7 +29,7 @@ def test_AbjadIDE_pytest_all_01():
     assert f"Matching '++ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_pytest_all_03():
+def test_AbjadIDE_pytest_all_02():
     """
     In test directory.
     """
@@ -39,7 +39,7 @@ def test_AbjadIDE_pytest_all_03():
     assert "Matching '++' to 2 files ..." in transcript
 
 
-def test_AbjadIDE_pytest_all_04():
+def test_AbjadIDE_pytest_all_03():
     """
     Handles numeric input.
     """
@@ -57,7 +57,7 @@ def test_AbjadIDE_pytest_all_04():
     assert "Matching '++99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_pytest_all_05():
+def test_AbjadIDE_pytest_all_04():
     """
     Handles empty input and junk input.
     """
