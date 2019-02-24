@@ -3,7 +3,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.tags.FIGURE_NAME_MARKUP
+tag = abjad.const.FIGURE_NAME_MARKUP
 
 def test_AbjadIDE_show_figure_names_01():
     """

@@ -10,7 +10,7 @@ def test_AbjadIDE_show_measure_numbers_01():
 
     with ide.Test():
 
-        tag = abjad.tags.MEASURE_NUMBER_MARKUP
+        tag = abjad.const.MEASURE_NUMBER_MARKUP
         build = ide.Path('green_score', 'builds', 'arch-a-score')
         path = build / '_segments' / 'segment--.ly'
 
@@ -43,7 +43,7 @@ def test_AbjadIDE_show_measure_numbers_02():
 
     with ide.Test():
 
-        tag = abjad.tags.MEASURE_NUMBER_MARKUP
+        tag = abjad.const.MEASURE_NUMBER_MARKUP
         path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
         assert path.is_file()
         
