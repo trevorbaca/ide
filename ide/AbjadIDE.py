@@ -1431,9 +1431,16 @@ class AbjadIDE(object):
         return menu
 
     def _manage_directory(self, directory, redraw=True):
+        while True:
+            result = self._manage_directory_once(directory, redraw=redraw)
+            if result in ('quit', None):
+                return
+            directory, redraw = result
+
+    def _manage_directory_once(self, directory, redraw=True):
         if not directory.exists():
             self.io.display(f'missing {directory.trim()} ...')
-            return
+            return 'quit'
         assert directory.is_dir(), repr(directory)
         if not self.current_directory == directory:
             self._previous_directory = self.current_directory
@@ -1467,7 +1474,8 @@ class AbjadIDE(object):
             elif path.is_dir():
                 if path.is_wrapper():
                     path = path.contents
-                self._manage_directory(path)
+                #self._manage_directory(path)
+                return path, True
             else:
                 self.io.display(f'missing {path.trim()} ...')
         elif response.is_shell():
@@ -1479,7 +1487,7 @@ class AbjadIDE(object):
                 raise Exception(response)
         self.io.display('')
         if response.string == 'q':
-            return
+            return 'quit'
         elif self.navigation is not None:
             string = self.navigation
             self._navigation = None
@@ -1492,7 +1500,8 @@ class AbjadIDE(object):
         else:
             redraw = response.string is None or self._redraw
             self._redraw = None
-            self._manage_directory(self.current_directory, redraw=redraw)
+            #self._manage_directory(self.current_directory, redraw=redraw)
+            return self.current_directory, redraw
 
     def _match_alias(self, directory, string):
         if not self.aliases:
