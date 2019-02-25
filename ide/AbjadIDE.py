@@ -1282,8 +1282,8 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
-                persist_statement = 'from {}.segments.{}.__metadata__'
-                persist_statement += ' import metadata as previous_persist'
+                persist_statement = 'from {}.segments.{}._persist__'
+                persist_statement += ' import persist as previous_persist'
                 persist_statement = persist_statement.format(
                     directory.contents.name,
                     previous_segment.name,
@@ -1334,8 +1334,8 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
-                persist_statement = 'from {}.segments.{}.__metadata__'
-                persist_statement += ' import metadata as previous_persist'
+                persist_statement = 'from {}.segments.{}.__persist__'
+                persist_statement += ' import persist as previous_persist'
                 persist_statement = persist_statement.format(
                     directory.contents.name,
                     previous_segment.name,
@@ -1392,8 +1392,8 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
-                persist_statement = 'from {}.segments.{}.__metadata__'
-                persist_statement += ' import metadata as previous_persist'
+                persist_statement = 'from {}.segments.{}.__persist__'
+                persist_statement += ' import persist as previous_persist'
                 persist_statement = persist_statement.format(
                     directory.contents.name,
                     previous_segment.name,

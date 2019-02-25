@@ -1,40 +1,41 @@
-\version "2.19.80"
-\language "english"
+\version "2.19.82"                                                             %! LilyPondFile
+\language "english"                                                            %! LilyPondFile
 
 #(ly:set-option 'relative-includes #t)
 
-\include "../../stylesheets/stylesheet.ily"
+\include "../../stylesheets/stylesheet.ily"                                    %! LilyPondFile
 
-\header {}
+\header {                                                                      %! LilyPondFile
+    tagline = ##f
+}                                                                              %! LilyPondFile
 
 \layout {}
-
+\include "illustration.ily"                                                    %! extern
 \paper {}
-\include "illustration.ily"
 
 
-\score {
+\score {                                                                       %! LilyPondFile
     <<
         {
             \include "layout.ly"
         }
-        \context Score = "TwoStaffPianoScore"
-        <<
-            \context GlobalContext = "GlobalContext"
-            <<
-                \context GlobalRests = "GlobalRests"
-                {
-                }
-                \context GlobalSkips = "GlobalSkips"
-                {
-                }
-            >>
-            \context PianoStaff = "PianoStaff"
-            <<
-                \context Staff = "RHStaff"
-                {
-                    \context Voice = "RH_Voice"
-                    {
+        \context Score = "Two_Staff_Piano_Score"                               %! abjad.TwoStaffPianoScoreTemplate.__call__
+        <<                                                                     %! abjad.TwoStaffPianoScoreTemplate.__call__
+            \context GlobalContext = "Global_Context"                          %! abjad.ScoreTemplate._make_global_context
+            <<                                                                 %! abjad.ScoreTemplate._make_global_context
+                \context GlobalRests = "Global_Rests"                          %! abjad.ScoreTemplate._make_global_context
+                {                                                              %! abjad.ScoreTemplate._make_global_context
+                }                                                              %! abjad.ScoreTemplate._make_global_context
+                \context GlobalSkips = "Global_Skips"                          %! abjad.ScoreTemplate._make_global_context
+                {                                                              %! abjad.ScoreTemplate._make_global_context
+                }                                                              %! abjad.ScoreTemplate._make_global_context
+            >>                                                                 %! abjad.ScoreTemplate._make_global_context
+            \context PianoStaff = "Piano_Staff"                                %! abjad.TwoStaffPianoScoreTemplate.__call__
+            <<                                                                 %! abjad.TwoStaffPianoScoreTemplate.__call__
+                \context Staff = "RH_Staff"                                    %! abjad.TwoStaffPianoScoreTemplate.__call__
+                {                                                              %! abjad.TwoStaffPianoScoreTemplate.__call__
+                    \context Voice = "RH_Voice"                                %! abjad.TwoStaffPianoScoreTemplate.__call__
+                    {                                                          %! abjad.TwoStaffPianoScoreTemplate.__call__
                         g''4.
                         bf''4.
                         d''4.
@@ -61,15 +62,13 @@
                         bf''4
                         ~
                         bf''16
-                    }
-                }
-                \context Staff = "LHStaff"
-                {
-                    \context Voice = "LH_Voice"
-                    {
-                        \set PianoStaff.instrumentName = \markup { Piano }               %! ST1
-                        \set PianoStaff.shortInstrumentName = \markup { Pf. }            %! ST1
-                        \clef "bass"                                                     %! ST3
+                    }                                                          %! abjad.TwoStaffPianoScoreTemplate.__call__
+                }                                                              %! abjad.TwoStaffPianoScoreTemplate.__call__
+                \context Staff = "LH_Staff"                                    %! abjad.TwoStaffPianoScoreTemplate.__call__
+                {                                                              %! abjad.TwoStaffPianoScoreTemplate.__call__
+                    \context Voice = "LH_Voice"                                %! abjad.TwoStaffPianoScoreTemplate.__call__
+                    {                                                          %! abjad.TwoStaffPianoScoreTemplate.__call__
+                        \clef "bass"                                           %! abjad.ScoreTemplate.attach_defaults
                         fs4
                         ~
                         fs16
@@ -96,9 +95,9 @@
                         af,8.
                         bf8.
                         fs8.
-                    }
-                }
-            >>
-        >>
+                    }                                                          %! abjad.TwoStaffPianoScoreTemplate.__call__
+                }                                                              %! abjad.TwoStaffPianoScoreTemplate.__call__
+            >>                                                                 %! abjad.TwoStaffPianoScoreTemplate.__call__
+        >>                                                                     %! abjad.TwoStaffPianoScoreTemplate.__call__
     >>
-}
+}                                                                              %! LilyPondFile
