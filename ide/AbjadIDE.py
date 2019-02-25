@@ -850,7 +850,10 @@ class AbjadIDE(object):
         container_to_part_assignment = abjad.OrderedDict()
         for source, target in pairs:
             segment = source.parent
-            value = segment.get_metadatum('container_to_part_assignment')
+            value = segment.get_metadatum(
+                'container_to_part_assignment',
+                file_name='__persist__.py',
+                )
             if value:
                 container_to_part_assignment[segment.name] = value
         return container_to_part_assignment
@@ -1271,6 +1274,7 @@ class AbjadIDE(object):
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
+                persist_statement = 'previous_persist = None'
             else:
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
@@ -1278,9 +1282,16 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
+                persist_statement = 'from {}.segments.{}.__metadata__'
+                persist_statement += ' import metadata as previous_persist'
+                persist_statement = persist_statement.format(
+                    directory.contents.name,
+                    previous_segment.name,
+                    )
             template = maker.read_text()
             template = template.format(
-                previous_segment_metadata_import_statement=statement
+                previous_segment_metadata_import_statement=statement,
+                previous_segment_persist_import_statement=persist_statement,
                 )
             maker.write_text(template)
             self.io.display(f'interpreting {maker.trim()} ...')
@@ -1315,6 +1326,7 @@ class AbjadIDE(object):
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
+                persist_statement = 'previous_persist = None'
             else:
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
@@ -1322,9 +1334,16 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
+                persist_statement = 'from {}.segments.{}.__metadata__'
+                persist_statement += ' import metadata as previous_persist'
+                persist_statement = persist_statement.format(
+                    directory.contents.name,
+                    previous_segment.name,
+                    )
             template = maker.read_text()
             template = template.format(
-                previous_segment_metadata_import_statement=statement
+                previous_segment_metadata_import_statement=statement,
+                previous_segment_persist_import_statement=persist_statement
                 )
             maker.write_text(template)
             self.io.display(f'interpreting {maker.trim()} ...')
@@ -1365,6 +1384,7 @@ class AbjadIDE(object):
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
                 statement = 'previous_metadata = None'
+                persist_statement = 'previous_persist = None'
             else:
                 statement = 'from {}.segments.{}.__metadata__'
                 statement += ' import metadata as previous_metadata'
@@ -1372,9 +1392,16 @@ class AbjadIDE(object):
                     directory.contents.name,
                     previous_segment.name,
                     )
+                persist_statement = 'from {}.segments.{}.__metadata__'
+                persist_statement += ' import metadata as previous_persist'
+                persist_statement = persist_statement.format(
+                    directory.contents.name,
+                    previous_segment.name,
+                    )
             template = maker.read_text()
             completed_template = template.format(
-                previous_segment_metadata_import_statement=statement
+                previous_segment_metadata_import_statement=statement,
+                previous_segment_persist_import_statement=persist_statement
                 )
             maker.write_text(completed_template)
             self.io.display(f'interpreting {maker.trim()} ...')
