@@ -3573,7 +3573,7 @@ class AbjadIDE(object):
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
             with self.change(directory):
-                command = 'git diff'
+                command = 'git diff .'
                 self.io.display(f'Running {command} ...')
                 abjad.IOManager.spawn_subprocess(command)
         else:
