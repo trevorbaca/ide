@@ -3671,12 +3671,11 @@ class AbjadIDE(object):
         Displays Git status of working copy.
         """
         if not directory.is_scores():
-            root = directory._get_repository_root()
-            if not root:
+            if not directory._get_repository_root():
                 self.io.display(f'missing {directory.trim()} repository ...')
                 return
-            with self.change(root):
-                command = 'git status'
+            with self.change(directory):
+                command = 'git status .'
                 self.io.display(f'Running {command} ...')
                 lines = abjad.IOManager.run_command(command)
                 lines = [_ for _ in lines if _ != '']
