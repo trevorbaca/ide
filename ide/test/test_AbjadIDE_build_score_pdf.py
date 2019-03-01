@@ -32,8 +32,6 @@ def test_AbjadIDE_build_score_pdf_01():
             'Uncoloring persistent indicators ...',
             ' Found no persistent indicator color suppression tags ...',
             ' Found no persistent indicator color expression tags ...',
-            'Hiding default clefs ...',
-            ' Found no default clef tags ...',
             'Hiding music annotations ...',
             ' Found no music annotation tags ...',
             'Joining broken spanners ...',
