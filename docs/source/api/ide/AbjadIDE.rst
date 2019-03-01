@@ -108,7 +108,6 @@ AbjadIDE
       go_up
       hide_clock_time
       hide_figure_names
-      hide_local_measure_indices
       hide_local_measure_numbers
       hide_measure_numbers
       hide_music_annotations
@@ -156,7 +155,6 @@ AbjadIDE
       show_clock_time
       show_figure_names
       show_help
-      show_local_measure_indices
       show_local_measure_numbers
       show_measure_numbers
       show_music_annotations
@@ -363,8 +361,6 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.hide_figure_names
 
-   .. automethod:: AbjadIDE.hide_local_measure_indices
-
    .. automethod:: AbjadIDE.hide_local_measure_numbers
 
    .. automethod:: AbjadIDE.hide_measure_numbers
@@ -446,8 +442,6 @@ AbjadIDE
    .. automethod:: AbjadIDE.show_figure_names
 
    .. automethod:: AbjadIDE.show_help
-
-   .. automethod:: AbjadIDE.show_local_measure_indices
 
    .. automethod:: AbjadIDE.show_local_measure_numbers
 

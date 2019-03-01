@@ -4053,20 +4053,6 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
 
     @Command(
-        'lmih',
-        description=f'local measure indices - hide',
-        menu_section='music annotations',
-        score_package_paths=('buildspace',),
-        )
-    def hide_local_measure_indices(self, directory: Path) -> None:
-        """
-        Hides local measure indices.
-        """
-        assert directory.is_buildspace()
-        self.run(
-            abjad.Job.show_local_measure_index_markup(directory, undo=True))
-
-    @Command(
         'lmnh',
         description=f'local measure numbers - hide',
         menu_section='music annotations',
@@ -5072,19 +5058,6 @@ class AbjadIDE(object):
         Shows help.
         """
         pass
-
-    @Command(
-        'lmis',
-        description=f'local measure indices - show',
-        menu_section='music annotations',
-        score_package_paths=('buildspace',),
-        )
-    def show_local_measure_indices(self, directory: Path) -> None:
-        """
-        Shows local measure indices.
-        """
-        assert directory.is_buildspace()
-        self.run(abjad.Job.show_local_measure_index_markup(directory))
 
     @Command(
         'lmns',
