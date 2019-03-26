@@ -35,7 +35,7 @@ before_install:
     # install lilypond:
     - LILYPOND=/tmp/lilypond
     - LILYPOND_URL=http://lilypond.org/download/binaries/linux-64/
-    - LILYPOND_SOURCE=lilypond-2.19.82-1.linux-64.sh
+    - LILYPOND_SOURCE=lilypond-2.19.83-1.linux-64.sh
     - wget -q -O $LILYPOND $LILYPOND_URL/$LILYPOND_SOURCE
     - sh $LILYPOND --batch
 
@@ -106,7 +106,7 @@ install:
     - prime-parser-tables
 
 script:
-    - mypy $PACKAGE
+    - mypy --ignore-missing-imports $PACKAGE
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
     - coverage run -a `which py.test` -rf $PACKAGE
