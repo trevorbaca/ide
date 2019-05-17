@@ -113,5 +113,5 @@ script:
     - coverage run -a `which py.test` -rf $PACKAGE
 
 after_success:
-    - pip install coveralls
+    - pip install --quiet coveralls
     - coveralls
