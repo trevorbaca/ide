@@ -2,9 +2,13 @@ sudo: false
 
 language: python
 
+# xenial required for Travis to find "3.8-dev"
+dist: xenial
+
 python:
     - 3.6
     - "3.7-dev"
+    - "3.8-dev"
 
 addons:
     apt:
