@@ -71,12 +71,12 @@ from .Test import Test
 from .Transcript import Transcript
 
 if not (
-    distutils.version.LooseVersion('3.6') <
-    distutils.version.LooseVersion(platform.python_version())
-    ):
-    raise ImportError('Requires Python 3.6.')
+    distutils.version.LooseVersion("3.6")
+    < distutils.version.LooseVersion(platform.python_version())
+):
+    raise ImportError("Requires Python 3.6.")
 del distutils
 del platform
 configuration = Configuration()
 configuration._add_test_score_to_sys_path()
-del(configuration)
+del configuration

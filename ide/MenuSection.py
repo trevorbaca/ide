@@ -11,12 +11,7 @@ class MenuSection(object):
 
     ### CLASS VARIABLES ###
 
-    __slots__ = (
-        '_command',
-        '_entries',
-        '_force_single_column',
-        '_secondary',
-        )
+    __slots__ = ("_command", "_entries", "_force_single_column", "_secondary")
 
     configuration = Configuration()
 
@@ -28,7 +23,7 @@ class MenuSection(object):
         entries: typing.List[MenuEntry] = None,
         force_single_column: bool = None,
         secondary: bool = None,
-        ) -> None:
+    ) -> None:
         object.__init__(self)
         if command is not None:
             assert isinstance(command, str), repr(command)
@@ -44,7 +39,7 @@ class MenuSection(object):
         Gets entry indexed by ``argument``.
         """
         return self.entries.__getitem__(argument)
-        
+
     def __iter__(self) -> typing.Iterator:
         """
         Iterates entries.
@@ -74,7 +69,7 @@ class MenuSection(object):
                 command=self.command,
                 number=number,
                 value=value,
-                )
+            )
             self.entries.append(entry)
         if self.command:
             self.entries.sort()
@@ -116,7 +111,7 @@ class MenuSection(object):
         """
         lines = [_.make_line(left_margin_width) for _ in self]
         if lines:
-            lines.append('')
+            lines.append("")
         return lines
 
     def match(self, string) -> typing.Optional[MenuEntry]:
@@ -137,9 +132,9 @@ class MenuSection(object):
                 return self[i]
         return None
 
-    def range_string_to_numbers(self, string) -> typing.Optional[
-        typing.List[typing.Optional[int]]
-        ]:
+    def range_string_to_numbers(
+        self, string
+    ) -> typing.Optional[typing.List[typing.Optional[int]]]:
         """
         Changes range ``string`` to numbers.
         """
@@ -148,8 +143,8 @@ class MenuSection(object):
         if not self.entries[0].number:
             return None
         numbers = []
-        if ',' in string:
-            parts = string.split(',')
+        if "," in string:
+            parts = string.split(",")
         else:
             parts = [string]
         for part in parts:
@@ -158,10 +153,10 @@ class MenuSection(object):
             if entry is not None:
                 numbers.append(entry.number)
                 continue
-            if part == 'all':
+            if part == "all":
                 numbers.extend(range(1, len(self.entries) + 1))
-            elif part.count('-') == 1:
-                start, stop = part.split('-')
+            elif part.count("-") == 1:
+                start, stop = part.split("-")
                 start = start.strip()
                 stop = stop.strip()
                 entry = self.match(start)

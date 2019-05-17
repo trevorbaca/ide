@@ -9,12 +9,7 @@ class Transcript(object):
 
     ### CLASS VARIABLES ###
 
-    __slots__ = (
-        '_blocks',
-        '_lines',
-        '_menus',
-        '_titles',
-        )
+    __slots__ = ("_blocks", "_lines", "_menus", "_titles")
 
     ### INITIALIZER ###
 
@@ -30,7 +25,7 @@ class Transcript(object):
         """
         Is true when ``argument`` appears in transcript.
         """
-        return argument in '\n'.join(self.lines)
+        return argument in "\n".join(self.lines)
 
     ### PUBLIC PROPERTIES ###
 
@@ -64,11 +59,7 @@ class Transcript(object):
 
     ### PUBLIC METHODS ###
 
-    def append(
-        self,
-        block,
-        is_menu: bool = False,
-        ) -> None:
+    def append(self, block, is_menu: bool = False) -> None:
         """
         Appends ``block``.
         """
@@ -83,8 +74,8 @@ class Transcript(object):
         Trims transcript.
         """
         for line in reversed(self.lines):
-            if line == '':
+            if line == "":
                 self.lines.pop(-1)
             else:
                 break
-        self.lines.append('')
+        self.lines.append("")

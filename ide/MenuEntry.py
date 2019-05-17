@@ -9,12 +9,7 @@ class MenuEntry(object):
 
     ### CLASS VARIABLES ###
 
-    __slots__ = (
-        '_command',
-        '_display',
-        '_number',
-        '_value',
-        )
+    __slots__ = ("_command", "_display", "_number", "_value")
 
     ### INITIALIZER ###
 
@@ -24,7 +19,7 @@ class MenuEntry(object):
         display: str = None,
         number: int = None,
         value: str = None,
-        ) -> None:
+    ) -> None:
         self._command = command
         self._display = abjad.String(display)
         self._number = number
@@ -39,7 +34,7 @@ class MenuEntry(object):
         """
         if not isinstance(argument, type(self)):
             raise TypeError(argument)
-        return (self.display or '') < (argument.display or '')
+        return (self.display or "") < (argument.display or "")
 
     ### PUBLIC PROPERTIES ###
 
@@ -78,9 +73,9 @@ class MenuEntry(object):
         Makes line.
         """
         if self.number is not None:
-            line = str(self.number) + ': '
+            line = str(self.number) + ": "
             line = line.rjust(left_margin_width)
         else:
-            line = left_margin_width * ' '
-        line += (self.display or '')
+            line = left_margin_width * " "
+        line += self.display or ""
         return line

@@ -1,6 +1,5 @@
 import abjad
-from red_score.materials.red_pitch_classes.definition import \
-    red_pitch_classes
+from red_score.materials.red_pitch_classes.definition import red_pitch_classes
 
 
 numerators = [_.number for _ in red_pitch_classes]

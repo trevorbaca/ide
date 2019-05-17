@@ -1,4 +1,5 @@
 import ide
+
 abjad_ide = ide.AbjadIDE(test=True)
 
 
@@ -8,17 +9,17 @@ def test_AbjadIDE_trash_definition_py_01():
     """
 
     with ide.Test():
-        path = ide.Path('red_score', 'segments', 'A', 'definition.py')
+        path = ide.Path("red_score", "segments", "A", "definition.py")
         assert path.is_file()
 
-        abjad_ide('red %A dpt q')
+        abjad_ide("red %A dpt q")
         transcript = abjad_ide.io.transcript
-        assert f'Trashing {path.trim()} ...' in transcript
+        assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()
 
-        abjad_ide('red %A dpt q')
+        abjad_ide("red %A dpt q")
         transcript = abjad_ide.io.transcript
-        assert f'Missing {path.trim()} ...' in transcript
+        assert f"Missing {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_trash_definition_py_02():
@@ -28,19 +29,19 @@ def test_AbjadIDE_trash_definition_py_02():
 
     with ide.Test():
         paths = [
-            ide.Path('red_score', 'segments', name, 'definition.py')
-            for name in ['_', 'A', 'B']
-            ]
+            ide.Path("red_score", "segments", name, "definition.py")
+            for name in ["_", "A", "B"]
+        ]
         for path in paths:
             assert path.is_file()
 
-        abjad_ide('red gg dpt q')
+        abjad_ide("red gg dpt q")
         transcript = abjad_ide.io.transcript
         for path in paths:
             assert not path.exists()
-            assert f'Trashing {path.trim()} ...' in transcript
+            assert f"Trashing {path.trim()} ..." in transcript
 
-        abjad_ide('red gg dpt q')
+        abjad_ide("red gg dpt q")
         transcript = abjad_ide.io.transcript
         for path in paths:
-            assert f'Missing {path.trim()} ...' in transcript
+            assert f"Missing {path.trim()} ..." in transcript

@@ -1,9 +1,4 @@
 import abjad
 
 
-instruments = abjad.OrderedDict([
-    (
-        'piano',
-        abjad.Piano(),
-        ),
-    ])
+instruments = abjad.OrderedDict([("piano", abjad.Piano())])

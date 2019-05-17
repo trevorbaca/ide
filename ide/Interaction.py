@@ -9,9 +9,7 @@ class Interaction(abjad.ContextManager):
 
     ### CLASS VARIABLES ###
 
-    __slots__ = (
-        '_io',
-        )
+    __slots__ = ("_io",)
 
     ### INITIALIZER ###
 
@@ -30,13 +28,13 @@ class Interaction(abjad.ContextManager):
         """
         Exits context manager.
         """
-        self.io.display('')
+        self.io.display("")
 
     def __repr__(self) -> str:
         """
         Gets interpreter representation of context manager.
         """
-        return f'<{type(self).__name__}()>'
+        return f"<{type(self).__name__}()>"
 
     ### PUBLIC PROPERTIES ###
 

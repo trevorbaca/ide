@@ -1,18 +1,19 @@
 import ide
+
 abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_trash_music_ly_01():
 
     with ide.Test():
-        path = ide.Path('red_score', 'builds', 'letter-score', 'music.ly')
+        path = ide.Path("red_score", "builds", "letter-score", "music.ly")
         assert path.is_file()
 
-        abjad_ide('red %letter mlt q')
+        abjad_ide("red %letter mlt q")
         transcript = abjad_ide.io.transcript
-        assert f'Trashing {path.trim()} ...' in transcript
+        assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()
 
-        abjad_ide('red %letter mlt q')
+        abjad_ide("red %letter mlt q")
         transcript = abjad_ide.io.transcript
-        assert f'No files matching music.ly ...' in transcript
+        assert f"No files matching music.ly ..." in transcript

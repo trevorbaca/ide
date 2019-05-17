@@ -14,40 +14,38 @@ class Response(object):
 
     ### CLASS VARIABLES ###
 
-    __slots__ = (
-        '_payload',
-        '_string',
-        )
+    __slots__ = ("_payload", "_string")
 
     ### INITIALIZER ###
 
     def __init__(
-        self,
-        payload: typing.Union[str, list, Path] = None,
-        string: str = None,
-        ) -> None:
+        self, payload: typing.Union[str, list, Path] = None, string: str = None
+    ) -> None:
         self._payload = payload
         self._string = string
 
     ### PRIVATE METHODS ###
 
     def _is_double_address(self):
-        if (2 <= len(self.string) and
-            self.string[0] in Path.address_characters and
-            self.string[0] == self.string[1]):
+        if (
+            2 <= len(self.string)
+            and self.string[0] in Path.address_characters
+            and self.string[0] == self.string[1]
+        ):
             return True
         return False
 
     def _is_single_address(self):
-        if (len(self.string) == 1 and
-            self.string[0] in Path.address_characters):
+        if len(self.string) == 1 and self.string[0] in Path.address_characters:
             return True
-        if (2 <= len(self.string) and
-            self.string[0] in Path.address_characters and
-            self.string[0] != self.string[1]):
+        if (
+            2 <= len(self.string)
+            and self.string[0] in Path.address_characters
+            and self.string[0] != self.string[1]
+        ):
             return True
         return False
-        
+
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -88,7 +86,7 @@ class Response(object):
         if self._is_double_address():
             assert self.string is not None
             return self.string[:2]
-        return ''
+        return ""
 
     @property
     def string(self) -> typing.Optional[str]:
@@ -105,8 +103,9 @@ class Response(object):
         """
         if isinstance(self.payload, Path):
             return self.payload
-        if (isinstance(self.payload, list) and
-            isinstance(self.payload[0], Path)):
+        if isinstance(self.payload, list) and isinstance(
+            self.payload[0], Path
+        ):
             return self.payload[0]
         return None
 
@@ -120,7 +119,7 @@ class Response(object):
         """
         Is true when response is command.
         """
-        return str(self.payload) in commands and self.string != '!'
+        return str(self.payload) in commands and self.string != "!"
 
     def is_path(self) -> bool:
         """
@@ -128,8 +127,9 @@ class Response(object):
         """
         if isinstance(self.payload, Path):
             return True
-        if (isinstance(self.payload, list) and
-            isinstance(self.payload[0], Path)):
+        if isinstance(self.payload, list) and isinstance(
+            self.payload[0], Path
+        ):
             return True
         return False
 
@@ -143,8 +143,10 @@ class Response(object):
         """
         Is true when response is shell command.
         """
-        if (self.string and
-            self.string.startswith('!') and
-            not self.string == '!!'):
+        if (
+            self.string
+            and self.string.startswith("!")
+            and not self.string == "!!"
+        ):
             return True
         return False

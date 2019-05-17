@@ -17,12 +17,9 @@ class IO(object):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = 'Classes'
+    __documentation_section__ = "Classes"
 
-    __slots__ = (
-        '_pending_input',
-        '_transcript',
-        )
+    __slots__ = ("_pending_input", "_transcript")
 
     ### SPECIAL METHODS ###
 
@@ -53,11 +50,11 @@ class IO(object):
         self,
         lines: typing.Union[
             str, abjad.String, typing.List[str], typing.List[abjad.String]
-            ],
+        ],
         indent: int = 0,
         is_menu: bool = False,
         raw: bool = False,
-        ) -> None:
+    ) -> None:
         """
         Displays lines.
         """
@@ -67,11 +64,11 @@ class IO(object):
         if not raw:
             lines = [abjad.String(_).capitalize_start() for _ in lines]
         if indent:
-            whitespace = indent * ' '
+            whitespace = indent * " "
             lines = [whitespace + _ for _ in lines]
         if lines:
             self.transcript.append(lines, is_menu=is_menu)
-        result = os.popen('stty size', 'r').read().split()
+        result = os.popen("stty size", "r").read().split()
         if result:
             width = int(result[1])
             lines = [_[:width] for _ in lines]
@@ -79,10 +76,8 @@ class IO(object):
             print(line)
 
     def get(
-        self,
-        prompt: str = None,
-        split_input: bool = False,
-        ) -> typing.Optional[str]:
+        self, prompt: str = None, split_input: bool = False
+    ) -> typing.Optional[str]:
         """
         Gets user input.
 
@@ -90,28 +85,30 @@ class IO(object):
 
         Returns string when user types input and then hits return.
         """
-        prompt = prompt or ''
-        prompt = abjad.String(prompt).capitalize_start() + '> '
+        prompt = prompt or ""
+        prompt = abjad.String(prompt).capitalize_start() + "> "
         if self._pending_input:
             parts = self._pending_input.split()
-            pending_input = ' '.join(parts[1:])
+            pending_input = " ".join(parts[1:])
             self._pending_input = pending_input
-            string = parts[0].replace('~', ' ')
-            string = string.replace('<return>', '')
-            print(f'{prompt}{string}')
+            string = parts[0].replace("~", " ")
+            string = string.replace("<return>", "")
+            print(f"{prompt}{string}")
         else:
             string = input(prompt)
-            if (string and
-                not string.isspace() and
-                split_input and
-                not string.startswith('!')):
+            if (
+                string
+                and not string.isspace()
+                and split_input
+                and not string.startswith("!")
+            ):
                 parts = string.split()
                 string = parts[0]
-                pending_input = ' '.join(parts[1:])
+                pending_input = " ".join(parts[1:])
                 if pending_input:
                     self._pending_input = pending_input
-        assert not string == '<return>'
-        self.transcript.append([f'{prompt}{string}', ''])
+        assert not string == "<return>"
+        self.transcript.append([f"{prompt}{string}", ""])
         if string:
             return abjad.String(string)
         return None

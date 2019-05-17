@@ -1,7 +1,4 @@
 import abjad
 
 
-metadata = abjad.OrderedDict([
-    ('title', 'Blue Score'),
-    ('year', 2017),
-    ])
+metadata = abjad.OrderedDict([("title", "Blue Score"), ("year", 2017)])

@@ -17,40 +17,34 @@ class Configuration(abjad.Configuration):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = 'Classes'
+    __documentation_section__ = "Classes"
 
     __slots__ = (
-        '_aliases',
-        '_composer_scores_directory',
-        '_composer_scores_directory_override',
-        '_test_scores_directory',
-        '_ide_directory',
-        )
+        "_aliases",
+        "_composer_scores_directory",
+        "_composer_scores_directory_override",
+        "_test_scores_directory",
+        "_ide_directory",
+    )
 
-    _configuration_directory_name = 'ide'
+    _configuration_directory_name = "ide"
 
-    _configuration_file_name = 'ide.cfg'
+    _configuration_file_name = "ide.cfg"
 
-    always_ignore = (
-        '__pycache__',
-        )
+    always_ignore = ("__pycache__",)
 
     editor_suffixes = (
-        '.cfg',
-        '.ily',
-        '.log',
-        '.ly',
-        '.md',
-        '.py',
-        '.tex',
-        '.txt',
-        )
+        ".cfg",
+        ".ily",
+        ".log",
+        ".ly",
+        ".md",
+        ".py",
+        ".tex",
+        ".txt",
+    )
 
-    noneditor_suffixes = (
-        '.mid',
-        '.midi',
-        '.pdf',
-        )
+    noneditor_suffixes = (".mid", ".midi", ".pdf")
 
     ### INITIALIZER ###
 
@@ -69,6 +63,7 @@ class Configuration(abjad.Configuration):
     @staticmethod
     def _add_test_score_to_sys_path():
         import ide
+
         configuration = ide.Configuration()
         directory = configuration.test_scores_directory
         for path in directory.iterdir():
@@ -78,9 +73,9 @@ class Configuration(abjad.Configuration):
     def _get_initial_comment(self):
         current_time = self._get_current_time()
         return [
-            f'Abjad IDE configuration file created on {current_time}.',
+            f"Abjad IDE configuration file created on {current_time}.",
             "This file is interpreted by ConfigParser and follows ini sytax.",
-            ]
+        ]
 
     def _get_option_definitions(self):
         return {}
@@ -88,17 +83,17 @@ class Configuration(abjad.Configuration):
     def _make_missing_directories(self):
         directory = pathlib.Path(
             abjad.abjad_configuration.composer_scores_directory
-            )
+        )
         if not directory.exists():
             directory.mkdir()
 
     def _read_aliases_file(self):
         globals_ = globals()
-        path = self.configuration_directory / '__aliases__.py'
+        path = self.configuration_directory / "__aliases__.py"
         if path.is_file():
             text = path.read_text()
             exec(text, globals_)
-        aliases = globals_.get('aliases') or abjad.OrderedDict()
+        aliases = globals_.get("aliases") or abjad.OrderedDict()
         self._aliases = aliases
 
     ### PUBLIC PROPERTIES ###
@@ -129,7 +124,8 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
-        return ide.Path(self.configuration_directory / '__aliases__.py')
+
+        return ide.Path(self.configuration_directory / "__aliases__.py")
 
     @property
     def boilerplate_directory(self):
@@ -144,6 +140,7 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
+
         return ide.Path(abjad.abjad_configuration.boilerplate_directory)
 
     @property
@@ -154,6 +151,7 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
+
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
         if self._composer_scores_directory is None:
@@ -191,6 +189,7 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
+
         if self._ide_directory is None:
             ide_directory = ide.Path(ide.__path__[0])
             self._ide_directory = ide_directory
@@ -209,7 +208,8 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
-        return ide.Path(self.configuration_directory / 'latex.log')
+
+        return ide.Path(self.configuration_directory / "latex.log")
 
     @property
     def test_scores_directory(self):
@@ -224,8 +224,9 @@ class Configuration(abjad.Configuration):
         Returns package path.
         """
         import ide
+
         try:
-            ide = importlib.import_module('ide')
+            ide = importlib.import_module("ide")
         except ImportError:
             return
-        return ide.Path(ide.__path__[0]) / 'scores'
+        return ide.Path(ide.__path__[0]) / "scores"

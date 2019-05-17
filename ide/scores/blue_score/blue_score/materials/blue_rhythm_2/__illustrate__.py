@@ -8,9 +8,9 @@ def make_lilypond_file():
     Reimplement for material-specific illustration logic.
     """
     name = pathlib.Path(__file__).parent.name
-    title = name.replace('_', ' ').capitalize()
+    title = name.replace("_", " ").capitalize()
     title = abjad.Markup(title)
-    title = title.override(('font-name', 'Palatino'))
+    title = title.override(("font-name", "Palatino"))
     material = getattr(definition, name)
     try:
         lilypond_file = material.__illustrate__(title=title)

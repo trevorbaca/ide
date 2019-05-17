@@ -3,206 +3,197 @@ import abjad
 
 metadata = abjad.OrderedDict(
     [
+        ("bol_measure_numbers", [1]),
+        ("duration", "0'08''"),
+        ("fermata_measure_numbers", [2]),
+        ("final_measure_is_fermata", True),
+        ("final_measure_number", 2),
+        ("first_measure_number", 1),
         (
-            'bol_measure_numbers',
-            [1],
-            ),
-        ('duration', "0'08''"),
-        (
-            'fermata_measure_numbers',
-            [2],
-            ),
-        ('final_measure_is_fermata', True),
-        ('final_measure_number', 2),
-        ('first_measure_number', 1),
-        (
-            'persistent_indicators',
+            "persistent_indicators",
             abjad.OrderedDict(
                 [
                     (
-                        'BassClarinetMusicStaff',
+                        "BassClarinetMusicStaff",
                         [
                             abjad.Momento(
-                                context='BassClarinetMusicVoice',
-                                prototype='abjad.Clef',
-                                value='treble',
-                                ),
+                                context="BassClarinetMusicVoice",
+                                prototype="abjad.Clef",
+                                value="treble",
+                            ),
                             abjad.Momento(
-                                context='BassClarinetMusicVoice',
-                                prototype='abjad.Instrument',
-                                value='BassClarinet',
-                                ),
+                                context="BassClarinetMusicVoice",
+                                prototype="abjad.Instrument",
+                                value="BassClarinet",
+                            ),
                             abjad.Momento(
-                                context='BassClarinetMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="BassClarinetMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=5,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'CelloMusicStaff',
+                        "CelloMusicStaff",
                         [
                             abjad.Momento(
-                                context='CelloMusicVoice',
-                                prototype='abjad.Clef',
-                                value='treble',
-                                ),
+                                context="CelloMusicVoice",
+                                prototype="abjad.Clef",
+                                value="treble",
+                            ),
                             abjad.Momento(
-                                context='CelloMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="CelloMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=5,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'CelloMusicVoice',
+                        "CelloMusicVoice",
                         [
                             abjad.Momento(
-                                context='CelloMusicVoice',
-                                prototype='abjad.Dynamic',
-                                value='sfz',
-                                ),
-                            ],
-                        ),
+                                context="CelloMusicVoice",
+                                prototype="abjad.Dynamic",
+                                value="sfz",
+                            )
+                        ],
+                    ),
                     (
-                        'CelloRHMusicStaff',
+                        "CelloRHMusicStaff",
                         [
                             abjad.Momento(
-                                context='CelloRHMusicVoice',
-                                prototype='abjad.Clef',
-                                value='percussion',
-                                ),
+                                context="CelloRHMusicVoice",
+                                prototype="abjad.Clef",
+                                value="percussion",
+                            ),
                             abjad.Momento(
-                                context='CelloRHMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="CelloRHMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=1,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'CelloStaffGroup',
+                        "CelloStaffGroup",
                         [
                             abjad.Momento(
-                                context='CelloMusicVoice',
-                                prototype='abjad.Instrument',
-                                value='Cello',
-                                ),
-                            ],
-                        ),
+                                context="CelloMusicVoice",
+                                prototype="abjad.Instrument",
+                                value="Cello",
+                            )
+                        ],
+                    ),
                     (
-                        'Score',
+                        "Score",
                         [
                             abjad.Momento(
-                                context='GlobalSkips',
-                                prototype='abjad.MetronomeMark',
-                                value='incisions',
-                                ),
+                                context="GlobalSkips",
+                                prototype="abjad.MetronomeMark",
+                                value="incisions",
+                            ),
                             abjad.Momento(
-                                context='GlobalSkips',
-                                prototype='abjad.TimeSignature',
-                                value='1/4',
-                                ),
-                            ],
-                        ),
+                                context="GlobalSkips",
+                                prototype="abjad.TimeSignature",
+                                value="1/4",
+                            ),
+                        ],
+                    ),
                     (
-                        'ViolaMusicStaff',
+                        "ViolaMusicStaff",
                         [
                             abjad.Momento(
-                                context='ViolaMusicVoice',
-                                prototype='abjad.Clef',
-                                value='alto',
-                                ),
+                                context="ViolaMusicVoice",
+                                prototype="abjad.Clef",
+                                value="alto",
+                            ),
                             abjad.Momento(
-                                context='ViolaMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="ViolaMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=5,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'ViolaRHMusicStaff',
+                        "ViolaRHMusicStaff",
                         [
                             abjad.Momento(
-                                context='ViolaRHMusicVoice',
-                                prototype='abjad.Clef',
-                                value='percussion',
-                                ),
+                                context="ViolaRHMusicVoice",
+                                prototype="abjad.Clef",
+                                value="percussion",
+                            ),
                             abjad.Momento(
-                                context='ViolaRHMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="ViolaRHMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=1,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'ViolaStaffGroup',
+                        "ViolaStaffGroup",
                         [
                             abjad.Momento(
-                                context='ViolaMusicVoice',
-                                prototype='abjad.Instrument',
-                                value='Viola',
-                                ),
-                            ],
-                        ),
+                                context="ViolaMusicVoice",
+                                prototype="abjad.Instrument",
+                                value="Viola",
+                            )
+                        ],
+                    ),
                     (
-                        'ViolinMusicStaff',
+                        "ViolinMusicStaff",
                         [
                             abjad.Momento(
-                                context='ViolinMusicVoice',
-                                prototype='abjad.Clef',
-                                value='percussion',
-                                ),
+                                context="ViolinMusicVoice",
+                                prototype="abjad.Clef",
+                                value="percussion",
+                            ),
                             abjad.Momento(
-                                context='ViolinMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="ViolinMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=1,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'ViolinMusicVoice',
+                        "ViolinMusicVoice",
                         [
                             abjad.Momento(
-                                context='ViolinMusicVoice',
-                                prototype='abjad.Dynamic',
-                                value='\\effort_mf',
-                                ),
-                            ],
-                        ),
+                                context="ViolinMusicVoice",
+                                prototype="abjad.Dynamic",
+                                value="\\effort_mf",
+                            )
+                        ],
+                    ),
                     (
-                        'ViolinRHMusicStaff',
+                        "ViolinRHMusicStaff",
                         [
                             abjad.Momento(
-                                context='ViolinRHMusicVoice',
-                                prototype='abjad.Clef',
-                                value='percussion',
-                                ),
+                                context="ViolinRHMusicVoice",
+                                prototype="abjad.Clef",
+                                value="percussion",
+                            ),
                             abjad.Momento(
-                                context='ViolinRHMusicVoice',
-                                prototype='baca.StaffLines',
+                                context="ViolinRHMusicVoice",
+                                prototype="baca.StaffLines",
                                 value=1,
-                                ),
-                            ],
-                        ),
+                            ),
+                        ],
+                    ),
                     (
-                        'ViolinStaffGroup',
+                        "ViolinStaffGroup",
                         [
                             abjad.Momento(
-                                context='ViolinMusicVoice',
-                                prototype='abjad.Instrument',
-                                value='Violin',
-                                ),
-                            ],
-                        ),
-                    ]
-                ),
+                                context="ViolinMusicVoice",
+                                prototype="abjad.Instrument",
+                                value="Violin",
+                            )
+                        ],
+                    ),
+                ]
             ),
-        ('segment_number', 1),
-        ('start_clock_time', "0'00''"),
-        ('stop_clock_time', "0'08''"),
-        (
-            'time_signatures',
-            ['7/4', '1/4'],
-            ),
-        ]
-    )
+        ),
+        ("segment_number", 1),
+        ("start_clock_time", "0'00''"),
+        ("stop_clock_time", "0'08''"),
+        ("time_signatures", ["7/4", "1/4"]),
+    ]
+)

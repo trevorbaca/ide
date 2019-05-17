@@ -14,29 +14,25 @@ class Path(abjad.Path):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = 'Classes'
+    __documentation_section__ = "Classes"
 
     address_characters = {
-        '@': 'file',
-        '%': 'directory',
-        '^': 'source file',
-        '*': 'PDF',
-        '+': 'test file',
-        }
+        "@": "file",
+        "%": "directory",
+        "^": "source file",
+        "*": "PDF",
+        "+": "test file",
+    }
 
     configuration = Configuration()
 
-    test_score_names = (
-        'blue_score',
-        'green_score',
-        'red_score',
-        )
+    test_score_names = ("blue_score", "green_score", "red_score")
 
     ### CONSTRUCTOR ###
 
     def __new__(class_, *arguments, scores=None):
         if not arguments:
-            raise Exception('must provide at least one argument.')
+            raise Exception("must provide at least one argument.")
         argument = arguments[0]
         _arguments = arguments[1:]
         if isinstance(argument, pathlib.Path) or os.sep in argument:
@@ -46,17 +42,19 @@ class Path(abjad.Path):
             if argument in Path.test_score_names:
                 arguments.append(Path.configuration.test_scores_directory)
                 arguments.extend(2 * [argument])
-            elif argument == 'boilerplate':
+            elif argument == "boilerplate":
                 arguments.append(
-                    abjad.abjad_configuration.boilerplate_directory)
-            elif argument == 'test_scores':
+                    abjad.abjad_configuration.boilerplate_directory
+                )
+            elif argument == "test_scores":
                 arguments.append(Path.configuration.test_scores_directory)
             elif scores is not None:
                 arguments.append(scores)
                 arguments.extend(2 * [argument])
             else:
                 arguments.append(
-                    abjad.abjad_configuration.composer_scores_directory)
+                    abjad.abjad_configuration.composer_scores_directory
+                )
                 arguments.extend(2 * [argument])
             arguments.extend(_arguments)
             self = pathlib.Path.__new__(class_, *arguments)
@@ -70,21 +68,21 @@ class Path(abjad.Path):
     def _find_doctest_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in sorted(self.glob('**/*.py')):
-                if '__pycache__' in str(path):
+            for path in sorted(self.glob("**/*.py")):
+                if "__pycache__" in str(path):
                     continue
                 if not path.is_file():
                     continue
-                if path.name.startswith('test'):
+                if path.name.startswith("test"):
                     continue
                 files.append(path)
                 strings.append(path.name)
         else:
             for path in self.segments.list_paths():
-                files.append(path / 'definition.py')
+                files.append(path / "definition.py")
                 strings.append(path.get_identifier())
             for path in self.materials.list_paths():
-                files.append(path / 'definition.py')
+                files.append(path / "definition.py")
                 strings.append(path.get_identifier())
             for path in self.tools.list_paths():
                 files.append(path)
@@ -94,8 +92,8 @@ class Path(abjad.Path):
     def _find_editable_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in sorted(self.glob('**/*')):
-                if '__pycache__' in str(path):
+            for path in sorted(self.glob("**/*")):
+                if "__pycache__" in str(path):
                     continue
                 if not path.is_file():
                     continue
@@ -105,10 +103,10 @@ class Path(abjad.Path):
                 strings.append(path.name)
         else:
             for path in self.segments.list_paths():
-                files.append(path / 'definition.py')
+                files.append(path / "definition.py")
                 strings.append(path.get_identifier())
             for path in self.materials.list_paths():
-                files.append(path / 'definition.py')
+                files.append(path / "definition.py")
                 strings.append(path.get_identifier())
             for path in self.tools.list_paths():
                 files.append(path)
@@ -124,8 +122,8 @@ class Path(abjad.Path):
     def _find_pdfs(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in sorted(self.glob('**/*.pdf')):
-                if '__pycache__' in str(path):
+            for path in sorted(self.glob("**/*.pdf")):
+                if "__pycache__" in str(path):
                     continue
                 if not path.is_file():
                     continue
@@ -133,13 +131,13 @@ class Path(abjad.Path):
                 strings.append(path.name)
         else:
             for path in self.segments.list_paths():
-                files.append(path / 'illustration.pdf')
+                files.append(path / "illustration.pdf")
                 strings.append(path.get_identifier())
             for path in self.materials.list_paths():
-                files.append(path / 'illustration.pdf')
+                files.append(path / "illustration.pdf")
                 strings.append(path.get_identifier())
             for path in self.etc.list_paths():
-                if path.suffix == '.pdf':
+                if path.suffix == ".pdf":
                     files.append(path)
                     strings.append(path.name)
         return files, strings
@@ -147,8 +145,8 @@ class Path(abjad.Path):
     def _find_pytest_files(self, force=False):
         files, strings = [], []
         if force or not self.is_score_package_path():
-            for path in sorted(self.glob('**/test*.py')):
-                if '__pycache__' in str(path):
+            for path in sorted(self.glob("**/test*.py")):
+                if "__pycache__" in str(path):
                     continue
                 if not path.is_file():
                     continue
@@ -165,8 +163,8 @@ class Path(abjad.Path):
         git_status_lines = self._get_git_status_lines()
         for line in git_status_lines:
             line = str(line)
-            if line.startswith('A'):
-                path = line.strip('A')
+            if line.startswith("A"):
+                path = line.strip("A")
                 path = path.strip()
                 root = self.wrapper
                 path = root / path
@@ -175,7 +173,7 @@ class Path(abjad.Path):
 
     def _get_git_status_lines(self):
         with abjad.TemporaryDirectoryChange(directory=self.wrapper):
-            command = f'git status --porcelain {self}'
+            command = f"git status --porcelain {self}"
             return abjad.IOManager.run_command(command)
 
     def _get_repository_root(self):
@@ -190,7 +188,7 @@ class Path(abjad.Path):
             return self.wrapper
         while str(path) != str(path.parts[0]):
             for path_ in path.iterdir():
-                if path_.name == '.git':
+                if path_.name == ".git":
                     return type(self)(path)
             path = path.parent
 
@@ -201,13 +199,13 @@ class Path(abjad.Path):
         git_status_lines = self._get_git_status_lines()
         for line in git_status_lines:
             line = str(line)
-            if line.startswith('?'):
-                path = line.strip('?')
+            if line.startswith("?"):
+                path = line.strip("?")
                 path = path.strip()
                 path = root / path
                 paths.append(path)
-            elif line.startswith('M'):
-                path = line.strip('M')
+            elif line.startswith("M"):
+                path = line.strip("M")
                 path = path.strip()
                 path = root / path
                 paths.append(path)
@@ -216,48 +214,48 @@ class Path(abjad.Path):
 
     def _has_pending_commit(self):
         assert self.is_dir()
-        command = f'git status {self}'
+        command = f"git status {self}"
         with abjad.TemporaryDirectoryChange(directory=self):
             lines = abjad.IOManager.run_command(command)
         clean_lines = []
         for line in lines:
             line = str(line)
             clean_line = line.strip()
-            clean_line = clean_line.replace(str(self), '')
+            clean_line = clean_line.replace(str(self), "")
             clean_lines.append(clean_line)
         for line in clean_lines:
-            if 'Changes not staged for commit:' in line:
+            if "Changes not staged for commit:" in line:
                 return True
-            if 'Changes to be committed:' in line:
+            if "Changes to be committed:" in line:
                 return True
-            if 'Untracked files:' in line:
+            if "Untracked files:" in line:
                 return True
-        
+
     def _is_git_unknown(self):
         if not self.exists():
             return False
         git_status_lines = self._get_git_status_lines()
-        git_status_lines = git_status_lines or ['']
+        git_status_lines = git_status_lines or [""]
         first_line = git_status_lines[0]
-        if first_line.startswith('?'):
+        if first_line.startswith("?"):
             return True
         return False
 
     def _parse_part_identifier(self):
-        if self.suffix == '.ly':
+        if self.suffix == ".ly":
             part_identifier = None
-            with self.open('r') as pointer:
+            with self.open("r") as pointer:
                 for line in pointer.readlines():
-                    if line.startswith('% part_identifier = '):
-                        line = line.strip('% part_identifier = ')
+                    if line.startswith("% part_identifier = "):
+                        line = line.strip("% part_identifier = ")
                         part_identifier = eval(line)
                         return part_identifier
-        elif self.name.endswith('layout.py'):
+        elif self.name.endswith("layout.py"):
             part_identifier = None
-            with self.open('r') as pointer:
+            with self.open("r") as pointer:
                 for line in pointer.readlines():
-                    if line.startswith('part_identifier = '):
-                        line = line.strip('part_identifier = ')
+                    if line.startswith("part_identifier = "):
+                        line = line.strip("part_identifier = ")
                         part_identifier = eval(line)
                         return part_identifier
         else:
@@ -269,9 +267,9 @@ class Path(abjad.Path):
         paths.extend(self._get_modified_asset_paths())
         commands = []
         for path in paths:
-            command = f'git reset -- {path}'
+            command = f"git reset -- {path}"
             commands.append(command)
-        command = ' && '.join(commands)
+        command = " && ".join(commands)
         with abjad.TemporaryDirectoryChange(directory=path):
             abjad.IOManager.spawn_subprocess(command)
 
@@ -292,12 +290,12 @@ class Path(abjad.Path):
         part_manifest = self._get_part_manifest()
         for part in part_manifest:
             identifier = abjad.String(part.identifier).to_shout_case()
-            document_name = f'{stem}_{part.identifier}'
+            document_name = f"{stem}_{part.identifier}"
             result.append(document_name)
         return result
 
     @property
-    def scores(self) -> typing.Optional['Path']:
+    def scores(self) -> typing.Optional["Path"]:
         """
         Gets scores directory.
 
@@ -313,14 +311,14 @@ class Path(abjad.Path):
             Path*('/path/to/scores/red_score/red_score/etc')
 
         """
-        if getattr(self, '_scores', None) is not None:
-            result = getattr(self, '_scores')
-            result._scores = getattr(self, '_scores')
+        if getattr(self, "_scores", None) is not None:
+            result = getattr(self, "_scores")
+            result._scores = getattr(self, "_scores")
             return result
         for scores in (
             self.configuration.test_scores_directory,
             abjad.abjad_configuration.composer_scores_directory,
-            ):
+        ):
             if str(self).startswith(str(scores)):
                 return type(self)(scores)
         return None
@@ -331,11 +329,11 @@ class Path(abjad.Path):
         """
         Gets EOL measure numbers from BOL measure numbers stored in metadata.
         """
-        bol_measure_numbers = self.get_metadatum('bol_measure_numbers')
+        bol_measure_numbers = self.get_metadatum("bol_measure_numbers")
         if bol_measure_numbers is None:
             return None
         eol_measure_numbers = [_ - 1 for _ in bol_measure_numbers[1:]]
-        final_measure_number = self.get_metadatum('final_measure_number')
+        final_measure_number = self.get_metadatum("final_measure_number")
         if final_measure_number is not None:
             eol_measure_numbers.append(final_measure_number)
         return eol_measure_numbers
@@ -345,21 +343,21 @@ class Path(abjad.Path):
         Gets menu header.
         """
         if self.is_scores():
-            return 'Abjad IDE : scores'
+            return "Abjad IDE : scores"
         if self.is_external():
-            header = f'Abjad IDE : {self}'
+            header = f"Abjad IDE : {self}"
             if not self.list_paths():
-                header += ' (empty)'
+                header += " (empty)"
             return header
         parts = [self.contents.get_title()]
         if self.is_wrapper():
-            parts.append('wrapper')
+            parts.append("wrapper")
         elif not self.is_contents():
             parts.extend(self.relative_to(self.contents).parts[:-1])
             parts.append(self.get_identifier())
         if parts and not self.list_paths():
-            parts[-1] += ' (empty)'
-        return ' : '.join(parts)
+            parts[-1] += " (empty)"
+        return " : ".join(parts)
 
     def is_external(self) -> bool:
         """
@@ -388,15 +386,18 @@ class Path(abjad.Path):
             True
 
         """
-        if (not self.name[0].isalpha() and
-            not self.name == '_assets' and
-            not self.name == '_segments' and
-            not self.parent.name == 'segments'):
+        if (
+            not self.name[0].isalpha()
+            and not self.name == "_assets"
+            and not self.name == "_segments"
+            and not self.parent.name == "segments"
+        ):
             return True
-        for scores in (abjad.abjad_configuration.composer_scores_directory,
+        for scores in (
+            abjad.abjad_configuration.composer_scores_directory,
             self.configuration.test_scores_directory,
-            getattr(self, '_scores', None),
-            ):
+            getattr(self, "_scores", None),
+        ):
             if str(self) == str(scores):
                 return True
             if str(self).startswith(str(scores)):

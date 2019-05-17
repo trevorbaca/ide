@@ -22,15 +22,15 @@ class Menu(object):
     ### CLASS VARIABLES ###
 
     __slots__ = (
-        '_aliases',
-        '_getter',
-        '_header',
-        '_io',
-        '_loop',
-        '_navigations',
-        '_prompt',
-        '_sections',
-        )
+        "_aliases",
+        "_getter",
+        "_header",
+        "_io",
+        "_loop",
+        "_navigations",
+        "_prompt",
+        "_sections",
+    )
 
     left_margin_width = 6
 
@@ -46,7 +46,7 @@ class Menu(object):
         navigations: abjad.OrderedDict = None,
         prompt: str = None,
         sections: typing.List[MenuSection] = None,
-        ) -> None:
+    ) -> None:
         self._aliases = aliases
         self._getter = getter
         self._header = header
@@ -64,7 +64,7 @@ class Menu(object):
         dimensions: typing.Tuple[int, int] = None,
         force_single_column: bool = False,
         redraw: typing.Union[bool, str] = True,
-        ) -> Response:
+    ) -> Response:
         """
         Calls menu on ``string``.
         """
@@ -74,42 +74,37 @@ class Menu(object):
             redraw,
             dimensions=dimensions,
             force_single_column=force_single_column,
-            )
-        string = self.io.get(
-            prompt=self.prompt,
-            split_input=not self.getter,
-            )
+        )
+        string = self.io.get(prompt=self.prompt, split_input=not self.getter)
         prefix, string = self._split_prefix(string)
         source = None
         if string is None:
             payload = None
-        elif string == '?':
-            return self(dimensions=dimensions, redraw='help')
-        elif string == ';':
+        elif string == "?":
+            return self(dimensions=dimensions, redraw="help")
+        elif string == ";":
             return self(dimensions=dimensions, force_single_column=True)
-        elif string == '?;':
+        elif string == "?;":
             return self(
-                dimensions=dimensions,
-                force_single_column=True,
-                redraw='help',
-                )
-        elif string == '' and self.loop:
+                dimensions=dimensions, force_single_column=True, redraw="help"
+            )
+        elif string == "" and self.loop:
             return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
-            source = 'navigations'
+            source = "navigations"
         elif bool(self._match_alias(string)):
             payload = self._match_alias(string)
-            source = 'alias'
+            source = "alias"
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
-            source = 'command'
+            source = "command"
         elif bool(self._match_assets(string)):
             payload = self._match_assets(string)
-            source = 'assets'
+            source = "assets"
         elif bool(self._match_range(string)):
             payload = self._match_range(string)
-            source = 'range'
+            source = "range"
         else:
             payload = None
         if string:
@@ -137,7 +132,7 @@ class Menu(object):
         start_width = len(string)
         if start_width < width:
             needed = width - start_width
-            suffix = needed * ' '
+            suffix = needed * " "
             result = string + suffix
         else:
             result = string
@@ -149,9 +144,9 @@ class Menu(object):
         lines_above,
         break_only_at_blank_lines=False,
         dimensions=None,
-        ):
-        if lines and lines[-1] != '':
-            lines.append('')
+    ):
+        if lines and lines[-1] != "":
+            lines.append("")
         lines = [_.rstrip() for _ in lines]
         if len(lines) < 4:
             return lines
@@ -160,7 +155,7 @@ class Menu(object):
         if isinstance(dimensions, tuple):
             height, width = dimensions
         else:
-            result = os.popen('stty size', 'r').read().split()
+            result = os.popen("stty size", "r").read().split()
             if not result:
                 return lines
             if result:
@@ -170,12 +165,12 @@ class Menu(object):
             return lines
         midpoint = int(len(lines) / 2)
         if break_only_at_blank_lines:
-            while lines[midpoint] != '':
+            while lines[midpoint] != "":
                 midpoint += 1
-            assert lines[midpoint] == ''
+            assert lines[midpoint] == ""
         left_lines = lines[:midpoint]
         if break_only_at_blank_lines:
-            right_lines = lines[midpoint+1:]
+            right_lines = lines[midpoint + 1 :]
             assert len(left_lines) + len(right_lines) == len(lines) - 1
         else:
             right_lines = lines[midpoint:]
@@ -192,7 +187,7 @@ class Menu(object):
         right_lines = [
             self._left_justify(_, right_width + right_margin)
             for _ in right_lines
-            ]
+        ]
         conjoined_lines = []
         sequence = abjad.sequence([left_lines, right_lines])
         lines = []
@@ -201,12 +196,12 @@ class Menu(object):
                 line = pair[0]
             elif len(pair) == 2:
                 left_line, right_line = pair
-                line = left_line + gutter_width * ' ' + right_line
+                line = left_line + gutter_width * " " + right_line
             lines.append(line)
         if lines[-1].isspace():
-            lines[-1] = ''
-        if lines[-1] != '':
-            lines.append('')
+            lines[-1] = ""
+        if lines[-1] != "":
+            lines.append("")
         return lines
 
     def _match_alias(self, string):
@@ -228,7 +223,7 @@ class Menu(object):
             paths = [Path(_.display) for _ in section]
             for i, path in enumerate(paths):
                 for part in path.parts:
-                    if part == '/':
+                    if part == "/":
                         continue
                     if part == string:
                         entry = section[i]
@@ -249,9 +244,9 @@ class Menu(object):
                 return entry.value
 
     def _match_range(self, string):
-        if string.startswith('!'):
+        if string.startswith("!"):
             return
-        if ',' not in string and '-' not in string:
+        if "," not in string and "-" not in string:
             return
         for section in self.sections:
             numbers = section.range_string_to_numbers(string)
@@ -266,19 +261,23 @@ class Menu(object):
 
     @staticmethod
     def _split_prefix(string):
-        if (string and
-            2 <= len(string) and
-            string[0] == string[1] and
-            string[0] in Path.address_characters):
+        if (
+            string
+            and 2 <= len(string)
+            and string[0] == string[1]
+            and string[0] in Path.address_characters
+        ):
             prefix = string[:2]
             string = string[2:] or None
-        elif (string and
-            1 <= len(string) and
-            string[0] in Path.address_characters):
+        elif (
+            string
+            and 1 <= len(string)
+            and string[0] in Path.address_characters
+        ):
             prefix = string[:1]
             string = string[1:] or None
         else:
-            prefix = ''
+            prefix = ""
         return prefix, string
 
     ### PUBLIC PROPERTIES ###
@@ -343,12 +342,8 @@ class Menu(object):
 
     @staticmethod
     def from_directory(
-        directory,
-        aliases=None,
-        io=None,
-        navigations=None,
-        sections=None,
-        ) -> 'Menu':
+        directory, aliases=None, io=None, navigations=None, sections=None
+    ) -> "Menu":
         """
         Makes menu from ``directory``.
         """
@@ -378,7 +373,7 @@ class Menu(object):
             loop=True,
             navigations=navigations,
             sections=sections,
-            )
+        )
         return menu
 
     def make_help_lines(self, dimensions=None, force_single_column=None):
@@ -398,10 +393,10 @@ class Menu(object):
                 lines_above=2,
                 break_only_at_blank_lines=True,
                 dimensions=dimensions,
-                )
-        header = self.header + ' : help'
+            )
+        header = self.header + " : help"
         header = abjad.String(header).capitalize_start()
-        lines[0:0] = [header, '']
+        lines[0:0] = [header, ""]
         return lines
 
     def make_lines(self, dimensions=None, force_single_column=False):
@@ -410,30 +405,30 @@ class Menu(object):
 
         Returns list.
         """
-        header = abjad.String(self.header or '').capitalize_start()
-        lines = [header, '']
+        header = abjad.String(self.header or "").capitalize_start()
+        lines = [header, ""]
         names = []
         for section in self:
             if section.command:
                 if section.command in names:
-                    raise Exception(f'Duplicate section {section.command!r}.')
+                    raise Exception(f"Duplicate section {section.command!r}.")
                 names.append(section.command)
             if section.command:
                 continue
             lines_ = section.make_lines(self.left_margin_width)
-            if (not section.secondary and
-                not force_single_column and
-                not section.force_single_column):
+            if (
+                not section.secondary
+                and not force_single_column
+                and not section.force_single_column
+            ):
                 lines_ = self._make_bicolumnar(
-                    lines_,
-                    len(lines),
-                    dimensions=dimensions,
-                    )
+                    lines_, len(lines), dimensions=dimensions
+                )
             lines.extend(lines_)
         lines = [_.rstrip() for _ in lines]
         for line in lines:
             assert not line.isspace()
-        assert lines[-1] == '', repr(lines)
+        assert lines[-1] == "", repr(lines)
         return lines
 
     def redraw(self, value, dimensions=None, force_single_column=False):
@@ -447,12 +442,10 @@ class Menu(object):
         abjad.IOManager.clear_terminal()
         if value is True:
             lines = self.make_lines(
-                dimensions=dimensions,
-                force_single_column=force_single_column,
-                )
+                dimensions=dimensions, force_single_column=force_single_column
+            )
         else:
             lines = self.make_help_lines(
-                dimensions=dimensions,
-                force_single_column=force_single_column,
-                )
+                dimensions=dimensions, force_single_column=force_single_column
+            )
         self.io.display(lines, is_menu=True, raw=True)

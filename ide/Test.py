@@ -12,7 +12,7 @@ class Test(abjad.FilesystemState):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = 'Classes'
+    __documentation_section__ = "Classes"
 
     configuration = Configuration()
 
@@ -30,7 +30,7 @@ class Test(abjad.FilesystemState):
             assert os.path.exists(path), repr(path)
             assert os.path.isfile(path) or os.path.isdir(path), repr(path)
         path = str(self.configuration.test_scores_directory)
-        backup_path = path + '.backup'
+        backup_path = path + ".backup"
         shutil.copytree(path, backup_path)
         super(Test, self).__enter__()
 
@@ -40,7 +40,7 @@ class Test(abjad.FilesystemState):
         """
         super(Test, self).__exit__(exg_type, exc_value, traceback)
         path = str(self.configuration.test_scores_directory)
-        backup_path = path + '.backup'
+        backup_path = path + ".backup"
         assert os.path.exists(backup_path), repr(backup_path)
         if os.path.exists(path):
             shutil.rmtree(path)

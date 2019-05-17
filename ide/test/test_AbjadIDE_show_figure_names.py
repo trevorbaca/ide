@@ -1,9 +1,11 @@
 import abjad
 import ide
+
 abjad_ide = ide.AbjadIDE(test=True)
 
 
 tag = abjad.const.FIGURE_NAME
+
 
 def test_AbjadIDE_show_figure_names_01():
     """
@@ -12,28 +14,28 @@ def test_AbjadIDE_show_figure_names_01():
 
     with ide.Test():
 
-        build = ide.Path('green_score', 'builds', 'arch-a-score')
-        path = build / '_segments' / 'segment--.ly'
+        build = ide.Path("green_score", "builds", "arch-a-score")
+        path = build / "_segments" / "segment--.ly"
 
-        abjad_ide('gre bb arch-a-score ggc q')
+        abjad_ide("gre bb arch-a-score ggc q")
         assert path.is_file()
-        
-        abjad_ide('gre bb arch-a-score fns q')
+
+        abjad_ide("gre bb arch-a-score fns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Activating 1 figure name markup tag ...',
-            ]:
+            "Showing figure name markup ...",
+            " Found 1 figure name markup tag ...",
+            " Activating 1 figure name markup tag ...",
+        ]:
             assert line in lines
 
-        abjad_ide('gre bb arch-a-score fnh q')
+        abjad_ide("gre bb arch-a-score fnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Deactivating 1 figure name markup tag ...',
-            ]:
+            "Hiding figure name markup ...",
+            " Found 1 figure name markup tag ...",
+            " Deactivating 1 figure name markup tag ...",
+        ]:
             assert line in lines
 
 
@@ -44,23 +46,23 @@ def test_AbjadIDE_show_figure_names_02():
 
     with ide.Test():
 
-        path = ide.Path('green_score', 'segments', '_', 'illustration.ly')
+        path = ide.Path("green_score", "segments", "_", "illustration.ly")
         assert path.is_file()
-        
-        abjad_ide('gre %_ fnh q')
+
+        abjad_ide("gre %_ fnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Hiding figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Deactivating 1 figure name markup tag ...',
-            ]:
+            "Hiding figure name markup ...",
+            " Found 1 figure name markup tag ...",
+            " Deactivating 1 figure name markup tag ...",
+        ]:
             assert line in lines
 
-        abjad_ide('gre %_ fns q')
+        abjad_ide("gre %_ fns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            'Showing figure name markup ...',
-            ' Found 1 figure name markup tag ...',
-            ' Activating 1 figure name markup tag ...',
-            ]:
+            "Showing figure name markup ...",
+            " Found 1 figure name markup tag ...",
+            " Activating 1 figure name markup tag ...",
+        ]:
             assert line in lines

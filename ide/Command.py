@@ -13,35 +13,35 @@ class Command(object):
     ### CLASS VARIABLES ###
 
     known_sections = (
-        'all',
-        'back cover',
-        'build',
-        'clipboard',
-        'definition',
-        'definitions',
-        'directory',
-        'front cover',
-        'git',
-        'go',
-        'hop',
-        'illustration',
-        'layout',
-        'log',
-        'music',
-        'music annotations',
-        'parts',
-        'path',
-        'persistent indicators',
-        'preface',
-        'score',
-        'segment.midi',
-        'segments',
-        'shell',
-        'show',
-        'smart',
-        'stylesheet',
-        'text',
-        )
+        "all",
+        "back cover",
+        "build",
+        "clipboard",
+        "definition",
+        "definitions",
+        "directory",
+        "front cover",
+        "git",
+        "go",
+        "hop",
+        "illustration",
+        "layout",
+        "log",
+        "music",
+        "music annotations",
+        "parts",
+        "path",
+        "persistent indicators",
+        "preface",
+        "score",
+        "segment.midi",
+        "segments",
+        "shell",
+        "show",
+        "smart",
+        "stylesheet",
+        "text",
+    )
 
     ### INITIALIZER ###
 
@@ -54,7 +54,7 @@ class Command(object):
         menu_section: str = None,
         score_package_paths: typing.Union[bool, typing.Tuple[str, ...]] = None,
         scores_directory: bool = None,
-        ) -> None:
+    ) -> None:
         assert isinstance(command_name, str), repr(command_name)
         assert Command._is_valid_command_name(command_name), repr(command_name)
         self.score_package_path_blacklist = score_package_path_blacklist
@@ -86,7 +86,7 @@ class Command(object):
         if self.description is not None:
             method.description = self.description
         else:
-            method.description = method.__name__.replace('_', ' ')
+            method.description = method.__name__.replace("_", " ")
         method.external_directories = self.external_directories
         method.menu_section = self.menu_section
         method.score_package_paths = self.score_package_paths

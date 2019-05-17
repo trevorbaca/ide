@@ -11,4 +11,4 @@ blue_rhythm_2 = blue_score.tools.SargassoMeasureMaker(
     measures_are_scaled=True,
     measures_are_split=True,
     measures_are_shuffled=True,
-    )
+)

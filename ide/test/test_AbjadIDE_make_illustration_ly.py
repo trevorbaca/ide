@@ -1,5 +1,6 @@
 import abjad
 import ide
+
 abjad_ide = ide.AbjadIDE(test=True)
 
 
@@ -9,29 +10,29 @@ def test_AbjadIDE_make_illustration_ly_01():
     """
 
     with ide.Test():
-        material = ide.Path('red_score', 'materials', 'red_pitch_classes')
-        ly = material / 'illustration.ly'
+        material = ide.Path("red_score", "materials", "red_pitch_classes")
+        ly = material / "illustration.ly"
         ly.remove()
-        maker = material / '__make_material_ly__.py'
+        maker = material / "__make_material_ly__.py"
         maker.remove()
 
-        abjad_ide('red %rpc ilm q')
+        abjad_ide("red %rpc ilm q")
         transcript = abjad_ide.io.transcript
-        assert f'Removing {ly.trim()} ...' not in transcript
-        assert f'Writing {maker.trim()} ...' in transcript
-        assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
-        assert f'Opening {ly.trim()} ...' not in transcript
+        assert f"Removing {ly.trim()} ..." not in transcript
+        assert f"Writing {maker.trim()} ..." in transcript
+        assert f"Interpreting {maker.trim()} ..." in transcript
+        assert f"Removing {maker.trim()} ..." in transcript
+        assert f"Opening {ly.trim()} ..." not in transcript
         assert ly.is_file()
         assert not maker.exists()
 
-        abjad_ide('red %rpc ilm q')
+        abjad_ide("red %rpc ilm q")
         transcript = abjad_ide.io.transcript
-        assert f'Removing {ly.trim()} ...' in transcript
-        assert f'Writing {maker.trim()} ...' in transcript
-        assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
-        assert f'Opening {ly.trim()} ...' not in transcript
+        assert f"Removing {ly.trim()} ..." in transcript
+        assert f"Writing {maker.trim()} ..." in transcript
+        assert f"Interpreting {maker.trim()} ..." in transcript
+        assert f"Removing {maker.trim()} ..." in transcript
+        assert f"Opening {ly.trim()} ..." not in transcript
         assert ly.is_file()
         assert not maker.exists()
 
@@ -42,28 +43,28 @@ def test_AbjadIDE_make_illustration_ly_02():
     """
 
     with ide.Test():
-        segment = ide.Path('red_score', 'segments', 'A')
-        ly = segment / 'illustration.ly'
+        segment = ide.Path("red_score", "segments", "A")
+        ly = segment / "illustration.ly"
         ly.remove()
-        maker = segment / '__make_segment_ly__.py'
+        maker = segment / "__make_segment_ly__.py"
         maker.remove()
 
-        abjad_ide('red %A ilm q')
+        abjad_ide("red %A ilm q")
         transcript = abjad_ide.io.transcript
-        assert f'Removing {ly.trim()} ...' not in transcript
-        assert f'Writing {maker.trim()} ...' in transcript
-        assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
-        assert f'Opening {ly.trim()} ...' not in transcript
+        assert f"Removing {ly.trim()} ..." not in transcript
+        assert f"Writing {maker.trim()} ..." in transcript
+        assert f"Interpreting {maker.trim()} ..." in transcript
+        assert f"Removing {maker.trim()} ..." in transcript
+        assert f"Opening {ly.trim()} ..." not in transcript
         assert ly.is_file()
         assert not maker.exists()
 
-        abjad_ide('red %A ilm q')
+        abjad_ide("red %A ilm q")
         transcript = abjad_ide.io.transcript
-        assert f'Removing {ly.trim()} ...' in transcript
-        assert f'Writing {maker.trim()} ...' in transcript
-        assert f'Interpreting {maker.trim()} ...' in transcript
-        assert f'Removing {maker.trim()} ...' in transcript
-        assert f'Opening {ly.trim()} ...' not in transcript
+        assert f"Removing {ly.trim()} ..." in transcript
+        assert f"Writing {maker.trim()} ..." in transcript
+        assert f"Interpreting {maker.trim()} ..." in transcript
+        assert f"Removing {maker.trim()} ..." in transcript
+        assert f"Opening {ly.trim()} ..." not in transcript
         assert ly.is_file()
         assert not maker.exists()
