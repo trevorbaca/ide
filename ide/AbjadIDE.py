@@ -1626,7 +1626,7 @@ class AbjadIDE(object):
         return messages
 
     def _open_files(self, paths, force_vim=False, silent=False):
-        assert isinstance(paths, collections.Iterable), repr(paths)
+        assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
             if not path.exists():
                 self.io.display(f'missing {path.trim()} ...')
@@ -1732,7 +1732,7 @@ class AbjadIDE(object):
             return lines
 
     def _run_doctest(self, paths):
-        assert isinstance(paths, collections.Iterable), repr(paths)
+        assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
             if path.is_dir():
                 raise Exception(f'directory {path.trim()} not a file ...')
@@ -1775,7 +1775,7 @@ class AbjadIDE(object):
                 self.io.display(f'can not produce {pdf.trim()} ...')
 
     def _run_pytest(self, paths):
-        assert isinstance(paths, collections.Iterable), repr(paths)
+        assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
             if path.is_dir():
                 raise Exception(f'directory {path.trim()} not a file ...')
