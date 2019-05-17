@@ -106,6 +106,7 @@ install:
     - prime-parser-tables
 
 script:
+    - black --target-version=py36 --line-length=79 --check --diff $PACKAGE
     - mypy --ignore-missing-imports $PACKAGE
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
