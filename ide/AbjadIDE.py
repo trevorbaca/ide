@@ -1596,6 +1596,8 @@ class AbjadIDE(object):
                     self.io.display(f"editing {path.trim()} ...")
         elif mode == "o":
             command = f"open {string}"
+            command = command.replace("(", r"\(")
+            command = command.replace(")", r"\)")
             if not silent:
                 for path in paths:
                     self.io.display(f"opening {path.trim()} ...")
