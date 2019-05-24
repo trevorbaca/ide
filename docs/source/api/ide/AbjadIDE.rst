@@ -28,6 +28,8 @@ AbjadIDE
       __repr__
       activate
       aliases
+      black_check
+      black_reformat
       build_part_pdf
       build_score_pdf
       call_shell
@@ -128,6 +130,7 @@ AbjadIDE
       make_illustration_pdf
       make_layout_ly
       make_segment_midi
+      mypy
       nake_illustration_pdf
       navigation
       navigations
@@ -214,6 +217,10 @@ AbjadIDE
       :class: class-header
 
    .. automethod:: AbjadIDE.activate
+
+   .. automethod:: AbjadIDE.black_check
+
+   .. automethod:: AbjadIDE.black_reformat
 
    .. automethod:: AbjadIDE.build_part_pdf
 
@@ -396,6 +403,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.make_layout_ly
 
    .. automethod:: AbjadIDE.make_segment_midi
+
+   .. automethod:: AbjadIDE.mypy
 
    .. automethod:: AbjadIDE.nake_illustration_pdf
 

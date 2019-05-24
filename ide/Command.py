@@ -29,6 +29,7 @@ class Command(object):
         "log",
         "music",
         "music annotations",
+        "package",
         "parts",
         "path",
         "persistent indicators",
