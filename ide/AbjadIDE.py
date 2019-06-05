@@ -2340,10 +2340,11 @@ class AbjadIDE(object):
             with abjad.Timer() as timer:
                 result = self._interpret_file(definition)
             stdout_lines, stderr_lines, exit = result
-            self.io.display(stdout_lines)
+            self.io.display(stdout_lines, wrap=True)
             if exit:
                 self.io.display(
-                    [f"{definition.trim()} FAILED:"] + stderr_lines
+                    [f"{definition.trim()} FAILED:"] + stderr_lines,
+                    wrap=True,
                 )
             else:
                 self.io.display(f"{definition.trim()} ... OK", raw=True)
@@ -4482,14 +4483,14 @@ class AbjadIDE(object):
             with self.change(root):
                 self.io.display(f"Running {command} on {root} ...")
                 lines = abjad.IOManager.run_command(f"{command} {root}")
-                self.io.display(lines, raw=True)
+                self.io.display(lines, raw=True, wrap=True)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
                 self.io.display(f"Running {command} on {path} ...")
                 lines = abjad.IOManager.run_command(f"{command} {path}")
-                self.io.display(lines, raw=True)
+                self.io.display(lines, raw=True, wrap=True)
                 if i + 1 < len(paths):
                     self.io.display("")
 

@@ -54,6 +54,7 @@ class IO(object):
         indent: int = 0,
         is_menu: bool = False,
         raw: bool = False,
+        wrap: bool = False,
     ) -> None:
         """
         Displays lines.
@@ -68,10 +69,11 @@ class IO(object):
             lines = [whitespace + _ for _ in lines]
         if lines:
             self.transcript.append(lines, is_menu=is_menu)
-        result = os.popen("stty size", "r").read().split()
-        if result:
-            width = int(result[1])
-            lines = [_[:width] for _ in lines]
+        if wrap is not True:
+            result = os.popen("stty size", "r").read().split()
+            if result:
+                width = int(result[1])
+                lines = [_[:width] for _ in lines]
         for line in lines:
             print(line)
 
