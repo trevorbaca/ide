@@ -2343,8 +2343,7 @@ class AbjadIDE(object):
             self.io.display(stdout_lines, wrap=True)
             if exit:
                 self.io.display(
-                    [f"{definition.trim()} FAILED:"] + stderr_lines,
-                    wrap=True,
+                    [f"{definition.trim()} FAILED:"] + stderr_lines, wrap=True
                 )
             else:
                 self.io.display(f"{definition.trim()} ... OK", raw=True)

@@ -8,7 +8,8 @@ pytest_plugins = ["helpers_namespace"]
 
 @pytest.fixture(autouse=True)
 def add_ide(doctest_namespace):
-    doctest_namespace['ide'] = ide
+    doctest_namespace["ide"] = ide
+
 
 @pytest.fixture(autouse=True)
 def add_libraries(doctest_namespace):
@@ -16,6 +17,7 @@ def add_libraries(doctest_namespace):
     doctest_namespace["f"] = abjad.f
     doctest_namespace["Infinity"] = abjad.mathtools.Infinity()
     doctest_namespace["NegativeInfinity"] = abjad.mathtools.NegativeInfinity()
+
 
 @pytest.helpers.register
 def list_all_ide_classes(ignored_classes=None):
