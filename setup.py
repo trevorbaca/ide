@@ -3,10 +3,8 @@ import setuptools
 
 
 author = ["Trevor Bača", "Josiah Wolf Oberholtzer"]
-author = ", ".join(author)
 
 author_email = ["trevor.baca@gmail.com", "josiah.oberholtzer@gmail.com"]
-author_email = ", ".join(author_email)
 
 install_requires = [
     "abjad",
@@ -24,15 +22,14 @@ keywords = [
     "formalized score control",
     "lilypond",
 ]
-keywords = ", ".join(keywords)
 
 if __name__ == "__main__":
     setuptools.setup(
-        author=author,
-        author_email=author_email,
+        author=", ".join(author),
+        author_email=", ".join(author_email),
         include_package_data=True,
         install_requires=install_requires,
-        keywords=keywords,
+        keywords=", ".join(keywords),
         license="MIT",
         name="Abjad IDE",
         packages=["ide"],
