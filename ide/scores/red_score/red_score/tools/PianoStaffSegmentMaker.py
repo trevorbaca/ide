@@ -315,9 +315,8 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
         if isinstance(divisions, dict):
             divisions = divisions[voice.name]
         assert isinstance(divisions, (list, tuple))
-        selections = rhythm_maker(divisions)
-        for selection in selections:
-            voice.extend(selection)
+        selection = rhythm_maker(divisions)
+        voice.extend(selection)
 
     ### PUBLIC PROPERTIES ###
 
