@@ -339,6 +339,10 @@ Path
 
    .. container:: inherited
 
+      .. automethod:: Path.is_mount
+
+   .. container:: inherited
+
       .. automethod:: Path.is_part
 
    .. container:: inherited
