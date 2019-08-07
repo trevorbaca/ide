@@ -292,7 +292,7 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
             string = r'\include "layout.ly"'
             literal = abjad.LilyPondLiteral(string, "opening")
             abjad.attach(literal, include)
-            container = abjad.Container([include, score], is_simultaneous=True)
+            container = abjad.Container([include, score], simultaneous=True)
             score_block.items[:] = [container]
         return lilypond_file
 
