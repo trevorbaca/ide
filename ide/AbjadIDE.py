@@ -3969,6 +3969,7 @@ class AbjadIDE(object):
         Goes to tools directory or tools.py module.
         """
         assert directory.is_score_package_path()
+        assert directory.tools is not None
         if directory.tools.exists():
             self._manage_directory(directory.tools)
         else:
