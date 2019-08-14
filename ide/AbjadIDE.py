@@ -3966,11 +3966,15 @@ class AbjadIDE(object):
     )
     def go_to_tools_directory(self, directory: Path) -> None:
         """
-        Goes to tools directory.
+        Goes to tools directory or tools.py module.
         """
         assert directory.is_score_package_path()
-        assert directory.tools is not None
-        self._manage_directory(directory.tools)
+        if directory.tools.exists():
+            self._manage_directory(directory.tools)
+        else:
+            path = directory.contents / "tools.py"
+            self._open_files([path])
+            self._manage_directory(directory)
 
     @Command(
         "ww",

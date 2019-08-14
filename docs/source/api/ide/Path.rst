@@ -48,10 +48,6 @@ Path
 
    .. container:: inherited
 
-      .. automethod:: Path.__call__
-
-   .. container:: inherited
-
       .. automethod:: Path.__enter__
 
    .. container:: inherited
