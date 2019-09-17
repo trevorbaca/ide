@@ -35,6 +35,7 @@ AbjadIDE
       call_shell
       change
       check_definition_py
+      check_out_optimization
       cleanup
       clipboard
       collect_segments
@@ -229,6 +230,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.call_shell
 
    .. automethod:: AbjadIDE.check_definition_py
+
+   .. automethod:: AbjadIDE.check_out_optimization
 
    .. automethod:: AbjadIDE.collect_segments
 

@@ -141,6 +141,19 @@ class AbjadIDE(object):
             commands[command.command_name] = command
         self._commands = commands
 
+    def _check_out_paths(self, paths):
+        assert isinstance(paths, collections.abc.Iterable), repr(paths)
+        for path in paths:
+            root = path._get_repository_root()
+            if not root:
+                self.io.display(f"missing {path.trim()} repository ...")
+                return
+            with self.change(root):
+                command = f"git checkout {path}"
+                self.io.display(f"Running {command} ...")
+                lines = abjad.IOManager.run_command(command)
+                self.io.display(lines, raw=True)
+
     def _check_test_scores_directory(self, check=False):
         if not check:
             return
@@ -2359,6 +2372,27 @@ class AbjadIDE(object):
         return 0
 
     @Command(
+        "oc",
+        description=".optimization - checkout",
+        menu_section="illustration",
+        score_package_paths=("illustrationspace",),
+    )
+    def check_out_optimization(self, directory: Path) -> None:
+        """
+        Checks out ``.optimization``.
+        """
+        assert directory.is_illustrationspace()
+        if directory.is_material() or directory.is_segment():
+            paths = [directory / ".optimization"]
+        else:
+            paths = []
+            for path in directory.list_paths():
+                optimization = path / ".optimization"
+                if optimization.is_file():
+                    paths.append(optimization)
+        self._check_out_paths(paths)
+
+    @Command(
         "ggc",
         description="segments - collect",
         menu_section="segments",
@@ -2949,9 +2983,9 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ily = path / ".optimization"
-                if illustration_ily.is_file():
-                    paths.append(illustration_ily)
+                optimization = path / ".optimization"
+                if optimization.is_file():
+                    paths.append(optimization)
         self._open_files(paths, force_vim=True)
 
     @Command(
