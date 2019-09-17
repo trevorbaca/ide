@@ -114,6 +114,7 @@ AbjadIDE
       hide_local_measure_numbers
       hide_measure_numbers
       hide_music_annotations
+      hide_not_yet_pitched_music
       hide_spacing
       hide_stage_numbers
       hide_tag
@@ -162,6 +163,7 @@ AbjadIDE
       show_local_measure_numbers
       show_measure_numbers
       show_music_annotations
+      show_not_yet_pitched
       show_spacing
       show_stage_numbers
       show_tag
@@ -377,6 +379,8 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.hide_music_annotations
 
+   .. automethod:: AbjadIDE.hide_not_yet_pitched_music
+
    .. automethod:: AbjadIDE.hide_spacing
 
    .. automethod:: AbjadIDE.hide_stage_numbers
@@ -460,6 +464,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.show_measure_numbers
 
    .. automethod:: AbjadIDE.show_music_annotations
+
+   .. automethod:: AbjadIDE.show_not_yet_pitched
 
    .. automethod:: AbjadIDE.show_spacing
 

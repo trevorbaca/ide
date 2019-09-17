@@ -4149,6 +4149,20 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
+        "nyph",
+        description=f"not yet pitched - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_not_yet_pitched_music(self, directory: Path) -> None:
+        """
+        Hides not yet pitched.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.NOT_YET_PITCHED
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+
+    @Command(
         "bcti",
         description="back-cover.tex - interpret",
         menu_section="back cover",
@@ -5154,6 +5168,20 @@ class AbjadIDE(object):
         tag = self.io.get("tag")
         if self.is_navigation(tag):
             return
+        self.run(abjad.Job.show_tag(directory, tag))
+
+    @Command(
+        "nyps",
+        description=f"not yet pitched - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_not_yet_pitched(self, directory: Path) -> None:
+        """
+        Shows not yet pitched.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.NOT_YET_PITCHED
         self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
