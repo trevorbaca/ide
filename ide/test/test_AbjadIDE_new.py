@@ -46,6 +46,8 @@ def test_AbjadIDE_new_01():
             " Found no bar line adjustment tags ...",
             "Handling shifted clefs ...",
             " Found no shifted clef tags ...",
+            "Handling MOL tags ...",
+            " Found no MOL tags ...",
             "Uncoloring persistent indicators ...",
             " Found no persistent indicator color suppression tags ...",
             " Found no persistent indicator color expression tags ...",

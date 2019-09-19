@@ -2462,6 +2462,7 @@ class AbjadIDE(object):
             abjad.Job.handle_edition_tags(_segments),
             abjad.Job.handle_fermata_bar_lines(_segments),
             abjad.Job.handle_shifted_clefs(_segments),
+            abjad.Job.handle_mol_tags(_segments),
             abjad.Job.color_persistent_indicators(_segments, undo=True),
             abjad.Job.show_music_annotations(_segments, undo=True),
             abjad.Job.join_broken_spanners(_segments),
