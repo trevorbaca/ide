@@ -11,7 +11,7 @@ def test_AbjadIDE_show_measure_numbers_01():
 
     with ide.Test():
 
-        tag = abjad.const.MEASURE_NUMBER
+        tag = abjad.tags.MEASURE_NUMBER
         build = ide.Path("green_score", "builds", "arch-a-score")
         path = build / "_segments" / "segment--.ly"
 
@@ -44,7 +44,7 @@ def test_AbjadIDE_show_measure_numbers_02():
 
     with ide.Test():
 
-        tag = abjad.const.MEASURE_NUMBER
+        tag = abjad.tags.MEASURE_NUMBER
         path = ide.Path("green_score", "segments", "_", "illustration.ly")
         assert path.is_file()
 

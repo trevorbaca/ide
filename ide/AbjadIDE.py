@@ -2455,7 +2455,9 @@ class AbjadIDE(object):
             directory.contents.remove_metadatum(key)
 
         def match_phantom_spanner_stop(tags):
-            return "PHANTOM" in tags and abjad.tags.SPANNER_STOP in tags
+            return (
+                abjad.tags.PHANTOM in tags and abjad.tags.SPANNER_STOP in tags
+            )
 
         _segments = directory._segments
         for job in [
@@ -2467,11 +2469,11 @@ class AbjadIDE(object):
             abjad.Job.show_music_annotations(_segments, undo=True),
             abjad.Job.join_broken_spanners(_segments),
             abjad.Job.show_tag(
-                _segments, "PHANTOM", skip_file_name=final_file_name
+                _segments, abjad.tags.PHANTOM, skip_file_name=final_file_name
             ),
             abjad.Job.show_tag(
                 _segments,
-                "PHANTOM",
+                abjad.tags.PHANTOM,
                 prepend_empty_chord=True,
                 skip_file_name=final_file_name,
                 undo=True,
@@ -2484,7 +2486,7 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
-                "SEGMENT_FINAL_STOP_MM_SPANNER",
+                abjad.Tag("SEGMENT_FINAL_STOP_MM_SPANNER"),
                 skip_file_name=final_file_name,
             ),
         ]:

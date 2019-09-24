@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.const.CLOCK_TIME
+tag = abjad.tags.CLOCK_TIME
 
 
 def test_AbjadIDE_show_clock_time_01():

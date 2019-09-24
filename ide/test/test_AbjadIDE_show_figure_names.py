@@ -4,7 +4,7 @@ import ide
 abjad_ide = ide.AbjadIDE(test=True)
 
 
-tag = abjad.const.FIGURE_NAME
+tag = abjad.tags.FIGURE_NAME
 
 
 def test_AbjadIDE_show_figure_names_01():
