@@ -2051,17 +2051,22 @@ class AbjadIDE(object):
         message_zero: bool = False,
         name: str = None,
     ) -> None:
-        """Activates ``tag`` in ``path``.
         """
+        Activates ``tag`` in ``path``.
+        """
+        tag_ = tag
+        if isinstance(tag, str):
+            tag_ = abjad.Tag(tag)
+        assert isinstance(tag_, abjad.Tag) or callable(tag_)
         if deactivate:
             result = path.deactivate(
-                tag, indent=indent, message_zero=message_zero, name=name
+                tag_, indent=indent, message_zero=message_zero, name=name
             )
             assert result is not None
             count, skipped, messages = result
         else:
             result = path.activate(
-                tag, indent=indent, message_zero=message_zero, name=name
+                tag_, indent=indent, message_zero=message_zero, name=name
             )
             assert result is not None
             count, skipped, messages = result
