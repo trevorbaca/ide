@@ -2054,9 +2054,11 @@ class AbjadIDE(object):
         """
         Activates ``tag`` in ``path``.
         """
-        tag_ = tag
         if isinstance(tag, str):
             tag_ = abjad.Tag(tag)
+        else:
+            assert callable(tag)
+            tag_ = tag
         assert isinstance(tag_, abjad.Tag) or callable(tag_)
         if deactivate:
             result = path.deactivate(
