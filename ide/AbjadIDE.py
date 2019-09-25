@@ -2054,6 +2054,7 @@ class AbjadIDE(object):
         """
         Activates ``tag`` in ``path``.
         """
+        tag_: typing.Union[abjad.Tag, typing.Callable]
         if isinstance(tag, str):
             tag_ = abjad.Tag(tag)
         else:
