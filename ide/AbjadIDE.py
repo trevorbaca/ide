@@ -2488,7 +2488,7 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
-                "phantom spanner stop",
+                abjad.Tag("phantom spanner stop"),
                 match=match_phantom_spanner_stop,
                 skip_file_name=final_file_name,
             ),
@@ -4163,9 +4163,10 @@ class AbjadIDE(object):
         Hides arbitrary (user-specified) tag.
         """
         assert directory.is_buildspace()
-        tag = self.io.get("tag")
-        if self.is_navigation(tag):
+        tag_ = self.io.get("tag")
+        if self.is_navigation(tag_):
             return
+        tag = abjad.Tag(tag_)
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -5185,9 +5186,10 @@ class AbjadIDE(object):
         Shows arbitrary (user-specified) tag.
         """
         assert directory.is_buildspace()
-        tag = self.io.get("tag")
-        if self.is_navigation(tag):
+        tag_ = self.io.get("tag")
+        if self.is_navigation(tag_):
             return
+        tag = abjad.Tag(tag_)
         self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
