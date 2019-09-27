@@ -38,6 +38,7 @@ def test_AbjadIDE_build_score_pdf_01():
             " Found no persistent indicator color expression tags ...",
             "Hiding music annotations ...",
             " Found no music annotation tags ...",
+            " Found no music annotation tags ...",
             "Joining broken spanners ...",
             " Found no broken spanner expression tags ...",
             " Found no broken spanner suppression tags ...",

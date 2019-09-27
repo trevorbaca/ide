@@ -4060,6 +4060,22 @@ class AbjadIDE(object):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
+        "aimh",
+        description=f"all invisible music - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_all_invisible_music(self, directory: Path) -> None:
+        """
+        Hides all invisible music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        self.run(abjad.Job.show_tag(directory, tag))
+        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+
+    @Command(
         "cth",
         description=f"clock time - hide",
         menu_section="music annotations",
@@ -4114,6 +4130,20 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_measure_number_markup(directory, undo=True))
 
     @Command(
+        "mmh",
+        description=f"mock music - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_mock_music(self, directory: Path) -> None:
+        """
+        Hides mock music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.MOCK_COLORING
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+
+    @Command(
         "mah",
         description=f"music annotations - hide",
         menu_section="music annotations",
@@ -4125,6 +4155,20 @@ class AbjadIDE(object):
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_music_annotations(directory, undo=True))
+
+    @Command(
+        "nyph",
+        description=f"not yet pitched - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_not_yet_pitched_music(self, directory: Path) -> None:
+        """
+        Hides not yet pitched.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.NOT_YET_PITCHED_COLORING
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
         "sph",
@@ -4167,20 +4211,6 @@ class AbjadIDE(object):
         if self.is_navigation(tag_):
             return
         tag = abjad.Tag(tag_)
-        self.run(abjad.Job.show_tag(directory, tag, undo=True))
-
-    @Command(
-        "nyph",
-        description=f"not yet pitched - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_not_yet_pitched_music(self, directory: Path) -> None:
-        """
-        Hides not yet pitched.
-        """
-        assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED_COLORING
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -5052,6 +5082,22 @@ class AbjadIDE(object):
             self.io.display(lines, raw=True)
 
     @Command(
+        "aims",
+        description=f"all invisible music - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_all_invisible_music(self, directory: Path) -> None:
+        """
+        Shows all invisible music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        self.run(abjad.Job.show_tag(directory, tag))
+
+    @Command(
         "cbs",
         description="clipboard - show",
         external_directories=True,
@@ -5137,6 +5183,20 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_measure_number_markup(directory))
 
     @Command(
+        "mms",
+        description=f"mock music - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_mock_music(self, directory: Path) -> None:
+        """
+        Shows mock music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.MOCK_COLORING
+        self.run(abjad.Job.show_tag(directory, tag))
+
+    @Command(
         "mas",
         description=f"music annotations - show",
         menu_section="music annotations",
@@ -5148,6 +5208,20 @@ class AbjadIDE(object):
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_music_annotations(directory))
+
+    @Command(
+        "nyps",
+        description=f"not yet pitched - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_not_yet_pitched(self, directory: Path) -> None:
+        """
+        Shows not yet pitched.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.NOT_YET_PITCHED_COLORING
+        self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
         "sps",
@@ -5190,20 +5264,6 @@ class AbjadIDE(object):
         if self.is_navigation(tag_):
             return
         tag = abjad.Tag(tag_)
-        self.run(abjad.Job.show_tag(directory, tag))
-
-    @Command(
-        "nyps",
-        description=f"not yet pitched - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_not_yet_pitched(self, directory: Path) -> None:
-        """
-        Shows not yet pitched.
-        """
-        assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED_COLORING
         self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
