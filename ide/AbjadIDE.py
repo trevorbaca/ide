@@ -2494,7 +2494,7 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
-                abjad.Tag("SEGMENT_FINAL_STOP_MM_SPANNER"),
+                abjad.Tag("EOS_STOP_MM_SPANNER"),
                 skip_file_name=final_file_name,
             ),
         ]:
