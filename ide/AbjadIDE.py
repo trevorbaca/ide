@@ -4180,7 +4180,7 @@ class AbjadIDE(object):
         Hides not yet pitched.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED
+        tag = abjad.tags.NOT_YET_PITCHED_COLORING
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -5203,7 +5203,7 @@ class AbjadIDE(object):
         Shows not yet pitched.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED
+        tag = abjad.tags.NOT_YET_PITCHED_COLORING
         self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
