@@ -2488,13 +2488,14 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
+                # TODO: remove? or change to abjad.tags.PHANTOM_SPANNER_STOP?
                 abjad.Tag("phantom spanner stop"),
                 match=match_phantom_spanner_stop,
                 skip_file_name=final_file_name,
             ),
             abjad.Job.show_tag(
                 _segments,
-                abjad.Tag("EOS_STOP_MM_SPANNER"),
+                abjad.tags.EOS_STOP_MM_SPANNER,
                 skip_file_name=final_file_name,
             ),
         ]:
@@ -4076,6 +4077,25 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
+        "ash",
+        description=f"annotation spanners - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_annotation_spanners(self, directory: Path) -> None:
+        """
+        Hides annotation spanners.
+        """
+        assert directory.is_buildspace()
+        tags_ = abjad.tags.annotation_spanner_tags()
+
+        def match(tags):
+            return bool(set(tags) & set(tags_))
+
+        name = "annotation spanners"
+        self.run(abjad.Job.show_tag(directory, name, match=match, undo=True))
+
+    @Command(
         "cth",
         description=f"clock time - hide",
         menu_section="music annotations",
@@ -5096,6 +5116,25 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
         tag = abjad.tags.INVISIBLE_MUSIC_COLORING
         self.run(abjad.Job.show_tag(directory, tag))
+
+    @Command(
+        "ass",
+        description=f"annotation spanners - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_annotation_spanners(self, directory: Path) -> None:
+        """
+        Shows annotation spanners.
+        """
+        assert directory.is_buildspace()
+        tags_ = abjad.tags.annotation_spanner_tags()
+
+        def match(tags):
+            return bool(set(tags) & set(tags_))
+
+        name = "annotation spanners"
+        self.run(abjad.Job.show_tag(directory, name, match=match))
 
     @Command(
         "cbs",
