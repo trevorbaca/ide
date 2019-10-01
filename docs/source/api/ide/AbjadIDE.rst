@@ -110,6 +110,7 @@ AbjadIDE
       go_to_wrapper_directory
       go_up
       hide_all_invisible_music
+      hide_annotation_spanners
       hide_clock_time
       hide_figure_names
       hide_local_measure_numbers
@@ -117,6 +118,7 @@ AbjadIDE
       hide_mock_music
       hide_music_annotations
       hide_not_yet_pitched_music
+      hide_rhythm_annotation_spanners
       hide_spacing
       hide_stage_numbers
       hide_tag
@@ -159,6 +161,7 @@ AbjadIDE
       run
       search
       show_all_invisible_music
+      show_annotation_spanners
       show_clipboard
       show_clock_time
       show_figure_names
@@ -168,6 +171,7 @@ AbjadIDE
       show_mock_music
       show_music_annotations
       show_not_yet_pitched
+      show_rhythm_annotation_spanners
       show_spacing
       show_stage_numbers
       show_tag
@@ -375,6 +379,8 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.hide_all_invisible_music
 
+   .. automethod:: AbjadIDE.hide_annotation_spanners
+
    .. automethod:: AbjadIDE.hide_clock_time
 
    .. automethod:: AbjadIDE.hide_figure_names
@@ -388,6 +394,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.hide_music_annotations
 
    .. automethod:: AbjadIDE.hide_not_yet_pitched_music
+
+   .. automethod:: AbjadIDE.hide_rhythm_annotation_spanners
 
    .. automethod:: AbjadIDE.hide_spacing
 
@@ -461,6 +469,8 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.show_all_invisible_music
 
+   .. automethod:: AbjadIDE.show_annotation_spanners
+
    .. automethod:: AbjadIDE.show_clipboard
 
    .. automethod:: AbjadIDE.show_clock_time
@@ -478,6 +488,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.show_music_annotations
 
    .. automethod:: AbjadIDE.show_not_yet_pitched
+
+   .. automethod:: AbjadIDE.show_rhythm_annotation_spanners
 
    .. automethod:: AbjadIDE.show_spacing
 

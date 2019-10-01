@@ -2488,13 +2488,6 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
-                # TODO: remove? or change to abjad.tags.PHANTOM_SPANNER_STOP?
-                abjad.Tag("phantom spanner stop"),
-                match=match_phantom_spanner_stop,
-                skip_file_name=final_file_name,
-            ),
-            abjad.Job.show_tag(
-                _segments,
                 abjad.tags.EOS_STOP_MM_SPANNER,
                 skip_file_name=final_file_name,
             ),
@@ -4191,6 +4184,24 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
+        "rash",
+        description=f"rhythm annotation spanners - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_rhythm_annotation_spanners(self, directory: Path) -> None:
+        """
+        Hides rhythm annotation spanners.
+        """
+        assert directory.is_buildspace()
+        name = "rhythm annotation spanners"
+        self.run(
+            abjad.Job.show_tag(
+                directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER, undo=True
+            )
+        )
+
+    @Command(
         "sph",
         description=f"spacing - hide",
         menu_section="music annotations",
@@ -5261,6 +5272,22 @@ class AbjadIDE(object):
         assert directory.is_buildspace()
         tag = abjad.tags.NOT_YET_PITCHED_COLORING
         self.run(abjad.Job.show_tag(directory, tag))
+
+    @Command(
+        "rass",
+        description=f"rhythm annotation spanners - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_rhythm_annotation_spanners(self, directory: Path) -> None:
+        """
+        Shows rhythm annotation spanners.
+        """
+        assert directory.is_buildspace()
+        name = "rhythm annotation spanners"
+        self.run(
+            abjad.Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER)
+        )
 
     @Command(
         "sps",
