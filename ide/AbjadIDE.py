@@ -2488,6 +2488,12 @@ class AbjadIDE(object):
             ),
             abjad.Job.show_tag(
                 _segments,
+                "phantom spanner stop",
+                match=match_phantom_spanner_stop,
+                skip_file_name=final_file_name,
+            ),
+            abjad.Job.show_tag(
+                _segments,
                 abjad.tags.EOS_STOP_MM_SPANNER,
                 skip_file_name=final_file_name,
             ),
