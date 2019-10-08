@@ -63,6 +63,8 @@ def test_AbjadIDE_new_01():
             " Found no PHANTOM tags ...",
             "Showing phantom-should-activate tags ...",
             " Found no phantom-should-activate tags ...",
+            "Hiding phantom-should-deactivate tags ...",
+            " Found no phantom-should-deactivate tags ...",
             "Showing EOS_STOP_MM_SPANNER tags ...",
             " Found no EOS_STOP_MM_SPANNER tags ...",
             "",
