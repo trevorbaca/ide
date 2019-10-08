@@ -2465,9 +2465,18 @@ class AbjadIDE(object):
         def match_phantom_should_activate(tags):
             if abjad.tags.PHANTOM not in tags:
                 return False
+            if abjad.tags.ONE_VOICE_COMMAND in tags:
+                return True
+            if abjad.tags.SHOW_TO_JOIN_BROKEN_SPANNERS in tags:
+                return True
             if abjad.tags.SPANNER_STOP in tags:
                 return True
-            if abjad.tags.ONE_VOICE_COMMAND in tags:
+            return False
+
+        def match_phantom_should_deactivate(tags):
+            if abjad.tags.PHANTOM not in tags:
+                return False
+            if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
                 return True
             return False
 
@@ -2495,6 +2504,13 @@ class AbjadIDE(object):
                 "phantom-should-activate",
                 match=match_phantom_should_activate,
                 skip_file_name=final_file_name,
+            ),
+            abjad.Job.show_tag(
+                _segments,
+                "phantom-should-deactivate",
+                match=match_phantom_should_deactivate,
+                skip_file_name=final_file_name,
+                undo=True,
             ),
             abjad.Job.show_tag(
                 _segments,
