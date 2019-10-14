@@ -2476,8 +2476,10 @@ class AbjadIDE(object):
         def match_phantom_should_deactivate(tags):
             if abjad.tags.PHANTOM not in tags:
                 return False
-            if (abjad.tags.SPANNER_STOP in tags
-                and abjad.tags.RIGHT_BROKEN in tags):
+            if (
+                abjad.tags.SPANNER_STOP in tags
+                and abjad.tags.RIGHT_BROKEN in tags
+            ):
                 return True
             if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
                 return True
