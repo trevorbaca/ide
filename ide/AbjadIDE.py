@@ -2464,8 +2464,14 @@ class AbjadIDE(object):
 
         def match_left_broken_should_deactivate(tags):
             if (
-                abjad.tags.SPANNER_START in tags
-                and abjad.tags.LEFT_BROKEN in tags
+                abjad.tags.LEFT_BROKEN in tags
+                and abjad.tags.SPANNER_START in tags
+            ):
+                return True
+            if (
+                abjad.tags.LEFT_BROKEN in tags
+                and abjad.tags.SPANNER_STOP in tags
+                and abjad.tags.EXPLICIT_DYNAMIC in tags
             ):
                 return True
             return False
