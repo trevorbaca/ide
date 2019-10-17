@@ -57,6 +57,8 @@ def test_AbjadIDE_new_01():
             "Joining broken spanners ...",
             " Found no broken spanner expression tags ...",
             " Found no broken spanner suppression tags ...",
+            "Hiding left-broken-should-deactivate tags ...",
+            " Found no left-broken-should-deactivate tags ...",
             "Showing PHANTOM tags ...",
             " Found no PHANTOM tags ...",
             "Hiding PHANTOM tags ...",

@@ -2462,6 +2462,14 @@ class AbjadIDE(object):
         else:
             directory.contents.remove_metadatum(key)
 
+        def match_left_broken_should_deactivate(tags):
+            if (
+                abjad.tags.SPANNER_START in tags
+                and abjad.tags.LEFT_BROKEN in tags
+            ):
+                return True
+            return False
+
         def match_phantom_should_activate(tags):
             if abjad.tags.PHANTOM not in tags:
                 return False
@@ -2476,6 +2484,11 @@ class AbjadIDE(object):
         def match_phantom_should_deactivate(tags):
             if abjad.tags.PHANTOM not in tags:
                 return False
+            if (
+                abjad.tags.SPANNER_START in tags
+                and abjad.tags.LEFT_BROKEN in tags
+            ):
+                return True
             if (
                 abjad.tags.SPANNER_STOP in tags
                 and abjad.tags.RIGHT_BROKEN in tags
@@ -2494,6 +2507,13 @@ class AbjadIDE(object):
             abjad.Job.color_persistent_indicators(_segments, undo=True),
             abjad.Job.show_music_annotations(_segments, undo=True),
             abjad.Job.join_broken_spanners(_segments),
+            abjad.Job.show_tag(
+                _segments,
+                "left-broken-should-deactivate",
+                match=match_left_broken_should_deactivate,
+                skip_file_name=final_file_name,
+                undo=True,
+            ),
             abjad.Job.show_tag(
                 _segments, abjad.tags.PHANTOM, skip_file_name=final_file_name
             ),
