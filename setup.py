@@ -12,7 +12,7 @@ install_requires = [
     "roman",
     "sphinx",
     "sphinx-rtd-theme",
-    "uqbar>=0.2.13",
+    "uqbar>=0.4.0",
 ]
 
 keywords = [
