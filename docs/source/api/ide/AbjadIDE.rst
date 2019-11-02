@@ -109,10 +109,10 @@ AbjadIDE
       go_to_tools_directory
       go_to_wrapper_directory
       go_up
-      hide_all_invisible_music
       hide_annotation_spanners
       hide_clock_time
       hide_figure_names
+      hide_invisible_music
       hide_local_measure_numbers
       hide_measure_numbers
       hide_mock_music
@@ -160,12 +160,12 @@ AbjadIDE
       replace
       run
       search
-      show_all_invisible_music
       show_annotation_spanners
       show_clipboard
       show_clock_time
       show_figure_names
       show_help
+      show_invisible_music
       show_local_measure_numbers
       show_measure_numbers
       show_mock_music
@@ -377,13 +377,13 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.go_up
 
-   .. automethod:: AbjadIDE.hide_all_invisible_music
-
    .. automethod:: AbjadIDE.hide_annotation_spanners
 
    .. automethod:: AbjadIDE.hide_clock_time
 
    .. automethod:: AbjadIDE.hide_figure_names
+
+   .. automethod:: AbjadIDE.hide_invisible_music
 
    .. automethod:: AbjadIDE.hide_local_measure_numbers
 
@@ -467,8 +467,6 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.search
 
-   .. automethod:: AbjadIDE.show_all_invisible_music
-
    .. automethod:: AbjadIDE.show_annotation_spanners
 
    .. automethod:: AbjadIDE.show_clipboard
@@ -478,6 +476,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.show_figure_names
 
    .. automethod:: AbjadIDE.show_help
+
+   .. automethod:: AbjadIDE.show_invisible_music
 
    .. automethod:: AbjadIDE.show_local_measure_numbers
 

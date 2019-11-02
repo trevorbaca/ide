@@ -4111,22 +4111,6 @@ class AbjadIDE(object):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
-        "aimh",
-        description=f"all invisible music - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_all_invisible_music(self, directory: Path) -> None:
-        """
-        Hides all invisible music.
-        """
-        assert directory.is_buildspace()
-        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
-        self.run(abjad.Job.show_tag(directory, tag))
-        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
-        self.run(abjad.Job.show_tag(directory, tag, undo=True))
-
-    @Command(
         "ash",
         description=f"annotation spanners - hide",
         menu_section="music annotations",
@@ -4170,6 +4154,22 @@ class AbjadIDE(object):
         """
         assert directory.is_buildspace()
         self.run(abjad.Job.show_figure_name_markup(directory, undo=True))
+
+    @Command(
+        "imh",
+        description=f"invisible music - hide",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def hide_invisible_music(self, directory: Path) -> None:
+        """
+        Hides invisible music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        self.run(abjad.Job.show_tag(directory, tag))
+        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
 
     @Command(
         "lmnh",
@@ -5170,22 +5170,6 @@ class AbjadIDE(object):
             self.io.display(lines, raw=True)
 
     @Command(
-        "aims",
-        description=f"all invisible music - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_all_invisible_music(self, directory: Path) -> None:
-        """
-        Shows all invisible music.
-        """
-        assert directory.is_buildspace()
-        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
-        self.run(abjad.Job.show_tag(directory, tag, undo=True))
-        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
-        self.run(abjad.Job.show_tag(directory, tag))
-
-    @Command(
         "ass",
         description=f"annotation spanners - show",
         menu_section="music annotations",
@@ -5262,6 +5246,22 @@ class AbjadIDE(object):
         Shows help.
         """
         pass
+
+    @Command(
+        "ims",
+        description=f"invisible music - show",
+        menu_section="music annotations",
+        score_package_paths=("buildspace",),
+    )
+    def show_invisible_music(self, directory: Path) -> None:
+        """
+        Shows invisible music.
+        """
+        assert directory.is_buildspace()
+        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        self.run(abjad.Job.show_tag(directory, tag, undo=True))
+        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
         "lmns",
