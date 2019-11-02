@@ -38,7 +38,7 @@ AbjadIDE
       check_out_optimization
       cleanup
       clipboard
-      collect_segments
+      collect_segment_lys
       color_clefs
       color_dynamics
       color_instruments
@@ -109,6 +109,8 @@ AbjadIDE
       go_to_tools_directory
       go_to_wrapper_directory
       go_up
+      handle_build_tags
+      handle_part_identifier_tags
       hide_annotation_spanners
       hide_clock_time
       hide_figure_names
@@ -243,7 +245,7 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.check_out_optimization
 
-   .. automethod:: AbjadIDE.collect_segments
+   .. automethod:: AbjadIDE.collect_segment_lys
 
    .. automethod:: AbjadIDE.color_clefs
 
@@ -376,6 +378,10 @@ AbjadIDE
    .. automethod:: AbjadIDE.go_to_wrapper_directory
 
    .. automethod:: AbjadIDE.go_up
+
+   .. automethod:: AbjadIDE.handle_build_tags
+
+   .. automethod:: AbjadIDE.handle_part_identifier_tags
 
    .. automethod:: AbjadIDE.hide_annotation_spanners
 

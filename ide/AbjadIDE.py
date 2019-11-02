@@ -105,25 +105,11 @@ class AbjadIDE(object):
 
     def __repr__(self) -> str:
         """
-        Gets interpreter representation.
+        Delegates to storage format manager.
         """
         return abjad.StorageFormatManager(self).get_repr_format()
 
     ### PRIVATE METHODS ###
-
-    def _activate_part_specific_tags(self, path):
-        parts_directory = path.parent.parent
-        assert parts_directory.is_parts()
-        self.run(abjad.Job.handle_edition_tags(parts_directory))
-        part_identifier = path._parse_part_identifier()
-        if part_identifier is None:
-            self.io.display(f"no part identifier found in {path.name} ...")
-        else:
-            parts_directory_name = abjad.String(parts_directory.name)
-            parts_directory_name = parts_directory_name.to_shout_case()
-            tag = f"+{parts_directory_name}_{part_identifier}"
-            self.activate(parts_directory, tag, message_zero=True)
-        self.uncolor_persistent_indicators(parts_directory)
 
     def _cache_commands(self):
         commands = abjad.OrderedDict()
@@ -140,6 +126,57 @@ class AbjadIDE(object):
                 continue
             commands[command.command_name] = command
         self._commands = commands
+
+    def _check_layout_time_signatures(self, path, indent=0):
+        message = "checking layout time signatures ..."
+        self.io.display(message, indent=indent)
+        layout_ly = path.name.replace("music.ly", "layout.ly")
+        layout_ly = path.parent / layout_ly
+        if not layout_ly.exists():
+            message = f"no {layout_ly.trim()} found ..."
+            self.io.display(message, indent=indent + 1)
+            return
+        self.io.display(f"found {layout_ly.trim()} ...", indent=indent + 1)
+        metadata_time_signatures = path.parent.get_time_signature_metadata()
+        metadata_time_signatures = [str(_) for _ in metadata_time_signatures]
+        if metadata_time_signatures:
+            message = "found time signature metadata ..."
+            self.io.display(message, indent=indent + 1)
+        layout_time_signatures = layout_ly.get_preamble_time_signatures()
+        partial_score = layout_ly.get_preamble_partial_score()
+        if partial_score:
+            self.io.display("found partial score ...", indent=indent + 1)
+            return
+        if layout_time_signatures == metadata_time_signatures:
+            message = "layout time signatures"
+            message += f" ({len(layout_time_signatures)})"
+            message += " match metadata time signatures"
+            message += f" ({len(metadata_time_signatures)}) ..."
+            self.io.display(message, indent=indent + 1)
+            return
+        message = "layout time signatures"
+        message += f" ({len(layout_time_signatures)})"
+        message += f" do not match metadata time signatures"
+        message += f" ({len(metadata_time_signatures)}) ..."
+        self.io.display(message, indent=indent + 1)
+        if self.test:
+            return
+        message = f"remaking {layout_ly.trim()} ..."
+        self.io.display(message, indent=indent + 1)
+        layout_py = layout_ly.with_suffix(".py")
+        self._make_layout_ly(layout_py)
+        layout_time_signatures = layout_ly.get_preamble_time_signatures()
+        if layout_time_signatures == metadata_time_signatures:
+            message = "layout time signatures"
+            message += f" ({len(layout_time_signatures)})"
+            message += f" match metadata time signatures"
+            message += f" ({len(metadata_time_signatures)}) ..."
+        else:
+            message = "layout time signatures"
+            message += f" ({len(layout_time_signatures)})"
+            message += f" still do not match metadata time signatures"
+            message += f" ({len(metadata_time_signatures)}) ..."
+        self.io.display(message, indent=indent + 1)
 
     def _check_out_paths(self, paths):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
@@ -163,7 +200,7 @@ class AbjadIDE(object):
             message = f"Empty test scores directory {directory} ..."
             raise Exception(message)
 
-    def _collect_segments(self, directory):
+    def _collect_segment_lys(self, directory):
         paths = directory.segments._list_paths()
         names = [_.name for _ in paths]
         sources, targets = [], []
@@ -352,29 +389,28 @@ class AbjadIDE(object):
         silent=None,
     ):
         assert path.build.exists(), repr(path)
+        self.io.display(f"generating {path.trim()} ...")
         if path.exists():
-            self.io.display(f"removing {path.trim()} ...", indent=indent)
+            self.io.display(f"removing {path.trim()} ...", indent=indent + 1)
             path.remove()
         segments = path.segments.list_paths()
         if not silent:
             if segments:
                 view = path.segments.get_metadatum("view")
                 if bool(view):
-                    self.io.display(
-                        f"examining segments in view order ...", indent=indent
-                    )
+                    message = f"examining segments in view order ..."
+                    self.io.display(message, indent=indent + 1)
             else:
-                self.io.display("no segments found ...", indent=indent)
+                self.io.display("no segments found ...", indent=indent + 1)
             for segment in segments:
                 if not segment.is_segment():
                     continue
-                self.io.display(
-                    f"examining {segment.trim()} ...", indent=indent
-                )
+                message = f"examining {segment.trim()} ..."
+                self.io.display(message, indent=indent + 1)
         names = [_.stem.replace("_", "-") for _ in segments]
         boilerplate = "part-music.ly"
         self._copy_boilerplate(
-            path.build, boilerplate, indent=indent, target_name=path.name
+            path.build, boilerplate, indent=indent + 1, target_name=path.name
         )
         lines, ily_lines = [], []
         for i, name in enumerate(names):
@@ -421,8 +457,9 @@ class AbjadIDE(object):
                 dictionary = self._make_container_to_part_assignment(path)
                 identifiers = path.part_to_identifiers(part, dictionary)
                 if isinstance(identifiers, str):
-                    self.io.display(identifiers + " ...")
-                    self.io.display(f"removing {path.trim()} ...")
+                    self.io.display(identifiers + " ...", indent=indent + 1)
+                    message = f"removing {path.trim()} ..."
+                    self.io.display(message, indent=indent + 1)
                     path.remove()
                     return
                 identifiers = ["\\" + _ for _ in identifiers]
@@ -510,25 +547,24 @@ class AbjadIDE(object):
         self, path, forces_tagline=None, indent=0, silent=None
     ):
         assert path.build.exists(), repr(path)
+        self.io.display(f"generating {path.trim()} ...", indent=indent)
         if path.exists():
-            self.io.display(f"removing {path.trim()} ...", indent=indent)
+            self.io.display(f"removing {path.trim()} ...", indent=indent + 1)
             path.remove()
         segments = path.segments.list_paths()
         if not silent:
             if segments:
                 view = path.segments.get_metadatum("view")
                 if bool(view):
-                    self.io.display(
-                        f"examining segments in view order ...", indent=indent
-                    )
+                    message = f"examining segments in view order ..."
+                    self.io.display(message, indent=indent + 1)
             else:
-                self.io.display("no segments found ...", indent=indent)
+                self.io.display("no segments found ...", indent=indent + 1)
             for segment in segments:
                 if not segment.is_segment():
                     continue
-                self.io.display(
-                    f"examining {segment.trim()} ...", indent=indent
-                )
+                message = f"examining {segment.trim()} ..."
+                self.io.display(message, indent=indent + 1)
         names = [_.stem.replace("_", "-") for _ in segments]
         score_skeleton = path.score_skeleton()
         if score_skeleton is None:
@@ -540,7 +576,7 @@ class AbjadIDE(object):
             lines = [lines[0]] + [8 * " " + _ for _ in lines[1:]]
             score_skeleton = "\n".join(lines)
         self._copy_boilerplate(
-            path.build, boilerplate, indent=indent, target_name=path.name
+            path.build, boilerplate, indent=indent + 1, target_name=path.name
         )
         lines, ily_lines = [], []
         for i, name in enumerate(names):
@@ -661,6 +697,23 @@ class AbjadIDE(object):
             self.open_all_pdfs(directory, response.pattern)
         else:
             raise ValueEror(response.prefix)
+
+    def _handle_part_identifier_tags(self, path, indent=0):
+        assert path.parent.is_part()
+        parts_directory = path.parent.parent
+        part_identifier = path._parse_part_identifier()
+        if part_identifier is None:
+            self.io.display(
+                f"no part identifier found in {path.name} ...", indent=indent,
+            )
+            return
+        self.io.display("handling part identifier tags ...", indent=indent)
+        parts_directory_name = abjad.String(parts_directory.name,)
+        parts_directory_name = parts_directory_name.to_shout_case()
+        tag = f"+{parts_directory_name}_{part_identifier}"
+        self.activate(
+            parts_directory, tag, indent=indent + 1, message_zero=True,
+        )
 
     def _interpret_file(self, path):
         path = Path(path)
@@ -821,7 +874,7 @@ class AbjadIDE(object):
         return sections
 
     def _make_container_to_part_assignment(self, directory):
-        pairs = self._collect_segments(directory.build)
+        pairs = self._collect_segment_lys(directory.build)
         if not pairs:
             self.io.display("... no segment lys found.")
             return
@@ -1055,7 +1108,7 @@ class AbjadIDE(object):
             parts_directory.add_metadatum("orientation", orientation)
         if bool(suffix):
             parts_directory.add_metadatum("catalog_number_suffix", suffix)
-        self.collect_segments(parts_directory)
+        self.collect_segment_lys(parts_directory)
         stub = parts_directory.builds._assets / "preface-body.tex"
         if not stub.is_file():
             stub.write_text("")
@@ -1171,7 +1224,7 @@ class AbjadIDE(object):
             build, "score_layout.py", target_name="layout.py"
         )
         self.io.display("")
-        self.collect_segments(build)
+        self.collect_segment_lys(build)
         self.io.display("")
         self.generate_music_ly(build)
         self.io.display("")
@@ -1698,10 +1751,11 @@ class AbjadIDE(object):
             command = f"baca-doctest --report-only-first-failure {string}"
             abjad.IOManager.spawn_subprocess(command)
 
-    def _run_lilypond(self, ly):
+    def _run_lilypond(self, ly, indent=0):
         assert ly.exists()
         if not abjad.IOManager.find_executable("lilypond"):
             raise ValueError("cannot find LilyPond executable.")
+        self.io.display(f"running LilyPond on {ly.trim()} ...", indent=indent)
         directory = ly.parent
         pdf = ly.with_suffix(".pdf")
         backup_pdf = ly.with_suffix("._backup.pdf")
@@ -1709,11 +1763,11 @@ class AbjadIDE(object):
         if backup_pdf.exists():
             backup_pdf.remove()
         if pdf.exists():
-            self.io.display(f"removing {pdf.trim()} ...")
+            self.io.display(f"removing {pdf.trim()} ...", indent=indent + 1)
             pdf.remove()
         assert not pdf.exists()
         with self.change(directory):
-            self.io.display(f"interpreting {ly.trim()} ...")
+            self.io.display(f"interpreting {ly.trim()} ...", indent=indent + 1)
             abjad.IOManager.run_lilypond(
                 str(ly), lilypond_log_file_path=str(log)
             )
@@ -1724,9 +1778,11 @@ class AbjadIDE(object):
             )
             self._display_lilypond_log_errors(log=log)
             if pdf.is_file():
-                self.io.display(f"found {pdf.trim()} ...")
+                self.io.display(f"found {pdf.trim()} ...", indent=indent + 1)
             else:
-                self.io.display(f"can not produce {pdf.trim()} ...")
+                self.io.display(
+                    f"can not produce {pdf.trim()} ...", indent=indent + 1
+                )
 
     def _run_pytest(self, paths):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
@@ -2127,14 +2183,16 @@ class AbjadIDE(object):
                 return True
         return False
 
-    def run(self, job: abjad.Job, quiet: bool = False) -> None:
+    def run(
+        self, job: abjad.Job, *, indent: int = 0, quiet: bool = False,
+    ) -> None:
         """
         Runs ``job`` on ``path``.
         """
         message_zero = not bool(quiet)
         job = abjad.new(job, message_zero=message_zero)
         messages: typing.List[abjad.String] = job()
-        self.io.display(messages)
+        self.io.display(messages, indent=indent)
 
     ### USER METHODS ###
 
@@ -2406,23 +2464,28 @@ class AbjadIDE(object):
         menu_section="segments",
         score_package_paths=("_segments", "build"),
     )
-    def collect_segments(self, directory: Path) -> None:
+    def collect_segment_lys(
+        self, directory: Path, *, indent=0, skip: bool = False,
+    ) -> None:
         """
         Collects segment lys.
 
-        Copies illustration.ly files from segment directories to
+        Copies illustration.ly, .ily files from segment directories to
         build/_segments directory.
 
-        Trims top-level comments, header block, paper block from each
-        illustration.ly file.
+        Trims top-level comments, header block, paper block from each file.
 
-        Keeps score block in each illustration.ly file.
+        Keeps score block in each file.
 
-        Activates and deactivates build-appropriate tags.
+        Handles build tags.
         """
         assert directory.is_build() or directory.is__segments()
-        self.io.display("collecting segment lys ...")
-        pairs = self._collect_segments(directory.build)
+        if skip:
+            self.io.display("skipping segment ly collection ...")
+            return
+        else:
+            self.io.display("collecting segment lys ...")
+        pairs = self._collect_segment_lys(directory.build)
         if not pairs:
             self.io.display("... no segment lys found.")
             return
@@ -2434,13 +2497,21 @@ class AbjadIDE(object):
             source_ily = source.with_suffix(".ily")
             target_ily = target.with_suffix(".ily")
             if target_ily.exists():
-                self.io.display(f" Removing {target_ily.trim()} ...")
+                self.io.display(
+                    f"Removing {target_ily.trim()} ...", indent=indent + 1
+                )
             if source_ily.is_file():
-                self.io.display(f" Writing {target_ily.trim()} ...")
+                self.io.display(
+                    f"Writing {target_ily.trim()} ...", indent=indent + 1,
+                )
                 shutil.copyfile(str(source_ily), target_ily)
             if target.exists():
-                self.io.display(f" Removing {target.trim()} ...")
-            self.io.display(f" Writing {target.trim()} ...")
+                self.io.display(
+                    f"Removing {target.trim()} ...", indent=indent + 1,
+                )
+            self.io.display(
+                f"Writing {target.trim()} ...", indent=indent + 1,
+            )
             text = self._trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
@@ -2453,103 +2524,23 @@ class AbjadIDE(object):
         final_file_name = target.with_suffix(".ily").name
         key = "fermata_measure_numbers"
         if bool(fermata_measure_numbers):
+            message = "writing fermata measure numbers to metadata ..."
+            self.io.display(message, indent=indent + 1)
             directory.contents.add_metadatum(key, fermata_measure_numbers)
         else:
+            message = "removing fermata measure numbers from metadata ..."
+            self.io.display(message, indent=indent + 1)
             directory.contents.remove_metadatum(key)
         key = "time_signatures"
         if bool(time_signatures):
+            message = "writing time signatures to metadata ..."
+            self.io.display(message, indent=indent + 1)
             directory.contents.add_metadatum(key, time_signatures)
         else:
+            message = "removing time signatures from metadata ..."
+            self.io.display(message, indent=indent + 1)
             directory.contents.remove_metadatum(key)
-
-        def match_left_broken_should_deactivate(tags):
-            if (
-                abjad.tags.LEFT_BROKEN in tags
-                and abjad.tags.SPANNER_START in tags
-            ):
-                return True
-            if (
-                abjad.tags.LEFT_BROKEN in tags
-                and abjad.tags.SPANNER_STOP in tags
-                and abjad.tags.EXPLICIT_DYNAMIC in tags
-            ):
-                return True
-            return False
-
-        def match_phantom_should_activate(tags):
-            if abjad.tags.PHANTOM not in tags:
-                return False
-            if abjad.tags.ONE_VOICE_COMMAND in tags:
-                return True
-            if abjad.tags.SHOW_TO_JOIN_BROKEN_SPANNERS in tags:
-                return True
-            if abjad.tags.SPANNER_STOP in tags:
-                return True
-            return False
-
-        def match_phantom_should_deactivate(tags):
-            if abjad.tags.PHANTOM not in tags:
-                return False
-            if (
-                abjad.tags.SPANNER_START in tags
-                and abjad.tags.LEFT_BROKEN in tags
-            ):
-                return True
-            if (
-                abjad.tags.SPANNER_STOP in tags
-                and abjad.tags.RIGHT_BROKEN in tags
-            ):
-                return True
-            if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
-                return True
-            return False
-
-        _segments = directory._segments
-        for job in [
-            abjad.Job.handle_edition_tags(_segments),
-            abjad.Job.handle_fermata_bar_lines(_segments),
-            abjad.Job.handle_shifted_clefs(_segments),
-            abjad.Job.handle_mol_tags(_segments),
-            abjad.Job.color_persistent_indicators(_segments, undo=True),
-            abjad.Job.show_music_annotations(_segments, undo=True),
-            abjad.Job.join_broken_spanners(_segments),
-            abjad.Job.show_tag(
-                _segments,
-                "left-broken-should-deactivate",
-                match=match_left_broken_should_deactivate,
-                skip_file_name=final_file_name,
-                undo=True,
-            ),
-            abjad.Job.show_tag(
-                _segments, abjad.tags.PHANTOM, skip_file_name=final_file_name
-            ),
-            abjad.Job.show_tag(
-                _segments,
-                abjad.tags.PHANTOM,
-                prepend_empty_chord=True,
-                skip_file_name=final_file_name,
-                undo=True,
-            ),
-            abjad.Job.show_tag(
-                _segments,
-                "phantom-should-activate",
-                match=match_phantom_should_activate,
-                skip_file_name=final_file_name,
-            ),
-            abjad.Job.show_tag(
-                _segments,
-                "phantom-should-deactivate",
-                match=match_phantom_should_deactivate,
-                skip_file_name=final_file_name,
-                undo=True,
-            ),
-            abjad.Job.show_tag(
-                _segments,
-                abjad.tags.EOS_STOP_MM_SPANNER,
-                skip_file_name=final_file_name,
-            ),
-        ]:
-            self.run(job, quiet=False)
+        self.handle_build_tags(directory, indent=indent)
 
     @Command(
         "ccl",
@@ -3306,47 +3297,47 @@ class AbjadIDE(object):
         menu_section="music",
         score_package_paths=("_segments", "build"),
     )
-    def generate_music_ly(self, directory: Path) -> None:
+    def generate_music_ly(self, directory: Path, *, skip: bool = None) -> None:
         """
         Generates ``music.ly``.
         """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name = "music.ly"
+        if skip:
+            path = directory.build / name
+            self.io.display(f"skipping {path.trim()} generation ...")
+            return
         if not (directory.build.is_parts() or directory.is_part()):
             path = directory.build / name
-            self.io.display(f"generating {path.trim()} ...")
-            self._generate_score_music_ly(path, indent=1)
+            self._generate_score_music_ly(path)
             return
-        else:
-            name, verb = "music.ly", "generate"
-            paths = self._select_paths_in_buildspace(directory, name, verb)
-            if self.is_navigation(paths):
-                return
-            if not paths:
-                return
-            path_count = len(paths)
-            for i, path in enumerate(paths):
-                part = path.to_part()
-                assert isinstance(part, abjad.Part)
-                dashed_part_name = abjad.String(part.name).to_dash_case()
-                file_name = f"{dashed_part_name}-{name}"
-                assert path.build is not None
-                path = path.build / file_name
-                forces_tagline = self._part_subtitle(part.name) + " part"
-                part_subtitle = self._part_subtitle(
-                    part.name, parentheses=True
-                )
-                self._generate_part_music_ly(
-                    path,
-                    dashed_part_name=dashed_part_name,
-                    forces_tagline=forces_tagline,
-                    keep_with_tag=part.name,
-                    part=part,
-                    part_subtitle=part_subtitle,
-                )
-                if 0 < path_count and i + 1 < path_count:
-                    self.io.display("")
+        name, verb = "music.ly", "generate"
+        paths = self._select_paths_in_buildspace(directory, name, verb)
+        if self.is_navigation(paths):
+            return
+        if not paths:
+            return
+        path_count = len(paths)
+        for i, path in enumerate(paths):
+            part = path.to_part()
+            assert isinstance(part, abjad.Part)
+            dashed_part_name = abjad.String(part.name).to_dash_case()
+            file_name = f"{dashed_part_name}-{name}"
+            assert path.build is not None
+            path = path.build / file_name
+            forces_tagline = self._part_subtitle(part.name) + " part"
+            part_subtitle = self._part_subtitle(part.name, parentheses=True)
+            self._generate_part_music_ly(
+                path,
+                dashed_part_name=dashed_part_name,
+                forces_tagline=forces_tagline,
+                keep_with_tag=part.name,
+                part=part,
+                part_subtitle=part_subtitle,
+            )
+            if 0 < path_count and i + 1 < path_count:
+                self.io.display("")
 
     @Command(
         "ptg",
@@ -4111,6 +4102,154 @@ class AbjadIDE(object):
             self._manage_directory(self.current_directory.parent)
 
     @Command(
+        "btags",
+        description="segments - handle build tags",
+        menu_section="segments",
+        score_package_paths=("_segments", "build"),
+    )
+    def handle_build_tags(
+        self, directory: Path, *, indent=0, skip: bool = False,
+    ) -> None:
+        """
+        Handles build tags.
+        """
+        assert directory.is_build() or directory.is__segments()
+        if skip:
+            self.io.display("skipping build tags ...")
+            return
+        else:
+            self.io.display("handling build tags ...")
+        pairs = self._collect_segment_lys(directory.build)
+        final_source, final_target = list(pairs)[-1]
+        final_file_name = final_target.with_suffix(".ily").name
+
+        def match_left_broken_should_deactivate(tags):
+            if (
+                abjad.tags.LEFT_BROKEN in tags
+                and abjad.tags.SPANNER_START in tags
+            ):
+                return True
+            if (
+                abjad.tags.LEFT_BROKEN in tags
+                and abjad.tags.SPANNER_STOP in tags
+                and abjad.tags.EXPLICIT_DYNAMIC in tags
+            ):
+                return True
+            return False
+
+        def match_phantom_should_activate(tags):
+            if abjad.tags.PHANTOM not in tags:
+                return False
+            if abjad.tags.ONE_VOICE_COMMAND in tags:
+                return True
+            if abjad.tags.SHOW_TO_JOIN_BROKEN_SPANNERS in tags:
+                return True
+            if abjad.tags.SPANNER_STOP in tags:
+                return True
+            return False
+
+        def match_phantom_should_deactivate(tags):
+            if abjad.tags.PHANTOM not in tags:
+                return False
+            if (
+                abjad.tags.SPANNER_START in tags
+                and abjad.tags.LEFT_BROKEN in tags
+            ):
+                return True
+            if (
+                abjad.tags.SPANNER_STOP in tags
+                and abjad.tags.RIGHT_BROKEN in tags
+            ):
+                return True
+            if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
+                return True
+            return False
+
+        _segments = directory._segments
+        for job in [
+            abjad.Job.handle_edition_tags(_segments),
+            abjad.Job.handle_fermata_bar_lines(_segments),
+            abjad.Job.handle_shifted_clefs(_segments),
+            abjad.Job.handle_mol_tags(_segments),
+            abjad.Job.color_persistent_indicators(_segments, undo=True),
+            abjad.Job.show_music_annotations(_segments, undo=True),
+            abjad.Job.join_broken_spanners(_segments),
+            abjad.Job.show_tag(
+                _segments,
+                "left-broken-should-deactivate",
+                match=match_left_broken_should_deactivate,
+                skip_file_name=final_file_name,
+                undo=True,
+            ),
+            abjad.Job.show_tag(
+                _segments, abjad.tags.PHANTOM, skip_file_name=final_file_name
+            ),
+            abjad.Job.show_tag(
+                _segments,
+                abjad.tags.PHANTOM,
+                prepend_empty_chord=True,
+                skip_file_name=final_file_name,
+                undo=True,
+            ),
+            abjad.Job.show_tag(
+                _segments,
+                "phantom-should-activate",
+                match=match_phantom_should_activate,
+                skip_file_name=final_file_name,
+            ),
+            abjad.Job.show_tag(
+                _segments,
+                "phantom-should-deactivate",
+                match=match_phantom_should_deactivate,
+                skip_file_name=final_file_name,
+                undo=True,
+            ),
+            abjad.Job.show_tag(
+                _segments,
+                abjad.tags.EOS_STOP_MM_SPANNER,
+                skip_file_name=final_file_name,
+            ),
+        ]:
+            self.run(job, indent=1, quiet=False)
+
+    @Command(
+        "pitags",
+        description="segments - handle part identifier tags",
+        menu_section="segments",
+        score_package_paths=("_segments", "build"),
+    )
+    def handle_part_identifier_tags(
+        self, directory: Path, *, indent=0, skip: bool = False,
+    ) -> None:
+        """
+        Handles part identifier tags.
+        """
+        assert directory.is_part(), repr(directory)
+        if skip:
+            self.io.display("skipping part identifier tags ...", indent=indent)
+            return
+        else:
+            self.io.display("handling part identifier tags ...", indent=indent)
+        parts_directory = directory
+        name, verb = "music.ly", "interpret"
+        paths = self._select_paths_in_buildspace(directory.build, name, "foo")
+        if not paths:
+            message = "can not find {directory.trim()} music.ly file ..."
+            self.io.display(message, indent=indent + 1)
+        music_ly = paths[0]
+        part_identifier = music_ly._parse_part_identifier()
+        if part_identifier is None:
+            message = f"no part identifier found in {music_ly.trim()} ..."
+            self.io.display(message, indent=indent + 1)
+            return
+        parts_directory_name = abjad.String(parts_directory.name)
+        parts_directory_name = parts_directory_name.to_shout_case()
+        tag = f"+{parts_directory_name}_{part_identifier}"
+        self.activate(
+            parts_directory, tag, indent=indent + 1, message_zero=True,
+        )
+
+    @Command(
         "ash",
         description=f"annotation spanners - hide",
         menu_section="music annotations",
@@ -4395,64 +4534,39 @@ class AbjadIDE(object):
     def interpret_music_ly(
         self,
         directory: Path,
-        do_not_collect_segments: bool = False,
-        do_not_generate_music: bool = False,
+        *,
         open_after: bool = True,
+        skip_segment_ly_collection: bool = False,
+        skip_tags: bool = False,
     ) -> None:
         """
-        Interprets ``music.ly``.
+        Interprets ``music.ly`` (after first collecting segments and handling
+        tags).
         """
         assert directory.is__segments() or directory.is_build()
+        message = f"interpreting {directory.build.trim()} music.ly files ..."
+        self.io.display(message)
         name, verb = "music.ly", "interpret"
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
         if self.is_navigation(paths):
             return
+        #        if not paths:
+        #            return
         if not paths:
-            return
+            self.generate_music_ly(directory)
+            paths = self._select_paths_in_buildspace(
+                directory.build, name, verb
+            )
         path_count = len(paths)
+        for path in paths:
+            self.io.display(f"found {path.trim()} ...")
+        self.collect_segment_lys(
+            directory.build, skip=skip_segment_ly_collection,
+        )
         for i, path in enumerate(paths):
-            if path.parent.is_score_build():
-                if not do_not_collect_segments or not do_not_generate_music:
-                    self.io.display(f"preparing {path.trim()} ...")
-                if not do_not_collect_segments:
-                    self.collect_segments(path.parent)
-                if not do_not_generate_music:
-                    self.generate_music_ly(path.parent)
             if path.parent.is_part():
-                self.io.display(f"preparing {path.trim()} ...")
-                self._activate_part_specific_tags(path)
-            music_time_signatures = path.parent.get_time_signature_metadata()
-            music_time_signatures = [str(_) for _ in music_time_signatures]
-            layout_ly = path.name.replace("music.ly", "layout.ly")
-            layout_ly = path.parent / layout_ly
-            if layout_ly.exists():
-                layout_time_signatures = (
-                    layout_ly.get_preamble_time_signatures()
-                )
-                partial_score = layout_ly.get_preamble_partial_score()
-                if not partial_score and (
-                    music_time_signatures != layout_time_signatures
-                ):
-                    message = f"music time signatures"
-                    message += f" ({len(music_time_signatures)})"
-                    message += " do not match layout time signatures"
-                    message += f" ({len(layout_time_signatures)}) ..."
-                    if not self.test:
-                        self.io.display(message)
-                        self.io.display(f"remaking {layout_ly.trim()} ...")
-                        layout_py = layout_ly.with_suffix(".py")
-                        self._make_layout_ly(layout_py)
-                        layout_time_signatures = (
-                            layout_ly.get_preamble_time_signatures()
-                        )
-                        if music_time_signatures != layout_time_signatures:
-                            message = "music time signatures"
-                            message += f" ({len(music_time_signatures)})"
-                            message += " still do not match"
-                            message += " layout time signatures"
-                            message += f" ({len(layout_time_signatures)}) ..."
-                            self.io.display(message)
-                            return
+                self.handle_part_identifier_tags(directory, skip=skip_tags)
+            self._check_layout_time_signatures(path)
             self._run_lilypond(path)
             if 0 < path_count and i + 1 < path_count:
                 self.io.display("")
@@ -5924,13 +6038,13 @@ class AbjadIDE(object):
         self, directory: Path, open_after: bool = True
     ) -> None:
         """
-        Interprets ``music.ly`` without collecting segments, handling
-        tags or generating music.
+        Interprets ``music.ly`` without collecting segment.lys or handling
+        tags.
         """
         assert directory.is__segments() or directory.is_build()
         self.interpret_music_ly(
             directory,
-            do_not_collect_segments=True,
-            do_not_generate_music=True,
             open_after=open_after,
+            skip_segment_ly_collection=True,
+            skip_tags=True,
         )
