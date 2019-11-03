@@ -4213,30 +4213,36 @@ class AbjadIDE(object):
             self.run(job, indent=1, quiet=False)
 
     @Command(
-        "pitags",
-        description="segments - handle part identifier tags",
+        "ptags",
+        description="segments - handle part tags",
         menu_section="segments",
         score_package_paths=("_segments", "build"),
     )
-    def handle_part_identifier_tags(
+    def handle_part_tags(
         self, directory: Path, *, indent=0, skip: bool = False,
     ) -> None:
         """
-        Handles part identifier tags.
+        Handles part tags.
         """
         assert directory.is_part(), repr(directory)
+        parts_directory = directory.parent
         if skip:
-            self.io.display("skipping part identifier tags ...", indent=indent)
+            self.io.display("skipping part tags ...", indent=indent)
             return
         else:
-            self.io.display("handling part identifier tags ...", indent=indent)
-        parts_directory = directory
+            self.io.display("handling part tags ...", indent=indent)
         name, verb = "music.ly", "interpret"
         paths = self._select_paths_in_buildspace(directory.build, name, "foo")
         if not paths:
             message = "can not find {directory.trim()} music.ly file ..."
             self.io.display(message, indent=indent + 1)
         music_ly = paths[0]
+        self.activate(
+            parts_directory, "+PARTS", indent=indent + 1, message_zero=True,
+        )
+        self.deactivate(
+            parts_directory, "-PARTS", indent=indent + 1, message_zero=True,
+        )
         part_identifier = music_ly._parse_part_identifier()
         if part_identifier is None:
             message = f"no part identifier found in {music_ly.trim()} ..."
@@ -4244,9 +4250,12 @@ class AbjadIDE(object):
             return
         parts_directory_name = abjad.String(parts_directory.name)
         parts_directory_name = parts_directory_name.to_shout_case()
-        tag = f"+{parts_directory_name}_{part_identifier}"
+        name = f"{parts_directory_name}_{part_identifier}"
         self.activate(
-            parts_directory, tag, indent=indent + 1, message_zero=True,
+            parts_directory, f"+{name}", indent=indent + 1, message_zero=True,
+        )
+        self.deactivate(
+            parts_directory, f"-{name}", indent=indent + 1, message_zero=True,
         )
 
     @Command(
@@ -4565,7 +4574,7 @@ class AbjadIDE(object):
         )
         for i, path in enumerate(paths):
             if path.parent.is_part():
-                self.handle_part_identifier_tags(directory, skip=skip_tags)
+                self.handle_part_tags(directory, skip=skip_tags)
             self._check_layout_time_signatures(path)
             self._run_lilypond(path)
             if 0 < path_count and i + 1 < path_count:

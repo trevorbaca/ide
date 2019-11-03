@@ -110,7 +110,7 @@ AbjadIDE
       go_to_wrapper_directory
       go_up
       handle_build_tags
-      handle_part_identifier_tags
+      handle_part_tags
       hide_annotation_spanners
       hide_clock_time
       hide_figure_names
@@ -381,7 +381,7 @@ AbjadIDE
 
    .. automethod:: AbjadIDE.handle_build_tags
 
-   .. automethod:: AbjadIDE.handle_part_identifier_tags
+   .. automethod:: AbjadIDE.handle_part_tags
 
    .. automethod:: AbjadIDE.hide_annotation_spanners
 
