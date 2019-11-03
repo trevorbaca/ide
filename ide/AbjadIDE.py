@@ -4243,6 +4243,12 @@ class AbjadIDE(object):
         self.deactivate(
             parts_directory, "-PARTS", indent=indent + 1, message_zero=True,
         )
+        self.deactivate(
+            parts_directory,
+            "HIDE_IN_PARTS",
+            indent=indent + 1,
+            message_zero=True,
+        )
         part_identifier = music_ly._parse_part_identifier()
         if part_identifier is None:
             message = f"no part identifier found in {music_ly.trim()} ..."
