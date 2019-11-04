@@ -4289,6 +4289,12 @@ class AbjadIDE(object):
             indent=indent + 1,
             message_zero=True,
         )
+        self.activate(
+            parts_directory,
+            "NOT_TOPMOST",
+            indent=indent + 1,
+            message_zero=True,
+        )
 
     @Command(
         "ash",
