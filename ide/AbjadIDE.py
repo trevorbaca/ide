@@ -4168,7 +4168,7 @@ class AbjadIDE(object):
         _segments = directory._segments
         for job in [
             abjad.Job.handle_edition_tags(_segments),
-            abjad.Job.handle_fermata_bar_lines(_segments),
+            abjad.Job.handle_fermata_bar_lines(directory),
             abjad.Job.handle_shifted_clefs(_segments),
             abjad.Job.handle_mol_tags(_segments),
             abjad.Job.color_persistent_indicators(_segments, undo=True),
@@ -4262,6 +4262,32 @@ class AbjadIDE(object):
         )
         self.deactivate(
             parts_directory, f"-{name}", indent=indent + 1, message_zero=True,
+        )
+        self.deactivate(
+            parts_directory,
+            str(abjad.tags.METRIC_MODULATION_IS_SCALED),
+            indent=indent + 1,
+            message_zero=True,
+        )
+        self.deactivate(
+            parts_directory,
+            str(abjad.tags.METRIC_MODULATION_IS_NOT_SCALED),
+            indent=indent + 1,
+            message_zero=True,
+        )
+        self.activate(
+            parts_directory,
+            str(abjad.tags.METRIC_MODULATION_IS_STRIPPED),
+            indent=indent + 1,
+            message_zero=True,
+        )
+        # HACK TO HIDE ALL POST-FERMATA-MEASURE TRANSPARENT BAR LINES;
+        # this only works if parts contain no EOL fermata measure:
+        self.deactivate(
+            parts_directory,
+            str(abjad.tags.FERMATA_MEASURE),
+            indent=indent + 1,
+            message_zero=True,
         )
 
     @Command(
