@@ -4209,6 +4209,12 @@ class AbjadIDE(object):
                 abjad.tags.EOS_STOP_MM_SPANNER,
                 skip_file_name=final_file_name,
             ),
+            abjad.Job.show_tag(
+                _segments, abjad.tags.METRIC_MODULATION_IS_STRIPPED, undo=True,
+            ),
+            abjad.Job.show_tag(
+                _segments, abjad.tags.METRIC_MODULATION_IS_SCALED, undo=True,
+            ),
         ]:
             self.run(job, indent=1, quiet=False)
 
