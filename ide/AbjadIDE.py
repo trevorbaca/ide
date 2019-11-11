@@ -4178,7 +4178,6 @@ class AbjadIDE(object):
                 _segments,
                 "left-broken-should-deactivate",
                 match=match_left_broken_should_deactivate,
-                skip_file_name=final_file_name,
                 undo=True,
             ),
             abjad.Job.show_tag(
