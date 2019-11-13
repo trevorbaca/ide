@@ -4300,6 +4300,30 @@ class AbjadIDE(object):
             indent=indent + 1,
             message_zero=True,
         )
+        self.deactivate(
+            parts_directory,
+            "FERMATA_MEASURE_EMPTY_BAR_EXTENT",
+            indent=indent + 1,
+            message_zero=True,
+        )
+        self.deactivate(
+            parts_directory,
+            "FERMATA_MEASURE_NEXT_BAR_EXTENT",
+            indent=indent + 1,
+            message_zero=True,
+        )
+        self.deactivate(
+            parts_directory,
+            "FERMATA_MEASURE_RESUME_BAR_EXTENT",
+            indent=indent + 1,
+            message_zero=True,
+        )
+        self.deactivate(
+            parts_directory,
+            str(abjad.tags.EXPLICIT_BAR_EXTENT),
+            indent=indent + 1,
+            message_zero=True,
+        )
 
     @Command(
         "ash",
