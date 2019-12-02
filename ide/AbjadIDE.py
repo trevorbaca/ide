@@ -4620,7 +4620,9 @@ class AbjadIDE(object):
         tags).
         """
         assert directory.is__segments() or directory.is_build()
-        message = f"interpreting {directory.build.trim()} music.ly files ..."
+        build = directory.build
+        assert build is not None, repr(directory)
+        message = f"interpreting {build.trim()} music.ly files ..."
         self.io.display(message)
         name, verb = "music.ly", "interpret"
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
