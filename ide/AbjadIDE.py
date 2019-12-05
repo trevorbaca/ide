@@ -2,15 +2,12 @@ import abjad
 import baca
 import collections
 import datetime
-import doctest
 import importlib
 import inspect
 import io
 import os
-import pathlib
 import platform
 import re
-import roman  # type: ignore
 import shutil
 import subprocess
 import typing
