@@ -110,8 +110,11 @@ install:
     - prime-parser-tables
 
 script:
+    - echo $TRAVIS_PYTHON_VERSION
+    - black --version
     - black --target-version=py36 --line-length=79 --check --diff $PACKAGE
-    - mypy --ignore-missing-imports $PACKAGE
+    - mypy --version
+    - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then make mypy; fi
     - start-abjad-ide q
     - coverage run -a `which baca-doctest` $PACKAGE/*.py
     - coverage run -a `which py.test` -rf $PACKAGE
@@ -119,3 +122,4 @@ script:
 after_success:
     - pip install --quiet coveralls
     - coveralls
+
