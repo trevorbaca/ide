@@ -15,7 +15,7 @@ PygmentsBridge.latex_formatter = CustomLatexFormatter
 
 add_function_parentheses = True
 
-copyright = "2008-2018, Trevor Bača"
+copyright = "2008-2020, Trevor Bača"
 
 exclude_patterns = []
 
@@ -30,7 +30,6 @@ extensions = [
     "uqbar.sphinx.api",
     "uqbar.sphinx.inheritance",
     "uqbar.sphinx.style",
-    "abjadext.book.sphinx",
 ]
 
 master_doc = "index"
@@ -126,7 +125,7 @@ graphviz_dot_args = ["-s32"]
 graphviz_output_format = "svg"
 intersphinx_mapping = {
     "abjad": ("http://abjad.mbrsi.org", None),
-    "python": ("http://docs.python.org/3.6", None),
+    "python": ("http://docs.python.org/3.7", None),
 }
 
 uqbar_api_title = "Abjad IDE"

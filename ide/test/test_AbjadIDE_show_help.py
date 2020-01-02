@@ -1307,6 +1307,7 @@ def test_AbjadIDE_show_help_11():
         "",
         "    score.pdf - open (spo)",
         "",
+        "    clicktrack - make (ctm)",
         "    segment.midi - make (midm)",
         "",
         "    shell - call (!)",

@@ -1231,6 +1231,64 @@ class AbjadIDE(object):
         self.io.display("")
         self.generate_stylesheet_ily(build)
 
+    def _make_segment_clicktrack(self, directory, open_after=True):
+        assert directory.is_segment()
+        definition = directory / "definition.py"
+        if not definition.is_file():
+            self.io.display(f"can not find {definition.trim()} ...")
+            return -1
+        self.io.display("making clicktrack ...")
+        score_name = directory.contents.name
+        segment_name = directory.name
+        ly = directory / f"{score_name}-{segment_name}-clicktrack.ly"
+        if ly.exists():
+            self.io.display(f"removing {ly.trim()} ...")
+            ly.remove()
+        midi = directory / f"{score_name}-{segment_name}-clicktrack.midi"
+        if midi.exists():
+            self.io.display(f"removing {midi.trim()} ...")
+            midi.remove()
+        maker = directory / "__make_segment_clicktrack__.py"
+        maker.remove()
+        # HERE
+        with self.cleanup([maker]):
+            self.io.display(f"writing {maker.trim()} ...")
+            self._copy_boilerplate(directory, maker.name)
+            previous_segment = directory.get_previous_package()
+            if previous_segment is None:
+                statement = "previous_metadata = None"
+                persist_statement = "previous_persist = None"
+            else:
+                statement = "from {}.segments.{}.__metadata__"
+                statement += " import metadata as previous_metadata"
+                statement = statement.format(
+                    directory.contents.name, previous_segment.name
+                )
+                persist_statement = "from {}.segments.{}.__persist__"
+                persist_statement += " import persist as previous_persist"
+                persist_statement = persist_statement.format(
+                    directory.contents.name, previous_segment.name
+                )
+            template = maker.read_text()
+            template = template.format(
+                previous_segment_metadata_import_statement=statement,
+                previous_segment_persist_import_statement=persist_statement,
+            )
+            maker.write_text(template)
+            self.io.display(f"interpreting {maker.trim()} ...")
+            result = self._interpret_file(maker)
+            self.io.display(f"removing {maker.trim()} ...")
+            if midi.is_file():
+                self.io.display(f"found {midi.trim()} ...")
+            self.io.display(f"removing {maker.trim()} ...")
+        stdout_lines, stderr_lines, exit_code = result
+        if exit_code:
+            self.io.display(stderr_lines, raw=True)
+            return exit_code
+        if midi.is_file() and open_after:
+            self._open_files([midi])
+        return 0
+
     def _make_score_package(self):
         scores = self._get_scores_directory()
         wrapper = scores._find_empty_wrapper()
@@ -4822,6 +4880,23 @@ class AbjadIDE(object):
             self._make_layout_ly(layout_py)
             if i < path_count - 1:
                 self.io.display("")
+
+    @Command(
+        "ctm",
+        description="clicktrack - make",
+        menu_section="segment.midi",
+        score_package_paths=("segment",),
+    )
+    def make_segment_clicktrack(
+        self, directory: Path, open_after: bool = True
+    ) -> int:
+        """
+        Makes segment clicktrack file.
+
+        Returns integer exit code for Travis tests.
+        """
+        assert directory.is_segment()
+        return self._make_segment_clicktrack(directory, open_after=open_after)
 
     @Command(
         "midm",

@@ -137,6 +137,7 @@ AbjadIDE
       make_illustration_ly
       make_illustration_pdf
       make_layout_ly
+      make_segment_clicktrack
       make_segment_midi
       mypy
       nake_illustration_pdf
@@ -430,6 +431,8 @@ AbjadIDE
    .. automethod:: AbjadIDE.make_illustration_pdf
 
    .. automethod:: AbjadIDE.make_layout_ly
+
+   .. automethod:: AbjadIDE.make_segment_clicktrack
 
    .. automethod:: AbjadIDE.make_segment_midi
 
