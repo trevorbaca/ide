@@ -36,6 +36,9 @@ before_install:
     # install pytest helpers namespace
     - pip install pytest-helpers-namespace
 
+    # install pytest-cov
+    - pip install pytest-cov
+
     # install flake8
     - pip install --upgrade flake8
 
