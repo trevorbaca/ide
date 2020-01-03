@@ -19,9 +19,7 @@ def test_AbjadIDE_smart_doctest_01():
 
     abjad_ide("red ^rpc q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path(
-        "red_score", "materials", "red_pitch_classes", "definition.py"
-    )
+    path = ide.Path("red_score", "materials", "red_pitch_classes", "definition.py")
     assert f"Matching '^rpc' to {path.trim()} ..." in transcript
 
     abjad_ide("red ^A q")
@@ -50,9 +48,7 @@ def test_AbjadIDE_smart_doctest_02():
 
     abjad_ide("red mm ^rpc q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path(
-        "red_score", "materials", "red_pitch_classes", "definition.py"
-    )
+    path = ide.Path("red_score", "materials", "red_pitch_classes", "definition.py")
     assert f"Matching '^rpc' to {path.trim()} ..." in transcript
 
     abjad_ide("red mm ^ST q")

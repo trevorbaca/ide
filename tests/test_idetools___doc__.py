@@ -31,6 +31,4 @@ def test_idetools___doc___01(object_):
             continue
         if attribute.name[0].isalpha() or attribute.name.startswith("__"):
             message = f"{object_.__name__}.{attribute.name}"
-            assert (
-                getattr(object_, attribute.name).__doc__ is not None
-            ), message
+            assert getattr(object_, attribute.name).__doc__ is not None, message

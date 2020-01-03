@@ -71,9 +71,7 @@ class Menu(object):
         if string is not None:
             self.io.pending_input(string)
         self.redraw(
-            redraw,
-            dimensions=dimensions,
-            force_single_column=force_single_column,
+            redraw, dimensions=dimensions, force_single_column=force_single_column,
         )
         string = self.io.get(prompt=self.prompt, split_input=not self.getter)
         prefix, string = self._split_prefix(string)
@@ -85,9 +83,7 @@ class Menu(object):
         elif string == ";":
             return self(dimensions=dimensions, force_single_column=True)
         elif string == "?;":
-            return self(
-                dimensions=dimensions, force_single_column=True, redraw="help"
-            )
+            return self(dimensions=dimensions, force_single_column=True, redraw="help")
         elif string == "" and self.loop:
             return self(dimensions=dimensions)
         elif string in self.navigations:
@@ -139,11 +135,7 @@ class Menu(object):
         return result
 
     def _make_bicolumnar(
-        self,
-        lines,
-        lines_above,
-        break_only_at_blank_lines=False,
-        dimensions=None,
+        self, lines, lines_above, break_only_at_blank_lines=False, dimensions=None,
     ):
         if lines and lines[-1] != "":
             lines.append("")
@@ -185,8 +177,7 @@ class Menu(object):
         assert gutter_width + right_margin == remaining
         left_lines = [self._left_justify(_, left_width) for _ in left_lines]
         right_lines = [
-            self._left_justify(_, right_width + right_margin)
-            for _ in right_lines
+            self._left_justify(_, right_width + right_margin) for _ in right_lines
         ]
         conjoined_lines = []
         sequence = abjad.sequence([left_lines, right_lines])
@@ -269,11 +260,7 @@ class Menu(object):
         ):
             prefix = string[:2]
             string = string[2:] or None
-        elif (
-            string
-            and 1 <= len(string)
-            and string[0] in Path.address_characters
-        ):
+        elif string and 1 <= len(string) and string[0] in Path.address_characters:
             prefix = string[:1]
             string = string[1:] or None
         else:

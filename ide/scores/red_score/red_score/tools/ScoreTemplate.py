@@ -47,13 +47,9 @@ class ScoreTemplate(object):
         Returns score.
         """
         rh_voice = abjad.Voice(lilypond_type="RH_Voice", name="RH_Voice")
-        rh_staff = abjad.Staff(
-            [rh_voice], lilypond_type="RHStaff", name="RHStaff"
-        )
+        rh_staff = abjad.Staff([rh_voice], lilypond_type="RHStaff", name="RHStaff")
         lh_voice = abjad.Voice(lilypond_type="LH_Voice", name="LH_Voice")
-        lh_staff = abjad.Staff(
-            [lh_voice], lilypond_type="LHStaff", name="LHStaff"
-        )
+        lh_staff = abjad.Staff([lh_voice], lilypond_type="LHStaff", name="LHStaff")
         piano_staff_group = abjad.StaffGroup(
             [rh_staff, lh_staff], name="PianoStaffGroup"
         )

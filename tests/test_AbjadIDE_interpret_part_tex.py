@@ -25,9 +25,7 @@ def test_AbjadIDE_interpret_part_tex_01():
             "bass-clarinet-music.pdf",
             "bass-clarinet-back-cover.pdf",
         ]:
-            abjad_ide._copy_boilerplate(
-                part_directory, "blank.pdf", target_name=name
-            )
+            abjad_ide._copy_boilerplate(part_directory, "blank.pdf", target_name=name)
 
         abjad_ide("gre bb arch pti bass q")
         transcript = abjad_ide.io.transcript

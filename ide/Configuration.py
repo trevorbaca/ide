@@ -81,9 +81,7 @@ class Configuration(abjad.Configuration):
         return {}
 
     def _make_missing_directories(self):
-        directory = pathlib.Path(
-            abjad.abjad_configuration.composer_scores_directory
-        )
+        directory = pathlib.Path(abjad.abjad_configuration.composer_scores_directory)
         if not directory.exists():
             directory.mkdir()
 

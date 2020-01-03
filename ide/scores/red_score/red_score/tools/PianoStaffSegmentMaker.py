@@ -272,9 +272,7 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
         self._populate_pitches(rh_voice, self.rh_pitch_range)
         self._populate_pitches(lh_voice, self.lh_pitch_range)
         template.attach_defaults(score)
-        stylesheet_path = pathlib.Path(
-            "..", "..", "stylesheets", "stylesheet.ily"
-        )
+        stylesheet_path = pathlib.Path("..", "..", "stylesheets", "stylesheet.ily")
         lilypond_file = abjad.LilyPondFile.new(
             music=score, includes=[stylesheet_path], use_relative_includes=True
         )
@@ -298,9 +296,7 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
 
     def _populate_pitches(self, voice, pitch_range):
         assert isinstance(pitch_range, abjad.PitchRange)
-        pitch_numbers = [
-            _ for _ in self._test_pitch_numbers if _ in pitch_range
-        ]
+        pitch_numbers = [_ for _ in self._test_pitch_numbers if _ in pitch_range]
         pitch_numbers = abjad.sequence(pitch_numbers).remove_repeats()
         pitch_numbers = abjad.CyclicTuple(pitch_numbers)
         logical_ties = abjad.iterate(voice).logical_ties(pitched=True)

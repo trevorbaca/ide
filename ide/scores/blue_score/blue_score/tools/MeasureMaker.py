@@ -78,40 +78,34 @@ class MeasureMaker(object):
         # print measures_are_split
         # print measures_are_shuffled
 
-        assert abjad.mathtools.is_nonnegative_integer_power_of_two(
-            measure_denominator
-        )
+        assert abjad.mathtools.is_nonnegative_integer_power_of_two(measure_denominator)
         assert abjad.mathtools.is_nonnegative_integer_power_of_two(
             measure_division_denominator
         )
         assert measure_denominator <= measure_division_denominator
 
         assert all(
-            abjad.mathtools.is_positive_integer(x)
-            for x in measure_numerator_talea
+            abjad.mathtools.is_positive_integer(x) for x in measure_numerator_talea
         )
         assert all(
-            abjad.mathtools.is_positive_integer(x)
-            for x in measure_division_talea
+            abjad.mathtools.is_positive_integer(x) for x in measure_division_talea
         )
         total_duration = abjad.Duration(total_duration)
 
         weight = int(measure_denominator * total_duration)
-        measure_numerators = abjad.sequence(
-            measure_numerator_talea
-        ).repeat_to_weight(weight)
+        measure_numerators = abjad.sequence(measure_numerator_talea).repeat_to_weight(
+            weight
+        )
         # print measure_numerators
 
         weight = int(measure_division_denominator * total_duration)
-        measure_divisions = abjad.sequence(
-            measure_division_talea
-        ).repeat_to_weight(weight)
+        measure_divisions = abjad.sequence(measure_division_talea).repeat_to_weight(
+            weight
+        )
         # print measure_divisions
 
         multiplier = measure_division_denominator / measure_denominator
-        multiplied_measure_numerators = [
-            multiplier * x for x in measure_numerators
-        ]
+        multiplied_measure_numerators = [multiplier * x for x in measure_numerators]
         # print multiplied_measure_numerators
 
         measure_divisions_by_measure = abjad.sequence(measure_divisions).split(
@@ -119,9 +113,7 @@ class MeasureMaker(object):
         )
         # print measure_divisions_by_measure
 
-        meter_multipliers = [
-            abjad.Multiplier(1) for x in measure_divisions_by_measure
-        ]
+        meter_multipliers = [abjad.Multiplier(1) for x in measure_divisions_by_measure]
 
         if measures_are_scaled:
 
@@ -152,14 +144,14 @@ class MeasureMaker(object):
                 prolated_measure_numerators.append(prolated_measure_numerator)
             # print prolated_measure_numerators
 
-            measure_divisions = abjad.sequence(
-                measure_division_talea
-            ).repeat_to_weight(sum(prolated_measure_numerators))
+            measure_divisions = abjad.sequence(measure_division_talea).repeat_to_weight(
+                sum(prolated_measure_numerators)
+            )
             # print measure_divisions
 
-            measure_divisions_by_measure = abjad.sequence(
-                measure_divisions
-            ).split(prolated_measure_numerators, cyclic=True, overhang=True)
+            measure_divisions_by_measure = abjad.sequence(measure_divisions).split(
+                prolated_measure_numerators, cyclic=True, overhang=True
+            )
             # print measure_divisions_by_measure
 
         measure_tokens = zip(meter_multipliers, measure_divisions_by_measure)
@@ -261,9 +253,7 @@ class MeasureMaker(object):
 
     def _get_possible_meter_multipliers(self, multiplied_measure_numerator):
         possible_meter_multipliers = []
-        assert (
-            int(multiplied_measure_numerator) == multiplied_measure_numerator
-        )
+        assert int(multiplied_measure_numerator) == multiplied_measure_numerator
         multiplied_measure_numerator = int(multiplied_measure_numerator)
         stop_value = 2 * multiplied_measure_numerator
         for denominator in range(multiplied_measure_numerator, stop_value):
@@ -279,10 +269,7 @@ class MeasureMaker(object):
         contents_string = " ".join([str(x) for x in measure])
         result = "{}({}, {!r}, implicit_scaling={})"
         result = result.format(
-            type(measure).__name__,
-            pair,
-            contents_string,
-            measure.implicit_scaling,
+            type(measure).__name__, pair, contents_string, measure.implicit_scaling,
         )
         return result
 
@@ -308,17 +295,13 @@ class MeasureMaker(object):
             (5 * x) % len_divided_measure_tokens
             for x in range(len_divided_measure_tokens)
         ]
-        divided_measure_tokens = abjad.sequence(
-            divided_measure_tokens
-        ).permute(permutation)
+        divided_measure_tokens = abjad.sequence(divided_measure_tokens).permute(
+            permutation
+        )
         return divided_measure_tokens
 
-    def _select_meter_multiplier(
-        self, possible_meter_multipliers, measure_index
-    ):
-        possible_meter_multipliers = abjad.CyclicTuple(
-            possible_meter_multipliers
-        )
+    def _select_meter_multiplier(self, possible_meter_multipliers, measure_index):
+        possible_meter_multipliers = abjad.CyclicTuple(possible_meter_multipliers)
         meter_multiplier = possible_meter_multipliers[5 * measure_index]
         return meter_multiplier
 

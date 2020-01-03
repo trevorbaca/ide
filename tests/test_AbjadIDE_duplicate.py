@@ -13,9 +13,7 @@ def test_AbjadIDE_duplicate_01():
     transcript = abjad_ide.io.transcript
     path = ide.Path("red_score", "builds", "letter-score")
     assert "Select files to duplicate> layout.ly" in transcript
-    assert (
-        "Duplicating red_score/builds/letter-score/layout.ly ..." in transcript
-    )
+    assert "Duplicating red_score/builds/letter-score/layout.ly ..." in transcript
     assert "Enter new name> q" in transcript
 
 

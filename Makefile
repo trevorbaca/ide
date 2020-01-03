@@ -1,21 +1,20 @@
 project = ide
 
-mypy:
-	mypy --ignore-missing-imports ${project}/
-
-errors = E123,E203,E265,E266,E501,E722,F81,W503
 formatPaths = ${project}/ tests/ *.py
 testPaths = ${project}/ tests/
-flakeOptions = --exclude=boilerplate,abjad/__init__.py,abjad/pitch/__init__.py --max-line-length=90 --isolated
+flakeIgnore = --ignore=E123,E203,E265,E266,E501,E722,F81,W503
+flakeExclude = --exclude=boilerplate,abjad/__init__.py,abjad/pitch/__init__.py
+flakeOptions = --max-line-length=90 --isolated
+blackExclude = --exclude='__metadata__.py|definition.py|layout.py'
 
 black-check:
-	black --target-version py36 --exclude '.*boilerplate.*' --check --diff ${formatPaths}
+	black --target-version py37 ${blackExclude} --check --diff ${formatPaths}
 
 black-reformat:
-	black --target-version py36 --exclude '.*boilerplate.*' ${formatPaths}
+	black --target-version py37 ${blackExclude} ${formatPaths}
 
 flake8:
-	flake8 ${flakeOptions} --ignore=${errors} ${formatPaths}
+	flake8 ${flakeExclude} ${flakeOptions} ${flakeIgnore} ${formatPaths}
 
 isort:
 	isort \
@@ -32,6 +31,9 @@ isort:
 		--trailing-comma \
 		--use-parentheses -y \
 		${formatPaths}
+
+mypy:
+	mypy --ignore-missing-imports ${project}/
 
 pytest:
 	rm -Rf htmlcov/

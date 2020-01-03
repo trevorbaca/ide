@@ -103,9 +103,7 @@ class Response(object):
         """
         if isinstance(self.payload, Path):
             return self.payload
-        if isinstance(self.payload, list) and isinstance(
-            self.payload[0], Path
-        ):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], Path):
             return self.payload[0]
         return None
 
@@ -127,9 +125,7 @@ class Response(object):
         """
         if isinstance(self.payload, Path):
             return True
-        if isinstance(self.payload, list) and isinstance(
-            self.payload[0], Path
-        ):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], Path):
             return True
         return False
 
@@ -143,10 +139,6 @@ class Response(object):
         """
         Is true when response is shell command.
         """
-        if (
-            self.string
-            and self.string.startswith("!")
-            and not self.string == "!!"
-        ):
+        if self.string and self.string.startswith("!") and not self.string == "!!":
             return True
         return False

@@ -43,18 +43,14 @@ class Path(abjad.Path):
                 arguments.append(Path.configuration.test_scores_directory)
                 arguments.extend(2 * [argument])
             elif argument == "boilerplate":
-                arguments.append(
-                    abjad.abjad_configuration.boilerplate_directory
-                )
+                arguments.append(abjad.abjad_configuration.boilerplate_directory)
             elif argument == "test_scores":
                 arguments.append(Path.configuration.test_scores_directory)
             elif scores is not None:
                 arguments.append(scores)
                 arguments.extend(2 * [argument])
             else:
-                arguments.append(
-                    abjad.abjad_configuration.composer_scores_directory
-                )
+                arguments.append(abjad.abjad_configuration.composer_scores_directory)
                 arguments.extend(2 * [argument])
             arguments.extend(_arguments)
             self = pathlib.Path.__new__(class_, *arguments)

@@ -325,9 +325,7 @@ class AbjadIDE(object):
             values["dashed_part_name"] = dashed_part_name
         else:
             raise ValueError(path.name)
-        self._copy_boilerplate(
-            directory, name, target_name=path.name, values=values
-        )
+        self._copy_boilerplate(directory, name, target_name=path.name, values=values)
 
     def _generate_front_cover_tex(self, path, forces_tagline=None):
         assert path.build.exists(), repr(path)
@@ -370,9 +368,7 @@ class AbjadIDE(object):
         values["paper_size"] = paper_size
         target_name = None
         target_name = path
-        self._copy_boilerplate(
-            directory, name, target_name=target_name, values=values
-        )
+        self._copy_boilerplate(directory, name, target_name=target_name, values=values)
 
     def _generate_part_music_ly(
         self,
@@ -503,9 +499,7 @@ class AbjadIDE(object):
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
         target_name = path.name
-        self._copy_boilerplate(
-            directory, name, target_name=target_name, values=values
-        )
+        self._copy_boilerplate(directory, name, target_name=target_name, values=values)
 
     def _generate_preface_tex(self, path):
         assert path.build.exists(), repr(path)
@@ -536,9 +530,7 @@ class AbjadIDE(object):
         else:
             name = "score-preface.tex"
             target_name = path.name
-        self._copy_boilerplate(
-            directory, name, target_name=target_name, values=values
-        )
+        self._copy_boilerplate(directory, name, target_name=target_name, values=values)
 
     def _generate_score_music_ly(
         self, path, forces_tagline=None, indent=0, silent=None
@@ -908,9 +900,7 @@ class AbjadIDE(object):
                 return
         if directory.is_tools():
             if abjad.String(name).is_classfile_name():
-                self._copy_boilerplate(
-                    directory, "Maker.py", target_name=target.name
-                )
+                self._copy_boilerplate(directory, "Maker.py", target_name=target.name)
                 template = target.read_text()
                 template = template.format(class_name=target.stem)
                 target.write_text(template)
@@ -934,9 +924,7 @@ class AbjadIDE(object):
         maker = path.parent / maker
         with self.cleanup([maker]):
             self._copy_boilerplate(
-                path.parent,
-                maker.name,
-                values={"layout_module_name": path.stem},
+                path.parent, maker.name, values={"layout_module_name": path.stem},
             )
             self.io.display(f"interpreting {maker.trim()} ...")
             result = self._interpret_file(maker)
@@ -1026,9 +1014,7 @@ class AbjadIDE(object):
         target = path / "definition.py"
         self.io.display(f"writing {target.trim()} ...")
         target.write_text("")
-        self._copy_boilerplate(
-            path, "segment_layout.py", target_name="layout.py"
-        )
+        self._copy_boilerplate(path, "segment_layout.py", target_name="layout.py")
         paths = path.parent.list_paths()
         if path not in paths:
             view = path.parent.get_metadatum("view")
@@ -1139,8 +1125,7 @@ class AbjadIDE(object):
                 silent=True,
             )
             self._generate_part_tex(
-                part_directory / f"{dashed_part_name}-part.tex",
-                dashed_part_name,
+                part_directory / f"{dashed_part_name}-part.tex", dashed_part_name,
             )
             self._generate_preface_tex(
                 part_directory / f"{dashed_part_name}-preface.tex"
@@ -1217,9 +1202,7 @@ class AbjadIDE(object):
         self.io.display("")
         self.generate_front_cover_tex(build)
         self.io.display("")
-        self._copy_boilerplate(
-            build, "score_layout.py", target_name="layout.py"
-        )
+        self._copy_boilerplate(build, "score_layout.py", target_name="layout.py")
         self.io.display("")
         self.collect_segment_lys(build)
         self.io.display("")
@@ -1823,9 +1806,7 @@ class AbjadIDE(object):
         assert not pdf.exists()
         with self.change(directory):
             self.io.display(f"interpreting {ly.trim()} ...", indent=indent + 1)
-            abjad.IOManager.run_lilypond(
-                str(ly), lilypond_log_file_path=str(log)
-            )
+            abjad.IOManager.run_lilypond(str(ly), lilypond_log_file_path=str(log))
             log.remove_lilypond_warnings(
                 crescendo_too_small=True,
                 decrescendo_too_small=True,
@@ -1835,9 +1816,7 @@ class AbjadIDE(object):
             if pdf.is_file():
                 self.io.display(f"found {pdf.trim()} ...", indent=indent + 1)
             else:
-                self.io.display(
-                    f"can not produce {pdf.trim()} ...", indent=indent + 1
-                )
+                self.io.display(f"can not produce {pdf.trim()} ...", indent=indent + 1)
 
     def _run_pytest(self, paths):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
@@ -1915,13 +1894,7 @@ class AbjadIDE(object):
         return result
 
     def _select_paths_in_buildspace(
-        self,
-        directory,
-        name,
-        verb,
-        count=None,
-        supply_missing=None,
-        underscores=False,
+        self, directory, name, verb, count=None, supply_missing=None, underscores=False,
     ):
         assert directory.is_buildspace()
         selected_paths = []
@@ -2238,9 +2211,7 @@ class AbjadIDE(object):
                 return True
         return False
 
-    def run(
-        self, job: abjad.Job, *, indent: int = 0, quiet: bool = False,
-    ) -> None:
+    def run(self, job: abjad.Job, *, indent: int = 0, quiet: bool = False,) -> None:
         """
         Runs ``job`` on ``path``.
         """
@@ -2552,9 +2523,7 @@ class AbjadIDE(object):
             source_ily = source.with_suffix(".ily")
             target_ily = target.with_suffix(".ily")
             if target_ily.exists():
-                self.io.display(
-                    f"Removing {target_ily.trim()} ...", indent=indent + 1
-                )
+                self.io.display(f"Removing {target_ily.trim()} ...", indent=indent + 1)
             if source_ily.is_file():
                 self.io.display(
                     f"Writing {target_ily.trim()} ...", indent=indent + 1,
@@ -2830,9 +2799,7 @@ class AbjadIDE(object):
                 )
                 self.io.display(lines)
             elif target.is_wrapper():
-                shutil.move(
-                    str(target.wrapper / source.name), str(target.contents)
-                )
+                shutil.move(str(target.wrapper / source.name), str(target.contents))
                 lines = self._replace_in_tree(
                     target, source.name, target.name, complete_words=True
                 )
@@ -3053,11 +3020,7 @@ class AbjadIDE(object):
         Edits ``.log``.
         """
         assert directory.is_buildspace()
-        if (
-            directory.is_material()
-            or directory.is_segment()
-            or directory.is_build()
-        ):
+        if directory.is_material() or directory.is_segment() or directory.is_build():
             paths = [directory / ".log"]
         else:
             paths = []
@@ -3494,9 +3457,7 @@ class AbjadIDE(object):
         values["paper_size"] = paper_size
         orientation = directory.build.get_metadatum("orientation", "")
         values["orientation"] = orientation
-        self._copy_boilerplate(
-            directory.build, "stylesheet.ily", values=values
-        )
+        self._copy_boilerplate(directory.build, "stylesheet.ily", values=values)
 
     @Command(
         "get",
@@ -3619,9 +3580,7 @@ class AbjadIDE(object):
                 shutil.copytree(str(source), str(target))
             else:
                 raise ValueError(source)
-            if source.is_material_or_segment() and source.get_metadatum(
-                "name"
-            ):
+            if source.is_material_or_segment() and source.get_metadatum("name"):
                 name = self.io.get("name metadatum")
                 if self.is_navigation(name):
                     return
@@ -3995,8 +3954,7 @@ class AbjadIDE(object):
         Goes to next package.
         """
         assert (
-            directory.is_material_or_segment()
-            or directory.is_materials_or_segments()
+            directory.is_material_or_segment() or directory.is_materials_or_segments()
         )
         next_package = directory.get_next_package(cyclic=True)
         self._manage_directory(next_package)
@@ -4028,8 +3986,7 @@ class AbjadIDE(object):
         Goes to previous package.
         """
         assert (
-            directory.is_material_or_segment()
-            or directory.is_materials_or_segments()
+            directory.is_material_or_segment() or directory.is_materials_or_segments()
         )
         previous_package = directory.get_previous_package(cyclic=True)
         self._manage_directory(previous_package)
@@ -4179,10 +4136,7 @@ class AbjadIDE(object):
         final_file_name = final_target.with_suffix(".ily").name
 
         def match_left_broken_should_deactivate(tags):
-            if (
-                abjad.tags.LEFT_BROKEN in tags
-                and abjad.tags.SPANNER_START in tags
-            ):
+            if abjad.tags.LEFT_BROKEN in tags and abjad.tags.SPANNER_START in tags:
                 return True
             if (
                 abjad.tags.LEFT_BROKEN in tags
@@ -4206,15 +4160,9 @@ class AbjadIDE(object):
         def match_phantom_should_deactivate(tags):
             if abjad.tags.PHANTOM not in tags:
                 return False
-            if (
-                abjad.tags.SPANNER_START in tags
-                and abjad.tags.LEFT_BROKEN in tags
-            ):
+            if abjad.tags.SPANNER_START in tags and abjad.tags.LEFT_BROKEN in tags:
                 return True
-            if (
-                abjad.tags.SPANNER_STOP in tags
-                and abjad.tags.RIGHT_BROKEN in tags
-            ):
+            if abjad.tags.SPANNER_STOP in tags and abjad.tags.RIGHT_BROKEN in tags:
                 return True
             if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
                 return True
@@ -4304,10 +4252,7 @@ class AbjadIDE(object):
             parts_directory, "-PARTS", indent=indent + 1, message_zero=True,
         )
         self.deactivate(
-            parts_directory,
-            "HIDE_IN_PARTS",
-            indent=indent + 1,
-            message_zero=True,
+            parts_directory, "HIDE_IN_PARTS", indent=indent + 1, message_zero=True,
         )
         part_identifier = music_ly._parse_part_identifier()
         if part_identifier is None:
@@ -4350,10 +4295,7 @@ class AbjadIDE(object):
             message_zero=True,
         )
         self.activate(
-            parts_directory,
-            "NOT_TOPMOST",
-            indent=indent + 1,
-            message_zero=True,
+            parts_directory, "NOT_TOPMOST", indent=indent + 1, message_zero=True,
         )
         self.deactivate(
             parts_directory,
@@ -4452,9 +4394,7 @@ class AbjadIDE(object):
         Hides local measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(
-            abjad.Job.show_local_measure_number_markup(directory, undo=True)
-        )
+        self.run(abjad.Job.show_local_measure_number_markup(directory, undo=True))
 
     @Command(
         "mnh",
@@ -4687,9 +4627,7 @@ class AbjadIDE(object):
         #            return
         if not paths:
             self.generate_music_ly(directory)
-            paths = self._select_paths_in_buildspace(
-                directory.build, name, verb
-            )
+            paths = self._select_paths_in_buildspace(directory.build, name, verb)
         path_count = len(paths)
         for path in paths:
             self.io.display(f"found {path.trim()} ...")
@@ -4714,9 +4652,7 @@ class AbjadIDE(object):
         menu_section="parts",
         score_package_paths=("part", "parts"),
     )
-    def interpret_part_tex(
-        self, directory: Path, open_after: bool = True
-    ) -> None:
+    def interpret_part_tex(self, directory: Path, open_after: bool = True) -> None:
         """
         Interprets ``part.tex``.
         """
@@ -4741,9 +4677,7 @@ class AbjadIDE(object):
         menu_section="preface",
         score_package_paths=("_segments", "build"),
     )
-    def interpret_preface_tex(
-        self, directory: Path, open_after: bool = True
-    ) -> None:
+    def interpret_preface_tex(self, directory: Path, open_after: bool = True) -> None:
         """
         Interprets ``preface.tex``.
         """
@@ -4766,9 +4700,7 @@ class AbjadIDE(object):
         score_package_path_blacklist=("parts",),
         score_package_paths=("_segments", "build"),
     )
-    def interpret_score_tex(
-        self, directory: Path, open_after: bool = True
-    ) -> None:
+    def interpret_score_tex(self, directory: Path, open_after: bool = True) -> None:
         """
         Interprets ``score.tex``.
         """
@@ -4887,9 +4819,7 @@ class AbjadIDE(object):
         menu_section="segment.midi",
         score_package_paths=("segment",),
     )
-    def make_segment_clicktrack(
-        self, directory: Path, open_after: bool = True
-    ) -> int:
+    def make_segment_clicktrack(self, directory: Path, open_after: bool = True) -> int:
         """
         Makes segment clicktrack file.
 
@@ -4904,9 +4834,7 @@ class AbjadIDE(object):
         menu_section="segment.midi",
         score_package_paths=("segment",),
     )
-    def make_segment_midi(
-        self, directory: Path, open_after: bool = True
-    ) -> int:
+    def make_segment_midi(self, directory: Path, open_after: bool = True) -> int:
         """
         Makes segment MIDI file.
 
@@ -4963,9 +4891,7 @@ class AbjadIDE(object):
         Returns integer exit code for Travis tests.
         """
         assert directory.is_illustrationspace()
-        return self.make_illustration_pdf(
-            directory, layout=False, open_after=False
-        )
+        return self.make_illustration_pdf(directory, layout=False, open_after=False)
 
     @Command(
         "new",
@@ -5203,9 +5129,7 @@ class AbjadIDE(object):
         """
         assert directory.is_parts() or directory.is_part()
         name, verb = "layout.py", "use as source"
-        paths = self._select_paths_in_buildspace(
-            directory, name, verb, count=1
-        )
+        paths = self._select_paths_in_buildspace(directory, name, verb, count=1)
         if self.is_navigation(paths):
             return
         if not paths:
@@ -5230,9 +5154,7 @@ class AbjadIDE(object):
             return
         for path in paths:
             part_identifier = path.get_part_identifier()
-            target_text = source_text.replace(
-                source_part_identifier, part_identifier
-            )
+            target_text = source_text.replace(source_part_identifier, part_identifier)
             self.io.display(f"writing {path.trim()} ...")
             path.write_text(target_text)
 
@@ -5346,9 +5268,7 @@ class AbjadIDE(object):
             if not target.is_dir():
                 return
             for path in sorted(target.glob("*.py")):
-                self._replace_in_file(
-                    path, source.name, target.name, whole_words=True
-                )
+                self._replace_in_file(path, source.name, target.name, whole_words=True)
 
     @Command(
         "rp",
@@ -5606,9 +5526,7 @@ class AbjadIDE(object):
         """
         assert directory.is_buildspace()
         name = "rhythm annotation spanners"
-        self.run(
-            abjad.Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER)
-        )
+        self.run(abjad.Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER))
 
     @Command(
         "sps",
@@ -5712,19 +5630,12 @@ class AbjadIDE(object):
         score_package_paths=True,
         scores_directory=True,
     )
-    def smart_pdf(
-        self, directory: Path, pattern: str, menu_paths: typing.List
-    ) -> None:
+    def smart_pdf(self, directory: Path, pattern: str, menu_paths: typing.List) -> None:
         """
         Smart PDF.
         """
         address, file_ = self._match_smart_file(
-            directory,
-            pattern,
-            menu_paths,
-            "*",
-            Path._find_pdfs,
-            "illustration.pdf",
+            directory, pattern, menu_paths, "*", Path._find_pdfs, "illustration.pdf",
         )
         if file_:
             self._open_files([file_])
@@ -6184,9 +6095,7 @@ class AbjadIDE(object):
         menu_section="music",
         score_package_paths=("_segments", "build"),
     )
-    def xinterpret_music_ly(
-        self, directory: Path, open_after: bool = True
-    ) -> None:
+    def xinterpret_music_ly(self, directory: Path, open_after: bool = True) -> None:
         """
         Interprets ``music.ly`` without collecting segment.lys or handling
         tags.

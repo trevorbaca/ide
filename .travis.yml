@@ -33,8 +33,14 @@ before_install:
     # upgrade pip:
     - pip install --upgrade pip
 
+    # install coverage
+    - pip install --upgrade coverage
+
+    # install flake8
+    - pip install --upgrade flake8
+
     # install mypy:
-    - pip install mypy
+    - pip install --upgrade mypy
 
     # install lilypond:
     - LILYPOND=/tmp/lilypond
@@ -105,14 +111,13 @@ before_install:
 
 install:
     - pip install pytest-helpers-namespace
-    - pip install coverage
     - pip install -e . 
     - prime-parser-tables
 
 script:
     - echo $TRAVIS_PYTHON_VERSION
     - black --version
-    - black --target-version=py36 --line-length=79 --check --diff $PACKAGE
+    - make black-check
     - mypy --version
     - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then make mypy; fi
     - start-abjad-ide q
@@ -122,4 +127,3 @@ script:
 after_success:
     - pip install --quiet coveralls
     - coveralls
-
