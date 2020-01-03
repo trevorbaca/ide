@@ -103,9 +103,12 @@ before_install:
     - ls $HOME/.abjad/ide
     - pwd
     - which baca-doctest
+    - which black
+    - which flake8
     - which latex
     - which mypy
     - which prime-parser-tables
+    - which pytest
     - which start-abjad-ide
     - which xetex
 
@@ -120,8 +123,8 @@ script:
     - mypy --version
     - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then make mypy; fi
     - start-abjad-ide q
-    - coverage run -a `which baca-doctest` $PACKAGE/*.py
-    - coverage run -a `which py.test` -rf $PACKAGE
+    - pytest --version
+    - make pytest
 
 after_success:
     - pip install --quiet coveralls
