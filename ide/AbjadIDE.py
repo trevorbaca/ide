@@ -1215,7 +1215,7 @@ class AbjadIDE(object):
         self.generate_stylesheet_ily(build)
 
     def _make_segment_clicktrack(self, directory, open_after=True):
-        assert directory.is_segment()
+        assert directory.is_segment(), repr(directory)
         definition = directory / "definition.py"
         if not definition.is_file():
             self.io.display(f"can not find {definition.trim()} ...")
@@ -1233,7 +1233,6 @@ class AbjadIDE(object):
             midi.remove()
         maker = directory / "__make_segment_clicktrack__.py"
         maker.remove()
-        # HERE
         with self.cleanup([maker]):
             self.io.display(f"writing {maker.trim()} ...")
             self._copy_boilerplate(directory, maker.name)
@@ -4817,7 +4816,7 @@ class AbjadIDE(object):
         "ctm",
         description="clicktrack - make",
         menu_section="segment.midi",
-        score_package_paths=("segment",),
+        score_package_paths=("illustrationspace",),
     )
     def make_segment_clicktrack(self, directory: Path, open_after: bool = True) -> int:
         """
@@ -4825,8 +4824,23 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        assert directory.is_segment()
-        return self._make_segment_clicktrack(directory, open_after=open_after)
+        if directory.is_segment():
+            paths = [directory]
+        else:
+            paths = []
+            for path in directory.list_paths():
+                if path.is_dir():
+                    paths.append(path)
+        for path in paths:
+            result = self._make_segment_clicktrack(path, open_after=False)
+        if len(paths) == 1:
+            directory = paths[0]
+            score_name = directory.contents.name
+            segment_name = directory.name
+            midi = directory / f"{score_name}-{segment_name}-clicktrack.midi"
+            if midi.is_file() and open_after:
+                self._open_files([midi])
+        return result
 
     @Command(
         "midm",
