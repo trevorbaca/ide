@@ -4824,7 +4824,7 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        paths: typing.List[typing.Union[abjad.Path, Path]]
+        paths: typing.List[typing.Union[abjad.Path, Path]] = []
         if directory.is_segment():
             paths.append(directory)
         else:
