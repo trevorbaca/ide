@@ -4834,9 +4834,9 @@ class AbjadIDE(object):
         for path in paths:
             result = self._make_segment_clicktrack(path, open_after=False)
         if len(paths) == 1:
-            directory = paths[0]
-            score_name = directory.contents.name
-            segment_name = directory.name
+            path = paths[0]
+            score_name = path.contents.name
+            segment_name = path.name
             midi = directory / f"{score_name}-{segment_name}-clicktrack.midi"
             if midi.is_file() and open_after:
                 self._open_files([midi])
