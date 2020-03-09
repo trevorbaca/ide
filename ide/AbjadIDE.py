@@ -1378,7 +1378,6 @@ class AbjadIDE(object):
         maker = directory / "__make_segment_midi__.py"
         maker.remove()
         with self.cleanup([maker]):
-            self.io.display(f"writing {maker.trim()} ...")
             self._copy_boilerplate(directory, maker.name)
             previous_segment = directory.get_previous_package()
             if previous_segment is None:
@@ -1403,7 +1402,6 @@ class AbjadIDE(object):
             maker.write_text(template)
             self.io.display(f"interpreting {maker.trim()} ...")
             result = self._interpret_file(maker)
-            self.io.display(f"removing {maker.trim()} ...")
             if midi.is_file():
                 self.io.display(f"found {midi.trim()} ...")
             self.io.display(f"removing {maker.trim()} ...")
