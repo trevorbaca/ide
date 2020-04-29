@@ -1,11 +1,21 @@
 import ide
-import os
-import pytest
 
 abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_build_score_pdf_01():
+
+    source = ide.Path("red_score", "builds", "letter-score")
+
+    _segments = source / "_segments"
+    for file_ in _segments.glob("*.ily"):
+        file_.remove()
+    for file_ in _segments.glob("*.ly"):
+        file_.remove()
+
+    pdfs = list(source.glob("*.pdf"))
+    for pdf in pdfs:
+        pdf.remove()
 
     with ide.Test():
         abjad_ide("red %let spb q")
@@ -65,7 +75,7 @@ def test_AbjadIDE_build_score_pdf_01():
             "Checking layout time signatures ...",
             " Found red_score/builds/letter-score/layout.ly ...",
             " Found time signature metadata ...",
-            " Layout time signatures (0) do not match metadata time signatures (11) ...",
+            " Layout time signatures (11) match metadata time signatures (11) ...",
             "Running LilyPond on red_score/builds/letter-score/music.ly ...",
             " Interpreting red_score/builds/letter-score/music.ly ...",
             "ERROR IN LILYPOND LOG FILE ...",
