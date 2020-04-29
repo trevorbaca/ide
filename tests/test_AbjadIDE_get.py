@@ -89,33 +89,6 @@ def test_AbjadIDE_get_03():
 
 def test_AbjadIDE_get_04():
     """
-    In material directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("blue_score", "materials", "blue_rhythm_1")
-        source /= "definition.py"
-        assert source.is_file()
-        target = source.with_parent("blue_rhythm_2")
-        target.remove()
-
-        abjad_ide(f"blu mm br2 get br1 y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        header = "Blue Score (2017) : materials : blue_rhythm_2 : get file ..."
-        assert header in transcript
-        for name in ["blue_rhythm_1", "blue_rhythm_2"]:
-            path = source.materials / name / "definition.py"
-            assert path.trim() in transcript
-        assert f"> br1" in transcript
-        assert f"Getting {source.trim()} ..." in transcript
-        assert f"Will write {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-        assert f"Writing {target.trim()} ..." in transcript
-
-
-def test_AbjadIDE_get_05():
-    """
     In materials directory.
     """
 
@@ -138,7 +111,7 @@ def test_AbjadIDE_get_05():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_06():
+def test_AbjadIDE_get_05():
     """
     In segment directory.
     """
@@ -183,7 +156,7 @@ def test_AbjadIDE_get_06():
     assert "Matches no file 'q' ..." not in transcript
 
 
-def test_AbjadIDE_get_07():
+def test_AbjadIDE_get_06():
     """
     In segments directory.
     """
@@ -210,7 +183,7 @@ def test_AbjadIDE_get_07():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_08():
+def test_AbjadIDE_get_07():
     """
     In stylesheets directory.
     """
@@ -234,7 +207,7 @@ def test_AbjadIDE_get_08():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_09():
+def test_AbjadIDE_get_08():
     """
     In test directory.
     """
@@ -258,7 +231,7 @@ def test_AbjadIDE_get_09():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_10():
+def test_AbjadIDE_get_09():
     """
     In tools directory.
     """

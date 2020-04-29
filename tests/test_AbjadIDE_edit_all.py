@@ -22,10 +22,6 @@ def test_AbjadIDE_edit_all_01():
         path = ide.Path("red_score", "materials", name, "definition.py")
         assert f"Editing {path.trim()} ..." in transcript
 
-    abjad_ide("red mm @@ q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@@' to 7 files ..." in transcript
-
 
 def test_AbjadIDE_edit_all_02():
     """

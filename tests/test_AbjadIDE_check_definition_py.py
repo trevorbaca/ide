@@ -8,7 +8,9 @@ def test_AbjadIDE_check_definition_py_01():
     In material directory.
     """
 
-    path = ide.Path("red_score", "materials", "red_pitch_classes", "definition.py")
+    path = ide.Path(
+        "red_score", "materials", "red_pitch_classes", "definition.py"
+    )
     abjad_ide("red %rpc dpc q")
     transcript = abjad_ide.io.transcript
     assert f"{path.trim()} ... OK" in transcript

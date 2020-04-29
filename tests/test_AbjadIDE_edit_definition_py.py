@@ -10,7 +10,9 @@ def test_AbjadIDE_edit_definition_py_01():
 
     abjad_ide("red %rpc dpe q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "materials", "red_pitch_classes", "definition.py")
+    path = ide.Path(
+        "red_score", "materials", "red_pitch_classes", "definition.py"
+    )
     assert f"Editing {path.trim()} ..." in transcript
 
 

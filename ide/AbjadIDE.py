@@ -3010,7 +3010,7 @@ class AbjadIDE(object):
         "le",
         description=".log - edit",
         menu_section="illustration",
-        score_package_paths=("buildspace",)
+        score_package_paths=("buildspace",),
     )
     def edit_log(self, directory: Path) -> None:
         """

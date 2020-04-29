@@ -289,6 +289,10 @@ Path
 
    .. container:: inherited
 
+      .. automethod:: Path.is_definitionspace
+
+   .. container:: inherited
+
       .. automethod:: Path.is_dir
 
    .. container:: inherited
