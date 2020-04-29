@@ -2424,7 +2424,7 @@ class AbjadIDE(object):
         "dpc",
         description="definition.py - check",
         menu_section="definition",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("definitionspace",),
     )
     def check_definition_py(self, directory: Path) -> int:
         """
@@ -2432,7 +2432,7 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        assert directory.is_illustrationspace()
+        assert directory.is_definitionspace()
         if directory.is_material() or directory.is_segment():
             self.io.display("checking definition ...")
             definition = directory / "definition.py"
@@ -2464,14 +2464,14 @@ class AbjadIDE(object):
         "oc",
         description=".optimization - checkout",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def check_out_optimization(self, directory: Path) -> None:
         """
         Checks out ``.optimization``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             paths = [directory / ".optimization"]
         else:
             paths = []
@@ -2866,13 +2866,13 @@ class AbjadIDE(object):
         "dpe",
         description="definition.py - edit",
         menu_section="definition",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("definitionspace",),
     )
     def edit_definition_py(self, directory: Path) -> None:
         """
         Edits ``definition.py``.
         """
-        assert directory.is_illustrationspace()
+        assert directory.is_definitionspace()
         paths = []
         if directory.is_material() or directory.is_segment():
             paths.append(directory / "definition.py")
@@ -2904,14 +2904,14 @@ class AbjadIDE(object):
         "iie",
         description="illustration.ily - edit",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def edit_illustration_ily(self, directory: Path) -> None:
         """
         Edits ``illustration.ily``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             paths = [directory / "illustration.ily"]
         else:
             paths = []
@@ -2925,14 +2925,14 @@ class AbjadIDE(object):
         "ile",
         description="illustration.ly - edit",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def edit_illustration_ly(self, directory: Path) -> None:
         """
         Edits ``illustration.ly``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             paths = [directory / "illustration.ly"]
         else:
             paths = []
@@ -3010,7 +3010,7 @@ class AbjadIDE(object):
         "le",
         description=".log - edit",
         menu_section="illustration",
-        score_package_paths=("buildspace", "illustrationspace"),
+        score_package_paths=("buildspace",)
     )
     def edit_log(self, directory: Path) -> None:
         """
@@ -3048,14 +3048,14 @@ class AbjadIDE(object):
         "oe",
         description=".optimization - edit",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def edit_optimization(self, directory: Path) -> None:
         """
         Edits ``.optimization``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             paths = [directory / ".optimization"]
         else:
             paths = []
@@ -4562,7 +4562,7 @@ class AbjadIDE(object):
         "ili",
         description="illustration.ly - interpret",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def interpret_illustration_ly(
         self, directory: Path, open_after: bool = True
@@ -4572,8 +4572,8 @@ class AbjadIDE(object):
 
         Makes ``illustration.pdf``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             self.io.display("interpreting ly ...")
             source = directory / "illustration.ly"
             target = source.with_suffix(".pdf")
@@ -4717,14 +4717,14 @@ class AbjadIDE(object):
         "ilm",
         description="illustration.ly - make",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def make_illustration_ly(self, directory: Path) -> None:
         """
         Makes ``illustration.ly``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             if directory.is_material():
                 self._make_material_ly(directory)
             else:
@@ -4744,7 +4744,7 @@ class AbjadIDE(object):
         "ipm",
         description="illustration.pdf - make",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def make_illustration_pdf(
         self, directory: Path, layout: bool = True, open_after: bool = True
@@ -4754,10 +4754,8 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material():
-            return self._make_material_pdf(directory, open_after=open_after)
-        elif directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             return self._make_segment_pdf(
                 directory, layout=layout, open_after=open_after
             )
@@ -4814,7 +4812,7 @@ class AbjadIDE(object):
         "ctm",
         description="clicktrack - make",
         menu_section="segment.midi",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def make_segment_clicktrack(self, directory: Path, open_after: bool = True) -> int:
         """
@@ -4822,6 +4820,7 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
+        assert directory.is_segment() or directory.is_segments()
         paths: typing.List[typing.Union[abjad.Path, Path]] = []
         if directory.is_segment():
             paths.append(directory)
@@ -4844,7 +4843,7 @@ class AbjadIDE(object):
         "midm",
         description="segment.midi - make",
         menu_section="segment.midi",
-        score_package_paths=("segment",),
+        score_package_paths=("segment", "segments"),
     )
     def make_segment_midi(self, directory: Path, open_after: bool = True) -> int:
         """
@@ -4852,8 +4851,25 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        assert directory.is_segment()
-        return self._make_segment_midi(directory, open_after=open_after)
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
+            return self._make_segment_midi(directory, open_after=open_after)
+        else:
+            assert directory.is_segments()
+            exit = 0
+            paths = directory.list_paths()
+            paths = [_ for _ in paths if _.is_dir()]
+            path_count = len(paths)
+            for i, path in enumerate(paths):
+                exit_ = self._make_segment_midi(path, open_after=False)
+                if i + 1 < len(paths):
+                    self.io.display("")
+                else:
+                    abjad.IOManager.spawn_subprocess('say "done"')
+                if exit_ != 0:
+                    exit = -1
+            return exit
+        return 0
 
     @Command(
         "mypy",
@@ -4893,7 +4909,7 @@ class AbjadIDE(object):
         "ipn",
         description="illustration.pdf - nake",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def nake_illustration_pdf(self, directory: Path) -> int:
         """
@@ -4902,7 +4918,7 @@ class AbjadIDE(object):
 
         Returns integer exit code for Travis tests.
         """
-        assert directory.is_illustrationspace()
+        assert directory.is_segment() or directory.is_segments()
         return self.make_illustration_pdf(directory, layout=False, open_after=False)
 
     @Command(
@@ -4987,14 +5003,14 @@ class AbjadIDE(object):
         "ipo",
         description="illustration.pdf - open",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def open_illustration_pdf(self, directory: Path) -> None:
         """
         Opens ``illustration.pdf``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             path = directory / "illustration.pdf"
             self._open_files([path])
         else:
@@ -5711,13 +5727,13 @@ class AbjadIDE(object):
         "dpt",
         description="definition.py - trash",
         menu_section="definition",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("definitionspace",),
     )
     def trash_definition_py(self, directory: Path) -> None:
         """
         Trashes ``definition.py``.
         """
-        assert directory.is_illustrationspace()
+        assert directory.is_definitionspace()
         if directory.is_material() or directory.is_segment():
             path = directory / "definition.py"
             self._trash_files(path)
@@ -5763,14 +5779,14 @@ class AbjadIDE(object):
         "iit",
         description="illustration.ily - trash",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def trash_illustration_ily(self, directory: Path) -> None:
         """
         Trashes ``illustration.ily``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             path = directory / "illustration.ily"
             self._trash_files(path)
         else:
@@ -5781,14 +5797,14 @@ class AbjadIDE(object):
         "ilt",
         description="illustration.ly - trash",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def trash_illustration_ly(self, directory: Path) -> None:
         """
         Trashes ``illustration.ly``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             path = directory / "illustration.ly"
             self._trash_files(path)
         else:
@@ -5799,14 +5815,14 @@ class AbjadIDE(object):
         "ipt",
         description="illustration.pdf - trash",
         menu_section="illustration",
-        score_package_paths=("illustrationspace",),
+        score_package_paths=("segment", "segments"),
     )
     def trash_illustration_pdf(self, directory: Path) -> None:
         """
         Trashes ``illustration.pdf``.
         """
-        assert directory.is_illustrationspace()
-        if directory.is_material() or directory.is_segment():
+        assert directory.is_segment() or directory.is_segments()
+        if directory.is_segment():
             path = directory / "illustration.pdf"
             self._trash_files(path)
         else:

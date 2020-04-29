@@ -5,25 +5,6 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_open_illustration_pdf_01():
     """
-    In material directory.
-    """
-
-    with ide.Test():
-
-        path = ide.Path("red_score", "materials", "red_pitch_classes")
-        path /= "illustration.pdf"
-        assert not path.exists()
-
-        path.write_text("")
-        assert path.is_file()
-
-        abjad_ide("red %rpc ipo q")
-        transcript = abjad_ide.io.transcript
-        assert f"Opening {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_open_illustration_pdf_02():
-    """
     In segment directory.
     """
 
@@ -40,7 +21,7 @@ def test_AbjadIDE_open_illustration_pdf_02():
         assert f"Opening {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_open_illustration_pdf_03():
+def test_AbjadIDE_open_illustration_pdf_02():
     """
     In segments directory.
     """
@@ -61,7 +42,7 @@ def test_AbjadIDE_open_illustration_pdf_03():
             assert f"Opening {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_open_illustration_pdf_04():
+def test_AbjadIDE_open_illustration_pdf_03():
     """
     Displays message when PDF does not exist.
     """
