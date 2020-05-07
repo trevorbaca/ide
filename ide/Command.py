@@ -1,8 +1,6 @@
 import string
 import typing
 
-import abjad
-
 
 class Command(object):
     """

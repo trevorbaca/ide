@@ -8,8 +8,6 @@ def test_AbjadIDE_git_commit_01():
     In score package directories.
     """
 
-    path = ide.Path("red_score")
-
     abjad_ide("red ci q")
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript

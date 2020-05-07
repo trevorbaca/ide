@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -11,7 +10,6 @@ def test_AbjadIDE_duplicate_01():
 
     abjad_ide(f"red %let dup layout.ly q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "builds", "letter-score")
     assert "Select files to duplicate> layout.ly" in transcript
     assert "Duplicating red_score/builds/letter-score/layout.ly ..." in transcript
     assert "Enter new name> q" in transcript
@@ -24,7 +22,6 @@ def test_AbjadIDE_duplicate_02():
 
     abjad_ide(f"red dd dup red-score.pdf q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "distribution")
     assert "Select files to duplicate> red-score.pdf" in transcript
     assert "Duplicating red_score/distribution/red-score.pdf ..." in transcript
     assert "Enter new name> q" in transcript
@@ -37,7 +34,6 @@ def test_AbjadIDE_duplicate_03():
 
     abjad_ide(f"red ee dup notes.txt q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "etc")
     assert "Select files to duplicate> notes.txt" in transcript
     assert "Duplicating red_score/etc/notes.txt ..." in transcript
     assert "Enter new name> q" in transcript

@@ -77,7 +77,6 @@ class Menu(object):
         )
         string = self.io.get(prompt=self.prompt, split_input=not self.getter)
         prefix, string = self._split_prefix(string)
-        source = None
         if string is None:
             payload = None
         elif string == "?":
@@ -90,19 +89,14 @@ class Menu(object):
             return self(dimensions=dimensions)
         elif string in self.navigations:
             payload = None
-            source = "navigations"
         elif bool(self._match_alias(string)):
             payload = self._match_alias(string)
-            source = "alias"
         elif bool(self._match_command(string)):
             payload = self._match_command(string)
-            source = "command"
         elif bool(self._match_assets(string)):
             payload = self._match_assets(string)
-            source = "assets"
         elif bool(self._match_range(string)):
             payload = self._match_range(string)
-            source = "range"
         else:
             payload = None
         if string:
@@ -181,7 +175,6 @@ class Menu(object):
         right_lines = [
             self._left_justify(_, right_width + right_margin) for _ in right_lines
         ]
-        conjoined_lines = []
         sequence = abjad.sequence([left_lines, right_lines])
         lines = []
         for pair in sequence.zip(truncate=False):

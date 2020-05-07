@@ -8,7 +8,6 @@ def test_AbjadIDE_generate_layout_py_01():
     """
 
     with ide.Test():
-        source = ide.Path("boilerplate", "score_layout.py")
         target = ide.Path("red_score", "segments", "A", "layout.py")
         assert target.is_file()
         target.remove()

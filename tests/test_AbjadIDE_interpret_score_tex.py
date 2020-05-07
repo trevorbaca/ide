@@ -1,8 +1,3 @@
-import os
-import shutil
-
-import pytest
-
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)

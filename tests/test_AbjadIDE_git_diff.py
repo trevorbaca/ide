@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -8,8 +7,6 @@ def test_AbjadIDE_git_diff_01():
     """
     In score package directories.
     """
-
-    path = ide.Path("red_score")
 
     abjad_ide("red diff q")
     transcript = abjad_ide.io.transcript

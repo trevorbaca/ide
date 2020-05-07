@@ -21,7 +21,6 @@ def test_AbjadIDE_open_score_pdf_02():
 
     abjad_ide("red %letter spo q")
     transcript = abjad_ide.io.transcript
-    target = ide.Path("red_score", "builds", "letter-score", "score.pdf")
     assert f"No files ending in *score.pdf ..." in transcript
 
 

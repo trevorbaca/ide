@@ -8,8 +8,6 @@ def test_AbjadIDE_git_status_01():
     In score directories.
     """
 
-    path = ide.Path("red_score")
-
     abjad_ide("red st q")
     transcript = abjad_ide.io.transcript
     assert "Running git status . ..." in transcript

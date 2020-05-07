@@ -2,8 +2,6 @@ import inspect
 
 import pytest
 
-import abjad
-
 classes = pytest.helpers.list_all_ide_classes()
 
 

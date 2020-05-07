@@ -1,10 +1,8 @@
-import importlib
 import os
 import pathlib
 import typing
 
 import abjad
-import baca
 
 from .Configuration import Configuration
 
@@ -287,7 +285,6 @@ class Path(abjad.Path):
         result = []
         part_manifest = self._get_part_manifest()
         for part in part_manifest:
-            identifier = abjad.String(part.identifier).to_shout_case()
             document_name = f"{stem}_{part.identifier}"
             result.append(document_name)
         return result

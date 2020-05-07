@@ -2,7 +2,7 @@ project = ide
 
 formatPaths = ${project}/ tests/ *.py
 testPaths = ${project}/ tests/
-flakeIgnore = --ignore=E123,E203,E265,E266,E501,E722,F81,W503
+flakeIgnore = --ignore=E123,E203,E231,E265,E266,E501,E722,F81,W503
 flakeExclude = --exclude=boilerplate,abjad/__init__.py,abjad/pitch/__init__.py
 flakeOptions = --max-line-length=90 --isolated
 blackExclude = --exclude='__metadata__.py|definition.py|layout.py'

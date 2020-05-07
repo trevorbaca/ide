@@ -3,7 +3,6 @@ import datetime
 import importlib
 import inspect
 import io
-import os
 import platform
 import re
 import shutil
@@ -11,12 +10,10 @@ import subprocess
 import typing
 
 import abjad
-import baca
 
 from .Command import Command
 from .Configuration import Configuration
 from .IO import IO
-from .Interaction import Interaction
 from .Menu import Menu
 from .MenuSection import MenuSection
 from .Path import Path
@@ -446,7 +443,6 @@ class AbjadIDE(object):
             newline = "\n" + 24 * " "
             global_skip_identifiers = newline.join(identifiers)
             if self.test:
-                defaults_include_statement = ""
                 segment_ly_include_statements = r"\FOO"
             else:
                 dictionary = self._make_container_to_part_assignment(path)
@@ -596,7 +592,6 @@ class AbjadIDE(object):
             score_title = annotated_title
         else:
             score_title = path.contents.get_title(year=False)
-        score_title_without_year = path.contents.get_title(year=False)
         if forces_tagline is None:
             string = "forces_tagline"
             forces_tagline = path.contents.get_metadatum(string, "")
@@ -687,7 +682,7 @@ class AbjadIDE(object):
         elif response.prefix == "**":
             self.open_all_pdfs(directory, response.pattern)
         else:
-            raise ValueEror(response.prefix)
+            raise ValueError(response.prefix)
 
     def _handle_part_identifier_tags(self, path, indent=0):
         assert path.parent.is_part()
@@ -759,11 +754,8 @@ class AbjadIDE(object):
         executables = [Path(_) for _ in executables]
         if not executables:
             executable_name = "pdflatex"
-            fancy_executable_name = "LaTeX"
         else:
             executable_name = "xelatex"
-            fancy_executable_name = "XeTeX"
-        pdf_path = tex.parent / (str(tex.stem) + ".pdf")
         log = self.configuration.latex_log_file_path
         command = f"date > {log};"
         command += f" {executable_name} -halt-on-error"
@@ -802,7 +794,6 @@ class AbjadIDE(object):
         if ok != "y":
             return
         for source in paths:
-            target = source.with_suffix(".pdf")
             self._interpret_tex_file(source)
 
     @staticmethod
@@ -920,8 +911,6 @@ class AbjadIDE(object):
 
     def _make_layout_ly(self, path):
         assert path.suffix == ".py"
-        ly_name = abjad.String(path.stem).to_dash_case() + ".ly"
-        ly_path = path.parent / ly_name
         maker = "__make_layout_ly__.py"
         maker = path.parent / maker
         with self.cleanup([maker]):
@@ -1029,7 +1018,6 @@ class AbjadIDE(object):
         self.io.display("getting part names from score template ...")
         part_manifest = directory._get_part_manifest()
         part_names = [_.name for _ in part_manifest]
-        part_identifier = [_.identifier for _ in part_manifest]
         for part_name in part_names:
             self.io.display(f"found {part_name} ...")
         self.io.display("")
@@ -1068,7 +1056,6 @@ class AbjadIDE(object):
             "back-cover.tex",
             "part.tex",
         )
-        paths = [parts_directory / _ for _ in names]
         self.io.display("will make ...")
         self.io.display(f"    {parts_directory.trim()}")
         path = parts_directory / "stylesheet.ily"
@@ -1592,7 +1579,6 @@ class AbjadIDE(object):
         if path.exists():
             return path
         if directory.is_score_package_path() and not directory.is_scores():
-            score_directory = directory.contents
             return directory.contents(value)
 
     def _match_files(self, files, strings, pattern, prefix):
@@ -2316,7 +2302,6 @@ class AbjadIDE(object):
         if not paths:
             return
         assert directory.build is not None
-        total_parts = len(directory.build._get_part_manifest())
         path_count = len(paths)
         for i, path in enumerate(paths):
             part = path.to_part()
@@ -2544,7 +2529,6 @@ class AbjadIDE(object):
             value = segment.get_metadatum("time_signatures")
             if value:
                 time_signatures[segment.name] = value
-        final_file_name = target.with_suffix(".ily").name
         key = "fermata_measure_numbers"
         if bool(fermata_measure_numbers):
             message = "writing fermata measure numbers to metadata ..."
@@ -4238,7 +4222,7 @@ class AbjadIDE(object):
             return
         else:
             self.io.display("handling part tags ...", indent=indent)
-        name, verb = "music.ly", "interpret"
+        name = "music.ly"
         paths = self._select_paths_in_buildspace(directory.build, name, "foo")
         if not paths:
             message = "can not find {directory.trim()} music.ly file ..."
@@ -4460,7 +4444,6 @@ class AbjadIDE(object):
         Hides rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        name = "rhythm annotation spanners"
         self.run(
             abjad.Job.show_tag(
                 directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER, undo=True
@@ -4766,7 +4749,6 @@ class AbjadIDE(object):
             exit = 0
             paths = directory.list_paths()
             paths = [_ for _ in paths if _.is_dir()]
-            path_count = len(paths)
             for i, path in enumerate(paths):
                 exit_ = self.make_illustration_pdf(path, open_after=False)
                 if i + 1 < len(paths):
@@ -4802,7 +4784,6 @@ class AbjadIDE(object):
         path_count = len(paths)
         for i, layout_py in enumerate(paths):
             self.io.display(f"{verb}ing {layout_py.trim()} ...")
-            layout_ly = layout_py.with_suffix(".ly")
             if not layout_py.is_file():
                 self.io.display(f"missing {layout_py.trim()} ...")
                 continue
@@ -4861,7 +4842,6 @@ class AbjadIDE(object):
             exit = 0
             paths = directory.list_paths()
             paths = [_ for _ in paths if _.is_dir()]
-            path_count = len(paths)
             for i, path in enumerate(paths):
                 exit_ = self._make_segment_midi(path, open_after=False)
                 if i + 1 < len(paths):
@@ -5555,7 +5535,6 @@ class AbjadIDE(object):
         Shows rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        name = "rhythm annotation spanners"
         self.run(abjad.Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER))
 
     @Command(
