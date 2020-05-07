@@ -16,7 +16,25 @@ black-reformat:
 flake8:
 	flake8 ${flakeExclude} ${flakeOptions} ${flakeIgnore} ${formatPaths}
 
-isort:
+isort-check:
+	isort \
+		--case-sensitive \
+		--check-only \
+		--line-width 90 \
+		--multi-line 3 \
+		--project abjad \
+		--project abjadext \
+		--recursive \
+		--skip ${project}/__init__.py \
+		--skip-glob '*boilerplate*' \
+		--thirdparty ply \
+		--thirdparty roman \
+		--thirdparty uqbar \
+		--trailing-comma \
+		--use-parentheses -y \
+		${formatPaths}
+
+isort-reformat:
 	isort \
 		--case-sensitive \
 		--line-width 90 \
@@ -58,11 +76,12 @@ pytest-x:
 		${testPaths}
 
 reformat:
-	make isort
 	make black-reformat
+	make isort-reformat
 
 test:
 	make black-check
 	make flake8
+	make isort-check
 	make mypy
 	make pytest
