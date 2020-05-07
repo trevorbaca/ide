@@ -1,6 +1,7 @@
+import pathlib
+
 import abjad
 import definition
-import pathlib
 
 
 def make_lilypond_file():

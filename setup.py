@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import setuptools
 
-
 author = ["Trevor Bača", "Josiah Wolf Oberholtzer"]
 
 author_email = ["trevor.baca@gmail.com", "josiah.oberholtzer@gmail.com"]

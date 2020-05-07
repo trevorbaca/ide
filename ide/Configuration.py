@@ -1,7 +1,8 @@
-import abjad
 import importlib
 import pathlib
 import sys
+
+import abjad
 
 
 class Configuration(abjad.Configuration):

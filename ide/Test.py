@@ -1,7 +1,9 @@
-import abjad
 import collections
 import os
 import shutil
+
+import abjad
+
 from .Configuration import Configuration
 
 

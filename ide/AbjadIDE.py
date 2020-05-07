@@ -1,5 +1,3 @@
-import abjad
-import baca
 import collections
 import datetime
 import importlib
@@ -11,10 +9,14 @@ import re
 import shutil
 import subprocess
 import typing
+
+import abjad
+import baca
+
 from .Command import Command
 from .Configuration import Configuration
-from .Interaction import Interaction
 from .IO import IO
+from .Interaction import Interaction
 from .Menu import Menu
 from .MenuSection import MenuSection
 from .Path import Path

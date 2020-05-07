@@ -1,5 +1,7 @@
-import abjad
 import typing
+
+import abjad
+
 from .Configuration import Configuration
 from .MenuEntry import MenuEntry
 

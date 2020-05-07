@@ -1,6 +1,8 @@
-import abjad
 import os
 import typing
+
+import abjad
+
 from .Transcript import Transcript
 
 

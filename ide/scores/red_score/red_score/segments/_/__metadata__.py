@@ -1,6 +1,5 @@
 import abjad
 
-
 metadata = abjad.OrderedDict(
     [
         ("first_measure_number", 1),

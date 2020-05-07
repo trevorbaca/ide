@@ -1,8 +1,9 @@
-import ide
 import pathlib
-import pytest
 import sys
 
+import pytest
+
+import ide
 
 abjad_ide = ide.AbjadIDE()
 scores = pathlib.Path(*pathlib.Path(__file__).parts[:-4])

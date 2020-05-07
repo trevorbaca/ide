@@ -12,7 +12,7 @@ def test_AbjadIDE_search_01():
     transcript = abjad_ide.io.transcript
     assert "Enter search string> RhythmMaker" in transcript
 
-    ack_line = "blue_score/blue_score/materials/blue_rhythm_1/definition.py:4:"
+    ack_line = "blue_score/blue_score/materials/blue_rhythm_1/definition.py:3:"
     ack_line += "blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker("
     grep_line = "blue_score/blue_score/materials/blue_rhythm_1/definition.py:"
     grep_line += "blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker("

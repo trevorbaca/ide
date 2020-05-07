@@ -1,6 +1,5 @@
 import abjad
 
-
 ranges = abjad.OrderedDict(
     [
         ("low", abjad.PitchRange("[A0, C4)")),

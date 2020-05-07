@@ -1,7 +1,6 @@
 import abjad
 import baca
 
-
 instruments = abjad.OrderedDict(
     [
         (

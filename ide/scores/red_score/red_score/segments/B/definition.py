@@ -1,7 +1,6 @@
 import abjad
 import red_score
 
-
 time_signatures = 2 * [(6, 8)]
 rh_divisions = []
 rh_divisions.extend(6 * [(2, 16)])

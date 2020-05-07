@@ -1,7 +1,9 @@
+import os
+
+import pytest
+
 import abjad
 import ide
-import os
-import pytest
 
 abjad_ide = ide.AbjadIDE(test=True)
 

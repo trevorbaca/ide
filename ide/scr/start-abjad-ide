@@ -1,6 +1,8 @@
 #! /usr/bin/env python
-import ide
 import sys
+
+import ide
+
 try:
     import readline
     import rlcompleter

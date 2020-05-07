@@ -1,6 +1,5 @@
 import abjad
 
-
 metadata = abjad.OrderedDict(
     [
         ("segment_count", 3),

@@ -1,6 +1,8 @@
-import abjad
 import os
 import typing
+
+import abjad
+
 from .IO import IO
 from .MenuEntry import MenuEntry
 from .MenuSection import MenuSection

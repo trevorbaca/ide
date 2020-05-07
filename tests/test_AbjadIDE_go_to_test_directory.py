@@ -1,5 +1,6 @@
-import ide
 import shutil
+
+import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
 

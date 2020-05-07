@@ -1,5 +1,6 @@
-import abjad
 import typing
+
+import abjad
 
 
 class Transcript(object):
