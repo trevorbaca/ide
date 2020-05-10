@@ -3,7 +3,17 @@ project = ide
 formatPaths = ${project}/ tests/ *.py
 testPaths = ${project}/ tests/
 flakeIgnore = --ignore=E123,E203,E231,E265,E266,E501,E722,F81,W503
-flakeExclude = --exclude=boilerplate,abjad/__init__.py,abjad/pitch/__init__.py
+flakeExclude := --exclude=
+flakeExclude := $(flakeExclude)ide/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/materials/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/tools/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/materials/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/tools/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/materials/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/tools/__init__.py
+flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/__init__.py
 flakeOptions = --max-line-length=90 --isolated
 blackExclude = --exclude='__metadata__.py|definition.py|layout.py'
 

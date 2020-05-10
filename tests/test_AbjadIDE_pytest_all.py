@@ -10,7 +10,7 @@ def test_AbjadIDE_pytest_all_01():
 
     abjad_ide("red ++ q")
     transcript = abjad_ide.io.transcript
-    assert "Matching '++' to 2 files ..." in transcript
+    assert "Matching '++' to 1 file ..." in transcript
 
     abjad_ide("red ++def q")
     transcript = abjad_ide.io.transcript
@@ -36,7 +36,7 @@ def test_AbjadIDE_pytest_all_02():
 
     abjad_ide("red tt ++ q")
     transcript = abjad_ide.io.transcript
-    assert "Matching '++' to 2 files ..." in transcript
+    assert "Matching '++' to 1 file ..." in transcript
 
 
 def test_AbjadIDE_pytest_all_03():

@@ -74,5 +74,4 @@ def test_AbjadIDE_go_to_test_directory_05():
 
     abjad_ide("red tt q")
     transcript = abjad_ide.io.transcript
-    assert "1: test_materials.py" in transcript
-    assert "2: test_segments.py" in transcript
+    assert "1: test_segments.py" in transcript

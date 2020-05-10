@@ -38,10 +38,10 @@ def test_AbjadIDE_smart_pytest_02():
     transcript = abjad_ide.io.transcript
     assert "Missing '+' pattern ..." in transcript
 
-    abjad_ide("red tt +tm q")
+    abjad_ide("red tt +ts q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "test", "test_materials.py")
-    assert f"Matching '+tm' to {path.trim()} ..." in transcript
+    path = ide.Path("red_score", "test", "test_segments.py")
+    assert f"Matching '+ts' to {path.trim()} ..." in transcript
 
 
 def test_AbjadIDE_smart_pytest_03():
@@ -55,7 +55,7 @@ def test_AbjadIDE_smart_pytest_03():
 
     abjad_ide("red tt +1 q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "test", "test_materials.py")
+    path = ide.Path("red_score", "test", "test_segments.py")
     assert f"Matching '+1' to {path.trim()} ..." in transcript
 
     abjad_ide("red tt +99 q")

@@ -1,4 +1,3 @@
-import abjad
 import red_score
 
 time_signatures = [(15, 8), (18, 8)]

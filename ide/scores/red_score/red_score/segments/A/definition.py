@@ -1,4 +1,3 @@
-import abjad
 import red_score
 
 time_signatures = 5 * [(3, 4)]

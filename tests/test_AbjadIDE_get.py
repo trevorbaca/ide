@@ -212,18 +212,18 @@ def test_AbjadIDE_get_08():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "test", "test_materials.py")
+        source = ide.Path("red_score", "test", "test_segments.py")
         assert source.is_file()
         target = source.with_score("blue_score")
         target.remove()
 
-        abjad_ide(f"blu tt get red _mat y q")
+        abjad_ide(f"blu tt get red _seg y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = "Blue Score (2017) : test (empty) : get files from ..."
         assert header in transcript
         assert "> red" in transcript
-        assert "> _mat" in transcript
+        assert "> _seg" in transcript
         assert f"Getting {source.trim()} ..." in transcript
         assert f"Will write {target.trim()} ..." in transcript
         assert "Ok?> y" in transcript

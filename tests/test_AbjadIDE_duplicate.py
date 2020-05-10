@@ -139,27 +139,6 @@ def test_AbjadIDE_duplicate_08():
 
 def test_AbjadIDE_duplicate_09():
     """
-    In test directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "test", "test_materials.py")
-        assert source.is_file()
-        target = source.with_name("test_new_materials.py")
-        target.remove()
-
-        abjad_ide(f"red tt dup _mat test~new~materials y q")
-        transcript = abjad_ide.io.transcript
-        assert target.exists()
-        assert f"Select files to duplicate> _mat" in transcript
-        assert f"Duplicating {source.trim()} ..." in transcript
-        assert "Enter new name> test new materials" in transcript
-        assert f"Writing {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-
-
-def test_AbjadIDE_duplicate_10():
-    """
     In tools directory.
     """
 
