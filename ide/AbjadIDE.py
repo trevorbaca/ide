@@ -1,5 +1,6 @@
 import collections
 import datetime
+import difflib
 import importlib
 import inspect
 import io
@@ -8,6 +9,7 @@ import platform
 import re
 import shutil
 import subprocess
+import sys
 import typing
 
 import abjad
@@ -1991,22 +1993,19 @@ class AbjadIDE(object):
     @staticmethod
     def _test_segment_illustration(directory):
         # only run on Travis because segment illustration usually takes a while
-        if not os.getenv('TRAVIS'):
+        if not os.getenv("TRAVIS"):
             return
         abjad_ide = AbjadIDE()
         with abjad.FilesystemState(keep=[directory]):
-            ly = directory / 'illustration.ly'
-            ly_old = directory / 'illustration.old.ly'
+            ly = directory / "illustration.ly"
+            ly_old = directory / "illustration.old.ly"
             if ly.exists():
                 shutil.copyfile(ly, ly_old)
-            ily = directory / 'illustration.ily'
-            ily_old = directory / 'illustration.old.ily'
+            ily = directory / "illustration.ily"
+            ily_old = directory / "illustration.old.ily"
             if ily.exists():
                 shutil.copyfile(ily, ily_old)
-            exit_code = abjad_ide.make_illustration_pdf(
-                directory,
-                open_after=False,
-                )
+            exit_code = abjad_ide.make_illustration_pdf(directory, open_after=False,)
             if exit_code != 0:
                 sys.exit(exit_code)
             if not ly_old.exists():
@@ -2016,7 +2015,7 @@ class AbjadIDE(object):
             if not abjad.TestManager.compare_files(ly_old, ly):
                 ly_old_text = ly_old.read_text().splitlines(keepends=True)
                 ly_text = ly.read_text().splitlines(keepends=True)
-                print(''.join(difflib.ndiff(ly_old_text, ly_text)))
+                print("".join(difflib.ndiff(ly_old_text, ly_text)))
                 sys.exit(1)
             if not ily_old.exists():
                 return
@@ -2025,7 +2024,7 @@ class AbjadIDE(object):
             if not abjad.TestManager.compare_files(ily_old, ily):
                 ily_old_text = ily_old.read_text().splitlines(keepends=True)
                 ily_text = ily.read_text().splitlines(keepends=True)
-                print(''.join(difflib.ndiff(ily_old_text, ily_text)))
+                print("".join(difflib.ndiff(ily_old_text, ily_text)))
                 sys.exit(1)
 
     @staticmethod
