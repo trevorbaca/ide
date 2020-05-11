@@ -2002,7 +2002,7 @@ class AbjadIDE(object):
             ily_old = directory / 'illustration.old.ily'
             if ily.exists():
                 shutil.copyfile(ily, ily_old)
-            exit_code = abjad_ide.make_illustration_pdf(
+            exit_code = AbjadIDE.make_illustration_pdf(
                 directory,
                 open_after=False,
                 )
