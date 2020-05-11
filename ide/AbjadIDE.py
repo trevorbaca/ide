@@ -1993,6 +1993,7 @@ class AbjadIDE(object):
         # only run on Travis because segment illustration usually takes a while
         if not os.getenv('TRAVIS'):
             return
+        abjad_ide = AbjadIDE()
         with abjad.FilesystemState(keep=[directory]):
             ly = directory / 'illustration.ly'
             ly_old = directory / 'illustration.old.ly'
@@ -2002,7 +2003,7 @@ class AbjadIDE(object):
             ily_old = directory / 'illustration.old.ily'
             if ily.exists():
                 shutil.copyfile(ily, ily_old)
-            exit_code = AbjadIDE.make_illustration_pdf(
+            exit_code = abjad_ide.make_illustration_pdf(
                 directory,
                 open_after=False,
                 )
