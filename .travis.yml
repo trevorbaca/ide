@@ -96,26 +96,39 @@ before_install:
     - mkdir -p $HOME/.abjad/output
     - touch $HOME/.abjad/output/lily.log
 
-    # log setup:
-    - echo $HOME
+    # log versions
+    - black --version
+    - flake8 --version
+    - isort --version
+    - mypy --version
+    - pip --version
+
+    # log environment variables
     - echo $MYPYPATH
+    - echo $PACKAGE
     - echo $PATH
     - echo $PYTHONPATH
+    - echo $TRAVIS_BUILD_DIR
+    - echo $TRAVIS_PYTHON_VERSION
+
+    # log script paths
+    - which baca-doctest
+    - which black-check
+    - which flake8-check
+    - which isort-check
+    - which prime-parser-tables
+    - which latex
+    - which pytest
+    - which start-abjad-ide
+    - which xetex
+
+    # log present working directory
+    - pwd
     - ls
     - ls /tmp
     - ls -a $HOME
     - ls $HOME/.abjad
     - ls $HOME/.abjad/ide
-    - pwd
-    - which baca-doctest
-    - which black
-    - which flake8
-    - which latex
-    - which mypy
-    - which prime-parser-tables
-    - which pytest
-    - which start-abjad-ide
-    - which xetex
 
 install:
     - pip install -e . 
@@ -123,12 +136,9 @@ install:
 
 script:
     - echo $TRAVIS_PYTHON_VERSION
-    - black --version
     - make black-check
-    - mypy --version
-    - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then make mypy; fi
+    - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then mypy .; fi
     - start-abjad-ide q
-    - pytest --version
     - make pytest
 
 after_success:

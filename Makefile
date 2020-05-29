@@ -61,9 +61,6 @@ isort-reformat:
 		--use-parentheses -y \
 		${formatPaths}
 
-mypy:
-	mypy --ignore-missing-imports ${project}/
-
 pytest:
 	rm -Rf htmlcov/
 	pytest \
