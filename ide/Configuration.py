@@ -134,7 +134,7 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().boilerplate_directory
-            Path('.../abjad/abjad/boilerplate')
+            Path('.../abjad/boilerplate')
 
         Returns package path.
         """
