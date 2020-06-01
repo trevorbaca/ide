@@ -39,29 +39,25 @@ before_install:
 
     # clone & install abjad dev branch:
     - git clone -b trevor/dev https://github.com/Abjad/abjad.git /tmp/abjad
-    - pip install -e /tmp/abjad
+    - pip install /tmp/abjad
 
     # clone & install rmakers:
     - git clone https://github.com/Abjad/abjad-ext-rmakers.git /tmp/abjad-ext-rmakers
-    - pip install -e /tmp/abjad-ext-rmakers
+    - pip install /tmp/abjad-ext-rmakers
 
     # clone & install tonality:
     - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
-    - pip install -e /tmp/abjad-ext-tonality
+    - pip install /tmp/abjad-ext-tonality
 
     # clone & install baca:
     - git clone https://github.com/trevorbaca/baca.git /tmp/baca
     - pip install /tmp/baca
     - export PATH=$PATH:/tmp/baca/scr
 
-    # install uqbar:
-    # - pip install --no-deps --target /tmp/uqbar uqbar
-
     # configure mypy
     - export MYPYPATH=$MYPYPATH:/tmp/abjad
     - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-rmakers
     - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-tonality
-    #- export MYPYPATH=$MYPYPATH:/tmp/baca:/tmp/uqbar
     - export MYPYPATH=$MYPYPATH:/tmp/baca
     - ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
 
