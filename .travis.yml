@@ -57,10 +57,11 @@ before_install:
     # install uqbar:
     - pip install --no-deps --target /tmp/uqbar uqbar
 
-    # set mypypath:
+    # configure mypy
     - export MYPYPATH=$MYPYPATH:/tmp/abjad
     - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-rmakers:/tmp/abjad-ext-tonality
     - export MYPYPATH=$MYPYPATH:/tmp/baca:/tmp/uqbar
+    - ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
 
     # set pythonpath:
     - export PYTHONPATH=$PYTHONPATH:$package/scores/blue_score
