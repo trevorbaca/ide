@@ -25,69 +25,47 @@ addons:
         - lmodern
 
 before_install:
-    # alias package
-    - PACKAGE=`pwd`/ide
-    - export PATH=$PATH:$PACKAGE/scr
+    - name=ide
 
-    # upgrade pip:
-    - pip install --upgrade pip
-
-    # install coverage
-    - pip install --upgrade coverage
-
-    # install pytest helpers namespace
-    - pip install pytest-helpers-namespace
-
-    # install pytest-cov
-    - pip install pytest-cov
-
-    # install flake8
-    - pip install --upgrade flake8
-
-    # install mypy:
-    - pip install --upgrade mypy
+    - package=$TRAVIS_BUILD_DIR/$name
+    - export PATH=$PATH:$package/scr
 
     # install lilypond:
-    - LILYPOND=/tmp/lilypond
-    - LILYPOND_URL=http://lilypond.org/download/binaries/linux-64/
-    - LILYPOND_SOURCE=lilypond-2.19.84-1.linux-64.sh
-    - wget -q -O $LILYPOND $LILYPOND_URL/$LILYPOND_SOURCE
-    - sh $LILYPOND --batch
+    - lilypond=/tmp/lilypond
+    - lilypond_url=http://lilypond.org/download/binaries/linux-64/
+    - lilypond_source=lilypond-2.19.84-1.linux-64.sh
+    - wget -q -O $lilypond $lilypond_url/$lilypond_source
+    - sh $lilypond --batch
 
     # clone & install abjad dev branch:
-    - ABJAD=/tmp/abjad
-    - git clone -b trevor/dev https://github.com/Abjad/abjad.git $ABJAD
-    - pip install -e $ABJAD
-    - export MYPYPATH=$ABJAD
+    - git clone -b trevor/dev https://github.com/Abjad/abjad.git /tmp/abjad
+    - pip install -e /tmp/abjad
 
     # clone & install rmakers:
-    - RMAKERS=/tmp/abjad-ext-rmakers
-    - git clone https://github.com/Abjad/abjad-ext-rmakers.git $RMAKERS
-    - pip install -e $RMAKERS
-    - export MYPYPATH=$MYPYPATH:$RMAKERS
+    - git clone https://github.com/Abjad/abjad-ext-rmakers.git /tmp/abjad-ext-rmakers
+    - pip install -e /tmp/abjad-ext-rmakers
 
     # clone & install tonality:
-    - TONALITY=/tmp/abjad-ext-tonality
-    - git clone https://github.com/Abjad/abjad-ext-tonality.git $TONALITY
-    - pip install -e $TONALITY
-    - export MYPYPATH=$MYPYPATH:$TONALITY
+    - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
+    - pip install -e /tmp/abjad-ext-tonality
 
     # clone & install baca:
-    - BACA=/tmp/baca
-    - git clone https://github.com/trevorbaca/baca.git $BACA
-    - pip install -e $BACA
-    - export MYPYPATH=$MYPYPATH:$BACA
-    - export PATH=$PATH:$BACA/scr
+    - git clone https://github.com/trevorbaca/baca.git /tmp/baca
+    - pip install /tmp/baca
+    - export PATH=$PATH:/tmp/baca/scr
 
     # install uqbar:
-    - UQBAR=/tmp/uqbar
-    - pip install --no-deps --target $UQBAR uqbar
-    - export MYPYPATH=$MYPYPATH:$UQBAR
+    - pip install --no-deps --target /tmp/uqbar uqbar
+
+    # set mypypath:
+    - export MYPYPATH=$MYPYPATH:/tmp/abjad
+    - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-rmakers:/tmp/abjad-ext-tonality
+    - export MYPYPATH=$MYPYPATH:/tmp/baca:/tmp/uqbar
 
     # set pythonpath:
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/blue_score
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/red_score
-    - export PYTHONPATH=$PYTHONPATH:$PACKAGE/scores/green_score
+    - export PYTHONPATH=$PYTHONPATH:$package/scores/blue_score
+    - export PYTHONPATH=$PYTHONPATH:$package/scores/red_score
+    - export PYTHONPATH=$PYTHONPATH:$package/scores/green_score
 
     # make aliases and log files for tests
     - mkdir -p $HOME/.abjad/ide
@@ -96,26 +74,14 @@ before_install:
     - mkdir -p $HOME/.abjad/output
     - touch $HOME/.abjad/output/lily.log
 
-    # log versions
-    - black --version
-    - flake8 --version
-    - isort --version
-    - mypy --version
-    - pip --version
-
     # log environment variables
     - echo $MYPYPATH
-    - echo $PACKAGE
     - echo $PATH
     - echo $PYTHONPATH
     - echo $TRAVIS_BUILD_DIR
     - echo $TRAVIS_PYTHON_VERSION
 
     # log script paths
-    - which baca-doctest
-    - which black-check
-    - which flake8-check
-    - which isort-check
     - which prime-parser-tables
     - which latex
     - which pytest
@@ -134,10 +100,18 @@ install:
     - pip install -e . 
     - prime-parser-tables
 
+    # log versions
+    - black --version
+    - flake8 --version
+    - isort --version
+    - mypy --version
+    - pip --version
+
 script:
-    - echo $TRAVIS_PYTHON_VERSION
     - make black-check
-    - if [[ $TRAVIS_PYTHON_VERSION != 3.6 ]]; then mypy .; fi
+    # - make flake8
+    - make isort-check
+    - mypy .
     - start-abjad-ide q
     - make pytest
 

@@ -14,51 +14,55 @@ flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/__init__.py
 flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/materials/__init__.py
 flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/tools/__init__.py
 flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/__init__.py
-flakeOptions = --max-line-length=90 --isolated
+flakeOptions = --max-line-length=88 --isolated
 blackExclude = --exclude='__metadata__.py|definition.py|layout.py'
 
 black-check:
-	black --target-version py37 ${blackExclude} --check --diff ${formatPaths}
+	black --check --diff --target-version py37 ${blackExclude} ${formatPaths}
 
 black-reformat:
 	black --target-version py37 ${blackExclude} ${formatPaths}
 
-flake8:
+flake8-check:
 	flake8 ${flakeExclude} ${flakeOptions} ${flakeIgnore} ${formatPaths}
 
 isort-check:
 	isort \
 		--case-sensitive \
 		--check-only \
-		--line-width 90 \
-		--multi-line 3 \
+		--diff \
+		--line-width=88 \
+		--multi-line=3 \
 		--project abjad \
 		--project abjadext \
 		--recursive \
 		--skip ${project}/__init__.py \
 		--skip-glob '*boilerplate*' \
-		--thirdparty ply \
-		--thirdparty roman \
-		--thirdparty uqbar \
+		--thirdparty=ply \
+		--thirdparty=roman \
+		--thirdparty=uqbar \
 		--trailing-comma \
-		--use-parentheses -y \
+		--use-parentheses \
 		${formatPaths}
 
 isort-reformat:
 	isort \
+		--apply \
 		--case-sensitive \
-		--line-width 90 \
-		--multi-line 3 \
+		--check-only \
+		--diff \
+		--line-width=88 \
+		--multi-line=3 \
 		--project abjad \
 		--project abjadext \
 		--recursive \
 		--skip ${project}/__init__.py \
 		--skip-glob '*boilerplate*' \
-		--thirdparty ply \
-		--thirdparty roman \
-		--thirdparty uqbar \
+		--thirdparty=ply \
+		--thirdparty=roman \
+		--thirdparty=uqbar \
 		--trailing-comma \
-		--use-parentheses -y \
+		--use-parentheses \
 		${formatPaths}
 
 pytest:
@@ -88,7 +92,7 @@ reformat:
 
 test:
 	make black-check
-	make flake8
+	make flake8-check
 	make isort-check
-	make mypy
+	mypy .
 	make pytest
