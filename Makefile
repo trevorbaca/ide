@@ -33,8 +33,9 @@ isort-check:
 		--diff \
 		--line-width=88 \
 		--multi-line=3 \
-		--project abjad \
-		--project abjadext \
+		--project=abjad \
+		--project=abjadext \
+		--project=baca \
 		--recursive \
 		--skip ${project}/__init__.py \
 		--skip-glob '*boilerplate*' \
@@ -53,8 +54,9 @@ isort-reformat:
 		--diff \
 		--line-width=88 \
 		--multi-line=3 \
-		--project abjad \
-		--project abjadext \
+		--project=abjad \
+		--project=abjadext \
+		--project=baca \
 		--recursive \
 		--skip ${project}/__init__.py \
 		--skip-glob '*boilerplate*' \
