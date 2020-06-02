@@ -71,6 +71,21 @@ from .Response import Response
 from .Test import Test
 from .Transcript import Transcript
 
+__all__ = [
+    "AbjadIDE",
+    "Command",
+    "Configuration",
+    "IO",
+    "Interaction",
+    "Menu",
+    "MenuEntry",
+    "MenuSection",
+    "Path",
+    "Response",
+    "Test",
+    "Transcript",
+]
+
 if not (
     distutils.version.LooseVersion("3.6")
     < distutils.version.LooseVersion(platform.python_version())

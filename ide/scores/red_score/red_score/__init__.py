@@ -1,3 +1,25 @@
-from red_score import segments
-from red_score.materials import *
-from red_score.tools import *
+from .materials import (
+    instruments,
+    metronome_marks,
+    ranges,
+    red_pitch_classes,
+    time_signatures,
+)
+from .tools import (
+    PianoStaffSegmentMaker,
+    RhythmMaker,
+    ScoreTemplate,
+    adjust_spacing_sections,
+)
+
+__all__ = [
+    "instruments",
+    "metronome_marks",
+    "ranges",
+    "red_pitch_classes",
+    "time_signatures",
+    "PianoStaffSegmentMaker",
+    "RhythmMaker",
+    "ScoreTemplate",
+    "adjust_spacing_sections",
+]

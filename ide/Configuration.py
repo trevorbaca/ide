@@ -1,4 +1,3 @@
-import importlib
 import pathlib
 import sys
 
@@ -224,8 +223,4 @@ class Configuration(abjad.Configuration):
         """
         import ide
 
-        try:
-            ide = importlib.import_module("ide")
-        except ImportError:
-            return
         return ide.Path(ide.__path__[0]) / "scores"
