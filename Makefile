@@ -57,6 +57,9 @@ isort-reformat:
 		--use-parentheses \
 		${formatPaths}
 
+mypy:
+	mypy ${project}/
+
 pytest:
 	rm -Rf htmlcov/
 	pytest \

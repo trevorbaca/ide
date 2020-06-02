@@ -15,8 +15,6 @@ install_requires = [
     "pytest-cov>=2.6.0",
     "pytest-helpers-namespace>=2019.1.8",
     "roman>=1.4",
-    # "sphinx>=3.0.4",
-    # "sphinx-rtd-theme>=0.4.3",
     "uqbar>=0.4.6",
 ]
 
@@ -39,5 +37,5 @@ if __name__ == "__main__":
         name="Abjad IDE",
         packages=["ide"],
         platforms="Any",
-        url="http://www.projectabjad.org",
+        url="http://abjad.io.github",
     )
