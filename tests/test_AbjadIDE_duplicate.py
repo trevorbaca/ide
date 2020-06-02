@@ -8,7 +8,7 @@ def test_AbjadIDE_duplicate_01():
     In build directory.
     """
 
-    abjad_ide(f"red %let dup layout.ly q")
+    abjad_ide("red %let dup layout.ly q")
     transcript = abjad_ide.io.transcript
     assert "Select files to duplicate> layout.ly" in transcript
     assert "Duplicating red_score/builds/letter-score/layout.ly ..." in transcript
@@ -20,7 +20,7 @@ def test_AbjadIDE_duplicate_02():
     In distribution directory.
     """
 
-    abjad_ide(f"red dd dup red-score.pdf q")
+    abjad_ide("red dd dup red-score.pdf q")
     transcript = abjad_ide.io.transcript
     assert "Select files to duplicate> red-score.pdf" in transcript
     assert "Duplicating red_score/distribution/red-score.pdf ..." in transcript
@@ -32,7 +32,7 @@ def test_AbjadIDE_duplicate_03():
     In etc directory.
     """
 
-    abjad_ide(f"red ee dup notes.txt q")
+    abjad_ide("red ee dup notes.txt q")
     transcript = abjad_ide.io.transcript
     assert "Select files to duplicate> notes.txt" in transcript
     assert "Duplicating red_score/etc/notes.txt ..." in transcript
@@ -50,10 +50,10 @@ def test_AbjadIDE_duplicate_04():
         target = source.with_name("orange_pitch_classes")
         target.remove()
 
-        abjad_ide(f"red mm dup rpc orange~pitch~classes y q")
+        abjad_ide("red mm dup rpc orange~pitch~classes y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f"Select packages to duplicate> rpc" in transcript
+        assert "Select packages to duplicate> rpc" in transcript
         assert f"Duplicating {source.trim()} ..."
         assert "Enter new name> orane pitch classes"
         assert f"Writing {target.trim()} ..." in transcript
@@ -105,10 +105,10 @@ def test_AbjadIDE_duplicate_07():
         target = source.with_name("B")
         target.remove()
 
-        abjad_ide(f"blu gg dup A B y q")
+        abjad_ide("blu gg dup A B y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f"Select packages to duplicate> A" in transcript
+        assert "Select packages to duplicate> A" in transcript
         assert f"Duplicating {source.trim()} ..."
         assert "Enter new name> B"
         assert f"Writing {target.trim()} ..." in transcript
@@ -127,10 +127,10 @@ def test_AbjadIDE_duplicate_08():
         target = source.with_name("new-stylesheet.ily")
         target.remove()
 
-        abjad_ide(f"red yy dup eet.i new~stylesheet y q")
+        abjad_ide("red yy dup eet.i new~stylesheet y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f"Select files to duplicate> eet.i" in transcript
+        assert "Select files to duplicate> eet.i" in transcript
         assert f"Duplicating {source.trim()} ..." in transcript
         assert "Enter new name> new stylesheet" in transcript
         assert f"Writing {target.trim()} ..." in transcript
@@ -148,10 +148,10 @@ def test_AbjadIDE_duplicate_09():
         target = source.with_name("ColorSpecifier.py")
         target.remove()
 
-        abjad_ide(f"red oo dup ST Color~specifier y q")
+        abjad_ide("red oo dup ST Color~specifier y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
-        assert f"Select files to duplicate> ST" in transcript
+        assert "Select files to duplicate> ST" in transcript
         assert f"Duplicating {source.trim()} ..." in transcript
         assert "Enter new name> Color specifier" in transcript
         assert f"Writing {target.trim()} ..." in transcript

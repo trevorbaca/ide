@@ -155,7 +155,7 @@ class AbjadIDE(object):
             return
         message = "layout time signatures"
         message += f" ({len(layout_time_signatures)})"
-        message += f" do not match metadata time signatures"
+        message += " do not match metadata time signatures"
         message += f" ({len(metadata_time_signatures)}) ..."
         self.io.display(message, indent=indent + 1)
         if self.test:
@@ -168,12 +168,12 @@ class AbjadIDE(object):
         if layout_time_signatures == metadata_time_signatures:
             message = "layout time signatures"
             message += f" ({len(layout_time_signatures)})"
-            message += f" match metadata time signatures"
+            message += " match metadata time signatures"
             message += f" ({len(metadata_time_signatures)}) ..."
         else:
             message = "layout time signatures"
             message += f" ({len(layout_time_signatures)})"
-            message += f" still do not match metadata time signatures"
+            message += " still do not match metadata time signatures"
             message += f" ({len(metadata_time_signatures)}) ..."
         self.io.display(message, indent=indent + 1)
 
@@ -393,7 +393,7 @@ class AbjadIDE(object):
             if segments:
                 view = path.segments.get_metadatum("view")
                 if bool(view):
-                    message = f"examining segments in view order ..."
+                    message = "examining segments in view order ..."
                     self.io.display(message, indent=indent + 1)
             else:
                 self.io.display("no segments found ...", indent=indent + 1)
@@ -546,7 +546,7 @@ class AbjadIDE(object):
             if segments:
                 view = path.segments.get_metadatum("view")
                 if bool(view):
-                    message = f"examining segments in view order ..."
+                    message = "examining segments in view order ..."
                     self.io.display(message, indent=indent + 1)
             else:
                 self.io.display("no segments found ...", indent=indent + 1)
@@ -762,7 +762,7 @@ class AbjadIDE(object):
         log = self.configuration.latex_log_file_path
         command = f"date > {log};"
         command += f" {executable_name} -halt-on-error"
-        command += f" -interaction=nonstopmode"
+        command += " -interaction=nonstopmode"
         command += f" --jobname={tex.stem}"
         command += f" -output-directory={tex.parent} {tex}"
         command += f" >> {log} 2>&1"
@@ -1045,7 +1045,7 @@ class AbjadIDE(object):
             paper_size = paper_size[:-length]
         if paper_size not in self.known_paper_sizes:
             self.io.display(f"unknown paper size: {paper_size} ...")
-            self.io.display(f"choose from ...")
+            self.io.display("choose from ...")
             for paper_size in self.known_paper_sizes:
                 self.io.display(f"    {paper_size}")
             return
@@ -1833,7 +1833,7 @@ class AbjadIDE(object):
             prompt = f"select parts to {verb}"
         else:
             header = "available parts"
-            prompt = f"select parts"
+            prompt = "select parts"
         selector = self._make_selector(
             aliases=None,
             header=header,
@@ -2774,7 +2774,7 @@ class AbjadIDE(object):
             source = paths[0]
             self.io.display(f"duplicating {source.trim()} ...")
         else:
-            self.io.display(f"duplicating ...")
+            self.io.display("duplicating ...")
             for path in paths:
                 self.io.display(f"    {path.trim()}")
             response = self.io.get("ok?")
@@ -3565,7 +3565,7 @@ class AbjadIDE(object):
         if len(paths) == 1:
             self.io.display(f"getting {paths[0].trim()} ...")
         else:
-            self.io.display(f"getting ...")
+            self.io.display("getting ...")
             for path in paths:
                 self.io.display(f"    {path.trim()}")
         targets = []
@@ -3587,7 +3587,7 @@ class AbjadIDE(object):
         if len(targets) == 1:
             self.io.display(f"will write {targets[0].trim()} ...")
         else:
-            self.io.display(f"will write ...")
+            self.io.display("will write ...")
             for target in targets:
                 self.io.display(f"    {target.trim()} ...")
         response = self.io.get("ok?")
@@ -3709,7 +3709,7 @@ class AbjadIDE(object):
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(root):
-                command = f"git pull"
+                command = "git pull"
                 self.io.display(f"Running {command} ...")
                 if self.test:
                     return
@@ -4347,7 +4347,7 @@ class AbjadIDE(object):
 
     @Command(
         "ash",
-        description=f"annotation spanners - hide",
+        description="annotation spanners - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4366,7 +4366,7 @@ class AbjadIDE(object):
 
     @Command(
         "cth",
-        description=f"clock time - hide",
+        description="clock time - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4379,7 +4379,7 @@ class AbjadIDE(object):
 
     @Command(
         "fnh",
-        description=f"figure names - hide",
+        description="figure names - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4392,7 +4392,7 @@ class AbjadIDE(object):
 
     @Command(
         "imh",
-        description=f"invisible music - hide",
+        description="invisible music - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4408,7 +4408,7 @@ class AbjadIDE(object):
 
     @Command(
         "lmnh",
-        description=f"local measure numbers - hide",
+        description="local measure numbers - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4421,7 +4421,7 @@ class AbjadIDE(object):
 
     @Command(
         "mnh",
-        description=f"measure numbers - hide",
+        description="measure numbers - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4434,7 +4434,7 @@ class AbjadIDE(object):
 
     @Command(
         "mmh",
-        description=f"mock music - hide",
+        description="mock music - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4448,7 +4448,7 @@ class AbjadIDE(object):
 
     @Command(
         "mah",
-        description=f"music annotations - hide",
+        description="music annotations - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4461,7 +4461,7 @@ class AbjadIDE(object):
 
     @Command(
         "nyph",
-        description=f"not yet pitched - hide",
+        description="not yet pitched - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4475,7 +4475,7 @@ class AbjadIDE(object):
 
     @Command(
         "rash",
-        description=f"rhythm annotation spanners - hide",
+        description="rhythm annotation spanners - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4492,7 +4492,7 @@ class AbjadIDE(object):
 
     @Command(
         "sph",
-        description=f"spacing - hide",
+        description="spacing - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4505,7 +4505,7 @@ class AbjadIDE(object):
 
     @Command(
         "snh",
-        description=f"stage numbers - hide",
+        description="stage numbers - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4518,7 +4518,7 @@ class AbjadIDE(object):
 
     @Command(
         "th",
-        description=f"tag - hide",
+        description="tag - hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -4907,7 +4907,7 @@ class AbjadIDE(object):
         """
         if self.test:
             return
-        command = f"mypy --ignore-missing-imports"
+        command = "mypy --ignore-missing-imports"
         if not directory.is_scores():
             root = directory._get_repository_root()
             if not root:
@@ -5405,7 +5405,7 @@ class AbjadIDE(object):
 
     @Command(
         "ass",
-        description=f"annotation spanners - show",
+        description="annotation spanners - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5443,7 +5443,7 @@ class AbjadIDE(object):
 
     @Command(
         "cts",
-        description=f"clock time - show",
+        description="clock time - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5456,7 +5456,7 @@ class AbjadIDE(object):
 
     @Command(
         "fns",
-        description=f"figure names - show",
+        description="figure names - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5483,7 +5483,7 @@ class AbjadIDE(object):
 
     @Command(
         "ims",
-        description=f"invisible music - show",
+        description="invisible music - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5499,7 +5499,7 @@ class AbjadIDE(object):
 
     @Command(
         "lmns",
-        description=f"local measure numbers - show",
+        description="local measure numbers - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5512,7 +5512,7 @@ class AbjadIDE(object):
 
     @Command(
         "mns",
-        description=f"measure numbers - show",
+        description="measure numbers - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5525,7 +5525,7 @@ class AbjadIDE(object):
 
     @Command(
         "mms",
-        description=f"mock music - show",
+        description="mock music - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5539,7 +5539,7 @@ class AbjadIDE(object):
 
     @Command(
         "mas",
-        description=f"music annotations - show",
+        description="music annotations - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5552,7 +5552,7 @@ class AbjadIDE(object):
 
     @Command(
         "nyps",
-        description=f"not yet pitched - show",
+        description="not yet pitched - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5566,7 +5566,7 @@ class AbjadIDE(object):
 
     @Command(
         "rass",
-        description=f"rhythm annotation spanners - show",
+        description="rhythm annotation spanners - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5579,7 +5579,7 @@ class AbjadIDE(object):
 
     @Command(
         "sps",
-        description=f"spacing - show",
+        description="spacing - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5592,7 +5592,7 @@ class AbjadIDE(object):
 
     @Command(
         "sns",
-        description=f"stage numbers - show",
+        description="stage numbers - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
@@ -5605,7 +5605,7 @@ class AbjadIDE(object):
 
     @Command(
         "ts",
-        description=f"tag - show",
+        description="tag - show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )

@@ -36,11 +36,11 @@ def test_AbjadIDE_doctest_all_02():
 
     abjad_ide("red mm ^^ q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '^^' to 5 files ..." in transcript
+    assert "Matching '^^' to 5 files ..." in transcript
 
     abjad_ide("red mm ^^def q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '^^def' to 5 files ..." in transcript
+    assert "Matching '^^def' to 5 files ..." in transcript
 
     abjad_ide("red mm ^^rpc q")
     transcript = abjad_ide.io.transcript
@@ -48,7 +48,7 @@ def test_AbjadIDE_doctest_all_02():
 
     abjad_ide("red mm ^^ST q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '^^ST' to 0 files ..." in transcript
+    assert "Matching '^^ST' to 0 files ..." in transcript
 
 
 def test_AbjadIDE_doctest_all_03():

@@ -16,4 +16,4 @@ def test_AbjadIDE_trash_music_ly_01():
 
         abjad_ide("red %letter mlt q")
         transcript = abjad_ide.io.transcript
-        assert f"No files matching music.ly ..." in transcript
+        assert "No files matching music.ly ..." in transcript

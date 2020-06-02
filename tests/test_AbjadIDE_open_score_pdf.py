@@ -21,7 +21,7 @@ def test_AbjadIDE_open_score_pdf_02():
 
     abjad_ide("red %letter spo q")
     transcript = abjad_ide.io.transcript
-    assert f"No files ending in *score.pdf ..." in transcript
+    assert "No files ending in *score.pdf ..." in transcript
 
 
 def test_AbjadIDE_open_score_pdf_03():

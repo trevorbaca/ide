@@ -43,7 +43,7 @@ def test_AbjadIDE_smart_doctest_02():
 
     abjad_ide("red mm ^def q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '^def' to 0 files ..." in transcript
+    assert "Matching '^def' to 0 files ..." in transcript
 
     abjad_ide("red mm ^rpc q")
     transcript = abjad_ide.io.transcript

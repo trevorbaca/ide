@@ -17,7 +17,7 @@ def test_AbjadIDE_open_all_pdfs_01():
 
         abjad_ide("red gg ** q")
         transcript = abjad_ide.io.transcript
-        assert f"Matching '**' to 1 file ..." in transcript
+        assert "Matching '**' to 1 file ..." in transcript
         assert f"Opening {path.trim()} ..." in transcript
 
         abjad_ide("red gg **0 q")

@@ -46,15 +46,15 @@ def test_AbjadIDE_edit_all_03():
 
     abjad_ide("red mm @@0 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@@0' to 0 files ..." in transcript
+    assert "Matching '@@0' to 0 files ..." in transcript
 
     abjad_ide("red mm @@1 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@@1' to 0 files ..." in transcript
+    assert "Matching '@@1' to 0 files ..." in transcript
 
     abjad_ide("red mm @@99 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@@99' to 0 files ..." in transcript
+    assert "Matching '@@99' to 0 files ..." in transcript
 
 
 def test_AbjadIDE_edit_all_04():
@@ -74,5 +74,5 @@ def test_AbjadIDE_edit_all_05():
 
     abjad_ide("red @@ <return> q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@@' to " in transcript
+    assert "Matching '@@' to " in transcript
     assert " files ok?> " in transcript

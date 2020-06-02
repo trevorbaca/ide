@@ -16,4 +16,4 @@ def test_AbjadIDE_trash_preface_tex_01():
 
         abjad_ide("red %letter pftt q")
         transcript = abjad_ide.io.transcript
-        assert f"No files matching preface.tex ..." in transcript
+        assert "No files matching preface.tex ..." in transcript

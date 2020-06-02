@@ -18,15 +18,15 @@ def test_AbjadIDE_smart_pytest_01():
 
     abjad_ide("red +rpc q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '+rpc' to 0 files ..." in transcript
+    assert "Matching '+rpc' to 0 files ..." in transcript
 
     abjad_ide("red +A q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '+A' to 0 files ..." in transcript
+    assert "Matching '+A' to 0 files ..." in transcript
 
     abjad_ide("red +ST q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '+ST' to 0 files ..." in transcript
+    assert "Matching '+ST' to 0 files ..." in transcript
 
 
 def test_AbjadIDE_smart_pytest_02():

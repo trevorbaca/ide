@@ -18,15 +18,15 @@ def test_AbjadIDE_pytest_all_01():
 
     abjad_ide("red ++rpc q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '++rpc' to 0 files ..." in transcript
+    assert "Matching '++rpc' to 0 files ..." in transcript
 
     abjad_ide("red ++A q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '++A' to 0 files ..." in transcript
+    assert "Matching '++A' to 0 files ..." in transcript
 
     abjad_ide("red ++ST q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '++ST' to 0 files ..." in transcript
+    assert "Matching '++ST' to 0 files ..." in transcript
 
 
 def test_AbjadIDE_pytest_all_02():
@@ -50,7 +50,7 @@ def test_AbjadIDE_pytest_all_03():
 
     abjad_ide("red tt ++1 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '++1' to 0 files ..." in transcript
+    assert "Matching '++1' to 0 files ..." in transcript
 
     abjad_ide("red tt ++99 q")
     transcript = abjad_ide.io.transcript

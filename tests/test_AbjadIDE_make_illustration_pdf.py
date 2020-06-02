@@ -76,7 +76,7 @@ def test_AbjadIDE_make_illustration_pdf_02():
             assert f"Found {ly.trim()} ..." in transcript
             assert f"Found {pdf.trim()} ..." in transcript
             assert f"Removing {maker.trim()} ..." in transcript
-            assert f"Opening" not in transcript
+            assert "Opening" not in transcript
             assert ly.is_file()
             assert pdf.is_file()
             assert not maker.exists()

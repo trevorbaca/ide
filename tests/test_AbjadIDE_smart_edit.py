@@ -75,7 +75,7 @@ def test_AbjadIDE_smart_edit_06():
 
     abjad_ide("red mm @0 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@0' to 0 files ..." in transcript
+    assert "Matching '@0' to 0 files ..." in transcript
 
     abjad_ide("red mm @1 q")
     transcript = abjad_ide.io.transcript
@@ -84,7 +84,7 @@ def test_AbjadIDE_smart_edit_06():
 
     abjad_ide("red mm @99 q")
     transcript = abjad_ide.io.transcript
-    assert f"Matching '@99' to 0 files ..." in transcript
+    assert "Matching '@99' to 0 files ..." in transcript
 
 
 def test_AbjadIDE_smart_edit_07():

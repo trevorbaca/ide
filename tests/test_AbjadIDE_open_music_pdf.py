@@ -7,4 +7,4 @@ def test_AbjadIDE_open_music_pdf_01():
 
     abjad_ide("red %letter mpo q")
     transcript = abjad_ide.io.transcript
-    assert f"No files matching music.pdf ..." in transcript
+    assert "No files matching music.pdf ..." in transcript

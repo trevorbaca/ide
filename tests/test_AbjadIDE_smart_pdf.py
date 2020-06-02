@@ -32,7 +32,7 @@ def test_AbjadIDE_smart_pdf_02():
 
         abjad_ide("red gg *0 q")
         transcript = abjad_ide.io.transcript
-        assert f"Matching '*0' to 0 files ..." in transcript
+        assert "Matching '*0' to 0 files ..." in transcript
 
         abjad_ide("red gg *1 q")
         transcript = abjad_ide.io.transcript

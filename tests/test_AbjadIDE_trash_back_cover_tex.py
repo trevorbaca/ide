@@ -16,4 +16,4 @@ def test_AbjadIDE_trash_back_cover_tex_01():
 
         abjad_ide("red %letter bctt q")
         transcript = abjad_ide.io.transcript
-        assert f"No files matching back-cover.tex ..." in transcript
+        assert "No files matching back-cover.tex ..." in transcript
