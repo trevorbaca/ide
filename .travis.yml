@@ -110,9 +110,9 @@ install:
 
 script:
     - make black-check
-    # - make flake8
+    - make flake8-check
     - make isort-check
-    - mypy .
+    - make mypy
     - start-abjad-ide q
     - make pytest
 

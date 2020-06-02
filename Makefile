@@ -2,29 +2,19 @@ project = ide
 
 formatPaths = ${project}/ tests/ *.py
 testPaths = ${project}/ tests/
-flakeIgnore = --ignore=E123,E203,E231,E265,E266,E501,E722,F81,W503
-flakeExclude := --exclude=
-flakeExclude := $(flakeExclude)ide/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/materials/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/tools/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/red_score/red_score/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/materials/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/tools/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/blue_score/blue_score/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/materials/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/tools/__init__.py
-flakeExclude := $(flakeExclude),ide/scores/green_score/green_score/__init__.py
-flakeOptions = --max-line-length=88 --isolated
+flakeIgnore = --ignore=E203,E266,E501,W503
+flakeExclude := --exclude=__metadata__.py
+flakeOptions = --isolated --max-line-length=88
 blackExclude = --exclude='__metadata__.py|definition.py|layout.py'
 
 black-check:
-	black --check --diff --target-version py37 ${blackExclude} ${formatPaths}
+	black --check --diff --target-version py38 ${blackExclude} ${formatPaths}
 
 black-reformat:
-	black --target-version py37 ${blackExclude} ${formatPaths}
+	black --target-version py38 ${blackExclude} ${formatPaths}
 
 flake8-check:
-	flake8 ${flakeExclude} ${flakeOptions} ${flakeIgnore} ${formatPaths}
+	flake8 ${flakeExclude} ${flakeIgnore} ${flakeOptions} ${formatPaths}
 
 isort-check:
 	isort \
@@ -92,9 +82,14 @@ reformat:
 	make black-reformat
 	make isort-reformat
 
+check:
+	make black-check
+	make flake8-check
+	make isort-check
+
 test:
 	make black-check
 	make flake8-check
 	make isort-check
-	mypy .
+	make mypy
 	make pytest
