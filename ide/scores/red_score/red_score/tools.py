@@ -39,10 +39,7 @@ metronome_marks = abjad.OrderedDict(
 # pitch ranges
 
 ranges = abjad.OrderedDict(
-    [
-        ("low", abjad.PitchRange("[A0, C4)")),
-        ("high", abjad.PitchRange("[C4, C8]")),
-    ]
+    [("low", abjad.PitchRange("[A0, C4)")), ("high", abjad.PitchRange("[C4, C8]"))]
 )
 
 # pitch-classes
