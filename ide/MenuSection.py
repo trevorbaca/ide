@@ -77,8 +77,7 @@ class MenuSection(object):
 
     @property
     def command(self) -> typing.Optional[bool]:
-        """Is true when section lists commands.
-        """
+        """Is true when section lists commands."""
         return self._command
 
     @property

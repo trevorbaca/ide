@@ -45,10 +45,14 @@ def test_AbjadIDE_make_layout_ly_02():
         lines = abjad_ide.io.transcript.lines
         assert path.is_file()
         for line in [
-            "Interpreting green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
-            "Interpreting green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
-            "Removing green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
+            "Interpreting"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
+            "Interpreting"
+            " green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
+            "Removing"
+            " green_score/builds/arch-a-parts/bass-clarinet/__make_layout_ly__.py ...",
         ]:
             assert line in lines
 

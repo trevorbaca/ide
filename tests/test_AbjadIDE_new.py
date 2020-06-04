@@ -255,13 +255,20 @@ def test_AbjadIDE_new_04():
             "  Found no EOS_STOP_MM_SPANNER tags ...",
             "Generating stylesheet ...",
             "Writing green_score/builds/arch-a-parts/stylesheet.ily ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-back-cover.tex ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-front-cover.tex ...",
-            "Generating green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly ...",
-            " Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-part.tex ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-preface.tex ...",
-            "Writing green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-back-cover.tex ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-front-cover.tex ...",
+            "Generating"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly ...",
+            " Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-music.ly ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-part.tex ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass-clarinet-preface.tex ...",
+            "Writing"
+            " green_score/builds/arch-a-parts/bass-clarinet/bass_clarinet_layout.py ...",
             "Writing green_score/builds/arch-a-parts/violin/violin-back-cover.tex ...",
             "Writing green_score/builds/arch-a-parts/violin/violin-front-cover.tex ...",
             "Generating green_score/builds/arch-a-parts/violin/violin-music.ly ...",

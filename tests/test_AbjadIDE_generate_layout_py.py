@@ -4,8 +4,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 
 def test_AbjadIDE_generate_layout_py_01():
-    """In segment directory.
-    """
+    """In segment directory."""
 
     with ide.Test():
         target = ide.Path("red_score", "segments", "A", "layout.py")
