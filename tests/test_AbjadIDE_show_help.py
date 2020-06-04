@@ -725,177 +725,6 @@ def test_AbjadIDE_show_help_06():
 
 def test_AbjadIDE_show_help_07():
     """
-    In material directory.
-    """
-
-    abjad_ide("red %rpc ? q")
-    menu = abjad_ide.io.transcript.menus[-1]
-    assert menu == [
-        "Red Score (2017) : materials : red_pitch_classes : help",
-        "",
-        "    all - doctest (^^)",
-        "    all - edit (@@)",
-        "    all - pdfs (**)",
-        "    all - pytest (++)",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - cut (cbx)",
-        "    clipboard - empty (cbe)",
-        "    clipboard - paste (cbv)",
-        "    clipboard - show (cbs)",
-        "",
-        "    definition.py - check (dpc)",
-        "    definition.py - edit (dpe)",
-        "    definition.py - trash (dpt)",
-        "",
-        "    directory - builds (bb)",
-        "    directory - contents (cc)",
-        "    directory - distribution (dd)",
-        "    directory - etc (ee)",
-        "    directory - materials (mm)",
-        "    directory - segments (gg)",
-        "    directory - stylesheets (yy)",
-        "    directory - test (tt)",
-        "    directory - tools (oo)",
-        "    directory - wrapper (ww)",
-        "",
-        "    git - commit (ci)",
-        "    git - diff (diff)",
-        "    git - pull (pull)",
-        "    git - push (push)",
-        "    git - status (st)",
-        "",
-        "    go - back (-)",
-        "    go - directory (%)",
-        "    go - quit (q)",
-        "    go - scores (ss)",
-        "    go - up (..)",
-        "",
-        "    hop - next package (>)",
-        "    hop - next score (>>)",
-        "    hop - previous package (<)",
-        "    hop - previous score (<<)",
-        "",
-        "    log - aliases (al)",
-        "    log - latex (lx)",
-        "    log - lilypond (lp)",
-        "",
-        "    package - black check (bkc)",
-        "    package - black reformat (bkr)",
-        "    package - mypy (mypy)",
-        "",
-        "    path - get (get)",
-        "    path - new (new)",
-        "    path - remove (rm)",
-        "    path - rename (ren)",
-        "",
-        "    score.pdf - open (spo)",
-        "",
-        "    shell - call (!)",
-        "",
-        "    show - column (;)",
-        "    show - help (?)",
-        "",
-        "    smart - doctest (^)",
-        "    smart - edit (@)",
-        "    smart - pdf (*)",
-        "    smart - pytest (+)",
-        "",
-        "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
-        "",
-    ]
-
-
-def test_AbjadIDE_show_help_08():
-    r"""
-    In materials directory.
-    """
-
-    abjad_ide("red mm ? q")
-    menu = abjad_ide.io.transcript.menus[-1]
-    assert menu == [
-        "Red Score (2017) : materials : help",
-        "",
-        "    all - doctest (^^)",
-        "    all - edit (@@)",
-        "    all - pdfs (**)",
-        "    all - pytest (++)",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - cut (cbx)",
-        "    clipboard - empty (cbe)",
-        "    clipboard - paste (cbv)",
-        "    clipboard - show (cbs)",
-        "",
-        "    definition.py - check (dpc)",
-        "    definition.py - edit (dpe)",
-        "    definition.py - trash (dpt)",
-        "",
-        "    directory - builds (bb)",
-        "    directory - contents (cc)",
-        "    directory - distribution (dd)",
-        "    directory - etc (ee)",
-        "    directory - materials (mm)",
-        "    directory - segments (gg)",
-        "    directory - stylesheets (yy)",
-        "    directory - test (tt)",
-        "    directory - tools (oo)",
-        "    directory - wrapper (ww)",
-        "",
-        "    git - commit (ci)",
-        "    git - diff (diff)",
-        "    git - pull (pull)",
-        "    git - push (push)",
-        "    git - status (st)",
-        "",
-        "    go - back (-)",
-        "    go - directory (%)",
-        "    go - quit (q)",
-        "    go - scores (ss)",
-        "    go - up (..)",
-        "",
-        "    hop - next package (>)",
-        "    hop - next score (>>)",
-        "    hop - previous package (<)",
-        "    hop - previous score (<<)",
-        "",
-        "    log - aliases (al)",
-        "    log - latex (lx)",
-        "    log - lilypond (lp)",
-        "",
-        "    package - black check (bkc)",
-        "    package - black reformat (bkr)",
-        "    package - mypy (mypy)",
-        "",
-        "    path - duplicate (dup)",
-        "    path - get (get)",
-        "    path - new (new)",
-        "    path - remove (rm)",
-        "    path - rename (ren)",
-        "",
-        "    score.pdf - open (spo)",
-        "",
-        "    shell - call (!)",
-        "",
-        "    show - column (;)",
-        "    show - help (?)",
-        "",
-        "    smart - doctest (^)",
-        "    smart - edit (@)",
-        "    smart - pdf (*)",
-        "    smart - pytest (+)",
-        "",
-        "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
-        "",
-    ]
-
-
-def test_AbjadIDE_show_help_09():
-    """
     In parts directory.
     """
 
@@ -1077,7 +906,7 @@ def test_AbjadIDE_show_help_09():
     ]
 
 
-def test_AbjadIDE_show_help_10():
+def test_AbjadIDE_show_help_08():
     """
     In scores directory.
     """
@@ -1145,7 +974,7 @@ def test_AbjadIDE_show_help_10():
     ]
 
 
-def test_AbjadIDE_show_help_11():
+def test_AbjadIDE_show_help_09():
     """
     In segment directory.
     """
@@ -1298,7 +1127,7 @@ def test_AbjadIDE_show_help_11():
     ]
 
 
-def test_AbjadIDE_show_help_12():
+def test_AbjadIDE_show_help_10():
     """
     In segments directory.
     """
@@ -1452,7 +1281,7 @@ def test_AbjadIDE_show_help_12():
     ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_11():
     """
     In stylesheets directory.
     """
@@ -1532,7 +1361,7 @@ def test_AbjadIDE_show_help_13():
     ]
 
 
-def test_AbjadIDE_show_help_14():
+def test_AbjadIDE_show_help_12():
     """
     In test directory.
     """
@@ -1612,87 +1441,7 @@ def test_AbjadIDE_show_help_14():
     ]
 
 
-def test_AbjadIDE_show_help_15():
-    """
-    In tools directory.
-    """
-
-    abjad_ide("red oo ? q")
-    menu = abjad_ide.io.transcript.menus[-1]
-    assert menu == [
-        "Red Score (2017) : tools : help",
-        "",
-        "    all - doctest (^^)",
-        "    all - edit (@@)",
-        "    all - pdfs (**)",
-        "    all - pytest (++)",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - cut (cbx)",
-        "    clipboard - empty (cbe)",
-        "    clipboard - paste (cbv)",
-        "    clipboard - show (cbs)",
-        "",
-        "    directory - builds (bb)",
-        "    directory - contents (cc)",
-        "    directory - distribution (dd)",
-        "    directory - etc (ee)",
-        "    directory - materials (mm)",
-        "    directory - segments (gg)",
-        "    directory - stylesheets (yy)",
-        "    directory - test (tt)",
-        "    directory - tools (oo)",
-        "    directory - wrapper (ww)",
-        "",
-        "    git - commit (ci)",
-        "    git - diff (diff)",
-        "    git - pull (pull)",
-        "    git - push (push)",
-        "    git - status (st)",
-        "",
-        "    go - back (-)",
-        "    go - directory (%)",
-        "    go - quit (q)",
-        "    go - scores (ss)",
-        "    go - up (..)",
-        "",
-        "    hop - next score (>>)",
-        "    hop - previous score (<<)",
-        "",
-        "    log - aliases (al)",
-        "    log - latex (lx)",
-        "    log - lilypond (lp)",
-        "",
-        "    package - black check (bkc)",
-        "    package - black reformat (bkr)",
-        "    package - mypy (mypy)",
-        "",
-        "    path - duplicate (dup)",
-        "    path - get (get)",
-        "    path - new (new)",
-        "    path - remove (rm)",
-        "    path - rename (ren)",
-        "",
-        "    score.pdf - open (spo)",
-        "",
-        "    shell - call (!)",
-        "",
-        "    show - column (;)",
-        "    show - help (?)",
-        "",
-        "    smart - doctest (^)",
-        "    smart - edit (@)",
-        "    smart - pdf (*)",
-        "    smart - pytest (+)",
-        "",
-        "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
-        "",
-    ]
-
-
-def test_AbjadIDE_show_help_16():
+def test_AbjadIDE_show_help_13():
     """
     In wrapper directory.
     """

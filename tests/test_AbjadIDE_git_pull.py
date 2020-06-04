@@ -32,18 +32,6 @@ def test_AbjadIDE_git_pull_01():
     transcript = abjad_ide.io.transcript
     assert "Running git pull ..." in transcript
 
-    abjad_ide("red mm pull q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git pull ..." in transcript
-
-    abjad_ide("red mm rpc pull q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git pull ..." in transcript
-
-    abjad_ide("red oo pull q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git pull ..." in transcript
-
     abjad_ide("red tt pull q")
     transcript = abjad_ide.io.transcript
     assert "Running git pull ..." in transcript

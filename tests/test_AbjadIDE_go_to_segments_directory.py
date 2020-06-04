@@ -5,23 +5,6 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_go_to_segments_directory_01():
     """
-    From material directory.
-    """
-
-    abjad_ide("red mm metronome gg q")
-    transcript = abjad_ide.io.transcript
-    assert transcript.titles == [
-        "Abjad IDE : scores",
-        "Red Score (2017)",
-        "Red Score (2017) : materials",
-        "Red Score (2017) : materials : metronome_marks",
-        "Red Score (2017) : segments",
-    ]
-    assert ".gitignore" not in transcript
-
-
-def test_AbjadIDE_go_to_segments_directory_02():
-    """
     From segment directory.
     """
 
@@ -36,7 +19,7 @@ def test_AbjadIDE_go_to_segments_directory_02():
     ]
 
 
-def test_AbjadIDE_go_to_segments_directory_03():
+def test_AbjadIDE_go_to_segments_directory_02():
     """
     From score directory.
     """
@@ -50,7 +33,7 @@ def test_AbjadIDE_go_to_segments_directory_03():
     ]
 
 
-def test_AbjadIDE_go_to_segments_directory_04():
+def test_AbjadIDE_go_to_segments_directory_03():
     """
     Makes sure reverse-order view is in effect.
     """

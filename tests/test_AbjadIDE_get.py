@@ -88,30 +88,6 @@ def test_AbjadIDE_get_03():
 
 def test_AbjadIDE_get_04():
     """
-    In materials directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "materials", "red_pitch_classes")
-        assert source.is_dir()
-        target = source.with_score("blue_score")
-        target.remove()
-
-        abjad_ide("blu mm get red rpc y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        header = "Blue Score (2017) : materials : get packages from ..."
-        assert header in transcript
-        assert "> red" in transcript
-        assert "> rpc" in transcript
-        assert f"Getting {source.trim()} ..." in transcript
-        assert f"Will write {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-        assert f"Writing {target.trim()} ..." in transcript
-
-
-def test_AbjadIDE_get_05():
-    """
     In segment directory.
     """
 
@@ -155,7 +131,7 @@ def test_AbjadIDE_get_05():
     assert "Matches no file 'q' ..." not in transcript
 
 
-def test_AbjadIDE_get_06():
+def test_AbjadIDE_get_05():
     """
     In segments directory.
     """
@@ -182,7 +158,7 @@ def test_AbjadIDE_get_06():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_07():
+def test_AbjadIDE_get_06():
     """
     In stylesheets directory.
     """
@@ -206,7 +182,7 @@ def test_AbjadIDE_get_07():
         assert f"Writing {target.trim()} ..." in transcript
 
 
-def test_AbjadIDE_get_08():
+def test_AbjadIDE_get_07():
     """
     In test directory.
     """
@@ -224,29 +200,6 @@ def test_AbjadIDE_get_08():
         assert header in transcript
         assert "> red" in transcript
         assert "> _seg" in transcript
-        assert f"Getting {source.trim()} ..." in transcript
-        assert f"Will write {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-        assert f"Writing {target.trim()} ..." in transcript
-
-
-def test_AbjadIDE_get_09():
-    """
-    In tools directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "tools", "ScoreTemplate.py")
-        assert source.is_file()
-        target = source.with_score("blue_score")
-        target.remove()
-
-        abjad_ide("blu oo get red ST y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        header = "Blue Score (2017) : tools : get files from ..."
-        assert header in transcript
-        assert "> red" in transcript
         assert f"Getting {source.trim()} ..." in transcript
         assert f"Will write {target.trim()} ..." in transcript
         assert "Ok?> y" in transcript

@@ -45,27 +45,6 @@ def test_AbjadIDE_go_to_directory_04():
 
 def test_AbjadIDE_go_to_directory_05():
     """
-    Goes to material directory.
-    """
-
-    abjad_ide("red %rpc q")
-    transcript = abjad_ide.io.transcript
-    line = "Red Score (2017) : materials : red_pitch_classes"
-    assert line in transcript.titles
-
-
-def test_AbjadIDE_go_to_directory_06():
-    """
-    Goes to materials directory.
-    """
-
-    abjad_ide("red %erial q")
-    transcript = abjad_ide.io.transcript
-    assert "Red Score (2017) : materials" in transcript.titles
-
-
-def test_AbjadIDE_go_to_directory_07():
-    """
     Goes to segment directory.
     """
 
@@ -74,17 +53,17 @@ def test_AbjadIDE_go_to_directory_07():
     assert "Red Score (2017) : segments : A" in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_08():
+def test_AbjadIDE_go_to_directory_06():
     """
     Goes to segments directory.
     """
 
     abjad_ide("red %egmen q")
     transcript = abjad_ide.io.transcript
-    assert "Red Score (2017) : segments" in transcript.titles
+    assert "Editing red_score/PianoStaffSegmentMaker.py ..." in transcript
 
 
-def test_AbjadIDE_go_to_directory_09():
+def test_AbjadIDE_go_to_directory_07():
     """
     Goes to stylesheet directory.
     """
@@ -94,7 +73,7 @@ def test_AbjadIDE_go_to_directory_09():
     assert "Red Score (2017) : stylesheets" in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_10():
+def test_AbjadIDE_go_to_directory_08():
     """
     Goes to test directory.
     """
@@ -104,17 +83,7 @@ def test_AbjadIDE_go_to_directory_10():
     assert "Red Score (2017) : test" in transcript.titles
 
 
-def test_AbjadIDE_go_to_directory_11():
-    """
-    Goes to tools directory.
-    """
-
-    abjad_ide("red %ool q")
-    transcript = abjad_ide.io.transcript
-    assert "Red Score (2017) : tools" in transcript.titles
-
-
-def test_AbjadIDE_go_to_directory_12():
+def test_AbjadIDE_go_to_directory_09():
     """
     Handles numeric input.
     """
@@ -133,7 +102,7 @@ def test_AbjadIDE_go_to_directory_12():
     assert "Matching '%99' to 0 directories ..." in transcript
 
 
-def test_AbjadIDE_go_to_directory_13():
+def test_AbjadIDE_go_to_directory_10():
     """
     Handles empty input and junk input.
     """
@@ -147,7 +116,7 @@ def test_AbjadIDE_go_to_directory_13():
     assert "Matching '%asdf' to 0 directories ..." in transcript
 
 
-def test_AbjadIDE_go_to_directory_14():
+def test_AbjadIDE_go_to_directory_11():
     """
     Handles double input.
     """

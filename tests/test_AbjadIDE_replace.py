@@ -20,10 +20,10 @@ def test_AbjadIDE_replace_01():
         transcript = abjad_ide.io.transcript
         assert "Enter search string> RhythmMaker" in transcript
         assert "Enter replace string> FooMaker" in transcript
-        assert "Replaced 11 instances over 9 lines in 4 files." in transcript
+        assert "Replaced 395 instances over 12 lines in 8 files." in transcript
 
         abjad_ide("red rp FooMaker RhythmMaker y q")
         transcript = abjad_ide.io.transcript
         assert "Enter search string> FooMaker" in transcript
         assert "Enter replace string> RhythmMaker" in transcript
-        assert "Replaced 11 instances over 9 lines in 4 files." in transcript
+        assert "Replaced 395 instances over 12 lines in 8 files." in transcript

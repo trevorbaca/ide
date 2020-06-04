@@ -9,53 +9,49 @@ def test_AbjadIDE_column_01():
 
         abjad_ide(
             """
-            red oo
-            new test_file_01.py y
-            new test_file_02.py y
-            new test_file_03.py y
-            new test_file_04.py y
-            new test_file_05.py y
-            new test_file_06.py y
-            new test_file_07.py y
-            new test_file_08.py y
-            new test_file_09.py y
-            new test_file_10.py y
-            new test_file_11.py y
-            new test_file_12.py y
+            red ee
+            new test-file-01.txt y
+            new test-file-02.txt y
+            new test-file-03.txt y
+            new test-file-04.txt y
+            new test-file-05.txt y
+            new test-file-06.txt y
+            new test-file-07.txt y
+            new test-file-08.txt y
+            new test-file-09.txt y
+            new test-file-10.txt y
+            new test-file-11.txt y
+            new test-file-12.txt y
             <return>
             q"""
         )
         transcript = abjad_ide.io.transcript
         for line in [
-            "   1: PianoStaffSegmentMaker.py     9: test_file_05.py",
-            "   2: RhythmMaker.py               10: test_file_06.py",
-            "   3: ScoreTemplate.py             11: test_file_07.py",
-            "   4: adjust_spacing_sections.py   12: test_file_08.py",
-            "   5: test_file_01.py              13: test_file_09.py",
-            "   6: test_file_02.py              14: test_file_10.py",
-            "   7: test_file_03.py              15: test_file_11.py",
-            "   8: test_file_04.py              16: test_file_12.py",
+            "   1: notes.txt               8: test-file-07.txt",
+            "   2: test-file-01.txt        9: test-file-08.txt",
+            "   3: test-file-02.txt       10: test-file-09.txt",
+            "   4: test-file-03.txt       11: test-file-10.txt",
+            "   5: test-file-04.txt       12: test-file-11.txt",
+            "   6: test-file-05.txt       13: test-file-12.txt",
+            "   7: test-file-06.txt",
         ]:
             assert line in transcript.lines, repr(line)
 
-        abjad_ide("red oo ; q")
+        abjad_ide("red ee ; q")
         transcript = abjad_ide.io.transcript
         for line in [
-            "   1: PianoStaffSegmentMaker.py",
-            "   2: RhythmMaker.py",
-            "   3: ScoreTemplate.py",
-            "   4: adjust_spacing_sections.py",
-            "   5: test_file_01.py",
-            "   6: test_file_02.py",
-            "   7: test_file_03.py",
-            "   8: test_file_04.py",
-            "   9: test_file_05.py",
-            "  10: test_file_06.py",
-            "  11: test_file_07.py",
-            "  12: test_file_08.py",
-            "  13: test_file_09.py",
-            "  14: test_file_10.py",
-            "  15: test_file_11.py",
-            "  16: test_file_12.py",
+            "   1: notes.txt",
+            "   2: test-file-01.txt",
+            "   3: test-file-02.txt",
+            "   4: test-file-03.txt",
+            "   5: test-file-04.txt",
+            "   6: test-file-05.txt",
+            "   7: test-file-06.txt",
+            "   8: test-file-07.txt",
+            "   9: test-file-08.txt",
+            "  10: test-file-09.txt",
+            "  11: test-file-10.txt",
+            "  12: test-file-11.txt",
+            "  13: test-file-12.txt",
         ]:
             assert line in transcript.lines, repr(transcript.lines[-11][:])

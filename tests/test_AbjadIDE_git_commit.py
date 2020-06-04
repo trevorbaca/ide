@@ -24,18 +24,6 @@ def test_AbjadIDE_git_commit_01():
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript
 
-    abjad_ide("red oo ci q")
-    transcript = abjad_ide.io.transcript
-    assert "> ci" in transcript
-
-    abjad_ide("red mm ci q")
-    transcript = abjad_ide.io.transcript
-    assert "> ci" in transcript
-
-    abjad_ide("red mm rpc ci q")
-    transcript = abjad_ide.io.transcript
-    assert "> ci" in transcript
-
     abjad_ide("red gg ci q")
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript

@@ -3890,7 +3890,11 @@ class AbjadIDE(object):
             for path in paths:
                 self.io.display(path.trim(), raw=True)
             if paths:
-                self._manage_directory(paths[:1])
+                path_ = paths[0]
+                if path_.is_dir():
+                    self._manage_directory(path_)
+                else:
+                    self._open_files([path_])
             return
         assert payload is None, repr(payload)
         paths, strings = [], []

@@ -10,11 +10,11 @@ def test_AbjadIDE_doctest_all_01():
 
     abjad_ide("red ^^ q")
     transcript = abjad_ide.io.transcript
-    assert "Matching '^^' to 16 files ..." in transcript
+    assert "Matching '^^' to 10 files ..." in transcript
 
     abjad_ide("red ^^def q")
     transcript = abjad_ide.io.transcript
-    assert "Matching '^^def' to 8 files ..." in transcript
+    assert "Matching '^^def' to 3 files ..." in transcript
 
     abjad_ide("red ^^rpc q")
     transcript = abjad_ide.io.transcript
@@ -30,28 +30,6 @@ def test_AbjadIDE_doctest_all_01():
 
 
 def test_AbjadIDE_doctest_all_02():
-    """
-    In materials directory.
-    """
-
-    abjad_ide("red mm ^^ q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '^^' to 5 files ..." in transcript
-
-    abjad_ide("red mm ^^def q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '^^def' to 5 files ..." in transcript
-
-    abjad_ide("red mm ^^rpc q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '^^rpc' to 0 files ..." in transcript
-
-    abjad_ide("red mm ^^ST q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '^^ST' to 0 files ..." in transcript
-
-
-def test_AbjadIDE_doctest_all_03():
     """
     In segments directory.
     """
@@ -73,7 +51,7 @@ def test_AbjadIDE_doctest_all_03():
     assert "Matching '^^ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_04():
+def test_AbjadIDE_doctest_all_03():
     """
     In test directory.
     """
@@ -83,25 +61,25 @@ def test_AbjadIDE_doctest_all_04():
     assert "Matching '^^' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_05():
+def test_AbjadIDE_doctest_all_04():
     """
     Handles numeric input.
     """
 
-    abjad_ide("red oo ^^0 q")
+    abjad_ide("red ee ^^0 q")
     transcript = abjad_ide.io.transcript
     assert "Matching '^^0' to 0 files ..." in transcript
 
-    abjad_ide("red oo ^^1 q")
+    abjad_ide("red ee ^^1 q")
     transcript = abjad_ide.io.transcript
     assert "Matching '^^1' to 0 files ..." in transcript
 
-    abjad_ide("red oo ^^99 q")
+    abjad_ide("red ee ^^99 q")
     transcript = abjad_ide.io.transcript
     assert "Matching '^^99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_06():
+def test_AbjadIDE_doctest_all_05():
     """
     Emtpy and junk addresses.
     """

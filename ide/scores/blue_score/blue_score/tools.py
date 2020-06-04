@@ -1,4 +1,5 @@
 import abjad
+import abjadext
 
 
 class MeasureMaker(object):
@@ -378,3 +379,23 @@ class MeasureMaker(object):
         Returns duration.
         """
         return self._total_duration
+
+
+# rhythms
+
+blue_rhythm_1 = abjadext.rmakers.TaleaRhythmMaker(
+    talea=abjadext.rmakers.Talea(counts=(2, 2, -3), denominator=8),
+    split_divisions_by_counts=(2, 1),
+    extra_counts_per_division=(3, 1, 1),
+)
+
+blue_rhythm_2 = MeasureMaker(
+    measure_denominator=4,
+    measure_numerator_talea=(2, 2, 2, 2, 1, 1, 4, 4),
+    measure_division_denominator=16,
+    measure_division_talea=(1, 1, 2, 3, 1, 2, 3, 4, 1, 1, 1, 1, 4),
+    total_duration=abjad.Duration(11, 2),
+    measures_are_scaled=True,
+    measures_are_split=True,
+    measures_are_shuffled=True,
+)

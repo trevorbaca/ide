@@ -15,16 +15,6 @@ def test_AbjadIDE_call_shell_01():
 
 def test_AbjadIDE_call_shell_02():
     """
-    In material directory.
-    """
-
-    abjad_ide("red mm metronome !pwd q")
-    transcript = abjad_ide.io.transcript
-    assert "Calling shell on 'pwd' ..." in transcript
-
-
-def test_AbjadIDE_call_shell_03():
-    """
     In builds directory.
     """
 
@@ -33,7 +23,7 @@ def test_AbjadIDE_call_shell_03():
     assert "Calling shell on 'pwd' ..." in transcript
 
 
-def test_AbjadIDE_call_shell_04():
+def test_AbjadIDE_call_shell_03():
     """
     Works with spaces in command.
     """
@@ -43,7 +33,7 @@ def test_AbjadIDE_call_shell_04():
     assert "Calling shell on 'ls -a' ..." in transcript
 
 
-def test_AbjadIDE_call_shell_05():
+def test_AbjadIDE_call_shell_04():
     """
     Empty excalamation raises no exception.
     """

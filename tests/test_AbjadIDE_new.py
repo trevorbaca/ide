@@ -140,30 +140,6 @@ def test_AbjadIDE_new_02():
 
 def test_AbjadIDE_new_03():
     """
-    Makes material package.
-    """
-
-    path = ide.Path("red_score", "materials", "test_notes")
-    with ide.Test(remove=[path]):
-
-        abjad_ide("red mm new test~notes q")
-        transcript = abjad_ide.io.transcript
-        assert path.is_dir()
-        names = ["__init__.py", "definition.py"]
-        for name in names:
-            assert (path / name).is_file()
-        assert "Enter package name> test notes" in transcript
-        assert f"Making {path.trim()} ..." in transcript
-        for name in names:
-            assert f"Writing {(path / name).trim()} ..." in transcript
-
-        abjad_ide("red mm new test_notes q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {path.trim()} ..."
-
-
-def test_AbjadIDE_new_04():
-    """
     Makes parts directory.
     """
 
@@ -349,7 +325,7 @@ def test_AbjadIDE_new_04():
         assert stylesheet.is_file()
 
 
-def test_AbjadIDE_new_05():
+def test_AbjadIDE_new_04():
     """
     Makes score package.
     """
@@ -397,7 +373,7 @@ def test_AbjadIDE_new_05():
         assert f"Existing {wrapper.trim()} ..." in transcript
 
 
-def test_AbjadIDE_new_06():
+def test_AbjadIDE_new_05():
     """
     Makes score package in empty directory.
     """
@@ -447,7 +423,7 @@ def test_AbjadIDE_new_06():
         assert f"Existing {wrapper.trim()} ..." in transcript
 
 
-def test_AbjadIDE_new_07():
+def test_AbjadIDE_new_06():
     """
     Makes score package. Coerces package name.
     """
@@ -475,7 +451,7 @@ def test_AbjadIDE_new_07():
         assert package.is_dir()
 
 
-def test_AbjadIDE_new_08():
+def test_AbjadIDE_new_07():
     """
     Makes segment directory.
     """
@@ -504,7 +480,7 @@ def test_AbjadIDE_new_08():
         assert f"Existing {path.trim()} ..."
 
 
-def test_AbjadIDE_new_09():
+def test_AbjadIDE_new_08():
     """
     Makes stylesheet.
     """
@@ -532,47 +508,3 @@ def test_AbjadIDE_new_09():
         transcript = abjad_ide.io.transcript
         assert "Existing" not in transcript
         assert "Writing" not in transcript
-
-
-def test_AbjadIDE_new_10():
-    """
-    Makes tools classfile.
-    """
-
-    path = ide.Path("red_score", "tools", "NewClass.py")
-    with ide.Test(remove=[path]):
-
-        abjad_ide("red oo new NewClass.py y q")
-        transcript = abjad_ide.io.transcript
-        assert path.is_file()
-        text = path.read_text()
-        assert "class NewClass(object)" in text
-        assert "File name> NewClass" in transcript
-        assert f"Writing {path.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-
-        abjad_ide("red oo new NewClass q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {path.trim()} ..."
-
-
-def test_AbjadIDE_new_11():
-    """
-    Makes tools functionfile.
-    """
-
-    path = ide.Path("red_score", "tools", "make_material.py")
-    with ide.Test(remove=[path]):
-
-        abjad_ide("red oo new make_material y q")
-        transcript = abjad_ide.io.transcript
-        assert path.is_file()
-        text = path.read_text()
-        assert "def make_material():" in text
-        assert "File name> make_material" in transcript
-        assert f"Writing {path.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-
-        abjad_ide("red oo new make~material q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {path.trim()} ..."

@@ -1,5 +1,5 @@
-from .materials import instruments
-from .tools import ScoreTemplate
+from .ScoreTemplate import ScoreTemplate
+from .tools import instruments
 
 __all__ = [
     "ScoreTemplate",

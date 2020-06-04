@@ -38,21 +38,6 @@ def test_AbjadIDE_git_status_01():
     assert "Running git status . ..." in transcript
     assert "Running git submodule foreach git fetch ..." in transcript
 
-    abjad_ide("red mm st q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git status . ..." in transcript
-    assert "Running git submodule foreach git fetch ..." in transcript
-
-    abjad_ide("red mm rpc st q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git status . ..." in transcript
-    assert "Running git submodule foreach git fetch ..." in transcript
-
-    abjad_ide("red oo st q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git status . ..." in transcript
-    assert "Running git submodule foreach git fetch ..." in transcript
-
     abjad_ide("red tt st q")
     transcript = abjad_ide.io.transcript
     assert "Running git status . ..." in transcript

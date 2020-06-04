@@ -41,29 +41,6 @@ def test_AbjadIDE_duplicate_03():
 
 def test_AbjadIDE_duplicate_04():
     """
-    In materials directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "materials", "red_pitch_classes")
-        assert source.is_dir()
-        target = source.with_name("orange_pitch_classes")
-        target.remove()
-
-        abjad_ide("red mm dup rpc orange~pitch~classes y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        assert "Select packages to duplicate> rpc" in transcript
-        assert f"Duplicating {source.trim()} ..."
-        assert "Enter new name> orane pitch classes"
-        assert f"Writing {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-        line = "Replacing 'red_pitch_classes' with 'orange_pitch_classes' ..."
-        assert line in transcript
-
-
-def test_AbjadIDE_duplicate_05():
-    """
     In scores directory.
     """
 
@@ -84,7 +61,7 @@ def test_AbjadIDE_duplicate_05():
         assert "Replacing 'Red Score' with 'Purple Score' ..." in transcript
 
 
-def test_AbjadIDE_duplicate_06():
+def test_AbjadIDE_duplicate_05():
     """
     In scores directory. Handles empty return gracefully.
     """
@@ -94,7 +71,7 @@ def test_AbjadIDE_duplicate_06():
     assert "Select packages to duplicate> " in transcript
 
 
-def test_AbjadIDE_duplicate_07():
+def test_AbjadIDE_duplicate_06():
     """
     In segments directory.
     """
@@ -116,7 +93,7 @@ def test_AbjadIDE_duplicate_07():
         assert "Replacing 'A' with 'B' ..." in transcript
 
 
-def test_AbjadIDE_duplicate_08():
+def test_AbjadIDE_duplicate_07():
     """
     In stylesheets directory.
     """
@@ -133,26 +110,5 @@ def test_AbjadIDE_duplicate_08():
         assert "Select files to duplicate> eet.i" in transcript
         assert f"Duplicating {source.trim()} ..." in transcript
         assert "Enter new name> new stylesheet" in transcript
-        assert f"Writing {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-
-
-def test_AbjadIDE_duplicate_09():
-    """
-    In tools directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "tools", "ScoreTemplate.py")
-        assert source.is_file()
-        target = source.with_name("ColorSpecifier.py")
-        target.remove()
-
-        abjad_ide("red oo dup ST Color~specifier y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        assert "Select files to duplicate> ST" in transcript
-        assert f"Duplicating {source.trim()} ..." in transcript
-        assert "Enter new name> Color specifier" in transcript
         assert f"Writing {target.trim()} ..." in transcript
         assert "Ok?> y" in transcript

@@ -35,23 +35,6 @@ def test_AbjadIDE_go_to_contents_directory_02():
 
 def test_AbjadIDE_go_to_contents_directory_03():
     """
-    From material directory.
-    """
-
-    abjad_ide("red mm metronome cc q")
-    transcript = abjad_ide.io.transcript
-    assert transcript.titles == [
-        "Abjad IDE : scores",
-        "Red Score (2017)",
-        "Red Score (2017) : materials",
-        "Red Score (2017) : materials : metronome_marks",
-        "Red Score (2017)",
-    ]
-    assert ".gitignore" not in transcript
-
-
-def test_AbjadIDE_go_to_contents_directory_04():
-    """
     From score directory.
     """
 
@@ -64,7 +47,7 @@ def test_AbjadIDE_go_to_contents_directory_04():
     ]
 
 
-def test_AbjadIDE_go_to_contents_directory_05():
+def test_AbjadIDE_go_to_contents_directory_04():
     """
     From scores directory with smart match.
     """
@@ -78,7 +61,7 @@ def test_AbjadIDE_go_to_contents_directory_05():
     assert transcript.titles == ["Abjad IDE : scores", "Blue Score (2017)"]
 
 
-def test_AbjadIDE_go_to_contents_directory_06():
+def test_AbjadIDE_go_to_contents_directory_05():
     """
     From segment directory.
     """

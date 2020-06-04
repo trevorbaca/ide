@@ -20,29 +20,9 @@ class ScoreTemplate(object):
 
         ..  container:: example
 
-            >>> from red_score import tools
-            >>> template = tools.ScoreTemplate()
-            >>> score = template()
-
-            >>> f(score)
-            \context Score = "RedScore"
-            <<
-                \context StaffGroup = "PianoStaffGroup"
-                <<
-                    \context RHStaff = "RHStaff"
-                    {
-                        \context RH_Voice = "RH_Voice"
-                        {
-                        }
-                    }
-                    \context LHStaff = "LHStaff"
-                    {
-                        \context LH_Voice = "LH_Voice"
-                        {
-                        }
-                    }
-                >>
-            >>
+            >>> import red_score
+            >>> red_score.ScoreTemplate()
+            <red_score.ScoreTemplate.ScoreTemplate object at 0x...>
 
         Returns score.
         """

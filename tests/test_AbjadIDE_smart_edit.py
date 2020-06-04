@@ -16,17 +16,6 @@ def test_AbjadIDE_smart_edit_01():
 
 def test_AbjadIDE_smart_edit_02():
     """
-    Edits material definition file.
-    """
-
-    abjad_ide("red @rpc q")
-    transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "materials", "red_pitch_classes", "definition.py")
-    assert f"Editing {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_edit_03():
-    """
     Edits segment definition file.
     """
 
@@ -36,7 +25,7 @@ def test_AbjadIDE_smart_edit_03():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_04():
+def test_AbjadIDE_smart_edit_03():
     """
     Edits stylesheet.
     """
@@ -47,47 +36,7 @@ def test_AbjadIDE_smart_edit_04():
     assert f"Editing {path.trim()} ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_05():
-    """
-    Edits tools files.
-    """
-
-    abjad_ide("red @RM q")
-    transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "tools", "RhythmMaker.py")
-    assert f"Editing {path.trim()} ..." in transcript
-
-    abjad_ide("red @ScT q")
-    transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "tools", "ScoreTemplate.py")
-    assert f"Editing {path.trim()} ..." in transcript
-
-    abjad_ide("red @spacing q")
-    transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "tools", "adjust_spacing_sections.py")
-    assert f"Editing {path.trim()} ..." in transcript
-
-
-def test_AbjadIDE_smart_edit_06():
-    """
-    Handles single-prefix numeric input.
-    """
-
-    abjad_ide("red mm @0 q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@0' to 0 files ..." in transcript
-
-    abjad_ide("red mm @1 q")
-    transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "materials", "instruments", "definition.py")
-    assert f"Editing {path.trim()} ..." in transcript
-
-    abjad_ide("red mm @99 q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@99' to 0 files ..." in transcript
-
-
-def test_AbjadIDE_smart_edit_07():
+def test_AbjadIDE_smart_edit_04():
     """
     Missing pattern.
     """
@@ -97,7 +46,7 @@ def test_AbjadIDE_smart_edit_07():
     assert "Missing '@' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_edit_08():
+def test_AbjadIDE_smart_edit_05():
     """
     Unmatched pattern.
     """

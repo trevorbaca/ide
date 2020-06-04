@@ -21,21 +21,13 @@ def test_AbjadIDE_quit_02():
 
 def test_AbjadIDE_quit_03():
     """
-    In material directory.
-    """
-
-    abjad_ide("red %metronome q")
-
-
-def test_AbjadIDE_quit_04():
-    """
     In score directory.
     """
 
     abjad_ide("red q")
 
 
-def test_AbjadIDE_quit_05():
+def test_AbjadIDE_quit_04():
     """
     In segment directory.
     """

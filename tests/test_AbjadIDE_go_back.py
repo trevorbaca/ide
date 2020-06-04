@@ -5,21 +5,6 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_go_back_01():
 
-    abjad_ide("red mm metronome oo - - q")
-    transcript = abjad_ide.io.transcript
-    assert transcript.titles == [
-        "Abjad IDE : scores",
-        "Red Score (2017)",
-        "Red Score (2017) : materials",
-        "Red Score (2017) : materials : metronome_marks",
-        "Red Score (2017) : tools",
-        "Red Score (2017) : materials : metronome_marks",
-        "Red Score (2017) : tools",
-    ]
-
-
-def test_AbjadIDE_go_back_02():
-
     abjad_ide("red gg A bb - - q")
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
@@ -33,7 +18,7 @@ def test_AbjadIDE_go_back_02():
     ]
 
 
-def test_AbjadIDE_go_back_03():
+def test_AbjadIDE_go_back_02():
 
     abjad_ide("red - - - q")
     transcript = abjad_ide.io.transcript
@@ -46,7 +31,7 @@ def test_AbjadIDE_go_back_03():
     ]
 
 
-def test_AbjadIDE_go_back_04():
+def test_AbjadIDE_go_back_03():
     """
     Regression: back manages scores directory rather than quitting.
     """
