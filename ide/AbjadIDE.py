@@ -2740,7 +2740,7 @@ class AbjadIDE(object):
                 shutil.copytree(str(source), str(target))
             else:
                 raise ValueError(source)
-            if target.is_material_or_segment():
+            if target.is_segment():
                 if name_metadatum:
                     target.add_metadatum("name", name_metadatum)
                 else:
@@ -3422,7 +3422,7 @@ class AbjadIDE(object):
         Copies into ``directory``.
         """
         items = []
-        if directory.is_material_or_segment():
+        if directory.is_segment():
             siblings = directory.parent.list_paths()
             siblings.remove(directory)
             for sibling in siblings:
@@ -3460,7 +3460,7 @@ class AbjadIDE(object):
             cousin = directory.with_score(score.name)
             assert cousin is not None
             items = []
-            if directory.is_material_or_segment():
+            if directory.is_segment():
                 cousins = cousin.parent.list_paths()
                 cousins.remove(cousin)
                 for cousin in cousins:
@@ -3531,7 +3531,7 @@ class AbjadIDE(object):
                 shutil.copytree(str(source), str(target))
             else:
                 raise ValueError(source)
-            if source.is_material_or_segment() and source.get_metadatum("name"):
+            if source.is_segment() and source.get_metadatum("name"):
                 name = self.io.get("name metadatum")
                 if self.is_navigation(name):
                     return
@@ -3895,7 +3895,7 @@ class AbjadIDE(object):
         Goes to next package.
         """
         assert (
-            directory.is_material_or_segment() or directory.is_materials_or_segments()
+            directory.is_segment() or directory.is_segments()
         )
         next_package = directory.get_next_package(cyclic=True)
         self._manage_directory(next_package)
@@ -3927,7 +3927,7 @@ class AbjadIDE(object):
         Goes to previous package.
         """
         assert (
-            directory.is_material_or_segment() or directory.is_materials_or_segments()
+            directory.is_segment() or directory.is_segments()
         )
         previous_package = directory.get_previous_package(cyclic=True)
         self._manage_directory(previous_package)
@@ -4859,7 +4859,7 @@ class AbjadIDE(object):
                 self._make_score_build_directory(directory)
             elif type_ == "parts":
                 self._make_parts_directory(directory)
-        elif directory.is_materials_or_segments():
+        elif directory.is_segments():
             self._make_package(directory)
         elif directory.is_scores():
             self._make_score_package()
