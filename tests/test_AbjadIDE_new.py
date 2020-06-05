@@ -352,14 +352,12 @@ def test_AbjadIDE_new_04():
             "builds",
             "distribution",
             "etc",
-            "materials",
             "segments",
             "stylesheets",
             "test",
             "tools",
         ]:
             assert (wrapper.contents / name).exists()
-        assert (wrapper.materials / "__init__.py").is_file()
         assert (wrapper.segments / "__init__.py").is_file()
         assert "Enter title> Purple Score" in transcript
         assert f"Making {wrapper.trim()} ..." in transcript
@@ -405,13 +403,11 @@ def test_AbjadIDE_new_05():
             "distribution",
             "etc",
             "tools",
-            "materials",
             "segments",
             "stylesheets",
             "test",
         ]:
             assert (wrapper.contents / name).exists()
-        assert (wrapper.materials / "__init__.py").is_file()
         assert (wrapper.segments / "__init__.py").is_file()
         assert f"Found {wrapper.trim()}." in transcript
         assert f"Populate {wrapper.trim()}?>" in transcript

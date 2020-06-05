@@ -927,64 +927,6 @@ class AbjadIDE(object):
         if exit_code:
             self.io.display(stderr_lines, raw=True)
 
-    def _make_material_ly(self, directory):
-        assert directory.is_material()
-        definition = directory / "definition.py"
-        if not definition.is_file():
-            self.io.display(f"can not find {definition.trim()} ...")
-            return
-        ly = directory / "illustration.ly"
-        if ly.exists():
-            self.io.display(f"removing {ly.trim()} ...")
-        maker = directory / "__make_material_ly__.py"
-        maker.remove()
-        with self.cleanup([maker]):
-            self.io.display(f"writing {maker.trim()} ...")
-            self._copy_boilerplate(directory, maker.name)
-            self.io.display(f"interpreting {maker.trim()} ...")
-            result = self._interpret_file(str(maker))
-            if ly.is_file():
-                self.io.display(f"writing {ly.trim()} ...")
-            self.io.display(f"removing {maker.trim()} ...")
-            stdout_lines, stderr_lines, exit_code = result
-            if exit_code:
-                self.io.display(stderr_lines, raw=True)
-
-    def _make_material_pdf(self, directory, open_after=True):
-        assert directory.is_material()
-        definition = directory / "definition.py"
-        if not definition.is_file():
-            self.io.display(f"missing {definition.trim()} ...")
-            return 0
-        name = directory.name.replace("_", " ")
-        self.io.display(f"making {name} PDF ...")
-        ly = directory / "illustration.ly"
-        if ly.exists():
-            self.io.display(f"removing {ly.trim()} ...")
-            ly.remove()
-        pdf = directory / "illustration.pdf"
-        if pdf.exists():
-            self.io.display(f"removing {pdf.trim()} ...")
-            pdf.remove()
-        maker = directory / "__make_material_pdf__.py"
-        maker.remove()
-        with self.cleanup([maker]):
-            self.io.display(f"writing {maker.trim()} ...")
-            self._copy_boilerplate(directory, maker.name)
-            self.io.display(f"interpreting {maker.trim()} ...")
-            result = self._interpret_file(maker)
-            if ly.is_file():
-                self.io.display(f"found {ly.trim()} ...")
-            if pdf.is_file():
-                self.io.display(f"found {pdf.trim()} ...")
-            self.io.display(f"removing {maker.trim()} ...")
-        stdout_lines, stderr_lines, exit_code = result
-        if exit_code:
-            self.io.display(stderr_lines, raw=True)
-        if pdf.is_file() and open_after:
-            self._open_files([pdf])
-        return exit_code
-
     def _make_package(self, directory):
         asset_type = directory.get_asset_type()
         name = self.io.get(f"enter {asset_type} name")
@@ -2460,7 +2402,7 @@ class AbjadIDE(object):
         Returns integer exit code for Travis tests.
         """
         assert directory.is_definitionspace()
-        if directory.is_material() or directory.is_segment():
+        if directory.is_segment():
             self.io.display("checking definition ...")
             definition = directory / "definition.py"
             if not definition.is_file():
@@ -2758,7 +2700,7 @@ class AbjadIDE(object):
         description="path - duplicate",
         external_directories=True,
         menu_section="path",
-        score_package_path_blacklist=("contents", "material", "segment"),
+        score_package_path_blacklist=("contents", "segment"),
         score_package_paths=True,
         scores_directory=True,
     )
@@ -2900,7 +2842,7 @@ class AbjadIDE(object):
         """
         assert directory.is_definitionspace()
         paths = []
-        if directory.is_material() or directory.is_segment():
+        if directory.is_segment():
             paths.append(directory / "definition.py")
         else:
             for path in directory.list_paths():
@@ -3043,7 +2985,7 @@ class AbjadIDE(object):
         Edits ``.log``.
         """
         assert directory.is_buildspace()
-        if directory.is_material() or directory.is_segment() or directory.is_build():
+        if directory.is_segment() or directory.is_build():
             paths = [directory / ".log"]
         else:
             paths = []
@@ -3957,24 +3899,10 @@ class AbjadIDE(object):
         self._manage_directory(directory.etc)
 
     @Command(
-        "mm",
-        description="directory - materials",
-        menu_section="directory",
-        score_package_paths=True,
-    )
-    def go_to_materials_directory(self, directory: Path) -> None:
-        """
-        Goes to materials directory.
-        """
-        assert directory.is_score_package_path()
-        assert directory.materials is not None
-        self._manage_directory(directory.materials)
-
-    @Command(
         ">",
         description="hop - next package",
         menu_section="hop",
-        score_package_paths=("material", "materials", "segment", "segments"),
+        score_package_paths=("segment", "segments"),
     )
     def go_to_next_package(self, directory: Path) -> None:
         """
@@ -4006,7 +3934,7 @@ class AbjadIDE(object):
         "<",
         description="hop - previous package",
         menu_section="hop",
-        score_package_paths=("material", "materials", "segment", "segments"),
+        score_package_paths=("segment", "segments"),
     )
     def go_to_previous_package(self, directory: Path) -> None:
         """
@@ -4754,11 +4682,7 @@ class AbjadIDE(object):
         """
         assert directory.is_segment() or directory.is_segments()
         if directory.is_segment():
-            if directory.is_material():
-                self._make_material_ly(directory)
-            else:
-                assert directory.is_segment()
-                self._make_segment_ly(directory)
+            self._make_segment_ly(directory)
         else:
             paths = directory.list_paths()
             path_count = len(paths)
@@ -4789,7 +4713,7 @@ class AbjadIDE(object):
                 directory, layout=layout, open_after=open_after
             )
         else:
-            assert directory.is_materials() or directory.is_segments()
+            assert directory.is_segments()
             exit = 0
             paths = directory.list_paths()
             paths = [_ for _ in paths if _.is_dir()]
@@ -5759,7 +5683,7 @@ class AbjadIDE(object):
         Trashes ``definition.py``.
         """
         assert directory.is_definitionspace()
-        if directory.is_material() or directory.is_segment():
+        if directory.is_segment():
             path = directory / "definition.py"
             self._trash_files(path)
         else:

@@ -77,9 +77,6 @@ class Path(abjad.Path):
             for path in self.segments.list_paths():
                 files.append(path / "definition.py")
                 strings.append(path.get_identifier())
-            for path in self.materials.list_paths():
-                files.append(path / "definition.py")
-                strings.append(path.get_identifier())
             for path in self.tools.list_paths():
                 files.append(path)
                 strings.append(path.name)
@@ -99,9 +96,6 @@ class Path(abjad.Path):
                 strings.append(path.name)
         else:
             for path in self.segments.list_paths():
-                files.append(path / "definition.py")
-                strings.append(path.get_identifier())
-            for path in self.materials.list_paths():
                 files.append(path / "definition.py")
                 strings.append(path.get_identifier())
             for path in self.tools.list_paths():
@@ -127,9 +121,6 @@ class Path(abjad.Path):
                 strings.append(path.name)
         else:
             for path in self.segments.list_paths():
-                files.append(path / "illustration.pdf")
-                strings.append(path.get_identifier())
-            for path in self.materials.list_paths():
                 files.append(path / "illustration.pdf")
                 strings.append(path.get_identifier())
             for path in self.etc.list_paths():
