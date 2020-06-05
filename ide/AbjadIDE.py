@@ -3894,9 +3894,7 @@ class AbjadIDE(object):
         """
         Goes to next package.
         """
-        assert (
-            directory.is_segment() or directory.is_segments()
-        )
+        assert directory.is_segment() or directory.is_segments()
         next_package = directory.get_next_package(cyclic=True)
         self._manage_directory(next_package)
 
@@ -3926,9 +3924,7 @@ class AbjadIDE(object):
         """
         Goes to previous package.
         """
-        assert (
-            directory.is_segment() or directory.is_segments()
-        )
+        assert directory.is_segment() or directory.is_segments()
         previous_package = directory.get_previous_package(cyclic=True)
         self._manage_directory(previous_package)
 
