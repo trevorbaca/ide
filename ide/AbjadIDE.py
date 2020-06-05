@@ -894,23 +894,9 @@ class AbjadIDE(object):
                 return
             if response != "y":
                 return
-        if directory.is_tools():
-            if abjad.String(name).is_classfile_name():
-                self._copy_boilerplate(directory, "Maker.py", target_name=target.name)
-                template = target.read_text()
-                template = template.format(class_name=target.stem)
-                target.write_text(template)
-            else:
-                self._copy_boilerplate(
-                    directory, "function.py", target_name=target.name
-                )
-                template = target.read_text()
-                template = template.format(function_name=target.stem)
-                target.write_text(template)
-        else:
-            if not target.parent.exists():
-                target.parent.mkdir()
-            target.write_text("")
+        if not target.parent.exists():
+            target.parent.mkdir()
+        target.write_text("")
 
     def _make_layout_ly(self, path):
         assert path.suffix == ".py"
@@ -4020,25 +4006,6 @@ class AbjadIDE(object):
         assert directory.is_score_package_path()
         assert directory.test is not None
         self._manage_directory(directory.test)
-
-    @Command(
-        "oo",
-        description="directory - tools",
-        menu_section="directory",
-        score_package_paths=True,
-    )
-    def go_to_tools_directory(self, directory: Path) -> None:
-        """
-        Goes to tools directory or tools.py module.
-        """
-        assert directory.is_score_package_path()
-        assert directory.tools is not None
-        if directory.tools.exists():
-            self._manage_directory(directory.tools)
-        else:
-            path = directory.contents / "tools.py"
-            self._open_files([path])
-            self._manage_directory(directory)
 
     @Command(
         "ww",

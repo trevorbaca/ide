@@ -77,9 +77,6 @@ class Path(abjad.Path):
             for path in self.segments.list_paths():
                 files.append(path / "definition.py")
                 strings.append(path.get_identifier())
-            for path in self.tools.list_paths():
-                files.append(path)
-                strings.append(path.name)
         return files, strings
 
     def _find_editable_files(self, force=False):
@@ -98,9 +95,6 @@ class Path(abjad.Path):
             for path in self.segments.list_paths():
                 files.append(path / "definition.py")
                 strings.append(path.get_identifier())
-            for path in self.tools.list_paths():
-                files.append(path)
-                strings.append(path.name)
             for path in self.stylesheets.list_paths():
                 files.append(path)
                 strings.append(path.name)

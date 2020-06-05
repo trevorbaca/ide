@@ -355,7 +355,6 @@ def test_AbjadIDE_new_04():
             "segments",
             "stylesheets",
             "test",
-            "tools",
         ]:
             assert (wrapper.contents / name).exists()
         assert (wrapper.segments / "__init__.py").is_file()
@@ -402,7 +401,6 @@ def test_AbjadIDE_new_05():
             "builds",
             "distribution",
             "etc",
-            "tools",
             "segments",
             "stylesheets",
             "test",
