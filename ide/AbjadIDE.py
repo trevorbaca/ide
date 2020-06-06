@@ -390,12 +390,7 @@ class AbjadIDE(object):
             path.remove()
         segments = path.segments.list_paths()
         if not silent:
-            if segments:
-                view = path.segments.get_metadatum("view")
-                if bool(view):
-                    message = "examining segments in view order ..."
-                    self.io.display(message, indent=indent + 1)
-            else:
+            if not segments:
                 self.io.display("no segments found ...", indent=indent + 1)
             for segment in segments:
                 if not segment.is_segment():
@@ -543,12 +538,7 @@ class AbjadIDE(object):
             path.remove()
         segments = path.segments.list_paths()
         if not silent:
-            if segments:
-                view = path.segments.get_metadatum("view")
-                if bool(view):
-                    message = "examining segments in view order ..."
-                    self.io.display(message, indent=indent + 1)
-            else:
+            if not segments:
                 self.io.display("no segments found ...", indent=indent + 1)
             for segment in segments:
                 if not segment.is_segment():
@@ -937,12 +927,6 @@ class AbjadIDE(object):
         self.io.display(f"writing {target.trim()} ...")
         target.write_text("")
         self._copy_boilerplate(path, "segment_layout.py", target_name="layout.py")
-        paths = path.parent.list_paths()
-        if path not in paths:
-            view = path.parent.get_metadatum("view")
-            if view is not None:
-                path.parent.add_metadatum("_view", view)
-                path.parent.remove_metadatum("view")
 
     def _make_parts_directory(self, directory):
         assert directory.is_builds()
@@ -1225,10 +1209,6 @@ class AbjadIDE(object):
             if path.name == ".gitignore":
                 continue
             path.remove()
-        view = scores.get_metadatum("view", None)
-        if view is not None:
-            scores.add_metadatum("_view", view)
-        scores.remove_metadatum("view")
         score = wrapper.contents
         assert score.exists()
         if not score.builds._assets.exists():
