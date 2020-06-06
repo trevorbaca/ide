@@ -42,8 +42,6 @@ class Path(abjad.Path):
             if argument in Path.test_score_names:
                 arguments.append(Path.configuration.test_scores_directory)
                 arguments.extend(2 * [argument])
-            elif argument == "boilerplate":
-                arguments.append(abjad.abjad_configuration.boilerplate_directory)
             elif argument == "test_scores":
                 arguments.append(Path.configuration.test_scores_directory)
             elif scores is not None:
