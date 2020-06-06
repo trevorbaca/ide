@@ -200,7 +200,7 @@ class AbjadIDE(object):
             raise Exception(message)
 
     def _collect_segment_lys(self, directory):
-        paths = directory.segments._list_paths()
+        paths = directory.segments.list_paths()
         names = [_.name for _ in paths]
         sources, targets = [], []
         for name in names:
@@ -2411,7 +2411,7 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                optimization = path / ".optimization"
+                optimization = Path(path / ".optimization")
                 if optimization.is_file():
                     paths.append(optimization)
         self._check_out_paths(paths)
@@ -2812,7 +2812,7 @@ class AbjadIDE(object):
             paths.append(directory / "definition.py")
         else:
             for path in directory.list_paths():
-                definition_py = path / "definition.py"
+                definition_py = Path(path / "definition.py")
                 if definition_py.is_file():
                     paths.append(definition_py)
         self._open_files(paths)
@@ -2850,7 +2850,7 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ily = path / "illustration.ily"
+                illustration_ily = Path(path / "illustration.ily")
                 if illustration_ily.is_file():
                     paths.append(illustration_ily)
         self._open_files(paths)
@@ -2871,7 +2871,7 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ly = path / "illustration.ly"
+                illustration_ly = Path(path / "illustration.ly")
                 if illustration_ly.is_file():
                     paths.append(illustration_ly)
         self._open_files(paths)
@@ -2956,7 +2956,7 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                illustration_ily = path / ".log"
+                illustration_ily = Path(path / ".log")
                 if illustration_ily.is_file():
                     paths.append(illustration_ily)
         self._open_files(paths, force_vim=True)
@@ -2994,7 +2994,7 @@ class AbjadIDE(object):
         else:
             paths = []
             for path in directory.list_paths():
-                optimization = path / ".optimization"
+                optimization = Path(path / ".optimization")
                 if optimization.is_file():
                     paths.append(optimization)
         self._open_files(paths, force_vim=True)
@@ -3334,6 +3334,7 @@ class AbjadIDE(object):
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = "preface.tex", "generate"
+        path: typing.Union[abjad.Path, Path]
         if directory.is_part():
             file_name = f"{directory.name}-{name}"
             path = directory / file_name
@@ -3478,6 +3479,7 @@ class AbjadIDE(object):
                 self.io.display(f"    {path.trim()}")
         targets = []
         for source in paths:
+            target: typing.Union[abjad.Path, Path]
             target = directory / source.name
             if target.exists():
                 self.io.display(f"existing {target.trim()} ...")
@@ -4893,8 +4895,8 @@ class AbjadIDE(object):
             path = directory / "illustration.pdf"
             self._open_files([path])
         else:
-            for path in directory.list_paths():
-                self.open_illustration_pdf(path)
+            for path_ in directory.list_paths():
+                self.open_illustration_pdf(path_)
 
     @Command(
         "mpo",
@@ -5202,7 +5204,7 @@ class AbjadIDE(object):
         if response != "y":
             complete_words = True
         if directory.is_score_package_path():
-            target = Path(directory.wrapper)
+            target = Path(str(directory.wrapper))
         else:
             target = directory
         lines = self._replace_in_tree(
@@ -5616,8 +5618,8 @@ class AbjadIDE(object):
             path = directory / "definition.py"
             self._trash_files(path)
         else:
-            for path in directory.list_paths():
-                self.trash_definition_py(path)
+            for path_ in directory.list_paths():
+                self.trash_definition_py(path_)
 
     @Command(
         "fcpt",
@@ -5668,8 +5670,8 @@ class AbjadIDE(object):
             path = directory / "illustration.ily"
             self._trash_files(path)
         else:
-            for path in directory.list_paths():
-                self.trash_illustration_ily(path)
+            for path_ in directory.list_paths():
+                self.trash_illustration_ily(path_)
 
     @Command(
         "ilt",
@@ -5686,8 +5688,8 @@ class AbjadIDE(object):
             path = directory / "illustration.ly"
             self._trash_files(path)
         else:
-            for path in directory.list_paths():
-                self.trash_illustration_ly(path)
+            for path_ in directory.list_paths():
+                self.trash_illustration_ly(path_)
 
     @Command(
         "ipt",
@@ -5704,8 +5706,8 @@ class AbjadIDE(object):
             path = directory / "illustration.pdf"
             self._trash_files(path)
         else:
-            for path in directory.list_paths():
-                self.trash_illustration_pdf(path)
+            for path_ in directory.list_paths():
+                self.trash_illustration_pdf(path_)
 
     @Command(
         "llt",

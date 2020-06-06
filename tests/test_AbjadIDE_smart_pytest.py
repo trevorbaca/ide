@@ -29,7 +29,7 @@ def test_AbjadIDE_smart_pytest_01():
     assert "Matching '+ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_smart_pytest_04():
+def test_AbjadIDE_smart_pytest_02():
     """
     Missing pattern.
     """
@@ -39,7 +39,7 @@ def test_AbjadIDE_smart_pytest_04():
     assert "Missing '+' pattern ..." in transcript
 
 
-def test_AbjadIDE_smart_pytest_05():
+def test_AbjadIDE_smart_pytest_03():
     """
     Unmatched pattern.
     """

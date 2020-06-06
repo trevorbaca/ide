@@ -1331,7 +1331,7 @@ def test_AbjadIDE_show_help_11():
     ]
 
 
-def test_AbjadIDE_show_help_13():
+def test_AbjadIDE_show_help_12():
     """
     In wrapper directory.
     """

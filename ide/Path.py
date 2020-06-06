@@ -50,8 +50,6 @@ class Path(abjad.Path):
                     continue
                 if not path.is_file():
                     continue
-                if path.suffix in self.configuration.noneditor_suffixes:
-                    continue
                 files.append(path)
                 strings.append(path.name)
         else:
@@ -123,9 +121,6 @@ class Path(abjad.Path):
             path = self
         else:
             path = self.wrapper
-        test_scores = self.configuration.test_scores_directory
-        if str(self).startswith(str(test_scores)):
-            return self.wrapper
         while str(path) != str(path.parts[0]):
             for path_ in path.iterdir():
                 if path_.name == ".git":

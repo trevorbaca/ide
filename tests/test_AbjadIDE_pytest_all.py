@@ -29,7 +29,7 @@ def test_AbjadIDE_pytest_all_01():
     assert "Matching '++ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_pytest_all_04():
+def test_AbjadIDE_pytest_all_02():
     """
     Handles empty input and junk input.
     """

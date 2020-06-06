@@ -6,25 +6,6 @@ scores = ide.Configuration().test_scores_directory
 
 def test_AbjadIDE_edit_all_01():
     """
-    Edits segment definition files.
-    """
-
-    abjad_ide("red gg @@efin q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@@efin' to 3 files ..." in transcript
-    for name in ["_", "A", "B"]:
-        path = ide.Path(
-            scores, "red_score", "red_score", "segments", name, "definition.py"
-        )
-        assert f"Editing {path.trim()} ..." in transcript
-
-    abjad_ide("red gg @@ q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@@' to 15 files ..." in transcript
-
-
-def test_AbjadIDE_edit_all_02():
-    """
     Handles nonexisting numeric input.
     """
 
@@ -41,7 +22,7 @@ def test_AbjadIDE_edit_all_02():
     assert "Matching '@@99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_edit_all_03():
+def test_AbjadIDE_edit_all_02():
     """
     Handles empty input, junk input and nonfile input.
     """
@@ -49,14 +30,3 @@ def test_AbjadIDE_edit_all_03():
     abjad_ide("@@asdf q")
     transcript = abjad_ide.io.transcript
     assert "Matching '@@asdf' to 0 files ..." in transcript
-
-
-def test_AbjadIDE_edit_all_04():
-    """
-    Provides warning with <= 20 files.
-    """
-
-    abjad_ide("red @@ <return> q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '@@' to " in transcript
-    assert " files ok?> " in transcript

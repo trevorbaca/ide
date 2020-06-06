@@ -51,7 +51,7 @@ def test_AbjadIDE_doctest_all_02():
     assert "Matching '^^ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_04():
+def test_AbjadIDE_doctest_all_03():
     """
     Handles numeric input.
     """
@@ -69,7 +69,7 @@ def test_AbjadIDE_doctest_all_04():
     assert "Matching '^^99' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_05():
+def test_AbjadIDE_doctest_all_04():
     """
     Emtpy and junk addresses.
     """
