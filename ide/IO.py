@@ -19,8 +19,6 @@ class IO(object):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = "Classes"
-
     __slots__ = ("_pending_input", "_transcript")
 
     ### SPECIAL METHODS ###

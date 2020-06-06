@@ -11,108 +11,12 @@ class ScoreTemplate(baca.ScoreTemplate):
 
     ..  container:: example
 
-        >>> template = green_score.ScoreTemplate()
-        >>> path = abjad.Path('green_score', 'stylesheets', 'contexts.ily')
-        >>> lilypond_file = template.__illustrate__(
-        ...     global_staff_size=15,
-        ...     includes=[path],
-        ...     )
-        >>> abjad.show(lilypond_file) # doctest: +SKIP
-
-        >>> abjad.f(lilypond_file[abjad.Score], strict=79)
-        \context Score = "Score"
-        <<
-            \tag BassClarinet.Violin.Viola.Cello                                       %! baca.ScoreTemplate._attach_liypond_tag()
-            \context GlobalContext = "Global_Context"                                  %! abjad.ScoreTemplate._make_global_context()
-            <<                                                                         %! abjad.ScoreTemplate._make_global_context()
-                \context GlobalRests = "Global_Rests"                                  %! abjad.ScoreTemplate._make_global_context()
-                {                                                                      %! abjad.ScoreTemplate._make_global_context()
-                }                                                                      %! abjad.ScoreTemplate._make_global_context()
-                \context GlobalSkips = "Global_Skips"                                  %! abjad.ScoreTemplate._make_global_context()
-                {                                                                      %! abjad.ScoreTemplate._make_global_context()
-                }                                                                      %! abjad.ScoreTemplate._make_global_context()
-            >>                                                                         %! abjad.ScoreTemplate._make_global_context()
-            \context MusicContext = "MusicContext"
-            {
-                \context EnsembleStaffGroup = "EnsembleStaffGroup"
-                <<
-                    \tag BassClarinet                                                  %! baca.ScoreTemplate._attach_liypond_tag()
-                    \context BassClarinetMusicStaff = "BassClarinetMusicStaff"
-                    {
-                        \context BassClarinetMusicVoice = "BassClarinetMusicVoice"
-                        {
-                            \clef "treble"                                             %! abjad.ScoreTemplate.attach_defaults(3)
-                            s1                                                         %! abjad.ScoreTemplate.__illustrate__()
-                        }
-                    }
-                    \tag Violin                                                        %! baca.ScoreTemplate._attach_liypond_tag()
-                    \context ViolinStaffGroup = "ViolinStaffGroup"
-                    <<
-                        \context ViolinRHMusicStaff = "ViolinRHMusicStaff"
-                        {
-                            \context ViolinRHMusicVoice = "ViolinRHMusicVoice"
-                            {
-                                \clef "percussion"                                     %! abjad.ScoreTemplate.attach_defaults(3)
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                        \context ViolinMusicStaff = "ViolinMusicStaff"
-                        {
-                            \context ViolinMusicVoice = "ViolinMusicVoice"
-                            {
-                                \clef "treble"                                         %! abjad.ScoreTemplate.attach_defaults(3)
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                    >>
-                    \tag Viola                                                         %! baca.ScoreTemplate._attach_liypond_tag()
-                    \context ViolaStaffGroup = "ViolaStaffGroup"
-                    <<
-                        \context ViolaRHMusicStaff = "ViolaRHMusicStaff"
-                        {
-                            \context ViolaRHMusicVoice = "ViolaRHMusicVoice"
-                            {
-                                \clef "percussion"                                     %! abjad.ScoreTemplate.attach_defaults(3)
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                        \context ViolaMusicStaff = "ViolaMusicStaff"
-                        {
-                            \context ViolaMusicVoice = "ViolaMusicVoice"
-                            {
-                                \clef "alto"                                           %! abjad.ScoreTemplate.attach_defaults(3)
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                    >>
-                    \tag Cello                                                         %! baca.ScoreTemplate._attach_liypond_tag()
-                    \context CelloStaffGroup = "CelloStaffGroup"
-                    <<
-                        \context CelloRHMusicStaff = "CelloRHMusicStaff"
-                        {
-                            \context CelloRHMusicVoice = "CelloRHMusicVoice"
-                            {
-                                \clef "percussion"                                     %! abjad.ScoreTemplate.attach_defaults(3)
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                        \context CelloMusicStaff = "CelloMusicStaff"
-                        {
-                            \context CelloMusicVoice = "CelloMusicVoice"
-                            {
-                                s1                                                     %! abjad.ScoreTemplate.__illustrate__()
-                            }
-                        }
-                    >>
-                >>
-            }
-        >>
+        >>> green_score.ScoreTemplate()
+        ScoreTemplate()
 
     """
 
     ### CLASS VARIABLES ###
-
-    __documentation_section__ = None
 
     _part_manifest = abjad.PartManifest(
         abjad.Part(section="BassClarinet", section_abbreviation="BCL"),

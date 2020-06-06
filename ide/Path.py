@@ -12,8 +12,6 @@ class Path(abjad.Path):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = "Classes"
-
     address_characters = {
         "@": "file",
         "%": "directory",
@@ -239,18 +237,6 @@ class Path(abjad.Path):
     def scores(self) -> typing.Optional["Path"]:
         """
         Gets scores directory.
-
-        ..  container:: example
-
-            >>> path = ide.Path(
-            ...     '/path/to/scores/my_score/my_score',
-            ...     scores='/path/to/scores',
-            ...     )
-            >>> path.scores
-            Path*('/path/to/scores')
-            >>> path.scores / 'red_score'/ 'red_score' / 'etc'
-            Path*('/path/to/scores/red_score/red_score/etc')
-
         """
         if getattr(self, "_scores", None) is not None:
             result = getattr(self, "_scores")
@@ -303,29 +289,6 @@ class Path(abjad.Path):
     def is_external(self) -> bool:
         """
         Is true when path does not have form of score package path.
-
-        ..  container:: example
-
-            >>> path = ide.Path(
-            ...     '/path/to/scores/my_score/my_score',
-            ...     scores='/path/to/scores',
-            ...     )
-
-            >>> path.builds.is_external()
-            False
-            >>> path.contents.is_external()
-            False
-            >>> path.wrapper.is_external()
-            False
-
-            >>> path.scores.is_external()
-            True
-
-        ..  container:: example
-
-            >>> ide.Path('/path/to/location').is_external()
-            True
-
         """
         if (
             not self.name[0].isalpha()

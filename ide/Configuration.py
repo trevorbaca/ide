@@ -17,8 +17,6 @@ class Configuration(abjad.Configuration):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = "Classes"
-
     __slots__ = (
         "_aliases",
         "_composer_scores_directory",

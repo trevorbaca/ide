@@ -13,8 +13,6 @@ class Test(abjad.FilesystemState):
 
     ### CLASS VARIABLES ###
 
-    __documentation_section__ = "Classes"
-
     configuration = Configuration()
 
     ### SPECIAL METHODS ###
