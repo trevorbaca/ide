@@ -145,7 +145,9 @@ def test_AbjadIDE_new_03():
     """
 
     with ide.Test():
-        directory = ide.Path("green_score", "builds", "arch-a-parts")
+        directory = ide.Path(
+            scores, "green_score", "green_score", "builds", "arch-a-parts"
+        )
         assert not directory.exists()
 
         abjad_ide("gre bb new parts arch-a-parts arch~a ARCH-A y q")

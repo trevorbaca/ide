@@ -1,12 +1,13 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_build_part_pdf_01():
 
     with ide.Test():
-        parts = ide.Path("green_score", "builds", "arch-a-parts")
+        parts = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-parts")
         assert not parts.exists()
 
         abjad_ide(

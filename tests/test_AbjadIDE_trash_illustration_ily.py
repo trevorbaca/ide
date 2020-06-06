@@ -34,7 +34,9 @@ def test_AbjadIDE_trash_illustration_ily_02():
     with ide.Test():
         paths = []
         for name in ["_", "A", "B"]:
-            path = ide.Path("red_score", "segments", name, "illustration.ily")
+            path = ide.Path(
+                scores, "red_score", "red_score", "segments", name, "illustration.ily"
+            )
             path.write_text("")
             assert path.is_file()
             paths.append(path)

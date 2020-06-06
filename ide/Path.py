@@ -1,5 +1,3 @@
-import os
-import pathlib
 import typing
 
 import abjad
@@ -25,38 +23,6 @@ class Path(abjad.Path):
     }
 
     configuration = Configuration()
-
-    test_score_names = ("blue_score", "green_score", "red_score")
-
-    ### CONSTRUCTOR ###
-
-    def __new__(class_, *arguments, scores=None):
-        if not arguments:
-            raise Exception("must provide at least one argument.")
-        argument = arguments[0]
-        _arguments = arguments[1:]
-        if isinstance(argument, pathlib.Path) or os.sep in argument:
-            #self = pathlib.Path.__new__(class_, argument)
-            self = pathlib.Path.__new__(class_, *arguments)
-        else:
-            arguments = []
-            if argument in Path.test_score_names:
-                arguments.append(Path.configuration.test_scores_directory)
-                arguments.extend(2 * [argument])
-            elif argument == "test_scores":
-                arguments.append(Path.configuration.test_scores_directory)
-            elif scores is not None:
-                arguments.append(scores)
-                arguments.extend(2 * [argument])
-            else:
-                arguments.append(abjad.abjad_configuration.composer_scores_directory)
-                arguments.extend(2 * [argument])
-            arguments.extend(_arguments)
-            self = pathlib.Path.__new__(class_, *arguments)
-        if scores is not None:
-            scores = type(self)(scores)
-        self._scores = scores
-        return self
 
     ### PRIVATE METHODS ###
 

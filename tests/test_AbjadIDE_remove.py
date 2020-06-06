@@ -80,7 +80,7 @@ def test_AbjadIDE_remove_02():
     """
 
     with ide.Test():
-        path = ide.Path("blue_score").wrapper
+        path = ide.Path(scores, "blue_score")
         assert path.is_dir()
 
         abjad_ide("rm blu remove q")

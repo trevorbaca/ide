@@ -2,6 +2,7 @@ import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 tag = abjad.tags.FIGURE_NAME
@@ -14,7 +15,7 @@ def test_AbjadIDE_show_figure_names_01():
 
     with ide.Test():
 
-        build = ide.Path("green_score", "builds", "arch-a-score")
+        build = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-score")
         path = build / "_segments" / "segment--.ly"
 
         abjad_ide("gre bb arch-a-score ggc q")
@@ -46,7 +47,9 @@ def test_AbjadIDE_show_figure_names_02():
 
     with ide.Test():
 
-        path = ide.Path("green_score", "segments", "_", "illustration.ly")
+        path = ide.Path(
+            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+        )
         assert path.is_file()
 
         abjad_ide("gre %_ fnh q")

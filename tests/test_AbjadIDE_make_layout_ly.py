@@ -35,7 +35,7 @@ def test_AbjadIDE_make_layout_ly_02():
     """
 
     with ide.Test():
-        parts = ide.Path("green_score", "builds", "arch-a-parts")
+        parts = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-parts")
         assert not parts.exists()
         part_directory = parts / "bass-clarinet"
         path = part_directory / "bass-clarinet-layout.ly"

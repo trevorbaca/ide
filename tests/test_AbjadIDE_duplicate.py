@@ -46,7 +46,7 @@ def test_AbjadIDE_duplicate_04():
     """
 
     with ide.Test():
-        source = ide.Path("red_score").wrapper
+        source = ide.Path(scores, "red_score")
         assert source.is_dir()
         target = source.with_name("purple_score")
         target.remove()
@@ -78,7 +78,7 @@ def test_AbjadIDE_duplicate_06():
     """
 
     with ide.Test():
-        source = ide.Path("blue_score", "segments", "A")
+        source = ide.Path(scores, "blue_score", "blue_score", "segments", "A")
         assert source.is_dir()
         target = source.with_name("B")
         target.remove()
