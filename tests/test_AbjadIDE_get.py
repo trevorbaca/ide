@@ -180,27 +180,3 @@ def test_AbjadIDE_get_06():
         assert f"Will write {target.trim()} ..." in transcript
         assert "Ok?> y" in transcript
         assert f"Writing {target.trim()} ..." in transcript
-
-
-def test_AbjadIDE_get_07():
-    """
-    In test directory.
-    """
-
-    with ide.Test():
-        source = ide.Path("red_score", "test", "test_segments.py")
-        assert source.is_file()
-        target = source.with_score("blue_score")
-        target.remove()
-
-        abjad_ide("blu tt get red _seg y q")
-        assert target.exists()
-        transcript = abjad_ide.io.transcript
-        header = "Blue Score (2017) : test (empty) : get files from ..."
-        assert header in transcript
-        assert "> red" in transcript
-        assert "> _seg" in transcript
-        assert f"Getting {source.trim()} ..." in transcript
-        assert f"Will write {target.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-        assert f"Writing {target.trim()} ..." in transcript

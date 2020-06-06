@@ -36,10 +36,6 @@ def test_AbjadIDE_git_diff_01():
     transcript = abjad_ide.io.transcript
     assert "Running git diff . ..." in transcript
 
-    abjad_ide("red tt diff q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git diff . ..." in transcript
-
 
 def test_AbjadIDE_git_diff_02():
     """

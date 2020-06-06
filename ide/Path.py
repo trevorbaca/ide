@@ -133,10 +133,6 @@ class Path(abjad.Path):
                     continue
                 files.append(path)
                 strings.append(path.name)
-        else:
-            for path in self.test.list_paths():
-                files.append(path)
-                strings.append(path.name)
         return files, strings
 
     def _get_added_asset_paths(self):

@@ -32,10 +32,6 @@ def test_AbjadIDE_git_push_01():
     transcript = abjad_ide.io.transcript
     assert "Running git push ..." in transcript
 
-    abjad_ide("red tt push q")
-    transcript = abjad_ide.io.transcript
-    assert "Running git push ..." in transcript
-
     abjad_ide("red yy push q")
     transcript = abjad_ide.io.transcript
     assert "Running git push ..." in transcript

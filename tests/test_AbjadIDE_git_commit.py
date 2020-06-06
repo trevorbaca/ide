@@ -36,10 +36,6 @@ def test_AbjadIDE_git_commit_01():
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript
 
-    abjad_ide("red tt ci q")
-    transcript = abjad_ide.io.transcript
-    assert "> ci" in transcript
-
 
 def test_AbjadIDE_git_commit_02():
     """

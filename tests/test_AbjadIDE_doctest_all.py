@@ -51,16 +51,6 @@ def test_AbjadIDE_doctest_all_02():
     assert "Matching '^^ST' to 0 files ..." in transcript
 
 
-def test_AbjadIDE_doctest_all_03():
-    """
-    In test directory.
-    """
-
-    abjad_ide("red tt ^^ q")
-    transcript = abjad_ide.io.transcript
-    assert "Matching '^^' to 0 files ..." in transcript
-
-
 def test_AbjadIDE_doctest_all_04():
     """
     Handles numeric input.

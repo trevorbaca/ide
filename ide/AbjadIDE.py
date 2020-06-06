@@ -3990,20 +3990,6 @@ class AbjadIDE(object):
         self._manage_directory(directory.stylesheets)
 
     @Command(
-        "tt",
-        description="directory - test",
-        menu_section="directory",
-        score_package_paths=True,
-    )
-    def go_to_test_directory(self, directory: Path) -> None:
-        """
-        Goes to test directory.
-        """
-        assert directory.is_score_package_path()
-        assert directory.test is not None
-        self._manage_directory(directory.test)
-
-    @Command(
         "ww",
         description="directory - wrapper",
         menu_section="directory",
