@@ -1,12 +1,15 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_interpret_score_tex_01():
 
     with ide.Test():
-        source = ide.Path("red_score", "builds", "letter-score", "score.tex")
+        source = ide.Path(
+            scores, "red_score", "red_score", "builds", "letter-score", "score.tex"
+        )
         target = source.with_suffix(".pdf")
         target.remove()
 
@@ -33,7 +36,7 @@ def test_AbjadIDE_interpret_score_tex_02():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score")
+        path = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
         path /= "front-cover.pdf"
         path.remove()
 

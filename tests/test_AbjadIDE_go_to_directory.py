@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_go_to_directory_01():
@@ -94,7 +95,7 @@ def test_AbjadIDE_go_to_directory_09():
 
     abjad_ide("red gg %1 q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "segments", "_")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "_")
     assert f"Matching '%1' to {path.trim()} ..." in transcript
 
     abjad_ide("red gg %99 q")

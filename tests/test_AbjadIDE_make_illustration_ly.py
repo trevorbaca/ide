@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_make_illustration_ly_01():
@@ -9,7 +10,7 @@ def test_AbjadIDE_make_illustration_ly_01():
     """
 
     with ide.Test():
-        segment = ide.Path("red_score", "segments", "A")
+        segment = ide.Path(scores, "red_score", "red_score", "segments", "A")
         ly = segment / "illustration.ly"
         ly.remove()
         maker = segment / "__make_segment_ly__.py"

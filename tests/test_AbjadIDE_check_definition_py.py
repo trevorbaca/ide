@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_check_definition_py_03():
@@ -8,7 +9,7 @@ def test_AbjadIDE_check_definition_py_03():
     In segment directory.
     """
 
-    path = ide.Path("red_score", "segments", "A", "definition.py")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
     abjad_ide("red %A dpc q")
     transcript = abjad_ide.io.transcript
     assert f"{path.trim()} ... OK" in transcript
@@ -23,6 +24,8 @@ def test_AbjadIDE_check_definition_py_04():
     abjad_ide("red gg dpc q")
     transcript = abjad_ide.io.transcript
     for name in ["_", "A", "B"]:
-        path = ide.Path("red_score", "segments", name, "definition.py")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", name, "definition.py"
+        )
         assert f"{path.trim()} ... OK" in transcript
     assert "Total time " in transcript

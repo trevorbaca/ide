@@ -1,12 +1,13 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_front_cover_tex_01():
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score")
+        path = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
         path /= "front-cover.tex"
         assert path.is_file()
 

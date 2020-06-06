@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_open_illustration_pdf_01():
@@ -10,7 +11,9 @@ def test_AbjadIDE_open_illustration_pdf_01():
 
     with ide.Test():
 
-        path = ide.Path("red_score", "segments", "A", "illustration.pdf")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "illustration.pdf"
+        )
         assert not path.exists()
 
         path.write_text("")
@@ -30,7 +33,9 @@ def test_AbjadIDE_open_illustration_pdf_02():
 
         paths = []
         for name in ["_", "A", "B"]:
-            path = ide.Path("red_score", "segments", name, "illustration.pdf")
+            path = ide.Path(
+                scores, "red_score", "red_score", "segments", name, "illustration.pdf"
+            )
             paths.append(path)
             assert not path.exists()
             path.write_text("")

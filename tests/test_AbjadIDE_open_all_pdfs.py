@@ -1,16 +1,21 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_open_all_pdfs_01():
 
     for name in ["_", "A", "B"]:
-        path = ide.Path("red_score", "segments", name, "illustration.pdf")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", name, "illustration.pdf"
+        )
         path.remove()
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "_", "illustration.pdf")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "_", "illustration.pdf"
+        )
 
         abjad_ide("red %_ ipm q")
         assert path.is_file()

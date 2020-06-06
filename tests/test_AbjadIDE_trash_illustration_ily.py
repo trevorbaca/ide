@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_illustration_ily_01():
@@ -9,7 +10,9 @@ def test_AbjadIDE_trash_illustration_ily_01():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "A", "illustration.ily")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "illustration.ily"
+        )
         path.write_text("")
         assert path.is_file()
 

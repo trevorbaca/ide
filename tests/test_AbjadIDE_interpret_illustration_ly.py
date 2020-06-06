@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_interpret_illustration_ly_01():
@@ -11,7 +12,9 @@ def test_AbjadIDE_interpret_illustration_ly_01():
     with ide.Test():
         sources = []
         for name in ["_", "A", "B"]:
-            path = ide.Path("red_score", "segments", name, "illustration.ly")
+            path = ide.Path(
+                scores, "red_score", "red_score", "segments", name, "illustration.ly"
+            )
             sources.append(path)
         targets = [_.with_suffix(".pdf") for _ in sources]
         for target in targets:
@@ -46,7 +49,9 @@ def test_AbjadIDE_interpret_illustration_ly_02():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "segments", "A", "illustration.ly")
+        source = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "illustration.ly"
+        )
         target = source.with_suffix(".pdf")
         target.remove()
 

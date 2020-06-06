@@ -1,12 +1,13 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_generate_front_cover_tex_01():
 
     with ide.Test():
-        target = ide.Path("red_score", "builds", "letter-score")
+        target = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
         target /= "front-cover.tex"
         target.remove()
 

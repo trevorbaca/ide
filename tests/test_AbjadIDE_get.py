@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_get_01():
@@ -9,7 +10,7 @@ def test_AbjadIDE_get_01():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "builds", "letter-score")
+        source = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
         source /= "front-cover.tex"
         assert source.is_file()
         target = source.with_score("blue_score")
@@ -37,7 +38,9 @@ def test_AbjadIDE_get_02():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "distribution", "red-score.pdf")
+        source = ide.Path(
+            scores, "red_score", "red_score", "distribution", "red-score.pdf"
+        )
         assert source.is_file()
         target = source.with_score("blue_score")
         target.remove()
@@ -65,7 +68,7 @@ def test_AbjadIDE_get_03():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "etc", "notes.txt")
+        source = ide.Path(scores, "red_score", "red_score", "etc", "notes.txt")
         assert source.is_file()
         target = source.with_score("blue_score")
         target.remove()
@@ -92,7 +95,9 @@ def test_AbjadIDE_get_04():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "segments", "A", "definition.py")
+        source = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "definition.py"
+        )
         assert source.is_file()
         target = source.with_parent("B")
         target.remove()
@@ -137,7 +142,7 @@ def test_AbjadIDE_get_05():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "segments", "B")
+        source = ide.Path(scores, "red_score", "red_score", "segments", "B")
         assert source.is_dir()
         target = source.with_score("blue_score")
         target.remove()
@@ -164,7 +169,9 @@ def test_AbjadIDE_get_06():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "stylesheets", "stylesheet.ily")
+        source = ide.Path(
+            scores, "red_score", "red_score", "stylesheets", "stylesheet.ily"
+        )
         assert source.is_file()
         target = source.with_score("blue_score")
         target.remove()

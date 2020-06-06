@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_git_pull_01():
@@ -44,6 +45,9 @@ def test_AbjadIDE_git_pull_02():
 
     abjad_ide("pull q")
     transcript = abjad_ide.io.transcript
-    for path in [ide.Path("red_score"), ide.Path("blue_score")]:
+    for path in [
+        ide.Path(scores, "red_score", "red_score"),
+        ide.Path(scores, "blue_score", "blue_score"),
+    ]:
         assert f"{path.wrapper} ..." in transcript
         assert "Running git pull ..." in transcript

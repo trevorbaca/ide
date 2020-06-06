@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_nake_illustration_pdf_01():
@@ -9,7 +10,7 @@ def test_AbjadIDE_nake_illustration_pdf_01():
     """
 
     with ide.Test():
-        directory = ide.Path("red_score", "segments", "A")
+        directory = ide.Path(scores, "red_score", "red_score", "segments", "A")
         ly = directory / "illustration.ly"
         ly.remove()
         pdf = directory / "illustration.pdf"

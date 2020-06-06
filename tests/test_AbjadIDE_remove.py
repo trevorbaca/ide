@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_remove_01():
@@ -9,7 +10,7 @@ def test_AbjadIDE_remove_01():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score")
+        path = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
         target_1 = path / "back-cover.tex"
         assert target_1.is_file()
         target_2 = path / "front-cover.tex"
@@ -97,8 +98,8 @@ def test_AbjadIDE_remove_03():
     """
 
     with ide.Test():
-        path_1 = ide.Path("blue_score").wrapper
-        path_2 = ide.Path("red_score").wrapper
+        path_1 = ide.Path(scores, "blue_score")
+        path_2 = ide.Path(scores, "red_score")
 
         abjad_ide("rm blu,red remove~2 q")
         for line in [
@@ -121,7 +122,9 @@ def test_AbjadIDE_remove_04():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "stylesheets", "stylesheet.ily")
+        path = ide.Path(
+            scores, "red_score", "red_score", "stylesheets", "stylesheet.ily"
+        )
 
         abjad_ide("red yy rm sheet q")
         transcript = abjad_ide.io.transcript

@@ -1,14 +1,15 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_copy_to_clipboard_01():
 
     abjad_ide("cbc Red,Blue q")
     transcript = abjad_ide.io.transcript
-    red_score_wrapper = ide.Path("red_score").wrapper
-    blue_score_wrapper = ide.Path("blue_score").wrapper
+    red_score_wrapper = ide.Path(scores, "red_score")
+    blue_score_wrapper = ide.Path(scores, "blue_score")
     assert red_score_wrapper in abjad_ide.clipboard
     assert blue_score_wrapper in abjad_ide.clipboard
     assert "Select packages for clipboard> Red,Blue" in transcript

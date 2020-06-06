@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_definition_py_01():
@@ -9,7 +10,9 @@ def test_AbjadIDE_trash_definition_py_01():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "A", "definition.py")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "definition.py"
+        )
         assert path.is_file()
 
         abjad_ide("red %A dpt q")
@@ -29,7 +32,9 @@ def test_AbjadIDE_trash_definition_py_02():
 
     with ide.Test():
         paths = [
-            ide.Path("red_score", "segments", name, "definition.py")
+            ide.Path(
+                scores, "red_score", "red_score", "segments", name, "definition.py"
+            )
             for name in ["_", "A", "B"]
         ]
         for path in paths:

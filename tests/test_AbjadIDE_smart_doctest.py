@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_smart_doctest_01():
@@ -18,7 +19,7 @@ def test_AbjadIDE_smart_doctest_01():
 
     abjad_ide("red ^A q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path("red_score", "segments", "A", "definition.py")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
     assert f"Matching '^A' to {path.trim()} ..." in transcript
 
 

@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_edit_all_01():
@@ -12,7 +13,9 @@ def test_AbjadIDE_edit_all_01():
     transcript = abjad_ide.io.transcript
     assert "Matching '@@efin' to 3 files ..." in transcript
     for name in ["_", "A", "B"]:
-        path = ide.Path("red_score", "segments", name, "definition.py")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", name, "definition.py"
+        )
         assert f"Editing {path.trim()} ..." in transcript
 
     abjad_ide("red gg @@ q")

@@ -1,12 +1,15 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_generate_score_tex_01():
 
     with ide.Test():
-        target = ide.Path("red_score", "builds", "letter-score", "score.tex")
+        target = ide.Path(
+            scores, "red_score", "red_score", "builds", "letter-score", "score.tex"
+        )
         target.remove()
 
         abjad_ide("red %letter stg q")

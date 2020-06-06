@@ -1,13 +1,16 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_generate_layout_py_01():
     """In segment directory."""
 
     with ide.Test():
-        target = ide.Path("red_score", "segments", "A", "layout.py")
+        target = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "layout.py"
+        )
         assert target.is_file()
         target.remove()
 

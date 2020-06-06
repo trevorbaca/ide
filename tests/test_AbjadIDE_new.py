@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_new_01():
@@ -8,7 +9,7 @@ def test_AbjadIDE_new_01():
     Makes build directory.
     """
 
-    build = ide.Path("red_score", "builds", "arch-a-score")
+    build = ide.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
     with ide.Test(remove=[build]):
 
         abjad_ide("red bb new score arch-a-score arch~a $80 ARCH-A y q")
@@ -104,7 +105,7 @@ def test_AbjadIDE_new_02():
     Makes build directory. Ignores empty metadata.
     """
 
-    path = ide.Path("red_score", "builds", "arch-a-score")
+    path = ide.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
     with ide.Test(remove=[path]):
 
         abjad_ide("red bb new score arch-a-score arch~a <return> <return> y q")
@@ -334,7 +335,7 @@ def test_AbjadIDE_new_04():
 
         abjad_ide("new Purple~Score q")
         transcript = abjad_ide.io.transcript
-        wrapper = ide.Path("test_scores") / "purple_score"
+        wrapper = ide.Configuration().test_scores_directory / "purple_score"
         assert wrapper.is_dir()
         for name in [
             ".gitignore",
@@ -376,7 +377,7 @@ def test_AbjadIDE_new_05():
     """
 
     with ide.Test():
-        wrapper = ide.Path("test_scores") / "purple_score"
+        wrapper = ide.Configuration().test_scores_directory / "purple_score"
         wrapper.remove()
         wrapper.mkdir()
         assert wrapper.is_dir()
@@ -422,7 +423,7 @@ def test_AbjadIDE_new_06():
     Makes score package. Coerces package name.
     """
 
-    package = ide.Path("test_scores") / "purple_score"
+    package = ide.Configuration().test_scores_directory / "purple_score"
 
     with ide.Test(remove=[package]):
 
@@ -450,7 +451,7 @@ def test_AbjadIDE_new_07():
     Makes segment directory.
     """
 
-    path = ide.Path("red_score", "segments", "segment_04")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "segment_04")
     with ide.Test(remove=[path]):
 
         abjad_ide("red gg new segment~04 q")
@@ -479,7 +480,9 @@ def test_AbjadIDE_new_08():
     Makes stylesheet.
     """
 
-    path = ide.Path("red_score", "stylesheets", "new-stylesheet.ily")
+    path = ide.Path(
+        scores, "red_score", "red_score", "stylesheets", "new-stylesheet.ily"
+    )
     with ide.Test(remove=[path]):
 
         abjad_ide("red yy new new~stylesheet y q")

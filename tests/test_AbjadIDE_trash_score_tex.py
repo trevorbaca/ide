@@ -1,12 +1,15 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_score_tex_01():
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score", "score.tex")
+        path = ide.Path(
+            scores, "red_score", "red_score", "builds", "letter-score", "score.tex"
+        )
         assert path.is_file()
 
         abjad_ide("red %letter stt q")

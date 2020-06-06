@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_make_layout_ly_01():
@@ -9,7 +10,9 @@ def test_AbjadIDE_make_layout_ly_01():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score", "layout.ly")
+        path = ide.Path(
+            scores, "red_score", "red_score", "builds", "letter-score", "layout.ly"
+        )
         assert path.is_file()
         path.remove()
         assert not path.exists()
@@ -63,7 +66,7 @@ def test_AbjadIDE_make_layout_ly_03():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "A", "layout.ly")
+        path = ide.Path(scores, "red_score", "red_score", "segments", "A", "layout.ly")
         assert path.is_file()
         path.remove()
         assert not path.exists()

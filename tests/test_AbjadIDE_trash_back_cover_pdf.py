@@ -1,12 +1,13 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_back_cover_pdf_01():
 
     with ide.Test():
-        path = ide.Path("red_score")
+        path = ide.Path(scores, "red_score", "red_score")
         path = path / "builds" / "letter-score" / "back-cover.pdf"
         assert not path.exists()
 

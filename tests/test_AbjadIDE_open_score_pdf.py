@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_open_score_pdf_01():
@@ -10,7 +11,7 @@ def test_AbjadIDE_open_score_pdf_01():
 
     abjad_ide("red spo q")
     transcript = abjad_ide.io.transcript
-    target = ide.Path("red_score", "distribution", "red-score.pdf")
+    target = ide.Path(scores, "red_score", "red_score", "distribution", "red-score.pdf")
     assert f"Opening {target.trim()} ..." in transcript
 
 
@@ -39,5 +40,5 @@ def test_AbjadIDE_open_score_pdf_04():
 
     abjad_ide("spo q")
     transcript = abjad_ide.io.transcript
-    target = ide.Path("red_score", "distribution", "red-score.pdf")
+    target = ide.Path(scores, "red_score", "red_score", "distribution", "red-score.pdf")
     assert f"Opening {target.trim()} ..." in transcript

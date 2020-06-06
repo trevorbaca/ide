@@ -36,7 +36,8 @@ class Path(abjad.Path):
         argument = arguments[0]
         _arguments = arguments[1:]
         if isinstance(argument, pathlib.Path) or os.sep in argument:
-            self = pathlib.Path.__new__(class_, argument)
+            #self = pathlib.Path.__new__(class_, argument)
+            self = pathlib.Path.__new__(class_, *arguments)
         else:
             arguments = []
             if argument in Path.test_score_names:

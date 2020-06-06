@@ -1,12 +1,15 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_trash_layout_py_01():
 
     with ide.Test():
-        path = ide.Path("red_score", "builds", "letter-score", "layout.py")
+        path = ide.Path(
+            scores, "red_score", "red_score", "builds", "letter-score", "layout.py"
+        )
         assert path.is_file()
 
         abjad_ide("red %let lpt q")

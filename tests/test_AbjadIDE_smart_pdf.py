@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_smart_pdf_01():
@@ -9,7 +10,9 @@ def test_AbjadIDE_smart_pdf_01():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "A", "illustration.pdf")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "A", "illustration.pdf"
+        )
 
         abjad_ide("red %A ipm q")
         assert path.is_file()
@@ -25,7 +28,9 @@ def test_AbjadIDE_smart_pdf_02():
     """
 
     with ide.Test():
-        path = ide.Path("red_score", "segments", "_", "illustration.pdf")
+        path = ide.Path(
+            scores, "red_score", "red_score", "segments", "_", "illustration.pdf"
+        )
 
         abjad_ide("red %_ ipm q")
         assert path.is_file()

@@ -1,6 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
+scores = ide.Configuration().test_scores_directory
 
 
 def test_AbjadIDE_duplicate_01():
@@ -99,7 +100,9 @@ def test_AbjadIDE_duplicate_07():
     """
 
     with ide.Test():
-        source = ide.Path("red_score", "stylesheets", "stylesheet.ily")
+        source = ide.Path(
+            scores, "red_score", "red_score", "stylesheets", "stylesheet.ily"
+        )
         assert source.is_file()
         target = source.with_name("new-stylesheet.ily")
         target.remove()
