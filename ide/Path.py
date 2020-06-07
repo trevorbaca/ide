@@ -228,22 +228,22 @@ class Path(abjad.Path):
             result.append(document_name)
         return result
 
-    @property
-    def scores(self) -> typing.Optional["Path"]:
-        """
-        Gets scores directory.
-        """
-        if getattr(self, "_scores", None) is not None:
-            result = getattr(self, "_scores")
-            result._scores = getattr(self, "_scores")
-            return result
-        for scores in (
-            self.configuration.test_scores_directory,
-            abjad.abjad_configuration.composer_scores_directory,
-        ):
-            if str(self).startswith(str(scores)):
-                return type(self)(scores)
-        return None
+    #    @property
+    #    def scores(self) -> typing.Optional["Path"]:
+    #        """
+    #        Gets scores directory.
+    #        """
+    #        if getattr(self, "_scores", None) is not None:
+    #            result = getattr(self, "_scores")
+    #            result._scores = getattr(self, "_scores")
+    #            return result
+    #        for scores in (
+    #            self.configuration.test_scores_directory,
+    #            abjad.abjad_configuration.composer_scores_directory,
+    #        ):
+    #            if str(self).startswith(str(scores)):
+    #                return type(self)(scores)
+    #        return None
 
     ### PUBLIC METHODS ###
 
