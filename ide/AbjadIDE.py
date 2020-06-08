@@ -1364,8 +1364,14 @@ class AbjadIDE(object):
             self.io.display(f"removing {maker.trim()} ...")
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
-            print(stdout_lines)
-            print(stderr_lines)
+            print()
+            print("STDOUT:")
+            for line in stdout_lines:
+                print(line)
+            print("STDERR:")
+            for line in stderr_lines:
+                print(line)
+            print()
             self.io.display(stderr_lines, raw=True)
             return exit_code
         if pdf.is_file() and open_after:
@@ -1915,7 +1921,7 @@ class AbjadIDE(object):
             ily_old = directory / "illustration.old.ily"
             if ily.exists():
                 shutil.copyfile(ily, ily_old)
-            exit_code = abjad_ide.make_illustration_pdf(directory, open_after=False,)
+            exit_code = abjad_ide.make_illustration_pdf(directory, open_after=False)
             if exit_code != 0:
                 sys.exit(exit_code)
             if not ly_old.exists():
