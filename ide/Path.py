@@ -2,8 +2,6 @@ import typing
 
 import abjad
 
-from .Configuration import Configuration
-
 
 class Path(abjad.Path):
     """
@@ -19,8 +17,6 @@ class Path(abjad.Path):
         "*": "PDF",
         "+": "test file",
     }
-
-    configuration = Configuration()
 
     ### PRIVATE METHODS ###
 
@@ -228,23 +224,6 @@ class Path(abjad.Path):
             result.append(document_name)
         return result
 
-    #    @property
-    #    def scores(self) -> typing.Optional["Path"]:
-    #        """
-    #        Gets scores directory.
-    #        """
-    #        if getattr(self, "_scores", None) is not None:
-    #            result = getattr(self, "_scores")
-    #            result._scores = getattr(self, "_scores")
-    #            return result
-    #        for scores in (
-    #            self.configuration.test_scores_directory,
-    #            abjad.abjad_configuration.composer_scores_directory,
-    #        ):
-    #            if str(self).startswith(str(scores)):
-    #                return type(self)(scores)
-    #        return None
-
     ### PUBLIC METHODS ###
 
     def get_eol_measure_numbers(self) -> typing.Optional[typing.List[int]]:
@@ -280,28 +259,6 @@ class Path(abjad.Path):
         if parts and not self.list_paths():
             parts[-1] += " (empty)"
         return " : ".join(parts)
-
-    def is_external(self) -> bool:
-        """
-        Is true when path does not have form of score package path.
-        """
-        if (
-            not self.name[0].isalpha()
-            and not self.name == "_assets"
-            and not self.name == "_segments"
-            and not self.parent.name == "segments"
-        ):
-            return True
-        for scores in (
-            abjad.abjad_configuration.composer_scores_directory,
-            self.configuration.test_scores_directory,
-            getattr(self, "_scores", None),
-        ):
-            if str(self) == str(scores):
-                return True
-            if str(self).startswith(str(scores)):
-                return False
-        return True
 
     def is_prototype(self, prototype) -> bool:
         """
