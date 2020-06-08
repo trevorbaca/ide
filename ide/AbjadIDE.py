@@ -1364,14 +1364,6 @@ class AbjadIDE(object):
             self.io.display(f"removing {maker.trim()} ...")
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
-            print()
-            print("STDOUT:")
-            for line in stdout_lines:
-                print(line)
-            print("STDERR:")
-            for line in stderr_lines:
-                print(line)
-            print()
             self.io.display(stderr_lines, raw=True)
             return exit_code
         if pdf.is_file() and open_after:
