@@ -324,7 +324,7 @@ class Menu(object):
 
     @staticmethod
     def from_directory(
-        directory, aliases=None, io=None, navigations=None, sections=None
+        directory, header, aliases=None, io=None, navigations=None, sections=None
     ) -> "Menu":
         """
         Makes menu from ``directory``.
@@ -350,7 +350,8 @@ class Menu(object):
             sections.append(section)
         menu = Menu(
             aliases=aliases,
-            header=directory.get_header(),
+            # header=directory.get_header(),
+            header=header,
             io=io,
             loop=True,
             navigations=navigations,

@@ -239,27 +239,6 @@ class Path(abjad.Path):
             eol_measure_numbers.append(final_measure_number)
         return eol_measure_numbers
 
-    def get_header(self) -> str:
-        """
-        Gets menu header.
-        """
-        if self.is_scores():
-            return "Abjad IDE : scores"
-        if self.is_external():
-            header = f"Abjad IDE : {self}"
-            if not self.list_paths():
-                header += " (empty)"
-            return header
-        parts = [self.contents.get_title()]
-        if self.is_wrapper():
-            parts.append("wrapper")
-        elif not self.is_contents():
-            parts.extend(self.relative_to(self.contents).parts[:-1])
-            parts.append(self.get_identifier())
-        if parts and not self.list_paths():
-            parts[-1] += " (empty)"
-        return " : ".join(parts)
-
     def is_prototype(self, prototype) -> bool:
         """
         Is true when path is ``prototype``.

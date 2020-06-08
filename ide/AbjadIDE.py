@@ -235,6 +235,25 @@ class AbjadIDE(object):
         template = template.format(**values)
         target.write_text(template)
 
+    @staticmethod
+    def _directory_to_header(directory):
+        if directory.is_scores():
+            return "Abjad IDE : scores"
+        if directory.is_external():
+            header = f"Abjad IDE : {directory}"
+            if not directory.list_paths():
+                header += " (empty)"
+            return header
+        parts = [directory.contents.get_title()]
+        if directory.is_wrapper():
+            parts.append("wrapper")
+        elif not directory.is_contents():
+            parts.extend(directory.relative_to(directory.contents).parts[:-1])
+            parts.append(directory.get_identifier())
+        if parts and not directory.list_paths():
+            parts[-1] += " (empty)"
+        return " : ".join(parts)
+
     def _display_lilypond_log_errors(self, log=None):
         if log is None:
             log = abjad.abjad_configuration.lilypond_log_file_path
@@ -1423,8 +1442,10 @@ class AbjadIDE(object):
             self._previous_directory = self.current_directory
             self._current_directory = directory
         sections = self._make_command_sections(directory)
+        header = self._directory_to_header(directory)
         menu = Menu.from_directory(
             directory,
+            header,
             aliases=self.aliases,
             io=self.io,
             navigations=self.navigations,
@@ -3411,7 +3432,8 @@ class AbjadIDE(object):
                 if definition.is_file():
                     items.append((definition.trim(), definition))
             label = directory.get_asset_type()
-            header = directory.get_header()
+            # header = directory.get_header()
+            header = self._directory_to_header(directory)
             header += f" : get {label} ..."
         if not items:
             scores_directory = directory.scores
@@ -3419,7 +3441,8 @@ class AbjadIDE(object):
             for path in scores_directory.list_paths():
                 items.append((path.get_identifier(), path))
             label = abjad.String(directory.get_asset_type()).pluralize()
-            header = directory.get_header() + f" : get {label} from ..."
+            # header = directory.get_header() + f" : get {label} from ..."
+            header = self._directory_to_header(directory) + f" : get {label} from ..."
             selector = self._make_selector(
                 aliases=self.aliases,
                 header=header,
@@ -3452,7 +3475,8 @@ class AbjadIDE(object):
             else:
                 for path in cousin.list_paths():
                     items.append((path.get_identifier(), path))
-            header = directory.get_header()
+            # header = directory.get_header()
+            header = self._directory_to_header(directory)
             header += f" : get {score.get_identifier()} {label} ..."
         selector = self._make_selector(
             aliases=self.aliases,
