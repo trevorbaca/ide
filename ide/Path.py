@@ -204,26 +204,6 @@ class Path(abjad.Path):
         with abjad.TemporaryDirectoryChange(directory=path):
             abjad.IOManager.spawn_subprocess(command)
 
-    ### PUBLIC PROPERTIES ###
-
-    @property
-    def document_names(self) -> typing.Optional[typing.List[str]]:
-        """
-        Gets document names in path.
-        """
-        if not self.is_build():
-            return None
-        stem = abjad.String(self.name).to_shout_case()
-        if not self.is_parts():
-            return [stem]
-        assert self.is_parts()
-        result = []
-        part_manifest = self._get_part_manifest()
-        for part in part_manifest:
-            document_name = f"{stem}_{part.identifier}"
-            result.append(document_name)
-        return result
-
     ### PUBLIC METHODS ###
 
     def get_eol_measure_numbers(self) -> typing.Optional[typing.List[int]]:
