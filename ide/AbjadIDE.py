@@ -809,6 +809,14 @@ class AbjadIDE(object):
             self._interpret_tex_file(source)
 
     @staticmethod
+    def _is_prototype(path, prototype):
+        if prototype is True:
+            return True
+        if bool(prototype) is False:
+            return False
+        return path.is_score_package_path(prototype)
+
+    @staticmethod
     def _make__assets_directory(directory):
         if directory._assets.exists():
             return
@@ -839,8 +847,8 @@ class AbjadIDE(object):
                 commands.append(command)
             elif (
                 directory.is_score_package_path()
-                and directory.is_prototype(command.score_package_paths)
-                and not directory.is_prototype(blacklist)
+                and self._is_prototype(directory, command.score_package_paths)
+                and not self._is_prototype(directory, blacklist)
             ):
                 commands.append(command)
         entries_by_section = {}

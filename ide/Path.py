@@ -201,15 +201,3 @@ class Path(abjad.Path):
         command = " && ".join(commands)
         with abjad.TemporaryDirectoryChange(directory=path):
             abjad.IOManager.spawn_subprocess(command)
-
-    ### PUBLIC METHODS ###
-
-    def is_prototype(self, prototype) -> bool:
-        """
-        Is true when path is ``prototype``.
-        """
-        if prototype is True:
-            return True
-        if bool(prototype) is False:
-            return False
-        return self.is_score_package_path(prototype)
