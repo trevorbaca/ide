@@ -11,84 +11,9 @@ class Path(abjad.Path):
     address_characters = {
         "@": "file",
         "%": "directory",
-        "^": "source file",
-        "*": "PDF",
-        "+": "test file",
     }
 
     ### PRIVATE METHODS ###
-
-    def _find_doctest_files(self, force=False):
-        files, strings = [], []
-        if force or not self.is_score_package_path():
-            for path in sorted(self.glob("**/*.py")):
-                if "__pycache__" in str(path):
-                    continue
-                if not path.is_file():
-                    continue
-                if path.name.startswith("test"):
-                    continue
-                files.append(path)
-                strings.append(path.name)
-        else:
-            for path in self.segments.list_paths():
-                files.append(path / "definition.py")
-                strings.append(path.get_identifier())
-        return files, strings
-
-    def _find_editable_files(self, force=False):
-        files, strings = [], []
-        if force or not self.is_score_package_path():
-            for path in sorted(self.glob("**/*")):
-                if "__pycache__" in str(path):
-                    continue
-                if not path.is_file():
-                    continue
-                files.append(path)
-                strings.append(path.name)
-        else:
-            for path in self.segments.list_paths():
-                files.append(path / "definition.py")
-                strings.append(path.get_identifier())
-            for path in self.stylesheets.list_paths():
-                files.append(path)
-                strings.append(path.name)
-            for path in self.etc.list_paths():
-                files.append(path)
-                strings.append(path.name)
-        return files, strings
-
-    def _find_pdfs(self, force=False):
-        files, strings = [], []
-        if force or not self.is_score_package_path():
-            for path in sorted(self.glob("**/*.pdf")):
-                if "__pycache__" in str(path):
-                    continue
-                if not path.is_file():
-                    continue
-                files.append(path)
-                strings.append(path.name)
-        else:
-            for path in self.segments.list_paths():
-                files.append(path / "illustration.pdf")
-                strings.append(path.get_identifier())
-            for path in self.etc.list_paths():
-                if path.suffix == ".pdf":
-                    files.append(path)
-                    strings.append(path.name)
-        return files, strings
-
-    def _find_pytest_files(self, force=False):
-        files, strings = [], []
-        if force or not self.is_score_package_path():
-            for path in sorted(self.glob("**/test*.py")):
-                if "__pycache__" in str(path):
-                    continue
-                if not path.is_file():
-                    continue
-                files.append(path)
-                strings.append(path.name)
-        return files, strings
 
     def _get_added_asset_paths(self):
         paths = []
@@ -169,26 +94,6 @@ class Path(abjad.Path):
         if first_line.startswith("?"):
             return True
         return False
-
-    def _parse_part_identifier(self):
-        if self.suffix == ".ly":
-            part_identifier = None
-            with self.open("r") as pointer:
-                for line in pointer.readlines():
-                    if line.startswith("% part_identifier = "):
-                        line = line.strip("% part_identifier = ")
-                        part_identifier = eval(line)
-                        return part_identifier
-        elif self.name.endswith("layout.py"):
-            part_identifier = None
-            with self.open("r") as pointer:
-                for line in pointer.readlines():
-                    if line.startswith("part_identifier = "):
-                        line = line.strip("part_identifier = ")
-                        part_identifier = eval(line)
-                        return part_identifier
-        else:
-            raise TypeError(self)
 
     def _unadd_added_assets(self):
         paths = []

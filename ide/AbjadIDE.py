@@ -1,7 +1,6 @@
 import collections
 import datetime
 import difflib
-import importlib
 import inspect
 import io
 import os
@@ -275,6 +274,29 @@ class AbjadIDE(object):
             indices = abjad.String.match_strings(strings, pattern)
             files = abjad.Sequence(files).retain(indices)
         return files
+
+    @staticmethod
+    def _find_editable_files(path, force=False):
+        files, strings = [], []
+        if force or not path.is_score_package_path():
+            for path_ in sorted(path.glob("**/*")):
+                if "__pycache__" in str(path_):
+                    continue
+                if not path_.is_file():
+                    continue
+                files.append(path_)
+                strings.append(path_.name)
+        else:
+            for path_ in path.segments.list_paths():
+                files.append(path_ / "definition.py")
+                strings.append(path_.get_identifier())
+            for path_ in path.stylesheets.list_paths():
+                files.append(path_)
+                strings.append(path_.name)
+            for path_ in path.etc.list_paths():
+                files.append(path_)
+                strings.append(path_.name)
+        return files, strings
 
     def _generate_back_cover_tex(self, path, price=None):
         assert path.build.exists(), repr((path, path.build))
@@ -641,26 +663,6 @@ class AbjadIDE(object):
             dimensions = eval(self.test.strip("dimensions="))
         return dimensions
 
-    def _get_doctest_globs(self, external_modules=()):
-        globs = {}
-        abjad = importlib.import_module("abjad")
-        globs["abjad"] = abjad
-        globs.update(abjad.__dict__)
-        external_modules = external_modules or ""
-        external_modules = external_modules.split(",")
-        for name in external_modules:
-            try:
-                module = importlib.import_module(name)
-                globs[name] = module
-            except ImportError:
-                pass
-        try:
-            ide_module = importlib.import_module("ide")
-            globs["ide"] = ide_module
-        except (AttributeError, ImportError):
-            pass
-        return globs
-
     def _get_score_names(self):
         scores = self._get_scores_directory()
         names = [_.name for _ in scores.list_paths()]
@@ -681,25 +683,13 @@ class AbjadIDE(object):
             self.go_to_directory(directory, response.pattern, response.payload)
         elif response.prefix == "%%":
             self.go_to_directory(directory, response.string[1:])
-        elif response.prefix == "^":
-            self.smart_doctest(directory, response.pattern, response.payload)
-        elif response.prefix == "^^":
-            self.doctest_all(directory, response.pattern)
-        elif response.prefix == "+":
-            self.smart_pytest(directory, response.pattern, response.payload)
-        elif response.prefix == "++":
-            self.pytest_all(directory, response.pattern)
-        elif response.prefix == "*":
-            self.smart_pdf(directory, response.pattern, response.payload)
-        elif response.prefix == "**":
-            self.open_all_pdfs(directory, response.pattern)
         else:
             raise ValueError(response.prefix)
 
     def _handle_part_identifier_tags(self, path, indent=0):
         assert path.parent.is_part()
         parts_directory = path.parent.parent
-        part_identifier = path._parse_part_identifier()
+        part_identifier = self._parse_part_identifier(path)
         if part_identifier is None:
             self.io.display(
                 f"no part identifier found in {path.name} ...", indent=indent,
@@ -1659,6 +1649,27 @@ class AbjadIDE(object):
         abjad.IOManager.spawn_subprocess(command)
 
     @staticmethod
+    def _parse_part_identifier(path):
+        if path.suffix == ".ly":
+            part_identifier = None
+            with path.open("r") as pointer:
+                for line in pointer.readlines():
+                    if line.startswith("% part_identifier = "):
+                        line = line.strip("% part_identifier = ")
+                        part_identifier = eval(line)
+                        return part_identifier
+        elif path.name.endswith("layout.py"):
+            part_identifier = None
+            with path.open("r") as pointer:
+                for line in pointer.readlines():
+                    if line.startswith("part_identifier = "):
+                        line = line.strip("part_identifier = ")
+                        part_identifier = eval(line)
+                        return part_identifier
+        else:
+            raise TypeError(path)
+
+    @staticmethod
     def _part_subtitle(part_name, parentheses=False):
         words = abjad.String(part_name).delimit_words()
         number = None
@@ -1701,18 +1712,6 @@ class AbjadIDE(object):
             lines = abjad.IOManager.run_command(command)
             lines = [_.strip() for _ in lines if not _ == ""]
             return lines
-
-    def _run_doctest(self, paths):
-        assert isinstance(paths, collections.abc.Iterable), repr(paths)
-        for path in paths:
-            if path.is_dir():
-                raise Exception(f"directory {path.trim()} not a file ...")
-        if self.test:
-            return
-        if paths:
-            string = " ".join([str(_) for _ in paths])
-            command = f"baca-doctest --report-only-first-failure {string}"
-            abjad.IOManager.spawn_subprocess(command)
 
     def _run_lilypond(self, ly, indent=0):
         assert ly.exists()
@@ -2674,23 +2673,6 @@ class AbjadIDE(object):
             path.remove()
 
     @Command(
-        "^^",
-        description="all - doctest",
-        external_directories=True,
-        menu_section="all",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def doctest_all(self, directory: Path, pattern: str = None) -> None:
-        """
-        Doctests all.
-        """
-        files, strings = directory._find_doctest_files(force=True)
-        files = self._match_files(files, strings, pattern, "^^")
-        self._run_doctest(files)
-        abjad.IOManager.spawn_subprocess('say "done"')
-
-    @Command(
         "dup",
         description="path - duplicate",
         external_directories=True,
@@ -2804,7 +2786,7 @@ class AbjadIDE(object):
         """
         Edits all files.
         """
-        files, strings = directory._find_editable_files(force=True)
+        files, strings = self._find_editable_files(directory, force=True)
         files = self._match_files(files, strings, pattern, "@@")
         self._open_files(files)
 
@@ -4172,7 +4154,7 @@ class AbjadIDE(object):
         self.deactivate(
             parts_directory, "HIDE_IN_PARTS", indent=indent + 1, message_zero=True,
         )
-        part_identifier = music_ly._parse_part_identifier()
+        part_identifier = self._parse_part_identifier(music_ly)
         if part_identifier is None:
             message = f"no part identifier found in {music_ly.trim()} ..."
             self.io.display(message, indent=indent + 1)
@@ -4863,22 +4845,6 @@ class AbjadIDE(object):
             self._make_file(directory)
 
     @Command(
-        "**",
-        description="all - pdfs",
-        external_directories=True,
-        menu_section="all",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def open_all_pdfs(self, directory: Path, pattern: str = None) -> None:
-        """
-        Opens all PDFs.
-        """
-        files, strings = directory._find_pdfs(force=True)
-        files = self._match_files(files, strings, pattern, "**")
-        self._open_files(files)
-
-    @Command(
         "bcpo",
         description="back-cover.pdf - open",
         menu_section="back cover",
@@ -5082,7 +5048,7 @@ class AbjadIDE(object):
         source = paths[0]
         self.io.display(f"using {source.trim()} as source ...")
         self.io.display("")
-        source_part_identifier = source._parse_part_identifier()
+        source_part_identifier = self._parse_part_identifier(source)
         if source_part_identifier is None:
             self.io.display(f"no part identifier found in {source.name} ...")
             return
@@ -5098,22 +5064,6 @@ class AbjadIDE(object):
             target_text = source_text.replace(source_part_identifier, part_identifier)
             self.io.display(f"writing {path.trim()} ...")
             path.write_text(target_text)
-
-    @Command(
-        "++",
-        description="all - pytest",
-        external_directories=True,
-        menu_section="all",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def pytest_all(self, directory: Path, pattern: str = None) -> None:
-        """
-        Pytests all.
-        """
-        files, strings = directory._find_pytest_files(force=True)
-        files = self._match_files(files, strings, pattern, "++")
-        self._run_pytest(files)
 
     @Command(
         "q",
@@ -5512,32 +5462,6 @@ class AbjadIDE(object):
         self.run(abjad.Job.show_tag(directory, tag))
 
     @Command(
-        "^",
-        description="smart - doctest",
-        external_directories=True,
-        menu_section="smart",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def smart_doctest(
-        self, directory: Path, pattern: str, menu_paths: typing.List
-    ) -> None:
-        """
-        Smart doctest.
-        """
-        address, file_ = self._match_smart_file(
-            directory,
-            pattern,
-            menu_paths,
-            "^",
-            Path._find_doctest_files,
-            "definition.py",
-        )
-        if file_:
-            self.io.display(f"matching {address!r} to {file_.trim()} ...")
-            self._run_doctest([file_])
-
-    @Command(
         "@",
         description="smart - edit",
         external_directories=True,
@@ -5556,50 +5480,11 @@ class AbjadIDE(object):
             pattern,
             menu_paths,
             "@",
-            Path._find_editable_files,
+            self._find_editable_files,
             "definition.py",
         )
         if file_:
             self._open_files([file_])
-
-    @Command(
-        "*",
-        description="smart - pdf",
-        external_directories=True,
-        menu_section="smart",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def smart_pdf(self, directory: Path, pattern: str, menu_paths: typing.List) -> None:
-        """
-        Smart PDF.
-        """
-        address, file_ = self._match_smart_file(
-            directory, pattern, menu_paths, "*", Path._find_pdfs, "illustration.pdf",
-        )
-        if file_:
-            self._open_files([file_])
-
-    @Command(
-        "+",
-        description="smart - pytest",
-        external_directories=True,
-        menu_section="smart",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def smart_pytest(
-        self, directory: Path, pattern: str, menu_paths: typing.List
-    ) -> None:
-        """
-        Smart pytest.
-        """
-        address, file_ = self._match_smart_file(
-            directory, pattern, menu_paths, "+", Path._find_pytest_files, None
-        )
-        if file_:
-            self.io.display(f"matching {address!r} to {file_.trim()} ...")
-            self._run_pytest([file_])
 
     @Command(
         "bcpt",
