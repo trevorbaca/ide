@@ -179,7 +179,7 @@ class AbjadIDE(object):
     def _check_out_paths(self, paths):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
-            root = path._get_repository_root()
+            root = self._get_repository_root(path)
             if not root:
                 self.io.display(f"missing {path.trim()} repository ...")
                 return
@@ -655,6 +655,20 @@ class AbjadIDE(object):
             )
         path.write_text(template)
 
+    @staticmethod
+    def _get_added_asset_paths(directory):
+        paths = []
+        git_status_lines = directory._get_git_status_lines()
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith("A"):
+                path = line.strip("A")
+                path = path.strip()
+                root = directory.wrapper
+                path = root / path
+                paths.append(path)
+        return paths
+
     def _get_dimensions(self):
         dimensions = None
         if self.test is True:
@@ -662,6 +676,26 @@ class AbjadIDE(object):
         if isinstance(self.test, str) and self.test.startswith("dimensions"):
             dimensions = eval(self.test.strip("dimensions="))
         return dimensions
+
+    @staticmethod
+    def _get_git_status_lines(directory):
+        with abjad.TemporaryDirectoryChange(directory=directory.wrapper):
+            command = f"git status --porcelain {directory}"
+            return abjad.IOManager.run_command(command)
+
+    @staticmethod
+    def _get_repository_root(directory):
+        if not directory.exists():
+            return
+        if directory.wrapper is None:
+            path = directory
+        else:
+            path = directory.wrapper
+        while str(path) != str(path.parts[0]):
+            for path_ in path.iterdir():
+                if path_.name == ".git":
+                    return type(directory)(path)
+            path = path.parent
 
     def _get_score_names(self):
         scores = self._get_scores_directory()
@@ -672,6 +706,27 @@ class AbjadIDE(object):
         if self.test or self.example:
             return self.configuration.test_scores_directory
         return self.configuration.composer_scores_directory
+
+    @staticmethod
+    def _get_unadded_asset_paths(directory):
+        assert directory.is_dir()
+        paths = []
+        root = directory.wrapper
+        git_status_lines = AbjadIDE._get_git_status_lines(directory)
+        for line in git_status_lines:
+            line = str(line)
+            if line.startswith("?"):
+                path = line.strip("?")
+                path = path.strip()
+                path = root / path
+                paths.append(path)
+            elif line.startswith("M"):
+                path = line.strip("M")
+                path = path.strip()
+                path = root / path
+                paths.append(path)
+        paths = [_ for _ in paths]
+        return paths
 
     def _go_to_directory(
         self, directory: Path, pattern: str = None, payload: typing.List = None
@@ -769,6 +824,26 @@ class AbjadIDE(object):
             parts_directory, tag, indent=indent + 1, message_zero=True,
         )
 
+    @staticmethod
+    def _has_pending_commit(directory):
+        assert directory.is_dir()
+        command = f"git status {directory}"
+        with abjad.TemporaryDirectoryChange(directory=directory):
+            lines = abjad.IOManager.run_command(command)
+        clean_lines = []
+        for line in lines:
+            line = str(line)
+            clean_line = line.strip()
+            clean_line = clean_line.replace(str(directory), "")
+            clean_lines.append(clean_line)
+        for line in clean_lines:
+            if "Changes not staged for commit:" in line:
+                return True
+            if "Changes to be committed:" in line:
+                return True
+            if "Untracked files:" in line:
+                return True
+
     def _interpret_file(self, path):
         path = Path(path)
         if not path.exists():
@@ -863,6 +938,17 @@ class AbjadIDE(object):
             return
         for source in paths:
             self._interpret_tex_file(source)
+
+    @staticmethod
+    def _is_git_unknown(directory):
+        if not directory.exists():
+            return False
+        git_status_lines = AbjadIDE._get_git_status_lines(directory)
+        git_status_lines = git_status_lines or [""]
+        first_line = git_status_lines[0]
+        if first_line.startswith("?"):
+            return True
+        return False
 
     @staticmethod
     def _is_prototype(path, prototype):
@@ -2078,6 +2164,19 @@ class AbjadIDE(object):
         lines = "".join(lines)
         return lines
 
+    @staticmethod
+    def _unadd_added_assets(directory):
+        paths = []
+        paths.extend(AbjadIDE._get_added_asset_paths(directory))
+        paths.extend(AbjadIDE._get_modified_asset_paths(directory))
+        commands = []
+        for path in paths:
+            command = f"git reset -- {path}"
+            commands.append(command)
+        command = " && ".join(commands)
+        with abjad.TemporaryDirectoryChange(directory=path):
+            abjad.IOManager.spawn_subprocess(command)
+
     ### PUBLIC PROPERTIES ###
 
     @property
@@ -2266,7 +2365,7 @@ class AbjadIDE(object):
         BLACK_EXCLUDE = "__metadata__.py|__persist__.py|segments|layout.py"
         command = f"black {BLACK_OPTS} --exclude '{BLACK_EXCLUDE}'"
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -2302,7 +2401,7 @@ class AbjadIDE(object):
         BLACK_EXCLUDE = "__metadata__.py|__persist__.py|segments|layout.py"
         command = f"black {BLACK_OPTS} --exclude '{BLACK_EXCLUDE}'"
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -3614,12 +3713,12 @@ class AbjadIDE(object):
         Commits working copy.
         """
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(root):
-                if not root._has_pending_commit():
+                if not self._has_pending_commit(root):
                     self.io.display("nothing to commit ...")
                     return
                 self.git_status(root)
@@ -3664,7 +3763,7 @@ class AbjadIDE(object):
         Displays Git diff of working copy.
         """
         if not directory.is_scores():
-            if not directory._get_repository_root():
+            if not self._get_repository_root(directory):
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(directory):
@@ -3693,7 +3792,7 @@ class AbjadIDE(object):
         Pulls working copy.
         """
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -3734,7 +3833,7 @@ class AbjadIDE(object):
         Pushes working copy.
         """
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -3766,7 +3865,7 @@ class AbjadIDE(object):
         Displays Git status of working copy.
         """
         if not directory.is_scores():
-            if not directory._get_repository_root():
+            if not self._get_repository_root(directory):
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(directory):
@@ -4766,7 +4865,7 @@ class AbjadIDE(object):
             return
         command = "mypy --ignore-missing-imports"
         if not directory.is_scores():
-            root = directory._get_repository_root()
+            root = self._get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
