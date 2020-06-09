@@ -1,6 +1,6 @@
 import typing
 
-from .Path import Path
+import abjad
 
 
 class Response(object):
@@ -19,7 +19,7 @@ class Response(object):
     ### INITIALIZER ###
 
     def __init__(
-        self, payload: typing.Union[str, list, Path] = None, string: str = None
+        self, payload: typing.Union[str, list, abjad.Path] = None, string: str = None
     ) -> None:
         self._payload = payload
         self._string = string
@@ -69,7 +69,7 @@ class Response(object):
         return self.string
 
     @property
-    def payload(self) -> typing.Optional[typing.Union[str, list, Path]]:
+    def payload(self) -> typing.Optional[typing.Union[str, list, abjad.Path]]:
         """
         Gets payload.
         """
@@ -97,13 +97,13 @@ class Response(object):
 
     ### PUBLIC METHODS ###
 
-    def get_path(self) -> typing.Optional[Path]:
+    def get_path(self) -> typing.Optional[abjad.Path]:
         """
         Gets path.
         """
-        if isinstance(self.payload, Path):
+        if isinstance(self.payload, abjad.Path):
             return self.payload
-        if isinstance(self.payload, list) and isinstance(self.payload[0], Path):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], abjad.Path):
             return self.payload[0]
         return None
 
@@ -123,9 +123,9 @@ class Response(object):
         """
         Is true when response is path.
         """
-        if isinstance(self.payload, Path):
+        if isinstance(self.payload, abjad.Path):
             return True
-        if isinstance(self.payload, list) and isinstance(self.payload[0], Path):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], abjad.Path):
             return True
         return False
 
@@ -133,7 +133,7 @@ class Response(object):
         """
         Is true when response is segment name.
         """
-        return Path.is_segment_name(self.string)
+        return abjad.Path.is_segment_name(self.string)
 
     def is_shell(self) -> bool:
         """

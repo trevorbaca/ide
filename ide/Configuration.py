@@ -119,9 +119,7 @@ class Configuration(abjad.Configuration):
 
         Returns package path.
         """
-        import ide
-
-        return ide.Path(self.configuration_directory / "__aliases__.py")
+        return abjad.Path(self.configuration_directory / "__aliases__.py")
 
     @property
     def boilerplate_directory(self):
@@ -135,9 +133,7 @@ class Configuration(abjad.Configuration):
 
         Returns package path.
         """
-        import ide
-
-        return ide.Path(abjad.abjad_configuration.boilerplate_directory)
+        return abjad.Path(abjad.abjad_configuration.boilerplate_directory)
 
     @property
     def composer_scores_directory(self):
@@ -146,13 +142,11 @@ class Configuration(abjad.Configuration):
 
         Returns package path.
         """
-        import ide
-
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
         if self._composer_scores_directory is None:
             scores = abjad.abjad_configuration.composer_scores_directory
-            scores = ide.Path(scores).expanduser()
+            scores = abjad.Path(scores).expanduser()
             self._composer_scores_directory = scores
         return self._composer_scores_directory
 
@@ -187,7 +181,7 @@ class Configuration(abjad.Configuration):
         import ide
 
         if self._ide_directory is None:
-            ide_directory = ide.Path(ide.__path__[0])
+            ide_directory = abjad.Path(ide.__path__[0])
             self._ide_directory = ide_directory
         return self._ide_directory
 
@@ -203,9 +197,7 @@ class Configuration(abjad.Configuration):
 
         Returns package path.
         """
-        import ide
-
-        return ide.Path(self.configuration_directory / "latex.log")
+        return abjad.Path(self.configuration_directory / "latex.log")
 
     @property
     def test_scores_directory(self):
@@ -221,4 +213,4 @@ class Configuration(abjad.Configuration):
         """
         import ide
 
-        return ide.Path(ide.__path__[0]) / "scores"
+        return abjad.Path(ide.__path__[0]) / "scores"

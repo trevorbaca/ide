@@ -66,7 +66,6 @@ from .Interaction import Interaction
 from .Menu import Menu
 from .MenuEntry import MenuEntry
 from .MenuSection import MenuSection
-from .Path import Path
 from .Response import Response
 from .Test import Test
 from .Transcript import Transcript
@@ -80,7 +79,6 @@ __all__ = [
     "Menu",
     "MenuEntry",
     "MenuSection",
-    "Path",
     "Response",
     "Test",
     "Transcript",
@@ -91,8 +89,5 @@ if not (
     < distutils.version.LooseVersion(platform.python_version())
 ):
     raise ImportError("Requires Python 3.6.")
-del distutils
-del platform
 configuration = Configuration()
 configuration._add_test_score_to_sys_path()
-del configuration

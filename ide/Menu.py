@@ -6,7 +6,6 @@ import abjad
 from .IO import IO
 from .MenuEntry import MenuEntry
 from .MenuSection import MenuSection
-from .Path import Path
 from .Response import Response
 
 
@@ -195,7 +194,7 @@ class Menu(object):
             return
         path = self.aliases.get(string)
         if path is not None:
-            return [Path(path)]
+            return [abjad.Path(path)]
 
     def _match_assets(self, string):
         for section in self.sections:
@@ -206,7 +205,7 @@ class Menu(object):
                 for entry in section:
                     if entry.number == number:
                         return [entry.value]
-            paths = [Path(_.display) for _ in section]
+            paths = [abjad.Path(_.display) for _ in section]
             for i, path in enumerate(paths):
                 for part in path.parts:
                     if part == "/":
