@@ -7,115 +7,115 @@ dist: xenial
 language: python
 
 python:
-    - 3.6
-    - 3.7
-    - 3.8
+  - 3.6
+  - 3.7
+  - 3.8
 
 addons:
-    apt:
-        packages:
-        - graphviz
-        - imagemagick
-        - pgf
-        - texlive
-        - texlive-extra-utils
-        - texlive-fonts-recommended
-        - texlive-latex-extra
-        - texlive-latex-recommended
-        - texlive-xetex
-        # lmodern required for texlive-xetex to find fonts
-        - lmodern
+  apt:
+    packages:
+    - graphviz
+    - imagemagick
+    - pgf
+    - texlive
+    - texlive-extra-utils
+    - texlive-fonts-recommended
+    - texlive-latex-extra
+    - texlive-latex-recommended
+    - texlive-xetex
+    # lmodern required for texlive-xetex to find fonts
+    - lmodern
 
 before_install:
-    - name=ide
+  - name=ide
 
-    - package=$TRAVIS_BUILD_DIR/$name
-    - export PATH=$PATH:$package/scr
+  - package=$TRAVIS_BUILD_DIR/$name
+  - export PATH=$PATH:$package/scr
 
-    # install lilypond:
-    - lilypond=/tmp/lilypond
-    - lilypond_url=http://lilypond.org/download/binaries/linux-64/
-    - lilypond_source=lilypond-2.19.84-1.linux-64.sh
-    - wget -q -O $lilypond $lilypond_url/$lilypond_source
-    - sh $lilypond --batch
+  # install lilypond:
+  - lilypond=/tmp/lilypond
+  - lilypond_url=http://lilypond.org/download/binaries/linux-64/
+  - lilypond_source=lilypond-2.19.84-1.linux-64.sh
+  - wget -q -O $lilypond $lilypond_url/$lilypond_source
+  - sh $lilypond --batch
 
-    # clone & install abjad dev branch:
-    - git clone -b trevor/dev https://github.com/Abjad/abjad.git /tmp/abjad
-    - pip install /tmp/abjad
+  # clone & install abjad dev branch:
+  - git clone -b trevor/dev https://github.com/Abjad/abjad.git /tmp/abjad
+  - pip install /tmp/abjad
 
-    # clone & install rmakers:
-    - git clone https://github.com/Abjad/abjad-ext-rmakers.git /tmp/abjad-ext-rmakers
-    - pip install /tmp/abjad-ext-rmakers
+  # clone & install rmakers:
+  - git clone https://github.com/Abjad/abjad-ext-rmakers.git /tmp/abjad-ext-rmakers
+  - pip install /tmp/abjad-ext-rmakers
 
-    # clone & install tonality:
-    - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
-    - pip install /tmp/abjad-ext-tonality
+  # clone & install tonality:
+  - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
+  - pip install /tmp/abjad-ext-tonality
 
-    # clone & install baca:
-    - git clone https://github.com/trevorbaca/baca.git /tmp/baca
-    - pip install /tmp/baca
-    - export PATH=$PATH:/tmp/baca/scr
+  # clone & install baca:
+  - git clone https://github.com/trevorbaca/baca.git /tmp/baca
+  - pip install /tmp/baca
+  - export PATH=$PATH:/tmp/baca/scr
 
-    # configure mypy
-    - export MYPYPATH=$MYPYPATH:/tmp/abjad
-    - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-rmakers
-    - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-tonality
-    - export MYPYPATH=$MYPYPATH:/tmp/baca
-    - ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
+  # configure mypy
+  - export MYPYPATH=$MYPYPATH:/tmp/abjad
+  - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-rmakers
+  - export MYPYPATH=$MYPYPATH:/tmp/abjad-ext-tonality
+  - export MYPYPATH=$MYPYPATH:/tmp/baca
+  - ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
 
-    # set pythonpath:
-    - export PYTHONPATH=$PYTHONPATH:$package/scores/blue_score
-    - export PYTHONPATH=$PYTHONPATH:$package/scores/red_score
-    - export PYTHONPATH=$PYTHONPATH:$package/scores/green_score
+  # set pythonpath:
+  - export PYTHONPATH=$PYTHONPATH:$package/scores/blue_score
+  - export PYTHONPATH=$PYTHONPATH:$package/scores/red_score
+  - export PYTHONPATH=$PYTHONPATH:$package/scores/green_score
 
-    # make aliases and log files for tests
-    - mkdir -p $HOME/.abjad/ide
-    - touch $HOME/.abjad/ide/__aliases__.py
-    - touch $HOME/.abjad/ide/latex.log
-    - mkdir -p $HOME/.abjad/output
-    - touch $HOME/.abjad/output/lily.log
+  # make aliases and log files for tests
+  - mkdir -p $HOME/.abjad/ide
+  - touch $HOME/.abjad/ide/__aliases__.py
+  - touch $HOME/.abjad/ide/latex.log
+  - mkdir -p $HOME/.abjad/output
+  - touch $HOME/.abjad/output/lily.log
 
-    # log environment variables
-    - echo $MYPYPATH
-    - echo $PATH
-    - echo $PYTHONPATH
-    - echo $TRAVIS_BUILD_DIR
-    - echo $TRAVIS_PYTHON_VERSION
+  # log environment variables
+  - echo $MYPYPATH
+  - echo $PATH
+  - echo $PYTHONPATH
+  - echo $TRAVIS_BUILD_DIR
+  - echo $TRAVIS_PYTHON_VERSION
 
-    # log script paths
-    - which prime-parser-tables
-    - which latex
-    - which pytest
-    - which start-abjad-ide
-    - which xetex
+  # log script paths
+  - which prime-parser-tables
+  - which latex
+  - which pytest
+  - which start-abjad-ide
+  - which xetex
 
-    # log present working directory
-    - pwd
-    - ls
-    - ls /tmp
-    - ls -a $HOME
-    - ls $HOME/.abjad
-    - ls $HOME/.abjad/ide
+  # log present working directory
+  - pwd
+  - ls
+  - ls /tmp
+  - ls -a $HOME
+  - ls $HOME/.abjad
+  - ls $HOME/.abjad/ide
 
 install:
-    - pip install -e . 
-    - prime-parser-tables
+  - pip install -e . 
+  - prime-parser-tables
 
-    # log versions
-    - black --version
-    - flake8 --version
-    - isort --version
-    - mypy --version
-    - pip --version
+  # log versions
+  - black --version
+  - flake8 --version
+  - isort --version
+  - mypy --version
+  - pip --version
 
 script:
-    - make black-check
-    - make flake8-check
-    - make isort-check
-    - make mypy
-    - start-abjad-ide q
-    - make pytest
+  - make black-check
+  - make flake8
+  - make isort-check
+  - make mypy
+  - start-abjad-ide q
+  - make pytest
 
 after_success:
-    - pip install --quiet coveralls
-    - coveralls
+  - pip install --quiet coveralls
+  - coveralls
