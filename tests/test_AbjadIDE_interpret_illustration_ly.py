@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -12,7 +13,7 @@ def test_AbjadIDE_interpret_illustration_ly_01():
     with ide.Test():
         sources = []
         for name in ["_", "A", "B"]:
-            path = ide.Path(
+            path = abjad.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ly"
             )
             sources.append(path)
@@ -49,7 +50,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
     """
 
     with ide.Test():
-        source = ide.Path(
+        source = abjad.Path(
             scores, "red_score", "red_score", "segments", "A", "illustration.ly"
         )
         target = source.with_suffix(".pdf")

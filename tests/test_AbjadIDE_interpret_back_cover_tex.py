@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -7,7 +8,7 @@ scores = ide.Configuration().test_scores_directory
 def test_AbjadIDE_interpret_back_cover_tex_01():
 
     with ide.Test():
-        source = ide.Path(
+        source = abjad.Path(
             scores, "red_score", "red_score", "builds", "letter-score", "back-cover.tex"
         )
         target = source.with_suffix(".pdf")

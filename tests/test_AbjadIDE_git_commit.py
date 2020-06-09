@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -47,8 +48,8 @@ def test_AbjadIDE_git_commit_02():
     transcript = abjad_ide.io.transcript
     assert "Commit message> Updated." in transcript
     for path in [
-        ide.Path(scores, "red_score", "red_score"),
-        ide.Path(scores, "blue_score", "blue_score"),
+        abjad.Path(scores, "red_score", "red_score"),
+        abjad.Path(scores, "blue_score", "blue_score"),
     ]:
         assert f"{path.wrapper} ..." in transcript
         assert "> ci" in transcript

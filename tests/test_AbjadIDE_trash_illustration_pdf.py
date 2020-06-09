@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -10,7 +11,7 @@ def test_AbjadIDE_trash_illustration_pdf_01():
     """
 
     with ide.Test():
-        path = ide.Path(
+        path = abjad.Path(
             scores, "red_score", "red_score", "segments", "A", "illustration.pdf"
         )
         assert not path.exists()
@@ -36,7 +37,7 @@ def test_AbjadIDE_trash_illustration_pdf_02():
     with ide.Test():
         paths = []
         for name in ["_", "A", "B"]:
-            path = ide.Path(
+            path = abjad.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.pdf"
             )
             paths.append(path)

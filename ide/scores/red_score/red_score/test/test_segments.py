@@ -4,11 +4,12 @@ import sys
 
 import pytest
 
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE()
 scores = pathlib.Path(*pathlib.Path(__file__).parts[:-4])
-path = ide.Path(__file__, scores=scores)
+path = abjad.Path(__file__, scores=scores)
 directories = path.segments.list_paths()
 
 

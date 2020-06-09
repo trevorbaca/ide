@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -7,7 +8,9 @@ scores = ide.Configuration().test_scores_directory
 def test_AbjadIDE_trash_part_tex_01():
 
     with ide.Test():
-        parts = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-parts")
+        parts = abjad.Path(
+            scores, "green_score", "green_score", "builds", "arch-a-parts"
+        )
         path = parts / "bass-clarinet" / "bass-clarinet-part.tex"
         assert not parts.exists()
 

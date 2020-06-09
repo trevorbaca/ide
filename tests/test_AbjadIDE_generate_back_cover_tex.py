@@ -9,11 +9,13 @@ def test_AbjadIDE_generate_back_cover_tex_01():
 
     with ide.Test():
         directory = abjad.abjad_configuration.boilerplate_directory
-        source = ide.Path(directory) / "back-cover.tex"
+        source = abjad.Path(directory) / "back-cover.tex"
         text = source.read_text()
         assert "paper_size" in text
         assert "{8.5in, 11in}" not in text
-        target = ide.Path(scores, "blue_score", "blue_score", "builds", "letter-score")
+        target = abjad.Path(
+            scores, "blue_score", "blue_score", "builds", "letter-score"
+        )
         target /= "back-cover.tex"
         target.remove()
 

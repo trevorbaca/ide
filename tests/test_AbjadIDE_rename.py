@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -10,7 +11,7 @@ def test_AbjadIDE_rename_01():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "blue_score", "blue_score")
+        source = abjad.Path(scores, "blue_score", "blue_score")
         assert source.is_dir()
         target = ide.Configuration().test_scores_directory / "purple_score"
         target.remove()
@@ -26,7 +27,7 @@ def test_AbjadIDE_rename_02():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "red_score", "red_score", "segments", "D")
+        source = abjad.Path(scores, "red_score", "red_score", "segments", "D")
         source.remove()
         target = source.with_name("E")
         target.remove()
@@ -53,7 +54,7 @@ def test_AbjadIDE_rename_03():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "red_score", "red_score", "segments", "B")
+        source = abjad.Path(scores, "red_score", "red_score", "segments", "B")
         assert source.is_dir()
         target = source.with_name("C")
         target.remove()
@@ -77,7 +78,7 @@ def test_AbjadIDE_rename_04():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "red_score", "red_score", "builds", "letter-score")
+        source = abjad.Path(scores, "red_score", "red_score", "builds", "letter-score")
         assert source.is_dir()
         target = source.with_name("standard-size")
         target.remove()
@@ -101,7 +102,7 @@ def test_AbjadIDE_rename_05():
     """
 
     with ide.Test():
-        source = ide.Path(
+        source = abjad.Path(
             scores, "red_score", "red_score", "stylesheets", "new-stylesheet.ily"
         )
         source.remove()

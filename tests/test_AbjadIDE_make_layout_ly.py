@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -10,7 +11,7 @@ def test_AbjadIDE_make_layout_ly_01():
     """
 
     with ide.Test():
-        path = ide.Path(
+        path = abjad.Path(
             scores, "red_score", "red_score", "builds", "letter-score", "layout.ly"
         )
         assert path.is_file()
@@ -35,7 +36,9 @@ def test_AbjadIDE_make_layout_ly_02():
     """
 
     with ide.Test():
-        parts = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-parts")
+        parts = abjad.Path(
+            scores, "green_score", "green_score", "builds", "arch-a-parts"
+        )
         assert not parts.exists()
         part_directory = parts / "bass-clarinet"
         path = part_directory / "bass-clarinet-layout.ly"
@@ -66,7 +69,9 @@ def test_AbjadIDE_make_layout_ly_03():
     """
 
     with ide.Test():
-        path = ide.Path(scores, "red_score", "red_score", "segments", "A", "layout.ly")
+        path = abjad.Path(
+            scores, "red_score", "red_score", "segments", "A", "layout.ly"
+        )
         assert path.is_file()
         path.remove()
         assert not path.exists()

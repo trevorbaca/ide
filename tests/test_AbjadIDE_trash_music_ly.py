@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -7,7 +8,7 @@ scores = ide.Configuration().test_scores_directory
 def test_AbjadIDE_trash_music_ly_01():
 
     with ide.Test():
-        path = ide.Path(
+        path = abjad.Path(
             scores, "red_score", "red_score", "builds", "letter-score", "music.ly"
         )
         assert path.is_file()

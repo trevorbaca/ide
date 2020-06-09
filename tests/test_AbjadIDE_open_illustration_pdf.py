@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -11,7 +12,7 @@ def test_AbjadIDE_open_illustration_pdf_01():
 
     with ide.Test():
 
-        path = ide.Path(
+        path = abjad.Path(
             scores, "red_score", "red_score", "segments", "A", "illustration.pdf"
         )
         assert not path.exists()
@@ -33,7 +34,7 @@ def test_AbjadIDE_open_illustration_pdf_02():
 
         paths = []
         for name in ["_", "A", "B"]:
-            path = ide.Path(
+            path = abjad.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.pdf"
             )
             paths.append(path)
@@ -53,6 +54,6 @@ def test_AbjadIDE_open_illustration_pdf_03():
     """
 
     abjad_ide("blu A ipo q")
-    path = ide.Path("blue_score", "segments", "A", "illustration.pdf")
+    path = abjad.Path("blue_score", "segments", "A", "illustration.pdf")
     transcript = abjad_ide.io.transcript
     assert f"Missing {path.trim()} ..." in transcript

@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -11,7 +12,7 @@ def test_AbjadIDE_edit_illustration_ily_01():
 
     with ide.Test():
 
-        path = ide.Path(
+        path = abjad.Path(
             scores, "red_score", "red_score", "segments", "A", "illustration.ily"
         )
         path.write_text("")
@@ -30,7 +31,7 @@ def test_AbjadIDE_edit_illustration_ily_02():
     with ide.Test():
 
         for name in ["_", "A", "B"]:
-            path = ide.Path(
+            path = abjad.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ily"
             )
             path.write_text("")
@@ -40,7 +41,7 @@ def test_AbjadIDE_edit_illustration_ily_02():
         transcript = abjad_ide.io.transcript
 
         for name in ["_", "A", "B"]:
-            path = ide.Path(
+            path = abjad.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ily"
             )
             assert f"Editing {path.trim()} ..." in transcript

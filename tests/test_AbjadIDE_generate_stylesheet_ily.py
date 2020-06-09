@@ -9,11 +9,13 @@ def test_AbjadIDE_generate_stylesheet_ily_01():
 
     with ide.Test():
         directory = abjad.abjad_configuration.boilerplate_directory
-        source = ide.Path(directory) / "stylesheet.ily"
+        source = abjad.Path(directory) / "stylesheet.ily"
         text = source.read_text()
         assert "paper_size" in text
         assert '"letter"' not in text
-        target = ide.Path(scores, "blue_score", "blue_score", "builds", "letter-score")
+        target = abjad.Path(
+            scores, "blue_score", "blue_score", "builds", "letter-score"
+        )
         target /= "stylesheet.ily"
         target.remove()
 

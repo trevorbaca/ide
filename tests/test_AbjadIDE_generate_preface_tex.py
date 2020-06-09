@@ -9,11 +9,13 @@ def test_AbjadIDE_generate_preface_tex_01():
 
     with ide.Test():
         directory = abjad.abjad_configuration.boilerplate_directory
-        source = ide.Path(directory) / "score-preface.tex"
+        source = abjad.Path(directory) / "score-preface.tex"
         text = source.read_text()
         assert "paper_size" in text
         assert "{8.5in, 11in}" not in text
-        target = ide.Path(scores, "blue_score", "blue_score", "builds", "letter-score")
+        target = abjad.Path(
+            scores, "blue_score", "blue_score", "builds", "letter-score"
+        )
         target /= "preface.tex"
         target.remove()
 

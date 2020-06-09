@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -7,7 +8,7 @@ scores = ide.Configuration().test_scores_directory
 def test_AbjadIDE_make_segment_midi_01():
 
     with ide.Test():
-        directory = ide.Path(scores, "red_score", "red_score", "segments", "_")
+        directory = abjad.Path(scores, "red_score", "red_score", "segments", "_")
         midi = directory / "segment.midi"
         midi.remove()
         maker = directory / "__make_segment_midi__.py"

@@ -1,3 +1,4 @@
+import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -52,7 +53,7 @@ def test_AbjadIDE_git_status_02():
 
     abjad_ide("st q")
     transcript = abjad_ide.io.transcript
-    for path in [ide.Path(scores, "red_score"), ide.Path(scores, "blue_score")]:
+    for path in [abjad.Path(scores, "red_score"), abjad.Path(scores, "blue_score")]:
         assert f"{path} ..." in transcript
         assert "Running git status . ..." in transcript
         assert "Running git submodule foreach git fetch ..." in transcript
