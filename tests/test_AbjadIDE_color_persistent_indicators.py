@@ -63,7 +63,7 @@ def test_AbjadIDE_color_persistent_indicators_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ picl q")
+        abjad_ide("gre _ picl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring persistent indicators ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_persistent_indicators_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ piuc q")
+        abjad_ide("gre _ piuc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring persistent indicators ...",
@@ -86,7 +86,7 @@ def test_AbjadIDE_color_persistent_indicators_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ picl q")
+        abjad_ide("gre _ picl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring persistent indicators ...",

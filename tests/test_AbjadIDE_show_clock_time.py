@@ -52,7 +52,7 @@ def test_AbjadIDE_show_clock_time_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ cts q")
+        abjad_ide("gre _ cts q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing clock time markup ...",
@@ -61,7 +61,7 @@ def test_AbjadIDE_show_clock_time_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ cth q")
+        abjad_ide("gre _ cth q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding clock time markup ...",

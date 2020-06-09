@@ -673,16 +673,82 @@ class AbjadIDE(object):
             return self.configuration.test_scores_directory
         return self.configuration.composer_scores_directory
 
+    def _go_to_directory(
+        self, directory: Path, pattern: str = None, payload: typing.List = None
+    ) -> None:
+        assert directory.is_dir()
+        if Path.is_segment_name(pattern):
+            address = pattern
+        else:
+            address = "%" + (pattern or "")
+        if self.aliases and pattern in self.aliases:
+            path = Path(self.aliases[pattern])
+            self.io.display(f"matching {address!r} to {path.trim()} ...")
+            self._manage_directory(path)
+            return
+        if isinstance(payload, Path):
+            path = payload
+            self.io.display(f"matching {address!r} to {path.trim()} ...")
+            self._manage_directory(path)
+            return
+        if isinstance(payload, list) and len(payload) == 1:
+            path = payload[0]
+            self.io.display(f"matching {address!r} to {path.trim()} ...")
+            self._manage_directory(path)
+            return
+        if isinstance(payload, list):
+            assert all(isinstance(_, Path) for _ in payload), repr(payload)
+            paths = payload
+            counter = abjad.String("directory").pluralize(len(paths))
+            message = f"matching {address!r} to {len(paths)} {counter} ..."
+            self.io.display(message)
+            for path in paths:
+                self.io.display(path.trim(), raw=True)
+            if paths:
+                path_ = paths[0]
+                if path_.is_dir():
+                    self._manage_directory(path_)
+                else:
+                    self._open_files([path_])
+            return
+        assert payload is None, repr(payload)
+        paths, strings = [], []
+        if directory.is_score_package_path():
+            root = directory.contents
+        else:
+            root = directory
+        for path in sorted(root.glob("**/*")):
+            if "__pycache__" in str(path):
+                continue
+            if not path.is_dir():
+                continue
+            paths.append(path)
+            strings.append(path.name)
+        if isinstance(pattern, str):
+            indices = abjad.String.match_strings(strings, pattern)
+            paths = list(abjad.Sequence(paths).retain(indices))
+            for index, path in zip(indices, paths):
+                if path.name == address:
+                    indices = [index]
+                    paths = [path]
+                    break
+        if len(paths) == 1:
+            self.io.display(f"matching {address!r} to {paths[0].trim()} ...")
+        else:
+            counter = abjad.String("directory").pluralize(len(paths))
+            message = f"matching {address!r} to {len(paths)} {counter} ..."
+            self.io.display(message)
+            for path in paths:
+                self.io.display(path.trim(), raw=True)
+        if paths:
+            self._manage_directory(paths[0])
+
     def _handle_address(self, directory, response):
         assert response.prefix, repr(response)
         if response.prefix == "@":
             self.smart_edit(directory, response.pattern, response.payload)
         elif response.prefix == "@@":
             self.edit_all(directory, response.pattern)
-        elif response.prefix == "%":
-            self.go_to_directory(directory, response.pattern, response.payload)
-        elif response.prefix == "%%":
-            self.go_to_directory(directory, response.string[1:])
         else:
             raise ValueError(response.prefix)
 
@@ -854,7 +920,6 @@ class AbjadIDE(object):
             if command.menu_section in navigation_sections:
                 name = command.command_name
                 navigations[name] = command
-        del navigations["%"]
         self._navigations = navigations
         sections = []
         for name in Command.known_sections:
@@ -1454,7 +1519,7 @@ class AbjadIDE(object):
         if self.is_navigation(response.string):
             pass
         elif response.is_segment_name():
-            self.go_to_directory(directory, response.string)
+            self._go_to_directory(directory, response.string)
         elif response.is_address():
             self._handle_address(directory, response)
         elif response.is_command(self.commands):
@@ -3770,87 +3835,6 @@ class AbjadIDE(object):
         """
         assert directory.is_score_package_path()
         self._manage_directory(directory.contents)
-
-    @Command(
-        "%",
-        description="go - directory",
-        external_directories=True,
-        menu_section="go",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def go_to_directory(
-        self, directory: Path, pattern: str = None, payload: typing.List = None
-    ) -> None:
-        """
-        Goes to directory.
-        """
-        assert directory.is_dir()
-        if Path.is_segment_name(pattern):
-            address = pattern
-        else:
-            address = "%" + (pattern or "")
-        if self.aliases and pattern in self.aliases:
-            path = Path(self.aliases[pattern])
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, Path):
-            path = payload
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, list) and len(payload) == 1:
-            path = payload[0]
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, list):
-            assert all(isinstance(_, Path) for _ in payload), repr(payload)
-            paths = payload
-            counter = abjad.String("directory").pluralize(len(paths))
-            message = f"matching {address!r} to {len(paths)} {counter} ..."
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-            if paths:
-                path_ = paths[0]
-                if path_.is_dir():
-                    self._manage_directory(path_)
-                else:
-                    self._open_files([path_])
-            return
-        assert payload is None, repr(payload)
-        paths, strings = [], []
-        if directory.is_score_package_path():
-            root = directory.contents
-        else:
-            root = directory
-        for path in sorted(root.glob("**/*")):
-            if "__pycache__" in str(path):
-                continue
-            if not path.is_dir():
-                continue
-            paths.append(path)
-            strings.append(path.name)
-        if isinstance(pattern, str):
-            indices = abjad.String.match_strings(strings, pattern)
-            paths = list(abjad.Sequence(paths).retain(indices))
-            for index, path in zip(indices, paths):
-                if path.name == address:
-                    indices = [index]
-                    paths = [path]
-                    break
-        if len(paths) == 1:
-            self.io.display(f"matching {address!r} to {paths[0].trim()} ...")
-        else:
-            counter = abjad.String("directory").pluralize(len(paths))
-            message = f"matching {address!r} to {len(paths)} {counter} ..."
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-        if paths:
-            self._manage_directory(paths[0])
 
     @Command(
         "dd",

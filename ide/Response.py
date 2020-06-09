@@ -29,18 +29,18 @@ class Response(object):
     def _is_double_address(self):
         if (
             2 <= len(self.string)
-            and self.string[0] in Path.address_characters
+            and self.string[0] == "@"
             and self.string[0] == self.string[1]
         ):
             return True
         return False
 
     def _is_single_address(self):
-        if len(self.string) == 1 and self.string[0] in Path.address_characters:
+        if len(self.string) == 1 and self.string[0] == "@":
             return True
         if (
             2 <= len(self.string)
-            and self.string[0] in Path.address_characters
+            and self.string[0] == "@"
             and self.string[0] != self.string[1]
         ):
             return True

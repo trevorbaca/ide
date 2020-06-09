@@ -13,7 +13,7 @@ def test_AbjadIDE_interpret_score_tex_01():
         target = source.with_suffix(".pdf")
         target.remove()
 
-        abjad_ide("red %letter fcti pfti mli bcti sti q")
+        abjad_ide("red bb letter fcti pfti mli bcti sti q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {target.trim()} ..." not in transcript
         assert f"Interpreting {source.trim()} ..." in transcript
@@ -40,6 +40,6 @@ def test_AbjadIDE_interpret_score_tex_02():
         path /= "front-cover.pdf"
         path.remove()
 
-        abjad_ide("red %letter sti q")
+        abjad_ide("red bb letter sti q")
         transcript = abjad_ide.io.transcript
         assert "ERROR IN LATEX LOG FILE ..." in transcript

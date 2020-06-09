@@ -19,7 +19,7 @@ def test_AbjadIDE_build_score_pdf_01():
         pdf.remove()
 
     with ide.Test():
-        abjad_ide("red %let spb q")
+        abjad_ide("red bb let spb q")
         lines = abjad_ide.io.transcript.lines
         index = lines.index("Building score ...")
         assert lines[index:] == [

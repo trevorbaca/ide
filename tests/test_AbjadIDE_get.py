@@ -16,7 +16,7 @@ def test_AbjadIDE_get_01():
         target = source.with_score("blue_score")
         target.remove()
 
-        abjad_ide("blu %letter get red ont-co y q")
+        abjad_ide("blu bb letter get red ont-co y q")
         assert target.is_file()
         transcript = abjad_ide.io.transcript
         header = "Blue Score (2017) : builds : letter-score (empty)"
@@ -102,7 +102,7 @@ def test_AbjadIDE_get_04():
         target = source.with_parent("B")
         target.remove()
 
-        abjad_ide("red %B get A y q")
+        abjad_ide("red B get A y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
         header = "Red Score (2017) : segments : B : get file ..."
@@ -114,7 +114,7 @@ def test_AbjadIDE_get_04():
         assert f"Writing {target.trim()} ..." in transcript
 
     # regression: return jumps from selector
-    abjad_ide("blu %_ get <return> q")
+    abjad_ide("blu _ get <return> q")
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         "Abjad IDE : scores",
@@ -125,7 +125,7 @@ def test_AbjadIDE_get_04():
     ]
 
     # regression: quit jumps from selector
-    abjad_ide("blu %_ get q")
+    abjad_ide("blu _ get q")
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         "Abjad IDE : scores",

@@ -17,7 +17,7 @@ def test_AbjadIDE_generate_back_cover_tex_01():
         target /= "back-cover.tex"
         target.remove()
 
-        abjad_ide("blu %letter bctg q")
+        abjad_ide("blu bb letter bctg q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {target.trim()} ..." not in transcript
         assert f"Writing {target.trim()} ..." in transcript
@@ -26,7 +26,7 @@ def test_AbjadIDE_generate_back_cover_tex_01():
         assert "paper_size" not in text
         assert "{8.5in, 11in}" in text
 
-        abjad_ide("blu %letter bctg q")
+        abjad_ide("blu bb letter bctg q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {target.trim()} ..." in transcript
         assert f"Writing {target.trim()} ..." in transcript

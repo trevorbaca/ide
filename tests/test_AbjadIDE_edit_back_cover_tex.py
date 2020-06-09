@@ -6,7 +6,7 @@ scores = ide.Configuration().test_scores_directory
 
 def test_AbjadIDE_edit_back_cover_tex_01():
 
-    abjad_ide("red %letter bcte q")
+    abjad_ide("red bb letter bcte q")
     transcript = abjad_ide.io.transcript
     path = ide.Path(
         scores, "red_score", "red_score", "builds", "letter-score", "back-cover.tex"

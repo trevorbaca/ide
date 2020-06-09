@@ -38,7 +38,7 @@ def test_AbjadIDE_show_spacing_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ sps q")
+        abjad_ide("gre _ sps q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing spacing markup ...",
@@ -47,7 +47,7 @@ def test_AbjadIDE_show_spacing_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ sph q")
+        abjad_ide("gre _ sph q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding spacing markup ...",

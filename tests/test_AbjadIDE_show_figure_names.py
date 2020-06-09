@@ -52,7 +52,7 @@ def test_AbjadIDE_show_figure_names_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ fnh q")
+        abjad_ide("gre _ fnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding figure name markup ...",
@@ -61,7 +61,7 @@ def test_AbjadIDE_show_figure_names_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ fns q")
+        abjad_ide("gre _ fns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing figure name markup ...",

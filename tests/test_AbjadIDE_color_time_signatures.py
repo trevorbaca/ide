@@ -57,7 +57,7 @@ def test_AbjadIDE_color_time_signatures_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ tscl q")
+        abjad_ide("gre _ tscl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring time signatures ...",
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_time_signatures_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ tsuc q")
+        abjad_ide("gre _ tsuc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring time signatures ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_time_signatures_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ tscl q")
+        abjad_ide("gre _ tscl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring time signatures ...",

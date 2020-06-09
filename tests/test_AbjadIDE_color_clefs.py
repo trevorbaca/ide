@@ -57,7 +57,7 @@ def test_AbjadIDE_color_clefs_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ ccl q")
+        abjad_ide("gre _ ccl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_clefs_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ cuc q")
+        abjad_ide("gre _ cuc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring clefs ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_clefs_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ ccl q")
+        abjad_ide("gre _ ccl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",

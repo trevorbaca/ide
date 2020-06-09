@@ -12,7 +12,7 @@ def test_AbjadIDE_generate_music_ly_01():
         )
         target.remove()
 
-        abjad_ide("red %letter ggc mlg q")
+        abjad_ide("red bb letter ggc mlg q")
         transcript = abjad_ide.io.transcript
         assert f"Generating {target.trim()} ..." in transcript
         # assert f'Removing {target.trim()} ...' in transcript
@@ -26,7 +26,7 @@ def test_AbjadIDE_generate_music_ly_01():
         assert '\n        \\include "_segments/segment-A.ly"' in text
         assert '\n        \\include "_segments/segment-B.ly"' in text
 
-        abjad_ide("red %letter mlg q")
+        abjad_ide("red bb letter mlg q")
         transcript = abjad_ide.io.transcript
         assert f"Generating {target.trim()} ..." in transcript
         # assert f'Removing {target.trim()} ...' in transcript
@@ -52,7 +52,7 @@ def test_AbjadIDE_generate_music_ly_02():
         )
         target.remove()
 
-        abjad_ide("red gg new C %letter ggc mlg q")
+        abjad_ide("red gg new C bb letter ggc mlg q")
         transcript = abjad_ide.io.transcript
         assert f"Generating {target.trim()} ..." in transcript
         # assert f'Removing {target.trim()} ...' in transcript

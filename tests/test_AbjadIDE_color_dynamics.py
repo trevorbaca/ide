@@ -57,7 +57,7 @@ def test_AbjadIDE_color_dynamics_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ dcl q")
+        abjad_ide("gre _ dcl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring dynamics ...",
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_dynamics_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ duc q")
+        abjad_ide("gre _ duc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring dynamics ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_dynamics_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ dcl q")
+        abjad_ide("gre _ dcl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring dynamics ...",

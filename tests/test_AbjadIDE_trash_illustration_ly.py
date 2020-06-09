@@ -15,12 +15,12 @@ def test_AbjadIDE_trash_illustration_ly_01():
         )
         assert path.is_file()
 
-        abjad_ide("red %A ilt q")
+        abjad_ide("red A ilt q")
         transcript = abjad_ide.io.transcript
         assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()
 
-        abjad_ide("red %A ilt q")
+        abjad_ide("red A ilt q")
         transcript = abjad_ide.io.transcript
         assert f"Missing {path.trim()} ..." in transcript
 

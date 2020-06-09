@@ -10,7 +10,7 @@ def test_AbjadIDE_collect_segments_01():
 
     with ide.Test():
 
-        abjad_ide("red %let ggc q")
+        abjad_ide("red bb let ggc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Collecting segment lys ...",

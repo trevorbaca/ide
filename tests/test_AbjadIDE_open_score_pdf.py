@@ -20,7 +20,7 @@ def test_AbjadIDE_open_score_pdf_02():
     Opens build score.
     """
 
-    abjad_ide("red %letter spo q")
+    abjad_ide("red bb letter spo q")
     transcript = abjad_ide.io.transcript
     assert "No files ending in *score.pdf ..." in transcript
 

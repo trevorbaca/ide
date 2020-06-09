@@ -247,15 +247,10 @@ class Menu(object):
 
     @staticmethod
     def _split_prefix(string):
-        if (
-            string
-            and 2 <= len(string)
-            and string[0] == string[1]
-            and string[0] in Path.address_characters
-        ):
+        if string and 2 <= len(string) and string[0] == string[1] and string[0] == "@":
             prefix = string[:2]
             string = string[2:] or None
-        elif string and 1 <= len(string) and string[0] in Path.address_characters:
+        elif string and 1 <= len(string) and string[0] == "@":
             prefix = string[:1]
             string = string[1:] or None
         else:

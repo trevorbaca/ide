@@ -14,7 +14,7 @@ def test_AbjadIDE_trash_back_cover_pdf_01():
         path.write_text("")
         assert path.is_file()
 
-        abjad_ide("red %letter bcpt q")
+        abjad_ide("red bb letter bcpt q")
         transcript = abjad_ide.io.transcript
         assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()

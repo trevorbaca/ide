@@ -6,13 +6,6 @@ class Path(abjad.Path):
     Path.
     """
 
-    ### CLASS VARIABLES ###
-
-    address_characters = {
-        "@": "file",
-        "%": "directory",
-    }
-
     ### PRIVATE METHODS ###
 
     def _get_added_asset_paths(self):

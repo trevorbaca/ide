@@ -48,7 +48,7 @@ def test_AbjadIDE_show_measure_numbers_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ mns q")
+        abjad_ide("gre _ mns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing measure number markup ...",
@@ -57,7 +57,7 @@ def test_AbjadIDE_show_measure_numbers_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ mnh q")
+        abjad_ide("gre _ mnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding measure number markup ...",

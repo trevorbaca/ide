@@ -52,7 +52,7 @@ def test_AbjadIDE_show_stage_numbers_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ sns q")
+        abjad_ide("gre _ sns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing stage number markup ...",
@@ -61,7 +61,7 @@ def test_AbjadIDE_show_stage_numbers_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ snh q")
+        abjad_ide("gre _ snh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding stage number markup ...",

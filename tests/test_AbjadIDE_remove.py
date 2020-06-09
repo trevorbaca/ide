@@ -18,7 +18,7 @@ def test_AbjadIDE_remove_01():
         target_3 = path / "layout.ly"
         assert target_3.is_file()
 
-        abjad_ide("red %letter rm 1-3 remove~3 q")
+        abjad_ide("red bb letter rm 1-3 remove~3 q")
         transcript = abjad_ide.io.transcript
         assert not target_1.exists()
         assert not target_2.exists()
@@ -38,7 +38,7 @@ def test_AbjadIDE_remove_01():
         assert target_2.is_file()
         assert target_3.is_file()
 
-        abjad_ide("red %letter rm 2-1,3 remove~3 q")
+        abjad_ide("red bb letter rm 2-1,3 remove~3 q")
         transcript = abjad_ide.io.transcript
         assert not target_1.exists()
         assert not target_2.exists()
@@ -58,7 +58,7 @@ def test_AbjadIDE_remove_01():
         assert target_2.is_file()
         assert target_3.is_file()
 
-        abjad_ide("red %letter rm 2,1,3 remove~3 q")
+        abjad_ide("red bb letter rm 2,1,3 remove~3 q")
         transcript = abjad_ide.io.transcript
         assert not target_1.exists()
         assert not target_2.exists()

@@ -9,7 +9,7 @@ def test_AbjadIDE_duplicate_01():
     In build directory.
     """
 
-    abjad_ide("red %let dup layout.ly q")
+    abjad_ide("red bb let dup layout.ly q")
     transcript = abjad_ide.io.transcript
     assert "Select files to duplicate> layout.ly" in transcript
     assert "Duplicating red_score/builds/letter-score/layout.ly ..." in transcript

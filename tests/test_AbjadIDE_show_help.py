@@ -36,7 +36,6 @@ def test_AbjadIDE_show_help_01():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -79,7 +78,7 @@ def test_AbjadIDE_show_help_02():
     In _segments directory.
     """
 
-    abjad_ide("red %letter _segments ? q")
+    abjad_ide("red bb letter _segments ? q")
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : builds : letter-score : _segments (empty) : help",
@@ -121,7 +120,6 @@ def test_AbjadIDE_show_help_02():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -246,7 +244,7 @@ def test_AbjadIDE_show_help_03():
     In build directory.
     """
 
-    abjad_ide("red %letter ? q")
+    abjad_ide("red bb letter ? q")
     menu = abjad_ide.io.transcript.menus[-1]
 
     assert menu == [
@@ -289,7 +287,6 @@ def test_AbjadIDE_show_help_03():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -442,7 +439,6 @@ def test_AbjadIDE_show_help_04():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -566,7 +562,6 @@ def test_AbjadIDE_show_help_05():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -631,7 +626,6 @@ def test_AbjadIDE_show_help_06():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -720,7 +714,6 @@ def test_AbjadIDE_show_help_07():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -868,7 +861,6 @@ def test_AbjadIDE_show_help_08():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -910,7 +902,7 @@ def test_AbjadIDE_show_help_09():
     In segment directory.
     """
 
-    abjad_ide("red %A ? q")
+    abjad_ide("red A ? q")
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : segments : A : help",
@@ -942,7 +934,6 @@ def test_AbjadIDE_show_help_09():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -1086,7 +1077,6 @@ def test_AbjadIDE_show_help_10():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -1227,7 +1217,6 @@ def test_AbjadIDE_show_help_11():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",
@@ -1298,7 +1287,6 @@ def test_AbjadIDE_show_help_12():
         "    git - status (st)",
         "",
         "    go - back (-)",
-        "    go - directory (%)",
         "    go - quit (q)",
         "    go - scores (ss)",
         "    go - up (..)",

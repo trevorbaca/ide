@@ -9,7 +9,7 @@ def test_AbjadIDE_edit_illustration_ly_01():
     In segment directory.
     """
 
-    abjad_ide("red %A ile q")
+    abjad_ide("red A ile q")
     transcript = abjad_ide.io.transcript
     path = ide.Path(
         scores, "red_score", "red_score", "segments", "A", "illustration.ly"

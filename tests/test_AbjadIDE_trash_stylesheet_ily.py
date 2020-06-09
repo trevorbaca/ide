@@ -11,11 +11,11 @@ def test_AbjadIDE_trash_stylesheet_ily_01():
         path /= "stylesheet.ily"
         assert path.is_file()
 
-        abjad_ide("red %letter ssit q")
+        abjad_ide("red bb letter ssit q")
         transcript = abjad_ide.io.transcript
         assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()
 
-        abjad_ide("red %letter ssit q")
+        abjad_ide("red bb letter ssit q")
         transcript = abjad_ide.io.transcript
         assert f"Missing {path.trim()} ..." in transcript

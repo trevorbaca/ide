@@ -16,7 +16,7 @@ def test_AbjadIDE_make_illustration_ly_01():
         maker = segment / "__make_segment_ly__.py"
         maker.remove()
 
-        abjad_ide("red %A ilm q")
+        abjad_ide("red A ilm q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {ly.trim()} ..." not in transcript
         assert f"Writing {maker.trim()} ..." in transcript
@@ -26,7 +26,7 @@ def test_AbjadIDE_make_illustration_ly_01():
         assert ly.is_file()
         assert not maker.exists()
 
-        abjad_ide("red %A ilm q")
+        abjad_ide("red A ilm q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {ly.trim()} ..." in transcript
         assert f"Writing {maker.trim()} ..." in transcript

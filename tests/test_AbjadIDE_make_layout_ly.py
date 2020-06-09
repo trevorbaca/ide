@@ -17,7 +17,7 @@ def test_AbjadIDE_make_layout_ly_01():
         path.remove()
         assert not path.exists()
 
-        abjad_ide("red %let llm q")
+        abjad_ide("red bb let llm q")
         lines = abjad_ide.io.transcript.lines
         assert path.is_file()
         for line in [
@@ -71,7 +71,7 @@ def test_AbjadIDE_make_layout_ly_03():
         path.remove()
         assert not path.exists()
 
-        abjad_ide("red %A llm q")
+        abjad_ide("red A llm q")
         lines = abjad_ide.io.transcript.lines
         assert path.is_file()
         for line in [

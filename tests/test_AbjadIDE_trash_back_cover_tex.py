@@ -12,11 +12,11 @@ def test_AbjadIDE_trash_back_cover_tex_01():
         )
         assert path.is_file()
 
-        abjad_ide("red %letter bctt q")
+        abjad_ide("red bb letter bctt q")
         transcript = abjad_ide.io.transcript
         assert f"Trashing {path.trim()} ..." in transcript
         assert not path.exists()
 
-        abjad_ide("red %letter bctt q")
+        abjad_ide("red bb letter bctt q")
         transcript = abjad_ide.io.transcript
         assert "No files matching back-cover.tex ..." in transcript

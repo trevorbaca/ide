@@ -54,7 +54,7 @@ def test_AbjadIDE_color_margin_markup_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre %_ mmcl q")
+        abjad_ide("gre _ mmcl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring margin markup ...",
@@ -62,7 +62,7 @@ def test_AbjadIDE_color_margin_markup_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ mmuc q")
+        abjad_ide("gre _ mmuc q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring margin markup ...",
@@ -70,7 +70,7 @@ def test_AbjadIDE_color_margin_markup_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre %_ mmcl q")
+        abjad_ide("gre _ mmcl q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring margin markup ...",
