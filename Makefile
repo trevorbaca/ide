@@ -1,17 +1,17 @@
-blackExclude = --exclude='__metadata__.py|definition.py|layout.py'
+black_exclude = --exclude='__metadata__.py|definition.py|layout.py'
 
 black-check:
-	black --check --diff ${blackExclude} --target-version=py38 .
+	black --check --diff ${black_exclude} --target-version=py38 .
 
 black-reformat:
-	black ${blackExclude} --target-version=py38 .
+	black ${black_exclude} --target-version=py38 .
 
-flakeIgnore = --ignore=E203,E266,E501,W503
-flakeExclude := --exclude=__metadata__.py
-flakeOptions = --isolated --max-line-length=88
+flake_exclude = --exclude=__metadata__.py
+flake_ignore = --ignore=E203,E266,E501,W503
+flake_options = --isolated --max-line-length=88
 
 flake8:
-	flake8 ${flakeExclude} ${flakeIgnore} ${flakeOptions}
+	flake8 ${flake_exclude} ${flake_ignore} ${flake_options}
 
 isort-check:
 	isort \
