@@ -14,8 +14,6 @@ def test_AbjadIDE_generate_layout_py_01():
         )
         assert target.is_file()
         target.remove()
-
-        abjad_ide("red A lpt q")
         assert not target.exists()
 
         abjad_ide("red A lpg q")
