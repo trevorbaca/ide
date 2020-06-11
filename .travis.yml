@@ -39,7 +39,7 @@ before_install:
 
   # clone & install abjad dev branch:
   - git clone -b trevor/dev https://github.com/Abjad/abjad.git /tmp/abjad
-  - pip install /tmp/abjad
+  - pip install -e /tmp/abjad
 
   # clone & install rmakers:
   - git clone https://github.com/Abjad/abjad-ext-rmakers.git /tmp/abjad-ext-rmakers
