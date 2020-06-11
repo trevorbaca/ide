@@ -108,7 +108,7 @@ script:
   - make flake8
   - make isort-check
   - make mypy
-  - $TRAVIS_BUILD_DIR/ide/ide/scr/start-abjad-ide q
+  - $TRAVIS_BUILD_DIR/ide/scr/start-abjad-ide q
   - make pytest
 
 after_success:
