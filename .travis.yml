@@ -105,6 +105,7 @@ install:
   - pip --version
 
   # log paths
+  - python -c "import abjad; print(abjad.abjad_configuration.all_paths)"
   - python -c "import abjad; print(abjad.abjad_configuration.boilerplate_directory)"
   - python -c "import ide; print(ide.configuration.boilerplate_directory)"
 
