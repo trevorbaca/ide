@@ -61,9 +61,9 @@ before_install:
   - ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
 
   # set pythonpath:
-  - export PYTHONPATH=$PYTHONPATH:$package/scores/blue_score
-  - export PYTHONPATH=$PYTHONPATH:$package/scores/red_score
-  - export PYTHONPATH=$PYTHONPATH:$package/scores/green_score
+  - export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/scores/blue_score
+  - export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/scores/red_score
+  - export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/scores/green_score
 
   # make aliases and log files for tests
   - mkdir -p $HOME/.abjad/ide

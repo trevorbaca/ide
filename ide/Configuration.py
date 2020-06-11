@@ -213,4 +213,4 @@ class Configuration(abjad.Configuration):
         """
         import ide
 
-        return abjad.Path(ide.__path__[0]) / "scores"
+        return abjad.Path(ide.__path__[0]).parent / "scores"
