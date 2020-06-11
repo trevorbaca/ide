@@ -6,7 +6,7 @@ import ide
 try:
     import readline
     import rlcompleter
-    if readline.__doc__ is not None and 'libedit' in readline.__doc__:
+    if readline.__doc__ is not None and "libedit" in readline.__doc__:
         readline.parse_and_bind("bind ^I rl_complete")
     else:
         readline.parse_and_bind("tab: complete")
@@ -15,6 +15,6 @@ try:
 except ImportError:
     pass
 
-string = ' '.join(sys.argv[1:])
+string = " ".join(sys.argv[1:])
 abjad_ide = ide.AbjadIDE(example=True)
 abjad_ide(string)

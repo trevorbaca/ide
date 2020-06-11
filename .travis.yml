@@ -27,10 +27,8 @@ addons:
     - lmodern
 
 before_install:
-  - name=ide
-
-  - package=$TRAVIS_BUILD_DIR/$name
-  - export PATH=$PATH:$package/scr
+  # remember package
+  - package=$TRAVIS_BUILD_DIR/ide
 
   # install lilypond:
   - lilypond=/tmp/lilypond
@@ -54,7 +52,6 @@ before_install:
   # clone & install baca:
   - git clone https://github.com/trevorbaca/baca.git /tmp/baca
   - pip install /tmp/baca
-  - export PATH=$PATH:/tmp/baca/scr
 
   # configure mypy
   - export MYPYPATH=$MYPYPATH:/tmp/abjad
@@ -83,7 +80,6 @@ before_install:
   - echo $TRAVIS_PYTHON_VERSION
 
   # log script paths
-  - which prime-parser-tables
   - which latex
   - which pytest
   - which start-abjad-ide
@@ -99,7 +95,7 @@ before_install:
 
 install:
   - pip install -e . 
-  - prime-parser-tables
+  - /tmp/abjad/scr/devel/prime-parser-tables
 
   # log versions
   - black --version
@@ -113,7 +109,7 @@ script:
   - make flake8
   - make isort-check
   - make mypy
-  - start-abjad-ide q
+  - $TRAVIS_BUILD_DIR/ide/ide/scr/start-abjad-ide q
   - make pytest
 
 after_success:
