@@ -93,6 +93,7 @@ before_install:
   - ls $HOME/.abjad/ide
 
 install:
+  # install IDE
   - pip install -e . 
   - /tmp/abjad/scr/devel/prime-parser-tables
 
@@ -102,6 +103,10 @@ install:
   - isort --version
   - mypy --version
   - pip --version
+
+  # log paths
+  - python -c "import abjad; print(abjad.abjad_configuration.boilerplate_directory)"
+  - python -c "import ide; print(ide.configuration.boilerplate_directory)"
 
 script:
   - make black-check
