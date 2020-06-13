@@ -3,7 +3,7 @@ import pathlib
 import abjad
 
 
-class Configuration(abjad.Configuration):
+class Configuration(abjad.AbjadConfiguration):
     """
     Configuration.
 
