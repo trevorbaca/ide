@@ -89,5 +89,5 @@ if not (
     < distutils.version.LooseVersion(platform.python_version())
 ):
     raise ImportError("Requires Python 3.6.")
-#configuration = Configuration()
+configuration = Configuration()
 #configuration._add_test_score_to_sys_path()
