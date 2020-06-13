@@ -58,16 +58,6 @@ class Configuration(abjad.Configuration):
 
     ### PRIVATE METHODS ###
 
-#    @staticmethod
-#    def _add_test_score_to_sys_path():
-#        import ide
-#
-#        configuration = ide.Configuration()
-#        directory = configuration.test_scores_directory
-#        for path in directory.iterdir():
-#            if path.is_dir():
-#                sys.path.insert(0, str(path))
-
     def _get_initial_comment(self):
         current_time = self._get_current_time()
         return [

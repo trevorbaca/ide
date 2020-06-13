@@ -90,4 +90,3 @@ if not (
 ):
     raise ImportError("Requires Python 3.6.")
 configuration = Configuration()
-#configuration._add_test_score_to_sys_path()
