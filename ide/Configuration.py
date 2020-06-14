@@ -68,7 +68,7 @@ class Configuration(abjad.Configuration):
         return {}
 
     def _make_missing_directories(self):
-        directory = pathlib.Path(abjad.abjad_configuration.composer_scores_directory)
+        directory = pathlib.Path(abjad.configuration.composer_scores_directory)
         if not directory.exists():
             directory.mkdir()
 
@@ -120,7 +120,7 @@ class Configuration(abjad.Configuration):
             Path('.../abjad/boilerplate')
 
         """
-        return abjad.Path(abjad.abjad_configuration.boilerplate_directory)
+        return abjad.Path(abjad.configuration.boilerplate_directory)
 
     @property
     def composer_scores_directory(self) -> abjad.Path:
@@ -130,7 +130,7 @@ class Configuration(abjad.Configuration):
         if self._composer_scores_directory_override is not None:
             return self._composer_scores_directory_override
         if self._composer_scores_directory is None:
-            scores = abjad.abjad_configuration.composer_scores_directory
+            scores = abjad.configuration.composer_scores_directory
             scores = abjad.Path(scores).expanduser()
             self._composer_scores_directory = scores
         return self._composer_scores_directory
@@ -146,7 +146,7 @@ class Configuration(abjad.Configuration):
             Path('.../.abjad/ide')
 
         """
-        path = abjad.Path(abjad.abjad_configuration.configuration_directory)
+        path = abjad.Path(abjad.configuration.configuration_directory)
         path = path / self._configuration_directory_name
         return path
 

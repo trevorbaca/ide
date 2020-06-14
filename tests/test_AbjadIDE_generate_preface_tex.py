@@ -8,7 +8,7 @@ scores = ide.Configuration().test_scores_directory
 def test_AbjadIDE_generate_preface_tex_01():
 
     with ide.Test():
-        directory = abjad.abjad_configuration.boilerplate_directory
+        directory = abjad.configuration.boilerplate_directory
         source = abjad.Path(directory) / "score-preface.tex"
         text = source.read_text()
         assert "paper_size" in text
