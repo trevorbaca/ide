@@ -416,7 +416,7 @@ class Menu(object):
         """
         if not value:
             return
-        abjad.IOManager.clear_terminal()
+        abjad.IOManager.spawn_subprocess("clear")
         if value is True:
             lines = self.make_lines(
                 dimensions=dimensions, force_single_column=force_single_column

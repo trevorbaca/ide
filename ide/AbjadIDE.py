@@ -98,7 +98,7 @@ class AbjadIDE(object):
         self.io.transcript.trim()
         last_line = self.io.transcript.lines[-1]
         assert last_line == "", repr(last_line)
-        abjad.IOManager.clear_terminal()
+        abjad.IOManager.spawn_subprocess("clear")
 
     def __repr__(self) -> str:
         """
