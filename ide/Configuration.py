@@ -117,10 +117,10 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().boilerplate_directory
-            Path('.../abjad/boilerplate')
+            Path('.../ide/boilerplate')
 
         """
-        return abjad.Path(abjad.configuration.boilerplate_directory)
+        return abjad.Path(__file__).parent.parent / "boilerplate"
 
     @property
     def composer_scores_directory(self) -> abjad.Path:

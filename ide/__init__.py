@@ -70,6 +70,8 @@ from .Response import Response
 from .Test import Test
 from .Transcript import Transcript
 
+configuration = Configuration()
+
 __all__ = [
     "AbjadIDE",
     "Command",
@@ -82,6 +84,7 @@ __all__ = [
     "Response",
     "Test",
     "Transcript",
+    "configuration",
 ]
 
 if not (
@@ -89,4 +92,3 @@ if not (
     < distutils.version.LooseVersion(platform.python_version())
 ):
     raise ImportError("Requires Python 3.6.")
-configuration = Configuration()

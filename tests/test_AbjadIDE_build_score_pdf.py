@@ -6,7 +6,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 
 def test_AbjadIDE_build_score_pdf_01():
 
-    scores = ide.Configuration().test_scores_directory
+    scores = ide.configuration.test_scores_directory
     source = abjad.Path(scores, "red_score", "red_score", "builds", "letter-score")
 
     _segments = source / "_segments"

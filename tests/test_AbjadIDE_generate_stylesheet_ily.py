@@ -2,13 +2,13 @@ import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
-scores = ide.Configuration().test_scores_directory
+scores = ide.configuration.test_scores_directory
 
 
 def test_AbjadIDE_generate_stylesheet_ily_01():
 
     with ide.Test():
-        directory = abjad.configuration.boilerplate_directory
+        directory = ide.configuration.boilerplate_directory
         source = abjad.Path(directory) / "stylesheet.ily"
         text = source.read_text()
         assert "paper_size" in text

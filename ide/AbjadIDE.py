@@ -222,7 +222,7 @@ class AbjadIDE(object):
             self.io.display(f"removing {target.trim()} ...", indent=indent)
         self.io.display(f"writing {target.trim()} ...", indent=indent)
         values = values or {}
-        boilerplate = abjad.Path(abjad.configuration.boilerplate_directory)
+        boilerplate = abjad.Path(self.configuration.boilerplate_directory)
         source = boilerplate / source_name
         target_name = target_name or source_name
         target = directory / target_name

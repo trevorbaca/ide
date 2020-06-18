@@ -2,7 +2,7 @@ import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
-scores = ide.Configuration().test_scores_directory
+scores = ide.configuration.test_scores_directory
 
 
 def test_AbjadIDE_new_01():
@@ -338,7 +338,7 @@ def test_AbjadIDE_new_04():
 
         abjad_ide("new Purple~Score q")
         transcript = abjad_ide.io.transcript
-        wrapper = ide.Configuration().test_scores_directory / "purple_score"
+        wrapper = ide.configuration.test_scores_directory / "purple_score"
         assert wrapper.is_dir()
         for name in [
             ".gitignore",
@@ -380,7 +380,7 @@ def test_AbjadIDE_new_05():
     """
 
     with ide.Test():
-        wrapper = ide.Configuration().test_scores_directory / "purple_score"
+        wrapper = ide.configuration.test_scores_directory / "purple_score"
         wrapper.remove()
         wrapper.mkdir()
         assert wrapper.is_dir()
@@ -426,7 +426,7 @@ def test_AbjadIDE_new_06():
     Makes score package. Coerces package name.
     """
 
-    package = ide.Configuration().test_scores_directory / "purple_score"
+    package = ide.configuration.test_scores_directory / "purple_score"
 
     with ide.Test(remove=[package]):
 

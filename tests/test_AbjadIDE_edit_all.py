@@ -1,7 +1,7 @@
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
-scores = ide.Configuration().test_scores_directory
+scores = ide.configuration.test_scores_directory
 
 
 def test_AbjadIDE_edit_all_01():
