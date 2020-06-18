@@ -1364,6 +1364,7 @@ class AbjadIDE(object):
         self.io.display(f"making {wrapper.trim()} ...")
         year = datetime.date.today().year
         abjad.IOManager._make_score_package(
+            self.configuration.boilerplate_directory,
             score_package_path=str(wrapper),
             composer_email=abjad.configuration.composer_email,
             composer_full_name=abjad.configuration.composer_full_name,
