@@ -3311,7 +3311,8 @@ class AbjadIDE(object):
             return
         with self.change(directory):
             options = "--sort-files --type=python"
-            command = rf'vim -c "grep {search_string!r} {options}"'
+            command = f"vim -c \"grep '{search_string}' {options}\""
+            self.io.display(command, raw=True)
             abjad.IOManager.spawn_subprocess(command)
 
     @Command(
