@@ -48,6 +48,7 @@ class AbjadIDE(object):
         "_test",
     )
 
+    abjad_configuration = abjad.Configuration()
     configuration = Configuration()
 
     # lilypond.org/doc/v2.19/Documentation/notation/predefined-paper-sizes
@@ -320,7 +321,7 @@ class AbjadIDE(object):
 
     def _display_lilypond_log_errors(self, log=None):
         if log is None:
-            log = abjad.configuration.lilypond_log_file_path
+            log = self.abjad_configuration.lilypond_log_file_path
         log = abjad.Path(log)
         with log.open() as file_pointer:
             lines = file_pointer.readlines()
@@ -393,7 +394,7 @@ class AbjadIDE(object):
             if suffix:
                 catalog_number = f"{catalog_number} / {suffix}"
         values["catalog_number"] = catalog_number
-        composer_website = abjad.configuration.composer_website or ""
+        composer_website = self.abjad_configuration.composer_website or ""
         if self.test or self.example:
             composer_website = "www.composer-website.com"
         values["composer_website"] = composer_website
@@ -464,7 +465,7 @@ class AbjadIDE(object):
         values["forces_tagline"] = forces_tagline
         year = directory.contents.get_metadatum("year", "")
         values["year"] = str(year)
-        composer = abjad.configuration.composer_uppercase_name
+        composer = self.abjad_configuration.composer_uppercase_name
         if self.test or self.example:
             composer = "COMPOSER"
         values["composer"] = str(composer)
@@ -1374,10 +1375,10 @@ class AbjadIDE(object):
         year = datetime.date.today().year
         self.__make_score_package(
             score_package_path=str(wrapper),
-            composer_email=abjad.configuration.composer_email,
-            composer_full_name=abjad.configuration.composer_full_name,
-            composer_github_username=abjad.configuration.composer_github_username,
-            composer_last_name=abjad.configuration.composer_last_name,
+            composer_email=self.abjad_configuration.composer_email,
+            composer_full_name=self.abjad_configuration.composer_full_name,
+            composer_github_username=self.abjad_configuration.composer_github_username,
+            composer_last_name=self.abjad_configuration.composer_last_name,
             score_title=title,
             year=year,
         )
@@ -3165,7 +3166,7 @@ class AbjadIDE(object):
         """
         Edits ``lily.log``.
         """
-        path = abjad.Path(abjad.configuration.lilypond_log_file_path)
+        path = abjad.Path(self.abjad_configuration.lilypond_log_file_path)
         self._open_files([path])
 
     @Command(

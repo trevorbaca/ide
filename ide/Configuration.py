@@ -1,5 +1,3 @@
-import pathlib
-
 import abjad
 
 
@@ -27,6 +25,8 @@ class Configuration(abjad.Configuration):
     _configuration_directory_name = "ide"
 
     _configuration_file_name = "ide.cfg"
+
+    abjad_configuration = abjad.Configuration()
 
     always_ignore = ("__pycache__",)
 
@@ -68,7 +68,7 @@ class Configuration(abjad.Configuration):
         return {}
 
     def _make_missing_directories(self):
-        directory = pathlib.Path(abjad.configuration.composer_scores_directory)
+        directory = self.abjad_configuration.composer_scores_directory
         if not directory.exists():
             directory.mkdir()
 
@@ -123,19 +123,6 @@ class Configuration(abjad.Configuration):
         return abjad.Path(__file__).parent.parent / "boilerplate"
 
     @property
-    def composer_scores_directory(self) -> abjad.Path:
-        """
-        Gets composer scores directory.
-        """
-        if self._composer_scores_directory_override is not None:
-            return self._composer_scores_directory_override
-        if self._composer_scores_directory is None:
-            scores = abjad.configuration.composer_scores_directory
-            scores = abjad.Path(scores).expanduser()
-            self._composer_scores_directory = scores
-        return self._composer_scores_directory
-
-    @property
     def configuration_directory(self) -> abjad.Path:
         """
         Gets configuration directory path.
@@ -146,9 +133,8 @@ class Configuration(abjad.Configuration):
             Path('.../.abjad/ide')
 
         """
-        path = abjad.Path(abjad.configuration.configuration_directory)
-        path = path / self._configuration_directory_name
-        return path
+        path = self.abjad_configuration.configuration_directory
+        return abjad.Path(path / self._configuration_directory_name)
 
     @property
     def ide_directory(self) -> abjad.Path:
