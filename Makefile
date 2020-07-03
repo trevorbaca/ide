@@ -60,9 +60,7 @@ pytest:
 	pytest \
 	--cov-config=.coveragerc \
 	--cov-report=html \
-	--cov-report=term \
 	--cov=${project} \
-	--durations=20 \
 	.
 
 pytest-x:
@@ -71,9 +69,7 @@ pytest-x:
 	-x \
 	--cov-config=.coveragerc \
 	--cov-report=html \
-	--cov-report=term \
 	--cov=${project} \
-	--durations=20 \
 	.
 
 reformat:
