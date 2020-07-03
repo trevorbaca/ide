@@ -771,7 +771,7 @@ class AbjadIDE(object):
     def _get_scores_directory(self):
         if self.test or self.example:
             return self.configuration.test_scores_directory
-        return self.configuration.composer_scores_directory
+        return abjad.Path(self.configuration.composer_scores_directory)
 
     @staticmethod
     def _get_unadded_asset_paths(directory):
