@@ -23,17 +23,15 @@ isort-check:
 	--project=abjad \
 	--project=abjadext \
 	--project=baca \
-	--recursive \
 	--thirdparty=ply \
 	--thirdparty=roman \
 	--thirdparty=uqbar \
 	--trailing-comma \
 	--use-parentheses \
-	.
+	ide tests
 
 isort-reformat:
 	isort \
-	--apply \
 	--case-sensitive \
 	--check-only \
 	--diff \
@@ -42,13 +40,12 @@ isort-reformat:
 	--project=abjad \
 	--project=abjadext \
 	--project=baca \
-	--recursive \
 	--thirdparty=ply \
 	--thirdparty=roman \
 	--thirdparty=uqbar \
 	--trailing-comma \
 	--use-parentheses \
-	.
+	ide tests
 
 mypy:
 	mypy .
