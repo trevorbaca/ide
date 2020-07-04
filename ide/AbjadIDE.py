@@ -1102,7 +1102,6 @@ class AbjadIDE(object):
         if self.is_navigation(name):
             return
         if directory.is_score_package_path():
-            name = directory.coerce(name)
             predicate = directory.get_name_predicate()
             if predicate and not predicate(abjad.String(name)):
                 self.io.display(f"invalid file name {name!r} ...")
@@ -1142,7 +1141,6 @@ class AbjadIDE(object):
         name = self.io.get(f"enter {asset_type} name")
         if self.is_navigation(name):
             return
-        name = directory.coerce(name)
         path = directory / name
         if path.exists():
             self.io.display(f"existing {path.trim()} ...")
@@ -1173,7 +1171,6 @@ class AbjadIDE(object):
         name = self.io.get("directory name")
         if self.is_navigation(name):
             return
-        name = directory.coerce(name)
         parts_directory = directory / name
         if parts_directory.exists():
             self.io.display(f"existing {parts_directory.trim()} ...")
@@ -1279,7 +1276,6 @@ class AbjadIDE(object):
         name = self.io.get("build name")
         if self.is_navigation(name):
             return
-        name = builds.coerce(name)
         build = builds / name
         if build.exists():
             self.io.display(f"existing {build.trim()} ...")
@@ -1362,15 +1358,17 @@ class AbjadIDE(object):
                 return
             if response != "y":
                 return
-        title = self.io.get("enter title")
-        if self.is_navigation(title):
-            return
         if wrapper is None:
-            name = scores.coerce(title)
+            name = self.io.get("enter name")
+            if self.is_navigation(name):
+                return
             wrapper = scores / name
             if wrapper.exists():
                 self.io.display(f"existing {wrapper.trim()} ...")
                 return
+        title = self.io.get("enter title")
+        if self.is_navigation(title):
+            return
         self.io.display(f"making {wrapper.trim()} ...")
         year = datetime.date.today().year
         self.__make_score_package(
@@ -1687,7 +1685,6 @@ class AbjadIDE(object):
             elif path.is_dir():
                 if path.is_wrapper():
                     path = path.contents
-                # self._manage_directory(path)
                 return path, True
             else:
                 self.io.display(f"missing {path.trim()} ...")
@@ -1713,7 +1710,6 @@ class AbjadIDE(object):
         else:
             redraw = response.string is None or self._redraw
             self._redraw = None
-            # self._manage_directory(self.current_directory, redraw=redraw)
             return self.current_directory, redraw
 
     def _match_alias(self, directory, string):
@@ -2922,16 +2918,13 @@ class AbjadIDE(object):
         for source in paths:
             title = None
             name_metadatum = None
+            name = self.io.get("enter new name")
+            if self.is_navigation(name):
+                continue
             if source.is_wrapper():
                 title = self.io.get("enter title")
                 if self.is_navigation(title):
                     continue
-                name = title
-            else:
-                name = self.io.get("enter new name")
-                if self.is_navigation(name):
-                    continue
-            name = source.parent.coerce(name, suffix=source.suffix)
             target = source.with_name(name)
             if source == target:
                 continue
@@ -3640,7 +3633,6 @@ class AbjadIDE(object):
                 if definition.is_file():
                     items.append((definition.trim(), definition))
             label = directory.get_asset_type()
-            # header = directory.get_header()
             header = self._directory_to_header(directory)
             header += f" : get {label} ..."
         if not items:
@@ -3649,7 +3641,6 @@ class AbjadIDE(object):
             for path in scores_directory.list_paths():
                 items.append((path.get_identifier(), path))
             label = abjad.String(directory.get_asset_type()).pluralize()
-            # header = directory.get_header() + f" : get {label} from ..."
             header = self._directory_to_header(directory) + f" : get {label} from ..."
             selector = self._make_selector(
                 aliases=self.aliases,
@@ -3683,7 +3674,6 @@ class AbjadIDE(object):
             else:
                 for path in cousin.list_paths():
                     items.append((path.get_identifier(), path))
-            # header = directory.get_header()
             header = self._directory_to_header(directory)
             header += f" : get {score.get_identifier()} {label} ..."
         selector = self._make_selector(
@@ -3717,8 +3707,6 @@ class AbjadIDE(object):
                 name = self.io.get("enter new name")
                 if self.is_navigation(name):
                     return
-                suffix = source.suffix
-                name = source.parent.coerce(name, suffix=suffix)
                 target = target.with_name(name)
                 if target.exists():
                     self.io.display(f"existing {target.trim()} ...")
@@ -4658,8 +4646,6 @@ class AbjadIDE(object):
         paths = self._select_paths_in_buildspace(directory.build, name, verb)
         if self.is_navigation(paths):
             return
-        #        if not paths:
-        #            return
         if not paths:
             self.generate_music_ly(directory)
             paths = self._select_paths_in_buildspace(directory.build, name, verb)
@@ -5282,7 +5268,7 @@ class AbjadIDE(object):
             name = self.io.get("new name")
             if self.is_navigation(name):
                 return
-            name_ = directory.coerce(name, suffix=source.suffix)
+            name_ = name
             target = source.parent / name_
             if target.exists():
                 self.io.display(f"existing {target.trim()!r} ...")

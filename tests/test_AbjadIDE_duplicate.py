@@ -52,11 +52,12 @@ def test_AbjadIDE_duplicate_04():
         target = source.with_name("purple_score")
         target.remove()
 
-        abjad_ide("dup red Purple~Score y q")
+        abjad_ide("dup red purple_score Purple~Score y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
         assert "Select packages to duplicate> red" in transcript
         assert f"Duplicating {source.trim()} ..." in transcript
+        assert "Enter new name> purple_score" in transcript
         assert "Enter title> Purple Score" in transcript
         assert "Ok?> y" in transcript
         assert "Replacing 'red_score' with 'purple_score' ..." in transcript
@@ -108,11 +109,11 @@ def test_AbjadIDE_duplicate_07():
         target = source.with_name("new-stylesheet.ily")
         target.remove()
 
-        abjad_ide("red yy dup eet.i new~stylesheet y q")
+        abjad_ide("red yy dup eet.i new-stylesheet.ily y q")
         assert target.exists()
         transcript = abjad_ide.io.transcript
         assert "Select files to duplicate> eet.i" in transcript
         assert f"Duplicating {source.trim()} ..." in transcript
-        assert "Enter new name> new stylesheet" in transcript
+        assert "Enter new name> new-stylesheet.ily" in transcript
         assert f"Writing {target.trim()} ..." in transcript
         assert "Ok?> y" in transcript

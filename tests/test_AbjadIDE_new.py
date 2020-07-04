@@ -336,7 +336,7 @@ def test_AbjadIDE_new_04():
 
     with ide.Test():
 
-        abjad_ide("new Purple~Score q")
+        abjad_ide("new purple_score Purple~Score q")
         transcript = abjad_ide.io.transcript
         wrapper = ide.configuration.test_scores_directory / "purple_score"
         assert wrapper.is_dir()
@@ -362,6 +362,7 @@ def test_AbjadIDE_new_04():
         ]:
             assert (wrapper.contents / name).exists()
         assert (wrapper.segments / "__init__.py").is_file()
+        assert "Enter name> purple_score" in transcript
         assert "Enter title> Purple Score" in transcript
         assert f"Making {wrapper.trim()} ..." in transcript
 
@@ -369,7 +370,7 @@ def test_AbjadIDE_new_04():
         assert (wrapper.builds._assets / ".gitignore").is_file()
         assert (wrapper.builds / "__metadata__.py").is_file()
 
-        abjad_ide("new Purple~Score q")
+        abjad_ide("new purple_score Purple~Score q")
         transcript = abjad_ide.io.transcript
         assert f"Existing {wrapper.trim()} ..." in transcript
 
@@ -416,40 +417,12 @@ def test_AbjadIDE_new_05():
         assert "Enter title> Purple Score" in transcript
         assert f"Making {wrapper.trim()} ..." in transcript
 
-        abjad_ide("new Purple~Score q")
+        abjad_ide("new purple_score Purple~Score q")
         transcript = abjad_ide.io.transcript
         assert f"Existing {wrapper.trim()} ..." in transcript
 
 
 def test_AbjadIDE_new_06():
-    """
-    Makes score package. Coerces package name.
-    """
-
-    package = ide.configuration.test_scores_directory / "purple_score"
-
-    with ide.Test(remove=[package]):
-
-        abjad_ide("new PurpleScore q")
-        assert package.is_dir()
-
-    with ide.Test(remove=[package]):
-
-        abjad_ide("new purpleScore q")
-        assert package.is_dir()
-
-    with ide.Test(remove=[package]):
-
-        abjad_ide("new Purple_Score q")
-        assert package.is_dir()
-
-    with ide.Test(remove=[package]):
-
-        abjad_ide("new purple_score q")
-        assert package.is_dir()
-
-
-def test_AbjadIDE_new_07():
     """
     Makes segment directory.
     """
@@ -457,7 +430,7 @@ def test_AbjadIDE_new_07():
     path = abjad.Path(scores, "red_score", "red_score", "segments", "segment_04")
     with ide.Test(remove=[path]):
 
-        abjad_ide("red gg new segment~04 q")
+        abjad_ide("red gg new segment_04 q")
         transcript = abjad_ide.io.transcript
         assert path.is_dir()
         names = [
@@ -468,7 +441,7 @@ def test_AbjadIDE_new_07():
         ]
         for name in names:
             assert (path / name).is_file()
-        assert "Enter package name> segment 04" in transcript
+        assert "Enter package name> segment_04" in transcript
         assert f"Making {path.trim()} ..." in transcript
         for name in names:
             assert f"Writing {(path / name).trim()} ..." in transcript
@@ -478,7 +451,7 @@ def test_AbjadIDE_new_07():
         assert f"Existing {path.trim()} ..."
 
 
-def test_AbjadIDE_new_08():
+def test_AbjadIDE_new_07():
     """
     Makes stylesheet.
     """
@@ -488,14 +461,14 @@ def test_AbjadIDE_new_08():
     )
     with ide.Test(remove=[path]):
 
-        abjad_ide("red yy new new~stylesheet y q")
+        abjad_ide("red yy new new-stylesheet.ily y q")
         transcript = abjad_ide.io.transcript
         assert path.is_file()
-        assert "File name> new stylesheet" in transcript
+        assert "File name> new-stylesheet.ily" in transcript
         assert f"Writing {path.trim()} ..." in transcript
         assert "Ok?> y" in transcript
 
-        abjad_ide("red yy new new~stylesheet.ily q")
+        abjad_ide("red yy new new-stylesheet.ily q")
         transcript = abjad_ide.io.transcript
         assert f"Existing {path.trim()} ..."
 

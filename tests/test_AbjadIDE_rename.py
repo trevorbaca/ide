@@ -16,7 +16,7 @@ def test_AbjadIDE_rename_01():
         target = ide.configuration.test_scores_directory / "purple_score"
         target.remove()
 
-        abjad_ide("ren blu Purple~Score y q")
+        abjad_ide("ren blu purple_score y q")
         assert not source.exists()
         assert target.is_dir()
 
@@ -83,13 +83,13 @@ def test_AbjadIDE_rename_04():
         target = source.with_name("standard-size")
         target.remove()
 
-        abjad_ide("red bb ren letter standard~size y q")
+        abjad_ide("red bb ren letter standard-size y q")
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
         assert "Select directories to rename> letter" in transcript
         assert f"Renaming {source.trim()} ..." in transcript
-        assert "New name> standard size" in transcript
+        assert "New name> standard-size" in transcript
         assert "Renaming ..." in transcript
         assert f" FROM: {source.trim()}" in transcript
         assert f"   TO: {target.trim()}" in transcript
@@ -112,7 +112,7 @@ def test_AbjadIDE_rename_05():
         abjad_ide("red yy new new-stylesheet.ily y q")
         assert source.is_file()
 
-        abjad_ide("red yy ren new- renamed-stylesheet y q")
+        abjad_ide("red yy ren new- renamed-stylesheet.ily y q")
         assert not source.exists()
         assert target.is_file()
         transcript = abjad_ide.io.transcript
@@ -120,7 +120,7 @@ def test_AbjadIDE_rename_05():
         assert target.is_file()
         assert "Select files to rename> new-" in transcript
         assert f"Renaming {source.trim()} ..." in transcript
-        assert "New name> renamed-stylesheet" in transcript
+        assert "New name> renamed-stylesheet.ily" in transcript
         assert "Renaming ..." in transcript
         assert f" FROM: {source.trim()}" in transcript
         assert f"   TO: {target.trim()}" in transcript
