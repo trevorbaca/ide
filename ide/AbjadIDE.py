@@ -1640,6 +1640,7 @@ class AbjadIDE(object):
         return menu
 
     def _manage_directory(self, directory, redraw=True):
+        assert isinstance(directory, abjad.Path), repr(directory)
         while True:
             result = self._manage_directory_once(directory, redraw=redraw)
             if result in ("quit", None):
@@ -4076,7 +4077,7 @@ class AbjadIDE(object):
         """
         Goes to scores directory.
         """
-        directory = self.configuration.composer_scores_directory
+        directory = abjad.Path(self.configuration.composer_scores_directory)
         if self.test or self.example:
             directory = self.configuration.test_scores_directory
         self._manage_directory(directory)
