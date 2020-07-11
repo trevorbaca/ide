@@ -526,9 +526,9 @@ class AbjadIDE(object):
         else:
             segment_ily_include_statements = ""
         language_token = abjad.LilyPondLanguageToken()
-        lilypond_language_directive = format(language_token)
+        lilypond_language_directive = abjad.lilypond(language_token)
         version_token = abjad.LilyPondVersionToken()
-        lilypond_version_directive = format(version_token)
+        lilypond_version_directive = abjad.lilypond(version_token)
         annotated_title = path.contents.get_title(year=True)
         if annotated_title:
             score_title = annotated_title
@@ -658,7 +658,7 @@ class AbjadIDE(object):
             boilerplate = "score-music.ly"
         else:
             boilerplate = "full-score-music.ly"
-            text = format(score_skeleton)
+            text = abjad.lilypond(score_skeleton)
             lines = text.split("\n")
             lines = [lines[0]] + [8 * " " + _ for _ in lines[1:]]
             score_skeleton = "\n".join(lines)
@@ -684,9 +684,9 @@ class AbjadIDE(object):
             segment_ly_include_statements = ""
             segment_ily_include_statements = ""
         language_token = abjad.LilyPondLanguageToken()
-        lilypond_language_directive = format(language_token)
+        lilypond_language_directive = abjad.lilypond(language_token)
         version_token = abjad.LilyPondVersionToken()
-        lilypond_version_directive = format(version_token)
+        lilypond_version_directive = abjad.lilypond(version_token)
         annotated_title = path.contents.get_title(year=True)
         if annotated_title:
             score_title = annotated_title
