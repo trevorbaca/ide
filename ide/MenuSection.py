@@ -120,7 +120,7 @@ class MenuSection(object):
             for entry in self:
                 if entry.value == string:
                     return entry
-        elif abjad.mathtools.is_integer_equivalent(string):
+        elif abjad.mathx.is_integer_equivalent(string):
             for entry in self:
                 if str(entry.number) == string:
                     return entry

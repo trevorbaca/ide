@@ -200,7 +200,7 @@ class Menu(object):
         for section in self.sections:
             if section.command:
                 continue
-            if abjad.mathtools.is_integer_equivalent(string):
+            if abjad.mathx.is_integer_equivalent(string):
                 number = int(string)
                 for entry in section:
                     if entry.number == number:
