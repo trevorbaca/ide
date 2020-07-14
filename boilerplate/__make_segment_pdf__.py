@@ -69,7 +69,7 @@ if __name__ == "__main__":
             if not layout_ly.is_file():
                 message = f"{{layout_ly.trim()}} does not exit."
                 raise Exception(message)
-            result = layout_ly.get_preamble_page_count_overview()
+            result = ide.pathx.get_preamble_page_count_overview(layout_ly)
             if result is not None:
                 first_page_number, _, _ = result
                 line = r"\paper {{ first-page-number = #"
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         if empty_layout:
             print(f" Ignoring empty {{layout_py.trim()}} ...")
         else:
-            layout_time_signatures = layout_ly.get_preamble_time_signatures()
+            layout_time_signatures = ide.pathx.get_preamble_time_signatures(layout_ly)
             if layout_time_signatures is not None:
                 assert isinstance(layout_time_signatures, list)
                 layout_measure_count = len(layout_time_signatures)
@@ -166,13 +166,15 @@ if __name__ == "__main__":
                     message += " layout time signatures ..."
                     print(message)
                     print(f" Remaking {{layout_ly.trim()}} ...")
-                    ide = ide.AbjadIDE()
-                    ide._make_layout_ly(layout_py)
+                    abjad_ide = ide.AbjadIDE()
+                    abjad_ide._make_layout_ly(layout_py)
                     counter = abjad.String("measure").pluralize(measure_count)
                     message = f" Found {{measure_count}} {{counter}}"
                     message += f" in {{illustration_ly.trim()}} ..."
                     print(message)
-                    layout_time_signatures = layout_ly.get_preamble_time_signatures()
+                    layout_time_signatures = ide.pathx.get_preamble_time_signatures(
+                        layout_ly
+                    )
                     layout_measure_count = len(layout_time_signatures)
                     counter = abjad.String("measure").pluralize(layout_measure_count)
                     message = f" Found {{layout_measure_count}} {{counter}}"
@@ -204,7 +206,8 @@ if __name__ == "__main__":
             abjad.IOManager.run_lilypond(
                 illustration_ly, lilypond_log_file_path=lilypond_log_file_path
             )
-        lilypond_log_file_path.remove_lilypond_warnings(
+        ide.pathx.remove_lilypond_warnings(
+            lilypond_log_file_path,
             crescendo_too_small=True,
             decrescendo_too_small=True,
             overwriting_glissando=True,

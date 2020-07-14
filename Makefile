@@ -33,8 +33,6 @@ isort-check:
 isort-reformat:
 	isort \
 	--case-sensitive \
-	--check-only \
-	--diff \
 	--line-width=88 \
 	--multi-line=3 \
 	--project=abjad \
