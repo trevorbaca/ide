@@ -28,8 +28,6 @@ class Configuration(abjad.Configuration):
 
     abjad_configuration = abjad.Configuration()
 
-    always_ignore = ("__pycache__",)
-
     editor_suffixes = (
         ".cfg",
         ".ily",
@@ -53,7 +51,6 @@ class Configuration(abjad.Configuration):
         self._test_scores_directory = None
         self._ide_directory = None
         self._read_aliases_file()
-        self._make_missing_directories()
 
     ### PRIVATE METHODS ###
 
@@ -104,7 +101,7 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().aliases_file_path
-            Path('.../.abjad/ide/__aliases__.py')
+            Path('.../.abjad/__aliases__.py')
 
         """
         return abjad.Path(self.configuration_directory / "__aliases__.py")
@@ -130,11 +127,10 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().configuration_directory
-            Path('.../.abjad/ide')
+            Path('.../.abjad')
 
         """
-        path = self.abjad_configuration.configuration_directory
-        return abjad.Path(path / self._configuration_directory_name)
+        return abjad.Path(self.abjad_configuration.configuration_directory)
 
     @property
     def ide_directory(self) -> abjad.Path:
@@ -159,7 +155,7 @@ class Configuration(abjad.Configuration):
         ..  container:: example
 
             >>> ide.Configuration().latex_log_file_path
-            Path('.../.abjad/ide/latex.log')
+            Path('.../.abjad/latex.log')
 
         """
         return abjad.Path(self.configuration_directory / "latex.log")

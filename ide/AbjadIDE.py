@@ -347,8 +347,6 @@ class AbjadIDE(object):
         files, strings = [], []
         if force or not path.is_score_package_path():
             for path_ in sorted(path.glob("**/*")):
-                if "__pycache__" in str(path_):
-                    continue
                 if not path_.is_file():
                     continue
                 files.append(path_)
@@ -840,8 +838,6 @@ class AbjadIDE(object):
         else:
             root = directory
         for path in sorted(root.glob("**/*")):
-            if "__pycache__" in str(path):
-                continue
             if not path.is_dir():
                 continue
             paths.append(path)
