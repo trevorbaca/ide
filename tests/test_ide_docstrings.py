@@ -2,7 +2,9 @@ import inspect
 
 import pytest
 
-classes = pytest.helpers.list_all_ide_classes()
+import abjad
+
+classes = abjad.list_all_classes(modules="ide")
 
 
 @pytest.mark.parametrize("object_", classes)

@@ -43,7 +43,6 @@ install_requires = [
     "mypy>=0.770",
     "pytest>=5.4.2",
     "pytest-cov>=2.6.0",
-    "pytest-helpers-namespace>=2019.1.8",
     "roman>=1.4",
     "uqbar>=0.4.6",
 ]
