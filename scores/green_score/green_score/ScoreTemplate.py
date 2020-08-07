@@ -1,5 +1,6 @@
 import abjad
 import baca
+import ide
 import green_score
 
 
@@ -18,11 +19,11 @@ class ScoreTemplate(baca.ScoreTemplate):
 
     ### CLASS VARIABLES ###
 
-    _part_manifest = abjad.PartManifest(
-        abjad.Part(section="BassClarinet", section_abbreviation="BCL"),
-        abjad.Part(section="Violin", section_abbreviation="VN"),
-        abjad.Part(section="Viola", section_abbreviation="VA"),
-        abjad.Part(section="Cello", section_abbreviation="VC"),
+    _part_manifest = ide.PartManifest(
+        ide.Part(section="BassClarinet", section_abbreviation="BCL"),
+        ide.Part(section="Violin", section_abbreviation="VN"),
+        ide.Part(section="Viola", section_abbreviation="VA"),
+        ide.Part(section="Cello", section_abbreviation="VC"),
     )
 
     ### SPECIAL METHODS ###

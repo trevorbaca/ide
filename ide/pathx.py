@@ -3,6 +3,8 @@ import typing
 
 import abjad
 
+from .segments import Part, PartManifest
+
 
 def _context_name_to_first_appearance_margin_markup(path, context_name):
     module = _import_score_package(path)
@@ -205,7 +207,7 @@ def get_part_identifier(path) -> typing.Optional[str]:
     return None
 
 
-def get_part_manifest(path) -> abjad.PartManifest:
+def get_part_manifest(path) -> PartManifest:
     """
     Gets part manifest from ``path``.
     """
@@ -213,7 +215,7 @@ def get_part_manifest(path) -> abjad.PartManifest:
     score_template = _import_score_template(path)
     score_template = score_template()
     part_manifest = score_template.part_manifest
-    assert isinstance(part_manifest, abjad.PartManifest), repr(part_manifest)
+    assert isinstance(part_manifest, PartManifest), repr(part_manifest)
     return part_manifest
 
 
@@ -298,14 +300,14 @@ def global_skip_identifiers(path) -> typing.List[abjad.String]:
 
 
 def part_to_identifiers(
-    path, part: abjad.Part, container_to_part_assignment: abjad.OrderedDict
+    path, part: Part, container_to_part_assignment: abjad.OrderedDict
 ) -> typing.Union[str, typing.List[str]]:
     """
     Changes ``part`` to (part container) identifiers (using
     ``container_to_part_assignment`` dictionary).
     """
     assert not path.is_external(), repr(path)
-    if not isinstance(part, abjad.Part):
+    if not isinstance(part, Part):
         raise TypeError(f"must be part (not {part!r}).")
     identifiers = []
     default_clef = _part_name_to_default_clef(path, part.name)
@@ -332,7 +334,7 @@ def part_to_identifiers(
     return identifiers
 
 
-def path_to_part(path: abjad.Path) -> abjad.Part:
+def path_to_part(path: abjad.Path) -> Part:
     """
     Changes path to part.
     """
@@ -341,7 +343,7 @@ def path_to_part(path: abjad.Path) -> abjad.Part:
     part_manifest = get_part_manifest(path)
     if not part_manifest:
         raise Exception(f"no part manifest: {path}.")
-    assert isinstance(part_manifest, abjad.PartManifest), repr(part_manifest)
+    assert isinstance(part_manifest, PartManifest), repr(part_manifest)
     words = [abjad.String(_).capitalize_start() for _ in words]
     part_name = "".join(words)
     for part in part_manifest:

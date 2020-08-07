@@ -69,6 +69,15 @@ from .MenuSection import MenuSection
 from .Response import Response
 from .Test import Test
 from .Transcript import Transcript
+from .segments import (
+    Job,
+    Momento,
+    Part,
+    PartAssignment,
+    PartManifest,
+    PersistentOverride,
+    Section,
+)
 
 configuration = Configuration()
 
@@ -77,11 +86,18 @@ __all__ = [
     "Command",
     "Configuration",
     "IO",
+    "Job",
     "Interaction",
     "Menu",
     "MenuEntry",
     "MenuSection",
+    "Momento",
+    "Part",
+    "PartAssignment",
+    "PartManifest",
+    "PersistentOverride",
     "Response",
+    "Section",
     "Test",
     "Transcript",
     "configuration",

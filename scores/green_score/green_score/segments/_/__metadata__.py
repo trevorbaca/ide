@@ -1,4 +1,5 @@
 import abjad
+import ide
 
 metadata = abjad.OrderedDict(
     [
@@ -15,17 +16,17 @@ metadata = abjad.OrderedDict(
                     (
                         "BassClarinetMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="BassClarinetMusicVoice",
                                 prototype="abjad.Clef",
                                 value="treble",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="BassClarinetMusicVoice",
                                 prototype="abjad.Instrument",
                                 value="BassClarinet",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="BassClarinetMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=5,
@@ -35,12 +36,12 @@ metadata = abjad.OrderedDict(
                     (
                         "CelloMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloMusicVoice",
                                 prototype="abjad.Clef",
                                 value="treble",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=5,
@@ -50,7 +51,7 @@ metadata = abjad.OrderedDict(
                     (
                         "CelloMusicVoice",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloMusicVoice",
                                 prototype="abjad.Dynamic",
                                 value="sfz",
@@ -60,12 +61,12 @@ metadata = abjad.OrderedDict(
                     (
                         "CelloRHMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloRHMusicVoice",
                                 prototype="abjad.Clef",
                                 value="percussion",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloRHMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=1,
@@ -75,7 +76,7 @@ metadata = abjad.OrderedDict(
                     (
                         "CelloStaffGroup",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="CelloMusicVoice",
                                 prototype="abjad.Instrument",
                                 value="Cello",
@@ -85,12 +86,12 @@ metadata = abjad.OrderedDict(
                     (
                         "Score",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="GlobalSkips",
                                 prototype="abjad.MetronomeMark",
                                 value="incisions",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="GlobalSkips",
                                 prototype="abjad.TimeSignature",
                                 value="1/4",
@@ -100,12 +101,12 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolaMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolaMusicVoice",
                                 prototype="abjad.Clef",
                                 value="alto",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolaMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=5,
@@ -115,12 +116,12 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolaRHMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolaRHMusicVoice",
                                 prototype="abjad.Clef",
                                 value="percussion",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolaRHMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=1,
@@ -130,7 +131,7 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolaStaffGroup",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolaMusicVoice",
                                 prototype="abjad.Instrument",
                                 value="Viola",
@@ -140,12 +141,12 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolinMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinMusicVoice",
                                 prototype="abjad.Clef",
                                 value="percussion",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=1,
@@ -155,7 +156,7 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolinMusicVoice",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinMusicVoice",
                                 prototype="abjad.Dynamic",
                                 value="\\effort_mf",
@@ -165,12 +166,12 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolinRHMusicStaff",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinRHMusicVoice",
                                 prototype="abjad.Clef",
                                 value="percussion",
                             ),
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinRHMusicVoice",
                                 prototype="baca.StaffLines",
                                 value=1,
@@ -180,7 +181,7 @@ metadata = abjad.OrderedDict(
                     (
                         "ViolinStaffGroup",
                         [
-                            abjad.Momento(
+                            ide.Momento(
                                 context="ViolinMusicVoice",
                                 prototype="abjad.Instrument",
                                 value="Violin",

@@ -29,7 +29,10 @@ if __name__ == "__main__":
         from __persist__ import persist as persist
     except ModuleNotFoundError:
         segment_directory.write_metadata_py(
-            None, file_name="__persist__.py", variable_name="persist"
+            None,
+            file_name="__persist__.py",
+            import_statements=["import abjad", "import ide"],
+            variable_name="persist",
         )
         persist = None
 
@@ -61,7 +64,10 @@ if __name__ == "__main__":
         segment_maker_runtime = (count, counter)
         segment_directory.write_metadata_py(maker.metadata)
         segment_directory.write_metadata_py(
-            maker.persist, file_name="__persist__.py", variable_name="persist"
+            maker.persist,
+            file_name="__persist__.py",
+            import_statements=["import abjad", "import ide"],
+            variable_name="persist",
         )
         first_segment = segment_directory.segments.get_next_package()
         if segment_directory.name != first_segment.name:
@@ -117,10 +123,10 @@ if __name__ == "__main__":
         text = abjad.LilyPondFormatManager.left_shift_tags(text, realign=79)
         illustration_ly.write_text(text)
         for job in [
-            abjad.Job.handle_edition_tags(illustration_ly),
-            abjad.Job.handle_fermata_bar_lines(segment_directory),
-            abjad.Job.handle_shifted_clefs(segment_directory),
-            abjad.Job.handle_mol_tags(segment_directory),
+            ide.Job.handle_edition_tags(illustration_ly),
+            ide.Job.handle_fermata_bar_lines(segment_directory),
+            ide.Job.handle_shifted_clefs(segment_directory),
+            ide.Job.handle_mol_tags(segment_directory),
         ]:
             for message in job():
                 print(" " + message)
@@ -193,7 +199,7 @@ if __name__ == "__main__":
             illustration_ly.extern(realign=79)
             illustration_ily = illustration_ly.with_suffix(".ily")
             assert illustration_ily.is_file()
-            not_topmost = abjad.Job(
+            not_topmost = ide.Job(
                 deactivate=(abjad.Tag("NOT_TOPMOST"), "not topmost"),
                 path=segment_directory,
                 title="deactivating NOT_TOPMOST ...",
