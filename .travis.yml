@@ -66,6 +66,7 @@ before_install:
   - export PYTHONPATH=$PYTHONPATH:$TRAVIS_BUILD_DIR/scores/green_score
 
   # make aliases and log files for tests
+  - mkdir $HOME/.abjad
   - touch $HOME/.abjad/__aliases__.py
   - touch $HOME/.abjad/latex.log
   - mkdir -p $HOME/.abjad/output
