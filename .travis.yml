@@ -90,7 +90,6 @@ before_install:
   - ls /tmp
   - ls -a $HOME
   - ls $HOME/.abjad
-  - ls $HOME/.abjad/ide
 
 install:
   # install IDE
