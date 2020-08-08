@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 scores = ide.configuration.test_scores_directory
 
 
-tag = abjad.tags.STAGE_NUMBER
+tag = ide.tags.STAGE_NUMBER
 
 
 def test_AbjadIDE_show_stage_numbers_01():

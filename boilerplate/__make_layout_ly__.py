@@ -87,7 +87,7 @@ if __name__ == '__main__':
         lilypond_file = maker.run(
             do_not_print_timing=True,
             environment='layout',
-            remove=abjad.tags.layout_removal_tags(),
+            remove=ide.tags.layout_removal_tags(),
             )
         context = lilypond_file['Global_Skips']
         context.lilypond_type = 'PageLayout'

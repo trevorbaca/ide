@@ -2,16 +2,7 @@ import typing
 
 import abjad
 
-# from . import tags as abjad_tags
-# from . import typings
-# from .bundle import LilyPondFormatBundle
-# from .duration import Offset
-# from .overrides import OverrideInterface
-# from .path import Path
-# from .score import Context
-# from .storage import FormatSpecification, StorageFormatManager
-# from .stringx import String
-# from .tag import Tag, activate, deactivate
+from . import tags as _tags
 
 token_type = typing.Union[None, int, abjad.typings.IntegerPair, typing.List[int]]
 
@@ -231,7 +222,7 @@ class Job:
         name = "clef color"
 
         def match(tags):
-            tags_ = abjad.tags.clef_color_tags(path)
+            tags_ = _tags.clef_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -249,7 +240,7 @@ class Job:
         name = "dynamic color"
 
         def match(tags):
-            tags_ = abjad.tags.dynamic_color_tags(path)
+            tags_ = _tags.dynamic_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -269,7 +260,7 @@ class Job:
         name = "instrument color"
 
         def match(tags):
-            tags_ = abjad.tags.instrument_color_tags(path)
+            tags_ = _tags.instrument_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -289,7 +280,7 @@ class Job:
         name = "margin markup color"
 
         def match(tags):
-            tags_ = abjad.tags.margin_markup_color_tags(path)
+            tags_ = _tags.margin_markup_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -310,11 +301,11 @@ class Job:
         """
 
         def activate(tags):
-            tags_ = abjad.tags.metronome_mark_color_expression_tags(path)
+            tags_ = _tags.metronome_mark_color_expression_tags(path)
             return bool(set(tags) & set(tags_))
 
         def deactivate(tags):
-            tags_ = abjad.tags.metronome_mark_color_suppression_tags(path)
+            tags_ = _tags.metronome_mark_color_suppression_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -341,13 +332,13 @@ class Job:
         activate_name = "persistent indicator color expression"
 
         def activate(tags):
-            tags_ = abjad.tags.persistent_indicator_color_expression_tags(path)
+            tags_ = _tags.persistent_indicator_color_expression_tags(path)
             return bool(set(tags) & set(tags_))
 
         deactivate_name = "persistent indicator color suppression"
 
         def deactivate(tags):
-            tags_ = abjad.tags.persistent_indicator_color_suppression_tags(path)
+            tags_ = _tags.persistent_indicator_color_suppression_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -373,7 +364,7 @@ class Job:
         name = "staff lines color"
 
         def match(tags):
-            tags_ = abjad.tags.staff_lines_color_tags(path)
+            tags_ = _tags.staff_lines_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -393,7 +384,7 @@ class Job:
         name = "stage number markup"
 
         def match(tags) -> bool:
-            tags_ = [abjad.tags.STAGE_NUMBER]
+            tags_ = [_tags.STAGE_NUMBER]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -409,7 +400,7 @@ class Job:
         name = "time signature color"
 
         def match(tags):
-            tags_ = abjad.tags.time_signature_color_tags(path)
+            tags_ = _tags.time_signature_color_tags(path)
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -508,7 +499,7 @@ class Job:
             path = path.parent
 
         def activate(tags):
-            return bool(set(tags) & set([abjad.tags.FERMATA_MEASURE]))
+            return bool(set(tags) & set([_tags.FERMATA_MEASURE]))
 
         deactivate: typing.Optional[callable_type]
         # then deactivate non-EOL tags:
@@ -523,7 +514,7 @@ class Job:
             ]
 
             def deactivate(tags):
-                if abjad.tags.FERMATA_MEASURE in tags:
+                if _tags.FERMATA_MEASURE in tags:
                     if not bool(set(tags) & set(eol_measure_numbers)):
                         return True
                 return False
@@ -547,7 +538,7 @@ class Job:
 
         # activate all middle-of-line tags
         def activate(tags):
-            tags_ = set([abjad.tags.NOT_MOL, abjad.tags.ONLY_MOL])
+            tags_ = set([_tags.NOT_MOL, _tags.ONLY_MOL])
             return bool(set(tags) & tags_)
 
         deactivate: typing.Optional[callable_type]
@@ -563,10 +554,10 @@ class Job:
             ]
 
             def deactivate(tags):
-                if abjad.tags.NOT_MOL in tags:
+                if _tags.NOT_MOL in tags:
                     if not bool(set(tags) & set(nonmol_measure_numbers)):
                         return True
-                if abjad.tags.ONLY_MOL in tags:
+                if _tags.ONLY_MOL in tags:
                     if bool(set(tags) & set(nonmol_measure_numbers)):
                         return True
                 return False
@@ -587,7 +578,7 @@ class Job:
         """
 
         def activate(tags):
-            return abjad.tags.SHIFTED_CLEF in tags
+            return _tags.SHIFTED_CLEF in tags
 
         deactivate: typing.Optional[typing.Callable]
         # then deactivate shifted clefs at BOL:
@@ -603,7 +594,7 @@ class Job:
             ]
 
             def deactivate(tags):
-                if abjad.tags.SHIFTED_CLEF not in tags:
+                if _tags.SHIFTED_CLEF not in tags:
                     return False
                 if any(_ in tags for _ in bol_measure_numbers):
                     return True
@@ -626,7 +617,7 @@ class Job:
         name = "default clef"
 
         def match(tags):
-            tags_ = [abjad.tags.DEFAULT_CLEF]
+            tags_ = [_tags.DEFAULT_CLEF]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -645,11 +636,11 @@ class Job:
         """
 
         def activate(tags):
-            tags_ = [abjad.tags.SHOW_TO_JOIN_BROKEN_SPANNERS]
+            tags_ = [_tags.SHOW_TO_JOIN_BROKEN_SPANNERS]
             return bool(set(tags) & set(tags_))
 
         def deactivate(tags):
-            tags_ = [abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS]
+            tags_ = [_tags.HIDE_TO_JOIN_BROKEN_SPANNERS]
             return bool(set(tags) & set(tags_))
 
         return Job(
@@ -667,7 +658,7 @@ class Job:
         name = "clock time markup"
 
         def match(tags) -> bool:
-            tags_ = [abjad.tags.CLOCK_TIME]
+            tags_ = [_tags.CLOCK_TIME]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -683,7 +674,7 @@ class Job:
         name = "figure name markup"
 
         def match(tags) -> bool:
-            tags_ = [abjad.tags.FIGURE_NAME]
+            tags_ = [_tags.FIGURE_NAME]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -699,7 +690,7 @@ class Job:
         name = "local measure number markup"
 
         def match(tags) -> bool:
-            tags_ = [abjad.tags.LOCAL_MEASURE_NUMBER]
+            tags_ = [_tags.LOCAL_MEASURE_NUMBER]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -715,7 +706,7 @@ class Job:
         name = "measure number markup"
 
         def match(tags) -> bool:
-            tags_ = [abjad.tags.MEASURE_NUMBER]
+            tags_ = [_tags.MEASURE_NUMBER]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -731,11 +722,11 @@ class Job:
         name = "music annotation"
 
         def match(tags) -> bool:
-            tags_ = abjad.tags.music_annotation_tags()
+            tags_ = _tags.music_annotation_tags()
             return bool(set(tags) & set(tags_))
 
         def match_2(tags) -> bool:
-            tags_ = [abjad.tags.INVISIBLE_MUSIC_COMMAND]
+            tags_ = [_tags.INVISIBLE_MUSIC_COMMAND]
             return bool(set(tags) & set(tags_))
 
         if undo:
@@ -761,7 +752,7 @@ class Job:
         name = "spacing markup"
 
         def match(tags) -> bool:
-            tags_ = abjad.tags.spacing_markup_tags()
+            tags_ = _tags.spacing_markup_tags()
             return bool(set(tags) & set(tags_))
 
         if undo:

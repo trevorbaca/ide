@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 scores = ide.configuration.test_scores_directory
 
 
-tag = abjad.tags.CLOCK_TIME
+tag = ide.tags.CLOCK_TIME
 
 
 def test_AbjadIDE_show_clock_time_01():

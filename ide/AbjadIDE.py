@@ -14,6 +14,7 @@ import typing
 import abjad
 
 from . import pathx
+from . import tags as _tags
 from .Command import Command
 from .Configuration import Configuration
 from .IO import IO
@@ -4162,35 +4163,35 @@ class AbjadIDE(object):
         final_file_name = final_target.with_suffix(".ily").name
 
         def match_left_broken_should_deactivate(tags):
-            if abjad.tags.LEFT_BROKEN in tags and abjad.tags.SPANNER_START in tags:
+            if _tags.LEFT_BROKEN in tags and _tags.SPANNER_START in tags:
                 return True
             if (
-                abjad.tags.LEFT_BROKEN in tags
-                and abjad.tags.SPANNER_STOP in tags
-                and abjad.tags.EXPLICIT_DYNAMIC in tags
+                _tags.LEFT_BROKEN in tags
+                and _tags.SPANNER_STOP in tags
+                and _tags.EXPLICIT_DYNAMIC in tags
             ):
                 return True
             return False
 
         def match_phantom_should_activate(tags):
-            if abjad.tags.PHANTOM not in tags:
+            if _tags.PHANTOM not in tags:
                 return False
-            if abjad.tags.ONE_VOICE_COMMAND in tags:
+            if _tags.ONE_VOICE_COMMAND in tags:
                 return True
-            if abjad.tags.SHOW_TO_JOIN_BROKEN_SPANNERS in tags:
+            if _tags.SHOW_TO_JOIN_BROKEN_SPANNERS in tags:
                 return True
-            if abjad.tags.SPANNER_STOP in tags:
+            if _tags.SPANNER_STOP in tags:
                 return True
             return False
 
         def match_phantom_should_deactivate(tags):
-            if abjad.tags.PHANTOM not in tags:
+            if _tags.PHANTOM not in tags:
                 return False
-            if abjad.tags.SPANNER_START in tags and abjad.tags.LEFT_BROKEN in tags:
+            if _tags.SPANNER_START in tags and _tags.LEFT_BROKEN in tags:
                 return True
-            if abjad.tags.SPANNER_STOP in tags and abjad.tags.RIGHT_BROKEN in tags:
+            if _tags.SPANNER_STOP in tags and _tags.RIGHT_BROKEN in tags:
                 return True
-            if abjad.tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
+            if _tags.HIDE_TO_JOIN_BROKEN_SPANNERS in tags:
                 return True
             return False
 
@@ -4209,10 +4210,10 @@ class AbjadIDE(object):
                 match=match_left_broken_should_deactivate,
                 undo=True,
             ),
-            Job.show_tag(_segments, abjad.tags.PHANTOM, skip_file_name=final_file_name),
+            Job.show_tag(_segments, _tags.PHANTOM, skip_file_name=final_file_name),
             Job.show_tag(
                 _segments,
-                abjad.tags.PHANTOM,
+                _tags.PHANTOM,
                 prepend_empty_chord=True,
                 skip_file_name=final_file_name,
                 undo=True,
@@ -4231,14 +4232,10 @@ class AbjadIDE(object):
                 undo=True,
             ),
             Job.show_tag(
-                _segments,
-                abjad.tags.EOS_STOP_MM_SPANNER,
-                skip_file_name=final_file_name,
+                _segments, _tags.EOS_STOP_MM_SPANNER, skip_file_name=final_file_name,
             ),
-            Job.show_tag(
-                _segments, abjad.tags.METRIC_MODULATION_IS_STRIPPED, undo=True,
-            ),
-            Job.show_tag(_segments, abjad.tags.METRIC_MODULATION_IS_SCALED, undo=True,),
+            Job.show_tag(_segments, _tags.METRIC_MODULATION_IS_STRIPPED, undo=True,),
+            Job.show_tag(_segments, _tags.METRIC_MODULATION_IS_SCALED, undo=True,),
         ]:
             self.run(job, indent=1, quiet=False)
 
@@ -4292,19 +4289,19 @@ class AbjadIDE(object):
         )
         self.deactivate(
             parts_directory,
-            str(abjad.tags.METRIC_MODULATION_IS_SCALED),
+            str(_tags.METRIC_MODULATION_IS_SCALED),
             indent=indent + 1,
             message_zero=True,
         )
         self.deactivate(
             parts_directory,
-            str(abjad.tags.METRIC_MODULATION_IS_NOT_SCALED),
+            str(_tags.METRIC_MODULATION_IS_NOT_SCALED),
             indent=indent + 1,
             message_zero=True,
         )
         self.activate(
             parts_directory,
-            str(abjad.tags.METRIC_MODULATION_IS_STRIPPED),
+            str(_tags.METRIC_MODULATION_IS_STRIPPED),
             indent=indent + 1,
             message_zero=True,
         )
@@ -4312,7 +4309,7 @@ class AbjadIDE(object):
         # this only works if parts contain no EOL fermata measure:
         self.deactivate(
             parts_directory,
-            str(abjad.tags.FERMATA_MEASURE),
+            str(_tags.FERMATA_MEASURE),
             indent=indent + 1,
             message_zero=True,
         )
@@ -4339,7 +4336,7 @@ class AbjadIDE(object):
         )
         self.deactivate(
             parts_directory,
-            str(abjad.tags.EXPLICIT_BAR_EXTENT),
+            str(_tags.EXPLICIT_BAR_EXTENT),
             indent=indent + 1,
             message_zero=True,
         )
@@ -4355,7 +4352,7 @@ class AbjadIDE(object):
         Hides annotation spanners.
         """
         assert directory.is_buildspace()
-        tags_ = abjad.tags.annotation_spanner_tags()
+        tags_ = _tags.annotation_spanner_tags()
 
         def match(tags):
             return bool(set(tags) & set(tags_))
@@ -4400,9 +4397,9 @@ class AbjadIDE(object):
         Hides invisible music.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        tag = _tags.INVISIBLE_MUSIC_COMMAND
         self.run(Job.show_tag(directory, tag))
-        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        tag = _tags.INVISIBLE_MUSIC_COLORING
         self.run(Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -4442,7 +4439,7 @@ class AbjadIDE(object):
         Hides mock music.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.MOCK_COLORING
+        tag = _tags.MOCK_COLORING
         self.run(Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -4469,7 +4466,7 @@ class AbjadIDE(object):
         Hides not yet pitched.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED_COLORING
+        tag = _tags.NOT_YET_PITCHED_COLORING
         self.run(Job.show_tag(directory, tag, undo=True))
 
     @Command(
@@ -4483,9 +4480,7 @@ class AbjadIDE(object):
         Hides rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        self.run(
-            Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER, undo=True)
-        )
+        self.run(Job.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER, undo=True))
 
     @Command(
         "sph",
@@ -5381,7 +5376,7 @@ class AbjadIDE(object):
         Shows annotation spanners.
         """
         assert directory.is_buildspace()
-        tags_ = abjad.tags.annotation_spanner_tags()
+        tags_ = _tags.annotation_spanner_tags()
 
         def match(tags):
             return bool(set(tags) & set(tags_))
@@ -5459,9 +5454,9 @@ class AbjadIDE(object):
         Shows invisible music.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.INVISIBLE_MUSIC_COMMAND
+        tag = _tags.INVISIBLE_MUSIC_COMMAND
         self.run(Job.show_tag(directory, tag, undo=True))
-        tag = abjad.tags.INVISIBLE_MUSIC_COLORING
+        tag = _tags.INVISIBLE_MUSIC_COLORING
         self.run(Job.show_tag(directory, tag))
 
     @Command(
@@ -5501,7 +5496,7 @@ class AbjadIDE(object):
         Shows mock music.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.MOCK_COLORING
+        tag = _tags.MOCK_COLORING
         self.run(Job.show_tag(directory, tag))
 
     @Command(
@@ -5528,7 +5523,7 @@ class AbjadIDE(object):
         Shows not yet pitched.
         """
         assert directory.is_buildspace()
-        tag = abjad.tags.NOT_YET_PITCHED_COLORING
+        tag = _tags.NOT_YET_PITCHED_COLORING
         self.run(Job.show_tag(directory, tag))
 
     @Command(
@@ -5542,7 +5537,7 @@ class AbjadIDE(object):
         Shows rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, abjad.tags.RHYTHM_ANNOTATION_SPANNER))
+        self.run(Job.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER))
 
     @Command(
         "sps",

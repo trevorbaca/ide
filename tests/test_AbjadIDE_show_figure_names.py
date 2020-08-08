@@ -5,7 +5,7 @@ abjad_ide = ide.AbjadIDE(test=True)
 scores = ide.configuration.test_scores_directory
 
 
-tag = abjad.tags.FIGURE_NAME
+tag = ide.tags.FIGURE_NAME
 
 
 def test_AbjadIDE_show_figure_names_01():
