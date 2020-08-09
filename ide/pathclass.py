@@ -610,7 +610,7 @@ class Path(pathlib.PosixPath):
         Writes ``.ily`` to this path with ``.ily` suffix when ``include_path``
         is not set.
         """
-        tag = abjad.Tag("abjad.Path.extern()")
+        tag = abjad.Tag("ide.Path.extern()")
         if not self.suffix == ".ly":
             raise Exception(f"must be lilypond file: {self}.")
         if include_path is None:
