@@ -3,13 +3,14 @@ import typing
 
 import abjad
 
+from . import pathclass
 from .IO import IO
 from .MenuEntry import MenuEntry
 from .MenuSection import MenuSection
 from .Response import Response
 
 
-class Menu(object):
+class Menu:
     """
     Menu.
 
@@ -194,7 +195,7 @@ class Menu(object):
             return
         path = self.aliases.get(string)
         if path is not None:
-            return [abjad.Path(path)]
+            return [pathclass.Path(path)]
 
     def _match_assets(self, string):
         for section in self.sections:
@@ -205,7 +206,7 @@ class Menu(object):
                 for entry in section:
                     if entry.number == number:
                         return [entry.value]
-            paths = [abjad.Path(_.display) for _ in section]
+            paths = [pathclass.Path(_.display) for _ in section]
             for i, path in enumerate(paths):
                 for part in path.parts:
                     if part == "/":

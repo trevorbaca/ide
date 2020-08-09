@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -12,5 +11,5 @@ def test_AbjadIDE_edit_definition_py_02():
 
     abjad_ide("red A dpe q")
     transcript = abjad_ide.io.transcript
-    path = abjad.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
     assert f"Editing {path.trim()} ..." in transcript

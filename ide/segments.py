@@ -2,6 +2,7 @@ import typing
 
 import abjad
 
+from . import pathclass
 from . import tags as _tags
 
 token_type = typing.Union[None, int, abjad.typings.IntegerPair, typing.List[int]]
@@ -37,7 +38,7 @@ class Job:
         deactivate: activation_type = None,
         deactivate_first: bool = None,
         message_zero: bool = None,
-        path: abjad.Path = None,
+        path: pathclass.Path = None,
         prepend_empty_chord: bool = None,
         skip_file_name: str = None,
         title: str = None,
@@ -68,7 +69,7 @@ class Job:
                 assert isinstance(self.deactivate, tuple)
                 match, name = self.deactivate
                 if match is not None:
-                    if isinstance(self.path, abjad.Path):
+                    if isinstance(self.path, pathclass.Path):
                         result = self.path.deactivate(
                             match,
                             indent=1,
@@ -96,7 +97,7 @@ class Job:
             assert isinstance(self.activate, tuple)
             match, name = self.activate
             if match is not None:
-                if isinstance(self.path, abjad.Path):
+                if isinstance(self.path, pathclass.Path):
                     result = self.path.activate(
                         match,
                         indent=1,
@@ -118,7 +119,7 @@ class Job:
                 assert isinstance(self.deactivate, tuple)
                 match, name = self.deactivate
                 if match is not None:
-                    if isinstance(self.path, abjad.Path):
+                    if isinstance(self.path, pathclass.Path):
                         result = self.path.deactivate(
                             match,
                             indent=1,
@@ -142,7 +143,7 @@ class Job:
                         )
         if total_count == 0 and not self.message_zero:
             messages = []
-        if isinstance(self.path, abjad.Path):
+        if isinstance(self.path, pathclass.Path):
             return messages
         else:
             assert isinstance(self.path, str)
@@ -185,7 +186,7 @@ class Job:
         return self._message_zero
 
     @property
-    def path(self) -> typing.Optional[abjad.Path]:
+    def path(self) -> typing.Optional[pathclass.Path]:
         """
         Gets path.
         """

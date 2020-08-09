@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -8,9 +7,7 @@ scores = ide.configuration.test_scores_directory
 def test_AbjadIDE_interpret_part_tex_01():
 
     with ide.Test():
-        parts = abjad.Path(
-            scores, "green_score", "green_score", "builds", "arch-a-parts"
-        )
+        parts = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-parts")
         part_directory = parts / "bass-clarinet"
         part_tex = part_directory / "bass-clarinet-part.tex"
         part_pdf = part_tex.with_suffix(".pdf")

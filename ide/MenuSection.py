@@ -6,7 +6,7 @@ from .Configuration import Configuration
 from .MenuEntry import MenuEntry
 
 
-class MenuSection(object):
+class MenuSection:
     """
     Menu section.
     """

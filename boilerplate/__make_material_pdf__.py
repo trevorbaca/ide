@@ -6,7 +6,7 @@ import definition
 
 if __name__ == "__main__":
 
-    directory, lilypond_file = abjad.Path(__file__).parent, None
+    directory, lilypond_file = ide.Path(__file__).parent, None
 
     try:
         material = getattr(definition, directory.name)

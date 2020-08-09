@@ -12,7 +12,7 @@ import ide
 if __name__ == '__main__':
 
     layout_module_name = '{layout_module_name}'
-    maker = abjad.Path(os.path.realpath(__file__))
+    maker = ide.Path(os.path.realpath(__file__))
 
     try:
         from {layout_module_name} import breaks

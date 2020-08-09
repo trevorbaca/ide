@@ -6,7 +6,7 @@ import abjad
 from .Transcript import Transcript
 
 
-class IO(object):
+class IO:
     """
     IO.
 

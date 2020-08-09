@@ -7,7 +7,7 @@ import ide
 
 abjad_ide = ide.AbjadIDE()
 scores = pathlib.Path(*pathlib.Path(__file__).parts[:-4])
-path = abjad.Path(__file__, scores=scores)
+path = ide.Path(__file__, scores=scores)
 directories = path.materials.list_paths()
 
 

@@ -3,6 +3,7 @@ import typing
 
 import abjad
 
+from .pathclass import Path
 from .segments import Part, PartManifest
 
 
@@ -334,7 +335,7 @@ def part_to_identifiers(
     return identifiers
 
 
-def path_to_part(path: abjad.Path) -> Part:
+def path_to_part(path: Path) -> Part:
     """
     Changes path to part.
     """

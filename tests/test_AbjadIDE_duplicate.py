@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -47,7 +46,7 @@ def test_AbjadIDE_duplicate_04():
     """
 
     with ide.Test():
-        source = abjad.Path(scores, "red_score")
+        source = ide.Path(scores, "red_score")
         assert source.is_dir()
         target = source.with_name("purple_score")
         target.remove()
@@ -80,7 +79,7 @@ def test_AbjadIDE_duplicate_06():
     """
 
     with ide.Test():
-        source = abjad.Path(scores, "blue_score", "blue_score", "segments", "A")
+        source = ide.Path(scores, "blue_score", "blue_score", "segments", "A")
         assert source.is_dir()
         target = source.with_name("B")
         target.remove()
@@ -102,7 +101,7 @@ def test_AbjadIDE_duplicate_07():
     """
 
     with ide.Test():
-        source = abjad.Path(
+        source = ide.Path(
             scores, "red_score", "red_score", "stylesheets", "stylesheet.ily"
         )
         assert source.is_file()

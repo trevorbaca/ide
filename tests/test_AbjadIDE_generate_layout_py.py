@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -9,7 +8,7 @@ def test_AbjadIDE_generate_layout_py_01():
     """In segment directory."""
 
     with ide.Test():
-        target = abjad.Path(
+        target = ide.Path(
             scores, "red_score", "red_score", "segments", "A", "layout.py"
         )
         assert target.is_file()

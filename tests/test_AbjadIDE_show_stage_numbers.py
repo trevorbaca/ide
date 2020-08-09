@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -15,9 +14,7 @@ def test_AbjadIDE_show_stage_numbers_01():
 
     with ide.Test():
 
-        build = abjad.Path(
-            scores, "green_score", "green_score", "builds", "arch-a-score"
-        )
+        build = ide.Path(scores, "green_score", "green_score", "builds", "arch-a-score")
         path = build / "_segments" / "segment--.ly"
 
         abjad_ide("gre bb arch-a-score ggc q")
@@ -49,7 +46,7 @@ def test_AbjadIDE_show_stage_numbers_02():
 
     with ide.Test():
 
-        path = abjad.Path(
+        path = ide.Path(
             scores, "green_score", "green_score", "segments", "_", "illustration.ly"
         )
         assert path.is_file()

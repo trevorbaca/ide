@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -11,7 +10,7 @@ def test_AbjadIDE_make_illustration_pdf_01():
     """
 
     with ide.Test():
-        directory = abjad.Path(scores, "red_score", "red_score", "segments", "A")
+        directory = ide.Path(scores, "red_score", "red_score", "segments", "A")
         ly = directory / "illustration.ly"
         ly.remove()
         pdf = directory / "illustration.pdf"
@@ -56,7 +55,7 @@ def test_AbjadIDE_make_illustration_pdf_02():
     """
 
     with ide.Test():
-        directory = abjad.Path(scores, "red_score", "red_score", "segments")
+        directory = ide.Path(scores, "red_score", "red_score", "segments")
         names = ["_", "A", "B"]
         for name in names:
             ly = directory / "illustration.ly"

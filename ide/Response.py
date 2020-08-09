@@ -1,9 +1,9 @@
 import typing
 
-import abjad
+from . import pathclass
 
 
-class Response(object):
+class Response:
     """
     Response.
 
@@ -19,7 +19,9 @@ class Response(object):
     ### INITIALIZER ###
 
     def __init__(
-        self, payload: typing.Union[str, list, abjad.Path] = None, string: str = None
+        self,
+        payload: typing.Union[str, list, pathclass.Path] = None,
+        string: str = None,
     ) -> None:
         self._payload = payload
         self._string = string
@@ -69,7 +71,7 @@ class Response(object):
         return self.string
 
     @property
-    def payload(self) -> typing.Optional[typing.Union[str, list, abjad.Path]]:
+    def payload(self) -> typing.Optional[typing.Union[str, list, pathclass.Path]]:
         """
         Gets payload.
         """
@@ -97,13 +99,15 @@ class Response(object):
 
     ### PUBLIC METHODS ###
 
-    def get_path(self) -> typing.Optional[abjad.Path]:
+    def get_path(self) -> typing.Optional[pathclass.Path]:
         """
         Gets path.
         """
-        if isinstance(self.payload, abjad.Path):
+        if isinstance(self.payload, pathclass.Path):
             return self.payload
-        if isinstance(self.payload, list) and isinstance(self.payload[0], abjad.Path):
+        if isinstance(self.payload, list) and isinstance(
+            self.payload[0], pathclass.Path
+        ):
             return self.payload[0]
         return None
 
@@ -123,9 +127,11 @@ class Response(object):
         """
         Is true when response is path.
         """
-        if isinstance(self.payload, abjad.Path):
+        if isinstance(self.payload, pathclass.Path):
             return True
-        if isinstance(self.payload, list) and isinstance(self.payload[0], abjad.Path):
+        if isinstance(self.payload, list) and isinstance(
+            self.payload[0], pathclass.Path
+        ):
             return True
         return False
 
@@ -133,7 +139,7 @@ class Response(object):
         """
         Is true when response is segment name.
         """
-        return abjad.Path.is_segment_name(self.string)
+        return pathclass.Path.is_segment_name(self.string)
 
     def is_shell(self) -> bool:
         """

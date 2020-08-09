@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -8,10 +7,10 @@ scores = ide.configuration.test_scores_directory
 def test_AbjadIDE_paste_from_clipboard_01():
 
     with ide.Test():
-        source = abjad.Path(scores, "red_score", "red_score").distribution
+        source = ide.Path(scores, "red_score", "red_score").distribution
         source /= "red-score-program-notes.txt"
         assert source.is_file()
-        target_1 = abjad.Path(scores, "blue_score", "blue_score").distribution
+        target_1 = ide.Path(scores, "blue_score", "blue_score").distribution
         target_1 /= "red-score-program-notes.txt"
         target_1.remove()
         target_2 = target_1.with_name("new-notes.txt")

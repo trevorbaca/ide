@@ -38,7 +38,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        segment_directory = abjad.Path(os.path.realpath(__file__)).parent
+        segment_directory = ide.Path(os.path.realpath(__file__)).parent
         with abjad.Timer() as timer:
             lilypond_file = maker.run(
                 metadata=metadata,
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     abjad.f(lilypond_file)
 
     try:
-        segment_directory = abjad.Path(__file__).parent
+        segment_directory = ide.Path(__file__).parent
         score_directory = segment_directory.contents
         stem = f"{{score_directory.name}}-{{segment_directory.name}}-clicktrack"
         midi = stem + ".midi"

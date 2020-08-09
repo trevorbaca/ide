@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -8,7 +7,7 @@ scores = ide.configuration.test_scores_directory
 def test_AbjadIDE_generate_music_ly_01():
 
     with ide.Test():
-        target = abjad.Path(
+        target = ide.Path(
             scores, "red_score", "red_score", "builds", "letter-score", "music.ly"
         )
         target.remove()
@@ -48,7 +47,7 @@ def test_AbjadIDE_generate_music_ly_02():
     """
 
     with ide.Test():
-        target = abjad.Path(
+        target = ide.Path(
             scores, "red_score", "red_score", "builds", "letter-score", "music.ly"
         )
         target.remove()

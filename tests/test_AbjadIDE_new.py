@@ -1,4 +1,3 @@
-import abjad
 import ide
 
 abjad_ide = ide.AbjadIDE(test=True)
@@ -10,7 +9,7 @@ def test_AbjadIDE_new_01():
     Makes build directory.
     """
 
-    build = abjad.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
+    build = ide.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
     with ide.Test(remove=[build]):
 
         abjad_ide("red bb new score arch-a-score arch~a $80 ARCH-A y q")
@@ -106,7 +105,7 @@ def test_AbjadIDE_new_02():
     Makes build directory. Ignores empty metadata.
     """
 
-    path = abjad.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
+    path = ide.Path(scores, "red_score", "red_score", "builds", "arch-a-score")
     with ide.Test(remove=[path]):
 
         abjad_ide("red bb new score arch-a-score arch~a <return> <return> y q")
@@ -146,7 +145,7 @@ def test_AbjadIDE_new_03():
     """
 
     with ide.Test():
-        directory = abjad.Path(
+        directory = ide.Path(
             scores, "green_score", "green_score", "builds", "arch-a-parts"
         )
         assert not directory.exists()
@@ -427,7 +426,7 @@ def test_AbjadIDE_new_06():
     Makes segment directory.
     """
 
-    path = abjad.Path(scores, "red_score", "red_score", "segments", "segment_04")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "segment_04")
     with ide.Test(remove=[path]):
 
         abjad_ide("red gg new segment_04 q")
@@ -456,7 +455,7 @@ def test_AbjadIDE_new_07():
     Makes stylesheet.
     """
 
-    path = abjad.Path(
+    path = ide.Path(
         scores, "red_score", "red_score", "stylesheets", "new-stylesheet.ily"
     )
     with ide.Test(remove=[path]):

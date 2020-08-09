@@ -293,7 +293,7 @@ def clef_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Segment:
 
-        >>> path = abjad.Path('etude', 'segments', '_')
+        >>> path = ide.Path('etude', 'segments', '_')
         >>> for tag in ide.tags.clef_color_tags(path=path):
         ...     tag
         ...
@@ -310,7 +310,7 @@ def clef_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Segments:
 
-        >>> path = abjad.Path('etude', 'segments')
+        >>> path = ide.Path('etude', 'segments')
         >>> for tag in ide.tags.clef_color_tags(path=path):
         ...     tag
         ...
@@ -327,7 +327,7 @@ def clef_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Build:
 
-        >>> path = abjad.Path('etude', 'builds', 'letter-score')
+        >>> path = ide.Path('etude', 'builds', 'letter-score')
         >>> for tag in ide.tags.clef_color_tags(path=path):
         ...     tag
         ...
@@ -657,7 +657,7 @@ def persistent_indicator_color_expression_tags(path=None) -> typing.List[abjad.T
 
         Segment:
 
-        >>> path = abjad.Path('etude', 'segments', '_')
+        >>> path = ide.Path('etude', 'segments', '_')
         >>> tags = ide.tags.persistent_indicator_color_expression_tags(path)
         >>> for tag in tags:
         ...     tag
@@ -712,7 +712,7 @@ def persistent_indicator_color_expression_tags(path=None) -> typing.List[abjad.T
 
         Segments:
 
-        >>> path = abjad.Path('etude', 'segments')
+        >>> path = ide.Path('etude', 'segments')
         >>> tags = ide.tags.persistent_indicator_color_expression_tags(path)
         >>> for tag in tags:
         ...     tag
@@ -769,7 +769,7 @@ def persistent_indicator_color_expression_tags(path=None) -> typing.List[abjad.T
 
         Build:
 
-        >>> path = abjad.Path('etude', 'builds', 'letter-score')
+        >>> path = ide.Path('etude', 'builds', 'letter-score')
         >>> tags = ide.tags.persistent_indicator_color_expression_tags(path)
         >>> for tag in tags:
         ...     tag
@@ -852,7 +852,7 @@ def persistent_indicator_color_suppression_tags(path=None) -> typing.List[abjad.
 
         Segment:
 
-        >>> path = abjad.Path('etude', 'segments', '_')
+        >>> path = ide.Path('etude', 'segments', '_')
         >>> tags = ide.tags.persistent_indicator_color_suppression_tags(path)
         >>> for tag in tags:
         ...     tag
@@ -864,7 +864,7 @@ def persistent_indicator_color_suppression_tags(path=None) -> typing.List[abjad.
 
         Build:
 
-        >>> path = abjad.Path('etude', 'builds', 'letter-score')
+        >>> path = ide.Path('etude', 'builds', 'letter-score')
         >>> tags = ide.tags.persistent_indicator_color_suppression_tags(path)
         >>> for tag in tags:
         ...     tag
@@ -1011,7 +1011,7 @@ def staff_lines_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Segment:
 
-        >>> path = abjad.Path('etude', 'segments', '_')
+        >>> path = ide.Path('etude', 'segments', '_')
         >>> for tag in ide.tags.staff_lines_color_tags(path):
         ...     tag
         ...
@@ -1023,7 +1023,7 @@ def staff_lines_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Build:
 
-        >>> path = abjad.Path('etude', 'builds', 'letter-score')
+        >>> path = ide.Path('etude', 'builds', 'letter-score')
         >>> for tag in ide.tags.staff_lines_color_tags(path):
         ...     tag
         ...
@@ -1060,7 +1060,7 @@ def time_signature_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Segment:
 
-        >>> path = abjad.Path('etude', 'segments', '_')
+        >>> path = ide.Path('etude', 'segments', '_')
         >>> for tag in ide.tags.time_signature_color_tags():
         ...     tag
         ...
@@ -1072,7 +1072,7 @@ def time_signature_color_tags(path=None) -> typing.List[abjad.Tag]:
 
         Build:
 
-        >>> path = abjad.Path('etude', 'builds', 'letter-score')
+        >>> path = ide.Path('etude', 'builds', 'letter-score')
         >>> for tag in ide.tags.time_signature_color_tags():
         ...     tag
         ...

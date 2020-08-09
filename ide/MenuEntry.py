@@ -3,7 +3,7 @@ import typing
 import abjad
 
 
-class MenuEntry(object):
+class MenuEntry:
     """
     Menu entry.
     """

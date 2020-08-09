@@ -2,7 +2,7 @@ import string
 import typing
 
 
-class Command(object):
+class Command:
     """
     Command.
 

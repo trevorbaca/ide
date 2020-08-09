@@ -69,6 +69,7 @@ from .MenuSection import MenuSection
 from .Response import Response
 from .Test import Test
 from .Transcript import Transcript
+from .pathclass import Path
 from .segments import (
     Job,
     Momento,
@@ -95,6 +96,7 @@ __all__ = [
     "Part",
     "PartAssignment",
     "PartManifest",
+    "Path",
     "PersistentOverride",
     "Response",
     "Section",

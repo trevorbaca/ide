@@ -1,7 +1,7 @@
 import typing
 
 
-class Transcript(object):
+class Transcript:
     """
     Transcript.
     """
