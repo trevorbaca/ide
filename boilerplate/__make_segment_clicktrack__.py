@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
     try:
         with abjad.Timer() as timer:
-            abjad.persist(lilypond_file).as_midi(midi, remove_ly=True)
+            abjad.persist.as_midi(lilypond_file, midi, remove_ly=True)
         count = int(timer.elapsed_time)
         counter = abjad.String("second").pluralize(count)
         message = f"LilyPond runtime {{count}} {{counter}} ..."

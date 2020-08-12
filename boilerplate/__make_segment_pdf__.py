@@ -83,7 +83,7 @@ if __name__ == "__main__":
                 line += " }}"
                 line = abjad.Tag.tag([line], tag="__make_segment_pdf__")[0]
                 lilypond_file.items.insert(0, line)
-        result = abjad.persist(lilypond_file).as_ly(illustration_ly, strict=79)
+        result = abjad.persist.as_ly(lilypond_file, illustration_ly, strict=79)
         abjad_format_time = int(result[1])
         count = abjad_format_time
         counter = abjad.String("second").pluralize(count)
