@@ -2165,7 +2165,7 @@ class AbjadIDE:
                 return
             assert ly.exists()
             assert ly_old.exists()
-            if not abjad.TestManager.compare_files(ly_old, ly):
+            if not abjad.IOManager.compare_files(ly_old, ly):
                 ly_old_text = ly_old.read_text().splitlines(keepends=True)
                 ly_text = ly.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ly_old_text, ly_text)))
@@ -2174,7 +2174,7 @@ class AbjadIDE:
                 return
             assert ily.exists()
             assert ily_old.exists()
-            if not abjad.TestManager.compare_files(ily_old, ily):
+            if not abjad.IOManager.compare_files(ily_old, ily):
                 ily_old_text = ily_old.read_text().splitlines(keepends=True)
                 ily_text = ily.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ily_old_text, ily_text)))
