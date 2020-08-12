@@ -851,7 +851,7 @@ class Path(pathlib.PosixPath):
         if metadata_py_path.is_file():
             file_contents_string = metadata_py_path.read_text()
             try:
-                result = abjad.IOManager.execute_string(
+                result = abjad.iox.execute_string(
                     file_contents_string, attribute_names=("metadata",)
                 )
             except NameError as e:

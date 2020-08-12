@@ -209,7 +209,7 @@ if __name__ == "__main__":
         lilypond_log_file_path = illustration_ily.parent / ".log"
         with abjad.Timer() as timer:
             print(" Running LilyPond ...")
-            abjad.IOManager.run_lilypond(
+            abjad.iox.run_lilypond(
                 illustration_ly, lilypond_log_file_path=lilypond_log_file_path
             )
         ide.pathx.remove_lilypond_warnings(

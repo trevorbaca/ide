@@ -102,7 +102,7 @@ class AbjadIDE:
         self.io.transcript.trim()
         last_line = self.io.transcript.lines[-1]
         assert last_line == "", repr(last_line)
-        abjad.IOManager.spawn_subprocess("clear")
+        abjad.iox.spawn_subprocess("clear")
 
     def __repr__(self) -> str:
         """
@@ -255,7 +255,7 @@ class AbjadIDE:
             with self.change(root):
                 command = f"git checkout {path}"
                 self.io.display(f"Running {command} ...")
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 self.io.display(lines, raw=True)
 
     def _check_test_scores_directory(self, check=False):
@@ -748,7 +748,7 @@ class AbjadIDE:
     def _get_git_status_lines(directory):
         with abjad.TemporaryDirectoryChange(directory=directory.wrapper):
             command = f"git status --porcelain {directory}"
-            return abjad.IOManager.run_command(command)
+            return abjad.iox.run_command(command)
 
     @staticmethod
     def _get_repository_root(directory):
@@ -897,7 +897,7 @@ class AbjadIDE:
         assert directory.is_dir()
         command = f"git status {directory}"
         with abjad.TemporaryDirectoryChange(directory=directory):
-            lines = abjad.IOManager.run_command(command)
+            lines = abjad.iox.run_command(command)
         clean_lines = []
         for line in lines:
             line = str(line)
@@ -942,7 +942,7 @@ class AbjadIDE:
                 string_buffer.write(line)
             process.wait()
             stdout_lines = string_buffer.getvalue().splitlines()
-            stderr_lines = abjad.IOManager._read_from_pipe(process.stderr)
+            stderr_lines = abjad.iox._read_from_pipe(process.stderr)
             stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
         if path.suffix == ".ly":
@@ -961,7 +961,7 @@ class AbjadIDE:
         self.io.display(f"interpreting {tex.trim()} ...")
         if not tex.is_file():
             return
-        executables = abjad.IOManager.find_executable("xelatex")
+        executables = abjad.iox.find_executable("xelatex")
         executables = [pathclass.Path(_) for _ in executables]
         if not executables:
             executable_name = "pdflatex"
@@ -976,7 +976,7 @@ class AbjadIDE:
         command += f" >> {log} 2>&1"
         command_called_twice = f"{command}; {command}"
         with self.change(tex.parent):
-            abjad.IOManager.spawn_subprocess(command_called_twice)
+            abjad.iox.spawn_subprocess(command_called_twice)
             for path in sorted(tex.parent.glob("*.aux")):
                 path.remove()
             for path in sorted(tex.parent.glob("*.log")):
@@ -1860,9 +1860,9 @@ class AbjadIDE:
                 with self.cleanup([target]):
                     target.write_text(template)
                     permissions = f"chmod 755 {target}"
-                    abjad.IOManager.spawn_subprocess(permissions)
-                    abjad.IOManager.spawn_subprocess(str(target))
-        abjad.IOManager.spawn_subprocess(command)
+                    abjad.iox.spawn_subprocess(permissions)
+                    abjad.iox.spawn_subprocess(str(target))
+        abjad.iox.spawn_subprocess(command)
 
     @staticmethod
     def _parse_part_identifier(path):
@@ -1925,13 +1925,13 @@ class AbjadIDE:
         if complete_words:
             command += " -W"
         with self.change(directory):
-            lines = abjad.IOManager.run_command(command)
+            lines = abjad.iox.run_command(command)
             lines = [_.strip() for _ in lines if not _ == ""]
             return lines
 
     def _run_lilypond(self, ly, indent=0):
         assert ly.exists()
-        if not abjad.IOManager.find_executable("lilypond"):
+        if not abjad.iox.find_executable("lilypond"):
             raise ValueError("cannot find LilyPond executable.")
         self.io.display(f"running LilyPond on {ly.trim()} ...", indent=indent)
         directory = ly.parent
@@ -1946,7 +1946,7 @@ class AbjadIDE:
         assert not pdf.exists()
         with self.change(directory):
             self.io.display(f"interpreting {ly.trim()} ...", indent=indent + 1)
-            abjad.IOManager.run_lilypond(str(ly), lilypond_log_file_path=str(log))
+            abjad.iox.run_lilypond(str(ly), lilypond_log_file_path=str(log))
             pathx.remove_lilypond_warnings(
                 log,
                 crescendo_too_small=True,
@@ -1969,7 +1969,7 @@ class AbjadIDE:
         if paths:
             string = " ".join([str(_) for _ in paths])
             command = f'py.test -xrf {string}; say "done"'
-            abjad.IOManager.spawn_subprocess(command)
+            abjad.iox.spawn_subprocess(command)
 
     def _select_parts(self, directory, verb=""):
         part_manifest = pathx.get_part_manifest(directory)
@@ -2165,7 +2165,7 @@ class AbjadIDE:
                 return
             assert ly.exists()
             assert ly_old.exists()
-            if not abjad.IOManager.compare_files(ly_old, ly):
+            if not abjad.iox.compare_files(ly_old, ly):
                 ly_old_text = ly_old.read_text().splitlines(keepends=True)
                 ly_text = ly.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ly_old_text, ly_text)))
@@ -2174,7 +2174,7 @@ class AbjadIDE:
                 return
             assert ily.exists()
             assert ily_old.exists()
-            if not abjad.IOManager.compare_files(ily_old, ily):
+            if not abjad.iox.compare_files(ily_old, ily):
                 ily_old_text = ily_old.read_text().splitlines(keepends=True)
                 ily_text = ily.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ily_old_text, ily_text)))
@@ -2229,7 +2229,7 @@ class AbjadIDE:
             commands.append(command)
         command = " && ".join(commands)
         with abjad.TemporaryDirectoryChange(directory=path):
-            abjad.IOManager.spawn_subprocess(command)
+            abjad.iox.spawn_subprocess(command)
 
     ### PUBLIC PROPERTIES ###
 
@@ -2425,14 +2425,14 @@ class AbjadIDE:
                 return
             with self.change(root):
                 self.io.display(f"Running black check on {root} ...")
-                lines = abjad.IOManager.run_command(f"{command} {root}")
+                lines = abjad.iox.run_command(f"{command} {root}")
                 self.io.display(lines, raw=True)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
                 self.io.display(f"Running black check on {path} ...")
-                lines = abjad.IOManager.run_command(f"{command} {path}")
+                lines = abjad.iox.run_command(f"{command} {path}")
                 self.io.display(lines, raw=True)
                 if i + 1 < len(paths):
                     self.io.display("")
@@ -2461,14 +2461,14 @@ class AbjadIDE:
                 return
             with self.change(root):
                 self.io.display(f"Running black reformat on {root} ...")
-                lines = abjad.IOManager.run_command(f"{command} {root}")
+                lines = abjad.iox.run_command(f"{command} {root}")
                 self.io.display(lines, raw=True)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
                 self.io.display(f"Running black reformat on {path} ...")
-                lines = abjad.IOManager.run_command(f"{command} {path}")
+                lines = abjad.iox.run_command(f"{command} {path}")
                 self.io.display(lines, raw=True)
                 if i + 1 < len(paths):
                     self.io.display("")
@@ -2599,7 +2599,7 @@ class AbjadIDE:
         """
         with self.change(directory):
             self.io.display(f"calling shell on {statement!r} ...")
-            abjad.IOManager.spawn_subprocess(statement)
+            abjad.iox.spawn_subprocess(statement)
 
     @Command(
         "dpc",
@@ -3313,7 +3313,7 @@ class AbjadIDE:
             options = "--sort-files --type=python"
             command = f"vim -c \"grep '{search_string}' {options}\""
             self.io.display(command, raw=True)
-            abjad.IOManager.spawn_subprocess(command)
+            abjad.iox.spawn_subprocess(command)
 
     @Command(
         "cbe",
@@ -3775,7 +3775,7 @@ class AbjadIDE:
                     return
                 command = f"git add -A {root}"
                 self.io.display(f"Running {command} ...")
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 self.io.display(lines, raw=True)
                 if commit_message is None:
                     commit_message = self.io.get("commit message")
@@ -3784,7 +3784,7 @@ class AbjadIDE:
                         return
                 command = f'git commit -m "{commit_message}" {root}'
                 command += "; git push"
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 self.io.display(lines, raw=True)
         else:
             assert directory.is_scores()
@@ -3818,7 +3818,7 @@ class AbjadIDE:
             with self.change(directory):
                 command = "git diff ."
                 self.io.display(f"Running {command} ...")
-                abjad.IOManager.spawn_subprocess(command)
+                abjad.iox.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
@@ -3850,13 +3850,13 @@ class AbjadIDE:
                 self.io.display(f"Running {command} ...")
                 if self.test:
                     return
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 if lines and "Already up to date" in lines[-1]:
                     lines = lines[-1:]
                 self.io.display(lines)
                 command = "git submodule foreach git pull origin master"
                 self.io.display(f"Running {command} ...")
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 if lines and "Already up to date" in lines[-1]:
                     lines = lines[-1:]
                 self.io.display(lines)
@@ -3891,7 +3891,7 @@ class AbjadIDE:
                 self.io.display(f"Running {command} ...")
                 if self.test:
                     return
-                abjad.IOManager.spawn_subprocess(command)
+                abjad.iox.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
@@ -3920,12 +3920,12 @@ class AbjadIDE:
             with self.change(directory):
                 command = "git status ."
                 self.io.display(f"Running {command} ...")
-                lines = abjad.IOManager.run_command(command)
+                lines = abjad.iox.run_command(command)
                 lines = [_ for _ in lines if _ != ""]
                 self.io.display(lines)
                 command = "git submodule foreach git fetch"
                 self.io.display(f"Running {command} ...")
-                abjad.IOManager.spawn_subprocess(command)
+                abjad.iox.spawn_subprocess(command)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
@@ -4791,7 +4791,7 @@ class AbjadIDE:
                 if i + 1 < len(paths):
                     self.io.display("")
                 else:
-                    abjad.IOManager.spawn_subprocess('say "done"')
+                    abjad.iox.spawn_subprocess('say "done"')
                 if exit_ != 0:
                     exit = -1
             return exit
@@ -4888,7 +4888,7 @@ class AbjadIDE:
                 if i + 1 < len(paths):
                     self.io.display("")
                 else:
-                    abjad.IOManager.spawn_subprocess('say "done"')
+                    abjad.iox.spawn_subprocess('say "done"')
                 if exit_ != 0:
                     exit = -1
             return exit
@@ -4916,14 +4916,14 @@ class AbjadIDE:
                 return
             with self.change(root):
                 self.io.display(f"Running {command} on {root} ...")
-                lines = abjad.IOManager.run_command(f"{command} {root}")
+                lines = abjad.iox.run_command(f"{command} {root}")
                 self.io.display(lines, raw=True, wrap=True)
         else:
             assert directory.is_scores()
             paths = directory.list_paths()
             for i, path in enumerate(paths):
                 self.io.display(f"Running {command} on {path} ...")
-                lines = abjad.IOManager.run_command(f"{command} {path}")
+                lines = abjad.iox.run_command(f"{command} {path}")
                 self.io.display(lines, raw=True, wrap=True)
                 if i + 1 < len(paths):
                     self.io.display("")
@@ -5338,9 +5338,9 @@ class AbjadIDE:
 
         Delegates to grep is ack is not found.
         """
-        strings = abjad.IOManager.find_executable("ack")
+        strings = abjad.iox.find_executable("ack")
         if not strings:
-            strings = abjad.IOManager.find_executable("grep")
+            strings = abjad.iox.find_executable("grep")
         executables = [pathclass.Path(_) for _ in strings]
         if not executables:
             self.io.display("can not find ack.")
@@ -5369,7 +5369,7 @@ class AbjadIDE:
         else:
             target = directory
         with self.change(target):
-            lines = abjad.IOManager.run_command(command)
+            lines = abjad.iox.run_command(command)
             self.io.display(lines, raw=True)
 
     @Command(
