@@ -653,7 +653,7 @@ class Path(pathlib.PosixPath):
                             tag_ = tag.append(abjad.Tag("NOT_TOPMOST"))
                         else:
                             tag_ = tag
-                        strings = abjad.Tag.tag([dereference], tag=tag_)
+                        strings = abjad.tag.tag([dereference], tag=tag_)
                         dereference = strings[0]
                         dereference = dereference + "\n"
                         if bool(stack):
@@ -675,7 +675,7 @@ class Path(pathlib.PosixPath):
         else:
             include_name = str(include_path)
         foo = f'\\include "{include_name}"'
-        foo = abjad.Tag.tag([foo], tag=tag)[0]
+        foo = abjad.tag.tag([foo], tag=tag)[0]
         if preamble_lines[-1].startswith(r"\paper"):
             preamble_lines.insert(-2, foo + "\n")
         else:
@@ -707,7 +707,7 @@ class Path(pathlib.PosixPath):
             words = first_line.split()
             site = words.index("%*%")
             first_line = " ".join(words[:site])
-            first_line = abjad.Tag.tag([first_line], tag=tag)[0]
+            first_line = abjad.tag.tag([first_line], tag=tag)[0]
             first_line += "\n"
             lines.append(first_line)
             for variable_line in variable_lines[1:]:
@@ -721,7 +721,7 @@ class Path(pathlib.PosixPath):
             words = last_line.split()
             site = words.index("%*%")
             last_line = " ".join(words[:site])
-            last_line = abjad.Tag.tag([last_line], tag=tag)[0]
+            last_line = abjad.tag.tag([last_line], tag=tag)[0]
             last_line += "\n"
             lines[-1] = last_line
             if i < total - 1:
