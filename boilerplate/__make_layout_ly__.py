@@ -149,7 +149,7 @@ if __name__ == '__main__':
         prototype = abjad.LilyPondLiteral
         skips = abjad.iterate(score['Page_Layout']).leaves(abjad.Skip)
         for i, skip in enumerate(skips):
-            for literal in abjad.inspect(skip).indicators(prototype):
+            for literal in abjad.inspectx.indicators(skip, prototype):
                 if literal.argument in (r'\break', r'\pageBreak'):
                     measure_number = first_measure_number + i
                     bol_measure_numbers.append(measure_number)
