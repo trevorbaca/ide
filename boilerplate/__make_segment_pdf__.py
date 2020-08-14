@@ -105,7 +105,7 @@ if __name__ == "__main__":
             time_signatures = []
             prototype = abjad.TimeSignature
             for skip in context:
-                time_signature = abjad.inspectx.effective(skip, prototype)
+                time_signature = abjad.get.effective(skip, prototype)
                 assert isinstance(time_signature, prototype), repr(time_signature)
                 time_signatures.append(str(time_signature))
             # for phantom measure at end

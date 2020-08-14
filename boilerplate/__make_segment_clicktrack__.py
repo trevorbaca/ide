@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     metronome_marks = []
     for skip in skips:
-        metronome_mark = abjad.inspectx.effective(skip, abjad.MetronomeMark)
+        metronome_mark = abjad.get.effective(skip, abjad.MetronomeMark)
         metronome_marks.append(metronome_mark)
 
     staff = abjad.Staff()
