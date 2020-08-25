@@ -37,7 +37,7 @@ if __name__ == "__main__":
     try:
         pdf = directory / "illustration.pdf"
         with abjad.Timer() as timer:
-            abjad.persist.as_pdf(lilypond_file, pdf, strict=89)
+            abjad.persist.as_pdf(lilypond_file, pdf, align_tags=89)
         count = int(timer.elapsed_time)
         counter = abjad.String("second").pluralize(count)
         message = f"LilyPond runtime {count} {counter} ..."

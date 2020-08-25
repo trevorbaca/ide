@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     try:
         illustration_ly = segment / "illustration.ly"
-        result = abjad.persist.as_ly(lilypond_file, illustration_ly, strict=89)
+        result = abjad.persist.as_ly(lilypond_file, illustration_ly, align_tags=89)
         abjad_format_time = int(result[1])
         count = abjad_format_time
         counter = abjad.String("second").pluralize(count)
