@@ -345,7 +345,6 @@ class Menu:
             sections.append(section)
         menu = Menu(
             aliases=aliases,
-            # header=directory.get_header(),
             header=header,
             io=io,
             loop=True,

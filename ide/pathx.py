@@ -1,4 +1,3 @@
-import os
 import pathlib
 import shutil
 import typing
@@ -14,7 +13,9 @@ class Path(pathlib.PosixPath):
 
     ..  container:: example
 
+        >>> ide.Path._mock_scores = "/path/to/scores"
         >>> path = ide.Path("/path/to/scores/my_score/my_score")
+        >>> path.mock_scores = "/path/to/scores"
 
         >>> path.stylesheets
         Path('/path/to/scores/my_score/my_score/stylesheets')
@@ -38,6 +39,8 @@ class Path(pathlib.PosixPath):
         "stylesheets",
     )
 
+    _mock_scores = None
+
     _secondary_names = (
         ".gitignore",
         ".log",
@@ -50,6 +53,8 @@ class Path(pathlib.PosixPath):
         "_segments",
         "stylesheet.ily",
     )
+
+    _test_scores_directory = pathlib.Path(__file__).parent.parent / "scores"
 
     ### SPECIAL METHODS ###
 
@@ -258,6 +263,8 @@ class Path(pathlib.PosixPath):
         scores = self.scores
         if not scores:
             return None
+        if self.is_external():
+            return None
         parts = self.relative_to(scores).parts
         if not parts:
             return None
@@ -316,28 +323,34 @@ class Path(pathlib.PosixPath):
             Path('/path/to/scores/red_score/red_score')
 
         """
+        if self._mock_scores is not None:
+            return Path(self._mock_scores)
+        if str(self).startswith(str(self._test_scores_directory)):
+            return Path(self._test_scores_directory)
         directory = configuration.composer_scores_directory
-        if str(self).startswith(str(directory)):
-            return type(self)(directory)
-        parts = str(self).split(os.sep)
-        if "ide" in parts:
-            scores_parts = [os.sep]
-            for part_ in parts:
-                scores_parts.append(part_)
-                if part_ == "scores":
-                    path = pathlib.Path(*scores_parts)
-                    return type(self)(path)
-        previous_part = None
-        for part in reversed(parts):
-            if part == previous_part:
-                scores_parts = [os.sep]
-                for part_ in parts:
-                    if part_ == part:
-                        path = pathlib.Path(*scores_parts)
-                        return type(self)(path)
-                    scores_parts.append(part_)
-            previous_part = part
-        return None
+        return Path(directory)
+
+    #        if str(self).startswith(str(directory)):
+    #            return type(self)(directory)
+    #        parts = str(self).split(os.sep)
+    #        if "ide" in parts:
+    #            scores_parts = [os.sep]
+    #            for part_ in parts:
+    #                scores_parts.append(part_)
+    #                if part_ == "scores":
+    #                    path = pathlib.Path(*scores_parts)
+    #                    return type(self)(path)
+    #        previous_part = None
+    #        for part in reversed(parts):
+    #            if part == previous_part:
+    #                scores_parts = [os.sep]
+    #                for part_ in parts:
+    #                    if part_ == part:
+    #                        path = pathlib.Path(*scores_parts)
+    #                        return type(self)(path)
+    #                    scores_parts.append(part_)
+    #            previous_part = part
+    #        return None
 
     @property
     def segments(self) -> typing.Optional["Path"]:
@@ -1248,7 +1261,6 @@ class Path(pathlib.PosixPath):
         """
         return self.name == "etc"
 
-    # TODO: remove
     def is_external(self) -> bool:
         """
         Is true when path is not a score package path.
@@ -1259,9 +1271,13 @@ class Path(pathlib.PosixPath):
             True
 
         """
-        if self.contents is not None and (self.contents / "__metadata__.py").is_file():
+        if str(self).startswith(str(self.scores)):
             return False
         return True
+
+    #        if self.contents is not None and (self.contents / "__metadata__.py").is_file():
+    #            return False
+    #        return True
 
     def is_introduction_segment(self) -> bool:
         """
@@ -1408,6 +1424,8 @@ class Path(pathlib.PosixPath):
             True
 
         """
+        if self.is_external():
+            return False
         if self.is_scores():
             return False
         if not self.scores:
