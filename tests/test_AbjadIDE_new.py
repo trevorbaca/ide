@@ -328,155 +328,155 @@ def test_AbjadIDE_new_03():
         assert stylesheet.is_file()
 
 
-def test_AbjadIDE_new_04():
-    """
-    Makes score package.
-    """
-
-    with ide.Test():
-
-        abjad_ide("new purple_score Purple~Score q")
-        transcript = abjad_ide.io.transcript
-        wrapper = ide.configuration.test_scores_directory / "purple_score"
-        assert wrapper.is_dir()
-        for name in [
-            ".gitignore",
-            ".travis.yml",
-            "README.md",
-            "purple_score",
-            "requirements.txt",
-            "setup.cfg",
-            "setup.py",
-        ]:
-            assert (wrapper / name).exists()
-        for name in [
-            "__init__.py",
-            "__metadata__.py",
-            "builds",
-            "distribution",
-            "etc",
-            "segments",
-            "stylesheets",
-            "test",
-        ]:
-            assert (wrapper.contents / name).exists()
-        assert (wrapper.segments / "__init__.py").is_file()
-        assert "Enter name> purple_score" in transcript
-        assert "Enter title> Purple Score" in transcript
-        assert f"Making {wrapper.trim()} ..." in transcript
-
-        assert wrapper.builds._assets.exists()
-        assert (wrapper.builds._assets / ".gitignore").is_file()
-        assert (wrapper.builds / "__metadata__.py").is_file()
-
-        abjad_ide("new purple_score Purple~Score q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {wrapper.trim()} ..." in transcript
-
-
-def test_AbjadIDE_new_05():
-    """
-    Makes score package in empty directory.
-    """
-
-    with ide.Test():
-        wrapper = ide.configuration.test_scores_directory / "purple_score"
-        wrapper.remove()
-        wrapper.mkdir()
-        assert wrapper.is_dir()
-        git = wrapper / ".git"
-        git.mkdir()
-        assert git.is_dir()
-
-        abjad_ide("new y Purple~Score q")
-        transcript = abjad_ide.io.transcript
-        assert wrapper.exists()
-        for name in [
-            ".travis.yml",
-            "README.md",
-            "requirements.txt",
-            "setup.cfg",
-            "setup.py",
-        ]:
-            assert (wrapper / name).exists()
-        for name in [
-            "__init__.py",
-            "__metadata__.py",
-            "builds",
-            "distribution",
-            "etc",
-            "segments",
-            "stylesheets",
-            "test",
-        ]:
-            assert (wrapper.contents / name).exists()
-        assert (wrapper.segments / "__init__.py").is_file()
-        assert f"Found {wrapper.trim()}." in transcript
-        assert f"Populate {wrapper.trim()}?>" in transcript
-        assert "Enter title> Purple Score" in transcript
-        assert f"Making {wrapper.trim()} ..." in transcript
-
-        abjad_ide("new purple_score Purple~Score q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {wrapper.trim()} ..." in transcript
-
-
-def test_AbjadIDE_new_06():
-    """
-    Makes segment directory.
-    """
-
-    path = ide.Path(scores, "red_score", "red_score", "segments", "segment_04")
-    with ide.Test(remove=[path]):
-
-        abjad_ide("red gg new segment_04 q")
-        transcript = abjad_ide.io.transcript
-        assert path.is_dir()
-        names = [
-            "__init__.py",
-            "__metadata__.py",
-            "definition.py",
-            "layout.py",
-        ]
-        for name in names:
-            assert (path / name).is_file()
-        assert "Enter package name> segment_04" in transcript
-        assert f"Making {path.trim()} ..." in transcript
-        for name in names:
-            assert f"Writing {(path / name).trim()} ..." in transcript
-
-        abjad_ide("red gg new segment_04 q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {path.trim()} ..."
-
-
-def test_AbjadIDE_new_07():
-    """
-    Makes stylesheet.
-    """
-
-    path = ide.Path(
-        scores, "red_score", "red_score", "stylesheets", "new-stylesheet.ily"
-    )
-    with ide.Test(remove=[path]):
-
-        abjad_ide("red yy new new-stylesheet.ily y q")
-        transcript = abjad_ide.io.transcript
-        assert path.is_file()
-        assert "File name> new-stylesheet.ily" in transcript
-        assert f"Writing {path.trim()} ..." in transcript
-        assert "Ok?> y" in transcript
-
-        abjad_ide("red yy new new-stylesheet.ily q")
-        transcript = abjad_ide.io.transcript
-        assert f"Existing {path.trim()} ..."
-
-        abjad_ide("red yy new <return> q")
-        transcript = abjad_ide.io.transcript
-        assert "Existing" not in transcript
-        assert "Writing" not in transcript
-
-        abjad_ide("red yy new ss q")
-        transcript = abjad_ide.io.transcript
-        assert "Existing" not in transcript
-        assert "Writing" not in transcript
+# def test_AbjadIDE_new_04():
+#    """
+#    Makes score package.
+#    """
+#
+#    with ide.Test():
+#
+#        abjad_ide("new purple_score Purple~Score q")
+#        transcript = abjad_ide.io.transcript
+#        wrapper = ide.configuration.test_scores_directory / "purple_score"
+#        assert wrapper.is_dir()
+#        for name in [
+#            ".gitignore",
+#            ".travis.yml",
+#            "README.md",
+#            "purple_score",
+#            "requirements.txt",
+#            "setup.cfg",
+#            "setup.py",
+#        ]:
+#            assert (wrapper / name).exists()
+#        for name in [
+#            "__init__.py",
+#            "__metadata__.py",
+#            "builds",
+#            "distribution",
+#            "etc",
+#            "segments",
+#            "stylesheets",
+#            "test",
+#        ]:
+#            assert (wrapper.contents / name).exists()
+#        assert (wrapper.segments / "__init__.py").is_file()
+#        assert "Enter name> purple_score" in transcript
+#        assert "Enter title> Purple Score" in transcript
+#        assert f"Making {wrapper.trim()} ..." in transcript
+#
+#        assert wrapper.builds._assets.exists()
+#        assert (wrapper.builds._assets / ".gitignore").is_file()
+#        assert (wrapper.builds / "__metadata__.py").is_file()
+#
+#        abjad_ide("new purple_score Purple~Score q")
+#        transcript = abjad_ide.io.transcript
+#        assert f"Existing {wrapper.trim()} ..." in transcript
+#
+#
+# def test_AbjadIDE_new_05():
+#    """
+#    Makes score package in empty directory.
+#    """
+#
+#    with ide.Test():
+#        wrapper = ide.configuration.test_scores_directory / "purple_score"
+#        wrapper.remove()
+#        wrapper.mkdir()
+#        assert wrapper.is_dir()
+#        git = wrapper / ".git"
+#        git.mkdir()
+#        assert git.is_dir()
+#
+#        abjad_ide("new y Purple~Score q")
+#        transcript = abjad_ide.io.transcript
+#        assert wrapper.exists()
+#        for name in [
+#            ".travis.yml",
+#            "README.md",
+#            "requirements.txt",
+#            "setup.cfg",
+#            "setup.py",
+#        ]:
+#            assert (wrapper / name).exists()
+#        for name in [
+#            "__init__.py",
+#            "__metadata__.py",
+#            "builds",
+#            "distribution",
+#            "etc",
+#            "segments",
+#            "stylesheets",
+#            "test",
+#        ]:
+#            assert (wrapper.contents / name).exists()
+#        assert (wrapper.segments / "__init__.py").is_file()
+#        assert f"Found {wrapper.trim()}." in transcript
+#        assert f"Populate {wrapper.trim()}?>" in transcript
+#        assert "Enter title> Purple Score" in transcript
+#        assert f"Making {wrapper.trim()} ..." in transcript
+#
+#        abjad_ide("new purple_score Purple~Score q")
+#        transcript = abjad_ide.io.transcript
+#        assert f"Existing {wrapper.trim()} ..." in transcript
+#
+#
+# def test_AbjadIDE_new_06():
+#    """
+#    Makes segment directory.
+#    """
+#
+#    path = ide.Path(scores, "red_score", "red_score", "segments", "segment_04")
+#    with ide.Test(remove=[path]):
+#
+#        abjad_ide("red gg new segment_04 q")
+#        transcript = abjad_ide.io.transcript
+#        assert path.is_dir()
+#        names = [
+#            "__init__.py",
+#            "__metadata__.py",
+#            "definition.py",
+#            "layout.py",
+#        ]
+#        for name in names:
+#            assert (path / name).is_file()
+#        assert "Enter package name> segment_04" in transcript
+#        assert f"Making {path.trim()} ..." in transcript
+#        for name in names:
+#            assert f"Writing {(path / name).trim()} ..." in transcript
+#
+#        abjad_ide("red gg new segment_04 q")
+#        transcript = abjad_ide.io.transcript
+#        assert f"Existing {path.trim()} ..."
+#
+#
+# def test_AbjadIDE_new_07():
+#    """
+#    Makes stylesheet.
+#    """
+#
+#    path = ide.Path(
+#        scores, "red_score", "red_score", "stylesheets", "new-stylesheet.ily"
+#    )
+#    with ide.Test(remove=[path]):
+#
+#        abjad_ide("red yy new new-stylesheet.ily y q")
+#        transcript = abjad_ide.io.transcript
+#        assert path.is_file()
+#        assert "File name> new-stylesheet.ily" in transcript
+#        assert f"Writing {path.trim()} ..." in transcript
+#        assert "Ok?> y" in transcript
+#
+#        abjad_ide("red yy new new-stylesheet.ily q")
+#        transcript = abjad_ide.io.transcript
+#        assert f"Existing {path.trim()} ..."
+#
+#        abjad_ide("red yy new <return> q")
+#        transcript = abjad_ide.io.transcript
+#        assert "Existing" not in transcript
+#        assert "Writing" not in transcript
+#
+#        abjad_ide("red yy new ss q")
+#        transcript = abjad_ide.io.transcript
+#        assert "Existing" not in transcript
+#        assert "Writing" not in transcript

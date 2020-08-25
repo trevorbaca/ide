@@ -31,7 +31,7 @@ def test_AbjadIDE_rename_02():
         target = source.with_name("E")
         target.remove()
 
-        abjad_ide("red gg new D q")
+        source.mkdir()
         assert source.is_dir()
 
         abjad_ide("red gg ren D E y q")
@@ -108,7 +108,7 @@ def test_AbjadIDE_rename_05():
         target = source.with_name("renamed-stylesheet.ily")
         target.remove()
 
-        abjad_ide("red yy new new-stylesheet.ily y q")
+        source.touch()
         assert source.is_file()
 
         abjad_ide("red yy ren new- renamed-stylesheet.ily y q")

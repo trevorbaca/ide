@@ -144,18 +144,18 @@ class Path(pathlib.PosixPath):
 
     ### PRIVATE METHODS ###
 
-    def _find_empty_wrapper(self):
-        if not self.scores:
-            return
-        for path in self.scores.iterdir():
-            if not path.name[0].isalpha():
-                continue
-            if not path.name[0].islower():
-                continue
-            if not path.is_dir():
-                continue
-            if all(_.name.startswith(".") for _ in path.iterdir()):
-                return type(self)(path)
+    #    def _find_empty_wrapper(self):
+    #        if not self.scores:
+    #            return
+    #        for path in self.scores.iterdir():
+    #            if not path.name[0].isalpha():
+    #                continue
+    #            if not path.name[0].islower():
+    #                continue
+    #            if not path.is_dir():
+    #                continue
+    #            if all(_.name.startswith(".") for _ in path.iterdir()):
+    #                return type(self)(path)
 
     def _get_file_path_ending_with(self, string):
         if not self.is_dir():
@@ -323,10 +323,10 @@ class Path(pathlib.PosixPath):
             Path('/path/to/scores/red_score/red_score')
 
         """
-        if self._mock_scores is not None:
-            return Path(self._mock_scores)
         if str(self).startswith(str(self._test_scores_directory)):
             return Path(self._test_scores_directory)
+        if self._mock_scores is not None:
+            return Path(self._mock_scores)
         directory = configuration.composer_scores_directory
         return Path(directory)
 
