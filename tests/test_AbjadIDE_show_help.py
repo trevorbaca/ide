@@ -61,8 +61,6 @@ def test_AbjadIDE_show_help_01():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -208,8 +206,6 @@ def test_AbjadIDE_show_help_02():
         "    stylesheet.ily - generate (ssig)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -356,8 +352,6 @@ def test_AbjadIDE_show_help_03():
         "    stylesheet.ily - generate (ssig)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -471,8 +465,6 @@ def test_AbjadIDE_show_help_04():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -529,8 +521,6 @@ def test_AbjadIDE_show_help_05():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -593,8 +583,6 @@ def test_AbjadIDE_show_help_06():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -747,8 +735,6 @@ def test_AbjadIDE_show_help_07():
         "    stylesheet.ily - generate (ssig)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -802,8 +788,6 @@ def test_AbjadIDE_show_help_08():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -933,8 +917,6 @@ def test_AbjadIDE_show_help_09():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -1065,8 +1047,6 @@ def test_AbjadIDE_show_help_10():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -1129,8 +1109,6 @@ def test_AbjadIDE_show_help_11():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
 
@@ -1193,7 +1171,5 @@ def test_AbjadIDE_show_help_12():
         "    show - help (?)",
         "",
         "    text - edit (it)",
-        "    text - replace (rp)",
-        "    text - search (sr)",
         "",
     ]
