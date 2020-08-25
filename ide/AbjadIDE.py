@@ -2402,78 +2402,6 @@ class AbjadIDE:
     ### USER METHODS ###
 
     @Command(
-        "bkc",
-        description="package - black check",
-        external_directories=True,
-        menu_section="package",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def black_check(self, directory: pathclass.Path) -> None:
-        """
-        Runs black check on package.
-        """
-        if self.test:
-            return
-        BLACK_OPTS = "--target-version=py36 --line-length=79 --check --diff"
-        BLACK_EXCLUDE = "__metadata__.py|__persist__.py|segments|layout.py"
-        command = f"black {BLACK_OPTS} --exclude '{BLACK_EXCLUDE}'"
-        if not directory.is_scores():
-            root = self._get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                self.io.display(f"Running black check on {root} ...")
-                lines = abjad.iox.run_command(f"{command} {root}")
-                self.io.display(lines, raw=True)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"Running black check on {path} ...")
-                lines = abjad.iox.run_command(f"{command} {path}")
-                self.io.display(lines, raw=True)
-                if i + 1 < len(paths):
-                    self.io.display("")
-
-    @Command(
-        "bkr",
-        description="package - black reformat",
-        external_directories=True,
-        menu_section="package",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def black_reformat(self, directory: pathclass.Path) -> None:
-        """
-        Runs black reformat on package.
-        """
-        if self.test:
-            return
-        BLACK_OPTS = "--target-version=py36 --line-length=79"
-        BLACK_EXCLUDE = "__metadata__.py|__persist__.py|segments|layout.py"
-        command = f"black {BLACK_OPTS} --exclude '{BLACK_EXCLUDE}'"
-        if not directory.is_scores():
-            root = self._get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                self.io.display(f"Running black reformat on {root} ...")
-                lines = abjad.iox.run_command(f"{command} {root}")
-                self.io.display(lines, raw=True)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"Running black reformat on {path} ...")
-                lines = abjad.iox.run_command(f"{command} {path}")
-                self.io.display(lines, raw=True)
-                if i + 1 < len(paths):
-                    self.io.display("")
-
-    @Command(
         "ppb",
         description="part.pdf - build",
         menu_section="parts",
@@ -4893,40 +4821,6 @@ class AbjadIDE:
                     exit = -1
             return exit
         return 0
-
-    @Command(
-        "mypy",
-        description="package - mypy",
-        external_directories=True,
-        menu_section="package",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def mypy(self, directory: pathclass.Path) -> None:
-        """
-        Runs mypy --ignore-missing-imports on package.
-        """
-        if self.test:
-            return
-        command = "mypy --ignore-missing-imports"
-        if not directory.is_scores():
-            root = self._get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                self.io.display(f"Running {command} on {root} ...")
-                lines = abjad.iox.run_command(f"{command} {root}")
-                self.io.display(lines, raw=True, wrap=True)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"Running {command} on {path} ...")
-                lines = abjad.iox.run_command(f"{command} {path}")
-                self.io.display(lines, raw=True, wrap=True)
-                if i + 1 < len(paths):
-                    self.io.display("")
 
     @Command(
         "ipn",
