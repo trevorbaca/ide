@@ -116,7 +116,7 @@ if __name__ == '__main__':
             if buildspace_directory.name != first_segment.name:
                 previous_segment = buildspace_directory.get_previous_package()
                 previous_layout_ly = previous_segment / 'layout.ly'
-                result = ide.pathx.get_preamble_page_count_overview(previous_layout_ly)
+                result = ide.segments.get_preamble_page_count_overview(previous_layout_ly)
                 if result is not None:
                     _, _, final_page_number = result
                     first_page_number = final_page_number + 1

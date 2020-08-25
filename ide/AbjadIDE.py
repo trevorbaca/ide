@@ -13,7 +13,8 @@ import typing
 
 import abjad
 
-from . import pathclass, pathx
+from . import pathclass
+from . import segments as _segments
 from . import tags as _tags
 from .Command import Command
 from .Configuration import Configuration
@@ -209,8 +210,8 @@ class AbjadIDE:
         if metadata_time_signatures:
             message = "found time signature metadata ..."
             self.io.display(message, indent=indent + 1)
-        layout_time_signatures = pathx.get_preamble_time_signatures(layout_ly)
-        partial_score = pathx.get_preamble_partial_score(layout_ly)
+        layout_time_signatures = _segments.get_preamble_time_signatures(layout_ly)
+        partial_score = _segments.get_preamble_partial_score(layout_ly)
         if partial_score:
             self.io.display("found partial score ...", indent=indent + 1)
             return
@@ -232,7 +233,7 @@ class AbjadIDE:
         self.io.display(message, indent=indent + 1)
         layout_py = layout_ly.with_suffix(".py")
         self._make_layout_ly(layout_py)
-        layout_time_signatures = pathx.get_preamble_time_signatures(layout_ly)
+        layout_time_signatures = _segments.get_preamble_time_signatures(layout_ly)
         if layout_time_signatures == metadata_time_signatures:
             message = "layout time signatures"
             message += f" ({len(layout_time_signatures)})"
@@ -544,7 +545,7 @@ class AbjadIDE:
         assert path.is_file(), repr(path)
         template = path.read_text()
         if path.parent.is_part():
-            identifiers = pathx.global_skip_identifiers(path)
+            identifiers = _segments.global_skip_identifiers(path)
             identifiers = ["\\" + _ for _ in identifiers]
             newline = "\n" + 24 * " "
             global_skip_identifiers = newline.join(identifiers)
@@ -552,7 +553,7 @@ class AbjadIDE:
                 segment_ly_include_statements = r"\FOO"
             else:
                 dictionary = self._make_container_to_part_assignment(path)
-                identifiers = pathx.part_to_identifiers(path, part, dictionary)
+                identifiers = _segments.part_to_identifiers(path, part, dictionary)
                 if isinstance(identifiers, str):
                     self.io.display(identifiers + " ...", indent=indent + 1)
                     message = f"removing {path.trim()} ..."
@@ -654,7 +655,7 @@ class AbjadIDE:
                 message = f"examining {segment.trim()} ..."
                 self.io.display(message, indent=indent + 1)
         names = [_.stem.replace("_", "-") for _ in segments]
-        score_skeleton = pathx.score_skeleton(path)
+        score_skeleton = _segments.score_skeleton(path)
         if score_skeleton is None:
             boilerplate = "score-music.ly"
         else:
@@ -1163,7 +1164,7 @@ class AbjadIDE:
     def _make_parts_directory(self, directory):
         assert directory.is_builds()
         self.io.display("getting part names from score template ...")
-        part_manifest = pathx.get_part_manifest(directory)
+        part_manifest = _segments.get_part_manifest(directory)
         part_names = [_.name for _ in part_manifest]
         for part_name in part_names:
             self.io.display(f"found {part_name} ...")
@@ -1907,7 +1908,7 @@ class AbjadIDE:
         with self.change(directory):
             self.io.display(f"interpreting {ly.trim()} ...", indent=indent + 1)
             abjad.iox.run_lilypond(str(ly), lilypond_log_file_path=str(log))
-            pathx.remove_lilypond_warnings(
+            _segments.remove_lilypond_warnings(
                 log,
                 crescendo_too_small=True,
                 decrescendo_too_small=True,
@@ -1932,7 +1933,7 @@ class AbjadIDE:
             abjad.iox.spawn_subprocess(command)
 
     def _select_parts(self, directory, verb=""):
-        part_manifest = pathx.get_part_manifest(directory)
+        part_manifest = _segments.get_part_manifest(directory)
         if not part_manifest:
             self.io.display("score template defines no part manifest.")
             return
@@ -2386,7 +2387,7 @@ class AbjadIDE:
         assert directory.build is not None
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             dashed_part_name = abjad.String(part.name).to_dash_case()
             part_directory = directory / dashed_part_name
             part_pdf_path = part_directory / dashed_part_name
@@ -3267,10 +3268,10 @@ class AbjadIDE:
             return
         if not paths:
             return
-        total_parts = len(pathx.get_part_manifest(directory.build))
+        total_parts = len(_segments.get_part_manifest(directory.build))
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             price = f"{part.identifier} ({part.number}/{total_parts})"
             self._generate_back_cover_tex(path, price=price)
             if i + 1 < path_count:
@@ -3309,7 +3310,7 @@ class AbjadIDE:
             return
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             forces_tagline = self._part_subtitle(part.name, parentheses=False)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
             if i + 1 < path_count:
@@ -3347,7 +3348,7 @@ class AbjadIDE:
             return
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             self._copy_boilerplate(
                 path.parent,
                 "part_layout.py",
@@ -3388,7 +3389,7 @@ class AbjadIDE:
             return
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             assert isinstance(part, Part)
             dashed_part_name = abjad.String(part.name).to_dash_case()
             file_name = f"{dashed_part_name}-{name}"
@@ -3434,7 +3435,7 @@ class AbjadIDE:
             return
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = pathx.path_to_part(path)
+            part = _segments.path_to_part(path)
             dashed_part_name = abjad.String(part.name).to_dash_case()
             self._generate_part_tex(path, dashed_part_name)
             if 1 < path_count and i + 1 < path_count:
@@ -4914,7 +4915,7 @@ class AbjadIDE:
         if not paths:
             return
         for path in paths:
-            part_identifier = pathx.get_part_identifier(path)
+            part_identifier = _segments.get_part_identifier(path)
             target_text = source_text.replace(source_part_identifier, part_identifier)
             self.io.display(f"writing {path.trim()} ...")
             path.write_text(target_text)

@@ -74,7 +74,7 @@ if __name__ == "__main__":
             if not layout_ly.is_file():
                 message = f"{{layout_ly.trim()}} does not exit."
                 raise Exception(message)
-            result = ide.pathx.get_preamble_page_count_overview(layout_ly)
+            result = ide.segments.get_preamble_page_count_overview(layout_ly)
             if result is not None:
                 first_page_number, _, _ = result
                 line = r"\paper {{ first-page-number = #"
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         if empty_layout:
             print(f" Ignoring empty {{layout_py.trim()}} ...")
         else:
-            layout_time_signatures = ide.pathx.get_preamble_time_signatures(layout_ly)
+            layout_time_signatures = ide.segments.get_preamble_time_signatures(layout_ly)
             if layout_time_signatures is not None:
                 assert isinstance(layout_time_signatures, list)
                 layout_measure_count = len(layout_time_signatures)
@@ -177,7 +177,7 @@ if __name__ == "__main__":
                     message = f" Found {{measure_count}} {{counter}}"
                     message += f" in {{illustration_ly.trim()}} ..."
                     print(message)
-                    layout_time_signatures = ide.pathx.get_preamble_time_signatures(
+                    layout_time_signatures = ide.segments.get_preamble_time_signatures(
                         layout_ly
                     )
                     layout_measure_count = len(layout_time_signatures)
@@ -211,7 +211,7 @@ if __name__ == "__main__":
             abjad.iox.run_lilypond(
                 illustration_ly, lilypond_log_file_path=lilypond_log_file_path
             )
-        ide.pathx.remove_lilypond_warnings(
+        ide.segments.remove_lilypond_warnings(
             lilypond_log_file_path,
             crescendo_too_small=True,
             decrescendo_too_small=True,

@@ -57,7 +57,7 @@ You're ready to use the Abjad IDE when the docs build and all tests pass.
 import distutils.version
 import platform
 
-from . import pathx, tags
+from . import pathclass, segments, tags
 from .AbjadIDE import AbjadIDE
 from .Command import Command
 from .Configuration import Configuration
@@ -103,7 +103,8 @@ __all__ = [
     "Test",
     "Transcript",
     "configuration",
-    "pathx",
+    "pathclass",
+    "segments",
     "tags",
 ]
 
