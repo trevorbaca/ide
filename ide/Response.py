@@ -1,6 +1,6 @@
 import typing
 
-from . import pathclass
+from . import pathx
 
 
 class Response:
@@ -19,9 +19,7 @@ class Response:
     ### INITIALIZER ###
 
     def __init__(
-        self,
-        payload: typing.Union[str, list, pathclass.Path] = None,
-        string: str = None,
+        self, payload: typing.Union[str, list, pathx.Path] = None, string: str = None,
     ) -> None:
         self._payload = payload
         self._string = string
@@ -71,7 +69,7 @@ class Response:
         return self.string
 
     @property
-    def payload(self) -> typing.Optional[typing.Union[str, list, pathclass.Path]]:
+    def payload(self) -> typing.Optional[typing.Union[str, list, pathx.Path]]:
         """
         Gets payload.
         """
@@ -99,15 +97,13 @@ class Response:
 
     ### PUBLIC METHODS ###
 
-    def get_path(self) -> typing.Optional[pathclass.Path]:
+    def get_path(self) -> typing.Optional[pathx.Path]:
         """
         Gets path.
         """
-        if isinstance(self.payload, pathclass.Path):
+        if isinstance(self.payload, pathx.Path):
             return self.payload
-        if isinstance(self.payload, list) and isinstance(
-            self.payload[0], pathclass.Path
-        ):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], pathx.Path):
             return self.payload[0]
         return None
 
@@ -127,11 +123,9 @@ class Response:
         """
         Is true when response is path.
         """
-        if isinstance(self.payload, pathclass.Path):
+        if isinstance(self.payload, pathx.Path):
             return True
-        if isinstance(self.payload, list) and isinstance(
-            self.payload[0], pathclass.Path
-        ):
+        if isinstance(self.payload, list) and isinstance(self.payload[0], pathx.Path):
             return True
         return False
 
@@ -139,7 +133,7 @@ class Response:
         """
         Is true when response is segment name.
         """
-        return pathclass.Path.is_segment_name(self.string)
+        return pathx.Path.is_segment_name(self.string)
 
     def is_shell(self) -> bool:
         """

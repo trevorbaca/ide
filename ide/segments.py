@@ -3,7 +3,7 @@ import typing
 
 import abjad
 
-from . import pathclass
+from . import pathx
 from . import tags as _tags
 
 token_type = typing.Union[None, int, abjad.typings.IntegerPair, typing.List[int]]
@@ -39,7 +39,7 @@ class Job:
         deactivate: activation_type = None,
         deactivate_first: bool = None,
         message_zero: bool = None,
-        path: pathclass.Path = None,
+        path: pathx.Path = None,
         prepend_empty_chord: bool = None,
         skip_file_name: str = None,
         title: str = None,
@@ -70,7 +70,7 @@ class Job:
                 assert isinstance(self.deactivate, tuple)
                 match, name = self.deactivate
                 if match is not None:
-                    if isinstance(self.path, pathclass.Path):
+                    if isinstance(self.path, pathx.Path):
                         result = self.path.deactivate(
                             match,
                             indent=1,
@@ -98,7 +98,7 @@ class Job:
             assert isinstance(self.activate, tuple)
             match, name = self.activate
             if match is not None:
-                if isinstance(self.path, pathclass.Path):
+                if isinstance(self.path, pathx.Path):
                     result = self.path.activate(
                         match,
                         indent=1,
@@ -120,7 +120,7 @@ class Job:
                 assert isinstance(self.deactivate, tuple)
                 match, name = self.deactivate
                 if match is not None:
-                    if isinstance(self.path, pathclass.Path):
+                    if isinstance(self.path, pathx.Path):
                         result = self.path.deactivate(
                             match,
                             indent=1,
@@ -144,7 +144,7 @@ class Job:
                         )
         if total_count == 0 and not self.message_zero:
             messages = []
-        if isinstance(self.path, pathclass.Path):
+        if isinstance(self.path, pathx.Path):
             return messages
         else:
             assert isinstance(self.path, str)
@@ -187,7 +187,7 @@ class Job:
         return self._message_zero
 
     @property
-    def path(self) -> typing.Optional[pathclass.Path]:
+    def path(self) -> typing.Optional[pathx.Path]:
         """
         Gets path.
         """
@@ -3047,7 +3047,7 @@ def part_to_identifiers(
     return identifiers
 
 
-def path_to_part(path: pathclass.Path) -> Part:
+def path_to_part(path: pathx.Path) -> Part:
     """
     Changes path to part.
     """
