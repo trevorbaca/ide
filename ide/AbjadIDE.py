@@ -868,9 +868,7 @@ class AbjadIDE:
 
     def _handle_address(self, directory, response):
         assert response.prefix, repr(response)
-        if response.prefix == "@":
-            self.smart_edit(directory, response.pattern, response.payload)
-        elif response.prefix == "@@":
+        if response.prefix == "@@":
             self.edit_all(directory, response.pattern)
         else:
             raise ValueError(response.prefix)
@@ -1738,44 +1736,6 @@ class AbjadIDE:
         message = f"matching {address!r} to {count} {counter} ..."
         self.io.display(message)
         return files
-
-    def _match_smart_file(
-        self, directory, pattern, paths, prefix, finder, default_name=None
-    ):
-        if not pattern:
-            self.io.display(f"missing {prefix!r} pattern ...")
-            return prefix, None
-        alias = ""
-        if self.aliases and pattern in self.aliases:
-            alias = pattern
-            path, pattern = pathclass.Path(self.aliases[pattern]), None
-            if path.is_dir():
-                directory, paths = path, None
-            else:
-                paths = [path]
-        elif not (pattern and pattern[0].isdigit()):
-            paths = None
-        if isinstance(paths, pathclass.Path):
-            paths = [paths]
-        if paths:
-            files = self._supply_name(paths, default_name)
-        else:
-            files, strings = finder(directory)
-            files = self._filter_files(files, strings, pattern)
-        address = prefix + (pattern or "") + alias
-        count = len(files)
-        counter = abjad.String("file").pluralize(count)
-        result = None
-        if not files:
-            self.io.display(f"matching {address!r} to {count} {counter} ...")
-        elif len(files) == 1:
-            result = files[0]
-        else:
-            self.io.display(f"matching {address!r} to {count} {counter} ...")
-            for file_ in files:
-                self.io.display(file_.trim(), raw=True)
-            result = files[0]
-        return address, result
 
     @staticmethod
     def _message_activate(ly, tag, count, name=None):
@@ -5482,31 +5442,6 @@ class AbjadIDE:
             return
         tag = abjad.Tag(tag_)
         self.run(Job.show_tag(directory, tag))
-
-    @Command(
-        "@",
-        description="smart - edit",
-        external_directories=True,
-        menu_section="smart",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def smart_edit(
-        self, directory: pathclass.Path, pattern: str, menu_paths: typing.List
-    ) -> None:
-        """
-        Smart edit.
-        """
-        address, file_ = self._match_smart_file(
-            directory,
-            pattern,
-            menu_paths,
-            "@",
-            self._find_editable_files,
-            "definition.py",
-        )
-        if file_:
-            self._open_files([file_])
 
     @Command(
         "cuc",

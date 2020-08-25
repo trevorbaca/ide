@@ -38,7 +38,6 @@ class Command:
         "segments",
         "shell",
         "show",
-        "smart",
         "stylesheet",
         "text",
     )

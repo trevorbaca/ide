@@ -118,7 +118,7 @@ def test_AbjadIDE_remove_03():
 
 def test_AbjadIDE_remove_04():
     """
-    In stylesheets directory. Works with smart match.
+    In stylesheets directory.
     """
 
     with ide.Test():

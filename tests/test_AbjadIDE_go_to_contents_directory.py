@@ -49,7 +49,7 @@ def test_AbjadIDE_go_to_contents_directory_03():
 
 def test_AbjadIDE_go_to_contents_directory_04():
     """
-    From scores directory with smart match.
+    From scores directory.
     """
 
     abjad_ide("lue q")
