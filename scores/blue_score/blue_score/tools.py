@@ -270,7 +270,10 @@ class MeasureMaker(object):
         contents_string = " ".join([str(x) for x in measure])
         result = "{}({}, {!r}, implicit_scaling={})"
         result = result.format(
-            type(measure).__name__, pair, contents_string, measure.implicit_scaling,
+            type(measure).__name__,
+            pair,
+            contents_string,
+            measure.implicit_scaling,
         )
         return result
 

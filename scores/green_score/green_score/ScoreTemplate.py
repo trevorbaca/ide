@@ -44,7 +44,8 @@ class ScoreTemplate(baca.ScoreTemplate):
 
         # BASS CLARINET
         bass_clarinet_music_voice = abjad.Voice(
-            lilypond_type="BassClarinetMusicVoice", name="BassClarinetMusicVoice",
+            lilypond_type="BassClarinetMusicVoice",
+            name="BassClarinetMusicVoice",
         )
         bass_clarinet_music_staff = abjad.Staff(
             [bass_clarinet_music_voice],
@@ -85,7 +86,9 @@ class ScoreTemplate(baca.ScoreTemplate):
             name="ViolinStaffGroup",
         )
         abjad.annotate(
-            violin_staff_group, "default_instrument", green_score.instruments["Violin"],
+            violin_staff_group,
+            "default_instrument",
+            green_score.instruments["Violin"],
         )
         self._attach_lilypond_tag("Violin", violin_staff_group)
 
@@ -115,7 +118,9 @@ class ScoreTemplate(baca.ScoreTemplate):
             name="ViolaStaffGroup",
         )
         abjad.annotate(
-            viola_staff_group, "default_instrument", green_score.instruments["Viola"],
+            viola_staff_group,
+            "default_instrument",
+            green_score.instruments["Viola"],
         )
         self._attach_lilypond_tag("Viola", viola_staff_group)
 
@@ -144,7 +149,9 @@ class ScoreTemplate(baca.ScoreTemplate):
             name="CelloStaffGroup",
         )
         abjad.annotate(
-            cello_staff_group, "default_instrument", green_score.instruments["Cello"],
+            cello_staff_group,
+            "default_instrument",
+            green_score.instruments["Cello"],
         )
         abjad.annotate(cello_staff_group, "default_clef", abjad.Clef("bass"))
         self._attach_lilypond_tag("Cello", cello_staff_group)
@@ -163,7 +170,9 @@ class ScoreTemplate(baca.ScoreTemplate):
 
         # MUSIC CONTEXT
         music_context = abjad.Context(
-            [ensemble_staff_group], lilypond_type="MusicContext", name="MusicContext",
+            [ensemble_staff_group],
+            lilypond_type="MusicContext",
+            name="MusicContext",
         )
 
         # SCORE

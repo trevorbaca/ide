@@ -796,7 +796,10 @@ class AbjadIDE:
         return paths
 
     def _go_to_directory(
-        self, directory: pathx.Path, pattern: str = None, payload: typing.List = None,
+        self,
+        directory: pathx.Path,
+        pattern: str = None,
+        payload: typing.List = None,
     ) -> None:
         assert directory.is_dir()
         if pathx.Path.is_segment_name(pattern):
@@ -876,15 +879,21 @@ class AbjadIDE:
         part_identifier = self._parse_part_identifier(path)
         if part_identifier is None:
             self.io.display(
-                f"no part identifier found in {path.name} ...", indent=indent,
+                f"no part identifier found in {path.name} ...",
+                indent=indent,
             )
             return
         self.io.display("handling part identifier tags ...", indent=indent)
-        parts_directory_name = abjad.String(parts_directory.name,)
+        parts_directory_name = abjad.String(
+            parts_directory.name,
+        )
         parts_directory_name = parts_directory_name.to_shout_case()
         tag = f"+{parts_directory_name}_{part_identifier}"
         self.activate(
-            parts_directory, tag, indent=indent + 1, message_zero=True,
+            parts_directory,
+            tag,
+            indent=indent + 1,
+            message_zero=True,
         )
 
     @staticmethod
@@ -1124,7 +1133,9 @@ class AbjadIDE:
         maker = path.parent / maker
         with self.cleanup([maker]):
             self._copy_boilerplate(
-                path.parent, maker.name, values={"layout_module_name": path.stem},
+                path.parent,
+                maker.name,
+                values={"layout_module_name": path.stem},
             )
             self.io.display(f"interpreting {maker.trim()} ...")
             result = self._interpret_file(maker)
@@ -1257,7 +1268,8 @@ class AbjadIDE:
                 silent=True,
             )
             self._generate_part_tex(
-                part_directory / f"{dashed_part_name}-part.tex", dashed_part_name,
+                part_directory / f"{dashed_part_name}-part.tex",
+                dashed_part_name,
             )
             self._generate_preface_tex(
                 part_directory / f"{dashed_part_name}-preface.tex"
@@ -1992,7 +2004,13 @@ class AbjadIDE:
         return result
 
     def _select_paths_in_buildspace(
-        self, directory, name, verb, count=None, supply_missing=None, underscores=False,
+        self,
+        directory,
+        name,
+        verb,
+        count=None,
+        supply_missing=None,
+        underscores=False,
     ):
         assert directory.is_buildspace()
         selected_paths = []
@@ -2347,7 +2365,13 @@ class AbjadIDE:
                 return True
         return False
 
-    def run(self, job: Job, *, indent: int = 0, quiet: bool = False,) -> None:
+    def run(
+        self,
+        job: Job,
+        *,
+        indent: int = 0,
+        quiet: bool = False,
+    ) -> None:
         """
         Runs ``job`` on ``path``.
         """
@@ -2554,7 +2578,11 @@ class AbjadIDE:
         score_package_paths=("_segments", "build"),
     )
     def collect_segment_lys(
-        self, directory: pathx.Path, *, indent=0, skip: bool = False,
+        self,
+        directory: pathx.Path,
+        *,
+        indent=0,
+        skip: bool = False,
     ) -> None:
         """
         Collects segment lys.
@@ -2589,15 +2617,18 @@ class AbjadIDE:
                 self.io.display(f"Removing {target_ily.trim()} ...", indent=indent + 1)
             if source_ily.is_file():
                 self.io.display(
-                    f"Writing {target_ily.trim()} ...", indent=indent + 1,
+                    f"Writing {target_ily.trim()} ...",
+                    indent=indent + 1,
                 )
                 shutil.copyfile(str(source_ily), target_ily)
             if target.exists():
                 self.io.display(
-                    f"Removing {target.trim()} ...", indent=indent + 1,
+                    f"Removing {target.trim()} ...",
+                    indent=indent + 1,
                 )
             self.io.display(
-                f"Writing {target.trim()} ...", indent=indent + 1,
+                f"Writing {target.trim()} ...",
+                indent=indent + 1,
             )
             text = self._trim_illustration_ly(source)
             target.write_text(text)
@@ -3907,7 +3938,11 @@ class AbjadIDE:
         score_package_paths=("_segments", "build"),
     )
     def handle_build_tags(
-        self, directory: pathx.Path, *, indent=0, skip: bool = False,
+        self,
+        directory: pathx.Path,
+        *,
+        indent=0,
+        skip: bool = False,
     ) -> None:
         """
         Handles build tags.
@@ -3992,10 +4027,20 @@ class AbjadIDE:
                 undo=True,
             ),
             Job.show_tag(
-                _segments, _tags.EOS_STOP_MM_SPANNER, skip_file_name=final_file_name,
+                _segments,
+                _tags.EOS_STOP_MM_SPANNER,
+                skip_file_name=final_file_name,
             ),
-            Job.show_tag(_segments, _tags.METRIC_MODULATION_IS_STRIPPED, undo=True,),
-            Job.show_tag(_segments, _tags.METRIC_MODULATION_IS_SCALED, undo=True,),
+            Job.show_tag(
+                _segments,
+                _tags.METRIC_MODULATION_IS_STRIPPED,
+                undo=True,
+            ),
+            Job.show_tag(
+                _segments,
+                _tags.METRIC_MODULATION_IS_SCALED,
+                undo=True,
+            ),
         ]:
             self.run(job, indent=1, quiet=False)
 
@@ -4006,7 +4051,11 @@ class AbjadIDE:
         score_package_paths=("_segments", "build"),
     )
     def handle_part_tags(
-        self, directory: pathx.Path, *, indent=0, skip: bool = False,
+        self,
+        directory: pathx.Path,
+        *,
+        indent=0,
+        skip: bool = False,
     ) -> None:
         """
         Handles part tags.
@@ -4025,13 +4074,22 @@ class AbjadIDE:
             self.io.display(message, indent=indent + 1)
         music_ly = paths[0]
         self.activate(
-            parts_directory, "+PARTS", indent=indent + 1, message_zero=True,
+            parts_directory,
+            "+PARTS",
+            indent=indent + 1,
+            message_zero=True,
         )
         self.deactivate(
-            parts_directory, "-PARTS", indent=indent + 1, message_zero=True,
+            parts_directory,
+            "-PARTS",
+            indent=indent + 1,
+            message_zero=True,
         )
         self.deactivate(
-            parts_directory, "HIDE_IN_PARTS", indent=indent + 1, message_zero=True,
+            parts_directory,
+            "HIDE_IN_PARTS",
+            indent=indent + 1,
+            message_zero=True,
         )
         part_identifier = self._parse_part_identifier(music_ly)
         if part_identifier is None:
@@ -4042,10 +4100,16 @@ class AbjadIDE:
         parts_directory_name = parts_directory_name.to_shout_case()
         name = f"{parts_directory_name}_{part_identifier}"
         self.activate(
-            parts_directory, f"+{name}", indent=indent + 1, message_zero=True,
+            parts_directory,
+            f"+{name}",
+            indent=indent + 1,
+            message_zero=True,
         )
         self.deactivate(
-            parts_directory, f"-{name}", indent=indent + 1, message_zero=True,
+            parts_directory,
+            f"-{name}",
+            indent=indent + 1,
+            message_zero=True,
         )
         self.deactivate(
             parts_directory,
@@ -4074,7 +4138,10 @@ class AbjadIDE:
             message_zero=True,
         )
         self.activate(
-            parts_directory, "NOT_TOPMOST", indent=indent + 1, message_zero=True,
+            parts_directory,
+            "NOT_TOPMOST",
+            indent=indent + 1,
+            message_zero=True,
         )
         self.deactivate(
             parts_directory,
@@ -4404,7 +4471,8 @@ class AbjadIDE:
         for path in paths:
             self.io.display(f"found {path.trim()} ...")
         self.collect_segment_lys(
-            directory.build, skip=skip_segment_ly_collection,
+            directory.build,
+            skip=skip_segment_ly_collection,
         )
         for i, path in enumerate(paths):
             if path.parent.is_part():

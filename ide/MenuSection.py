@@ -67,7 +67,10 @@ class MenuSection:
             else:
                 raise TypeError(entry)
             entry = MenuEntry(
-                display=display, command=self.command, number=number, value=value,
+                display=display,
+                command=self.command,
+                number=number,
+                value=value,
             )
             self.entries.append(entry)
         if self.command:

@@ -73,7 +73,9 @@ class Menu:
         if string is not None:
             self.io.pending_input(string)
         self.redraw(
-            redraw, dimensions=dimensions, force_single_column=force_single_column,
+            redraw,
+            dimensions=dimensions,
+            force_single_column=force_single_column,
         )
         string = self.io.get(prompt=self.prompt, split_input=not self.getter)
         prefix, string = self._split_prefix(string)
@@ -131,7 +133,11 @@ class Menu:
         return result
 
     def _make_bicolumnar(
-        self, lines, lines_above, break_only_at_blank_lines=False, dimensions=None,
+        self,
+        lines,
+        lines_above,
+        break_only_at_blank_lines=False,
+        dimensions=None,
     ):
         if lines and lines[-1] != "":
             lines.append("")

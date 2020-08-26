@@ -113,7 +113,10 @@ class Job:
                 else:
                     assert isinstance(self.path, str)
                     text, count, skipped = abjad.activate(
-                        text, match, skip_file_name=self.skip_file_name, skipped=True,
+                        text,
+                        match,
+                        skip_file_name=self.skip_file_name,
+                        skipped=True,
                     )
         if self.deactivate_first is not True:
             if self.deactivate is not None:
@@ -229,7 +232,9 @@ class Job:
 
         if undo:
             return Job(
-                deactivate=(match, name), path=path, title="uncoloring clefs ...",
+                deactivate=(match, name),
+                path=path,
+                title="uncoloring clefs ...",
             )
         else:
             return Job(activate=(match, name), path=path, title="coloring clefs ...")
@@ -247,11 +252,15 @@ class Job:
 
         if undo:
             return Job(
-                deactivate=(match, name), path=path, title="uncoloring dynamics ...",
+                deactivate=(match, name),
+                path=path,
+                title="uncoloring dynamics ...",
             )
         else:
             return Job(
-                activate=(match, name), path=path, title="coloring dynamics ...",
+                activate=(match, name),
+                path=path,
+                title="coloring dynamics ...",
             )
 
     @staticmethod
@@ -267,11 +276,15 @@ class Job:
 
         if undo:
             return Job(
-                deactivate=(match, name), path=path, title="uncoloring instruments ...",
+                deactivate=(match, name),
+                path=path,
+                title="uncoloring instruments ...",
             )
         else:
             return Job(
-                activate=(match, name), path=path, title="coloring instruments ...",
+                activate=(match, name),
+                path=path,
+                title="coloring instruments ...",
             )
 
     @staticmethod
@@ -293,7 +306,9 @@ class Job:
             )
         else:
             return Job(
-                activate=(match, name), path=path, title="coloring margin markup ...",
+                activate=(match, name),
+                path=path,
+                title="coloring margin markup ...",
             )
 
     @staticmethod
@@ -371,11 +386,15 @@ class Job:
 
         if undo:
             return Job(
-                deactivate=(match, name), path=path, title="uncoloring staff lines ...",
+                deactivate=(match, name),
+                path=path,
+                title="uncoloring staff lines ...",
             )
         else:
             return Job(
-                activate=(match, name), path=path, title="coloring staff lines ...",
+                activate=(match, name),
+                path=path,
+                title="coloring staff lines ...",
             )
 
     @staticmethod
@@ -413,7 +432,9 @@ class Job:
             )
         else:
             return Job(
-                activate=(match, name), path=path, title="coloring time signatures ...",
+                activate=(match, name),
+                path=path,
+                title="coloring time signatures ...",
             )
 
     @staticmethod
@@ -624,11 +645,15 @@ class Job:
 
         if undo:
             return Job(
-                activate=(match, name), path=path, title="showing default clefs ...",
+                activate=(match, name),
+                path=path,
+                title="showing default clefs ...",
             )
         else:
             return Job(
-                deactivate=(match, name), path=path, title="hiding default clefs ...",
+                deactivate=(match, name),
+                path=path,
+                title="hiding default clefs ...",
             )
 
     @staticmethod
@@ -2516,7 +2541,11 @@ class PersistentOverride:
         else:
             lilypond_type = self.context
         string = abjad.OverrideInterface.make_lilypond_override_string(
-            self.grob, self.attribute, self.value, context=lilypond_type, once=False,
+            self.grob,
+            self.attribute,
+            self.value,
+            context=lilypond_type,
+            once=False,
         )
         return string
 

@@ -19,7 +19,9 @@ class Response:
     ### INITIALIZER ###
 
     def __init__(
-        self, payload: typing.Union[str, list, pathx.Path] = None, string: str = None,
+        self,
+        payload: typing.Union[str, list, pathx.Path] = None,
+        string: str = None,
     ) -> None:
         self._payload = payload
         self._string = string
