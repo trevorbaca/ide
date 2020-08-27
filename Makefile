@@ -1,4 +1,4 @@
-black_exclude = --exclude='__metadata__.py|boilerplate|definition.py|layout.py'
+black_exclude = --exclude='boilerplate|definition.py|layout.py'
 
 black-check:
 	black --check --diff ${black_exclude} --target-version=py38 .
@@ -6,7 +6,7 @@ black-check:
 black-reformat:
 	black ${black_exclude} --target-version=py38 .
 
-flake_exclude = --exclude=__metadata__.py,boilerplate
+flake_exclude = --exclude=boilerplate
 flake_ignore = --ignore=E203,E266,E501,W503
 flake_options = --isolated --max-line-length=88
 
