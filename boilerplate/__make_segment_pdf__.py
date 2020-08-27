@@ -61,13 +61,17 @@ if __name__ == "__main__":
         message = f" Segment-maker runtime {{count}} {{counter}} ..."
         print(message)
         segment_maker_runtime = (count, counter)
+        print(" Writing __metadata__.py ...")
         segment_directory.write_metadata_py(maker.metadata)
+        os.system("black --target-version=py38 __metadata__.py")
+        print(" Writing __persist__.py ...")
         segment_directory.write_metadata_py(
             maker.persist,
             file_name="__persist__.py",
             import_statements=["import abjad", "import ide"],
             variable_name="persist",
         )
+        os.system("black --target-version=py38 __persist__.py")
         first_segment = segment_directory.segments.get_next_package()
         if segment_directory.name != first_segment.name:
             layout_ly = segment_directory / "layout.ly"
