@@ -158,7 +158,9 @@ if __name__ == "__main__":
         if empty_layout:
             print(f" Ignoring empty {{layout_py.trim()}} ...")
         else:
-            layout_time_signatures = ide.segments.get_preamble_time_signatures(layout_ly)
+            layout_time_signatures = ide.segments.get_preamble_time_signatures(
+                layout_ly
+            )
             if layout_time_signatures is not None:
                 assert isinstance(layout_time_signatures, list)
                 layout_measure_count = len(layout_time_signatures)

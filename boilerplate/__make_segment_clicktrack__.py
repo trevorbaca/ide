@@ -82,7 +82,9 @@ if __name__ == "__main__":
             metronome_mark = metronome_marks[i]
             units_per_minute = round(metronome_mark.units_per_minute)
             metronome_mark = abjad.new(
-                metronome_mark, hide=False, units_per_minute=units_per_minute,
+                metronome_mark,
+                hide=False,
+                units_per_minute=units_per_minute,
             )
             time_signature = abjad.new(time_signature)
             numerator, denominator = time_signature.pair

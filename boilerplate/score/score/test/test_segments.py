@@ -32,7 +32,10 @@ def test_segments_02(directory):
         ly_old = directory / "illustration.old.ly"
         if ly.exists():
             shutil.copyfile(ly, ly_old)
-        exit_code = abjad_ide.make_illustration_pdf(directory, open_after=False,)
+        exit_code = abjad_ide.make_illustration_pdf(
+            directory,
+            open_after=False,
+        )
         if exit_code != 0:
             sys.exit(exit_code)
         if not ly_old.exists():

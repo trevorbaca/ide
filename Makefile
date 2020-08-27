@@ -1,4 +1,4 @@
-black_exclude = --exclude='boilerplate|definition.py|layout.py'
+black_exclude = --exclude='boilerplate'
 
 black-check:
 	black --check --diff ${black_exclude} --target-version=py38 .
