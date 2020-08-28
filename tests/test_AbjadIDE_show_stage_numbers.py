@@ -23,18 +23,18 @@ def test_AbjadIDE_show_stage_numbers_01():
         abjad_ide("gre bb arch-a-score sns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing stage number markup ...",
-            " Found 2 stage number markup tags ...",
-            " Activating 2 stage number markup tags ...",
+            "Showing STAGE_NUMBER tags ...",
+            " Found 2 STAGE_NUMBER tags ...",
+            " Activating 2 STAGE_NUMBER tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre bb arch-a-score snh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding stage number markup ...",
-            " Found 2 stage number markup tags ...",
-            " Deactivating 2 stage number markup tags ...",
+            "Hiding STAGE_NUMBER tags ...",
+            " Found 2 STAGE_NUMBER tags ...",
+            " Deactivating 2 STAGE_NUMBER tags ...",
         ]:
             assert line in lines
 
@@ -54,17 +54,17 @@ def test_AbjadIDE_show_stage_numbers_02():
         abjad_ide("gre _ sns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing stage number markup ...",
-            " Found 2 stage number markup tags ...",
-            " Activating 2 stage number markup tags ...",
+            "Showing STAGE_NUMBER tags ...",
+            " Found 2 STAGE_NUMBER tags ...",
+            " Activating 2 STAGE_NUMBER tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre _ snh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding stage number markup ...",
-            " Found 2 stage number markup tags ...",
-            " Deactivating 2 stage number markup tags ...",
+            "Hiding STAGE_NUMBER tags ...",
+            " Found 2 STAGE_NUMBER tags ...",
+            " Deactivating 2 STAGE_NUMBER tags ...",
         ]:
             assert line in lines

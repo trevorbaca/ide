@@ -71,6 +71,23 @@ class AbjadIDE:
 
     known_paper_sizes = list(paper_size_to_paper_dimensions.keys())
 
+    known_tags = (
+        _tags.CLOCK_TIME,
+        _tags.FIGURE_NAME,
+        _tags.INVISIBLE_MUSIC_COMMAND,
+        _tags.INVISIBLE_MUSIC_COLORING,
+        _tags.LOCAL_MEASURE_NUMBER,
+        _tags.MATERIAL_ANNOTATION_SPANNER,
+        _tags.MEASURE_NUMBER,
+        _tags.MOCK_COLORING,
+        _tags.NOT_YET_PITCHED_COLORING,
+        _tags.PITCH_ANNOTATION_SPANNER,
+        _tags.RHYTHM_ANNOTATION_SPANNER,
+        _tags.SPACING,
+        _tags.SPACING_OVERRIDE,
+        _tags.STAGE_NUMBER,
+    )
+
     ### INITIALIZER ###
 
     def __init__(self, example: bool = None, test: bool = None) -> None:
@@ -3919,7 +3936,11 @@ class AbjadIDE:
         Hides annotation spanners.
         """
         assert directory.is_buildspace()
-        tags_ = _tags.annotation_spanner_tags()
+        tags_ = (
+            _tags.MATERIAL_ANNOTATION_SPANNER,
+            _tags.PITCH_ANNOTATION_SPANNER,
+            _tags.RHYTHM_ANNOTATION_SPANNER,
+        )
 
         def match(tags):
             return bool(set(tags) & set(tags_))
@@ -3938,7 +3959,7 @@ class AbjadIDE:
         Hides clock time.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_clock_time_markup(directory, undo=True))
+        self.run(Job.show_tag(directory, _tags.CLOCK_TIME, undo=True))
 
     @Command(
         "fnh",
@@ -3951,7 +3972,7 @@ class AbjadIDE:
         Hides figure names.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_figure_name_markup(directory, undo=True))
+        self.run(Job.show_tag(directory, _tags.FIGURE_NAME, undo=True))
 
     @Command(
         "imh",
@@ -3980,7 +4001,7 @@ class AbjadIDE:
         Hides local measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_local_measure_number_markup(directory, undo=True))
+        self.run(Job.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER, undo=True))
 
     @Command(
         "mnh",
@@ -3993,7 +4014,7 @@ class AbjadIDE:
         Hides measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_measure_number_markup(directory, undo=True))
+        self.run(Job.show_tag(directory, _tags.MEASURE_NUMBER, undo=True))
 
     @Command(
         "mmh",
@@ -4060,7 +4081,16 @@ class AbjadIDE:
         Hides spacing.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_spacing_markup(directory, undo=True))
+        tags_ = (
+            _tags.SPACING,
+            _tags.SPACING_OVERRIDE,
+        )
+
+        def match(tags):
+            return bool(set(tags) & set(tags_))
+
+        name = "spacing"
+        self.run(Job.show_tag(directory, name, match=match, undo=True))
 
     @Command(
         "snh",
@@ -4073,7 +4103,7 @@ class AbjadIDE:
         Hides stage numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_stage_number_markup(directory, undo=True))
+        self.run(Job.show_tag(directory, _tags.STAGE_NUMBER, undo=True))
 
     @Command(
         "th",
@@ -4086,6 +4116,7 @@ class AbjadIDE:
         Hides arbitrary (user-specified) tag.
         """
         assert directory.is_buildspace()
+        # HERE
         tag_ = self.io.get("tag")
         if self.is_navigation(tag_):
             return
@@ -4812,7 +4843,11 @@ class AbjadIDE:
         Shows annotation spanners.
         """
         assert directory.is_buildspace()
-        tags_ = _tags.annotation_spanner_tags()
+        tags_ = (
+            _tags.MATERIAL_ANNOTATION_SPANNER,
+            _tags.PITCH_ANNOTATION_SPANNER,
+            _tags.RHYTHM_ANNOTATION_SPANNER,
+        )
 
         def match(tags):
             return bool(set(tags) & set(tags_))
@@ -4851,7 +4886,7 @@ class AbjadIDE:
         Shows clock time.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_clock_time_markup(directory))
+        self.run(Job.show_tag(directory, _tags.CLOCK_TIME))
 
     @Command(
         "fns",
@@ -4864,7 +4899,7 @@ class AbjadIDE:
         Shows figure names.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_figure_name_markup(directory))
+        self.run(Job.show_tag(directory, _tags.FIGURE_NAME))
 
     @Command(
         "?",
@@ -4907,7 +4942,7 @@ class AbjadIDE:
         Shows local measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_local_measure_number_markup(directory))
+        self.run(Job.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER))
 
     @Command(
         "mns",
@@ -4920,7 +4955,7 @@ class AbjadIDE:
         Shows measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_measure_number_markup(directory))
+        self.run(Job.show_tag(directory, _tags.MEASURE_NUMBER))
 
     @Command(
         "mms",
@@ -4987,7 +5022,16 @@ class AbjadIDE:
         Shows spacing.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_spacing_markup(directory))
+        tags_ = (
+            _tags.SPACING,
+            _tags.SPACING_OVERRIDE,
+        )
+
+        def match(tags):
+            return bool(set(tags) & set(tags_))
+
+        name = "spacing"
+        self.run(Job.show_tag(directory, name, match=match))
 
     @Command(
         "sns",
@@ -5000,7 +5044,7 @@ class AbjadIDE:
         Shows stage numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_stage_number_markup(directory))
+        self.run(Job.show_tag(directory, _tags.STAGE_NUMBER))
 
     @Command(
         "ts",

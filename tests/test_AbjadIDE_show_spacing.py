@@ -20,8 +20,8 @@ def test_AbjadIDE_show_spacing_01():
         abjad_ide("gre bb arch-a-score sps q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing spacing markup ...",
-            " Found no spacing markup tags ...",
+            "Showing spacing tags ...",
+            " Found no spacing tags ...",
         ]:
             assert line in lines
 
@@ -41,17 +41,17 @@ def test_AbjadIDE_show_spacing_02():
         abjad_ide("gre _ sps q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing spacing markup ...",
-            " Found 2 spacing markup tags ...",
-            " Activating 2 spacing markup tags ...",
+            "Showing spacing tags ...",
+            " Found 2 spacing tags ...",
+            " Activating 2 spacing tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre _ sph q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding spacing markup ...",
-            " Found 2 spacing markup tags ...",
-            " Deactivating 2 spacing markup tags ...",
+            "Hiding spacing tags ...",
+            " Found 2 spacing tags ...",
+            " Deactivating 2 spacing tags ...",
         ]:
             assert line in lines

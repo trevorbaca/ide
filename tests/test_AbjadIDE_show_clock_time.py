@@ -23,18 +23,18 @@ def test_AbjadIDE_show_clock_time_01():
         abjad_ide("gre bb arch-a-score cts q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing clock time markup ...",
-            " Found 2 clock time markup tags ...",
-            " Activating 2 clock time markup tags ...",
+            "Showing CLOCK_TIME tags ...",
+            " Found 2 CLOCK_TIME tags ...",
+            " Activating 2 CLOCK_TIME tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre bb arch-a-score cth q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding clock time markup ...",
-            " Found 2 clock time markup tags ...",
-            " Deactivating 2 clock time markup tags ...",
+            "Hiding CLOCK_TIME tags ...",
+            " Found 2 CLOCK_TIME tags ...",
+            " Deactivating 2 CLOCK_TIME tags ...",
         ]:
             assert line in lines
 
@@ -54,17 +54,17 @@ def test_AbjadIDE_show_clock_time_02():
         abjad_ide("gre _ cts q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing clock time markup ...",
-            " Found 2 clock time markup tags ...",
-            " Activating 2 clock time markup tags ...",
+            "Showing CLOCK_TIME tags ...",
+            " Found 2 CLOCK_TIME tags ...",
+            " Activating 2 CLOCK_TIME tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre _ cth q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding clock time markup ...",
-            " Found 2 clock time markup tags ...",
-            " Deactivating 2 clock time markup tags ...",
+            "Hiding CLOCK_TIME tags ...",
+            " Found 2 CLOCK_TIME tags ...",
+            " Deactivating 2 CLOCK_TIME tags ...",
         ]:
             assert line in lines

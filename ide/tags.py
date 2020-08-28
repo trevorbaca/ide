@@ -251,26 +251,6 @@ ONLY_SCORE = abjad.Tag("+SCORE")
 ONLY_SEGMENT = abjad.Tag("+SEGMENT")
 
 
-def annotation_spanner_tags() -> typing.List[abjad.Tag]:
-    """
-    Gets annotation spanner tags.
-
-    ..  container:: example
-
-        >>> for tag in ide.tags.annotation_spanner_tags():
-        ...     tag
-        Tag('MATERIAL_ANNOTATION_SPANNER')
-        Tag('PITCH_ANNOTATION_SPANNER')
-        Tag('RHYTHM_ANNOTATION_SPANNER')
-
-    """
-    return [
-        MATERIAL_ANNOTATION_SPANNER,
-        PITCH_ANNOTATION_SPANNER,
-        RHYTHM_ANNOTATION_SPANNER,
-    ]
-
-
 def clef_color_tags(path=None) -> typing.List[abjad.Tag]:
     """
     Gets clef color tags.

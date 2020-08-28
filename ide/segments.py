@@ -398,22 +398,6 @@ class Job:
             )
 
     @staticmethod
-    def color_stage_number_markup(path, undo=False) -> "Job":
-        """
-        Colors stage number markup.
-        """
-        name = "stage number markup"
-
-        def match(tags) -> bool:
-            tags_ = [_tags.STAGE_NUMBER]
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
-
-    @staticmethod
     def color_time_signatures(path, undo=False) -> "Job":
         """
         Colors time signatures.
@@ -678,70 +662,6 @@ class Job:
         )
 
     @staticmethod
-    def show_clock_time_markup(path, undo=False) -> "Job":
-        """
-        Makes clock time markup job.
-        """
-        name = "clock time markup"
-
-        def match(tags) -> bool:
-            tags_ = [_tags.CLOCK_TIME]
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
-
-    @staticmethod
-    def show_figure_name_markup(path, undo=False) -> "Job":
-        """
-        Shows figure name markup.
-        """
-        name = "figure name markup"
-
-        def match(tags) -> bool:
-            tags_ = [_tags.FIGURE_NAME]
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
-
-    @staticmethod
-    def show_local_measure_number_markup(path, undo=False) -> "Job":
-        """
-        Shows local measure number markup.
-        """
-        name = "local measure number markup"
-
-        def match(tags) -> bool:
-            tags_ = [_tags.LOCAL_MEASURE_NUMBER]
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
-
-    @staticmethod
-    def show_measure_number_markup(path, undo=False) -> "Job":
-        """
-        Shows measure number markup.
-        """
-        name = "measure number markup"
-
-        def match(tags) -> bool:
-            tags_ = [_tags.MEASURE_NUMBER]
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
-
-    @staticmethod
     def show_music_annotations(path, undo=False) -> "Job":
         """
         Shows music annotations.
@@ -770,22 +690,6 @@ class Job:
                 path=path,
                 title=f"showing {name}s ...",
             )
-
-    @staticmethod
-    def show_spacing_markup(path, undo=False) -> "Job":
-        """
-        Shows spacing markup.
-        """
-        name = "spacing markup"
-
-        def match(tags) -> bool:
-            tags_ = _tags.spacing_markup_tags()
-            return bool(set(tags) & set(tags_))
-
-        if undo:
-            return Job(deactivate=(match, name), path=path, title=f"hiding {name} ...")
-        else:
-            return Job(activate=(match, name), path=path, title=f"showing {name} ...")
 
     @staticmethod
     def show_tag(

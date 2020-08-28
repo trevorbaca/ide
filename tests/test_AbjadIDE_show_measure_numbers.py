@@ -20,18 +20,18 @@ def test_AbjadIDE_show_measure_numbers_01():
         abjad_ide("gre bb arch-a-score mns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing measure number markup ...",
-            " Found 2 measure number markup tags ...",
-            " Activating 2 measure number markup tags ...",
+            "Showing MEASURE_NUMBER tags ...",
+            " Found 2 MEASURE_NUMBER tags ...",
+            " Activating 2 MEASURE_NUMBER tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre bb arch-a-score mnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding measure number markup ...",
-            " Found 2 measure number markup tags ...",
-            " Deactivating 2 measure number markup tags ...",
+            "Hiding MEASURE_NUMBER tags ...",
+            " Found 2 MEASURE_NUMBER tags ...",
+            " Deactivating 2 MEASURE_NUMBER tags ...",
         ]:
             assert line in lines
 
@@ -51,17 +51,17 @@ def test_AbjadIDE_show_measure_numbers_02():
         abjad_ide("gre _ mns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing measure number markup ...",
-            " Found 2 measure number markup tags ...",
-            " Activating 2 measure number markup tags ...",
+            "Showing MEASURE_NUMBER tags ...",
+            " Found 2 MEASURE_NUMBER tags ...",
+            " Activating 2 MEASURE_NUMBER tags ...",
         ]:
             assert line in lines
 
         abjad_ide("gre _ mnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding measure number markup ...",
-            " Found 2 measure number markup tags ...",
-            " Deactivating 2 measure number markup tags ...",
+            "Hiding MEASURE_NUMBER tags ...",
+            " Found 2 MEASURE_NUMBER tags ...",
+            " Deactivating 2 MEASURE_NUMBER tags ...",
         ]:
             assert line in lines

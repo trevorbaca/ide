@@ -23,18 +23,18 @@ def test_AbjadIDE_show_figure_names_01():
         abjad_ide("gre bb arch-a-score fns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing figure name markup ...",
-            " Found 1 figure name markup tag ...",
-            " Activating 1 figure name markup tag ...",
+            "Showing FIGURE_NAME tags ...",
+            " Found 1 FIGURE_NAME tag ...",
+            " Activating 1 FIGURE_NAME tag ...",
         ]:
             assert line in lines
 
         abjad_ide("gre bb arch-a-score fnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding figure name markup ...",
-            " Found 1 figure name markup tag ...",
-            " Deactivating 1 figure name markup tag ...",
+            "Hiding FIGURE_NAME tags ...",
+            " Found 1 FIGURE_NAME tag ...",
+            " Deactivating 1 FIGURE_NAME tag ...",
         ]:
             assert line in lines
 
@@ -54,17 +54,17 @@ def test_AbjadIDE_show_figure_names_02():
         abjad_ide("gre _ fnh q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Hiding figure name markup ...",
-            " Found 1 figure name markup tag ...",
-            " Deactivating 1 figure name markup tag ...",
+            "Hiding FIGURE_NAME tags ...",
+            " Found 1 FIGURE_NAME tag ...",
+            " Deactivating 1 FIGURE_NAME tag ...",
         ]:
             assert line in lines
 
         abjad_ide("gre _ fns q")
         lines = abjad_ide.io.transcript.lines
         for line in [
-            "Showing figure name markup ...",
-            " Found 1 figure name markup tag ...",
-            " Activating 1 figure name markup tag ...",
+            "Showing FIGURE_NAME tags ...",
+            " Found 1 FIGURE_NAME tag ...",
+            " Activating 1 FIGURE_NAME tag ...",
         ]:
             assert line in lines
