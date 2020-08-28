@@ -112,72 +112,6 @@ class AbjadIDE:
 
     ### PRIVATE METHODS ###
 
-    #    def __make_score_package(
-    #        self,
-    #        score_package_path,
-    #        *,
-    #        composer_email=None,
-    #        composer_full_name=None,
-    #        composer_last_name=None,
-    #        composer_github_username=None,
-    #        score_title=None,
-    #        year=None,
-    #    ):
-    #        score_package_name = os.path.basename(score_package_path)
-    #        source_path = os.path.join(self.configuration.boilerplate_directory, "score")
-    #        target_path = score_package_path
-    #        if not os.path.exists(target_path):
-    #            shutil.copytree(source_path, target_path)
-    #        else:
-    #            for subentry in os.listdir(source_path):
-    #                subentry_source = os.path.join(source_path, subentry)
-    #                subentry_target = os.path.join(target_path, subentry)
-    #                if os.path.isfile(subentry_source):
-    #                    shutil.copy(subentry_source, subentry_target)
-    #                elif os.path.isdir(subentry_source):
-    #                    shutil.copytree(subentry_source, subentry_target)
-    #                else:
-    #                    raise ValueError(subentry_source)
-    #        old_contents_directory = os.path.join(target_path, "score")
-    #        new_contents_directory = os.path.join(target_path, score_package_name)
-    #        shutil.move(old_contents_directory, new_contents_directory)
-    #        suffixes = (".py", ".tex", ".md", ".rst", ".ly", ".ily")
-    #        for root, directory_name, file_names in os.walk(target_path):
-    #            for file_name in file_names:
-    #                if not file_name.endswith(suffixes):
-    #                    continue
-    #                file_ = os.path.join(root, file_name)
-    #                with open(file_, "r") as file_pointer:
-    #                    template = file_pointer.read()
-    #                try:
-    #                    template = template.format(
-    #                        composer_email=composer_email,
-    #                        composer_full_name=composer_full_name,
-    #                        composer_github_username=composer_github_username,
-    #                        composer_last_name=composer_last_name,
-    #                        score_package_name=score_package_name,
-    #                        score_title=score_title,
-    #                        year=year,
-    #                    )
-    #                except (IndexError, KeyError):
-    #                    lines = template.splitlines()
-    #                    for i, line in enumerate(lines):
-    #                        try:
-    #                            lines[i] = line.format(
-    #                                composer_email=composer_email,
-    #                                composer_full_name=composer_full_name,
-    #                                composer_github_username=composer_github_username,
-    #                                composer_last_name=composer_last_name,
-    #                                score_package_name=score_package_name,
-    #                                score_title=score_title,
-    #                                year=year,
-    #                            )
-    #                        except (KeyError, IndexError, ValueError):
-    #                            pass
-    #                    template = "\n".join(lines)
-    #                with open(file_, "w") as file_pointer:
-    #                    file_pointer.write(template)
-
     def _cache_commands(self):
         commands = abjad.OrderedDict()
         for name in dir(self):
@@ -1103,30 +1037,6 @@ class AbjadIDE:
                 container_to_part_assignment[segment.name] = value
         return container_to_part_assignment
 
-    #    def _make_file(self, directory):
-    #        name = self.io.get("file name")
-    #        if self.is_navigation(name):
-    #            return
-    #        if directory.is_score_package_path():
-    #            predicate = directory.get_name_predicate()
-    #            if predicate and not predicate(abjad.String(name)):
-    #                self.io.display(f"invalid file name {name!r} ...")
-    #                return
-    #        target = directory / name
-    #        if target.exists():
-    #            self.io.display(f"existing {target.trim()} ...")
-    #            return
-    #        else:
-    #            self.io.display(f"writing {target.trim()} ...")
-    #            response = self.io.get("ok?")
-    #            if self.is_navigation(response):
-    #                return
-    #            if response != "y":
-    #                return
-    #        if not target.parent.exists():
-    #            target.parent.mkdir()
-    #        target.write_text("")
-
     def _make_layout_ly(self, path):
         assert path.suffix == ".py"
         maker = "__make_layout_ly__.py"
@@ -1143,30 +1053,6 @@ class AbjadIDE:
         stdout_lines, stderr_lines, exit_code = result
         if exit_code:
             self.io.display(stderr_lines, raw=True)
-
-    #    def _make_package(self, directory):
-    #        asset_type = directory.get_asset_type()
-    #        name = self.io.get(f"enter {asset_type} name")
-    #        if self.is_navigation(name):
-    #            return
-    #        path = directory / name
-    #        if path.exists():
-    #            self.io.display(f"existing {path.trim()} ...")
-    #            return
-    #        self.io.display(f"making {path.trim()} ...")
-    #        path.mkdir()
-    #        target = path / "__init__.py"
-    #        self.io.display(f"writing {target.trim()} ...")
-    #        target.write_text("")
-    #        if path.is_segment():
-    #            target = path / "__metadata__.py"
-    #            self.io.display(f"writing {target.trim()} ...")
-    #            text = "import abjad\n\n\nmetadata = abjad.OrderedDict()"
-    #            target.write_text(text)
-    #        target = path / "definition.py"
-    #        self.io.display(f"writing {target.trim()} ...")
-    #        target.write_text("")
-    #        self._copy_boilerplate(path, "segment_layout.py", target_name="layout.py")
 
     def _make_parts_directory(self, directory):
         assert directory.is_builds()
@@ -1356,49 +1242,6 @@ class AbjadIDE:
         self.generate_score_tex(build)
         self.io.display("")
         self.generate_stylesheet_ily(build)
-
-    #    def _make_score_package(self):
-    #        scores = self._get_scores_directory()
-    #        wrapper = scores._find_empty_wrapper()
-    #        if wrapper is not None:
-    #            self.io.display(f"found {wrapper.trim()}.")
-    #            response = self.io.get(f"populate {wrapper.trim()}?")
-    #            if self.is_navigation(response):
-    #                return
-    #            if response != "y":
-    #                return
-    #        if wrapper is None:
-    #            name = self.io.get("enter name")
-    #            if self.is_navigation(name):
-    #                return
-    #            wrapper = scores / name
-    #            if wrapper.exists():
-    #                self.io.display(f"existing {wrapper.trim()} ...")
-    #                return
-    #        title = self.io.get("enter title")
-    #        if self.is_navigation(title):
-    #            return
-    #        self.io.display(f"making {wrapper.trim()} ...")
-    #        year = datetime.date.today().year
-    #        self.__make_score_package(
-    #            score_package_path=str(wrapper),
-    #            composer_email=self.abjad_configuration.composer_email,
-    #            composer_full_name=self.abjad_configuration.composer_full_name,
-    #            composer_github_username=self.abjad_configuration.composer_github_username,
-    #            composer_last_name=self.abjad_configuration.composer_last_name,
-    #            score_title=title,
-    #            year=year,
-    #        )
-    #        for path in wrapper.builds.iterdir():
-    #            if path.name == ".gitignore":
-    #                continue
-    #            path.remove()
-    #        score = wrapper.contents
-    #        assert score.exists()
-    #        if not score.builds._assets.exists():
-    #            self._make__assets_directory(score.builds)
-    #        if not (score.builds / "__metadata__.py").is_file():
-    #            score.builds.write_metadata_py(abjad.OrderedDict())
 
     def _make_segment_clicktrack(self, directory, open_after=True):
         assert directory.is_segment(), repr(directory)
@@ -4646,13 +4489,6 @@ class AbjadIDE:
             self._make_score_build_directory(directory)
         elif type_ == "parts":
             self._make_parts_directory(directory)
-
-    #        elif directory.is_segments():
-    #            self._make_package(directory)
-    #        elif directory.is_scores():
-    #            self._make_score_package()
-    #        else:
-    #            self._make_file(directory)
 
     @Command(
         "bcpo",
