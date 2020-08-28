@@ -1782,17 +1782,9 @@ class AbjadIDE:
                 self.io.display(f"not a file {path.trim()} ...")
                 return
         string = " ".join([str(_) for _ in paths])
-        if force_vim or all(
-            _.suffix in self.configuration.editor_suffixes for _ in paths
-        ):
-            mode = "e"
-        elif all(_.suffix in (".mid", ".midi", ".pdf") for _ in paths):
+        mode = "e"
+        if all(_.suffix in (".mid", ".midi", ".pdf") for _ in paths):
             mode = "o"
-        else:
-            mode = self.io.get("open or edit (o|e)?")
-            if self.is_navigation(mode):
-                return
-            mode = mode.lower()
         if mode == "e":
             command = f"vim {string}"
             if not silent:
@@ -1807,7 +1799,7 @@ class AbjadIDE:
                     self.io.display(f"opening {path.trim()} ...")
         else:
             return
-        if 20 <= len(paths):
+        if 100 <= len(paths):
             response = self.io.get(f"{len(paths)} files ok?")
             if self.is_navigation(response):
                 return response
@@ -1870,6 +1862,13 @@ class AbjadIDE:
         words = [_.lower() for _ in words]
         part_subtitle = " ".join(words)
         return part_subtitle
+
+    def _purge_clipboard(self):
+        clipboard = []
+        for source in self.clipboard:
+            if source.exists():
+                clipboard.append(source)
+        self.clipboard[:] = clipboard
 
     @staticmethod
     def _replace_in_file(file_path, old, new, whole_words=False):
@@ -2781,110 +2780,8 @@ class AbjadIDE:
         assert isinstance(paths, list)
         self.io.display("copying to clipboard ...")
         for path in paths:
-            self.io.display(path.trim(), raw=True)
+            self.io.display(f"    {path.trim()}", raw=True)
             self.clipboard.append(path)
-
-    @Command(
-        "cbx",
-        description="clipboard - cut",
-        external_directories=True,
-        menu_section="clipboard",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def cut_to_clipboard(self, directory: pathx.Path) -> None:
-        """
-        Cuts to clipboard.
-        """
-        paths = self._select_paths(directory, infinitive="for clipboard")
-        if self.is_navigation(paths):
-            return
-        assert isinstance(paths, list)
-        self.io.display("cutting to clipboard ...")
-        for path in paths:
-            self.io.display(path.trim(), raw=True)
-            self.clipboard.append(path)
-            path.remove()
-
-    @Command(
-        "dup",
-        description="path - duplicate",
-        external_directories=True,
-        menu_section="path",
-        score_package_path_blacklist=("contents", "segment"),
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def duplicate(self, directory: pathx.Path) -> None:
-        """
-        Duplicates asset.
-        """
-        paths = self._select_paths(directory, infinitive="to duplicate")
-        if self.is_navigation(paths):
-            return
-        assert isinstance(paths, list)
-        if len(paths) == 1:
-            source = paths[0]
-            self.io.display(f"duplicating {source.trim()} ...")
-        else:
-            self.io.display("duplicating ...")
-            for path in paths:
-                self.io.display(f"    {path.trim()}")
-            response = self.io.get("ok?")
-            if self.is_navigation(response):
-                return
-            if response != "y":
-                return
-        for source in paths:
-            title = None
-            name_metadatum = None
-            name = self.io.get("enter new name")
-            if self.is_navigation(name):
-                continue
-            if source.is_wrapper():
-                title = self.io.get("enter title")
-                if self.is_navigation(title):
-                    continue
-            target = source.with_name(name)
-            if source == target:
-                continue
-            if source.is_segment() and source.get_metadatum("name"):
-                name_metadatum = self.io.get("name metadatum")
-            self.io.display(f"writing {target.trim()} ...")
-            response = self.io.get("ok?")
-            if self.is_navigation(response):
-                return
-            if response != "y":
-                continue
-            if source.is_file():
-                shutil.copyfile(str(source), str(target))
-            elif source.is_dir():
-                shutil.copytree(str(source), str(target))
-            else:
-                raise ValueError(source)
-            if target.is_segment():
-                if name_metadatum:
-                    target.add_metadatum("name", name_metadatum)
-                else:
-                    target.remove_metadatum("name")
-                lines = self._replace_in_tree(
-                    target, source.name, target.name, complete_words=True
-                )
-                self.io.display(lines)
-            elif target.is_wrapper():
-                shutil.move(str(target.wrapper / source.name), str(target.contents))
-                lines = self._replace_in_tree(
-                    target, source.name, target.name, complete_words=True
-                )
-                self.io.display(lines)
-                if title is not None:
-                    target.contents.add_metadatum("title", title)
-                    source_title = source.contents.get_metadatum("title")
-                    if source_title is not None:
-                        lines = self._replace_in_tree(
-                            target, source_title, title, complete_words=True
-                        )
-                        self.io.display(lines)
 
     @Command(
         "al",
@@ -4909,33 +4806,27 @@ class AbjadIDE:
         """
         Pastes from clipboard.
         """
+        self._purge_clipboard()
         if not bool(self.clipboard):
             self.io.display("showing empty clipboard ...")
             return
         self.io.display("pasting from clipboard ...")
         for i, source in enumerate(self.clipboard[:]):
-            self.io.display(f"    {source.trim()} ...")
+            if not source.exists():
+                continue
             target = directory / source.name
+            if source == target:
+                self.io.display(f"    Skipping {source.trim()} ...")
+                continue
+            self.io.display(f"    {source.trim()} ...")
             self.io.display(f"    {target.trim()} ...")
-            if target.exists():
-                self.io.display(["", f"existing {target.trim()} ..."])
-                name = self.io.get("enter new name")
-                if self.is_navigation(name):
-                    return
-                if not bool(name):
-                    continue
-                target = target.with_name(name)
-                if target.exists():
-                    self.io.display(f"existing {target.trim()} ...")
-                    return
-                self.io.display(f"    {source.trim()} ...")
-                self.io.display(f"    {target.trim()} ...")
             if source.is_dir():
                 shutil.copytree(str(source), str(target))
             else:
                 shutil.copy(str(source), str(target))
             if i < len(self.clipboard) - 1:
                 self.io.display("")
+        self.clipboard[:] = []
 
     @Command(
         "lpp",
@@ -5105,6 +4996,7 @@ class AbjadIDE:
         """
         Shows clipboard.
         """
+        self._purge_clipboard()
         if not bool(self.clipboard):
             self.io.display("showing empty clipboard ...")
             return

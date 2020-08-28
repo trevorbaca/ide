@@ -1828,10 +1828,11 @@ class Path(pathlib.PosixPath):
 
         ..  container:: example
 
+            >>> ide.Path._mock_scores = "/path/to/scores"
             >>> path = ide.Path("/path/to/scores/my_score/my_score")
 
             >>> path.contents.trim()
-            '/path/to/scores/my_score/my_score'
+            'my_score'
 
             >>> path.segments.trim()
             'my_score/segments'
@@ -1841,11 +1842,9 @@ class Path(pathlib.PosixPath):
             'my_score/segments/segment_01'
 
         """
-        if self.scores is None or self.is_wrapper() or self.is_contents():
-            home_directory = type(self)(configuration.home_directory)
-            if str(self).startswith(str(home_directory)):
-                return "../" + str(self.relative_to(home_directory))
+        if self.is_external():
             return str(self)
+        assert self.scores is not None, repr(self)
         count = len(self.scores.parts) + 1
         parts = self.parts
         parts = parts[count:]
