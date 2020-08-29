@@ -1812,6 +1812,91 @@ class AbjadIDE:
             command = f'py.test -xrf {string}; say "done"'
             abjad.iox.spawn_subprocess(command)
 
+    def _select_annotation_jobs(self, directory, undo=False):
+        def _annotation_spanners(tags):
+            tags_ = (
+                _tags.MATERIAL_ANNOTATION_SPANNER,
+                _tags.PITCH_ANNOTATION_SPANNER,
+                _tags.RHYTHM_ANNOTATION_SPANNER,
+            )
+            return bool(set(tags) & set(tags_))
+
+        annotation_spanners = _jobs.show_tag(
+            directory,
+            "annotation spanners",
+            match=_annotation_spanners,
+            undo=undo,
+        )
+
+        def _spacing(tags):
+            tags_ = (
+                _tags.SPACING,
+                _tags.SPACING_OVERRIDE,
+            )
+            return bool(set(tags) & set(tags_))
+
+        spacing = _jobs.show_tag(directory, "spacing", match=_spacing, undo=undo)
+
+        items = [
+            ("annotation spanners", annotation_spanners),
+            ("clock time", _jobs.show_tag(directory, _tags.CLOCK_TIME, undo=undo)),
+            ("figure name", _jobs.show_tag(directory, _tags.FIGURE_NAME, undo=undo)),
+            (
+                "invisible music",
+                [
+                    _jobs.show_tag(
+                        directory, _tags.INVISIBLE_MUSIC_COMMAND, undo=not undo
+                    ),
+                    _jobs.show_tag(
+                        directory, _tags.INVISIBLE_MUSIC_COLORING, undo=undo
+                    ),
+                ],
+            ),
+            (
+                "local measure numbers",
+                _jobs.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER, undo=undo),
+            ),
+            (
+                "measure numbers",
+                _jobs.show_tag(directory, _tags.MEASURE_NUMBER, undo=undo),
+            ),
+            (
+                "mock coloring",
+                _jobs.show_tag(directory, _tags.MOCK_COLORING, undo=undo),
+            ),
+            ("music annotations", _jobs.show_music_annotations(directory, undo=undo)),
+            (
+                "not yet pitched",
+                _jobs.show_tag(directory, _tags.NOT_YET_PITCHED_COLORING, undo=undo),
+            ),
+            (
+                "rhythm annotation spanners",
+                _jobs.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER, undo=undo),
+            ),
+            ("spacing", spacing),
+            ("stage number", _jobs.show_tag(directory, _tags.STAGE_NUMBER, undo=undo)),
+        ]
+
+        header = "available annotation jobs"
+        prompt = "select annotation job"
+        selector = self._make_selector(
+            aliases=None,
+            header=header,
+            items=items,
+            navigations=self.navigations,
+            prompt=prompt,
+        )
+        response = selector(redraw=True)
+        if self.is_navigation(response.string):
+            return response.string
+        if response.payload is None:
+            if bool(response.string):
+                self.io.display(f"matches no annotation job {response.string!r} ...")
+            return
+        assert isinstance(response.payload, list), response
+        result = response.payload
+        return result
+
     def _select_color_jobs(self):
         items = [
             ("clefs", _jobs.color_clefs),
@@ -3824,184 +3909,26 @@ class AbjadIDE:
         )
 
     @Command(
-        "ash",
-        description="annotation spanners - hide",
+        "hide",
+        description="hide",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
-    def hide_annotation_spanners(self, directory: pathx.Path) -> None:
+    def hide(self, directory: pathx.Path) -> None:
         """
-        Hides annotation spanners.
-        """
-        assert directory.is_buildspace()
-        tags_ = (
-            _tags.MATERIAL_ANNOTATION_SPANNER,
-            _tags.PITCH_ANNOTATION_SPANNER,
-            _tags.RHYTHM_ANNOTATION_SPANNER,
-        )
-
-        def match(tags):
-            return bool(set(tags) & set(tags_))
-
-        name = "annotation spanners"
-        self.run(_jobs.show_tag(directory, name, match=match, undo=True))
-
-    @Command(
-        "cth",
-        description="clock time - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_clock_time(self, directory: pathx.Path) -> None:
-        """
-        Hides clock time.
+        Hides annotations.
         """
         assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.CLOCK_TIME, undo=True))
-
-    @Command(
-        "fnh",
-        description="figure names - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_figure_names(self, directory: pathx.Path) -> None:
-        """
-        Hides figure names.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.FIGURE_NAME, undo=True))
-
-    @Command(
-        "imh",
-        description="invisible music - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_invisible_music(self, directory: pathx.Path) -> None:
-        """
-        Hides invisible music.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.INVISIBLE_MUSIC_COMMAND
-        self.run(_jobs.show_tag(directory, tag))
-        tag = _tags.INVISIBLE_MUSIC_COLORING
-        self.run(_jobs.show_tag(directory, tag, undo=True))
-
-    @Command(
-        "lmnh",
-        description="local measure numbers - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_local_measure_numbers(self, directory: pathx.Path) -> None:
-        """
-        Hides local measure numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER, undo=True))
-
-    @Command(
-        "mnh",
-        description="measure numbers - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_measure_numbers(self, directory: pathx.Path) -> None:
-        """
-        Hides measure numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.MEASURE_NUMBER, undo=True))
-
-    @Command(
-        "mmh",
-        description="mock music - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_mock_music(self, directory: pathx.Path) -> None:
-        """
-        Hides mock music.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.MOCK_COLORING
-        self.run(_jobs.show_tag(directory, tag, undo=True))
-
-    @Command(
-        "mah",
-        description="music annotations - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_music_annotations(self, directory: pathx.Path) -> None:
-        """
-        Hides music annotations.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_music_annotations(directory, undo=True))
-
-    @Command(
-        "nyph",
-        description="not yet pitched - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_not_yet_pitched_music(self, directory: pathx.Path) -> None:
-        """
-        Hides not yet pitched.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.NOT_YET_PITCHED_COLORING
-        self.run(_jobs.show_tag(directory, tag, undo=True))
-
-    @Command(
-        "rash",
-        description="rhythm annotation spanners - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_rhythm_annotation_spanners(self, directory: pathx.Path) -> None:
-        """
-        Hides rhythm annotation spanners.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER, undo=True))
-
-    @Command(
-        "sph",
-        description="spacing - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_spacing(self, directory: pathx.Path) -> None:
-        """
-        Hides spacing.
-        """
-        assert directory.is_buildspace()
-        tags_ = (
-            _tags.SPACING,
-            _tags.SPACING_OVERRIDE,
-        )
-
-        def match(tags):
-            return bool(set(tags) & set(tags_))
-
-        name = "spacing"
-        self.run(_jobs.show_tag(directory, name, match=match, undo=True))
-
-    @Command(
-        "snh",
-        description="stage numbers - hide",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def hide_stage_numbers(self, directory: pathx.Path) -> None:
-        """
-        Hides stage numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.STAGE_NUMBER, undo=True))
+        jobs = self._select_annotation_jobs(directory, undo=True)
+        if self.is_navigation(jobs):
+            return
+        assert isinstance(jobs, list)
+        for item in jobs:
+            if isinstance(item, list):
+                for item_ in item:
+                    self.run(item_)
+            else:
+                self.run(item)
 
     @Command(
         "th",
@@ -4014,7 +3941,6 @@ class AbjadIDE:
         Hides arbitrary (user-specified) tag.
         """
         assert directory.is_buildspace()
-        # HERE
         tag_ = self.io.get("tag")
         if self.is_navigation(tag_):
             return
@@ -4731,27 +4657,26 @@ class AbjadIDE:
                 _replace_in_file(path, source.name, target.name, whole_words=True)
 
     @Command(
-        "ass",
-        description="annotation spanners - show",
+        "show",
+        description="show",
         menu_section="music annotations",
         score_package_paths=("buildspace",),
     )
-    def show_annotation_spanners(self, directory: pathx.Path) -> None:
+    def show(self, directory: pathx.Path) -> None:
         """
-        Shows annotation spanners.
+        Shows annotations.
         """
         assert directory.is_buildspace()
-        tags_ = (
-            _tags.MATERIAL_ANNOTATION_SPANNER,
-            _tags.PITCH_ANNOTATION_SPANNER,
-            _tags.RHYTHM_ANNOTATION_SPANNER,
-        )
-
-        def match(tags):
-            return bool(set(tags) & set(tags_))
-
-        name = "annotation spanners"
-        self.run(_jobs.show_tag(directory, name, match=match))
+        jobs = self._select_annotation_jobs(directory)
+        if self.is_navigation(jobs):
+            return
+        assert isinstance(jobs, list)
+        for item in jobs:
+            if isinstance(item, list):
+                for item_ in item:
+                    self.run(item_)
+            else:
+                self.run(item)
 
     @Command(
         "cbs",
@@ -4774,32 +4699,6 @@ class AbjadIDE:
             self.io.display(path.trim(), raw=True)
 
     @Command(
-        "cts",
-        description="clock time - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_clock_time(self, directory: pathx.Path) -> None:
-        """
-        Shows clock time.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.CLOCK_TIME))
-
-    @Command(
-        "fns",
-        description="figure names - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_figure_names(self, directory: pathx.Path) -> None:
-        """
-        Shows figure names.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.FIGURE_NAME))
-
-    @Command(
         "?",
         description="show - help",
         external_directories=True,
@@ -4812,137 +4711,6 @@ class AbjadIDE:
         Shows help.
         """
         pass
-
-    @Command(
-        "ims",
-        description="invisible music - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_invisible_music(self, directory: pathx.Path) -> None:
-        """
-        Shows invisible music.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.INVISIBLE_MUSIC_COMMAND
-        self.run(_jobs.show_tag(directory, tag, undo=True))
-        tag = _tags.INVISIBLE_MUSIC_COLORING
-        self.run(_jobs.show_tag(directory, tag))
-
-    @Command(
-        "lmns",
-        description="local measure numbers - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_local_measure_numbers(self, directory: pathx.Path) -> None:
-        """
-        Shows local measure numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER))
-
-    @Command(
-        "mns",
-        description="measure numbers - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_measure_numbers(self, directory: pathx.Path) -> None:
-        """
-        Shows measure numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.MEASURE_NUMBER))
-
-    @Command(
-        "mms",
-        description="mock music - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_mock_music(self, directory: pathx.Path) -> None:
-        """
-        Shows mock music.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.MOCK_COLORING
-        self.run(_jobs.show_tag(directory, tag))
-
-    @Command(
-        "mas",
-        description="music annotations - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_music_annotations(self, directory: pathx.Path) -> None:
-        """
-        Shows music annotations.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_music_annotations(directory))
-
-    @Command(
-        "nyps",
-        description="not yet pitched - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_not_yet_pitched(self, directory: pathx.Path) -> None:
-        """
-        Shows not yet pitched.
-        """
-        assert directory.is_buildspace()
-        tag = _tags.NOT_YET_PITCHED_COLORING
-        self.run(_jobs.show_tag(directory, tag))
-
-    @Command(
-        "rass",
-        description="rhythm annotation spanners - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_rhythm_annotation_spanners(self, directory: pathx.Path) -> None:
-        """
-        Shows rhythm annotation spanners.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER))
-
-    @Command(
-        "sps",
-        description="spacing - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_spacing(self, directory: pathx.Path) -> None:
-        """
-        Shows spacing.
-        """
-        assert directory.is_buildspace()
-        tags_ = (
-            _tags.SPACING,
-            _tags.SPACING_OVERRIDE,
-        )
-
-        def match(tags):
-            return bool(set(tags) & set(tags_))
-
-        name = "spacing"
-        self.run(_jobs.show_tag(directory, name, match=match))
-
-    @Command(
-        "sns",
-        description="stage numbers - show",
-        menu_section="music annotations",
-        score_package_paths=("buildspace",),
-    )
-    def show_stage_numbers(self, directory: pathx.Path) -> None:
-        """
-        Shows stage numbers.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.show_tag(directory, _tags.STAGE_NUMBER))
 
     @Command(
         "ts",
