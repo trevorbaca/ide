@@ -8,7 +8,7 @@ classes = abjad.list_all_classes(modules="ide")
 
 
 @pytest.mark.parametrize("object_", classes)
-def test_idetools___doc___01(object_):
+def test_ide_docstrings_01(object_):
     """
     All classes have a docstring. All class methods have a docstring.
     """
