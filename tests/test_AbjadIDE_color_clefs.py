@@ -17,7 +17,7 @@ def test_AbjadIDE_color_clefs_01():
         abjad_ide("gre bb arch-a-score ggc q")
         assert path.is_file()
 
-        abjad_ide("gre bb arch-a-score ccl q")
+        abjad_ide("gre bb arch-a-score color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -26,7 +26,7 @@ def test_AbjadIDE_color_clefs_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score cuc q")
+        abjad_ide("gre bb arch-a-score uncolor clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring clefs ...",
@@ -35,7 +35,7 @@ def test_AbjadIDE_color_clefs_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score ccl q")
+        abjad_ide("gre bb arch-a-score color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -57,7 +57,7 @@ def test_AbjadIDE_color_clefs_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre _ ccl q")
+        abjad_ide("gre _ color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_clefs_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ cuc q")
+        abjad_ide("gre _ uncolor clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring clefs ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_clefs_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ ccl q")
+        abjad_ide("gre _ color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",

@@ -189,9 +189,9 @@ class Menu:
             right_margin = int(remaining / 2)
             gutter_width = remaining - right_margin
         assert gutter_width + right_margin == remaining
-        left_lines = [self._left_justify(_, left_width) for _ in left_lines]
+        left_lines = [_left_justify(_, left_width) for _ in left_lines]
         right_lines = [
-            self._left_justify(_, right_width + right_margin) for _ in right_lines
+            _left_justify(_, right_width + right_margin) for _ in right_lines
         ]
         sequence = abjad.sequence([left_lines, right_lines])
         lines = []

@@ -1812,6 +1812,37 @@ class AbjadIDE:
             command = f'py.test -xrf {string}; say "done"'
             abjad.iox.spawn_subprocess(command)
 
+    def _select_color_jobs(self):
+        items = [
+            ("clefs", _jobs.color_clefs),
+            ("dynamics", _jobs.color_dynamics),
+            ("instruments", _jobs.color_instruments),
+            ("margin markup", _jobs.color_margin_markup),
+            ("metronome marks", _jobs.color_metronome_marks),
+            ("persistent indicators", _jobs.color_persistent_indicators),
+            ("staff lines", _jobs.color_staff_lines),
+            ("time signatures", _jobs.color_time_signatures),
+        ]
+        header = "available color jobs"
+        prompt = "select color job"
+        selector = self._make_selector(
+            aliases=None,
+            header=header,
+            items=items,
+            navigations=self.navigations,
+            prompt=prompt,
+        )
+        response = selector(redraw=True)
+        if self.is_navigation(response.string):
+            return response.string
+        if response.payload is None:
+            if bool(response.string):
+                self.io.display(f"matches no color job {response.string!r} ...")
+            return
+        assert isinstance(response.payload, list), response
+        result = response.payload
+        return result
+
     def _select_parts(self, directory, verb=""):
         part_manifest = _segments.get_part_manifest(directory)
         if not part_manifest:
@@ -2471,108 +2502,23 @@ class AbjadIDE:
         self.handle_build_tags(directory, indent=indent)
 
     @Command(
-        "ccl",
-        description="clefs - color",
+        "color",
+        description="color",
         menu_section="persistent indicators",
         score_package_paths=("buildspace",),
     )
-    def color_clefs(self, directory: pathx.Path) -> None:
-        """
-        Colors clefs.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_clefs(directory))
-
-    @Command(
-        "dcl",
-        description="dynamics - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_dynamics(self, directory: pathx.Path) -> None:
-        """
-        Colors dynamics.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_dynamics(directory))
-
-    @Command(
-        "icl",
-        description="instruments - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_instruments(self, directory: pathx.Path):
-        """
-        Colors instruments.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_instruments(directory))
-
-    @Command(
-        "mmcl",
-        description="margin markup - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_margin_markup(self, directory: pathx.Path) -> None:
-        """
-        Colors margin markup.
-        """
-        assert directory.is_score_package_path()
-        self.run(_jobs.color_margin_markup(directory))
-
-    @Command(
-        "tmcl",
-        description="metronome marks - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_metronome_marks(self, directory: pathx.Path) -> None:
-        """
-        Colors metronome marks.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_metronome_marks(directory))
-
-    @Command(
-        "picl",
-        description="persistent indicators - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_persistent_indicators(self, directory: pathx.Path) -> None:
+    def color(self, directory: pathx.Path) -> None:
         """
         Colors persistent indicators.
         """
         assert directory.is_buildspace()
-        self.run(_jobs.color_persistent_indicators(directory))
-
-    @Command(
-        "slcl",
-        description="staff lines - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_staff_lines(self, directory: pathx.Path) -> None:
-        """
-        Colors staff lines.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_staff_lines(directory))
-
-    @Command(
-        "tscl",
-        description="time signatures - color",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def color_time_signatures(self, directory: pathx.Path) -> None:
-        """
-        Colors time signatures.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_time_signatures(directory))
+        color_jobs = self._select_color_jobs()
+        if self.is_navigation(color_jobs):
+            return
+        assert isinstance(color_jobs, list)
+        for job in color_jobs:
+            job_ = job(directory)
+            self.run(job_)
 
     @Command(
         "cbc",
@@ -5016,109 +4962,23 @@ class AbjadIDE:
         self.run(_jobs.show_tag(directory, tag))
 
     @Command(
-        "cuc",
-        description="clefs - uncolor",
+        "uncolor",
+        description="uncolor",
         menu_section="persistent indicators",
         score_package_paths=("buildspace",),
     )
-    def uncolor_clefs(self, directory: pathx.Path) -> None:
-        """
-        Uncolors clefs.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_clefs(directory, undo=True))
-
-    @Command(
-        "duc",
-        description="dynamics - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_dynamics(self, directory: pathx.Path) -> None:
-        """
-        Uncolors dynamics.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_dynamics(directory, undo=True))
-
-    @Command(
-        "iuc",
-        description="instruments - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_instruments(self, directory: pathx.Path) -> None:
-        """
-        Uncolors instruments.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_instruments(directory, undo=True))
-
-    @Command(
-        "mmuc",
-        description="margin markup - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_margin_markup(self, directory: pathx.Path) -> None:
-        """
-        Uncolors margin markup.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_margin_markup(directory, undo=True))
-
-    @Command(
-        "tmuc",
-        description="metronome marks - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_metronome_marks(self, directory: pathx.Path) -> None:
-        """
-        Uncolors metornome marks.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_metronome_marks(directory, undo=True))
-
-    @Command(
-        "piuc",
-        description="persistent indicators - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_persistent_indicators(self, directory: pathx.Path) -> None:
+    def uncolor(self, directory: pathx.Path) -> None:
         """
         Uncolors persistent indicators.
         """
         assert directory.is_buildspace()
-        job = _jobs.color_persistent_indicators(directory, undo=True)
-        self.run(job)
-
-    @Command(
-        "sluc",
-        description="staff lines - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_staff_lines(self, directory: pathx.Path) -> None:
-        """
-        Uncolors staff lines.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_staff_lines(directory, undo=True))
-
-    @Command(
-        "tsuc",
-        description="time signatures - uncolor",
-        menu_section="persistent indicators",
-        score_package_paths=("buildspace",),
-    )
-    def uncolor_time_signatures(self, directory: pathx.Path) -> None:
-        """
-        Uncolors time signatures.
-        """
-        assert directory.is_buildspace()
-        self.run(_jobs.color_time_signatures(directory, undo=True))
+        color_jobs = self._select_color_jobs()
+        if self.is_navigation(color_jobs):
+            return
+        assert isinstance(color_jobs, list)
+        for job in color_jobs:
+            job_ = job(directory, undo=True)
+            self.run(job_)
 
     @Command(
         "mlx",

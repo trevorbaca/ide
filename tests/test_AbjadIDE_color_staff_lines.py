@@ -17,7 +17,7 @@ def test_AbjadIDE_color_staff_lines_01():
         abjad_ide("gre bb arch-a-score ggc q")
         assert path.is_file()
 
-        abjad_ide("gre bb arch-a-score slcl q")
+        abjad_ide("gre bb arch-a-score color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",
@@ -26,7 +26,7 @@ def test_AbjadIDE_color_staff_lines_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score sluc q")
+        abjad_ide("gre bb arch-a-score uncolor staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring staff lines ...",
@@ -35,7 +35,7 @@ def test_AbjadIDE_color_staff_lines_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score slcl q")
+        abjad_ide("gre bb arch-a-score color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",
@@ -57,7 +57,7 @@ def test_AbjadIDE_color_staff_lines_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre _ slcl q")
+        abjad_ide("gre _ color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",
@@ -66,7 +66,7 @@ def test_AbjadIDE_color_staff_lines_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ sluc q")
+        abjad_ide("gre _ uncolor staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring staff lines ...",
@@ -75,7 +75,7 @@ def test_AbjadIDE_color_staff_lines_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ slcl q")
+        abjad_ide("gre _ color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",

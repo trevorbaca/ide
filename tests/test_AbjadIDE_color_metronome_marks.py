@@ -17,7 +17,7 @@ def test_AbjadIDE_color_metronome_marks_01():
         abjad_ide("gre bb arch-a-score ggc q")
         assert path.is_file()
 
-        abjad_ide("gre bb arch-a-score tmcl q")
+        abjad_ide("gre bb arch-a-score color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
@@ -28,7 +28,7 @@ def test_AbjadIDE_color_metronome_marks_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score tmuc q")
+        abjad_ide("gre bb arch-a-score uncolor metro q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring metronome marks ...",
@@ -39,7 +39,7 @@ def test_AbjadIDE_color_metronome_marks_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre bb arch-a-score tmcl q")
+        abjad_ide("gre bb arch-a-score color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
@@ -63,7 +63,7 @@ def test_AbjadIDE_color_metronome_marks_02():
         )
         assert path.is_file()
 
-        abjad_ide("gre _ tmcl q")
+        abjad_ide("gre _ color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
@@ -74,7 +74,7 @@ def test_AbjadIDE_color_metronome_marks_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ tmuc q")
+        abjad_ide("gre _ uncolor metro q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring metronome marks ...",
@@ -85,7 +85,7 @@ def test_AbjadIDE_color_metronome_marks_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre _ tmcl q")
+        abjad_ide("gre _ color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
