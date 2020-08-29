@@ -126,10 +126,10 @@ if __name__ == "__main__":
         text = abjad.LilyPondFormatManager.left_shift_tags(text, realign=79)
         illustration_ly.write_text(text)
         for job in [
-            ide.Job.handle_edition_tags(illustration_ly),
-            ide.Job.handle_fermata_bar_lines(segment_directory),
-            ide.Job.handle_shifted_clefs(segment_directory),
-            ide.Job.handle_mol_tags(segment_directory),
+            ide.jobs.handle_edition_tags(illustration_ly),
+            ide.jobs.handle_fermata_bar_lines(segment_directory),
+            ide.jobs.handle_shifted_clefs(segment_directory),
+            ide.jobs.handle_mol_tags(segment_directory),
         ]:
             for message in job():
                 print(" " + message)

@@ -12,6 +12,7 @@ import typing
 
 import abjad
 
+from . import jobs as _jobs
 from . import pathx
 from . import segments as _segments
 from . import tags as _tags
@@ -22,6 +23,256 @@ from .Menu import Menu
 from .MenuSection import MenuSection
 from .Response import Response
 from .segments import Job, Part
+
+
+def _directory_to_header(directory):
+    if directory.is_scores():
+        return "Abjad IDE : scores"
+    if directory.is_external():
+        header = f"Abjad IDE : {directory}"
+        if not directory.list_paths():
+            header += " (empty)"
+        return header
+    parts = [directory.contents.get_title()]
+    if directory.is_wrapper():
+        parts.append("wrapper")
+    elif not directory.is_contents():
+        parts.extend(directory.relative_to(directory.contents).parts[:-1])
+        parts.append(directory.get_identifier())
+    if parts and not directory.list_paths():
+        parts[-1] += " (empty)"
+    return " : ".join(parts)
+
+
+def _filter_files(files, strings, pattern):
+    if isinstance(pattern, str):
+        indices = abjad.String.match_strings(strings, pattern)
+        files = abjad.Sequence(files).retain(indices)
+    return files
+
+
+def _find_editable_files(path, force=False):
+    files, strings = [], []
+    if force or not path.is_score_package_path():
+        for path_ in sorted(path.glob("**/*")):
+            if not path_.is_file():
+                continue
+            files.append(path_)
+            strings.append(path_.name)
+    else:
+        for path_ in path.segments.list_paths():
+            files.append(path_ / "definition.py")
+            strings.append(path_.get_identifier())
+        for path_ in path.stylesheets.list_paths():
+            files.append(path_)
+            strings.append(path_.name)
+        for path_ in path.etc.list_paths():
+            files.append(path_)
+            strings.append(path_.name)
+    return files, strings
+
+
+def _get_added_asset_paths(directory):
+    paths = []
+    git_status_lines = _get_git_status_lines(directory)
+    for line in git_status_lines:
+        line = str(line)
+        if line.startswith("A"):
+            path = line.strip("A")
+            path = path.strip()
+            root = directory.wrapper
+            path = root / path
+            paths.append(path)
+    return paths
+
+
+def _get_git_status_lines(directory):
+    with abjad.TemporaryDirectoryChange(directory=directory.wrapper):
+        command = f"git status --porcelain {directory}"
+        return abjad.iox.run_command(command)
+
+
+def _get_repository_root(directory):
+    if not directory.exists():
+        return
+    if directory.wrapper is None:
+        path = directory
+    else:
+        path = directory.wrapper
+    while str(path) != str(path.parts[0]):
+        for path_ in path.iterdir():
+            if path_.name == ".git":
+                return type(directory)(path)
+        path = path.parent
+
+
+def _get_unadded_asset_paths(directory):
+    assert directory.is_dir()
+    paths = []
+    root = directory.wrapper
+    git_status_lines = _get_git_status_lines(directory)
+    for line in git_status_lines:
+        line = str(line)
+        if line.startswith("?"):
+            path = line.strip("?")
+            path = path.strip()
+            path = root / path
+            paths.append(path)
+        elif line.startswith("M"):
+            path = line.strip("M")
+            path = path.strip()
+            path = root / path
+            paths.append(path)
+    paths = [_ for _ in paths]
+    return paths
+
+
+def _has_pending_commit(directory):
+    assert directory.is_dir()
+    command = f"git status {directory}"
+    with abjad.TemporaryDirectoryChange(directory=directory):
+        lines = abjad.iox.run_command(command)
+    clean_lines = []
+    for line in lines:
+        line = str(line)
+        clean_line = line.strip()
+        clean_line = clean_line.replace(str(directory), "")
+        clean_lines.append(clean_line)
+    for line in clean_lines:
+        if "Changes not staged for commit:" in line:
+            return True
+        if "Changes to be committed:" in line:
+            return True
+        if "Untracked files:" in line:
+            return True
+
+
+def _is_git_unknown(directory):
+    if not directory.exists():
+        return False
+    git_status_lines = _get_git_status_lines(directory)
+    git_status_lines = git_status_lines or [""]
+    first_line = git_status_lines[0]
+    if first_line.startswith("?"):
+        return True
+    return False
+
+
+def _is_prototype(path, prototype):
+    if prototype is True:
+        return True
+    if bool(prototype) is False:
+        return False
+    return path.is_score_package_path(prototype)
+
+
+def _make__assets_directory(directory):
+    if directory._assets.exists():
+        return
+    directory._assets.mkdir()
+    gitignore = directory._assets / ".gitignore"
+    gitignore.write_text("")
+
+
+def _make__segments_directory(directory):
+    if directory._segments.exists():
+        return
+    directory._segments.mkdir()
+    gitignore = directory._segments / ".gitignore"
+    gitignore.write_text("*.ily")
+    gitignore.write_text("*.ly")
+
+
+def _parse_part_identifier(path):
+    if path.suffix == ".ly":
+        part_identifier = None
+        with path.open("r") as pointer:
+            for line in pointer.readlines():
+                if line.startswith("% part_identifier = "):
+                    line = line.strip("% part_identifier = ")
+                    part_identifier = eval(line)
+                    return part_identifier
+    elif path.name.endswith("layout.py"):
+        part_identifier = None
+        with path.open("r") as pointer:
+            for line in pointer.readlines():
+                if line.startswith("part_identifier = "):
+                    line = line.strip("part_identifier = ")
+                    part_identifier = eval(line)
+                    return part_identifier
+    else:
+        raise TypeError(path)
+
+
+def _part_subtitle(part_name, parentheses=False):
+    words = abjad.String(part_name).delimit_words()
+    number = None
+    try:
+        number = int(words[-1])
+    except ValueError:
+        pass
+    if number is not None:
+        if parentheses:
+            words[-1] = f"({number})"
+        else:
+            words[-1] = str(number)
+    words = [_.lower() for _ in words]
+    part_subtitle = " ".join(words)
+    return part_subtitle
+
+
+def _replace_in_file(file_path, old, new, whole_words=False):
+    assert file_path.is_file()
+    assert isinstance(old, str), repr(old)
+    assert isinstance(new, str), repr(new)
+    with file_path.open() as file_pointer:
+        new_file_lines = []
+        for line in file_pointer.readlines():
+            if whole_words:
+                line = re.sub(r"\b%s\b" % old, new, line)
+            else:
+                line = line.replace(old, new)
+            new_file_lines.append(line)
+    new_file_contents = "".join(new_file_lines)
+    file_path.write_text(new_file_contents)
+
+
+def _to_paper_dimensions(paper_size, orientation="portrait"):
+    orientations = ("landscape", "portrait", None)
+    assert orientation in orientations, repr(orientation)
+    paper_dimensions = AbjadIDE.paper_size_to_paper_dimensions[paper_size]
+    paper_dimensions = paper_dimensions.replace(" x ", " ")
+    width, height, unit = paper_dimensions.split()
+    if orientation == "landscape":
+        height_ = width
+        width_ = height
+        height = height_
+        width = width_
+    return width, height, unit
+
+
+def _trim_illustration_ly(ly):
+    assert ly.is_file()
+    lines = []
+    with ly.open() as file_pointer:
+        found_score_context_open = False
+        found_score_context_close = False
+        for line in file_pointer.readlines():
+            if r"\context Score" in line:
+                found_score_context_open = True
+            if line == "        >>\n":
+                found_score_context_close = True
+            if found_score_context_open:
+                lines.append(line)
+            if found_score_context_close:
+                lines.append("\n")
+                break
+    if lines and lines[0].startswith("    "):
+        lines = [_[8:] for _ in lines]
+    if lines and lines[-1] == "\n":
+        lines.pop()
+    lines = "".join(lines)
+    return lines
 
 
 class AbjadIDE:
@@ -199,7 +450,7 @@ class AbjadIDE:
     def _check_out_paths(self, paths):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
-            root = self._get_repository_root(path)
+            root = _get_repository_root(path)
             if not root:
                 self.io.display(f"missing {path.trim()} repository ...")
                 return
@@ -254,25 +505,6 @@ class AbjadIDE:
         template = template.format(**values)
         target.write_text(template)
 
-    @staticmethod
-    def _directory_to_header(directory):
-        if directory.is_scores():
-            return "Abjad IDE : scores"
-        if directory.is_external():
-            header = f"Abjad IDE : {directory}"
-            if not directory.list_paths():
-                header += " (empty)"
-            return header
-        parts = [directory.contents.get_title()]
-        if directory.is_wrapper():
-            parts.append("wrapper")
-        elif not directory.is_contents():
-            parts.extend(directory.relative_to(directory.contents).parts[:-1])
-            parts.append(directory.get_identifier())
-        if parts and not directory.list_paths():
-            parts[-1] += " (empty)"
-        return " : ".join(parts)
-
     def _display_lilypond_log_errors(self, log=None):
         if log is None:
             log = self.abjad_configuration.lilypond_log_file_path
@@ -287,34 +519,6 @@ class AbjadIDE:
             ):
                 self.io.display("ERROR IN LILYPOND LOG FILE ...")
                 break
-
-    @staticmethod
-    def _filter_files(files, strings, pattern):
-        if isinstance(pattern, str):
-            indices = abjad.String.match_strings(strings, pattern)
-            files = abjad.Sequence(files).retain(indices)
-        return files
-
-    @staticmethod
-    def _find_editable_files(path, force=False):
-        files, strings = [], []
-        if force or not path.is_score_package_path():
-            for path_ in sorted(path.glob("**/*")):
-                if not path_.is_file():
-                    continue
-                files.append(path_)
-                strings.append(path_.name)
-        else:
-            for path_ in path.segments.list_paths():
-                files.append(path_ / "definition.py")
-                strings.append(path_.get_identifier())
-            for path_ in path.stylesheets.list_paths():
-                files.append(path_)
-                strings.append(path_.name)
-            for path_ in path.etc.list_paths():
-                files.append(path_)
-                strings.append(path_.name)
-        return files, strings
 
     def _generate_back_cover_tex(self, path, price=None):
         assert path.build.exists(), repr((path, path.build))
@@ -360,7 +564,7 @@ class AbjadIDE:
             self.io.display(f"unknown paper size {paper_size} ...")
             return
         orientation = metadata.get("orientation")
-        dimensions = self._to_paper_dimensions(paper_size, orientation)
+        dimensions = _to_paper_dimensions(paper_size, orientation)
         width, height, unit = dimensions
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
@@ -374,7 +578,7 @@ class AbjadIDE:
         values = {}
         paper_size = directory.get_metadatum("paper_size", "letter")
         orientation = directory.get_metadatum("orientation")
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        paper_size = _to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
@@ -423,7 +627,7 @@ class AbjadIDE:
         values["composer"] = str(composer)
         paper_size = directory.get_metadatum("paper_size", "letter")
         orientation = directory.get_metadatum("orientation")
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        paper_size = _to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
@@ -549,7 +753,7 @@ class AbjadIDE:
             metadata = path.build.get_metadata()
         paper_size = metadata.get("paper_size", "letter")
         orientation = metadata.get("orientation")
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        paper_size = _to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
@@ -575,7 +779,7 @@ class AbjadIDE:
             metadata = path.build.get_metadata()
         paper_size = metadata.get("paper_size", "letter")
         orientation = metadata.get("orientation")
-        paper_size = self._to_paper_dimensions(paper_size, orientation)
+        paper_size = _to_paper_dimensions(paper_size, orientation)
         width, height, unit = paper_size
         paper_size = f"{{{width}{unit}, {height}{unit}}}"
         values["paper_size"] = paper_size
@@ -673,20 +877,6 @@ class AbjadIDE:
             )
         path.write_text(template)
 
-    @staticmethod
-    def _get_added_asset_paths(directory):
-        paths = []
-        git_status_lines = directory._get_git_status_lines()
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith("A"):
-                path = line.strip("A")
-                path = path.strip()
-                root = directory.wrapper
-                path = root / path
-                paths.append(path)
-        return paths
-
     def _get_dimensions(self):
         dimensions = None
         if self.test is True:
@@ -694,26 +884,6 @@ class AbjadIDE:
         if isinstance(self.test, str) and self.test.startswith("dimensions"):
             dimensions = eval(self.test.strip("dimensions="))
         return dimensions
-
-    @staticmethod
-    def _get_git_status_lines(directory):
-        with abjad.TemporaryDirectoryChange(directory=directory.wrapper):
-            command = f"git status --porcelain {directory}"
-            return abjad.iox.run_command(command)
-
-    @staticmethod
-    def _get_repository_root(directory):
-        if not directory.exists():
-            return
-        if directory.wrapper is None:
-            path = directory
-        else:
-            path = directory.wrapper
-        while str(path) != str(path.parts[0]):
-            for path_ in path.iterdir():
-                if path_.name == ".git":
-                    return type(directory)(path)
-            path = path.parent
 
     def _get_score_names(self):
         scores = self._get_scores_directory()
@@ -724,27 +894,6 @@ class AbjadIDE:
         if self.test or self.example:
             return self.configuration.test_scores_directory
         return pathx.Path(self.configuration.composer_scores_directory)
-
-    @staticmethod
-    def _get_unadded_asset_paths(directory):
-        assert directory.is_dir()
-        paths = []
-        root = directory.wrapper
-        git_status_lines = AbjadIDE._get_git_status_lines(directory)
-        for line in git_status_lines:
-            line = str(line)
-            if line.startswith("?"):
-                path = line.strip("?")
-                path = path.strip()
-                path = root / path
-                paths.append(path)
-            elif line.startswith("M"):
-                path = line.strip("M")
-                path = path.strip()
-                path = root / path
-                paths.append(path)
-        paths = [_ for _ in paths]
-        return paths
 
     def _go_to_directory(
         self,
@@ -827,7 +976,7 @@ class AbjadIDE:
     def _handle_part_identifier_tags(self, path, indent=0):
         assert path.parent.is_part()
         parts_directory = path.parent.parent
-        part_identifier = self._parse_part_identifier(path)
+        part_identifier = _parse_part_identifier(path)
         if part_identifier is None:
             self.io.display(
                 f"no part identifier found in {path.name} ...",
@@ -846,26 +995,6 @@ class AbjadIDE:
             indent=indent + 1,
             message_zero=True,
         )
-
-    @staticmethod
-    def _has_pending_commit(directory):
-        assert directory.is_dir()
-        command = f"git status {directory}"
-        with abjad.TemporaryDirectoryChange(directory=directory):
-            lines = abjad.iox.run_command(command)
-        clean_lines = []
-        for line in lines:
-            line = str(line)
-            clean_line = line.strip()
-            clean_line = clean_line.replace(str(directory), "")
-            clean_lines.append(clean_line)
-        for line in clean_lines:
-            if "Changes not staged for commit:" in line:
-                return True
-            if "Changes to be committed:" in line:
-                return True
-            if "Untracked files:" in line:
-                return True
 
     def _interpret_file(self, path):
         path = pathx.Path(path)
@@ -962,42 +1091,6 @@ class AbjadIDE:
         for source in paths:
             self._interpret_tex_file(source)
 
-    @staticmethod
-    def _is_git_unknown(directory):
-        if not directory.exists():
-            return False
-        git_status_lines = AbjadIDE._get_git_status_lines(directory)
-        git_status_lines = git_status_lines or [""]
-        first_line = git_status_lines[0]
-        if first_line.startswith("?"):
-            return True
-        return False
-
-    @staticmethod
-    def _is_prototype(path, prototype):
-        if prototype is True:
-            return True
-        if bool(prototype) is False:
-            return False
-        return path.is_score_package_path(prototype)
-
-    @staticmethod
-    def _make__assets_directory(directory):
-        if directory._assets.exists():
-            return
-        directory._assets.mkdir()
-        gitignore = directory._assets / ".gitignore"
-        gitignore.write_text("")
-
-    @staticmethod
-    def _make__segments_directory(directory):
-        if directory._segments.exists():
-            return
-        directory._segments.mkdir()
-        gitignore = directory._segments / ".gitignore"
-        gitignore.write_text("*.ily")
-        gitignore.write_text("*.ly")
-
     def _make_command_sections(self, directory):
         commands = []
         for command in self.commands.values():
@@ -1012,8 +1105,8 @@ class AbjadIDE:
                 commands.append(command)
             elif (
                 directory.is_score_package_path()
-                and self._is_prototype(directory, command.score_package_paths)
-                and not self._is_prototype(directory, blacklist)
+                and _is_prototype(directory, command.score_package_paths)
+                and not _is_prototype(directory, blacklist)
             ):
                 commands.append(command)
         entries_by_section = {}
@@ -1151,8 +1244,8 @@ class AbjadIDE:
             part_directory = parts_directory / dashed_part_name
             part_directory.mkdir()
             snake_part_name = abjad.String(part.name).to_snake_case()
-            part_subtitle = self._part_subtitle(part.name, parentheses=True)
-            forces_tagline = self._part_subtitle(part.name) + " part"
+            part_subtitle = _part_subtitle(part.name, parentheses=True)
+            forces_tagline = _part_subtitle(part.name) + " part"
             self._generate_back_cover_tex(
                 part_directory / f"{dashed_part_name}-back-cover.tex",
                 price=f"{part.identifier} ({part.number}/{total_parts})",
@@ -1525,7 +1618,7 @@ class AbjadIDE:
             self._previous_directory = self.current_directory
             self._current_directory = directory
         sections = self._make_command_sections(directory)
-        header = self._directory_to_header(directory)
+        header = _directory_to_header(directory)
         menu = Menu.from_directory(
             directory,
             header,
@@ -1596,7 +1689,7 @@ class AbjadIDE:
 
     def _match_files(self, files, strings, pattern, prefix):
         if pattern:
-            files = self._filter_files(files, strings, pattern)
+            files = _filter_files(files, strings, pattern)
         else:
             files = [_ for _ in files if _.name[0].isalpha()]
         address = prefix + (pattern or "")
@@ -1605,32 +1698,6 @@ class AbjadIDE:
         message = f"matching {address!r} to {count} {counter} ..."
         self.io.display(message)
         return files
-
-    @staticmethod
-    def _message_activate(ly, tag, count, name=None):
-        messages = []
-        name = name or tag
-        if 0 < count:
-            counter = abjad.String("tag").pluralize(count)
-            message = f"activating {count} {name} {counter}"
-            if ly is not None:
-                message += f" in {ly.name}"
-            message += " ..."
-            messages.append(message)
-        return messages
-
-    @staticmethod
-    def _message_deactivate(ly, tag, count, name=None):
-        messages = []
-        name = name or tag
-        if 0 < count:
-            counter = abjad.String("tag").pluralize(count)
-            message = f"deactivating {count} {name} {counter}"
-            if ly is not None:
-                message += f" in {ly.name}"
-            message += " ..."
-            messages.append(message)
-        return messages
 
     def _open_files(self, paths, force_vim=False, silent=False):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
@@ -1685,66 +1752,12 @@ class AbjadIDE:
                     abjad.iox.spawn_subprocess(str(target))
         abjad.iox.spawn_subprocess(command)
 
-    @staticmethod
-    def _parse_part_identifier(path):
-        if path.suffix == ".ly":
-            part_identifier = None
-            with path.open("r") as pointer:
-                for line in pointer.readlines():
-                    if line.startswith("% part_identifier = "):
-                        line = line.strip("% part_identifier = ")
-                        part_identifier = eval(line)
-                        return part_identifier
-        elif path.name.endswith("layout.py"):
-            part_identifier = None
-            with path.open("r") as pointer:
-                for line in pointer.readlines():
-                    if line.startswith("part_identifier = "):
-                        line = line.strip("part_identifier = ")
-                        part_identifier = eval(line)
-                        return part_identifier
-        else:
-            raise TypeError(path)
-
-    @staticmethod
-    def _part_subtitle(part_name, parentheses=False):
-        words = abjad.String(part_name).delimit_words()
-        number = None
-        try:
-            number = int(words[-1])
-        except ValueError:
-            pass
-        if number is not None:
-            if parentheses:
-                words[-1] = f"({number})"
-            else:
-                words[-1] = str(number)
-        words = [_.lower() for _ in words]
-        part_subtitle = " ".join(words)
-        return part_subtitle
-
     def _purge_clipboard(self):
         clipboard = []
         for source in self.clipboard:
             if source.exists():
                 clipboard.append(source)
         self.clipboard[:] = clipboard
-
-    @staticmethod
-    def _replace_in_file(file_path, old, new, whole_words=False):
-        assert file_path.is_file()
-        assert isinstance(old, str), repr(old)
-        assert isinstance(new, str), repr(new)
-        with file_path.open() as file_pointer:
-            new_file_lines = []
-            for line in file_pointer.readlines():
-                if whole_words:
-                    line = re.sub(r"\b%s\b" % old, new, line)
-                else:
-                    line = line.replace(old, new)
-                new_file_lines.append(line)
-        new_file_contents = "".join(new_file_lines)
-        file_path.write_text(new_file_contents)
 
     def _replace_in_tree(
         self, directory, search_string, replace_string, complete_words=False
@@ -1968,16 +1981,6 @@ class AbjadIDE:
         return paths
 
     @staticmethod
-    def _supply_name(paths, name):
-        files = []
-        for path in paths:
-            if path.is_dir() and name:
-                path /= name
-            if path.is_file():
-                files.append(path)
-        return files
-
-    @staticmethod
     def _test_segment_illustration(directory):
         # only run on Travis because segment illustration usually takes a while
         if not os.getenv("TRAVIS"):
@@ -2013,57 +2016,6 @@ class AbjadIDE:
                 ily_text = ily.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ily_old_text, ily_text)))
                 sys.exit(1)
-
-    @staticmethod
-    def _to_paper_dimensions(paper_size, orientation="portrait"):
-        orientations = ("landscape", "portrait", None)
-        assert orientation in orientations, repr(orientation)
-        paper_dimensions = AbjadIDE.paper_size_to_paper_dimensions[paper_size]
-        paper_dimensions = paper_dimensions.replace(" x ", " ")
-        width, height, unit = paper_dimensions.split()
-        if orientation == "landscape":
-            height_ = width
-            width_ = height
-            height = height_
-            width = width_
-        return width, height, unit
-
-    @staticmethod
-    def _trim_illustration_ly(ly):
-        assert ly.is_file()
-        lines = []
-        with ly.open() as file_pointer:
-            found_score_context_open = False
-            found_score_context_close = False
-            for line in file_pointer.readlines():
-                if r"\context Score" in line:
-                    found_score_context_open = True
-                if line == "        >>\n":
-                    found_score_context_close = True
-                if found_score_context_open:
-                    lines.append(line)
-                if found_score_context_close:
-                    lines.append("\n")
-                    break
-        if lines and lines[0].startswith("    "):
-            lines = [_[8:] for _ in lines]
-        if lines and lines[-1] == "\n":
-            lines.pop()
-        lines = "".join(lines)
-        return lines
-
-    @staticmethod
-    def _unadd_added_assets(directory):
-        paths = []
-        paths.extend(AbjadIDE._get_added_asset_paths(directory))
-        paths.extend(AbjadIDE._get_modified_asset_paths(directory))
-        commands = []
-        for path in paths:
-            command = f"git reset -- {path}"
-            commands.append(command)
-        command = " && ".join(commands)
-        with abjad.TemporaryDirectoryChange(directory=path):
-            abjad.iox.spawn_subprocess(command)
 
     ### PUBLIC PROPERTIES ###
 
@@ -2465,8 +2417,8 @@ class AbjadIDE:
         if not pairs:
             self.io.display("... no segment lys found.")
             return
-        self._make__assets_directory(directory.build)
-        self._make__segments_directory(directory.build)
+        _make__assets_directory(directory.build)
+        _make__segments_directory(directory.build)
         fermata_measure_numbers = abjad.OrderedDict()
         time_signatures = abjad.OrderedDict()
         for source, target in pairs:
@@ -2489,7 +2441,7 @@ class AbjadIDE:
                 f"Writing {target.trim()} ...",
                 indent=indent + 1,
             )
-            text = self._trim_illustration_ly(source)
+            text = _trim_illustration_ly(source)
             target.write_text(text)
             segment = source.parent
             value = segment.get_metadatum("fermata_measure_numbers")
@@ -2529,7 +2481,7 @@ class AbjadIDE:
         Colors clefs.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_clefs(directory))
+        self.run(_jobs.color_clefs(directory))
 
     @Command(
         "dcl",
@@ -2542,7 +2494,7 @@ class AbjadIDE:
         Colors dynamics.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_dynamics(directory))
+        self.run(_jobs.color_dynamics(directory))
 
     @Command(
         "icl",
@@ -2555,7 +2507,7 @@ class AbjadIDE:
         Colors instruments.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_instruments(directory))
+        self.run(_jobs.color_instruments(directory))
 
     @Command(
         "mmcl",
@@ -2568,7 +2520,7 @@ class AbjadIDE:
         Colors margin markup.
         """
         assert directory.is_score_package_path()
-        self.run(Job.color_margin_markup(directory))
+        self.run(_jobs.color_margin_markup(directory))
 
     @Command(
         "tmcl",
@@ -2581,7 +2533,7 @@ class AbjadIDE:
         Colors metronome marks.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_metronome_marks(directory))
+        self.run(_jobs.color_metronome_marks(directory))
 
     @Command(
         "picl",
@@ -2594,7 +2546,7 @@ class AbjadIDE:
         Colors persistent indicators.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_persistent_indicators(directory))
+        self.run(_jobs.color_persistent_indicators(directory))
 
     @Command(
         "slcl",
@@ -2607,7 +2559,7 @@ class AbjadIDE:
         Colors staff lines.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_staff_lines(directory))
+        self.run(_jobs.color_staff_lines(directory))
 
     @Command(
         "tscl",
@@ -2620,7 +2572,7 @@ class AbjadIDE:
         Colors time signatures.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_time_signatures(directory))
+        self.run(_jobs.color_time_signatures(directory))
 
     @Command(
         "cbc",
@@ -2674,7 +2626,7 @@ class AbjadIDE:
         """
         Edits all files.
         """
-        files, strings = self._find_editable_files(directory, force=True)
+        files, strings = _find_editable_files(directory, force=True)
         files = self._match_files(files, strings, pattern, "@@")
         files = [_ for _ in files if "__pycache__" not in str(_)]
         files = [_ for _ in files if ".mypy_cache" not in str(_)]
@@ -3095,7 +3047,7 @@ class AbjadIDE:
         path_count = len(paths)
         for i, path in enumerate(paths):
             part = _segments.path_to_part(path)
-            forces_tagline = self._part_subtitle(part.name, parentheses=False)
+            forces_tagline = _part_subtitle(part.name, parentheses=False)
             self._generate_front_cover_tex(path, forces_tagline=forces_tagline)
             if i + 1 < path_count:
                 self.io.display("")
@@ -3177,8 +3129,8 @@ class AbjadIDE:
             file_name = f"{dashed_part_name}-{name}"
             assert path.build is not None
             path = path.build / file_name
-            forces_tagline = self._part_subtitle(part.name) + " part"
-            part_subtitle = self._part_subtitle(part.name, parentheses=True)
+            forces_tagline = _part_subtitle(part.name) + " part"
+            part_subtitle = _part_subtitle(part.name, parentheses=True)
             self._generate_part_music_ly(
                 path,
                 dashed_part_name=dashed_part_name,
@@ -3305,12 +3257,12 @@ class AbjadIDE:
         Commits working copy.
         """
         if not directory.is_scores():
-            root = self._get_repository_root(directory)
+            root = _get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(root):
-                if not self._has_pending_commit(root):
+                if not _has_pending_commit(root):
                     self.io.display("nothing to commit ...")
                     return
                 self.git_status(root)
@@ -3355,7 +3307,7 @@ class AbjadIDE:
         Displays Git diff of working copy.
         """
         if not directory.is_scores():
-            if not self._get_repository_root(directory):
+            if not _get_repository_root(directory):
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(directory):
@@ -3384,7 +3336,7 @@ class AbjadIDE:
         Pulls working copy.
         """
         if not directory.is_scores():
-            root = self._get_repository_root(directory)
+            root = _get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -3425,7 +3377,7 @@ class AbjadIDE:
         Pushes working copy.
         """
         if not directory.is_scores():
-            root = self._get_repository_root(directory)
+            root = _get_repository_root(directory)
             if not root:
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
@@ -3457,7 +3409,7 @@ class AbjadIDE:
         Displays Git status of working copy.
         """
         if not directory.is_scores():
-            if not self._get_repository_root(directory):
+            if not _get_repository_root(directory):
                 self.io.display(f"missing {directory.trim()} repository ...")
                 return
             with self.change(directory):
@@ -3509,7 +3461,7 @@ class AbjadIDE:
         assert directory.builds is not None
         assert directory.builds._assets is not None
         if not directory.builds._assets.exists():
-            self._make__assets_directory(directory.builds)
+            _make__assets_directory(directory.builds)
         if not (directory.builds / "__metadata__.py").is_file():
             directory.builds.write_metadata_py(abjad.OrderedDict())
         self._manage_directory(directory.builds)
@@ -3749,51 +3701,51 @@ class AbjadIDE:
 
         _segments = directory._segments
         for job in [
-            Job.handle_edition_tags(_segments),
-            Job.handle_fermata_bar_lines(directory),
-            Job.handle_shifted_clefs(_segments),
-            Job.handle_mol_tags(_segments),
-            Job.color_persistent_indicators(_segments, undo=True),
-            Job.show_music_annotations(_segments, undo=True),
-            Job.join_broken_spanners(_segments),
-            Job.show_tag(
+            _jobs.handle_edition_tags(_segments),
+            _jobs.handle_fermata_bar_lines(directory),
+            _jobs.handle_shifted_clefs(_segments),
+            _jobs.handle_mol_tags(_segments),
+            _jobs.color_persistent_indicators(_segments, undo=True),
+            _jobs.show_music_annotations(_segments, undo=True),
+            _jobs.join_broken_spanners(_segments),
+            _jobs.show_tag(
                 _segments,
                 "left-broken-should-deactivate",
                 match=match_left_broken_should_deactivate,
                 undo=True,
             ),
-            Job.show_tag(_segments, _tags.PHANTOM, skip_file_name=final_file_name),
-            Job.show_tag(
+            _jobs.show_tag(_segments, _tags.PHANTOM, skip_file_name=final_file_name),
+            _jobs.show_tag(
                 _segments,
                 _tags.PHANTOM,
                 prepend_empty_chord=True,
                 skip_file_name=final_file_name,
                 undo=True,
             ),
-            Job.show_tag(
+            _jobs.show_tag(
                 _segments,
                 "phantom-should-activate",
                 match=match_phantom_should_activate,
                 skip_file_name=final_file_name,
             ),
-            Job.show_tag(
+            _jobs.show_tag(
                 _segments,
                 "phantom-should-deactivate",
                 match=match_phantom_should_deactivate,
                 skip_file_name=final_file_name,
                 undo=True,
             ),
-            Job.show_tag(
+            _jobs.show_tag(
                 _segments,
                 _tags.EOS_STOP_MM_SPANNER,
                 skip_file_name=final_file_name,
             ),
-            Job.show_tag(
+            _jobs.show_tag(
                 _segments,
                 _tags.METRIC_MODULATION_IS_STRIPPED,
                 undo=True,
             ),
-            Job.show_tag(
+            _jobs.show_tag(
                 _segments,
                 _tags.METRIC_MODULATION_IS_SCALED,
                 undo=True,
@@ -3848,7 +3800,7 @@ class AbjadIDE:
             indent=indent + 1,
             message_zero=True,
         )
-        part_identifier = self._parse_part_identifier(music_ly)
+        part_identifier = _parse_part_identifier(music_ly)
         if part_identifier is None:
             message = f"no part identifier found in {music_ly.trim()} ..."
             self.io.display(message, indent=indent + 1)
@@ -3946,7 +3898,7 @@ class AbjadIDE:
             return bool(set(tags) & set(tags_))
 
         name = "annotation spanners"
-        self.run(Job.show_tag(directory, name, match=match, undo=True))
+        self.run(_jobs.show_tag(directory, name, match=match, undo=True))
 
     @Command(
         "cth",
@@ -3959,7 +3911,7 @@ class AbjadIDE:
         Hides clock time.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.CLOCK_TIME, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.CLOCK_TIME, undo=True))
 
     @Command(
         "fnh",
@@ -3972,7 +3924,7 @@ class AbjadIDE:
         Hides figure names.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.FIGURE_NAME, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.FIGURE_NAME, undo=True))
 
     @Command(
         "imh",
@@ -3986,9 +3938,9 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.INVISIBLE_MUSIC_COMMAND
-        self.run(Job.show_tag(directory, tag))
+        self.run(_jobs.show_tag(directory, tag))
         tag = _tags.INVISIBLE_MUSIC_COLORING
-        self.run(Job.show_tag(directory, tag, undo=True))
+        self.run(_jobs.show_tag(directory, tag, undo=True))
 
     @Command(
         "lmnh",
@@ -4001,7 +3953,7 @@ class AbjadIDE:
         Hides local measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER, undo=True))
 
     @Command(
         "mnh",
@@ -4014,7 +3966,7 @@ class AbjadIDE:
         Hides measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.MEASURE_NUMBER, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.MEASURE_NUMBER, undo=True))
 
     @Command(
         "mmh",
@@ -4028,7 +3980,7 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.MOCK_COLORING
-        self.run(Job.show_tag(directory, tag, undo=True))
+        self.run(_jobs.show_tag(directory, tag, undo=True))
 
     @Command(
         "mah",
@@ -4041,7 +3993,7 @@ class AbjadIDE:
         Hides music annotations.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_music_annotations(directory, undo=True))
+        self.run(_jobs.show_music_annotations(directory, undo=True))
 
     @Command(
         "nyph",
@@ -4055,7 +4007,7 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.NOT_YET_PITCHED_COLORING
-        self.run(Job.show_tag(directory, tag, undo=True))
+        self.run(_jobs.show_tag(directory, tag, undo=True))
 
     @Command(
         "rash",
@@ -4068,7 +4020,7 @@ class AbjadIDE:
         Hides rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER, undo=True))
 
     @Command(
         "sph",
@@ -4090,7 +4042,7 @@ class AbjadIDE:
             return bool(set(tags) & set(tags_))
 
         name = "spacing"
-        self.run(Job.show_tag(directory, name, match=match, undo=True))
+        self.run(_jobs.show_tag(directory, name, match=match, undo=True))
 
     @Command(
         "snh",
@@ -4103,7 +4055,7 @@ class AbjadIDE:
         Hides stage numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.STAGE_NUMBER, undo=True))
+        self.run(_jobs.show_tag(directory, _tags.STAGE_NUMBER, undo=True))
 
     @Command(
         "th",
@@ -4121,7 +4073,7 @@ class AbjadIDE:
         if self.is_navigation(tag_):
             return
         tag = abjad.Tag(tag_)
-        self.run(Job.show_tag(directory, tag, undo=True))
+        self.run(_jobs.show_tag(directory, tag, undo=True))
 
     @Command(
         "bcti",
@@ -4719,7 +4671,7 @@ class AbjadIDE:
         source = paths[0]
         self.io.display(f"using {source.trim()} as source ...")
         self.io.display("")
-        source_part_identifier = self._parse_part_identifier(source)
+        source_part_identifier = _parse_part_identifier(source)
         if source_part_identifier is None:
             self.io.display(f"no part identifier found in {source.name} ...")
             return
@@ -4830,7 +4782,7 @@ class AbjadIDE:
             if not target.is_dir():
                 return
             for path in sorted(target.glob("*.py")):
-                self._replace_in_file(path, source.name, target.name, whole_words=True)
+                _replace_in_file(path, source.name, target.name, whole_words=True)
 
     @Command(
         "ass",
@@ -4853,7 +4805,7 @@ class AbjadIDE:
             return bool(set(tags) & set(tags_))
 
         name = "annotation spanners"
-        self.run(Job.show_tag(directory, name, match=match))
+        self.run(_jobs.show_tag(directory, name, match=match))
 
     @Command(
         "cbs",
@@ -4886,7 +4838,7 @@ class AbjadIDE:
         Shows clock time.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.CLOCK_TIME))
+        self.run(_jobs.show_tag(directory, _tags.CLOCK_TIME))
 
     @Command(
         "fns",
@@ -4899,7 +4851,7 @@ class AbjadIDE:
         Shows figure names.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.FIGURE_NAME))
+        self.run(_jobs.show_tag(directory, _tags.FIGURE_NAME))
 
     @Command(
         "?",
@@ -4927,9 +4879,9 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.INVISIBLE_MUSIC_COMMAND
-        self.run(Job.show_tag(directory, tag, undo=True))
+        self.run(_jobs.show_tag(directory, tag, undo=True))
         tag = _tags.INVISIBLE_MUSIC_COLORING
-        self.run(Job.show_tag(directory, tag))
+        self.run(_jobs.show_tag(directory, tag))
 
     @Command(
         "lmns",
@@ -4942,7 +4894,7 @@ class AbjadIDE:
         Shows local measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER))
+        self.run(_jobs.show_tag(directory, _tags.LOCAL_MEASURE_NUMBER))
 
     @Command(
         "mns",
@@ -4955,7 +4907,7 @@ class AbjadIDE:
         Shows measure numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.MEASURE_NUMBER))
+        self.run(_jobs.show_tag(directory, _tags.MEASURE_NUMBER))
 
     @Command(
         "mms",
@@ -4969,7 +4921,7 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.MOCK_COLORING
-        self.run(Job.show_tag(directory, tag))
+        self.run(_jobs.show_tag(directory, tag))
 
     @Command(
         "mas",
@@ -4982,7 +4934,7 @@ class AbjadIDE:
         Shows music annotations.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_music_annotations(directory))
+        self.run(_jobs.show_music_annotations(directory))
 
     @Command(
         "nyps",
@@ -4996,7 +4948,7 @@ class AbjadIDE:
         """
         assert directory.is_buildspace()
         tag = _tags.NOT_YET_PITCHED_COLORING
-        self.run(Job.show_tag(directory, tag))
+        self.run(_jobs.show_tag(directory, tag))
 
     @Command(
         "rass",
@@ -5009,7 +4961,7 @@ class AbjadIDE:
         Shows rhythm annotation spanners.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER))
+        self.run(_jobs.show_tag(directory, _tags.RHYTHM_ANNOTATION_SPANNER))
 
     @Command(
         "sps",
@@ -5031,7 +4983,7 @@ class AbjadIDE:
             return bool(set(tags) & set(tags_))
 
         name = "spacing"
-        self.run(Job.show_tag(directory, name, match=match))
+        self.run(_jobs.show_tag(directory, name, match=match))
 
     @Command(
         "sns",
@@ -5044,7 +4996,7 @@ class AbjadIDE:
         Shows stage numbers.
         """
         assert directory.is_buildspace()
-        self.run(Job.show_tag(directory, _tags.STAGE_NUMBER))
+        self.run(_jobs.show_tag(directory, _tags.STAGE_NUMBER))
 
     @Command(
         "ts",
@@ -5061,7 +5013,7 @@ class AbjadIDE:
         if self.is_navigation(tag_):
             return
         tag = abjad.Tag(tag_)
-        self.run(Job.show_tag(directory, tag))
+        self.run(_jobs.show_tag(directory, tag))
 
     @Command(
         "cuc",
@@ -5074,7 +5026,7 @@ class AbjadIDE:
         Uncolors clefs.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_clefs(directory, undo=True))
+        self.run(_jobs.color_clefs(directory, undo=True))
 
     @Command(
         "duc",
@@ -5087,7 +5039,7 @@ class AbjadIDE:
         Uncolors dynamics.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_dynamics(directory, undo=True))
+        self.run(_jobs.color_dynamics(directory, undo=True))
 
     @Command(
         "iuc",
@@ -5100,7 +5052,7 @@ class AbjadIDE:
         Uncolors instruments.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_instruments(directory, undo=True))
+        self.run(_jobs.color_instruments(directory, undo=True))
 
     @Command(
         "mmuc",
@@ -5113,7 +5065,7 @@ class AbjadIDE:
         Uncolors margin markup.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_margin_markup(directory, undo=True))
+        self.run(_jobs.color_margin_markup(directory, undo=True))
 
     @Command(
         "tmuc",
@@ -5126,7 +5078,7 @@ class AbjadIDE:
         Uncolors metornome marks.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_metronome_marks(directory, undo=True))
+        self.run(_jobs.color_metronome_marks(directory, undo=True))
 
     @Command(
         "piuc",
@@ -5139,7 +5091,7 @@ class AbjadIDE:
         Uncolors persistent indicators.
         """
         assert directory.is_buildspace()
-        job = Job.color_persistent_indicators(directory, undo=True)
+        job = _jobs.color_persistent_indicators(directory, undo=True)
         self.run(job)
 
     @Command(
@@ -5153,7 +5105,7 @@ class AbjadIDE:
         Uncolors staff lines.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_staff_lines(directory, undo=True))
+        self.run(_jobs.color_staff_lines(directory, undo=True))
 
     @Command(
         "tsuc",
@@ -5166,7 +5118,7 @@ class AbjadIDE:
         Uncolors time signatures.
         """
         assert directory.is_buildspace()
-        self.run(Job.color_time_signatures(directory, undo=True))
+        self.run(_jobs.color_time_signatures(directory, undo=True))
 
     @Command(
         "mlx",

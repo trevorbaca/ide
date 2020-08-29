@@ -144,19 +144,6 @@ class Path(pathlib.PosixPath):
 
     ### PRIVATE METHODS ###
 
-    #    def _find_empty_wrapper(self):
-    #        if not self.scores:
-    #            return
-    #        for path in self.scores.iterdir():
-    #            if not path.name[0].isalpha():
-    #                continue
-    #            if not path.name[0].islower():
-    #                continue
-    #            if not path.is_dir():
-    #                continue
-    #            if all(_.name.startswith(".") for _ in path.iterdir()):
-    #                return type(self)(path)
-
     def _get_file_path_ending_with(self, string):
         if not self.is_dir():
             return
@@ -329,28 +316,6 @@ class Path(pathlib.PosixPath):
             return Path(self._mock_scores)
         directory = configuration.composer_scores_directory
         return Path(directory)
-
-    #        if str(self).startswith(str(directory)):
-    #            return type(self)(directory)
-    #        parts = str(self).split(os.sep)
-    #        if "ide" in parts:
-    #            scores_parts = [os.sep]
-    #            for part_ in parts:
-    #                scores_parts.append(part_)
-    #                if part_ == "scores":
-    #                    path = pathlib.Path(*scores_parts)
-    #                    return type(self)(path)
-    #        previous_part = None
-    #        for part in reversed(parts):
-    #            if part == previous_part:
-    #                scores_parts = [os.sep]
-    #                for part_ in parts:
-    #                    if part_ == part:
-    #                        path = pathlib.Path(*scores_parts)
-    #                        return type(self)(path)
-    #                    scores_parts.append(part_)
-    #            previous_part = part
-    #        return None
 
     @property
     def segments(self) -> typing.Optional["Path"]:
@@ -925,8 +890,6 @@ class Path(pathlib.PosixPath):
         """
         if self.is_scores():
             return abjad.String.is_package_name
-        #        elif self.is_external():
-        #            return None
         elif self.is_wrapper():
             return None
         elif self.is_build():
@@ -1274,10 +1237,6 @@ class Path(pathlib.PosixPath):
         if str(self).startswith(str(self.scores)):
             return False
         return True
-
-    #        if self.contents is not None and (self.contents / "__metadata__.py").is_file():
-    #            return False
-    #        return True
 
     def is_introduction_segment(self) -> bool:
         """

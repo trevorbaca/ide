@@ -10,6 +10,29 @@ from .MenuSection import MenuSection
 from .Response import Response
 
 
+def _left_justify(string, width):
+    start_width = len(string)
+    if start_width < width:
+        needed = width - start_width
+        suffix = needed * " "
+        result = string + suffix
+    else:
+        result = string
+    return result
+
+
+def _split_prefix(string):
+    if string and 2 <= len(string) and string[0] == string[1] and string[0] == "@":
+        prefix = string[:2]
+        string = string[2:] or None
+    elif string and 1 <= len(string) and string[0] == "@":
+        prefix = string[:1]
+        string = string[1:] or None
+    else:
+        prefix = ""
+    return prefix, string
+
+
 class Menu:
     """
     Menu.
@@ -78,7 +101,7 @@ class Menu:
             force_single_column=force_single_column,
         )
         string = self.io.get(prompt=self.prompt, split_input=not self.getter)
-        prefix, string = self._split_prefix(string)
+        prefix, string = _split_prefix(string)
         if string is None:
             payload = None
         elif string == "?":
@@ -120,17 +143,6 @@ class Menu:
         return abjad.StorageFormatManager(self).get_repr_format()
 
     ### PRIVATE METHODS ###
-
-    @staticmethod
-    def _left_justify(string, width):
-        start_width = len(string)
-        if start_width < width:
-            needed = width - start_width
-            suffix = needed * " "
-            result = string + suffix
-        else:
-            result = string
-        return result
 
     def _make_bicolumnar(
         self,
@@ -250,18 +262,6 @@ class Menu:
                 entry = [_.value for _ in section][i]
                 string.append(entry)
             return string
-
-    @staticmethod
-    def _split_prefix(string):
-        if string and 2 <= len(string) and string[0] == string[1] and string[0] == "@":
-            prefix = string[:2]
-            string = string[2:] or None
-        elif string and 1 <= len(string) and string[0] == "@":
-            prefix = string[:1]
-            string = string[1:] or None
-        else:
-            prefix = ""
-        return prefix, string
 
     ### PUBLIC PROPERTIES ###
 

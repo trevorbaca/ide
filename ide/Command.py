@@ -2,6 +2,18 @@ import string
 import typing
 
 
+def _is_valid_command_name(argument):
+    if not isinstance(argument, str):
+        return False
+    for character in argument:
+        if character.islower():
+            continue
+        if character in string.punctuation:
+            continue
+        return False
+    return True
+
+
 class Command:
     """
     Command.
@@ -55,7 +67,7 @@ class Command:
         scores_directory: bool = None,
     ) -> None:
         assert isinstance(command_name, str), repr(command_name)
-        assert Command._is_valid_command_name(command_name), repr(command_name)
+        assert _is_valid_command_name(command_name), repr(command_name)
         self.score_package_path_blacklist = score_package_path_blacklist
         self.command_name = command_name
         self.description = description
@@ -93,15 +105,3 @@ class Command:
         return method
 
     ### PRIVATE METHODS ###
-
-    @staticmethod
-    def _is_valid_command_name(argument):
-        if not isinstance(argument, str):
-            return False
-        for character in argument:
-            if character.islower():
-                continue
-            if character in string.punctuation:
-                continue
-            return False
-        return True
