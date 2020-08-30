@@ -1655,9 +1655,8 @@ class AbjadIDE:
             self.call_shell(directory, response.string[1:].strip())
         else:
             assert response.payload is None, repr(response)
-            self.io.display(f"unknown command {response.string!r} ...")
-            if self.test and self.test != "allow_unknown_input":
-                raise Exception(response)
+            with self.change(directory):
+                abjad.iox.spawn_subprocess(response.string)
         self.io.display("")
         if response.string == "q":
             return "quit"
