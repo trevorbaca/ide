@@ -3600,9 +3600,9 @@ class AbjadIDE:
 
     @Command(
         "ss",
-        description="go - scores",
+        description="directory - scores",
         external_directories=True,
-        menu_section="go",
+        menu_section="directory",
         score_package_paths=True,
         scores_directory=True,
     )
