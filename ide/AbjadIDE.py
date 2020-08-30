@@ -966,13 +966,6 @@ class AbjadIDE:
         if paths:
             self._manage_directory(paths[0])
 
-    def _handle_address(self, directory, response):
-        assert response.prefix, repr(response)
-        if response.prefix == "@@":
-            self.edit_all(directory, response.pattern)
-        else:
-            raise ValueError(response.prefix)
-
     def _handle_part_identifier_tags(self, path, indent=0):
         assert path.parent.is_part()
         parts_directory = path.parent.parent
@@ -1633,8 +1626,6 @@ class AbjadIDE:
             pass
         elif response.is_segment_name():
             self._go_to_directory(directory, response.string)
-        elif response.is_address():
-            self._handle_address(directory, response)
         elif response.is_command(self.commands):
             command = self.commands[response.payload]
             try:

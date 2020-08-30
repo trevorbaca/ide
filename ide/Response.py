@@ -6,10 +6,6 @@ from . import pathx
 class Response:
     """
     Response.
-
-    :param payload: delivered to IDE.
-
-    :param string: user input.
     """
 
     ### CLASS VARIABLES ###
@@ -26,49 +22,7 @@ class Response:
         self._payload = payload
         self._string = string
 
-    ### PRIVATE METHODS ###
-
-    def _is_double_address(self):
-        if (
-            2 <= len(self.string)
-            and self.string[0] == "@"
-            and self.string[0] == self.string[1]
-        ):
-            return True
-        return False
-
-    def _is_single_address(self):
-        if len(self.string) == 1 and self.string[0] == "@":
-            return True
-        if (
-            2 <= len(self.string)
-            and self.string[0] == "@"
-            and self.string[0] != self.string[1]
-        ):
-            return True
-        return False
-
     ### PUBLIC PROPERTIES ###
-
-    @property
-    def pair(self) -> typing.Tuple[str, typing.Optional[str]]:
-        """
-        Gets prefix / pattern pair.
-        """
-        return self.prefix, self.pattern
-
-    @property
-    def pattern(self) -> typing.Optional[str]:
-        """
-        Gets pattern.
-        """
-        if self._is_single_address():
-            assert self.string is not None
-            return self.string[1:]
-        if self._is_double_address():
-            assert self.string is not None
-            return self.string[2:]
-        return self.string
 
     @property
     def payload(self) -> typing.Optional[typing.Union[str, list, pathx.Path]]:
@@ -76,19 +30,6 @@ class Response:
         Gets payload.
         """
         return self._payload
-
-    @property
-    def prefix(self) -> str:
-        """
-        Gets prefix.
-        """
-        if self._is_single_address():
-            assert self.string is not None
-            return self.string[:1]
-        if self._is_double_address():
-            assert self.string is not None
-            return self.string[:2]
-        return ""
 
     @property
     def string(self) -> typing.Optional[str]:
@@ -108,12 +49,6 @@ class Response:
         if isinstance(self.payload, list) and isinstance(self.payload[0], pathx.Path):
             return self.payload[0]
         return None
-
-    def is_address(self) -> bool:
-        """
-        Is true when response is address.
-        """
-        return bool(self.prefix)
 
     def is_command(self, commands) -> bool:
         """
