@@ -2626,25 +2626,6 @@ class AbjadIDE:
             self.clipboard.append(path)
 
     @Command(
-        "al",
-        description="log - aliases",
-        external_directories=True,
-        menu_section="log",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_aliases_py(self) -> None:
-        """
-        Edits ``__aliases__.py``.
-        """
-        self._open_files([self.configuration.aliases_file_path])
-        self.configuration._read_aliases_file()
-        self._aliases = abjad.OrderedDict(self.configuration.aliases)
-        for name, path in self.aliases.items():
-            if not pathx.Path(path).exists():
-                self.io.display(f"missing {name!r} {path} ...")
-
-    @Command(
         "@@",
         description="all - edit",
         external_directories=True,
@@ -2760,21 +2741,6 @@ class AbjadIDE:
         self._open_files(paths)
 
     @Command(
-        "lx",
-        description="log - latex",
-        external_directories=True,
-        menu_section="log",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_latex_log(self) -> None:
-        """
-        Edits ``latex.log``.
-        """
-        path = self.configuration.latex_log_file_path
-        self._open_files([path])
-
-    @Command(
         "lle",
         description="layout.ly - edit",
         menu_section="layout",
@@ -2807,21 +2773,6 @@ class AbjadIDE:
         if self.is_navigation(paths):
             return
         self._open_files(paths)
-
-    @Command(
-        "lp",
-        description="log - lilypond",
-        external_directories=True,
-        menu_section="log",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_lilypond_log(self) -> None:
-        """
-        Edits ``lily.log``.
-        """
-        path = pathx.Path(self.abjad_configuration.lilypond_log_file_path)
-        self._open_files([path])
 
     @Command(
         "le",
