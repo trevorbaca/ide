@@ -66,12 +66,6 @@ class Response:
             return True
         return False
 
-    def is_segment_name(self) -> bool:
-        """
-        Is true when response is segment name.
-        """
-        return pathx.Path.is_segment_name(self.string)
-
     def is_shell(self) -> bool:
         """
         Is true when response is shell command.

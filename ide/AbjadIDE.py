@@ -902,10 +902,8 @@ class AbjadIDE:
         payload: typing.List = None,
     ) -> None:
         assert directory.is_dir()
-        if pathx.Path.is_segment_name(pattern):
-            address = pattern
-        else:
-            address = "%" + (pattern or "")
+        # TODO: remove following line?
+        address = "%" + (pattern or "")
         if self.aliases and pattern in self.aliases:
             path = pathx.Path(self.aliases[pattern])
             self.io.display(f"matching {address!r} to {path.trim()} ...")
@@ -1624,8 +1622,6 @@ class AbjadIDE:
         response = menu(dimensions=dimensions, redraw=redraw)
         if self.is_navigation(response.string):
             pass
-        elif response.is_segment_name():
-            self._go_to_directory(directory, response.string)
         elif response.is_command(self.commands):
             command = self.commands[response.payload]
             try:

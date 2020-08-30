@@ -55,7 +55,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
         target = source.with_suffix(".pdf")
         target.remove()
 
-        abjad_ide("red A ili q")
+        abjad_ide("red gg A ili q")
         transcript = abjad_ide.io.transcript
         assert "Interpreting ly ..." in transcript
         assert f"Interpreting {source.trim()} ..." in transcript
@@ -64,7 +64,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
         assert f"Opening {target.trim()} ..." in transcript
         assert target.is_file()
 
-        abjad_ide("red A ili q")
+        abjad_ide("red gg A ili q")
         transcript = abjad_ide.io.transcript
         assert "Interpreting ly ..." in transcript
         assert f"Interpreting {source.trim()} ..." in transcript

@@ -18,7 +18,7 @@ def test_AbjadIDE_nake_illustration_pdf_01():
         maker = directory / "__make_segment_pdf__.py"
         maker.remove()
 
-        abjad_ide("red A ipn q")
+        abjad_ide("red gg A ipn q")
         transcript = abjad_ide.io.transcript
         assert "Making segment A PDF ..." in transcript
         assert f"Removing {ly.trim()} ..." not in transcript

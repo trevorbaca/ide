@@ -18,7 +18,7 @@ def test_AbjadIDE_make_illustration_pdf_01():
         maker = directory / "__make_segment_pdf__.py"
         maker.remove()
 
-        abjad_ide("red A ipm q")
+        abjad_ide("red gg A ipm q")
         transcript = abjad_ide.io.transcript
         assert "Making segment A PDF ..." in transcript
         assert f"Removing {ly.trim()} ..." not in transcript
@@ -33,7 +33,7 @@ def test_AbjadIDE_make_illustration_pdf_01():
         assert pdf.is_file()
         assert not maker.exists()
 
-        abjad_ide("red A ipm q")
+        abjad_ide("red gg A ipm q")
         transcript = abjad_ide.io.transcript
         assert "Making segment A PDF ..." in transcript
         assert f"Removing {ly.trim()} ..." in transcript

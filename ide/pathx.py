@@ -877,9 +877,6 @@ class Path(pathlib.PosixPath):
             >>> path.contents.get_name_predicate() is None
             True
 
-            >>> path.segments.get_name_predicate()
-            <function String.is_segment_name at ...>
-
             >>> segment = path.segments / "segment_01"
             >>> segment.get_name_predicate()
             <function String.is_lowercase_file_name at ...>
@@ -907,7 +904,7 @@ class Path(pathlib.PosixPath):
         elif self.is_segment():
             return abjad.String.is_lowercase_file_name
         elif self.is_segments():
-            return abjad.String.is_segment_name
+            return None
         elif self.is_stylesheets():
             return abjad.String.is_stylesheet_name
         elif self.is_wrapper():
@@ -1454,109 +1451,6 @@ class Path(pathlib.PosixPath):
             return False
         return self.parent.name == "segments" and self.parent.parent.name != "abjad"
 
-    @staticmethod
-    def is_segment_name(string) -> bool:
-        """
-        Is true when ``string`` is canonical segment name.
-
-        ..  container:: example
-
-            >>> ide.Path.is_segment_name("_")
-            True
-
-            >>> ide.Path.is_segment_name("_1")
-            True
-
-            >>> ide.Path.is_segment_name("_2")
-            True
-
-            >>> ide.Path.is_segment_name("_99")
-            True
-
-            >>> ide.Path.is_segment_name("A")
-            True
-
-            >>> ide.Path.is_segment_name("A1")
-            True
-
-            >>> ide.Path.is_segment_name("A2")
-            True
-
-            >>> ide.Path.is_segment_name("A99")
-            True
-
-            >>> ide.Path.is_segment_name("B")
-            True
-
-            >>> ide.Path.is_segment_name("B1")
-            True
-
-            >>> ide.Path.is_segment_name("B2")
-            True
-
-            >>> ide.Path.is_segment_name("B99")
-            True
-
-            >>> ide.Path.is_segment_name("AA")
-            True
-
-            >>> ide.Path.is_segment_name("AA1")
-            True
-
-            >>> ide.Path.is_segment_name("AA2")
-            True
-
-            >>> ide.Path.is_segment_name("AA99")
-            True
-
-            >>> ide.Path.is_segment_name("AB")
-            True
-
-            >>> ide.Path.is_segment_name("AB1")
-            True
-
-            >>> ide.Path.is_segment_name("AB2")
-            True
-
-            >>> ide.Path.is_segment_name("AB99")
-            True
-
-            >>> ide.Path.is_segment_name("__")
-            False
-
-            >>> ide.Path.is_segment_name("1")
-            False
-
-            >>> ide.Path.is_segment_name("a")
-            False
-
-            >>> ide.Path.is_segment_name("b")
-            False
-
-            >>> ide.Path.is_segment_name("aa")
-            False
-
-            >>> ide.Path.is_segment_name("ab")
-            False
-
-            >>> ide.Path.is_segment_name("AAA")
-            False
-
-        """
-        if not isinstance(string, str):
-            return False
-        if not bool(string):
-            return False
-        if not (string[0].isupper() or string[0] == "_"):
-            return False
-        if len(string) == 1:
-            return True
-        if not (string[1].isupper() or string[1].isdigit()):
-            return False
-        if len(string) == 2:
-            return True
-        return string[2:].isnumeric()
-
     def is_segments(self) -> bool:
         """
         Is true when path is segments directory.
@@ -1642,7 +1536,6 @@ class Path(pathlib.PosixPath):
                 continue
             names.append(name)
         if is_segments:
-            names = [_ for _ in names if _.is_segment_name()]
             names = Path.sort_segment_names(names)
         if self.is__segments():
             prefix = "segment-"
@@ -1722,8 +1615,6 @@ class Path(pathlib.PosixPath):
         names = []
         for string in strings:
             name = abjad.String(string)
-            if not name.is_segment_name():
-                raise ValueError(f"must be segment name (not {string!r}).")
             names.append(name)
 
         def _compare(name_1, name_2):

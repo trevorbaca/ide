@@ -10,7 +10,7 @@ def test_AbjadIDE_check_definition_py_03():
     """
 
     path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
-    abjad_ide("red A dpc q")
+    abjad_ide("red gg A dpc q")
     transcript = abjad_ide.io.transcript
     assert f"{path.trim()} ... OK" in transcript
     assert "Total time " in transcript

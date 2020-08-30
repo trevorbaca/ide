@@ -17,7 +17,7 @@ def test_AbjadIDE_edit_illustration_ily_01():
         path.write_text("")
         assert path.is_file()
 
-        abjad_ide("red A iie q")
+        abjad_ide("red gg A iie q")
         transcript = abjad_ide.io.transcript
         assert f"Editing {path.trim()} ..." in transcript
 

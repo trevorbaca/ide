@@ -13,7 +13,7 @@ def test_AbjadIDE_make_segment_midi_01():
         maker = directory / "__make_segment_midi__.py"
         maker.remove()
 
-        abjad_ide("red _ midm q")
+        abjad_ide("red gg _ midm q")
         transcript = abjad_ide.io.transcript
         assert "Making MIDI ..." in transcript
         assert f"Removing {midi.trim()} ..." not in transcript
@@ -25,7 +25,7 @@ def test_AbjadIDE_make_segment_midi_01():
         assert midi.is_file()
         assert not maker.exists()
 
-        abjad_ide("red _ midm q")
+        abjad_ide("red gg _ midm q")
         transcript = abjad_ide.io.transcript
         assert "Making MIDI ..." in transcript
         assert f"Removing {midi.trim()} ..." in transcript

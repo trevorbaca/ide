@@ -587,7 +587,7 @@ def test_AbjadIDE_show_help_09():
     In segment directory.
     """
 
-    abjad_ide("red A ? q")
+    abjad_ide("red gg A ? q")
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : segments : A : help",
