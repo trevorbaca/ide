@@ -1686,19 +1686,19 @@ class AbjadIDE:
         if directory.is_score_package_path() and not directory.is_scores():
             return directory.contents(value)
 
-    def _match_files(self, files, strings, pattern, prefix):
+    def _match_files(self, files, strings, pattern):
         if pattern:
             files = _filter_files(files, strings, pattern)
         else:
             files = [_ for _ in files if _.name[0].isalpha()]
-        address = prefix + (pattern or "")
+        address = pattern or ""
         count = len(files)
         counter = abjad.String("file").pluralize(count)
         message = f"matching {address!r} to {count} {counter} ..."
         self.io.display(message)
         return files
 
-    def _open_files(self, paths, force_vim=False, silent=False):
+    def _open_files(self, paths, force_vim=False, silent=False, warn=100):
         assert isinstance(paths, collections.abc.Iterable), repr(paths)
         for path in paths:
             if not path.exists():
@@ -1725,7 +1725,7 @@ class AbjadIDE:
                     self.io.display(f"opening {path.trim()} ...")
         else:
             return
-        if 100 <= len(paths):
+        if warn <= len(paths):
             response = self.io.get(f"{len(paths)} files ok?")
             if self.is_navigation(response):
                 return response
@@ -2626,24 +2626,6 @@ class AbjadIDE:
             self.clipboard.append(path)
 
     @Command(
-        "@@",
-        description="all - edit",
-        external_directories=True,
-        menu_section="all",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_all(self, directory: pathx.Path, pattern: str = None) -> None:
-        """
-        Edits all files.
-        """
-        files, strings = _find_editable_files(directory, force=True)
-        files = self._match_files(files, strings, pattern, "@@")
-        files = [_ for _ in files if "__pycache__" not in str(_)]
-        files = [_ for _ in files if ".mypy_cache" not in str(_)]
-        self._open_files(files)
-
-    @Command(
         "bcte",
         description="back-cover.tex - edit",
         menu_section="back cover",
@@ -2680,6 +2662,27 @@ class AbjadIDE:
                 if definition_py.is_file():
                     paths.append(definition_py)
         self._open_files(paths)
+
+    @Command(
+        "ef",
+        description="edit - files",
+        external_directories=True,
+        menu_section="edit",
+        score_package_paths=True,
+        scores_directory=True,
+    )
+    def edit_files(self, directory: pathx.Path, pattern: str = None) -> None:
+        """
+        Edits all files.
+        """
+        files, strings = _find_editable_files(directory, force=True)
+        pattern = self.io.get("pattern")
+        if self.is_navigation(pattern):
+            return
+        files = self._match_files(files, strings, pattern)
+        files = [_ for _ in files if "__pycache__" not in str(_)]
+        files = [_ for _ in files if ".mypy_cache" not in str(_)]
+        self._open_files(files, warn=1)
 
     @Command(
         "fcte",
@@ -2884,29 +2887,14 @@ class AbjadIDE:
         self._open_files([path])
 
     @Command(
-        "ssie",
-        description="stylesheet.ily - edit",
-        menu_section="stylesheet",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_stylesheet_ily(self, directory: pathx.Path) -> None:
-        """
-        Edits ``stylesheet.ily``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        assert directory.build is not None
-        path = directory.build / "stylesheet.ily"
-        self._open_files([path])
-
-    @Command(
-        "it",
-        description="text - edit",
+        "es",
+        description="edit - string",
         external_directories=True,
-        menu_section="text",
+        menu_section="edit",
         score_package_paths=True,
         scores_directory=True,
     )
-    def edit_text(self, directory: pathx.Path) -> None:
+    def edit_string(self, directory: pathx.Path) -> None:
         """
         Opens Vim and goes to every occurrence of search string.
         """
@@ -2920,6 +2908,21 @@ class AbjadIDE:
             command = f"vim -c \"grep '{search_string}' {options}\""
             self.io.display(command, raw=True)
             abjad.iox.spawn_subprocess(command)
+
+    @Command(
+        "ssie",
+        description="stylesheet.ily - edit",
+        menu_section="stylesheet",
+        score_package_paths=("_segments", "build"),
+    )
+    def edit_stylesheet_ily(self, directory: pathx.Path) -> None:
+        """
+        Edits ``stylesheet.ily``.
+        """
+        assert directory.is__segments() or directory.is_build()
+        assert directory.build is not None
+        path = directory.build / "stylesheet.ily"
+        self._open_files([path])
 
     @Command(
         "cbe",

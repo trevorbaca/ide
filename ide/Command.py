@@ -24,13 +24,13 @@ class Command:
     ### CLASS VARIABLES ###
 
     known_sections = (
-        "all",
         "back cover",
         "build",
         "clipboard",
         "definition",
         "definitions",
         "directory",
+        "edit",
         "front cover",
         "git",
         "go",
@@ -51,7 +51,6 @@ class Command:
         "shell",
         "show",
         "stylesheet",
-        "text",
     )
 
     ### INITIALIZER ###

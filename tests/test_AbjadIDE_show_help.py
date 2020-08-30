@@ -13,8 +13,6 @@ def test_AbjadIDE_show_help_01():
     assert menu == [
         "Red Score (2017) : builds : _assets (empty) : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
         "    clipboard - paste (cbv)",
@@ -28,6 +26,9 @@ def test_AbjadIDE_show_help_01():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -52,8 +53,6 @@ def test_AbjadIDE_show_help_01():
         "    show - column (;)",
         "    show - help (?)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -66,8 +65,6 @@ def test_AbjadIDE_show_help_02():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : builds : letter-score : _segments (empty) : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - edit (bcte)",
@@ -87,6 +84,9 @@ def test_AbjadIDE_show_help_02():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    front-cover.pdf - open (fcpo)",
         "    front-cover.tex - edit (fcte)",
@@ -152,8 +152,6 @@ def test_AbjadIDE_show_help_02():
         "",
         "    stylesheet.ily - edit (ssie)",
         "    stylesheet.ily - generate (ssig)",
-        "",
-        "    text - edit (it)",
         "",
     ]
 
@@ -169,8 +167,6 @@ def test_AbjadIDE_show_help_03():
     assert menu == [
         "Red Score (2017) : builds : letter-score : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - edit (bcte)",
         "    back-cover.tex - generate (bctg)",
@@ -189,6 +185,9 @@ def test_AbjadIDE_show_help_03():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    front-cover.pdf - open (fcpo)",
         "    front-cover.tex - edit (fcte)",
@@ -255,8 +254,6 @@ def test_AbjadIDE_show_help_03():
         "    stylesheet.ily - edit (ssie)",
         "    stylesheet.ily - generate (ssig)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -269,8 +266,6 @@ def test_AbjadIDE_show_help_04():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : builds : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
@@ -285,6 +280,9 @@ def test_AbjadIDE_show_help_04():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -325,8 +323,6 @@ def test_AbjadIDE_show_help_04():
         "    show - column (;)",
         "    show - help (?)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -339,8 +335,6 @@ def test_AbjadIDE_show_help_05():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
@@ -355,6 +349,9 @@ def test_AbjadIDE_show_help_05():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -376,8 +373,6 @@ def test_AbjadIDE_show_help_05():
         "    show - column (;)",
         "    show - help (?)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -390,8 +385,6 @@ def test_AbjadIDE_show_help_06():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : distribution : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
@@ -406,6 +399,9 @@ def test_AbjadIDE_show_help_06():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -430,8 +426,6 @@ def test_AbjadIDE_show_help_06():
         "    show - column (;)",
         "    show - help (?)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -448,8 +442,6 @@ def test_AbjadIDE_show_help_07():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Green Score (2018) : builds : arch-a-parts : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - edit (bcte)",
@@ -469,6 +461,9 @@ def test_AbjadIDE_show_help_07():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    front-cover.pdf - open (fcpo)",
         "    front-cover.tex - edit (fcte)",
@@ -538,8 +533,6 @@ def test_AbjadIDE_show_help_07():
         "    stylesheet.ily - edit (ssie)",
         "    stylesheet.ily - generate (ssig)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -553,14 +546,15 @@ def test_AbjadIDE_show_help_08():
     assert menu == [
         "Abjad IDE : scores : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
         "    clipboard - paste (cbv)",
         "    clipboard - show (cbs)",
         "",
         "    directory - scores (ss)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -584,8 +578,6 @@ def test_AbjadIDE_show_help_08():
         "",
         "    show - column (;)",
         "    show - help (?)",
-        "",
-        "    text - edit (it)",
         "",
     ]
 
@@ -600,8 +592,6 @@ def test_AbjadIDE_show_help_09():
     assert menu == [
         "Red Score (2017) : segments : A : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
         "    clipboard - paste (cbv)",
@@ -618,6 +608,9 @@ def test_AbjadIDE_show_help_09():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -670,8 +663,6 @@ def test_AbjadIDE_show_help_09():
         "",
         "    show - column (;)",
         "    show - help (?)",
-        "",
-        "    text - edit (it)",
         "",
     ]
 
@@ -686,8 +677,6 @@ def test_AbjadIDE_show_help_10():
     assert menu == [
         "Red Score (2017) : segments : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
         "    clipboard - paste (cbv)",
@@ -704,6 +693,9 @@ def test_AbjadIDE_show_help_10():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -757,8 +749,6 @@ def test_AbjadIDE_show_help_10():
         "    show - column (;)",
         "    show - help (?)",
         "",
-        "    text - edit (it)",
-        "",
     ]
 
 
@@ -771,8 +761,6 @@ def test_AbjadIDE_show_help_11():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : stylesheets : help",
-        "",
-        "    all - edit (@@)",
         "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
@@ -787,6 +775,9 @@ def test_AbjadIDE_show_help_11():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -810,8 +801,6 @@ def test_AbjadIDE_show_help_11():
         "",
         "    show - column (;)",
         "    show - help (?)",
-        "",
-        "    text - edit (it)",
         "",
     ]
 
@@ -826,8 +815,6 @@ def test_AbjadIDE_show_help_12():
     assert menu == [
         "Red Score (2017) : wrapper : help",
         "",
-        "    all - edit (@@)",
-        "",
         "    clipboard - copy (cbc)",
         "    clipboard - empty (cbe)",
         "    clipboard - paste (cbv)",
@@ -841,6 +828,9 @@ def test_AbjadIDE_show_help_12():
         "    directory - segments (gg)",
         "    directory - stylesheets (yy)",
         "    directory - wrapper (ww)",
+        "",
+        "    edit - files (ef)",
+        "    edit - string (es)",
         "",
         "    git - commit (ci)",
         "    git - diff (diff)",
@@ -864,7 +854,5 @@ def test_AbjadIDE_show_help_12():
         "",
         "    show - column (;)",
         "    show - help (?)",
-        "",
-        "    text - edit (it)",
         "",
     ]
