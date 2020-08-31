@@ -9,8 +9,8 @@ def test_AbjadIDE_check_definition_py_03():
     In segment directory.
     """
 
-    path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
-    abjad_ide("red gg A dpc q")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "02", "definition.py")
+    abjad_ide("red gg 02 dpc q")
     transcript = abjad_ide.io.transcript
     assert f"{path.trim()} ... OK" in transcript
     assert "Total time " in transcript
@@ -23,7 +23,7 @@ def test_AbjadIDE_check_definition_py_04():
 
     abjad_ide("red gg dpc q")
     transcript = abjad_ide.io.transcript
-    for name in ["_", "A", "B"]:
+    for name in ["01", "02", "03"]:
         path = ide.Path(
             scores, "red_score", "red_score", "segments", name, "definition.py"
         )

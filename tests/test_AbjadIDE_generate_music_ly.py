@@ -22,9 +22,9 @@ def test_AbjadIDE_generate_music_ly_01():
         assert "Red Score (2017) for piano" in text
         assert r"\version" in text
         assert r"\language" in text
-        assert '\n        \\include "_segments/segment--.ly"' in text
-        assert '\n        \\include "_segments/segment-A.ly"' in text
-        assert '\n        \\include "_segments/segment-B.ly"' in text
+        assert '\n        \\include "_segments/segment-01ly"' in text
+        assert '\n        \\include "_segments/segment-02.ly"' in text
+        assert '\n        \\include "_segments/segment-03.ly"' in text
 
         abjad_ide("red bb letter mlg q")
         transcript = abjad_ide.io.transcript
@@ -36,9 +36,9 @@ def test_AbjadIDE_generate_music_ly_01():
         assert "Red Score (2017) for piano" in text
         assert r"\version" in text
         assert r"\language" in text
-        assert '\n        \\include "_segments/segment--.ly"' in text
-        assert '\n        \\include "_segments/segment-A.ly"' in text
-        assert '\n        \\include "_segments/segment-B.ly"' in text
+        assert '\n        \\include "_segments/segment-01.ly"' in text
+        assert '\n        \\include "_segments/segment-02.ly"' in text
+        assert '\n        \\include "_segments/segment-03.ly"' in text
 
 
 def test_AbjadIDE_generate_music_ly_02():
@@ -52,8 +52,8 @@ def test_AbjadIDE_generate_music_ly_02():
         )
         target.remove()
 
-        segment_C = target.segments / "C"
-        segment_C.mkdir()
+        segment_04 = target.segments / "04"
+        segment_04.mkdir()
 
         abjad_ide("red bb letter ggc mlg q")
         transcript = abjad_ide.io.transcript
@@ -64,7 +64,7 @@ def test_AbjadIDE_generate_music_ly_02():
         assert "Red Score (2017) for piano" in text
         assert r"\version" in text
         assert r"\language" in text
-        assert '\n        \\include "_segments/segment--.ly"' in text
-        assert '\n        \\include "_segments/segment-A.ly"' in text
-        assert '\n        \\include "_segments/segment-B.ly"' in text
-        assert '\n        %\\include "_segments/segment-C.ly"' in text
+        assert '\n        \\include "_segments/segment-01.ly"' in text
+        assert '\n        \\include "_segments/segment-02.ly"' in text
+        assert '\n        \\include "_segments/segment-03.ly"' in text
+        assert '\n        %\\include "_segments/segment-04.ly"' in text

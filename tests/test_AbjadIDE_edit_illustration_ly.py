@@ -9,10 +9,10 @@ def test_AbjadIDE_edit_illustration_ly_01():
     In segment directory.
     """
 
-    abjad_ide("red gg A ile q")
+    abjad_ide("red gg 02 ile q")
     transcript = abjad_ide.io.transcript
     path = ide.Path(
-        scores, "red_score", "red_score", "segments", "A", "illustration.ly"
+        scores, "red_score", "red_score", "segments", "02", "illustration.ly"
     )
     assert f"Editing {path.trim()} ..." in transcript
 
@@ -25,7 +25,7 @@ def test_AbjadIDE_edit_illustration_ly_02():
     abjad_ide("red gg ile q")
     transcript = abjad_ide.io.transcript
 
-    for name in ["_", "A", "B"]:
+    for name in ["01", "02", "03"]:
         path = ide.Path(
             scores, "red_score", "red_score", "segments", name, "illustration.ly"
         )

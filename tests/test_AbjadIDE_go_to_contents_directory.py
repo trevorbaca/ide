@@ -66,12 +66,12 @@ def test_AbjadIDE_go_to_contents_directory_05():
     From segment directory.
     """
 
-    abjad_ide("red gg A cc q")
+    abjad_ide("red gg 02 cc q")
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         "Abjad IDE : scores",
         "Red Score (2017)",
         "Red Score (2017) : segments",
-        "Red Score (2017) : segments : A",
+        "Red Score (2017) : segments : 02",
         "Red Score (2017)",
     ]

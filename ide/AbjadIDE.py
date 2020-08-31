@@ -1371,16 +1371,26 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                statement = "from {}.segments.{}.__metadata__"
-                statement += " import metadata as previous_metadata"
-                statement = statement.format(
-                    directory.contents.name, previous_segment.name
-                )
-                persist_statement = "from {}.segments.{}.__persist__"
-                persist_statement += " import persist as previous_persist"
-                persist_statement = persist_statement.format(
-                    directory.contents.name, previous_segment.name
-                )
+                #                statement = "from {}.segments.{}.__metadata__"
+                #                statement += " import metadata as previous_metadata"
+                #                statement = statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                metadata = previous_segment / "__metadata__.py"
+                statement = f'file = ide.Path("{metadata}")'
+                statement += "\n        lines = file.read_text()"
+                statement += "\n        exec(lines)"
+                statement += "\n        previous_metadata = metadata"
+                #                persist_statement = "from {}.segments.{}.__persist__"
+                #                persist_statement += " import persist as previous_persist"
+                #                persist_statement = persist_statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                persist = previous_segment / "__persist__.py"
+                persist_statement = f'file = ide.Path("{persist}")'
+                persist_statement += "\n        lines = file.read_text()"
+                persist_statement += "\n        exec(lines)"
+                persist_statement += "\n        previous_persist = persist"
             template = maker.read_text()
             template = template.format(
                 previous_segment_metadata_import_statement=statement,
@@ -1420,16 +1430,26 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                statement = "from {}.segments.{}.__metadata__"
-                statement += " import metadata as previous_metadata"
-                statement = statement.format(
-                    directory.contents.name, previous_segment.name
-                )
-                persist_statement = "from {}.segments.{}._persist__"
-                persist_statement += " import persist as previous_persist"
-                persist_statement = persist_statement.format(
-                    directory.contents.name, previous_segment.name
-                )
+                #                statement = "from {}.segments.{}.__metadata__"
+                #                statement += " import metadata as previous_metadata"
+                #                statement = statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                metadata = previous_segment / "__metadata__.py"
+                statement = f'file = ide.Path("{metadata}")'
+                statement += "\n        lines = file.read_text()"
+                statement += "\n        exec(lines)"
+                statement += "\n        previous_metadata = metadata"
+                #                persist_statement = "from {}.segments.{}._persist__"
+                #                persist_statement += " import persist as previous_persist"
+                #                persist_statement = persist_statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                persist = previous_segment / "__persist__.py"
+                persist_statement = f'file = ide.Path("{persist}")'
+                persist_statement += "\n        lines = file.read_text()"
+                persist_statement += "\n        exec(lines)"
+                persist_statement += "\n        previous_persist = persist"
             template = maker.read_text()
             template = template.format(
                 previous_segment_metadata_import_statement=statement,
@@ -1469,16 +1489,26 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                statement = "from {}.segments.{}.__metadata__"
-                statement += " import metadata as previous_metadata"
-                statement = statement.format(
-                    directory.contents.name, previous_segment.name
-                )
-                persist_statement = "from {}.segments.{}.__persist__"
-                persist_statement += " import persist as previous_persist"
-                persist_statement = persist_statement.format(
-                    directory.contents.name, previous_segment.name
-                )
+                #                statement = "from {}.segments.{}.__metadata__"
+                #                statement += " import metadata as previous_metadata"
+                #                statement = statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                metadata = previous_segment / "__metadata__.py"
+                statement = f'file = ide.Path("{metadata}")'
+                statement += "\n        lines = file.read_text()"
+                statement += "\n        exec(lines)"
+                statement += "\n        previous_metadata = metadata"
+                #                persist_statement = "from {}.segments.{}.__persist__"
+                #                persist_statement += " import persist as previous_persist"
+                #                persist_statement = persist_statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                persist = previous_segment / "__persist__.py"
+                persist_statement = f'file = ide.Path("{persist}")'
+                persist_statement += "\n        lines = file.read_text()"
+                persist_statement += "\n        exec(lines)"
+                persist_statement += "\n        previous_persist = persist"
             template = maker.read_text()
             template = template.format(
                 previous_segment_metadata_import_statement=statement,
@@ -1524,16 +1554,26 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                statement = "from {}.segments.{}.__metadata__"
-                statement += " import metadata as previous_metadata"
-                statement = statement.format(
-                    directory.contents.name, previous_segment.name
-                )
-                persist_statement = "from {}.segments.{}.__persist__"
-                persist_statement += " import persist as previous_persist"
-                persist_statement = persist_statement.format(
-                    directory.contents.name, previous_segment.name
-                )
+                #                statement = "from {}.segments.{}.__metadata__"
+                #                statement += " import metadata as previous_metadata"
+                #                statement = statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                metadata = previous_segment / "__metadata__.py"
+                statement = f'file = ide.Path("{metadata}")'
+                statement += "\n        lines = file.read_text()"
+                statement += "\n        exec(lines)"
+                statement += "\n        previous_metadata = metadata"
+                #                persist_statement = "from {}.segments.{}.__persist__"
+                #                persist_statement += " import persist as previous_persist"
+                #                persist_statement = persist_statement.format(
+                #                    directory.contents.name, previous_segment.name
+                #                )
+                persist = previous_segment / "__persist__.py"
+                persist_statement = f'file = ide.Path("{persist}")'
+                persist_statement += "\n        lines = file.read_text()"
+                persist_statement += "\n        exec(lines)"
+                persist_statement += "\n        previous_persist = persist"
             template = maker.read_text()
             completed_template = template.format(
                 previous_segment_metadata_import_statement=statement,

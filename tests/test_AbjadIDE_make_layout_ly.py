@@ -66,18 +66,18 @@ def test_AbjadIDE_make_layout_ly_03():
     """
 
     with ide.Test():
-        path = ide.Path(scores, "red_score", "red_score", "segments", "A", "layout.ly")
+        path = ide.Path(scores, "red_score", "red_score", "segments", "02", "layout.ly")
         assert path.is_file()
         path.remove()
         assert not path.exists()
 
-        abjad_ide("red gg A llm q")
+        abjad_ide("red gg 02 llm q")
         lines = abjad_ide.io.transcript.lines
         assert path.is_file()
         for line in [
-            "Interpreting red_score/segments/A/layout.py ...",
-            "Writing red_score/segments/A/__make_layout_ly__.py ...",
-            "Interpreting red_score/segments/A/__make_layout_ly__.py ...",
-            "Removing red_score/segments/A/__make_layout_ly__.py ...",
+            "Interpreting red_score/segments/02/layout.py ...",
+            "Writing red_score/segments/02/__make_layout_ly__.py ...",
+            "Interpreting red_score/segments/02/__make_layout_ly__.py ...",
+            "Removing red_score/segments/02/__make_layout_ly__.py ...",
         ]:
             assert line in lines

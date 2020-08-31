@@ -12,12 +12,12 @@ def test_AbjadIDE_edit_illustration_ily_01():
     with ide.Test():
 
         path = ide.Path(
-            scores, "red_score", "red_score", "segments", "A", "illustration.ily"
+            scores, "red_score", "red_score", "segments", "02", "illustration.ily"
         )
         path.write_text("")
         assert path.is_file()
 
-        abjad_ide("red gg A iie q")
+        abjad_ide("red gg 02 iie q")
         transcript = abjad_ide.io.transcript
         assert f"Editing {path.trim()} ..." in transcript
 
@@ -29,7 +29,7 @@ def test_AbjadIDE_edit_illustration_ily_02():
 
     with ide.Test():
 
-        for name in ["_", "A", "B"]:
+        for name in ["01", "02", "03"]:
             path = ide.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ily"
             )
@@ -39,7 +39,7 @@ def test_AbjadIDE_edit_illustration_ily_02():
         abjad_ide("red gg iie q")
         transcript = abjad_ide.io.transcript
 
-        for name in ["_", "A", "B"]:
+        for name in ["01", "02", "03"]:
             path = ide.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ily"
             )

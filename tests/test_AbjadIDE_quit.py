@@ -32,4 +32,4 @@ def test_AbjadIDE_quit_04():
     In segment directory.
     """
 
-    abjad_ide("red gg A q")
+    abjad_ide("red gg 02 q")

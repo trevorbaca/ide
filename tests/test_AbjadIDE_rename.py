@@ -26,21 +26,21 @@ def test_AbjadIDE_rename_02():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "red_score", "red_score", "segments", "D")
+        source = ide.Path(scores, "red_score", "red_score", "segments", "04")
         source.remove()
-        target = source.with_name("E")
+        target = source.with_name("05")
         target.remove()
 
         source.mkdir()
         assert source.is_dir()
 
-        abjad_ide("red gg ren D E y q")
+        abjad_ide("red gg ren 04 05 y q")
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert "Select packages to rename> D" in transcript
+        assert "Select packages to rename> 04" in transcript
         assert f"Renaming {source.trim()} ..." in transcript
-        assert "New name> E" in transcript
+        assert "New name> 05" in transcript
         assert "Renaming ..." in transcript
         assert f" FROM: {source.trim()}" in transcript
         assert f"   TO: {target.trim()}" in transcript
@@ -53,18 +53,18 @@ def test_AbjadIDE_rename_03():
     """
 
     with ide.Test():
-        source = ide.Path(scores, "red_score", "red_score", "segments", "B")
+        source = ide.Path(scores, "red_score", "red_score", "segments", "03")
         assert source.is_dir()
-        target = source.with_name("C")
+        target = source.with_name("04")
         target.remove()
 
-        abjad_ide("red gg ren B C y q")
+        abjad_ide("red gg ren 03 04 y q")
         transcript = abjad_ide.io.transcript
         assert not source.exists()
         assert target.is_dir()
-        assert "Select packages to rename> B" in transcript
+        assert "Select packages to rename> 03" in transcript
         assert f"Renaming {source.trim()} ..." in transcript
-        assert "New name> C" in transcript
+        assert "New name> 04" in transcript
         assert "Renaming ..." in transcript
         assert f" FROM: {source.trim()}" in transcript
         assert f"   TO: {target.trim()}" in transcript

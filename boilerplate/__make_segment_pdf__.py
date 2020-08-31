@@ -11,9 +11,11 @@ if __name__ == "__main__":
 
     try:
         from definition import maker
-        from __metadata__ import metadata as metadata
 
         {previous_segment_metadata_import_statement}
+
+        from __metadata__ import metadata as metadata
+
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
@@ -21,6 +23,12 @@ if __name__ == "__main__":
     try:
         segment_directory = ide.Path(os.path.realpath(__file__)).parent
     except Exception:
+        traceback.print_exc()
+        sys.exit(1)
+
+    try:
+        {previous_segment_persist_import_statement}
+    except ModuleNotFoundError:
         traceback.print_exc()
         sys.exit(1)
 
@@ -34,12 +42,6 @@ if __name__ == "__main__":
             variable_name="persist",
         )
         persist = None
-
-    try:
-        {previous_segment_persist_import_statement}
-    except ModuleNotFoundError:
-        traceback.print_exc()
-        sys.exit(1)
 
     try:
         scores_directory = segment_directory.parent.parent.parent.parent

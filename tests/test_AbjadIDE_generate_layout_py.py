@@ -9,13 +9,13 @@ def test_AbjadIDE_generate_layout_py_01():
 
     with ide.Test():
         target = ide.Path(
-            scores, "red_score", "red_score", "segments", "A", "layout.py"
+            scores, "red_score", "red_score", "segments", "02", "layout.py"
         )
         assert target.is_file()
         target.remove()
         assert not target.exists()
 
-        abjad_ide("red gg A lpg q")
+        abjad_ide("red gg 02 lpg q")
         transcript = abjad_ide.io.transcript
         assert f"Writing {target.trim()} ..." in transcript
         assert target.is_file()

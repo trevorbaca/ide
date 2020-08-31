@@ -12,14 +12,14 @@ def test_AbjadIDE_open_illustration_pdf_01():
     with ide.Test():
 
         path = ide.Path(
-            scores, "red_score", "red_score", "segments", "A", "illustration.pdf"
+            scores, "red_score", "red_score", "segments", "02", "illustration.pdf"
         )
         assert not path.exists()
 
         path.write_text("")
         assert path.is_file()
 
-        abjad_ide("red gg A ipo q")
+        abjad_ide("red gg 02 ipo q")
         transcript = abjad_ide.io.transcript
         assert f"Opening {path.trim()} ..." in transcript
 
@@ -32,7 +32,7 @@ def test_AbjadIDE_open_illustration_pdf_02():
     with ide.Test():
 
         paths = []
-        for name in ["_", "A", "B"]:
+        for name in ["01", "02", "03"]:
             path = ide.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.pdf"
             )

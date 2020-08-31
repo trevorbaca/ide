@@ -11,7 +11,7 @@ def test_AbjadIDE_interpret_illustration_ly_01():
 
     with ide.Test():
         sources = []
-        for name in ["_", "A", "B"]:
+        for name in ["01", "02", "03"]:
             path = ide.Path(
                 scores, "red_score", "red_score", "segments", name, "illustration.ly"
             )
@@ -50,12 +50,12 @@ def test_AbjadIDE_interpret_illustration_ly_02():
 
     with ide.Test():
         source = ide.Path(
-            scores, "red_score", "red_score", "segments", "A", "illustration.ly"
+            scores, "red_score", "red_score", "segments", "02", "illustration.ly"
         )
         target = source.with_suffix(".pdf")
         target.remove()
 
-        abjad_ide("red gg A ili q")
+        abjad_ide("red gg 02 ili q")
         transcript = abjad_ide.io.transcript
         assert "Interpreting ly ..." in transcript
         assert f"Interpreting {source.trim()} ..." in transcript
@@ -64,7 +64,7 @@ def test_AbjadIDE_interpret_illustration_ly_02():
         assert f"Opening {target.trim()} ..." in transcript
         assert target.is_file()
 
-        abjad_ide("red gg A ili q")
+        abjad_ide("red gg 02 ili q")
         transcript = abjad_ide.io.transcript
         assert "Interpreting ly ..." in transcript
         assert f"Interpreting {source.trim()} ..." in transcript

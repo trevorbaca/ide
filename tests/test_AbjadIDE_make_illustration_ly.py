@@ -10,13 +10,13 @@ def test_AbjadIDE_make_illustration_ly_01():
     """
 
     with ide.Test():
-        segment = ide.Path(scores, "red_score", "red_score", "segments", "A")
+        segment = ide.Path(scores, "red_score", "red_score", "segments", "02")
         ly = segment / "illustration.ly"
         ly.remove()
         maker = segment / "__make_segment_ly__.py"
         maker.remove()
 
-        abjad_ide("red gg A ilm q")
+        abjad_ide("red gg 02 ilm q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {ly.trim()} ..." not in transcript
         assert f"Writing {maker.trim()} ..." in transcript
@@ -26,7 +26,7 @@ def test_AbjadIDE_make_illustration_ly_01():
         assert ly.is_file()
         assert not maker.exists()
 
-        abjad_ide("red gg A ilm q")
+        abjad_ide("red gg 02 ilm q")
         transcript = abjad_ide.io.transcript
         assert f"Removing {ly.trim()} ..." in transcript
         assert f"Writing {maker.trim()} ..." in transcript

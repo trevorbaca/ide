@@ -14,11 +14,11 @@ def test_AbjadIDE_collect_segments_01():
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Collecting segment lys ...",
-            " Writing red_score/builds/letter-score/_segments/segment--.ily ...",
-            " Writing red_score/builds/letter-score/_segments/segment--.ly ...",
-            " Writing red_score/builds/letter-score/_segments/segment-A.ily ...",
-            " Writing red_score/builds/letter-score/_segments/segment-A.ly ...",
-            " Writing red_score/builds/letter-score/_segments/segment-B.ily ...",
-            " Writing red_score/builds/letter-score/_segments/segment-B.ly ...",
+            " Writing red_score/builds/letter-score/_segments/segment-01.ily ...",
+            " Writing red_score/builds/letter-score/_segments/segment-01.ly ...",
+            " Writing red_score/builds/letter-score/_segments/segment-02.ily ...",
+            " Writing red_score/builds/letter-score/_segments/segment-02.ly ...",
+            " Writing red_score/builds/letter-score/_segments/segment-03.ily ...",
+            " Writing red_score/builds/letter-score/_segments/segment-03.ly ...",
         ]:
             assert line in lines, repr(line)

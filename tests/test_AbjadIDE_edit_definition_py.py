@@ -9,7 +9,7 @@ def test_AbjadIDE_edit_definition_py_02():
     In segment directory.
     """
 
-    abjad_ide("red gg A dpe q")
+    abjad_ide("red gg 02 dpe q")
     transcript = abjad_ide.io.transcript
-    path = ide.Path(scores, "red_score", "red_score", "segments", "A", "definition.py")
+    path = ide.Path(scores, "red_score", "red_score", "segments", "02", "definition.py")
     assert f"Editing {path.trim()} ..." in transcript

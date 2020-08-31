@@ -15,13 +15,16 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        from __metadata__ import metadata as metadata
+        {previous_segment_metadata_import_statement}
+        lines = file.read_text()
+        exec(lines)
+        previous_metadata = metadata
     except ImportError:
         traceback.print_exc()
         sys.exit(1)
 
     try:
-        {previous_segment_metadata_import_statement}
+        from __metadata__ import metadata as metadata
     except ImportError:
         traceback.print_exc()
         sys.exit(1)

@@ -29,7 +29,7 @@ def test_AbjadIDE_git_commit_01():
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript
 
-    abjad_ide("red gg A ci q")
+    abjad_ide("red gg 02 ci q")
     transcript = abjad_ide.io.transcript
     assert "> ci" in transcript
 

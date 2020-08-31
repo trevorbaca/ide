@@ -10,7 +10,7 @@ def test_AbjadIDE_make_illustration_pdf_01():
     """
 
     with ide.Test():
-        directory = ide.Path(scores, "red_score", "red_score", "segments", "A")
+        directory = ide.Path(scores, "red_score", "red_score", "segments", "02")
         ly = directory / "illustration.ly"
         ly.remove()
         pdf = directory / "illustration.pdf"
@@ -18,9 +18,9 @@ def test_AbjadIDE_make_illustration_pdf_01():
         maker = directory / "__make_segment_pdf__.py"
         maker.remove()
 
-        abjad_ide("red gg A ipm q")
+        abjad_ide("red gg 02 ipm q")
         transcript = abjad_ide.io.transcript
-        assert "Making segment A PDF ..." in transcript
+        assert "Making segment 02 PDF ..." in transcript
         assert f"Removing {ly.trim()} ..." not in transcript
         assert f"Removing {pdf.trim()} ..." not in transcript
         assert f"Writing {maker.trim()} ..." in transcript
@@ -33,9 +33,9 @@ def test_AbjadIDE_make_illustration_pdf_01():
         assert pdf.is_file()
         assert not maker.exists()
 
-        abjad_ide("red gg A ipm q")
+        abjad_ide("red gg 02 ipm q")
         transcript = abjad_ide.io.transcript
-        assert "Making segment A PDF ..." in transcript
+        assert "Making segment 02 PDF ..." in transcript
         assert f"Removing {ly.trim()} ..." in transcript
         assert f"Removing {pdf.trim()} ..." in transcript
         assert f"Writing {maker.trim()} ..." in transcript
@@ -56,7 +56,7 @@ def test_AbjadIDE_make_illustration_pdf_02():
 
     with ide.Test():
         directory = ide.Path(scores, "red_score", "red_score", "segments")
-        names = ["_", "A", "B"]
+        names = ["01", "02", "03"]
         for name in names:
             ly = directory / "illustration.ly"
             ly.remove()
