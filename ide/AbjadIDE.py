@@ -1638,8 +1638,6 @@ class AbjadIDE:
                 return path, True
             else:
                 self.io.display(f"missing {path.trim()} ...")
-        elif response.is_shell():
-            self.call_shell(directory, response.string[1:].strip())
         else:
             assert response.payload is None, repr(response)
             with self.change(directory):
@@ -2406,22 +2404,6 @@ class AbjadIDE:
         self.generate_score_tex(directory.build)
         self.io.display("")
         self.interpret_score_tex(directory.build)
-
-    @Command(
-        "!",
-        description="shell - call",
-        external_directories=True,
-        menu_section="shell",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def call_shell(self, directory: pathx.Path, statement: str) -> None:
-        """
-        Calls shell.
-        """
-        with self.change(directory):
-            self.io.display(f"calling shell on {statement!r} ...")
-            abjad.iox.spawn_subprocess(statement)
 
     @Command(
         "dpc",

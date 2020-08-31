@@ -77,9 +77,7 @@ class IO:
         for line in lines:
             print(line)
 
-    def get(
-        self, prompt: str = None, split_input: bool = False
-    ) -> typing.Optional[str]:
+    def get(self, prompt: str = None) -> typing.Optional[str]:
         """
         Gets user input.
 
@@ -98,17 +96,6 @@ class IO:
             print(f"{prompt}{string}")
         else:
             string = input(prompt)
-            if (
-                string
-                and not string.isspace()
-                and split_input
-                and not string.startswith("!")
-            ):
-                parts = string.split()
-                string = parts[0]
-                pending_input = " ".join(parts[1:])
-                if pending_input:
-                    self._pending_input = pending_input
         assert not string == "<return>"
         self.transcript.append([f"{prompt}{string}", ""])
         if string:

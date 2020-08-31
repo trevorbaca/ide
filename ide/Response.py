@@ -54,7 +54,7 @@ class Response:
         """
         Is true when response is command.
         """
-        return str(self.payload) in commands and self.string != "!"
+        return str(self.payload) in commands
 
     def is_path(self) -> bool:
         """
@@ -63,13 +63,5 @@ class Response:
         if isinstance(self.payload, pathx.Path):
             return True
         if isinstance(self.payload, list) and isinstance(self.payload[0], pathx.Path):
-            return True
-        return False
-
-    def is_shell(self) -> bool:
-        """
-        Is true when response is shell command.
-        """
-        if self.string and self.string.startswith("!") and not self.string == "!!":
             return True
         return False

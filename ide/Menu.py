@@ -100,7 +100,7 @@ class Menu:
             dimensions=dimensions,
             force_single_column=force_single_column,
         )
-        string = self.io.get(prompt=self.prompt, split_input=not self.getter)
+        string = self.io.get(prompt=self.prompt)
         prefix, string = _split_prefix(string)
         if string is None:
             payload = None
@@ -248,8 +248,6 @@ class Menu:
                 return entry.value
 
     def _match_range(self, string):
-        if string.startswith("!"):
-            return
         if "," not in string and "-" not in string:
             return
         for section in self.sections:
