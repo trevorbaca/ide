@@ -52,7 +52,7 @@ def test_AbjadIDE_open_illustration_pdf_03():
     Displays message when PDF does not exist.
     """
 
-    abjad_ide("blu gg A ipo q")
-    path = ide.Path("blue_score", "segments", "A", "illustration.pdf")
+    abjad_ide("blu gg 02 ipo q")
+    path = ide.Path("blue_score", "segments", "02", "illustration.pdf")
     transcript = abjad_ide.io.transcript
     assert f"Missing {path.trim()} ..." in transcript
