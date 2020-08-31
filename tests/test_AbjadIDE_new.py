@@ -193,7 +193,7 @@ def test_AbjadIDE_new_03():
 
         for line in [
             "Collecting segment lys ...",
-            " Writing green_score/builds/arch-a-parts/_segments/segment--.ly ...",
+            " Writing green_score/builds/arch-a-parts/_segments/segment-01.ly ...",
             " Writing fermata measure numbers to metadata ...",
             " Writing time signatures to metadata ...",
             "Handling build tags ...",
@@ -278,7 +278,7 @@ def test_AbjadIDE_new_03():
         assert (directory._assets / ".gitignore").is_file()
         assert directory._segments.exists()
         assert (directory._segments / ".gitignore").is_file()
-        assert (directory._segments / "segment--.ly").is_file()
+        assert (directory._segments / "segment-01.ly").is_file()
 
         for name in [
             "bass-clarinet-back-cover.tex",

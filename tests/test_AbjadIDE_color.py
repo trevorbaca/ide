@@ -12,11 +12,11 @@ def test_AbjadIDE_color_01():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color clefs q")
+        abjad_ide("gre gg 01 color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -25,7 +25,7 @@ def test_AbjadIDE_color_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor clefs q")
+        abjad_ide("gre gg 01 uncolor clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring clefs ...",
@@ -34,7 +34,7 @@ def test_AbjadIDE_color_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color clefs q")
+        abjad_ide("gre gg 01 color clefs q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring clefs ...",
@@ -52,11 +52,11 @@ def test_AbjadIDE_color_02():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color dynamics q")
+        abjad_ide("gre gg 01 color dynamics q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring dynamics ...",
@@ -65,7 +65,7 @@ def test_AbjadIDE_color_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor dynamics q")
+        abjad_ide("gre gg 01 uncolor dynamics q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring dynamics ...",
@@ -74,7 +74,7 @@ def test_AbjadIDE_color_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color dynamics q")
+        abjad_ide("gre gg 01 color dynamics q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring dynamics ...",
@@ -92,11 +92,11 @@ def test_AbjadIDE_color_03():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color instruments q")
+        abjad_ide("gre gg 01 color instruments q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring instruments ...",
@@ -106,7 +106,7 @@ def test_AbjadIDE_color_03():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor instruments q")
+        abjad_ide("gre gg 01 uncolor instruments q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring instruments ...",
@@ -115,7 +115,7 @@ def test_AbjadIDE_color_03():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color instruments q")
+        abjad_ide("gre gg 01 color instruments q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring instruments ...",
@@ -133,11 +133,11 @@ def test_AbjadIDE_color_04():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color margin q")
+        abjad_ide("gre gg 01 color margin q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring margin markup ...",
@@ -145,7 +145,7 @@ def test_AbjadIDE_color_04():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor margin q")
+        abjad_ide("gre gg 01 uncolor margin q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring margin markup ...",
@@ -153,7 +153,7 @@ def test_AbjadIDE_color_04():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color margin q")
+        abjad_ide("gre gg 01 color margin q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring margin markup ...",
@@ -170,11 +170,11 @@ def test_AbjadIDE_color_05():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color metronome q")
+        abjad_ide("gre gg 01 color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
@@ -185,7 +185,7 @@ def test_AbjadIDE_color_05():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor metro q")
+        abjad_ide("gre gg 01 uncolor metro q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring metronome marks ...",
@@ -196,7 +196,7 @@ def test_AbjadIDE_color_05():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color metronome q")
+        abjad_ide("gre gg 01 color metronome q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring metronome marks ...",
@@ -216,11 +216,11 @@ def test_AbjadIDE_color_06():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color persistent q")
+        abjad_ide("gre gg 01 color persistent q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring persistent indicators ...",
@@ -232,7 +232,7 @@ def test_AbjadIDE_color_06():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor persistent q")
+        abjad_ide("gre gg 01 uncolor persistent q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring persistent indicators ...",
@@ -243,7 +243,7 @@ def test_AbjadIDE_color_06():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color persistent q")
+        abjad_ide("gre gg 01 color persistent q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring persistent indicators ...",
@@ -263,11 +263,11 @@ def test_AbjadIDE_color_07():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color staff q")
+        abjad_ide("gre gg 01 color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",
@@ -276,7 +276,7 @@ def test_AbjadIDE_color_07():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor staff q")
+        abjad_ide("gre gg 01 uncolor staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring staff lines ...",
@@ -285,7 +285,7 @@ def test_AbjadIDE_color_07():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color staff q")
+        abjad_ide("gre gg 01 color staff q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring staff lines ...",
@@ -303,11 +303,11 @@ def test_AbjadIDE_color_08():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ color time q")
+        abjad_ide("gre gg 01 color time q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring time signatures ...",
@@ -316,7 +316,7 @@ def test_AbjadIDE_color_08():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ uncolor time q")
+        abjad_ide("gre gg 01 uncolor time q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Uncoloring time signatures ...",
@@ -325,7 +325,7 @@ def test_AbjadIDE_color_08():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ color time q")
+        abjad_ide("gre gg 01 color time q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Coloring time signatures ...",

@@ -12,11 +12,11 @@ def test_AbjadIDE_show_01():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ show clock q")
+        abjad_ide("gre gg 01 show clock q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing CLOCK_TIME tags ...",
@@ -25,7 +25,7 @@ def test_AbjadIDE_show_01():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ hide clock q")
+        abjad_ide("gre gg 01 hide clock q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding CLOCK_TIME tags ...",
@@ -43,11 +43,11 @@ def test_AbjadIDE_show_02():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ hide figure q")
+        abjad_ide("gre gg 01 hide figure q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding FIGURE_NAME tags ...",
@@ -56,7 +56,7 @@ def test_AbjadIDE_show_02():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ show figure q")
+        abjad_ide("gre gg 01 show figure q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing FIGURE_NAME tags ...",
@@ -74,11 +74,11 @@ def test_AbjadIDE_show_03():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ show measure q")
+        abjad_ide("gre gg 01 show measure q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing MEASURE_NUMBER tags ...",
@@ -87,7 +87,7 @@ def test_AbjadIDE_show_03():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ hide measure q")
+        abjad_ide("gre gg 01 hide measure q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding MEASURE_NUMBER tags ...",
@@ -105,11 +105,11 @@ def test_AbjadIDE_show_04():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "layout.ly"
+            scores, "green_score", "green_score", "segments", "01", "layout.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ show spacing q")
+        abjad_ide("gre gg 01 show spacing q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing spacing tags ...",
@@ -118,7 +118,7 @@ def test_AbjadIDE_show_04():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ hide spacing q")
+        abjad_ide("gre gg 01 hide spacing q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding spacing tags ...",
@@ -136,11 +136,11 @@ def test_AbjadIDE_show_05():
     with ide.Test():
 
         path = ide.Path(
-            scores, "green_score", "green_score", "segments", "_", "illustration.ly"
+            scores, "green_score", "green_score", "segments", "01", "illustration.ly"
         )
         assert path.is_file()
 
-        abjad_ide("gre gg _ show stage q")
+        abjad_ide("gre gg 01 show stage q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Showing STAGE_NUMBER tags ...",
@@ -149,7 +149,7 @@ def test_AbjadIDE_show_05():
         ]:
             assert line in lines
 
-        abjad_ide("gre gg _ hide stage q")
+        abjad_ide("gre gg 01 hide stage q")
         lines = abjad_ide.io.transcript.lines
         for line in [
             "Hiding STAGE_NUMBER tags ...",
