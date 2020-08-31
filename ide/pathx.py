@@ -1536,6 +1536,7 @@ class Path(pathlib.PosixPath):
                 continue
             names.append(name)
         if is_segments:
+            names = [_ for _ in names if not _.endswith("backup")]
             names = Path.sort_segment_names(names)
         if self.is__segments():
             prefix = "segment-"
