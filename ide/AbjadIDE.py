@@ -2320,44 +2320,6 @@ class AbjadIDE:
             self.clipboard.append(path)
 
     @Command(
-        "bcte",
-        description="back-cover.tex - edit",
-        menu_section="back cover",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_back_cover_tex(self, directory: pathx.Path) -> None:
-        """
-        Edits ``back-cover.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "back-cover.tex", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "dpe",
-        description="definition.py - edit",
-        menu_section="definition",
-        score_package_paths=("definitionspace",),
-    )
-    def edit_definition_py(self, directory: pathx.Path) -> None:
-        """
-        Edits ``definition.py``.
-        """
-        assert directory.is_definitionspace()
-        paths = []
-        if directory.is_segment():
-            paths.append(directory / "definition.py")
-        else:
-            for path in directory.list_paths():
-                definition_py = pathx.Path(path / "definition.py")
-                if definition_py.is_file():
-                    paths.append(definition_py)
-        self._open_files(paths)
-
-    @Command(
         "ef",
         description="edit - files",
         external_directories=True,
@@ -2377,132 +2339,6 @@ class AbjadIDE:
         files = [_ for _ in files if "__pycache__" not in str(_)]
         files = [_ for _ in files if ".mypy_cache" not in str(_)]
         self._open_files(files, warn=1)
-
-    @Command(
-        "fcte",
-        description="front-cover.tex - edit",
-        menu_section="front cover",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_front_cover_tex(self, directory: pathx.Path) -> None:
-        """
-        Edits ``front-cover.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "front-cover.tex", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "iie",
-        description="illustration.ily - edit",
-        menu_section="illustration",
-        score_package_paths=("segment", "segments"),
-    )
-    def edit_illustration_ily(self, directory: pathx.Path) -> None:
-        """
-        Edits ``illustration.ily``.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        if directory.is_segment():
-            paths = [directory / "illustration.ily"]
-        else:
-            paths = []
-            for path in directory.list_paths():
-                illustration_ily = pathx.Path(path / "illustration.ily")
-                if illustration_ily.is_file():
-                    paths.append(illustration_ily)
-        self._open_files(paths)
-
-    @Command(
-        "ile",
-        description="illustration.ly - edit",
-        menu_section="illustration",
-        score_package_paths=("segment", "segments"),
-    )
-    def edit_illustration_ly(self, directory: pathx.Path) -> None:
-        """
-        Edits ``illustration.ly``.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        if directory.is_segment():
-            paths = [directory / "illustration.ly"]
-        else:
-            paths = []
-            for path in directory.list_paths():
-                illustration_ly = pathx.Path(path / "illustration.ly")
-                if illustration_ly.is_file():
-                    paths.append(illustration_ly)
-        self._open_files(paths)
-
-    @Command(
-        "mle",
-        description="music.ly - edit",
-        menu_section="music",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_music_ly(self, directory: pathx.Path) -> None:
-        """
-        Edits ``music.ly``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "music.ly", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "pte",
-        description="part.tex - edit",
-        menu_section="parts",
-        score_package_paths=("part", "parts"),
-    )
-    def edit_part_tex(self, directory: pathx.Path) -> None:
-        """
-        Edits ``part.tex``.
-        """
-        assert directory.is_parts() or directory.is_part()
-        name, verb = "part.tex", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "pfte",
-        description="preface.tex - edit",
-        menu_section="preface",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_preface_tex(self, directory: pathx.Path) -> None:
-        """
-        Edits ``preface.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "preface.tex", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "ste",
-        description="score.tex - edit",
-        menu_section="score",
-        score_package_path_blacklist=("parts",),
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_score_tex(self, directory: pathx.Path) -> None:
-        """
-        Edits ``score.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        assert directory.build is not None
-        path = directory.build / "score.tex"
-        self._open_files([path])
 
     @Command(
         "es",
@@ -2526,21 +2362,6 @@ class AbjadIDE:
             command = f"vim -c \"grep '{search_string}' {options}\""
             self.io.display(command, raw=True)
             abjad.iox.spawn_subprocess(command)
-
-    @Command(
-        "ssie",
-        description="stylesheet.ily - edit",
-        menu_section="stylesheet",
-        score_package_paths=("_segments", "build"),
-    )
-    def edit_stylesheet_ily(self, directory: pathx.Path) -> None:
-        """
-        Edits ``stylesheet.ily``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        assert directory.build is not None
-        path = directory.build / "stylesheet.ily"
-        self._open_files([path])
 
     @Command(
         "cbe",
