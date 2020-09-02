@@ -4,7 +4,6 @@ import inspect
 import io
 import os
 import platform
-import re
 import shutil
 import subprocess
 import sys
@@ -133,22 +132,6 @@ def _part_subtitle(part_name, parentheses=False):
     words = [_.lower() for _ in words]
     part_subtitle = " ".join(words)
     return part_subtitle
-
-
-def _replace_in_file(file_path, old, new, whole_words=False):
-    assert file_path.is_file()
-    assert isinstance(old, str), repr(old)
-    assert isinstance(new, str), repr(new)
-    with file_path.open() as file_pointer:
-        new_file_lines = []
-        for line in file_pointer.readlines():
-            if whole_words:
-                line = re.sub(r"\b%s\b" % old, new, line)
-            else:
-                line = line.replace(old, new)
-            new_file_lines.append(line)
-    new_file_contents = "".join(new_file_lines)
-    file_path.write_text(new_file_contents)
 
 
 def _to_paper_dimensions(paper_size, orientation="portrait"):
@@ -796,75 +779,6 @@ class AbjadIDE:
             return self.configuration.test_scores_directory
         return pathx.Path(self.configuration.composer_scores_directory)
 
-    def _go_to_directory(
-        self,
-        directory: pathx.Path,
-        pattern: str = None,
-        payload: typing.List = None,
-    ) -> None:
-        assert directory.is_dir()
-        # TODO: remove following line?
-        address = "%" + (pattern or "")
-        if self.aliases and pattern in self.aliases:
-            path = pathx.Path(self.aliases[pattern])
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, pathx.Path):
-            path = payload
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, list) and len(payload) == 1:
-            path = payload[0]
-            self.io.display(f"matching {address!r} to {path.trim()} ...")
-            self._manage_directory(path)
-            return
-        if isinstance(payload, list):
-            assert all(isinstance(_, pathx.Path) for _ in payload), repr(payload)
-            paths = payload
-            counter = abjad.String("directory").pluralize(len(paths))
-            message = f"matching {address!r} to {len(paths)} {counter} ..."
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-            if paths:
-                path_ = paths[0]
-                if path_.is_dir():
-                    self._manage_directory(path_)
-                else:
-                    self._open_files([path_])
-            return
-        assert payload is None, repr(payload)
-        paths, strings = [], []
-        if directory.is_score_package_path():
-            root = directory.contents
-        else:
-            root = directory
-        for path in sorted(root.glob("**/*")):
-            if not path.is_dir():
-                continue
-            paths.append(path)
-            strings.append(path.name)
-        if isinstance(pattern, str):
-            indices = abjad.String.match_strings(strings, pattern)
-            paths = list(abjad.Sequence(paths).retain(indices))
-            for index, path in zip(indices, paths):
-                if path.name == address:
-                    indices = [index]
-                    paths = [path]
-                    break
-        if len(paths) == 1:
-            self.io.display(f"matching {address!r} to {paths[0].trim()} ...")
-        else:
-            counter = abjad.String("directory").pluralize(len(paths))
-            message = f"matching {address!r} to {len(paths)} {counter} ..."
-            self.io.display(message)
-            for path in paths:
-                self.io.display(path.trim(), raw=True)
-        if paths:
-            self._manage_directory(paths[0])
-
     def _handle_part_identifier_tags(self, path, indent=0):
         assert path.parent.is_part()
         parts_directory = path.parent.parent
@@ -1272,21 +1186,11 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                #                statement = "from {}.segments.{}.__metadata__"
-                #                statement += " import metadata as previous_metadata"
-                #                statement = statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 metadata = previous_segment / "__metadata__.py"
                 statement = f'file = ide.Path("{metadata}")'
                 statement += "\n        lines = file.read_text()"
                 statement += "\n        exec(lines)"
                 statement += "\n        previous_metadata = metadata"
-                #                persist_statement = "from {}.segments.{}.__persist__"
-                #                persist_statement += " import persist as previous_persist"
-                #                persist_statement = persist_statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 persist = previous_segment / "__persist__.py"
                 persist_statement = f'file = ide.Path("{persist}")'
                 persist_statement += "\n        lines = file.read_text()"
@@ -1331,21 +1235,11 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                #                statement = "from {}.segments.{}.__metadata__"
-                #                statement += " import metadata as previous_metadata"
-                #                statement = statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 metadata = previous_segment / "__metadata__.py"
                 statement = f'file = ide.Path("{metadata}")'
                 statement += "\n        lines = file.read_text()"
                 statement += "\n        exec(lines)"
                 statement += "\n        previous_metadata = metadata"
-                #                persist_statement = "from {}.segments.{}._persist__"
-                #                persist_statement += " import persist as previous_persist"
-                #                persist_statement = persist_statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 persist = previous_segment / "__persist__.py"
                 persist_statement = f'file = ide.Path("{persist}")'
                 persist_statement += "\n        lines = file.read_text()"
@@ -1390,21 +1284,11 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                #                statement = "from {}.segments.{}.__metadata__"
-                #                statement += " import metadata as previous_metadata"
-                #                statement = statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 metadata = previous_segment / "__metadata__.py"
                 statement = f'file = ide.Path("{metadata}")'
                 statement += "\n        lines = file.read_text()"
                 statement += "\n        exec(lines)"
                 statement += "\n        previous_metadata = metadata"
-                #                persist_statement = "from {}.segments.{}.__persist__"
-                #                persist_statement += " import persist as previous_persist"
-                #                persist_statement = persist_statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 persist = previous_segment / "__persist__.py"
                 persist_statement = f'file = ide.Path("{persist}")'
                 persist_statement += "\n        lines = file.read_text()"
@@ -1455,21 +1339,11 @@ class AbjadIDE:
                 statement = "previous_metadata = None"
                 persist_statement = "previous_persist = None"
             else:
-                #                statement = "from {}.segments.{}.__metadata__"
-                #                statement += " import metadata as previous_metadata"
-                #                statement = statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 metadata = previous_segment / "__metadata__.py"
                 statement = f'file = ide.Path("{metadata}")'
                 statement += "\n        lines = file.read_text()"
                 statement += "\n        exec(lines)"
                 statement += "\n        previous_metadata = metadata"
-                #                persist_statement = "from {}.segments.{}.__persist__"
-                #                persist_statement += " import persist as previous_persist"
-                #                persist_statement = persist_statement.format(
-                #                    directory.contents.name, previous_segment.name
-                #                )
                 persist = previous_segment / "__persist__.py"
                 persist_statement = f'file = ide.Path("{persist}")'
                 persist_statement += "\n        lines = file.read_text()"
@@ -2246,7 +2120,6 @@ class AbjadIDE:
         """
         assert directory.is_parts() or directory.is_part()
         name, verb = "part.pdf", "build"
-        # TODO:
         if directory.is_part():
             raise NotImplementedError()
         paths = self._select_paths_in_buildspace(
@@ -2839,12 +2712,6 @@ class AbjadIDE:
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = "back-cover.tex", "generate"
-        # TODO:
-        # if directory.is_part():
-        #    file_name = f'{directory.name}-{name}'
-        #    path = directory / file_name
-        #    self._generate_back_cover_tex(path)
-        #    return
         if not (directory.build.is_parts() or directory.build.is_part()):
             path = directory.build / name
             self._generate_back_cover_tex(path)
@@ -2878,13 +2745,8 @@ class AbjadIDE:
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name, verb = "front-cover.tex", "generate"
-        # TODO:
         if directory.is_part():
             raise NotImplementedError()
-            # file_name = f'{directory.name}-{name}'
-            # path = directory / file_name
-            # self._generate_front_cover_tex(path)
-            # return
         if not directory.build.is_parts():
             path = directory.build / name
             self._generate_front_cover_tex(path)
@@ -4208,88 +4070,6 @@ class AbjadIDE:
         Quits Abjad IDE.
         """
         self._navigation = "q"
-
-    @Command(
-        "rm",
-        description="path - remove",
-        external_directories=True,
-        menu_section="path",
-        score_package_path_blacklist=("contents",),
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def remove(self, directory: pathx.Path) -> None:
-        """
-        Removes assets.
-        """
-        paths = self._select_paths(directory, infinitive="to remove")
-        if self.is_navigation(paths):
-            return
-        assert isinstance(paths, list)
-        count = len(paths)
-        if count == 1:
-            self.io.display(f"will remove {paths[0].trim()} ...")
-        else:
-            self.io.display("will remove ...")
-            for path in paths:
-                self.io.display(f"    {path.trim()}")
-        if count == 1:
-            string = "remove"
-        else:
-            string = f"remove {count}"
-        result = self.io.get(f"type {string!r} to proceed")
-        if self.is_navigation(result):
-            return
-        if result != string:
-            return
-        for path in paths:
-            self.io.display(f"removing {path.trim()} ...")
-            path.remove()
-
-    @Command(
-        "ren",
-        description="path - rename",
-        external_directories=True,
-        menu_section="path",
-        score_package_path_blacklist=("contents",),
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def rename(self, directory: pathx.Path) -> None:
-        """
-        Renames file or directory.
-        """
-        paths = self._select_paths(directory, infinitive="to rename")
-        if self.is_navigation(paths):
-            return
-        assert isinstance(paths, list), repr(paths)
-        for source in paths:
-            self.io.display(f"renaming {source.trim()} ...")
-            name = self.io.get("new name")
-            if self.is_navigation(name):
-                return
-            name_ = name
-            target = source.parent / name_
-            if target.exists():
-                self.io.display(f"existing {target.trim()!r} ...")
-                return
-            self.io.display("renaming ...")
-            self.io.display(f" FROM: {source.trim()}")
-            self.io.display(f"   TO: {target.trim()}")
-            response = self.io.get("ok?")
-            if self.is_navigation(response):
-                return
-            if response != "y":
-                return
-            shutil.move(str(source), str(target))
-            if target.is_wrapper():
-                assert (target / source.name).is_dir()
-                shutil.move(str(target / source.name), str(target.contents))
-                target.contents.add_metadatum("title", name)
-            if not target.is_dir():
-                return
-            for path in sorted(target.glob("*.py")):
-                _replace_in_file(path, source.name, target.name, whole_words=True)
 
     @Command(
         "show",
