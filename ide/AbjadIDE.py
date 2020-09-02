@@ -2540,27 +2540,6 @@ class AbjadIDE:
         self._open_files(paths)
 
     @Command(
-        "le",
-        description=".log - edit",
-        menu_section="illustration",
-        score_package_paths=("buildspace",),
-    )
-    def edit_log(self, directory: pathx.Path) -> None:
-        """
-        Edits ``.log``.
-        """
-        assert directory.is_buildspace()
-        if directory.is_segment() or directory.is_build():
-            paths = [directory / ".log"]
-        else:
-            paths = []
-            for path in directory.list_paths():
-                illustration_ily = pathx.Path(path / ".log")
-                if illustration_ily.is_file():
-                    paths.append(illustration_ily)
-        self._open_files(paths, force_vim=True)
-
-    @Command(
         "mle",
         description="music.ly - edit",
         menu_section="music",
