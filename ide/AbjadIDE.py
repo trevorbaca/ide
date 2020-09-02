@@ -3218,38 +3218,6 @@ class AbjadIDE:
         self._copy_boilerplate(directory.build, "stylesheet.ily", values=values)
 
     @Command(
-        "push",
-        description="git - push",
-        external_directories=True,
-        menu_section="git",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def git_push(self, directory: pathx.Path) -> None:
-        """
-        Pushes working copy.
-        """
-        if not directory.is_scores():
-            root = _get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                command = "git push"
-                self.io.display(f"Running {command} ...")
-                if self.test:
-                    return
-                abjad.iox.spawn_subprocess(command)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"{path} ...")
-                self.git_push(path)
-                if i + 1 < len(paths):
-                    self.io.display("")
-
-    @Command(
         "-",
         description="go - back",
         external_directories=True,
