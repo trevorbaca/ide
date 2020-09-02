@@ -119,7 +119,6 @@ def test_AbjadIDE_show_help_02():
         "    show - help (?)",
         "",
         "    stylesheet.ily - edit (ssie)",
-        "    stylesheet.ily - generate (ssig)",
         "",
     ]
 
@@ -201,7 +200,6 @@ def test_AbjadIDE_show_help_03():
         "    show - help (?)",
         "",
         "    stylesheet.ily - edit (ssie)",
-        "    stylesheet.ily - generate (ssig)",
         "",
     ]
 
@@ -422,7 +420,6 @@ def test_AbjadIDE_show_help_07():
         "    show - help (?)",
         "",
         "    stylesheet.ily - edit (ssie)",
-        "    stylesheet.ily - generate (ssig)",
         "",
     ]
 

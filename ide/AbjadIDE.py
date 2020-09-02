@@ -1043,7 +1043,13 @@ class AbjadIDE:
         stub = parts_directory.builds._assets / "preface-colophon.tex"
         if not stub.is_file():
             stub.write_text("")
-        self.generate_stylesheet_ily(parts_directory)
+        self.io.display("generating stylesheet ...")
+        values = {}
+        paper_size = parts_directory.build.get_metadatum("paper_size", "letter")
+        values["paper_size"] = paper_size
+        orientation = parts_directory.build.get_metadatum("orientation", "")
+        values["orientation"] = orientation
+        self._copy_boilerplate(parts_directory.build, "stylesheet.ily", values=values)
         total_parts = len(part_manifest)
         for i, part in enumerate(part_manifest):
             dashed_part_name = abjad.String(part.name).to_dash_case()
@@ -2651,26 +2657,6 @@ class AbjadIDE:
             )
             if 0 < path_count and i + 1 < path_count:
                 self.io.display("")
-
-    @Command(
-        "ssig",
-        description="stylesheet.ily - generate",
-        menu_section="stylesheet",
-        score_package_paths=("_segments", "build"),
-    )
-    def generate_stylesheet_ily(self, directory: pathx.Path) -> None:
-        """
-        Generates build directory ``stylesheet.ily``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        assert directory.build is not None
-        self.io.display("generating stylesheet ...")
-        values = {}
-        paper_size = directory.build.get_metadatum("paper_size", "letter")
-        values["paper_size"] = paper_size
-        orientation = directory.build.get_metadatum("orientation", "")
-        values["orientation"] = orientation
-        self._copy_boilerplate(directory.build, "stylesheet.ily", values=values)
 
     @Command(
         "-",
