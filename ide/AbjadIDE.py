@@ -127,24 +127,24 @@ def _get_unadded_asset_paths(directory):
     return paths
 
 
-def _has_pending_commit(directory):
-    assert directory.is_dir()
-    command = f"git status {directory}"
-    with abjad.TemporaryDirectoryChange(directory=directory):
-        lines = abjad.iox.run_command(command)
-    clean_lines = []
-    for line in lines:
-        line = str(line)
-        clean_line = line.strip()
-        clean_line = clean_line.replace(str(directory), "")
-        clean_lines.append(clean_line)
-    for line in clean_lines:
-        if "Changes not staged for commit:" in line:
-            return True
-        if "Changes to be committed:" in line:
-            return True
-        if "Untracked files:" in line:
-            return True
+# def _has_pending_commit(directory):
+#    assert directory.is_dir()
+#    command = f"git status {directory}"
+#    with abjad.TemporaryDirectoryChange(directory=directory):
+#        lines = abjad.iox.run_command(command)
+#    clean_lines = []
+#    for line in lines:
+#        line = str(line)
+#        clean_line = line.strip()
+#        clean_line = clean_line.replace(str(directory), "")
+#        clean_lines.append(clean_line)
+#    for line in clean_lines:
+#        if "Changes not staged for commit:" in line:
+#            return True
+#        if "Changes to be committed:" in line:
+#            return True
+#        if "Untracked files:" in line:
+#            return True
 
 
 def _is_git_unknown(directory):
@@ -3237,54 +3237,54 @@ class AbjadIDE:
         values["orientation"] = orientation
         self._copy_boilerplate(directory.build, "stylesheet.ily", values=values)
 
-    @Command(
-        "ci",
-        description="git - commit",
-        external_directories=True,
-        menu_section="git",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def git_commit(self, directory: pathx.Path, commit_message: str = None) -> None:
-        """
-        Commits working copy.
-        """
-        if not directory.is_scores():
-            root = _get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                if not _has_pending_commit(root):
-                    self.io.display("nothing to commit ...")
-                    return
-                if self.test:
-                    return
-                command = f"git add -A {root}"
-                self.io.display(f"Running {command} ...")
-                lines = abjad.iox.run_command(command)
-                self.io.display(lines, raw=True)
-                if commit_message is None:
-                    commit_message = self.io.get("commit message")
-                    assert isinstance(commit_message, str)
-                    if self.is_navigation(commit_message):
-                        return
-                command = f'git commit -m "{commit_message}" {root}'
-                command += "; git push"
-                lines = abjad.iox.run_command(command)
-                self.io.display(lines, raw=True)
-        else:
-            assert directory.is_scores()
-            commit_message = self.io.get("commit message")
-            assert isinstance(commit_message, str)
-            if self.is_navigation(commit_message):
-                return
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"{path} ...")
-                self.git_commit(path, commit_message=commit_message)
-                if i + 1 < len(paths):
-                    self.io.display("")
+    #    @Command(
+    #        "ci",
+    #        description="git - commit",
+    #        external_directories=True,
+    #        menu_section="git",
+    #        score_package_paths=True,
+    #        scores_directory=True,
+    #    )
+    #    def git_commit(self, directory: pathx.Path, commit_message: str = None) -> None:
+    #        """
+    #        Commits working copy.
+    #        """
+    #        if not directory.is_scores():
+    #            root = _get_repository_root(directory)
+    #            if not root:
+    #                self.io.display(f"missing {directory.trim()} repository ...")
+    #                return
+    #            with self.change(root):
+    #                if not _has_pending_commit(root):
+    #                    self.io.display("nothing to commit ...")
+    #                    return
+    #                if self.test:
+    #                    return
+    #                command = f"git add -A {root}"
+    #                self.io.display(f"Running {command} ...")
+    #                lines = abjad.iox.run_command(command)
+    #                self.io.display(lines, raw=True)
+    #                if commit_message is None:
+    #                    commit_message = self.io.get("commit message")
+    #                    assert isinstance(commit_message, str)
+    #                    if self.is_navigation(commit_message):
+    #                        return
+    #                command = f'git commit -m "{commit_message}" {root}'
+    #                command += "; git push"
+    #                lines = abjad.iox.run_command(command)
+    #                self.io.display(lines, raw=True)
+    #        else:
+    #            assert directory.is_scores()
+    #            commit_message = self.io.get("commit message")
+    #            assert isinstance(commit_message, str)
+    #            if self.is_navigation(commit_message):
+    #                return
+    #            paths = directory.list_paths()
+    #            for i, path in enumerate(paths):
+    #                self.io.display(f"{path} ...")
+    #                self.git_commit(path, commit_message=commit_message)
+    #                if i + 1 < len(paths):
+    #                    self.io.display("")
 
     @Command(
         "diff",
