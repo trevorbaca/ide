@@ -72,72 +72,6 @@ def _find_editable_files(path, force=False):
     return files, strings
 
 
-def _get_added_asset_paths(directory):
-    paths = []
-    git_status_lines = _get_git_status_lines(directory)
-    for line in git_status_lines:
-        line = str(line)
-        if line.startswith("A"):
-            path = line.strip("A")
-            path = path.strip()
-            root = directory.wrapper
-            path = root / path
-            paths.append(path)
-    return paths
-
-
-def _get_git_status_lines(directory):
-    with abjad.TemporaryDirectoryChange(directory=directory.wrapper):
-        command = f"git status --porcelain {directory}"
-        return abjad.iox.run_command(command)
-
-
-def _get_repository_root(directory):
-    if not directory.exists():
-        return
-    if directory.wrapper is None:
-        path = directory
-    else:
-        path = directory.wrapper
-    while str(path) != str(path.parts[0]):
-        for path_ in path.iterdir():
-            if path_.name == ".git":
-                return type(directory)(path)
-        path = path.parent
-
-
-def _get_unadded_asset_paths(directory):
-    assert directory.is_dir()
-    paths = []
-    root = directory.wrapper
-    git_status_lines = _get_git_status_lines(directory)
-    for line in git_status_lines:
-        line = str(line)
-        if line.startswith("?"):
-            path = line.strip("?")
-            path = path.strip()
-            path = root / path
-            paths.append(path)
-        elif line.startswith("M"):
-            path = line.strip("M")
-            path = path.strip()
-            path = root / path
-            paths.append(path)
-    paths = [_ for _ in paths]
-    return paths
-
-
-def _is_git_unknown(directory):
-    if not directory.exists():
-        return False
-    git_status_lines = _get_git_status_lines(directory)
-    git_status_lines = git_status_lines or [""]
-    first_line = git_status_lines[0]
-    if first_line.startswith("?"):
-        return True
-    return False
-
-
 def _is_prototype(path, prototype):
     if prototype is True:
         return True
@@ -426,19 +360,6 @@ class AbjadIDE:
             message += " still do not match metadata time signatures"
             message += f" ({len(metadata_time_signatures)}) ..."
         self.io.display(message, indent=indent + 1)
-
-    def _check_out_paths(self, paths):
-        assert isinstance(paths, collections.abc.Iterable), repr(paths)
-        for path in paths:
-            root = _get_repository_root(path)
-            if not root:
-                self.io.display(f"missing {path.trim()} repository ...")
-                return
-            with self.change(root):
-                command = f"git checkout {path}"
-                self.io.display(f"Running {command} ...")
-                lines = abjad.iox.run_command(command)
-                self.io.display(lines, raw=True)
 
     def _check_test_scores_directory(self, check=False):
         if not check:
@@ -2464,27 +2385,6 @@ class AbjadIDE:
                 if i + 1 < path_count:
                     self.io.display("")
         return 0
-
-    @Command(
-        "oc",
-        description=".optimization - checkout",
-        menu_section="illustration",
-        score_package_paths=("segment", "segments"),
-    )
-    def check_out_optimization(self, directory: pathx.Path) -> None:
-        """
-        Checks out ``.optimization``.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        if directory.is_segment():
-            paths = [directory / ".optimization"]
-        else:
-            paths = []
-            for path in directory.list_paths():
-                optimization = pathx.Path(path / ".optimization")
-                if optimization.is_file():
-                    paths.append(optimization)
-        self._check_out_paths(paths)
 
     @Command(
         "ggc",
