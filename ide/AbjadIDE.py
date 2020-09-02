@@ -2705,27 +2705,6 @@ class AbjadIDE:
         self._open_files(paths)
 
     @Command(
-        "oe",
-        description=".optimization - edit",
-        menu_section="illustration",
-        score_package_paths=("segment", "segments"),
-    )
-    def edit_optimization(self, directory: pathx.Path) -> None:
-        """
-        Edits ``.optimization``.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        if directory.is_segment():
-            paths = [directory / ".optimization"]
-        else:
-            paths = []
-            for path in directory.list_paths():
-                optimization = pathx.Path(path / ".optimization")
-                if optimization.is_file():
-                    paths.append(optimization)
-        self._open_files(paths, force_vim=True)
-
-    @Command(
         "pte",
         description="part.tex - edit",
         menu_section="parts",
