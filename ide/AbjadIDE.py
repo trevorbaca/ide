@@ -3948,41 +3948,6 @@ class AbjadIDE:
         self._open_files(paths)
 
     @Command(
-        "spo",
-        description="score.pdf - open",
-        menu_section="score",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def open_score_pdf(self, directory: pathx.Path) -> None:
-        """
-        Opens ``score.pdf``.
-        """
-        if directory.is_scores():
-            score_pdfs = []
-            for path in directory.list_paths():
-                score_pdf = path._get_score_pdf()
-                if score_pdf:
-                    score_pdfs.append(score_pdf)
-            self._open_files(score_pdfs)
-        elif directory.is_build() and not directory.is_parts():
-            name = "score.pdf"
-            paths = directory.get_files_ending_with(name)
-            if paths:
-                self._open_files(paths)
-            else:
-                self.io.display(f"no files ending in *{name} ...")
-        else:
-            assert directory.is_score_package_path()
-            path = directory._get_score_pdf()
-            if path:
-                self._open_files([path])
-            else:
-                message = "missing score PDF"
-                message += " in distribution and build directories ..."
-                self.io.display(message)
-
-    @Command(
         "cbv",
         description="clipboard - paste",
         external_directories=True,
