@@ -1083,82 +1083,6 @@ class AbjadIDE:
                 values={"part_identifier": part.identifier},
             )
 
-    def _make_score_build_directory(self, builds):
-        name = self.io.get("build name")
-        if self.is_navigation(name):
-            return
-        build = builds / name
-        if build.exists():
-            self.io.display(f"existing {build.trim()} ...")
-            return
-        paper_size = self.io.get("paper size")
-        if paper_size and self.is_navigation(paper_size):
-            return
-        paper_size = paper_size or "letter"
-        orientation = "portrait"
-        if paper_size.endswith(" landscape"):
-            orientation = "landscape"
-            length = len(" landscape")
-            paper_size = paper_size[:-length]
-        elif paper_size.endswith(" portrait"):
-            length = len(" portrait")
-            paper_size = paper_size[:-length]
-        if paper_size not in self.known_paper_sizes:
-            self.io.display(f"unknown paper size {paper_size!r} ...")
-            self.io.display("choose from ...")
-            for paper_size in self.known_paper_sizes:
-                self.io.display(f"    {paper_size}")
-            return
-        price = self.io.get("price")
-        if price and self.is_navigation(price):
-            return
-        suffix = self.io.get("catalog number suffix")
-        if suffix and self.is_navigation(suffix):
-            return
-        names = (
-            "back-cover.tex",
-            "front-cover.tex",
-            "music.ly",
-            "preface.tex",
-            "score.tex",
-            "stylesheet.ily",
-        )
-        paths = [build / _ for _ in names]
-        self.io.display("making ...")
-        self.io.display(f"    {build.trim()}")
-        for path in paths:
-            self.io.display(f"    {path.trim()}")
-        response = self.io.get("ok?")
-        if self.is_navigation(response):
-            return
-        if response != "y":
-            return
-        assert not build.exists()
-        build.mkdir()
-        if bool(paper_size):
-            build.add_metadatum("paper_size", paper_size)
-        if not orientation == "portrait":
-            build.add_metadatum("orientation", orientation)
-        if bool(price):
-            build.add_metadatum("price", price)
-        if bool(suffix):
-            build.add_metadatum("catalog_number_suffix", suffix)
-        self.generate_back_cover_tex(build)
-        self.io.display("")
-        self.generate_front_cover_tex(build)
-        self.io.display("")
-        self._copy_boilerplate(build, "score_layout.py", target_name="layout.py")
-        self.io.display("")
-        self.collect_segment_lys(build)
-        self.io.display("")
-        self.generate_music_ly(build)
-        self.io.display("")
-        self.generate_preface_tex(build)
-        self.io.display("")
-        self.generate_score_tex(build)
-        self.io.display("")
-        self.generate_stylesheet_ily(build)
-
     def _make_segment_clicktrack(self, directory, open_after=True):
         assert directory.is_segment(), repr(directory)
         definition = directory / "definition.py"
@@ -3816,8 +3740,6 @@ class AbjadIDE:
         type_ = self.io.get("score or parts?")
         if self.is_navigation(type_):
             return
-        if type_ == "score":
-            self._make_score_build_directory(directory)
         elif type_ == "parts":
             self._make_parts_directory(directory)
 
