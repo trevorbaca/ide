@@ -3218,47 +3218,6 @@ class AbjadIDE:
         self._copy_boilerplate(directory.build, "stylesheet.ily", values=values)
 
     @Command(
-        "pull",
-        description="git - pull",
-        external_directories=True,
-        menu_section="git",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def git_pull(self, directory: pathx.Path) -> None:
-        """
-        Pulls working copy.
-        """
-        if not directory.is_scores():
-            root = _get_repository_root(directory)
-            if not root:
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(root):
-                command = "git pull"
-                self.io.display(f"Running {command} ...")
-                if self.test:
-                    return
-                lines = abjad.iox.run_command(command)
-                if lines and "Already up to date" in lines[-1]:
-                    lines = lines[-1:]
-                self.io.display(lines)
-                command = "git submodule foreach git pull origin master"
-                self.io.display(f"Running {command} ...")
-                lines = abjad.iox.run_command(command)
-                if lines and "Already up to date" in lines[-1]:
-                    lines = lines[-1:]
-                self.io.display(lines)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"{path} ...")
-                self.git_pull(path)
-                if i + 1 < len(paths):
-                    self.io.display("")
-
-    @Command(
         "push",
         description="git - push",
         external_directories=True,
