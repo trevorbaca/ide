@@ -2364,26 +2364,6 @@ class AbjadIDE:
             abjad.iox.spawn_subprocess(command)
 
     @Command(
-        "cbe",
-        description="clipboard - empty",
-        external_directories=True,
-        menu_section="clipboard",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def empty_clipboard(self, directory: pathx.Path) -> None:
-        """
-        Empties clipboard.
-        """
-        if not bool(self.clipboard):
-            self.io.display("clipboard is empty ...")
-            return
-        self.io.display("emptying clipboard ...")
-        for path in self.clipboard:
-            self.io.display(path.trim())
-        self._clipboard[:] = []
-
-    @Command(
         ";",
         description="show - column",
         external_directories=True,
@@ -3542,26 +3522,6 @@ class AbjadIDE:
                     self.run(item_)
             else:
                 self.run(item)
-
-    @Command(
-        "cbs",
-        description="clipboard - show",
-        external_directories=True,
-        menu_section="clipboard",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def show_clipboard(self, directory: pathx.Path) -> None:
-        """
-        Shows clipboard.
-        """
-        self._purge_clipboard()
-        if not bool(self.clipboard):
-            self.io.display("showing empty clipboard ...")
-            return
-        self.io.display("showing clipboard ...")
-        for path in self.clipboard:
-            self.io.display(path.trim(), raw=True)
 
     @Command(
         "?",
