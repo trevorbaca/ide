@@ -2651,39 +2651,6 @@ class AbjadIDE:
                 self.io.display("")
 
     @Command(
-        "ptg",
-        description="part.tex - generate",
-        menu_section="parts",
-        score_package_paths=("part", "parts"),
-    )
-    def generate_part_tex(self, directory: pathx.Path) -> None:
-        """
-        Generates ``part.tex``.
-        """
-        assert directory.is_parts() or directory.is_part()
-        name, verb = "part.tex", "generate"
-        if directory.is_part():
-            dashed_part_name = directory.name
-            file_name = f"{dashed_part_name}-{name}"
-            path = directory / file_name
-            self._generate_part_tex(path, dashed_part_name)
-            return
-        paths = self._select_paths_in_buildspace(
-            directory, name, verb, supply_missing=True
-        )
-        if self.is_navigation(paths):
-            return
-        if not paths:
-            return
-        path_count = len(paths)
-        for i, path in enumerate(paths):
-            part = _segments.path_to_part(path)
-            dashed_part_name = abjad.String(part.name).to_dash_case()
-            self._generate_part_tex(path, dashed_part_name)
-            if 1 < path_count and i + 1 < path_count:
-                self.io.display("")
-
-    @Command(
         "stg",
         description="score.tex - generate",
         menu_section="score",

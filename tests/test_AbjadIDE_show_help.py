@@ -407,7 +407,6 @@ def test_AbjadIDE_show_help_07():
         "    part.pdf - build (ppb)",
         "    part.pdf - open (ppo)",
         "    part.tex - edit (pte)",
-        "    part.tex - generate (ptg)",
         "    part.tex - interpret (pti)",
         "",
         "    color (color)",
