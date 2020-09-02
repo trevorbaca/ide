@@ -2438,40 +2438,6 @@ class AbjadIDE:
         self._open_files(paths)
 
     @Command(
-        "lle",
-        description="layout.ly - edit",
-        menu_section="layout",
-        score_package_paths=("buildspace",),
-    )
-    def edit_layout_ly(self, directory: pathx.Path) -> None:
-        """
-        Edits ``layout.ly``.
-        """
-        assert directory.is_buildspace()
-        name, verb = "layout.ly", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
-        "lpe",
-        description="layout.py - edit",
-        menu_section="layout",
-        score_package_paths=("buildspace",),
-    )
-    def edit_layout_py(self, directory: pathx.Path) -> None:
-        """
-        Edits ``layout.py``.
-        """
-        assert directory.is_buildspace()
-        name, verb = "layout.py", "open"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if self.is_navigation(paths):
-            return
-        self._open_files(paths)
-
-    @Command(
         "mle",
         description="music.ly - edit",
         menu_section="music",
