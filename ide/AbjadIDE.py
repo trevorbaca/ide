@@ -3258,7 +3258,6 @@ class AbjadIDE:
                 if not _has_pending_commit(root):
                     self.io.display("nothing to commit ...")
                     return
-                self.git_status(root)
                 if self.test:
                     return
                 command = f"git add -A {root}"
@@ -3386,40 +3385,6 @@ class AbjadIDE:
             for i, path in enumerate(paths):
                 self.io.display(f"{path} ...")
                 self.git_push(path)
-                if i + 1 < len(paths):
-                    self.io.display("")
-
-    @Command(
-        "st",
-        description="git - status",
-        external_directories=True,
-        menu_section="git",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def git_status(self, directory: pathx.Path) -> None:
-        """
-        Displays Git status of working copy.
-        """
-        if not directory.is_scores():
-            if not _get_repository_root(directory):
-                self.io.display(f"missing {directory.trim()} repository ...")
-                return
-            with self.change(directory):
-                command = "git status ."
-                self.io.display(f"Running {command} ...")
-                lines = abjad.iox.run_command(command)
-                lines = [_ for _ in lines if _ != ""]
-                self.io.display(lines)
-                command = "git submodule foreach git fetch"
-                self.io.display(f"Running {command} ...")
-                abjad.iox.spawn_subprocess(command)
-        else:
-            assert directory.is_scores()
-            paths = directory.list_paths()
-            for i, path in enumerate(paths):
-                self.io.display(f"{path} ...")
-                self.git_status(path)
                 if i + 1 < len(paths):
                     self.io.display("")
 
