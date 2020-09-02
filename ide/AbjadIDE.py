@@ -2139,7 +2139,9 @@ class AbjadIDE:
             self.io.display("missing back cover ...")
             return
         self.io.display("")
-        self.generate_score_tex(directory.build)
+        self.io.display("generating score ...")
+        path = directory.build / "score.tex"
+        self._generate_document(path)
         self.io.display("")
         self.interpret_score_tex(directory.build)
 
@@ -2649,23 +2651,6 @@ class AbjadIDE:
             )
             if 0 < path_count and i + 1 < path_count:
                 self.io.display("")
-
-    @Command(
-        "stg",
-        description="score.tex - generate",
-        menu_section="score",
-        score_package_path_blacklist=("parts",),
-        score_package_paths=("_segments", "build"),
-    )
-    def generate_score_tex(self, directory: pathx.Path) -> None:
-        """
-        Generates ``score.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        assert directory.build is not None
-        self.io.display("generating score ...")
-        path = directory.build / "score.tex"
-        self._generate_document(path)
 
     @Command(
         "ssig",
