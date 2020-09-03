@@ -8,6 +8,8 @@ def _is_valid_command_name(argument):
     for character in argument:
         if character.islower():
             continue
+        if character.isupper():
+            continue
         if character in string.punctuation:
             continue
         return False

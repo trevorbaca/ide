@@ -8,7 +8,7 @@ def test_AbjadIDE_hop_to_next_score_01():
     In scores directory.
     """
 
-    abjad_ide(">> >> >> q")
+    abjad_ide("MM MM MM q")
     transcript = abjad_ide.io.transcript
     assert transcript.titles == [
         "Abjad IDE : scores",

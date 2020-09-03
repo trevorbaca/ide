@@ -2503,66 +2503,6 @@ class AbjadIDE:
         self._manage_directory(directory.etc)
 
     @Command(
-        ">",
-        description="hop - next package",
-        menu_section="hop",
-        score_package_paths=("segment", "segments"),
-    )
-    def go_to_next_package(self, directory: pathx.Path) -> None:
-        """
-        Goes to next package.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        next_package = directory.get_next_package(cyclic=True)
-        self._manage_directory(next_package)
-
-    @Command(
-        ">>",
-        description="hop - next score",
-        menu_section="hop",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def go_to_next_score(self, directory: pathx.Path) -> None:
-        """
-        Goes to next score.
-        """
-        assert directory.is_score_package_path() or directory.is_scores()
-        wrapper = directory.get_next_score(cyclic=True)
-        assert wrapper is not None
-        self._manage_directory(wrapper.contents)
-
-    @Command(
-        "<",
-        description="hop - previous package",
-        menu_section="hop",
-        score_package_paths=("segment", "segments"),
-    )
-    def go_to_previous_package(self, directory: pathx.Path) -> None:
-        """
-        Goes to previous package.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        previous_package = directory.get_previous_package(cyclic=True)
-        self._manage_directory(previous_package)
-
-    @Command(
-        "<<",
-        description="hop - previous score",
-        menu_section="hop",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def go_to_previous_score(self, directory: pathx.Path) -> None:
-        """
-        Goes to previous score.
-        """
-        assert directory.is_score_package_path() or directory.is_scores()
-        wrapper = directory.get_previous_score(cyclic=True)
-        assert wrapper is not None
-        self._manage_directory(wrapper.contents)
-
-    @Command(
         "ss",
         description="directory - scores",
         external_directories=True,
@@ -2910,6 +2850,66 @@ class AbjadIDE:
             return
         tag = abjad.Tag(tag_)
         self.run(_jobs.show_tag(directory, tag, undo=True))
+
+    @Command(
+        "M",
+        description="hop - next package",
+        menu_section="hop",
+        score_package_paths=("segment", "segments"),
+    )
+    def hop_to_next_package(self, directory: pathx.Path) -> None:
+        """
+        Hops to next package.
+        """
+        assert directory.is_segment() or directory.is_segments()
+        next_package = directory.get_next_package(cyclic=True)
+        self._manage_directory(next_package)
+
+    @Command(
+        "MM",
+        description="hop - next score",
+        menu_section="hop",
+        score_package_paths=True,
+        scores_directory=True,
+    )
+    def hop_to_next_score(self, directory: pathx.Path) -> None:
+        """
+        Hops to next score.
+        """
+        assert directory.is_score_package_path() or directory.is_scores()
+        wrapper = directory.get_next_score(cyclic=True)
+        assert wrapper is not None
+        self._manage_directory(wrapper.contents)
+
+    @Command(
+        "N",
+        description="hop - previous package",
+        menu_section="hop",
+        score_package_paths=("segment", "segments"),
+    )
+    def hop_to_previous_package(self, directory: pathx.Path) -> None:
+        """
+        Goes to previous package.
+        """
+        assert directory.is_segment() or directory.is_segments()
+        previous_package = directory.get_previous_package(cyclic=True)
+        self._manage_directory(previous_package)
+
+    @Command(
+        "NN",
+        description="hop - previous score",
+        menu_section="hop",
+        score_package_paths=True,
+        scores_directory=True,
+    )
+    def hop_to_previous_score(self, directory: pathx.Path) -> None:
+        """
+        Goes to previous score.
+        """
+        assert directory.is_score_package_path() or directory.is_scores()
+        wrapper = directory.get_previous_score(cyclic=True)
+        assert wrapper is not None
+        self._manage_directory(wrapper.contents)
 
     @Command(
         "bcti",
