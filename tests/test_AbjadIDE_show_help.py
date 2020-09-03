@@ -13,9 +13,6 @@ def test_AbjadIDE_show_help_01():
     assert menu == [
         "Red Score (2017) : builds : _assets (empty) : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -53,9 +50,6 @@ def test_AbjadIDE_show_help_02():
         "",
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - interpret (bcti)",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
         "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
@@ -124,9 +118,6 @@ def test_AbjadIDE_show_help_03():
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - interpret (bcti)",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -190,9 +181,6 @@ def test_AbjadIDE_show_help_04():
     assert menu == [
         "Red Score (2017) : builds : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -240,9 +228,6 @@ def test_AbjadIDE_show_help_05():
     assert menu == [
         "Red Score (2017) : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -277,9 +262,6 @@ def test_AbjadIDE_show_help_06():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : distribution : help",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
         "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
@@ -322,9 +304,6 @@ def test_AbjadIDE_show_help_07():
         "",
         "    back-cover.pdf - open (bcpo)",
         "    back-cover.tex - interpret (bcti)",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
         "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
@@ -391,9 +370,6 @@ def test_AbjadIDE_show_help_08():
     assert menu == [
         "Abjad IDE : scores : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - scores (ss)",
         "",
         "    edit - files (ef)",
@@ -421,9 +397,6 @@ def test_AbjadIDE_show_help_09():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : segments : 02 : help",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
         "",
         "    definition.py - check (dpc)",
         "",
@@ -483,9 +456,6 @@ def test_AbjadIDE_show_help_10():
     assert menu == [
         "Red Score (2017) : segments : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    definition.py - check (dpc)",
         "",
         "    directory - builds (bb)",
@@ -544,9 +514,6 @@ def test_AbjadIDE_show_help_11():
     assert menu == [
         "Red Score (2017) : stylesheets : help",
         "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -581,9 +548,6 @@ def test_AbjadIDE_show_help_12():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : wrapper : help",
-        "",
-        "    clipboard - copy (cbc)",
-        "    clipboard - paste (cbv)",
         "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",

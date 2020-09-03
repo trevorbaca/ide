@@ -28,7 +28,6 @@ class Command:
     known_sections = (
         "back cover",
         "build",
-        "clipboard",
         "definition",
         "definitions",
         "directory",

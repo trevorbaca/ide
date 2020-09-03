@@ -187,7 +187,6 @@ class AbjadIDE:
 
     __slots__ = (
         "_aliases",
-        "_clipboard",
         "_commands",
         "_current_directory",
         "_example",
@@ -240,7 +239,6 @@ class AbjadIDE:
 
     def __init__(self, example: bool = None, test: bool = None) -> None:
         self._aliases = abjad.OrderedDict(self.configuration.aliases)
-        self._clipboard: typing.List[str] = []
         self._current_directory = None
         self._example = example
         self._navigation: typing.Optional[str] = None
@@ -1481,13 +1479,6 @@ class AbjadIDE:
                     abjad.iox.spawn_subprocess(str(target))
         abjad.iox.spawn_subprocess(command)
 
-    def _purge_clipboard(self):
-        clipboard = []
-        for source in self.clipboard:
-            if source.exists():
-                clipboard.append(source)
-        self.clipboard[:] = clipboard
-
     def _replace_in_tree(
         self, directory, search_string, replace_string, complete_words=False
     ):
@@ -1870,13 +1861,6 @@ class AbjadIDE:
         Gets aliases.
         """
         return self._aliases
-
-    @property
-    def clipboard(self) -> list:
-        """
-        Gets clipboard.
-        """
-        return self._clipboard
 
     @property
     def commands(self) -> abjad.OrderedDict:
@@ -2297,27 +2281,6 @@ class AbjadIDE:
         for job in color_jobs:
             job_ = job(directory)
             self.run(job_)
-
-    @Command(
-        "cbc",
-        description="clipboard - copy",
-        external_directories=True,
-        menu_section="clipboard",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def copy_to_clipboard(self, directory: pathx.Path) -> None:
-        """
-        Copies to clipboard.
-        """
-        paths = self._select_paths(directory, infinitive="for clipboard")
-        if self.is_navigation(paths):
-            return
-        assert isinstance(paths, list)
-        self.io.display("copying to clipboard ...")
-        for path in paths:
-            self.io.display(f"    {path.trim()}", raw=True)
-            self.clipboard.append(path)
 
     @Command(
         "ef",
@@ -3411,40 +3374,6 @@ class AbjadIDE:
         if self.is_navigation(paths):
             return
         self._open_files(paths)
-
-    @Command(
-        "cbv",
-        description="clipboard - paste",
-        external_directories=True,
-        menu_section="clipboard",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def paste_from_clipboard(self, directory: pathx.Path) -> None:
-        """
-        Pastes from clipboard.
-        """
-        self._purge_clipboard()
-        if not bool(self.clipboard):
-            self.io.display("showing empty clipboard ...")
-            return
-        self.io.display("pasting from clipboard ...")
-        for i, source in enumerate(self.clipboard[:]):
-            if not source.exists():
-                continue
-            target = directory / source.name
-            if source == target:
-                self.io.display(f"    Skipping {source.trim()} ...")
-                continue
-            self.io.display(f"    {source.trim()} ...")
-            self.io.display(f"    {target.trim()} ...")
-            if source.is_dir():
-                shutil.copytree(str(source), str(target))
-            else:
-                shutil.copy(str(source), str(target))
-            if i < len(self.clipboard) - 1:
-                self.io.display("")
-        self.clipboard[:] = []
 
     @Command(
         "lpp",
