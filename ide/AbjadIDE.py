@@ -2283,50 +2283,6 @@ class AbjadIDE:
             self.run(job_)
 
     @Command(
-        "ef",
-        description="edit - files",
-        external_directories=True,
-        menu_section="edit",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_files(self, directory: pathx.Path, pattern: str = None) -> None:
-        """
-        Edits all files.
-        """
-        files, strings = _find_editable_files(directory, force=True)
-        pattern = self.io.get("pattern")
-        if self.is_navigation(pattern):
-            return
-        files = self._match_files(files, strings, pattern)
-        files = [_ for _ in files if "__pycache__" not in str(_)]
-        files = [_ for _ in files if ".mypy_cache" not in str(_)]
-        self._open_files(files, warn=1)
-
-    @Command(
-        "es",
-        description="edit - string",
-        external_directories=True,
-        menu_section="edit",
-        score_package_paths=True,
-        scores_directory=True,
-    )
-    def edit_string(self, directory: pathx.Path) -> None:
-        """
-        Opens Vim and goes to every occurrence of search string.
-        """
-        search_string = self.io.get("enter search string")
-        if self.is_navigation(search_string):
-            return
-        if self.test:
-            return
-        with self.change(directory):
-            options = "--sort-files --type=python"
-            command = f"vim -c \"grep '{search_string}' {options}\""
-            self.io.display(command, raw=True)
-            abjad.iox.spawn_subprocess(command)
-
-    @Command(
         ";",
         description="show - column",
         external_directories=True,
