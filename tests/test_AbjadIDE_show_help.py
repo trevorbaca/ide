@@ -361,8 +361,6 @@ def test_AbjadIDE_show_help_09():
     assert menu == [
         "Red Score (2017) : segments : 02 : help",
         "",
-        "    definition.py - check (dpc)",
-        "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",
         "    directory - distribution (dd)",
@@ -414,8 +412,6 @@ def test_AbjadIDE_show_help_10():
     menu = abjad_ide.io.transcript.menus[-1]
     assert menu == [
         "Red Score (2017) : segments : help",
-        "",
-        "    definition.py - check (dpc)",
         "",
         "    directory - builds (bb)",
         "    directory - contents (cc)",

@@ -2136,46 +2136,6 @@ class AbjadIDE:
         self.interpret_score_tex(directory.build)
 
     @Command(
-        "dpc",
-        description="definition.py - check",
-        menu_section="definition",
-        score_package_paths=("definitionspace",),
-    )
-    def check_definition_py(self, directory: pathx.Path) -> int:
-        """
-        Checks ``definition.py``.
-
-        Returns integer exit code for Travis tests.
-        """
-        assert directory.is_definitionspace()
-        if directory.is_segment():
-            self.io.display("checking definition ...")
-            definition = directory / "definition.py"
-            if not definition.is_file():
-                self.io.display(f"missing {definition.trim()} ...")
-                return -1
-            with abjad.Timer() as timer:
-                result = self._interpret_file(definition)
-            stdout_lines, stderr_lines, exit = result
-            self.io.display(stdout_lines, wrap=True)
-            if exit:
-                self.io.display(
-                    [f"{definition.trim()} FAILED:"] + stderr_lines, wrap=True
-                )
-            else:
-                self.io.display(f"{definition.trim()} ... OK", raw=True)
-            self.io.display(timer.total_time_message)
-            return exit
-        else:
-            paths = directory.list_paths()
-            path_count = len(paths)
-            for i, path in enumerate(paths):
-                self.check_definition_py(path)
-                if i + 1 < path_count:
-                    self.io.display("")
-        return 0
-
-    @Command(
         "ggc",
         description="segments - collect",
         menu_section="segments",
