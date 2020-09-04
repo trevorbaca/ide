@@ -2102,7 +2102,7 @@ class AbjadIDE:
         tex = directory.build / "front-cover.tex"
         pdf = directory.build / "front-cover.pdf"
         if tex.is_file():
-            self.interpret_front_cover_tex(directory.build, open_after=False)
+            self._interpret_tex_file(directory.build / "front-cover.tex")
         elif pdf.is_file():
             self.io.display(f"using existing {pdf.trim()} ...")
         else:
@@ -2112,7 +2112,7 @@ class AbjadIDE:
         tex = directory.build / "preface.tex"
         pdf = directory.build / "preface.pdf"
         if tex.is_file():
-            self.interpret_preface_tex(directory.build, open_after=False)
+            self._interpret_tex_file(directory.build / "preface.tex")
         elif pdf:
             self.io.display(f"using existing {pdf.trim()} ...")
         else:
@@ -2122,7 +2122,7 @@ class AbjadIDE:
         tex = directory.build / "back-cover.tex"
         pdf = directory.build / "back-cover.pdf"
         if tex.is_file():
-            self.interpret_back_cover_tex(directory.build, open_after=False)
+            self._interpret_tex_file(directory.build / "back-cover.tex")
         elif pdf.is_file():
             self.io.display(f"using existing {pdf.trim()} ...")
         else:
@@ -2791,56 +2791,6 @@ class AbjadIDE:
         self._manage_directory(wrapper.contents)
 
     @Command(
-        "bcti",
-        description="back-cover.tex - interpret",
-        menu_section="back cover",
-        score_package_paths=("_segments", "build"),
-    )
-    def interpret_back_cover_tex(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``back-cover.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "back-cover.tex", "interpret"
-        paths = self._select_paths_in_buildspace(directory.build, name, verb)
-        if self.is_navigation(paths):
-            return
-        if not paths:
-            return
-        for path in paths:
-            self._interpret_tex_file(path)
-        if len(paths) == 1:
-            target = path.with_suffix(".pdf")
-            if target.is_file() and open_after:
-                self._open_files([target])
-
-    @Command(
-        "fcti",
-        description="front-cover.tex - interpret",
-        menu_section="front cover",
-        score_package_paths=("_segments", "build"),
-    )
-    def interpret_front_cover_tex(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``front-cover.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "front-cover.tex", "interpret"
-        paths = self._select_paths_in_buildspace(directory.build, name, verb)
-        if not paths:
-            return
-        for path in paths:
-            self._interpret_tex_file(path)
-        if len(paths) == 1:
-            target = path.with_suffix(".pdf")
-            if target.is_file() and open_after:
-                self._open_files([target])
-
-    @Command(
         "ili",
         description="illustration.ly - interpret",
         menu_section="illustration",
@@ -2946,30 +2896,6 @@ class AbjadIDE:
             self._interpret_tex_file(path)
             if 1 < path_count and i + 1 < path_count:
                 self.io.display("")
-        if len(paths) == 1:
-            target = path.with_suffix(".pdf")
-            if target.is_file() and open_after:
-                self._open_files([target])
-
-    @Command(
-        "pfti",
-        description="preface.tex - interpret",
-        menu_section="preface",
-        score_package_paths=("_segments", "build"),
-    )
-    def interpret_preface_tex(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``preface.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "preface.tex", "interpret"
-        paths = self._select_paths_in_buildspace(directory.build, name, verb)
-        if not paths:
-            return
-        for path in paths:
-            self._interpret_tex_file(path)
         if len(paths) == 1:
             target = path.with_suffix(".pdf")
             if target.is_file() and open_after:
