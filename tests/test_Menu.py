@@ -1,7 +1,7 @@
 import ide
 
 
-def test_Menu___call___01():
+def test_Menu_01():
     """
     Command section.
     """
@@ -36,7 +36,7 @@ def test_Menu___call___01():
     assert response.string == "1"
 
 
-def test_Menu___call___02():
+def test_Menu_02():
     """
     Asset section.
     """
@@ -70,7 +70,7 @@ def test_Menu___call___02():
     assert response.string == "1"
 
 
-def test_Menu___call___03():
+def test_Menu_03():
     """
     Secondary asset section.
     """
