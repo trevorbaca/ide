@@ -2153,8 +2153,8 @@ class AbjadIDE:
         """
         Collects segment lys.
 
-        Copies illustration.ly, .ily files from segment directories to
-        build/_segments directory.
+        Copies illustration.ly, .ily files from segment directories to build/_segments
+        directory.
 
         Trims top-level comments, header block, paper block from each file.
 
@@ -2264,17 +2264,13 @@ class AbjadIDE:
         menu_section="music",
         score_package_paths=("_segments", "build"),
     )
-    def generate_music_ly(self, directory: pathx.Path, *, skip: bool = None) -> None:
+    def generate_music_ly(self, directory: pathx.Path) -> None:
         """
         Generates ``music.ly``.
         """
         assert directory.is__segments() or directory.is_build()
         assert directory.build is not None
         name = "music.ly"
-        if skip:
-            path = directory.build / name
-            self.io.display(f"skipping {path.trim()} generation ...")
-            return
         if not (directory.build.is_parts() or directory.is_part()):
             path = directory.build / name
             self._generate_score_music_ly(path)
@@ -2287,7 +2283,11 @@ class AbjadIDE:
             return
         path_count = len(paths)
         for i, path in enumerate(paths):
-            part = _segments.path_to_part(path)
+            try:
+                part = _segments.path_to_part(path)
+            except Exception:
+                print(f"Skipping {path.trim()} ...")
+                continue
             assert isinstance(part, Part)
             dashed_part_name = abjad.String(part.name).to_dash_case()
             file_name = f"{dashed_part_name}-{name}"
@@ -2807,8 +2807,7 @@ class AbjadIDE:
         skip_tags: bool = False,
     ) -> None:
         """
-        Interprets ``music.ly`` (after first collecting segments and handling
-        tags).
+        Interprets ``music.ly`` (after first collecting segments and handling tags).
         """
         assert directory.is__segments() or directory.is_build()
         build = directory.build
@@ -3002,8 +3001,8 @@ class AbjadIDE:
     )
     def nake_illustration_pdf(self, directory: pathx.Path) -> int:
         """
-        Makes ``illustration.pdf``; does not reinterpret ``layout.py``;
-        does not open after.
+        Makes ``illustration.pdf``; does not reinterpret ``layout.py``; does not open
+        after.
 
         Returns integer exit code for Travis tests.
         """
@@ -3164,8 +3163,7 @@ class AbjadIDE:
         self, directory: pathx.Path, open_after: bool = True
     ) -> None:
         """
-        Interprets ``music.ly`` without collecting segment.lys or handling
-        tags.
+        Interprets ``music.ly`` without collecting segment.lys or handling tags.
         """
         assert directory.is__segments() or directory.is_build()
         self.interpret_music_ly(
