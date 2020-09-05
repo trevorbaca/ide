@@ -2793,41 +2793,6 @@ class AbjadIDE:
         self._manage_directory(wrapper.contents)
 
     @Command(
-        "ili",
-        description="illustration.ly - interpret",
-        menu_section="illustration",
-        score_package_paths=("segment", "segments"),
-    )
-    def interpret_illustration_ly(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``illustration.ly``.
-
-        Makes ``illustration.pdf``.
-        """
-        assert directory.is_segment() or directory.is_segments()
-        if directory.is_segment():
-            self.io.display("interpreting ly ...")
-            source = directory / "illustration.ly"
-            target = source.with_suffix(".pdf")
-            if source.is_file():
-                self._run_lilypond(source)
-            else:
-                self.io.display(f"missing {source.trim()} ...")
-            if target.is_file() and open_after:
-                self._open_files([target])
-        else:
-            paths = directory.list_paths()
-            path_count = len(paths)
-            with abjad.Timer() as timer:
-                for i, path in enumerate(paths):
-                    self.interpret_illustration_ly(path, open_after=False)
-                    if i + 1 < path_count:
-                        self.io.display("")
-            self.io.display(timer.total_time_message)
-
-    @Command(
         "mli",
         description="music.ly - interpret",
         menu_section="music",
