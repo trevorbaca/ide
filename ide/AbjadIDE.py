@@ -2133,7 +2133,9 @@ class AbjadIDE:
         path = directory.build / "score.tex"
         self._generate_document(path)
         self.io.display("")
-        self.interpret_score_tex(directory.build)
+        self._interpret_tex_file(path)
+        score_pdf = directory.build / "score.pdf"
+        self._open_files([score_pdf])
 
     @Command(
         "ggc",
@@ -2869,58 +2871,6 @@ class AbjadIDE:
             self._run_lilypond(path)
             if 0 < path_count and i + 1 < path_count:
                 self.io.display("")
-        if len(paths) == 1:
-            target = path.with_suffix(".pdf")
-            if target.is_file() and open_after:
-                self._open_files([target])
-
-    @Command(
-        "pti",
-        description="part.tex - interpret",
-        menu_section="parts",
-        score_package_paths=("part", "parts"),
-    )
-    def interpret_part_tex(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``part.tex``.
-        """
-        assert directory.is_parts() or directory.is_part()
-        name, verb = "part.tex", "interpret"
-        paths = self._select_paths_in_buildspace(directory, name, verb)
-        if not paths:
-            return
-        path_count = len(paths)
-        for i, path in enumerate(paths):
-            self._interpret_tex_file(path)
-            if 1 < path_count and i + 1 < path_count:
-                self.io.display("")
-        if len(paths) == 1:
-            target = path.with_suffix(".pdf")
-            if target.is_file() and open_after:
-                self._open_files([target])
-
-    @Command(
-        "sti",
-        description="score.tex - interpret",
-        menu_section="score",
-        score_package_path_blacklist=("parts",),
-        score_package_paths=("_segments", "build"),
-    )
-    def interpret_score_tex(
-        self, directory: pathx.Path, open_after: bool = True
-    ) -> None:
-        """
-        Interprets ``score.tex``.
-        """
-        assert directory.is__segments() or directory.is_build()
-        name, verb = "score.tex", "interpret"
-        paths = self._select_paths_in_buildspace(directory.build, name, verb)
-        if not paths:
-            return
-        for path in paths:
-            self._interpret_tex_file(path)
         if len(paths) == 1:
             target = path.with_suffix(".pdf")
             if target.is_file() and open_after:
