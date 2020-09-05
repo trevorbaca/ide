@@ -2335,11 +2335,6 @@ class AbjadIDE:
         """
         assert directory.is_score_package_path()
         assert directory.builds is not None
-        assert directory.builds._assets is not None
-        if not directory.builds._assets.exists():
-            _make__assets_directory(directory.builds)
-        if not (directory.builds / "__metadata__.py").is_file():
-            directory.builds.write_metadata_py(abjad.OrderedDict())
         self._manage_directory(directory.builds)
 
     @Command(
@@ -2353,6 +2348,7 @@ class AbjadIDE:
         Goes to contents directory.
         """
         assert directory.is_score_package_path()
+        assert directory.contents is not None
         self._manage_directory(directory.contents)
 
     @Command(
@@ -2439,6 +2435,7 @@ class AbjadIDE:
         Goes to wrapper directory.
         """
         assert directory.is_score_package_path()
+        assert directory.wrapper is not None
         self._manage_directory(directory.wrapper)
 
     @Command(
