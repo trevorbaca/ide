@@ -1244,7 +1244,7 @@ class AbjadIDE:
     def _make_segment_pdf(self, directory, layout=True, open_after=True):
         assert directory.is_segment()
         if layout is True:
-            self.make_layout_ly(directory)
+            self._make_layout_ly(directory / "layout.py")
         definition = directory / "definition.py"
         if not definition.is_file():
             self.io.display(f"can not find {definition.trim()} ...")
@@ -2894,37 +2894,6 @@ class AbjadIDE:
                     exit = -1
             return exit
         return 0
-
-    @Command(
-        "llm",
-        description="layout.ly - make",
-        menu_section="layout",
-        score_package_paths=("buildspace",),
-    )
-    def make_layout_ly(self, directory: pathx.Path) -> None:
-        """
-        Makes ``layout.ly``.
-        """
-        assert directory.is_buildspace()
-        if directory.is__segments():
-            buildspace = directory.build
-        else:
-            buildspace = directory
-        name, verb = "layout.py", "interpret"
-        paths = self._select_paths_in_buildspace(buildspace, name, verb)
-        if self.is_navigation(paths):
-            return
-        if not paths:
-            return
-        path_count = len(paths)
-        for i, layout_py in enumerate(paths):
-            self.io.display(f"{verb}ing {layout_py.trim()} ...")
-            if not layout_py.is_file():
-                self.io.display(f"missing {layout_py.trim()} ...")
-                continue
-            self._make_layout_ly(layout_py)
-            if i < path_count - 1:
-                self.io.display("")
 
     @Command(
         "ctm",

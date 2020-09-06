@@ -1793,4 +1793,4 @@ class Path(pathlib.PosixPath):
         lines.append("")
         text = "\n".join(lines)
         metadata_py_path.write_text(text)
-        os.system(f"black --target-version=py38 {metadata_py_path}")
+        os.system(f"black --target-version=py38 {metadata_py_path} > /dev/null 2>&1")
