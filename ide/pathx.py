@@ -1779,7 +1779,6 @@ class Path(pathlib.PosixPath):
         for line in import_statements:
             lines.append(line)
         lines.append("")
-        lines.append("")
         dictionary = abjad.OrderedDict(metadata)
         items = list(dictionary.items())
         items.sort()
