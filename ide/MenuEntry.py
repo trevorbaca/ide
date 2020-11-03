@@ -1,7 +1,5 @@
 import typing
 
-import abjad
-
 
 class MenuEntry:
     """
@@ -22,7 +20,7 @@ class MenuEntry:
         value: str = None,
     ) -> None:
         self._command = command
-        self._display = abjad.String(display)
+        self._display = str(display)
         self._number = number
         self._value = value
 
@@ -47,7 +45,7 @@ class MenuEntry:
         return self._command
 
     @property
-    def display(self) -> typing.Optional[str]:
+    def display(self) -> str:
         """
         Gets display.
         """
