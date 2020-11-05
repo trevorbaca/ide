@@ -822,7 +822,6 @@ class AbjadIDE:
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                bufsize=1,
             )
             for line in process.stdout:
                 line = line.decode("utf-8")

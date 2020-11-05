@@ -1,4 +1,4 @@
-import os
+import subprocess
 import typing
 
 import abjad
@@ -70,7 +70,8 @@ class IO:
         if lines:
             self.transcript.append(lines, is_menu=is_menu)
         if wrap is not True:
-            result = os.popen("stty size", "r").read().split()
+            process = subprocess.run(["stty", "size"], stdout=subprocess.PIPE)
+            result = process.stdout.decode().split()
             if result:
                 width = int(result[1])
                 lines = [_[:width] for _ in lines]

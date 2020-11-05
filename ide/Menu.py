@@ -1,4 +1,4 @@
-import os
+import subprocess
 import typing
 
 import abjad
@@ -161,7 +161,8 @@ class Menu:
         if isinstance(dimensions, tuple):
             height, width = dimensions
         else:
-            result = os.popen("stty size", "r").read().split()
+            process = subprocess.run(["stty", "size"], stdout=subprocess.PIPE)
+            result = process.stdout.decode().split()
             if not result:
                 return lines
             if result:
