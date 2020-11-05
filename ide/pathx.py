@@ -1768,7 +1768,6 @@ class Path(pathlib.PosixPath):
         metadata,
         *,
         file_name="__metadata__.py",
-        import_statements=("import abjad",),
         variable_name="metadata",
     ) -> None:
         """
@@ -1776,9 +1775,6 @@ class Path(pathlib.PosixPath):
         """
         metadata_py_path = self / file_name
         lines = []
-        for line in import_statements:
-            lines.append(line)
-        lines.append("")
         dictionary = abjad.OrderedDict(metadata)
         items = list(dictionary.items())
         items.sort()
@@ -1791,5 +1787,15 @@ class Path(pathlib.PosixPath):
             lines.append(f"{variable_name} = abjad.OrderedDict()")
         lines.append("")
         text = "\n".join(lines)
+        import_statements = []
+        if "abjad." in text:
+            import_statements.append("import abjad")
+        if "ide." in text:
+            import_statements.append("import ide")
+        if import_statements:
+            import_statements.sort()
+            import_statements.append("")
+            import_text = "\n".join(import_statements)
+            text = import_text + text
         metadata_py_path.write_text(text)
         os.system(f"black --target-version=py38 {metadata_py_path} > /dev/null 2>&1")

@@ -38,7 +38,6 @@ if __name__ == "__main__":
         segment_directory.write_metadata_py(
             None,
             file_name="__persist__.py",
-            import_statements=["import abjad", "import ide"],
             variable_name="persist",
         )
         persist = None
@@ -70,7 +69,6 @@ if __name__ == "__main__":
         segment_directory.write_metadata_py(
             maker.persist,
             file_name="__persist__.py",
-            import_statements=["import abjad", "import ide"],
             variable_name="persist",
         )
         os.system("black --target-version=py38 __persist__.py")
