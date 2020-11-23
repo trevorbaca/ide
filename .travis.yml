@@ -46,8 +46,8 @@ before_install:
   - pip install /tmp/abjad-ext-rmakers
 
   # clone & install tonality:
-  - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
-  - pip install /tmp/abjad-ext-tonality
+  # - git clone https://github.com/Abjad/abjad-ext-tonality.git /tmp/abjad-ext-tonality
+  # - pip install /tmp/abjad-ext-tonality
 
   # clone & install baca:
   - git clone https://github.com/trevorbaca/baca.git /tmp/baca
