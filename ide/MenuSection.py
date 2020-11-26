@@ -123,7 +123,7 @@ class MenuSection:
             for entry in self:
                 if entry.value == string:
                     return entry
-        elif abjad.mathx.is_integer_equivalent(string):
+        elif abjad.math.is_integer_equivalent(string):
             for entry in self:
                 if str(entry.number) == string:
                     return entry
