@@ -265,7 +265,7 @@ class AbjadIDE:
         self.io.transcript.trim()
         last_line = self.io.transcript.lines[-1]
         assert last_line == "", repr(last_line)
-        abjad.iox.spawn_subprocess("clear")
+        abjad.io.spawn_subprocess("clear")
 
     def __repr__(self) -> str:
         """
@@ -829,7 +829,7 @@ class AbjadIDE:
                 string_buffer.write(line)
             process.wait()
             stdout_lines = string_buffer.getvalue().splitlines()
-            stderr_lines = abjad.iox._read_from_pipe(process.stderr)
+            stderr_lines = abjad.io._read_from_pipe(process.stderr)
             stderr_lines = stderr_lines.splitlines()
         exit_code = process.returncode
         if path.suffix == ".ly":
@@ -848,7 +848,7 @@ class AbjadIDE:
         self.io.display(f"interpreting {tex.trim()} ...")
         if not tex.is_file():
             return
-        executables = abjad.iox.find_executable("xelatex")
+        executables = abjad.io.find_executable("xelatex")
         executables = [pathx.Path(_) for _ in executables]
         if not executables:
             executable_name = "pdflatex"
@@ -863,7 +863,7 @@ class AbjadIDE:
         command += f" >> {log} 2>&1"
         command_called_twice = f"{command}; {command}"
         with self.change(tex.parent):
-            abjad.iox.spawn_subprocess(command_called_twice)
+            abjad.io.spawn_subprocess(command_called_twice)
             for path in sorted(tex.parent.glob("*.aux")):
                 path.remove()
             for path in sorted(tex.parent.glob("*.log")):
@@ -1383,7 +1383,7 @@ class AbjadIDE:
         else:
             assert response.payload is None, repr(response)
             with self.change(directory):
-                abjad.iox.spawn_subprocess(response.string)
+                abjad.io.spawn_subprocess(response.string)
         self.io.display("")
         if response.string == "q":
             return "quit"
@@ -1474,9 +1474,9 @@ class AbjadIDE:
                 with self.cleanup([target]):
                     target.write_text(template)
                     permissions = f"chmod 755 {target}"
-                    abjad.iox.spawn_subprocess(permissions)
-                    abjad.iox.spawn_subprocess(str(target))
-        abjad.iox.spawn_subprocess(command)
+                    abjad.io.spawn_subprocess(permissions)
+                    abjad.io.spawn_subprocess(str(target))
+        abjad.io.spawn_subprocess(command)
 
     def _replace_in_tree(
         self, directory, search_string, replace_string, complete_words=False
@@ -1485,13 +1485,13 @@ class AbjadIDE:
         if complete_words:
             command += " -W"
         with self.change(directory):
-            lines = abjad.iox.run_command(command)
+            lines = abjad.io.run_command(command)
             lines = [_.strip() for _ in lines if not _ == ""]
             return lines
 
     def _run_lilypond(self, ly, indent=0):
         assert ly.exists()
-        if not abjad.iox.find_executable("lilypond"):
+        if not abjad.io.find_executable("lilypond"):
             raise ValueError("cannot find LilyPond executable.")
         self.io.display(f"running LilyPond on {ly.trim()} ...", indent=indent)
         directory = ly.parent
@@ -1506,7 +1506,7 @@ class AbjadIDE:
         assert not pdf.exists()
         with self.change(directory):
             self.io.display(f"interpreting {ly.trim()} ...", indent=indent + 1)
-            abjad.iox.run_lilypond(str(ly), lilypond_log_file_path=str(log))
+            abjad.io.run_lilypond(str(ly), lilypond_log_file_path=str(log))
             _segments.remove_lilypond_warnings(
                 log,
                 crescendo_too_small=True,
@@ -1529,7 +1529,7 @@ class AbjadIDE:
         if paths:
             string = " ".join([str(_) for _ in paths])
             command = f'py.test -xrf {string}; say "done"'
-            abjad.iox.spawn_subprocess(command)
+            abjad.io.spawn_subprocess(command)
 
     def _select_annotation_jobs(self, directory, undo=False):
         def _annotation_spanners(tags):
@@ -1837,7 +1837,7 @@ class AbjadIDE:
                 return
             assert ly.exists()
             assert ly_old.exists()
-            if not abjad.iox.compare_files(ly_old, ly):
+            if not abjad.io.compare_files(ly_old, ly):
                 ly_old_text = ly_old.read_text().splitlines(keepends=True)
                 ly_text = ly.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ly_old_text, ly_text)))
@@ -1846,7 +1846,7 @@ class AbjadIDE:
                 return
             assert ily.exists()
             assert ily_old.exists()
-            if not abjad.iox.compare_files(ily_old, ily):
+            if not abjad.io.compare_files(ily_old, ily):
                 ily_old_text = ily_old.read_text().splitlines(keepends=True)
                 ily_text = ily.read_text().splitlines(keepends=True)
                 print("".join(difflib.ndiff(ily_old_text, ily_text)))
@@ -2888,7 +2888,7 @@ class AbjadIDE:
                 if i + 1 < len(paths):
                     self.io.display("")
                 else:
-                    abjad.iox.spawn_subprocess('say "done"')
+                    abjad.io.spawn_subprocess('say "done"')
                 if exit_ != 0:
                     exit = -1
             return exit
@@ -2952,7 +2952,7 @@ class AbjadIDE:
                 if i + 1 < len(paths):
                     self.io.display("")
                 else:
-                    abjad.iox.spawn_subprocess('say "done"')
+                    abjad.io.spawn_subprocess('say "done"')
                 if exit_ != 0:
                     exit = -1
             return exit
