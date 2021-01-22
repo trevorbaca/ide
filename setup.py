@@ -51,7 +51,6 @@ keywords = [
     "abjad",
     "music composition",
     "music notation",
-    "formalized score control",
     "lilypond",
 ]
 
@@ -63,7 +62,7 @@ if __name__ == "__main__":
         install_requires=install_requires,
         keywords=", ".join(keywords),
         license="MIT",
-        name="Abjad IDE",
+        name="baca-ide",
         packages=["ide"],
         platforms="Any",
         url="http://abjad.io.github",
