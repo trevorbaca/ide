@@ -1817,8 +1817,8 @@ class AbjadIDE:
 
     @staticmethod
     def _test_segment_illustration(directory):
-        # only run on Travis because segment illustration usually takes a while
-        if not os.getenv("TRAVIS"):
+        # only run on GitHub because segment illustration usually takes a while
+        if not os.getenv("GITHUB_WORKSPACE"):
             return
         abjad_ide = AbjadIDE()
         with abjad.FilesystemState(keep=[directory]):
