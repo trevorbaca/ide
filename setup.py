@@ -13,7 +13,7 @@ if CURRENT_PYTHON < REQUIRED_PYTHON:
 Unsupported Python version
 ==========================
 
-This version of the Abjad IDE requires Python {}.{}, but you're trying to
+This version of the Bača IDE requires Python {}.{}, but you're trying to
 install it on Python {}.{}.
 
 This may be because you are using a version of pip that doesn't
@@ -58,6 +58,7 @@ if __name__ == "__main__":
     setuptools.setup(
         author=", ".join(author),
         author_email=", ".join(author_email),
+        description="Trevor Bača's score management scripts.",
         include_package_data=True,
         install_requires=install_requires,
         keywords=", ".join(keywords),
@@ -66,4 +67,5 @@ if __name__ == "__main__":
         packages=["ide"],
         platforms="Any",
         url="http://abjad.io.github",
+        version="3.2",
     )
