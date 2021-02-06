@@ -234,8 +234,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     try:
-        optimization = segment_directory / ".optimization"
-        with optimization.open(mode="a") as pointer:
+        timing = segment_directory / ".timing"
+        with timing.open(mode="a") as pointer:
             pointer.write("\n")
             line = time.strftime("%Y-%m-%d %H:%M:%S") + "\n"
             pointer.write(line)

@@ -45,7 +45,7 @@ class Path(pathlib.PosixPath):
     _secondary_names = (
         ".gitignore",
         ".log",
-        ".optimization",
+        ".timing",
         "__init__.py",
         "__make_pdf__.py",
         "__make_midi__.py",
