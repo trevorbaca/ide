@@ -1928,7 +1928,7 @@ class PersistentOverride:
             lilypond_type = context.lilypond_type
         else:
             lilypond_type = self.context
-        string = abjad.OverrideInterface.make_lilypond_override_string(
+        string = abjad.overrides.make_lilypond_override_string(
             self.grob,
             self.attribute,
             self.value,
