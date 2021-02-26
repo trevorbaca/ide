@@ -237,7 +237,9 @@ class AbjadIDE:
 
     ### INITIALIZER ###
 
-    def __init__(self, example: bool = None, test: bool = None) -> None:
+    def __init__(
+        self, example: bool = None, test: typing.Union[bool, str] = None
+    ) -> None:
         self._aliases = abjad.OrderedDict(self.configuration.aliases)
         self._current_directory = None
         self._example = example
@@ -1911,7 +1913,7 @@ class AbjadIDE:
         return self._previous_directory
 
     @property
-    def test(self) -> typing.Optional[bool]:
+    def test(self) -> typing.Optional[typing.Union[bool, str]]:
         """
         Is true when IDE is test.
         """

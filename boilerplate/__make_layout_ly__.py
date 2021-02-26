@@ -103,7 +103,7 @@ if __name__ == '__main__':
 
     try:
         score = lilypond_file['Score']
-        text = abjad.lilypond(score)
+        text = abjad.lilypond(score, tags=True)
         text = text.replace('Global_Skips', 'Page_Layout')
         text = abjad.LilyPondFormatManager.left_shift_tags(text, realign=79)
         layout_ly = layout_module_name.replace('_', '-') + '.ly'

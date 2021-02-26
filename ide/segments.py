@@ -337,7 +337,8 @@ class Part:
         ...     section_abbreviation='VN-1',
         ...     )
 
-        >>> abjad.f(part)
+        >>> string = abjad.storage(part)
+        >>> print(string)
         ide.Part(
             instrument='FirstViolin',
             member=18,
@@ -1971,7 +1972,8 @@ class PersistentOverride:
 
             ..  docs::
 
-                >>> abjad.f(staff)
+                >>> string = abjad.lilypond(staff)
+                >>> print(string)
                 \new Staff
                 {
                     \override NoteHead.color = #red
@@ -1998,7 +2000,8 @@ class PersistentOverride:
 
             ..  docs::
 
-                >>> abjad.f(staff)
+                >>> string = abjad.lilypond(staff)
+                >>> print(string)
                 \new Staff
                 {
                     c'4

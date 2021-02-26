@@ -274,8 +274,10 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
         self._populate_pitches(lh_voice, self.lh_pitch_range)
         template.attach_defaults(score)
         stylesheet_path = pathlib.Path("..", "..", "stylesheets", "stylesheet.ily")
-        lilypond_file = abjad.LilyPondFile.new(
-            music=score, includes=[stylesheet_path], use_relative_includes=True
+        block = abjad.Block(name="score")
+        block.items.append(score)
+        lilypond_file = abjad.LilyPondFile(
+            items=[block], includes=[stylesheet_path], use_relative_includes=True
         )
         if self.include_layout_ly:
             score_block = lilypond_file.score_block
@@ -288,9 +290,6 @@ class PianoStaffSegmentMaker(abjad.SegmentMaker):
             container = abjad.Container([include, score], simultaneous=True)
             score_block.items[:] = [container]
         if midi:
-            for block in lilypond_file.items[:]:
-                if block.name in ("layout", "paper"):
-                    lilypond_file.items.remove(block)
             block = abjad.Block(name="midi")
             lilypond_file.score_block.items.append(block)
         return lilypond_file

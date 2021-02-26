@@ -46,16 +46,15 @@ isort-reformat:
 	ide tests
 
 mypy:
-	mypy .
-
-project = ide
+	mypy ide
+	mypy tests
 
 pytest:
 	rm -Rf htmlcov
 	pytest \
 	--cov-config=.coveragerc \
 	--cov-report=html \
-	--cov=${project} \
+	--cov=ide \
 	.
 
 pytest-x:
@@ -64,7 +63,7 @@ pytest-x:
 	-x \
 	--cov-config=.coveragerc \
 	--cov-report=html \
-	--cov=${project} \
+	--cov=ide \
 	.
 
 reformat:

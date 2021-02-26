@@ -247,7 +247,9 @@ class MeasureMaker(object):
             leaves = abjad.select(measure).by_leaf()
             abjad.attach(beam, leaves)
         score.add_final_bar_line()
-        lilypond_file = abjad.LilyPondFile.new(score)
+        block = abjad.Block(name="score")
+        block.items.append(score)
+        lilypond_file = abjad.LilyPondFile(items=[block])
         return lilypond_file
 
     ### PRIVATE METHODS ###

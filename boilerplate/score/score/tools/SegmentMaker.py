@@ -28,8 +28,10 @@ class SegmentMaker(abjad.SegmentMaker):
         self.previous_metadata = previous_metadata
         score = self.score_template()
         score['Example_Voice'].extend("c'4 ( d'4 e'4 f'4 )")
-        lilypond_file = abjad.LilyPondFile.new(
-            score,
+        block = abjad.Block(name="score")
+        block.items.append(score)
+        lilypond_file = abjad.LilyPondFile(
+            items=[block],
             includes=['../../stylesheets/stylesheet.ily'],
             )
         return lilypond_file

@@ -98,16 +98,11 @@ if __name__ == "__main__":
         measure = abjad.Container(notes)
         staff.append(measure)
 
-    lilypond_file = abjad.LilyPondFile.new(music=score)
-    block_names = ("layout", "paper")
-    for item in lilypond_file.items[:]:
-        if getattr(item, "name", None) in block_names:
-            lilypond_file.items.remove(item)
+    block = abjad.Block(name="score")
+    block.items.append(score)
+    lilypond_file = abjad.LilyPondFile(items=[block])
     block = abjad.Block(name="midi")
     lilypond_file.items.append(block)
-    for item in lilypond_file.items[:]:
-        if getattr(item, "name", None) == "header":
-            lilypond_file.items.remove(item)
     abjad.f(lilypond_file)
 
     try:
