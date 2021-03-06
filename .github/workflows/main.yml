@@ -75,7 +75,6 @@ jobs:
         export PATH=/home/runner/bin:${PATH}
         export MYPYPATH=/tmp/abjad:/tmp/abjad-ext-rmakers
         echo $MYPYPATH
-        cat $GITHUB_WORKSPACE/dotfiles/mypy.ini
         make black-check
         make flake8
         make isort-check
