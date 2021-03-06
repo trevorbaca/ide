@@ -75,6 +75,10 @@ jobs:
         export PATH=/home/runner/bin:${PATH}
         export MYPYPATH=/tmp/abjad:/tmp/abjad-ext-rmakers
         echo $MYPYPATH
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/blue_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/red_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/green_score
+        echo $PYTHONPATH
         make black-check
         make flake8
         make isort-check
