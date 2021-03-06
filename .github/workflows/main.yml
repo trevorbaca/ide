@@ -31,16 +31,28 @@ jobs:
 
     - name: Install LaTeX add-ons
       run: |
+        echo
+        echo GRAPHVIZ
         sudo apt-get install graphviz
+        echo
+        echo IMAGEMAGICK
         sudo apt-get install imagemagick
+        echo
+        echo PGF
         sudo apt-get install pgf
+        echo
+        echo TEXLIVE
         sudo apt-get install texlive
+        echo
+        echo TEXLIVE-EXTRA-UTILS
         sudo apt-get install texlive-extra-utils
         sudo apt-get install texlive-fonts-recommended
         sudo apt-get install texlive-latex-extra
         sudo apt-get install texlive-latex-recommended
         sudo apt-get install texlive-xetex
         # lmodern required for texlive-xetex to find fonts
+        echo
+        echo LMODERN
         sudo apt-get install lmodern
 
     - name: Install LilyPond
