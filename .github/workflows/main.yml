@@ -80,6 +80,17 @@ jobs:
       run: |
         python -m pip install -e .
 
+    - name: Check imports
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/blue_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/red_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/green_score
+        echo $PYTHONPATH
+        ls $GITHUB_WORKSPACE/scores
+        ls $GITHUB_WORKSPACE/scores/green_score
+        python -c "print('hello')"
+        python -c "import green_score; print('imported Green Score')"
+
     - name: Prime parser tables
       run: /tmp/abjad/scr/prime-parser-tables
 
