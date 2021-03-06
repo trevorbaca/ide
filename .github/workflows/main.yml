@@ -84,31 +84,12 @@ jobs:
       run: |
         git clone https://github.com/trevorbaca/baca.git /tmp/baca
         pip install /tmp/baca
-        # rm "$GITHUB_WORKSPACE"/Makefile
-        # ln -s /tmp/baca/dotfiles/Makefile "$GITHUB_WORKSPACE"/Makefile
-        # NAME=$(basename "$GITHUB_WORKSPACE")
-        # echo "$GITHUB_WORKSPACE"/$NAME/test.py
-        # rm -f "$GITHUB_WORKSPACE"/$NAME/test.py
-        # ln -s /tmp/baca/dotfiles/test_segments.py "$GITHUB_WORKSPACE"/$NAME/test.py
-        # ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
-
-    - name: Check imports
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/blue_score
-        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/red_score
-        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/green_score
-        echo $PYTHONPATH
-        ls $GITHUB_WORKSPACE/scores
-        ls $GITHUB_WORKSPACE/scores/green_score
-        python -c "print('hello')"
-        python -c "import green_score; print('imported Green Score')"
 
     - name: Prime parser tables
       run: /tmp/abjad/scr/prime-parser-tables
 
     - name: Log versions
       run: |
-        # lilypond is installed in /home/runner/bin
         export PATH=/home/runner/bin:${PATH}
         black --version
         flake8 --version
@@ -118,9 +99,8 @@ jobs:
         pytest --version
         lilypond --version
 
-    - name: Run checks and tests
+    - name: Run checks
       run: |
-        # lilypond is installed in /home/runner/bin
         export PATH=/home/runner/bin:${PATH}
         export MYPYPATH=/tmp/abjad:/tmp/abjad-ext-rmakers
         echo $MYPYPATH
@@ -132,4 +112,12 @@ jobs:
         make flake8
         make isort-check
         mypy --config-file=$GITHUB_WORKSPACE/mypy.ini ide
+
+    - name: Run tests
+      run: |
+        export PATH=/home/runner/bin:${PATH}
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/blue_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/red_score
+        export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/green_score
+        echo $PYTHONPATH
         make pytest
