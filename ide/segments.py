@@ -2224,7 +2224,7 @@ def _import_score_package(path):
 def _import_score_template(path):
     module = _import_score_package(path)
     if not module:
-        raise Exception(f"can not import score package: {path}.")
+        raise Exception(f"can not import score package: {path}, {path.contents}.")
     score_template = getattr(module, "ScoreTemplate", None)
     if not score_template:
         raise Exception("can not import score template.")
