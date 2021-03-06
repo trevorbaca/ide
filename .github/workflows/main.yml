@@ -31,17 +31,17 @@ jobs:
 
     - name: Install LaTeX add-ons
       run: |
-        apt-get install graphviz
-        apt-get install imagemagick
-        apt-get install pgf
-        apt-get install texlive
-        apt-get install texlive-extra-utils
-        apt-get install texlive-fonts-recommended
-        apt-get install texlive-latex-extra
-        apt-get install texlive-latex-recommended
-        apt-get install texlive-xetex
+        sudo apt-get install graphviz
+        sudo apt-get install imagemagick
+        sudo apt-get install pgf
+        sudo apt-get install texlive
+        sudo apt-get install texlive-extra-utils
+        sudo apt-get install texlive-fonts-recommended
+        sudo apt-get install texlive-latex-extra
+        sudo apt-get install texlive-latex-recommended
+        sudo apt-get install texlive-xetex
         # lmodern required for texlive-xetex to find fonts
-        apt-get install lmodern
+        sudo apt-get install lmodern
 
     - name: Install LilyPond
       run: |
