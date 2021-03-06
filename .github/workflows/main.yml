@@ -80,6 +80,18 @@ jobs:
       run: |
         python -m pip install -e .
 
+    - name: Install Bača
+      run: |
+        git clone https://github.com/trevorbaca/baca.git /tmp/baca
+        pip install /tmp/baca
+        # rm "$GITHUB_WORKSPACE"/Makefile
+        # ln -s /tmp/baca/dotfiles/Makefile "$GITHUB_WORKSPACE"/Makefile
+        # NAME=$(basename "$GITHUB_WORKSPACE")
+        # echo "$GITHUB_WORKSPACE"/$NAME/test.py
+        # rm -f "$GITHUB_WORKSPACE"/$NAME/test.py
+        # ln -s /tmp/baca/dotfiles/test_segments.py "$GITHUB_WORKSPACE"/$NAME/test.py
+        # ln -s /tmp/baca/dotfiles/mypy.ini ~/.mypy.ini
+
     - name: Check imports
       run: |
         export PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/scores/blue_score
