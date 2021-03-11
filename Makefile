@@ -50,21 +50,10 @@ mypy:
 	mypy tests
 
 pytest:
-	rm -Rf htmlcov
-	pytest \
-	--cov-config=.coveragerc \
-	--cov-report=html \
-	--cov=ide \
-	.
+	pytest .
 
 pytest-x:
-	rm -Rf htmlcov
-	pytest \
-	-x \
-	--cov-config=.coveragerc \
-	--cov-report=html \
-	--cov=ide \
-	.
+	pytest -x .
 
 reformat:
 	make black-reformat
@@ -77,8 +66,5 @@ check:
 	make mypy
 
 test:
-	make black-check
-	make flake8
-	make isort-check
-	make mypy
+	make check
 	make pytest
