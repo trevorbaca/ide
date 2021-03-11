@@ -37,9 +37,6 @@ jobs:
         echo
         echo IMAGEMAGICK
         sudo apt-get install imagemagick
-        # echo
-        # echo PGF
-        # sudo apt-get install pgf
         echo
         echo TEXLIVE
         sudo apt-get install texlive
